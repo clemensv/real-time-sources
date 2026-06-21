@@ -1869,6 +1869,24 @@
       "module": "siri_amqp"
     },
     {
+      "dir": "feeders/kiwis",
+      "image": "kiwis-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "kiwis_kafka"
+    },
+    {
+      "dir": "feeders/kiwis",
+      "image": "kiwis-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "kiwis_mqtt"
+    },
+    {
+      "dir": "feeders/kiwis",
+      "image": "kiwis-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "kiwis_amqp"
+    },
+    {
       "dir": "feeders/datex2",
       "image": "datex2",
       "file": "Dockerfile",
@@ -4167,6 +4185,12 @@
       "image": "uk-bods-siri-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUkBodsSiriAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/kiwis",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestKiwisDockerFlow",
+      "image": "kiwis-kafka"
     },
     {
       "test_file": "test_docker_kafka_flow.py",

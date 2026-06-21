@@ -1,0 +1,995 @@
+{
+  "endpoints": {
+    "org.kiwis.Station.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "kiwis",
+          "key": "{kiwis_id}/{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.kiwis.station.kafka"
+      ],
+      "description": "Kafka endpoint for KiWIS station reference records on the `kiwis` topic keyed by the configured KiWIS instance identifier and upstream station_id."
+    },
+    "org.kiwis.Timeseries.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "kiwis",
+          "key": "{kiwis_id}/{ts_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.kiwis.timeseries.kafka"
+      ],
+      "description": "Kafka endpoint for KiWIS timeseries metadata and values on the `kiwis` topic keyed by the configured KiWIS instance identifier and upstream ts_id."
+    },
+    "org.kiwis.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.kiwis.station.mqtt",
+        "#/messagegroups/org.kiwis.timeseries.mqtt"
+      ],
+      "description": "MQTT 5 endpoint for generalized KiWIS CloudEvents using a hydrology Unified Namespace topic tree."
+    },
+    "org.kiwis.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/kiwis"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.kiwis.station.amqp",
+        "#/messagegroups/org.kiwis.timeseries.amqp"
+      ],
+      "description": "AMQP 1.0 endpoint for generalized KiWIS CloudEvents on a configured queue, topic, or event hub address."
+    }
+  },
+  "messagegroups": {
+    "org.kiwis.station": {
+      "description": "Transport-neutral KiWIS station catalog events keyed by `{kiwis_id}/{station_id}`. Stations are emitted at startup and periodically refreshed before value telemetry so consumers can interpret timeseries in temporal context.",
+      "messages": {
+        "org.kiwis.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference metadata for one observation station returned by KiWIS getStationList, including stable identifiers, public names, WGS 84 coordinates, river, and catchment context.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.kiwis.Station"
+            },
+            "source": {
+              "value": "{base_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{kiwis_id}/{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.kiwis.jstruct/schemas/org.kiwis.Station"
+        }
+      }
+    },
+    "org.kiwis.timeseries": {
+      "description": "Transport-neutral KiWIS timeseries catalog and observation value events keyed by `{kiwis_id}/{ts_id}`. Timeseries metadata and values share a key because `ts_id` is the stable identity for the measured series within one KiWIS datasource.",
+      "messages": {
+        "org.kiwis.Timeseries": {
+          "name": "Timeseries",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference metadata for one KiWIS timeseries returned by getTimeseriesList, including station linkage, parameter labels, units, and coverage range.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.kiwis.Timeseries"
+            },
+            "source": {
+              "value": "{base_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{kiwis_id}/{ts_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.kiwis.jstruct/schemas/org.kiwis.Timeseries"
+        },
+        "org.kiwis.TimeseriesValue": {
+          "name": "TimeseriesValue",
+          "envelope": "CloudEvents/1.0",
+          "description": "One observation row returned by KiWIS getTimeseriesValues for a configured timeseries, carrying timestamp, numeric value, optional quality code, and the per-timeseries unit metadata needed by consumers.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.kiwis.TimeseriesValue"
+            },
+            "source": {
+              "value": "{base_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{kiwis_id}/{ts_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.kiwis.jstruct/schemas/org.kiwis.TimeseriesValue"
+        }
+      }
+    },
+    "org.kiwis.station.kafka": {
+      "description": "Kafka bindings for KiWIS station events.",
+      "messages": {
+        "org.kiwis.station.kafka.Station": {
+          "name": "Station",
+          "basemessageuri": "/messagegroups/org.kiwis.station/messages/org.kiwis.Station",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{kiwis_id}/{station_id}"
+          }
+        }
+      }
+    },
+    "org.kiwis.station.mqtt": {
+      "description": "MQTT bindings for KiWIS station events with retained last-known-value topics.",
+      "messages": {
+        "org.kiwis.station.mqtt.Station": {
+          "name": "Station",
+          "basemessageuri": "/messagegroups/org.kiwis.station/messages/org.kiwis.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/kiwis/{kiwis_id}/stations/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.kiwis.station.amqp": {
+      "description": "AMQP 1.0 bindings for KiWIS station events.",
+      "messages": {
+        "org.kiwis.station.amqp.Station": {
+          "name": "Station",
+          "basemessageuri": "/messagegroups/org.kiwis.station/messages/org.kiwis.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{kiwis_id}/{station_id}",
+                "description": "AMQP message subject matching the CloudEvents subject and Kafka key for stable per-entity ordering and correlation."
+              }
+            },
+            "application-properties": {
+              "kiwis_id": {
+                "type": "uritemplate",
+                "value": "{kiwis_id}",
+                "description": "Configuration-assigned KiWIS instance identifier used by AMQP subscribers to filter a shared address by upstream instance."
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.timeseries.kafka": {
+      "description": "Kafka bindings for KiWIS timeseries events.",
+      "messages": {
+        "org.kiwis.timeseries.kafka.Timeseries": {
+          "name": "Timeseries",
+          "basemessageuri": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.Timeseries",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{kiwis_id}/{ts_id}"
+          }
+        },
+        "org.kiwis.timeseries.kafka.TimeseriesValue": {
+          "name": "TimeseriesValue",
+          "basemessageuri": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.TimeseriesValue",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{kiwis_id}/{ts_id}"
+          }
+        }
+      }
+    },
+    "org.kiwis.timeseries.mqtt": {
+      "description": "MQTT bindings for KiWIS timeseries events with retained last-known-value topics.",
+      "messages": {
+        "org.kiwis.timeseries.mqtt.Timeseries": {
+          "name": "Timeseries",
+          "basemessageuri": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.Timeseries",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/kiwis/{kiwis_id}/timeseries/{ts_id}/metadata",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "org.kiwis.timeseries.mqtt.TimeseriesValue": {
+          "name": "TimeseriesValue",
+          "basemessageuri": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.TimeseriesValue",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/kiwis/{kiwis_id}/timeseries/{ts_id}/value",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.kiwis.timeseries.amqp": {
+      "description": "AMQP 1.0 bindings for KiWIS timeseries events.",
+      "messages": {
+        "org.kiwis.timeseries.amqp.Timeseries": {
+          "name": "Timeseries",
+          "basemessageuri": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.Timeseries",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{kiwis_id}/{ts_id}",
+                "description": "AMQP message subject matching the CloudEvents subject and Kafka key for stable per-entity ordering and correlation."
+              }
+            },
+            "application-properties": {
+              "kiwis_id": {
+                "type": "uritemplate",
+                "value": "{kiwis_id}",
+                "description": "Configuration-assigned KiWIS instance identifier used by AMQP subscribers to filter a shared address by upstream instance."
+              }
+            }
+          }
+        },
+        "org.kiwis.timeseries.amqp.TimeseriesValue": {
+          "name": "TimeseriesValue",
+          "basemessageuri": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.TimeseriesValue",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{kiwis_id}/{ts_id}",
+                "description": "AMQP message subject matching the CloudEvents subject and Kafka key for stable per-entity ordering and correlation."
+              }
+            },
+            "application-properties": {
+              "kiwis_id": {
+                "type": "uritemplate",
+                "value": "{kiwis_id}",
+                "description": "Configuration-assigned KiWIS instance identifier used by AMQP subscribers to filter a shared address by upstream instance."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.kiwis.jstruct": {
+      "schemas": {
+        "org.kiwis.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "Station",
+                "required": [
+                  "kiwis_id",
+                  "base_url",
+                  "station_id"
+                ],
+                "properties": {
+                  "kiwis_id": {
+                    "type": "string",
+                    "description": "Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource."
+                  },
+                  "base_url": {
+                    "type": "uri",
+                    "description": "Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance."
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable KiWIS station_id returned by getStationList. This is the station identity within one KiWIS datasource and forms the station event subject with kiwis_id.",
+                    "altnames": {
+                      "json": "station_id"
+                    }
+                  },
+                  "station_no": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Agency station number returned by getStationList. It is useful for user-facing cross-reference but is not used as the primary event key because KiWIS documents station_id as the stable query identifier.",
+                    "altnames": {
+                      "json": "station_no"
+                    }
+                  },
+                  "station_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable station name returned by getStationList for display, search, and map labels; not stable enough for keys.",
+                    "altnames": {
+                      "json": "station_name"
+                    }
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Station latitude in WGS 84 decimal degrees from station_latitude; null when the upstream catalog omits coordinates.",
+                    "altnames": {
+                      "json": "station_latitude"
+                    }
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Station longitude in WGS 84 decimal degrees from station_longitude; null when the upstream catalog omits coordinates.",
+                    "altnames": {
+                      "json": "station_longitude"
+                    }
+                  },
+                  "river_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "River or water body name returned by KiWIS getStationList, used by consumers for hydrological grouping and map filtering.",
+                    "altnames": {
+                      "json": "river_name"
+                    }
+                  },
+                  "catchment_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Catchment or basin label returned by KiWIS getStationList, used for watershed-level filtering and analytics.",
+                    "altnames": {
+                      "json": "catchment_name"
+                    }
+                  }
+                },
+                "$id": "https://schemas.clemensv.net/real-time-sources/kiwis/Station",
+                "description": "Reference station payload from KiWIS getStationList with stable identifiers, optional location, river, and catchment context.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
+              }
+            }
+          },
+          "description": "Reference station payload from KiWIS getStationList with stable identifiers, optional location, river, and catchment context."
+        },
+        "org.kiwis.Timeseries": {
+          "name": "Timeseries",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "Timeseries",
+                "required": [
+                  "kiwis_id",
+                  "base_url",
+                  "ts_id",
+                  "station_id"
+                ],
+                "properties": {
+                  "kiwis_id": {
+                    "type": "string",
+                    "description": "Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource."
+                  },
+                  "base_url": {
+                    "type": "uri",
+                    "description": "Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance."
+                  },
+                  "ts_id": {
+                    "type": "string",
+                    "description": "Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events.",
+                    "altnames": {
+                      "json": "ts_id"
+                    }
+                  },
+                  "ts_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Full KiWIS timeseries name such as `15minute.Total` or `Day.Mean`, describing aggregation interval and statistic.",
+                    "altnames": {
+                      "json": "ts_name"
+                    }
+                  },
+                  "ts_shortname": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Short KiWIS timeseries label returned by getTimeseriesList for compact displays and diagnostics.",
+                    "altnames": {
+                      "json": "ts_shortname"
+                    }
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable station_id of the station owning this timeseries, enabling joins from timeseries metadata to station reference events.",
+                    "altnames": {
+                      "json": "station_id"
+                    }
+                  },
+                  "station_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable station name repeated by getTimeseriesList for operator convenience; consumers should use station_id for joins.",
+                    "altnames": {
+                      "json": "station_name"
+                    }
+                  },
+                  "parametertype_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "KiWIS parameter type name such as level, discharge, precipitation, or temperature; identifies the physical quantity measured.",
+                    "altnames": {
+                      "json": "parametertype_name"
+                    }
+                  },
+                  "stationparameter_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Station-specific parameter name returned by KiWIS, often the locally meaningful label such as Level or Rain.",
+                    "altnames": {
+                      "json": "stationparameter_name"
+                    }
+                  },
+                  "unit_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Per-timeseries unit name returned as ts_unitname, such as meter or millimeter. Units vary by timeseries and therefore travel as data fields rather than fixed schema units.",
+                    "altnames": {
+                      "json": "ts_unitname"
+                    }
+                  },
+                  "unit_symbol": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Per-timeseries unit symbol returned as ts_unitsymbol, such as m, mm, m3/s, or deg C. Consumers use it to label numeric values correctly.",
+                    "altnames": {
+                      "json": "ts_unitsymbol"
+                    }
+                  },
+                  "coverage_from": {
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "Start timestamp of the available coverage range reported by KiWIS getTimeseriesList. It is null when the server omits coverage.",
+                    "altnames": {
+                      "json": "from"
+                    }
+                  },
+                  "coverage_to": {
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "End timestamp of the available coverage range reported by KiWIS getTimeseriesList. It is null when the server omits coverage.",
+                    "altnames": {
+                      "json": "to"
+                    }
+                  }
+                },
+                "$id": "https://schemas.clemensv.net/real-time-sources/kiwis/Timeseries",
+                "description": "Reference timeseries payload from KiWIS getTimeseriesList with station linkage, parameter labels, units, and coverage.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
+              }
+            }
+          },
+          "description": "Reference timeseries payload from KiWIS getTimeseriesList with station linkage, parameter labels, units, and coverage."
+        },
+        "org.kiwis.TimeseriesValue": {
+          "name": "TimeseriesValue",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "TimeseriesValue",
+                "required": [
+                  "kiwis_id",
+                  "base_url",
+                  "ts_id",
+                  "station_id",
+                  "timestamp"
+                ],
+                "properties": {
+                  "kiwis_id": {
+                    "type": "string",
+                    "description": "Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource."
+                  },
+                  "base_url": {
+                    "type": "uri",
+                    "description": "Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance."
+                  },
+                  "ts_id": {
+                    "type": "string",
+                    "description": "Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events.",
+                    "altnames": {
+                      "json": "ts_id"
+                    }
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable station_id of the station owning this timeseries, enabling joins from timeseries metadata to station reference events.",
+                    "altnames": {
+                      "json": "station_id"
+                    }
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp from the Timestamp column returned by getTimeseriesValues, parsed as an instant in UTC when the upstream string ends in Z."
+                  },
+                  "value": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Numeric observation value from the Value column. It can be null for missing or censored measurements; use unit_name and unit_symbol to interpret magnitude."
+                  },
+                  "quality_code": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Optional KiWIS Quality Code column value. KiWIS instances use this integer to convey quality, approval, or processing flags; null means the response omitted the column or row value.",
+                    "altnames": {
+                      "json": "Quality Code"
+                    }
+                  },
+                  "unit_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Per-timeseries unit name returned as ts_unitname, such as meter or millimeter. Units vary by timeseries and therefore travel as data fields rather than fixed schema units.",
+                    "altnames": {
+                      "json": "ts_unitname"
+                    }
+                  },
+                  "unit_symbol": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Per-timeseries unit symbol returned as ts_unitsymbol, such as m, mm, m3/s, or deg C. Consumers use it to label numeric values correctly.",
+                    "altnames": {
+                      "json": "ts_unitsymbol"
+                    }
+                  },
+                  "parametertype_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "KiWIS parameter type name such as level, discharge, precipitation, or temperature; identifies the physical quantity measured.",
+                    "altnames": {
+                      "json": "parametertype_name"
+                    }
+                  },
+                  "stationparameter_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Station-specific parameter name returned by KiWIS, often the locally meaningful label such as Level or Rain.",
+                    "altnames": {
+                      "json": "stationparameter_name"
+                    }
+                  }
+                },
+                "$id": "https://schemas.clemensv.net/real-time-sources/kiwis/TimeseriesValue",
+                "description": "Telemetry payload for one KiWIS getTimeseriesValues row with value, quality code, and unit metadata copied from the timeseries catalog.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
+              }
+            }
+          },
+          "description": "Telemetry payload for one KiWIS getTimeseriesValues row with value, quality code, and unit metadata copied from the timeseries catalog."
+        }
+      }
+    },
+    "org.kiwis.avro": {
+      "schemas": {
+        "org.kiwis.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "org.kiwis",
+                "doc": "Reference station payload from KiWIS getStationList.",
+                "fields": [
+                  {
+                    "name": "kiwis_id",
+                    "type": "string",
+                    "doc": "Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource."
+                  },
+                  {
+                    "name": "base_url",
+                    "type": "string",
+                    "doc": "Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable KiWIS station_id returned by getStationList. This is the station identity within one KiWIS datasource and forms the station event subject with kiwis_id."
+                  },
+                  {
+                    "name": "station_no",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Agency station number returned by getStationList. It is useful for user-facing cross-reference but is not used as the primary event key because KiWIS documents station_id as the stable query identifier.",
+                    "default": null
+                  },
+                  {
+                    "name": "station_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable station name returned by getStationList for display, search, and map labels; not stable enough for keys.",
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station latitude in WGS 84 decimal degrees from station_latitude; null when the upstream catalog omits coordinates.",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station longitude in WGS 84 decimal degrees from station_longitude; null when the upstream catalog omits coordinates.",
+                    "default": null
+                  },
+                  {
+                    "name": "river_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "River or water body name returned by KiWIS getStationList, used by consumers for hydrological grouping and map filtering.",
+                    "default": null
+                  },
+                  {
+                    "name": "catchment_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Catchment or basin label returned by KiWIS getStationList, used for watershed-level filtering and analytics.",
+                    "default": null
+                  }
+                ]
+              }
+            }
+          },
+          "description": "Reference station payload from KiWIS getStationList."
+        },
+        "org.kiwis.Timeseries": {
+          "name": "Timeseries",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Timeseries",
+                "namespace": "org.kiwis",
+                "doc": "Reference timeseries payload from KiWIS getTimeseriesList.",
+                "fields": [
+                  {
+                    "name": "kiwis_id",
+                    "type": "string",
+                    "doc": "Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource."
+                  },
+                  {
+                    "name": "base_url",
+                    "type": "string",
+                    "doc": "Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance."
+                  },
+                  {
+                    "name": "ts_id",
+                    "type": "string",
+                    "doc": "Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events."
+                  },
+                  {
+                    "name": "ts_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Full KiWIS timeseries name such as `15minute.Total` or `Day.Mean`, describing aggregation interval and statistic.",
+                    "default": null
+                  },
+                  {
+                    "name": "ts_shortname",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Short KiWIS timeseries label returned by getTimeseriesList for compact displays and diagnostics.",
+                    "default": null
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station_id of the station owning this timeseries, enabling joins from timeseries metadata to station reference events."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable station name repeated by getTimeseriesList for operator convenience; consumers should use station_id for joins.",
+                    "default": null
+                  },
+                  {
+                    "name": "parametertype_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "KiWIS parameter type name such as level, discharge, precipitation, or temperature; identifies the physical quantity measured.",
+                    "default": null
+                  },
+                  {
+                    "name": "stationparameter_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Station-specific parameter name returned by KiWIS, often the locally meaningful label such as Level or Rain.",
+                    "default": null
+                  },
+                  {
+                    "name": "unit_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Per-timeseries unit name returned as ts_unitname, such as meter or millimeter. Units vary by timeseries and therefore travel as data fields rather than fixed schema units.",
+                    "default": null
+                  },
+                  {
+                    "name": "unit_symbol",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Per-timeseries unit symbol returned as ts_unitsymbol, such as m, mm, m3/s, or deg C. Consumers use it to label numeric values correctly.",
+                    "default": null
+                  },
+                  {
+                    "name": "coverage_from",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "Start timestamp of the available coverage range reported by KiWIS getTimeseriesList. It is null when the server omits coverage.",
+                    "default": null
+                  },
+                  {
+                    "name": "coverage_to",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "End timestamp of the available coverage range reported by KiWIS getTimeseriesList. It is null when the server omits coverage.",
+                    "default": null
+                  }
+                ]
+              }
+            }
+          },
+          "description": "Reference timeseries payload from KiWIS getTimeseriesList."
+        },
+        "org.kiwis.TimeseriesValue": {
+          "name": "TimeseriesValue",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "TimeseriesValue",
+                "namespace": "org.kiwis",
+                "doc": "Telemetry payload for one KiWIS getTimeseriesValues row.",
+                "fields": [
+                  {
+                    "name": "kiwis_id",
+                    "type": "string",
+                    "doc": "Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource."
+                  },
+                  {
+                    "name": "base_url",
+                    "type": "string",
+                    "doc": "Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance."
+                  },
+                  {
+                    "name": "ts_id",
+                    "type": "string",
+                    "doc": "Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station_id of the station owning this timeseries, enabling joins from timeseries metadata to station reference events."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "Observation timestamp from the Timestamp column returned by getTimeseriesValues, parsed as an instant in UTC when the upstream string ends in Z."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Numeric observation value from the Value column. It can be null for missing or censored measurements; use unit_name and unit_symbol to interpret magnitude.",
+                    "default": null
+                  },
+                  {
+                    "name": "quality_code",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Optional KiWIS Quality Code column value. KiWIS instances use this integer to convey quality, approval, or processing flags; null means the response omitted the column or row value.",
+                    "default": null
+                  },
+                  {
+                    "name": "unit_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Per-timeseries unit name returned as ts_unitname, such as meter or millimeter. Units vary by timeseries and therefore travel as data fields rather than fixed schema units.",
+                    "default": null
+                  },
+                  {
+                    "name": "unit_symbol",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Per-timeseries unit symbol returned as ts_unitsymbol, such as m, mm, m3/s, or deg C. Consumers use it to label numeric values correctly.",
+                    "default": null
+                  },
+                  {
+                    "name": "parametertype_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "KiWIS parameter type name such as level, discharge, precipitation, or temperature; identifies the physical quantity measured.",
+                    "default": null
+                  },
+                  {
+                    "name": "stationparameter_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Station-specific parameter name returned by KiWIS, often the locally meaningful label such as Level or Rain.",
+                    "default": null
+                  }
+                ]
+              }
+            }
+          },
+          "description": "Telemetry payload for one KiWIS getTimeseriesValues row."
+        }
+      }
+    }
+  }
+}

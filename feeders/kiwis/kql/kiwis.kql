@@ -1,0 +1,332 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['org.kiwis.Station'] (
+   [kiwis_id]: string,
+   [base_url]: string,
+   [station_id]: string,
+   [station_no]: string,
+   [station_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [river_name]: string,
+   [catchment_name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.kiwis.Station'] docstring @"{""description"": ""Reference station payload from KiWIS getStationList with stable identifiers, optional location, river, and catchment context.""}";
+
+.alter table ['org.kiwis.Station'] column-docstrings (
+   [kiwis_id]: @"{""description"": ""Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource.""}",
+   [base_url]: @"{""description"": ""Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance.""}",
+   [station_id]: @"{""description"": ""Stable KiWIS station_id returned by getStationList. This is the station identity within one KiWIS datasource and forms the station event subject with kiwis_id.""}",
+   [station_no]: @"{""description"": ""Agency station number returned by getStationList. It is useful for user-facing cross-reference but is not used as the primary event key because KiWIS documents station_id as the stable query identifier.""}",
+   [station_name]: @"{""description"": ""Human-readable station name returned by getStationList for display, search, and map labels; not stable enough for keys.""}",
+   [latitude]: @"{""description"": ""Station latitude in WGS 84 decimal degrees from station_latitude; null when the upstream catalog omits coordinates.""}",
+   [longitude]: @"{""description"": ""Station longitude in WGS 84 decimal degrees from station_longitude; null when the upstream catalog omits coordinates.""}",
+   [river_name]: @"{""description"": ""River or water body name returned by KiWIS getStationList, used by consumers for hydrological grouping and map filtering.""}",
+   [catchment_name]: @"{""description"": ""Catchment or basin label returned by KiWIS getStationList, used for watershed-level filtering and analytics.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.kiwis.Station'] ingestion json mapping "org.kiwis.Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "kiwis_id", "path": "$.kiwis_id"},
+  {"column": "base_url", "path": "$.base_url"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_no", "path": "$.station_no"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "river_name", "path": "$.river_name"},
+  {"column": "catchment_name", "path": "$.catchment_name"}
+]
+```
+
+.create-or-alter table ['org.kiwis.Station'] ingestion json mapping "org.kiwis.Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "kiwis_id", "path": "$.data.kiwis_id"},
+  {"column": "base_url", "path": "$.data.base_url"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_no", "path": "$.data.station_no"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "river_name", "path": "$.data.river_name"},
+  {"column": "catchment_name", "path": "$.data.catchment_name"}
+]
+```
+
+.drop materialized-view ['org.kiwis.StationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.kiwis.StationLatest'] on table ['org.kiwis.Station'] {
+    ['org.kiwis.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.kiwis.Station'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.kiwis.Station') | project['kiwis_id'] = tostring(data.['kiwis_id']),['base_url'] = tostring(data.['base_url']),['station_id'] = tostring(data.['station_id']),['station_no'] = tostring(data.['station_no']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['river_name'] = tostring(data.['river_name']),['catchment_name'] = tostring(data.['catchment_name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['org.kiwis.Timeseries'] (
+   [kiwis_id]: string,
+   [base_url]: string,
+   [ts_id]: string,
+   [ts_name]: string,
+   [ts_shortname]: string,
+   [station_id]: string,
+   [station_name]: string,
+   [parametertype_name]: string,
+   [stationparameter_name]: string,
+   [unit_name]: string,
+   [unit_symbol]: string,
+   [coverage_from]: datetime,
+   [coverage_to]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.kiwis.Timeseries'] docstring @"{""description"": ""Reference timeseries payload from KiWIS getTimeseriesList with station linkage, parameter labels, units, and coverage.""}";
+
+.alter table ['org.kiwis.Timeseries'] column-docstrings (
+   [kiwis_id]: @"{""description"": ""Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource.""}",
+   [base_url]: @"{""description"": ""Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance.""}",
+   [ts_id]: @"{""description"": ""Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events.""}",
+   [ts_name]: @"{""description"": ""Full KiWIS timeseries name such as `15minute.Total` or `Day.Mean`, describing aggregation interval and statistic.""}",
+   [ts_shortname]: @"{""description"": ""Short KiWIS timeseries label returned by getTimeseriesList for compact displays and diagnostics.""}",
+   [station_id]: @"{""description"": ""Stable station_id of the station owning this timeseries, enabling joins from timeseries metadata to station reference events.""}",
+   [station_name]: @"{""description"": ""Human-readable station name repeated by getTimeseriesList for operator convenience; consumers should use station_id for joins.""}",
+   [parametertype_name]: @"{""description"": ""KiWIS parameter type name such as level, discharge, precipitation, or temperature; identifies the physical quantity measured.""}",
+   [stationparameter_name]: @"{""description"": ""Station-specific parameter name returned by KiWIS, often the locally meaningful label such as Level or Rain.""}",
+   [unit_name]: @"{""description"": ""Per-timeseries unit name returned as ts_unitname, such as meter or millimeter. Units vary by timeseries and therefore travel as data fields rather than fixed schema units.""}",
+   [unit_symbol]: @"{""description"": ""Per-timeseries unit symbol returned as ts_unitsymbol, such as m, mm, m3/s, or deg C. Consumers use it to label numeric values correctly.""}",
+   [coverage_from]: @"{""description"": ""Start timestamp of the available coverage range reported by KiWIS getTimeseriesList. It is null when the server omits coverage.""}",
+   [coverage_to]: @"{""description"": ""End timestamp of the available coverage range reported by KiWIS getTimeseriesList. It is null when the server omits coverage.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.kiwis.Timeseries'] ingestion json mapping "org.kiwis.Timeseries_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "kiwis_id", "path": "$.kiwis_id"},
+  {"column": "base_url", "path": "$.base_url"},
+  {"column": "ts_id", "path": "$.ts_id"},
+  {"column": "ts_name", "path": "$.ts_name"},
+  {"column": "ts_shortname", "path": "$.ts_shortname"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "parametertype_name", "path": "$.parametertype_name"},
+  {"column": "stationparameter_name", "path": "$.stationparameter_name"},
+  {"column": "unit_name", "path": "$.unit_name"},
+  {"column": "unit_symbol", "path": "$.unit_symbol"},
+  {"column": "coverage_from", "path": "$.coverage_from"},
+  {"column": "coverage_to", "path": "$.coverage_to"}
+]
+```
+
+.create-or-alter table ['org.kiwis.Timeseries'] ingestion json mapping "org.kiwis.Timeseries_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "kiwis_id", "path": "$.data.kiwis_id"},
+  {"column": "base_url", "path": "$.data.base_url"},
+  {"column": "ts_id", "path": "$.data.ts_id"},
+  {"column": "ts_name", "path": "$.data.ts_name"},
+  {"column": "ts_shortname", "path": "$.data.ts_shortname"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "parametertype_name", "path": "$.data.parametertype_name"},
+  {"column": "stationparameter_name", "path": "$.data.stationparameter_name"},
+  {"column": "unit_name", "path": "$.data.unit_name"},
+  {"column": "unit_symbol", "path": "$.data.unit_symbol"},
+  {"column": "coverage_from", "path": "$.data.coverage_from"},
+  {"column": "coverage_to", "path": "$.data.coverage_to"}
+]
+```
+
+.drop materialized-view ['org.kiwis.TimeseriesLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.kiwis.TimeseriesLatest'] on table ['org.kiwis.Timeseries'] {
+    ['org.kiwis.Timeseries'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.kiwis.Timeseries'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.kiwis.Timeseries') | project['kiwis_id'] = tostring(data.['kiwis_id']),['base_url'] = tostring(data.['base_url']),['ts_id'] = tostring(data.['ts_id']),['ts_name'] = tostring(data.['ts_name']),['ts_shortname'] = tostring(data.['ts_shortname']),['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['parametertype_name'] = tostring(data.['parametertype_name']),['stationparameter_name'] = tostring(data.['stationparameter_name']),['unit_name'] = tostring(data.['unit_name']),['unit_symbol'] = tostring(data.['unit_symbol']),['coverage_from'] = todatetime(data.['coverage_from']),['coverage_to'] = todatetime(data.['coverage_to']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['org.kiwis.TimeseriesValue'] (
+   [kiwis_id]: string,
+   [base_url]: string,
+   [ts_id]: string,
+   [station_id]: string,
+   [timestamp]: datetime,
+   [value]: real,
+   [quality_code]: int,
+   [unit_name]: string,
+   [unit_symbol]: string,
+   [parametertype_name]: string,
+   [stationparameter_name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.kiwis.TimeseriesValue'] docstring @"{""description"": ""Telemetry payload for one KiWIS getTimeseriesValues row with value, quality code, and unit metadata copied from the timeseries catalog.""}";
+
+.alter table ['org.kiwis.TimeseriesValue'] column-docstrings (
+   [kiwis_id]: @"{""description"": ""Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource.""}",
+   [base_url]: @"{""description"": ""Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance.""}",
+   [ts_id]: @"{""description"": ""Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events.""}",
+   [station_id]: @"{""description"": ""Stable station_id of the station owning this timeseries, enabling joins from timeseries metadata to station reference events.""}",
+   [timestamp]: @"{""description"": ""Observation timestamp from the Timestamp column returned by getTimeseriesValues, parsed as an instant in UTC when the upstream string ends in Z.""}",
+   [value]: @"{""description"": ""Numeric observation value from the Value column. It can be null for missing or censored measurements; use unit_name and unit_symbol to interpret magnitude.""}",
+   [quality_code]: @"{""description"": ""Optional KiWIS Quality Code column value. KiWIS instances use this integer to convey quality, approval, or processing flags; null means the response omitted the column or row value.""}",
+   [unit_name]: @"{""description"": ""Per-timeseries unit name returned as ts_unitname, such as meter or millimeter. Units vary by timeseries and therefore travel as data fields rather than fixed schema units.""}",
+   [unit_symbol]: @"{""description"": ""Per-timeseries unit symbol returned as ts_unitsymbol, such as m, mm, m3/s, or deg C. Consumers use it to label numeric values correctly.""}",
+   [parametertype_name]: @"{""description"": ""KiWIS parameter type name such as level, discharge, precipitation, or temperature; identifies the physical quantity measured.""}",
+   [stationparameter_name]: @"{""description"": ""Station-specific parameter name returned by KiWIS, often the locally meaningful label such as Level or Rain.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.kiwis.TimeseriesValue'] ingestion json mapping "org.kiwis.TimeseriesValue_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "kiwis_id", "path": "$.kiwis_id"},
+  {"column": "base_url", "path": "$.base_url"},
+  {"column": "ts_id", "path": "$.ts_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "quality_code", "path": "$.quality_code"},
+  {"column": "unit_name", "path": "$.unit_name"},
+  {"column": "unit_symbol", "path": "$.unit_symbol"},
+  {"column": "parametertype_name", "path": "$.parametertype_name"},
+  {"column": "stationparameter_name", "path": "$.stationparameter_name"}
+]
+```
+
+.create-or-alter table ['org.kiwis.TimeseriesValue'] ingestion json mapping "org.kiwis.TimeseriesValue_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "kiwis_id", "path": "$.data.kiwis_id"},
+  {"column": "base_url", "path": "$.data.base_url"},
+  {"column": "ts_id", "path": "$.data.ts_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "quality_code", "path": "$.data.quality_code"},
+  {"column": "unit_name", "path": "$.data.unit_name"},
+  {"column": "unit_symbol", "path": "$.data.unit_symbol"},
+  {"column": "parametertype_name", "path": "$.data.parametertype_name"},
+  {"column": "stationparameter_name", "path": "$.data.stationparameter_name"}
+]
+```
+
+.drop materialized-view ['org.kiwis.TimeseriesValueLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.kiwis.TimeseriesValueLatest'] on table ['org.kiwis.TimeseriesValue'] {
+    ['org.kiwis.TimeseriesValue']
+    | summarize arg_max(timestamp, *) by kiwis_id, ts_id
+}
+
+.alter table ['org.kiwis.TimeseriesValue'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.kiwis.TimeseriesValue') | project['kiwis_id'] = tostring(data.['kiwis_id']),['base_url'] = tostring(data.['base_url']),['ts_id'] = tostring(data.['ts_id']),['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['value'] = toreal(data.['value']),['quality_code'] = toint(data.['quality_code']),['unit_name'] = tostring(data.['unit_name']),['unit_symbol'] = tostring(data.['unit_symbol']),['parametertype_name'] = tostring(data.['parametertype_name']),['stationparameter_name'] = tostring(data.['stationparameter_name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+

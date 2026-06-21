@@ -109,6 +109,10 @@ def pegelonline_image():
     return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def kiwis_image():
+    return build_image('kiwis', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def ptwc_tsunami_image():
     return build_image('ptwc-tsunami')
 
@@ -1173,6 +1177,21 @@ class TestEntsoeKafkaDockerFlow:
             extra_env={'ENTSOE_SAMPLE_MODE': 'true'},
             min_messages=11, timeout=180,
         )
+
+class TestKiwisDockerFlow:
+    TOPIC = 'test-kiwis'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, kiwis_image):
+        _run_kafka_flow_test(
+            kafka, kiwis_image, self.TOPIC,
+            reference_types=['Station', 'Timeseries'],
+            telemetry_types=['TimeseriesValue'],
+            required_exact_types=['org.kiwis.Station', 'org.kiwis.Timeseries', 'org.kiwis.TimeseriesValue'],
+            extra_env={'KIWIS_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=3,
+            timeout=120,
+        )
+
 
 class TestPegelonlineDockerFlow:
     TOPIC = 'test-pegelonline'
