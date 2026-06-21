@@ -272,6 +272,14 @@
                 {
                   "name": "PYTHONUNBUFFERED",
                   "value": "1"
+                },
+                {
+                  "name": "GBFS_FEEDS",
+                  "value": "[parameters('gbfsFeeds')]"
+                },
+                {
+                  "name": "GBFS_SYSTEM_IDS",
+                  "value": "[parameters('gbfsSystemIds')]"
                 }
               ],
               "volumeMounts": [
