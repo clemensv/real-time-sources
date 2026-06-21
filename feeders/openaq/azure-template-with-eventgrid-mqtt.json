@@ -1,0 +1,341 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the openaq MQTT feeder together with a new Azure Event Grid namespace MQTT broker, an openaq-scoped topic space, and a user-assigned managed identity for broker publishing."
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "defaultValue": "openaq",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Base name for all resources."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "topicRoot": {
+      "type": "string",
+      "defaultValue": "air-quality/global/openaq/#",
+      "metadata": {
+        "description": "Topic-space root for the openaq UNS publish surface."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-openaq-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional MQTT client identifier override. Defaults to the managed identity principal id."
+      }
+    },
+    "openaqApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "OpenAQ API key sent as X-API-Key. Not required with OPENAQ_MOCK=true."
+      },
+      "defaultValue": ""
+    },
+    "openaqCountries": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated ISO alpha-2 country filters."
+      },
+      "defaultValue": "US"
+    },
+    "openaqLocations": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated OpenAQ location ids; overrides country paging."
+      },
+      "defaultValue": ""
+    },
+    "openaqBbox": {
+      "type": "string",
+      "metadata": {
+        "description": "WGS84 bbox minLon,minLat,maxLon,maxLat."
+      },
+      "defaultValue": ""
+    },
+    "openaqPageLimit": {
+      "type": "string",
+      "metadata": {
+        "description": "Maximum number of OpenAQ location records requested per API page during reference catalog discovery. Lower values reduce burst pressure on the upstream API."
+      },
+      "defaultValue": "25"
+    },
+    "openaqMaxPages": {
+      "type": "string",
+      "metadata": {
+        "description": "Max pages per country/bbox per reference refresh."
+      },
+      "defaultValue": "1"
+    },
+    "pollInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between latest-measurement polls."
+      },
+      "defaultValue": "900"
+    },
+    "referenceRefreshInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between Location/Sensor catalog refreshes."
+      },
+      "defaultValue": "21600"
+    },
+    "stateFile": {
+      "type": "string",
+      "metadata": {
+        "description": "Path inside the container volume where the feeder stores measurement deduplication state between polling cycles and container restarts."
+      },
+      "defaultValue": "/state/openaq-state.json"
+    },
+    "logLevel": {
+      "type": "string",
+      "metadata": {
+        "description": "Python logging verbosity for the bridge process. Use INFO for normal operations and DEBUG only while diagnosing polling or transport behavior."
+      },
+      "defaultValue": "INFO"
+    },
+    "openaqMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "false",
+        "true"
+      ],
+      "metadata": {
+        "description": "Emit deterministic synthetic events and exit once."
+      }
+    }
+  },
+  "variables": {
+    "namespaceName": "[concat(parameters('namePrefix'), '-egns')]",
+    "topicSpaceName": "openaq",
+    "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
+    "containerGroupName": "[concat(parameters('namePrefix'), '-mqtt')]",
+    "logAnalyticsWorkspaceName": "[concat(parameters('namePrefix'), '-logs')]",
+    "publisherRoleId": "/providers/Microsoft.Authorization/roleDefinitions/a12b0b94-b317-4dcd-84a8-502ce99884c6",
+    "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
+    "namespaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces', variables('namespaceName'))]",
+    "topicSpaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces/topicSpaces', variables('namespaceName'), variables('topicSpaceName'))]",
+    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('userIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[variables('namespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard",
+        "capacity": 1
+      },
+      "properties": {
+        "topicSpacesConfiguration": {
+          "state": "Enabled"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces/topicSpaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[concat(variables('namespaceName'), '/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('namespaceResourceId')]"
+      ],
+      "properties": {
+        "topicTemplates": [
+          "[parameters('topicRoot')]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('roleAssignmentName')]",
+      "scope": "[concat('Microsoft.EventGrid/namespaces/', variables('namespaceName'), '/topicSpaces/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('topicSpaceResourceId')]",
+        "[variables('userIdentityResourceId')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('publisherRoleId')]",
+        "principalId": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('userIdentityResourceId')]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[variables('namespaceResourceId')]",
+        "[variables('topicSpaceResourceId')]",
+        "[extensionResourceId(variables('topicSpaceResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "OnFailure",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[variables('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
+                },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
+                {
+                  "name": "MQTT_ENTRA_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[if(empty(parameters('mqttClientId')), reference(variables('userIdentityResourceId'), '2023-01-31').principalId, parameters('mqttClientId'))]"
+                },
+                {
+                  "name": "OPENAQ_API_KEY",
+                  "secureValue": "[parameters('openaqApiKey')]"
+                },
+                {
+                  "name": "OPENAQ_COUNTRIES",
+                  "value": "[parameters('openaqCountries')]"
+                },
+                {
+                  "name": "OPENAQ_LOCATIONS",
+                  "value": "[parameters('openaqLocations')]"
+                },
+                {
+                  "name": "OPENAQ_BBOX",
+                  "value": "[parameters('openaqBbox')]"
+                },
+                {
+                  "name": "OPENAQ_PAGE_LIMIT",
+                  "value": "[parameters('openaqPageLimit')]"
+                },
+                {
+                  "name": "OPENAQ_MAX_PAGES",
+                  "value": "[parameters('openaqMaxPages')]"
+                },
+                {
+                  "name": "OPENAQ_MOCK",
+                  "value": "[parameters('openaqMock')]"
+                },
+                {
+                  "name": "POLL_INTERVAL",
+                  "value": "[parameters('pollInterval')]"
+                },
+                {
+                  "name": "REFERENCE_REFRESH_INTERVAL",
+                  "value": "[parameters('referenceRefreshInterval')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "[parameters('stateFile')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "[parameters('logLevel')]"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "namespaceName": {
+      "type": "string",
+      "value": "[variables('namespaceName')]"
+    },
+    "mqttHostname": {
+      "type": "string",
+      "value": "[reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname]"
+    },
+    "topicSpaceName": {
+      "type": "string",
+      "value": "[variables('topicSpaceName')]"
+    },
+    "managedIdentityClientId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+    },
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+    }
+  }
+}

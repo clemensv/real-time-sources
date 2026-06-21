@@ -697,6 +697,17 @@
     "amqp": true
   },
   {
+    "id": "openaq",
+    "name": "OpenAQ",
+    "cat": "Air Quality",
+    "key": true,
+    "desc": "Global \u2014 locations, sensors, latest pollutant measurements",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "uk-bods-siri",
     "name": "UK BODS SIRI",
     "cat": "Transport",

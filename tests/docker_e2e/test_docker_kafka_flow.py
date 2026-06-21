@@ -2954,3 +2954,26 @@ class TestSiriKafkaDockerFlow:
                 container.remove(force=True)
             except Exception:
                 pass
+
+# ---------------------------------------------------------------------------
+# OpenAQ global air quality (mock mode)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def openaq_image():
+    return build_image('openaq', dockerfile='Dockerfile')
+
+
+class TestOpenAQDockerFlow:
+    TOPIC = 'test-openaq'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, openaq_image):
+        _run_kafka_flow_test(
+            kafka, openaq_image, self.TOPIC,
+            reference_types=['Location', 'Sensor'],
+            telemetry_types=['Measurement'],
+            extra_env={'OPENAQ_MOCK': 'true', 'ONCE_MODE': 'true'},
+            command=['python', '-m', 'openaq', 'feed', '--mock'],
+            min_messages=3,
+            timeout=180,
+        )

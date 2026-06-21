@@ -1,0 +1,282 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the openaq bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
+  },
+  "parameters": {
+    "connectionString": {
+      "type": "securestring",
+      "minLength": 1,
+      "metadata": {
+        "description": "BootstrapServer=host:port;EntityPath=topic or Event Hubs-compatible connection string."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "openaq",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "openaqApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "OpenAQ API key sent as X-API-Key. Not required with OPENAQ_MOCK=true."
+      },
+      "defaultValue": ""
+    },
+    "openaqCountries": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated ISO alpha-2 country filters."
+      },
+      "defaultValue": "US"
+    },
+    "openaqLocations": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated OpenAQ location ids; overrides country paging."
+      },
+      "defaultValue": ""
+    },
+    "openaqBbox": {
+      "type": "string",
+      "metadata": {
+        "description": "WGS84 bbox minLon,minLat,maxLon,maxLat."
+      },
+      "defaultValue": ""
+    },
+    "openaqPageLimit": {
+      "type": "string",
+      "metadata": {
+        "description": "Maximum number of OpenAQ location records requested per API page during reference catalog discovery. Lower values reduce burst pressure on the upstream API."
+      },
+      "defaultValue": "25"
+    },
+    "openaqMaxPages": {
+      "type": "string",
+      "metadata": {
+        "description": "Max pages per country/bbox per reference refresh."
+      },
+      "defaultValue": "1"
+    },
+    "pollInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between latest-measurement polls."
+      },
+      "defaultValue": "900"
+    },
+    "referenceRefreshInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between Location/Sensor catalog refreshes."
+      },
+      "defaultValue": "21600"
+    },
+    "stateFile": {
+      "type": "string",
+      "metadata": {
+        "description": "Path inside the container volume where the feeder stores measurement deduplication state between polling cycles and container restarts."
+      },
+      "defaultValue": "/state/openaq-state.json"
+    },
+    "logLevel": {
+      "type": "string",
+      "metadata": {
+        "description": "Python logging verbosity for the bridge process. Use INFO for normal operations and DEBUG only while diagnosing polling or transport behavior."
+      },
+      "defaultValue": "INFO"
+    },
+    "openaqMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "false",
+        "true"
+      ],
+      "metadata": {
+        "description": "Emit deterministic synthetic events and exit once."
+      }
+    }
+  },
+  "variables": {
+    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
+    "fileShareName": "bridge-state",
+    "imageName": "ghcr.io/clemensv/real-time-sources-openaq:latest",
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 1
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "OnFailure",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[variables('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "OPENAQ_API_KEY",
+                  "secureValue": "[parameters('openaqApiKey')]"
+                },
+                {
+                  "name": "OPENAQ_COUNTRIES",
+                  "value": "[parameters('openaqCountries')]"
+                },
+                {
+                  "name": "OPENAQ_LOCATIONS",
+                  "value": "[parameters('openaqLocations')]"
+                },
+                {
+                  "name": "OPENAQ_BBOX",
+                  "value": "[parameters('openaqBbox')]"
+                },
+                {
+                  "name": "OPENAQ_PAGE_LIMIT",
+                  "value": "[parameters('openaqPageLimit')]"
+                },
+                {
+                  "name": "OPENAQ_MAX_PAGES",
+                  "value": "[parameters('openaqMaxPages')]"
+                },
+                {
+                  "name": "OPENAQ_MOCK",
+                  "value": "[parameters('openaqMock')]"
+                },
+                {
+                  "name": "POLL_INTERVAL",
+                  "value": "[parameters('pollInterval')]"
+                },
+                {
+                  "name": "REFERENCE_REFRESH_INTERVAL",
+                  "value": "[parameters('referenceRefreshInterval')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "[parameters('stateFile')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "[parameters('logLevel')]"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
+              ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "bridge-state",
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+    }
+  }
+}

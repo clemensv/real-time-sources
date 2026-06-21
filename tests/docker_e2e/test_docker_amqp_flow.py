@@ -1020,3 +1020,11 @@ class TestSiriAmqpDockerFlow(AmqpDockerFlowBase):
     env = {'SIRI_SAMPLE_MODE': 'true', 'ONCE_MODE': 'true'}
     expected_types = {'org.siri.Operator', 'org.siri.VehiclePosition'}
     expected_count = 3
+
+class TestOpenAQAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'openaq'
+    image = 'openaq-amqp'
+    module = 'openaq_amqp'
+    expected_types = {'org.openaq.Location', 'org.openaq.Sensor', 'org.openaq.Measurement'}
+    env = {'OPENAQ_MOCK': 'true', 'ONCE_MODE': 'true'}
+

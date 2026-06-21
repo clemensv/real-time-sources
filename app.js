@@ -146,6 +146,7 @@ const SOURCES = [
 
   // ── Scientific Research ──
   { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
+  { id: "openaq", name: "OpenAQ", cat: "Air Quality", key: true, desc: "Global — locations, sensors, latest pollutant measurements", kql: true, notebook: true, mqtt: true, amqp: true },
 ];
 
 /* ── Derived data ──────────────────────────────────────────────────────── */
