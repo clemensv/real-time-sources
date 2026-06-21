@@ -390,6 +390,11 @@ function Build-SourceWheels {
     # sub-packages (_core, _kafka, _mqtt, _amqp) with pyproject.toml in the source dir.
     if (Test-Path (Join-Path $srcDir "pyproject.toml")) {
         $bridgePackages = @($srcDir)
+        # Also include sibling dirs with pyproject.toml (e.g. entsoe_kafka)
+        $siblings = Get-ChildItem -Directory $srcDir |
+            Where-Object { $_.FullName -ne $producerRoot -and $_.Name -notlike "*_producer*" -and $_.Name -notlike "*_amqp*" -and $_.Name -notlike "*_mqtt*" -and (Test-Path (Join-Path $_.FullName "pyproject.toml")) } |
+            ForEach-Object { $_.FullName }
+        if ($siblings) { $bridgePackages = @($bridgePackages) + @($siblings) }
     } else {
         $bridgePackages = Get-ChildItem -Directory $srcDir |
             Where-Object { (Test-Path (Join-Path $_.FullName "pyproject.toml")) -and ($_.Name -notlike "*_producer*") } |
