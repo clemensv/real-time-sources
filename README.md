@@ -2356,7 +2356,7 @@ Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="England" title="England" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>UK BODS SIRI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;28,000+ buses, BODS AVL (requires free API key)</sub></summary>
+<details><summary><picture><img align="middle" alt="England" title="England" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>UK BODS SIRI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;BODS SIRI-VM via generalized siri feeder (requires free API key)</sub></summary>
 
 <table align="right">
 <tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="England" title="England" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;England</td></tr>
@@ -2367,7 +2367,7 @@ Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-28,000+ buses, BODS AVL (requires free API key)
+BODS SIRI-VM via generalized siri feeder (requires free API key)
 
 <sub><b>📍 keyed by</b> <code>{operator_ref}/{vehicle_ref}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>VehiclePosition</code>, <code>Operator</code></sub>
 

@@ -113,6 +113,8 @@ class AmqpDockerFlowBase:
     def test_emits_cloudevents_to_amqp_queue(self):
         client = docker.from_env()
         queue = self.source_dir
+        if self.source_dir == 'uk-bods-siri':
+            build_image('siri', dockerfile='Dockerfile.amqp', tag='ghcr.io/clemensv/real-time-sources/siri-amqp:latest')
         image = build_image(self.source_dir, dockerfile="Dockerfile.amqp", tag=f"test-{self.image}")
         network = client.networks.create(f"{self.image}-e2e", driver="bridge")
         host_port = _find_free_port()
@@ -919,7 +921,7 @@ class TestUkBodsSiriAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = 'uk-bods-siri'
     image = 'uk-bods-siri-amqp'
     env = {'BODS_SAMPLE_MODE': 'true', 'ONCE_MODE': 'true'}
-    expected_types = {'uk.gov.dft.bods.Operator', 'uk.gov.dft.bods.VehiclePosition'}
+    expected_types = {'org.siri.Operator', 'org.siri.VehiclePosition'}
     expected_count = 3
 
 class TestAviationweatherAmqpDockerFlow(AmqpDockerFlowBase):

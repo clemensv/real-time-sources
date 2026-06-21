@@ -60,7 +60,16 @@ function Get-ParameterCellText {
         if ($cell.source -is [array]) { $parts.Add((@($cell.source) -join "")) }
         elseif ($null -ne $cell.source) { $parts.Add([string]$cell.source) }
     }
+
     return ($parts -join "`n")
+}
+
+function Get-NotebookWheelSource {
+    param([object]$Notebook)
+    $codeText = Get-CodeText -Notebook $Notebook
+    $match = [regex]::Match($codeText, '/lakehouse/default/Files/wheels/(?<source>[^/''"`]+?)/\*\.whl')
+    if ($match.Success) { return $match.Groups['source'].Value }
+    return $null
 }
 
 function Test-Notebook {
@@ -256,7 +265,30 @@ foreach ($dir in $selected) {
         } elseif ($nestedPyprojects.Count -gt 0) {
             $checks.Add((New-Check 'pyproject-buildable' 'ok' ("Nested build package(s) found: " + (($nestedPyprojects | Select-Object -ExpandProperty Name) -join ', '))))
         } else {
-            $checks.Add((New-Check 'pyproject-buildable' 'blocker' 'No root or immediate child pyproject.toml found; Fabric Environment wheel build has no source package.'))
+            $wheelSource = $null
+            if ($notebookPresent) {
+                try {
+                    $notebook = Get-Content -LiteralPath $notebookPath -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100
+                    $wheelSource = Get-NotebookWheelSource -Notebook $notebook
+                } catch {
+                    $wheelSource = $null
+                }
+            }
+            if ($wheelSource -and $wheelSource -ne $slug) {
+                $wheelSourceDir = Join-Path $feedersRoot $wheelSource
+                $wheelSourcePyproject = Join-Path $wheelSourceDir "pyproject.toml"
+                $wheelSourceNested = @()
+                if (Test-Path -LiteralPath $wheelSourceDir) {
+                    $wheelSourceNested = @(Get-ChildItem -LiteralPath $wheelSourceDir -Directory | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName "pyproject.toml") })
+                }
+                if ((Test-Path -LiteralPath $wheelSourcePyproject) -or $wheelSourceNested.Count -gt 0) {
+                    $checks.Add((New-Check 'pyproject-buildable' 'ok' "Config-only notebook wrapper loads wheels from buildable feeder '$wheelSource'."))
+                } else {
+                    $checks.Add((New-Check 'pyproject-buildable' 'blocker' "Notebook loads wheels from '$wheelSource', but no buildable feeder package was found there."))
+                }
+            } else {
+                $checks.Add((New-Check 'pyproject-buildable' 'blocker' 'No root or immediate child pyproject.toml found; Fabric Environment wheel build has no source package.'))
+            }
         }
     }
 

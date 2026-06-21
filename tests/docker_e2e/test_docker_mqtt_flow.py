@@ -855,9 +855,10 @@ class TestUkBodsSiriMqttDockerFlow:
 
         subscriber.on_message = on_message
         subscriber.connect('127.0.0.1', host_port, 30)
-        subscriber.subscribe('transit/uk/dft/bods/#', qos=1)
+        subscriber.subscribe('transit/siri/#', qos=1)
         subscriber.loop_start()
         try:
+            build_image('siri', dockerfile='Dockerfile.mqtt', tag='ghcr.io/clemensv/real-time-sources/siri-mqtt:latest')
             image = build_image('uk-bods-siri', dockerfile='Dockerfile.mqtt', tag='test-uk-bods-siri-mqtt')
             feeder = client.containers.run(
                 image.id,
@@ -885,6 +886,7 @@ class TestUkBodsSiriMqttDockerFlow:
             for msg in messages:
                 for required in ('id', 'source', 'type', 'subject', 'specversion'):
                     assert required in msg['user_properties'], msg
+                assert msg['user_properties']['type'] in {'org.siri.Operator', 'org.siri.VehiclePosition'}
         finally:
             subscriber.loop_stop()
             subscriber.disconnect()
