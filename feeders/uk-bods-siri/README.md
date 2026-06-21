@@ -19,13 +19,11 @@
 
 &nbsp;
 
-<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 
 > England — BODS bulk AVL VehicleMonitoring via the generalized `siri` feeder
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#uk-bods-siri) &nbsp;·&nbsp;
-
-[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#uk-bods-siri/fabric-notebook) &nbsp;·&nbsp;
 
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 
@@ -93,7 +91,7 @@ flowchart LR
     F -->|AMQP 1.0 binary CloudEvents| Q[(Service Bus / Event Hubs / AMQP broker)]
 ```
 
-All runtime behavior lives in `feeders/siri/`. This folder preserves the BODS deployment identity, documentation, catalog entry, Azure templates, Fabric notebook, and KQL script while avoiding another fork of the SIRI parser and producers.
+All runtime behavior lives in `feeders/siri/`. This folder preserves the BODS deployment identity, documentation, catalog entry, Azure templates, and KQL script while avoiding another fork of the SIRI parser and producers.
 
 ## Configuration
 | Setting | Environment | Default in thin wrapper | Notes |
@@ -105,7 +103,7 @@ All runtime behavior lives in `feeders/siri/`. This folder preserves the BODS de
 | Operator filter | `SIRI_OPERATORS` or `OPERATORS` | empty | Optional comma-separated operator filter. |
 | Poll cadence | `POLLING_INTERVAL` | `30` | Seconds between polls. |
 | Dedupe state | `STATE_FILE` | `~/.siri_state.json` in the base image | Mount a volume for persistent state. |
-| One-shot mode | `ONCE_MODE` | false | Used by Docker E2E and scheduled notebook runs. |
+| One-shot mode | `ONCE_MODE` | false | Used by Docker E2E and scheduled runs. |
 ## Event contract
 
 Read [EVENTS.md](EVENTS.md) for the full CloudEvents contract and [kql/uk-bods-siri.kql](kql/uk-bods-siri.kql) for the Fabric Eventhouse / ADX schema. The table names are intentionally `org.siri.*` because the on-wire event types now come from the generalized SIRI contract.
