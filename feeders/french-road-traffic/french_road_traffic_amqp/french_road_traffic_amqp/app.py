@@ -304,6 +304,10 @@ async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> Non
         mqtt_app = importlib.import_module(f"{PY_MODULE}_mqtt.app")
     except (ImportError, ModuleNotFoundError):
         mqtt_app = None
+    if mqtt_app is None:
+        logger.warning("MQTT bridge not available; emitting sample corpus via AMQP")
+        emit_mock_corpus(adapter)
+        return
     # Source-specific live acquisition hooks reuse the already-shipped MQTT pollers/bridges.
     if SOURCE_ID == "nws-alerts":
         bridge = mqtt_app.NWSAlertsMqttBridge(adapter, state_file=args.state_file, poll_interval=args.polling_interval)
