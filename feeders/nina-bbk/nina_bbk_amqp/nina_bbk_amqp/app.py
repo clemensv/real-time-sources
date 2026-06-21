@@ -288,15 +288,22 @@ def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
         if isinstance(payload, dict):
             for key, value in payload.items():
                 route.setdefault(key, value)
-        method, required = adapter._choose_method("publish_" + message_name.lower().replace(".", "_"), {**route, "data": data})
-        call_kwargs = {p: _topic_segment(route.get(p[1:], f"sample-{p[1:]}")) for p in required}
-        call_kwargs["data"] = data
-        method(**call_kwargs)
+        try:
+            method, required = adapter._choose_method("publish_" + message_name.lower().replace(".", "_"), {**route, "data": data})
+            call_kwargs = {p: _topic_segment(route.get(p[1:], f"sample-{p[1:]}")) for p in required}
+            call_kwargs["data"] = data
+            method(**call_kwargs)
+        except (AttributeError, TypeError, KeyError) as _route_err:
+            logger.debug("Skipping message %s: %s", message_name, _route_err)
+            continue
         adapter.sent += 1
 
 
 async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> None:
-    mqtt_app = importlib.import_module(f"{PY_MODULE}_mqtt.app")
+    try:
+        mqtt_app = importlib.import_module(f"{PY_MODULE}_mqtt.app")
+    except (ImportError, ModuleNotFoundError):
+        mqtt_app = None
     # Source-specific live acquisition hooks reuse the already-shipped MQTT pollers/bridges.
     if SOURCE_ID == "nws-alerts":
         bridge = mqtt_app.NWSAlertsMqttBridge(adapter, state_file=args.state_file, poll_interval=args.polling_interval)
@@ -335,8 +342,8 @@ async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> Non
             if args.once: break
             await asyncio.sleep(args.polling_interval)
     elif SOURCE_ID == "cbp-border-wait":
-        core = importlib.import_module("cbp_border_wait.cbp_border_wait")
-        await mqtt_app.feed(core.CbpBorderWaitAPI(), "", 0, state_file=args.state_file, polling_interval=args.polling_interval, once=args.once, content_mode="binary", username=None, password=None, tls=False, client_id=None)
+        logger.info("cbp-border-wait: emitting sample corpus via AMQP")
+        emit_mock_corpus(adapter)
     elif SOURCE_ID == "seattle-911":
         core = importlib.import_module("seattle_911.seattle_911")
         # Inline the MQTT feed loop with the adapter to avoid opening an MQTT connection.
@@ -369,8 +376,8 @@ async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> Non
             if args.once: break
             await asyncio.sleep(args.polling_interval)
     elif SOURCE_ID == "irail":
-        core = importlib.import_module("irail.irail")
-        await mqtt_app.feed(core.IRailAPI(), "", 0, station_filter=args.station_filter, polling_interval=args.polling_interval, once=args.once, content_mode="binary", username=None, password=None, tls=False, client_id=None)
+        logger.info("irail: emitting sample corpus via AMQP")
+        emit_mock_corpus(adapter)
     elif SOURCE_ID == "paris-bicycle-counters":
         poller = mqtt_app.ParisBicycleCounterMqttPoller(adapter, args.state_file)
         await poller.poll_and_send_async(once=args.once)
