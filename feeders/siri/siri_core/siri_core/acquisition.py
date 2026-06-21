@@ -13,7 +13,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from .config import DEFAULT_BODS_URL, DEFAULT_TRAFIKLAB_URL
+from .config import DEFAULT_BODS_URL, DEFAULT_ENTUR_CLIENT_NAME, DEFAULT_ENTUR_URL, DEFAULT_TRAFIKLAB_URL
 
 USER_AGENT = os.environ.get("USER_AGENT") or (
     "real-time-sources-siri/0.1.0 "
@@ -78,17 +78,21 @@ class SiriClient:
         api_key: str = "",
         operators: Optional[tuple[str, ...]] = None,
         data_types: tuple[str, ...] = ("vm",),
+        request_headers: Optional[dict[str, str]] = None,
         session: Optional[requests.Session] = None,
         request_timeout: float = 30.0,
         sample_mode: Optional[bool] = None,
         sample_path: Optional[str] = None,
     ) -> None:
         self._provider = provider
-        self._siri_url = siri_url.strip() if siri_url else (DEFAULT_BODS_URL if provider == "bods" else DEFAULT_TRAFIKLAB_URL)
+        self._siri_url = siri_url.strip() if siri_url else _default_url_for_provider(provider)
         self._api_key = api_key
         self._operators = tuple(value.strip() for value in operators or tuple() if value and value.strip()) or None
         self._operator_filter = set(self._operators or tuple()) or None
         self._data_types = tuple(data_types or ("vm",))
+        self._request_headers = dict(request_headers or {})
+        if self._provider == "entur" and not _has_header(self._request_headers, "ET-Client-Name"):
+            self._request_headers["ET-Client-Name"] = DEFAULT_ENTUR_CLIENT_NAME
         self._session = session or _build_retrying_session()
         self._session.headers.setdefault("User-Agent", USER_AGENT)
         self._request_timeout = request_timeout
@@ -137,7 +141,7 @@ class SiriClient:
                 RequestSpec(
                     request_url=bods_url,
                     source_url=bods_url,
-                    headers={},
+                    headers=dict(self._request_headers),
                     params={"api_key": self._api_key} if self._api_key else {},
                     is_zip=True,
                 )
@@ -146,12 +150,17 @@ class SiriClient:
         if self._provider == "trafiklab":
             base_url = self._siri_url or DEFAULT_TRAFIKLAB_URL
             headers = {"X-Api-Key": self._api_key} if self._api_key else {}
+            headers.update(self._request_headers)
             params: dict[str, str] = {}
             return self._expand_specs(base_url, headers=headers, params=params)
 
+        if self._provider == "entur":
+            base_url = self._siri_url or DEFAULT_ENTUR_URL
+            return self._expand_specs(base_url, headers=dict(self._request_headers), params={})
+
         if not self._siri_url:
             raise RuntimeError("SIRI_URL is required for provider=custom unless SIRI_SAMPLE_MODE=true.")
-        headers = {}
+        headers = dict(self._request_headers)
         params = {}
         if self._api_key:
             headers.update({"X-Api-Key": self._api_key, "Authorization": f"Bearer {self._api_key}"})
@@ -222,6 +231,20 @@ def _default_sample_path() -> Path:
         if candidate.exists():
             return candidate
     return candidates[0]
+
+
+def _default_url_for_provider(provider: str) -> str:
+    if provider == "bods":
+        return DEFAULT_BODS_URL
+    if provider == "trafiklab":
+        return DEFAULT_TRAFIKLAB_URL
+    if provider == "entur":
+        return DEFAULT_ENTUR_URL
+    return ""
+
+
+def _has_header(headers: dict[str, str], name: str) -> bool:
+    return any(header_name.lower() == name.lower() for header_name in headers)
 
 
 def _build_retrying_session() -> requests.Session:

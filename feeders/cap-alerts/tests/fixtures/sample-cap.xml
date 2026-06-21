@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>mock-20260620-001</identifier>
+  <sender>mock@example.invalid</sender>
+  <sent>2026-06-20T17:00:00Z</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <code>profile:CAP-CP:0.4</code>
+  <info>
+    <language>en-US</language>
+    <category>Met</category>
+    <event>Flood Warning</event>
+    <responseType>Monitor</responseType>
+    <urgency>Expected</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <effective>2026-06-20T17:00:00Z</effective>
+    <onset>2026-06-20T18:00:00Z</onset>
+    <expires>2026-06-21T00:00:00Z</expires>
+    <senderName>Mock Alerting Authority</senderName>
+    <headline>Mock flood warning for coastal zones</headline>
+    <description>Rising water may affect low-lying roads.</description>
+    <instruction>Move to higher ground if instructed by local officials.</instruction>
+    <parameter><valueName>VTEC</valueName><value>/O.NEW.KMTR.FL.W.0001.260620T1800Z-260621T0000Z/</value></parameter>
+    <parameter><valueName>awareness_level</valueName><value>3; orange; Severe</value></parameter>
+    <area>
+      <areaDesc>Mock Coast County</areaDesc>
+      <geocode><valueName>UGC</valueName><value>CAZ001</value></geocode>
+      <geocode><valueName>SAME</valueName><value>006001</value></geocode>
+    </area>
+  </info>
+  <info>
+    <language>es-US</language>
+    <category>Met</category>
+    <event>Flood Warning</event>
+    <urgency>Expected</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <headline>Aviso de inundación de prueba</headline>
+    <area><areaDesc>Condado Costa de Prueba</areaDesc></area>
+  </info>
+</alert>

@@ -33,15 +33,27 @@ class _AmqpPublishFacade:
                     if candidate in accepted: call[candidate]=v
             target(**call)
         return _publish
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            import logging; logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _build_publisher(*, host, port, address, use_tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key):
     if auth_mode=="entra":
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
         cred=ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
-        p=BRINPEDETERAmqpProducer(host=host,address=address,port=port,content_mode=content_mode,credential=cred,entra_audience=entra_audience,use_tls=use_tls)
+        p=_retry_producer_init(lambda: BRINPEDETERAmqpProducer(host=host,address=address,port=port,content_mode=content_mode,credential=cred,entra_audience=entra_audience,use_tls=use_tls))
     elif auth_mode=="sas":
-        p=BRINPEDETERAmqpProducer(host=host,address=address,port=port,content_mode=content_mode,sas_key_name=sas_key_name,sas_key=sas_key,use_tls=use_tls)
+        p=_retry_producer_init(lambda: BRINPEDETERAmqpProducer(host=host,address=address,port=port,content_mode=content_mode,sas_key_name=sas_key_name,sas_key=sas_key,use_tls=use_tls))
     else:
-        p=BRINPEDETERAmqpProducer(host=host,address=address,port=port,username=username,password=password,content_mode=content_mode,use_tls=use_tls)
+        p=_retry_producer_init(lambda: BRINPEDETERAmqpProducer(host=host,address=address,port=port,username=username,password=password,content_mode=content_mode,use_tls=use_tls))
     return _AmqpPublishFacade(p)
 
 logger = logging.getLogger(__name__)

@@ -6,11 +6,13 @@ import socket
 import os
 import time
 import urllib.parse
+import json
 from contextlib import closing
 from typing import Any, Dict, List
 
 import docker
 import pytest
+from json_structure import InstanceValidator
 
 from .helpers import REPO_ROOT, build_image
 
@@ -60,6 +62,44 @@ def _extract_ce_attrs(msg: Any) -> Dict[str, Any]:
     return attrs
 
 
+def _load_jstruct_validators(project_dir: str) -> Dict[str, InstanceValidator]:
+    xreg_path = os.path.join(REPO_ROOT, "feeders", project_dir, "xreg", f"{project_dir.replace('-', '_')}.xreg.json")
+    if not os.path.exists(xreg_path):
+        xreg_path = os.path.join(REPO_ROOT, "feeders", project_dir, "xreg", f"{project_dir}.xreg.json")
+    with open(xreg_path, "r", encoding="utf-8") as handle:
+        manifest = json.load(handle)
+    validators: Dict[str, InstanceValidator] = {}
+    for group in manifest.get("schemagroups", {}).values():
+        if "jsonstructure" not in str(group.get("format", "")).lower() and str(group.get("format", "")).lower() != "jstruct":
+            continue
+        for schema_name, schema_entry in group.get("schemas", {}).items():
+            schema = schema_entry.get("schema")
+            if schema is None and "versions" in schema_entry:
+                version_id = schema_entry.get("defaultversionid") or next(iter(schema_entry["versions"]))
+                schema = schema_entry["versions"][version_id].get("schema", schema_entry["versions"][version_id])
+            if schema is None:
+                schema = schema_entry
+            validator = InstanceValidator(schema, extended=True)
+            validators[schema.get("$id", schema_name)] = validator
+            validators[schema_name] = validator
+    return validators
+
+
+def _amqp_body_dict(msg: Any) -> Dict[str, Any]:
+    body = getattr(msg, "body", None)
+    if isinstance(body, dict):
+        return body
+    if isinstance(body, memoryview):
+        body = body.tobytes()
+    if isinstance(body, bytes):
+        body = body.decode("utf-8")
+    if isinstance(body, str):
+        parsed = json.loads(body)
+        assert isinstance(parsed, dict), f"AMQP body is not a JSON object: {body!r}"
+        return parsed
+    raise AssertionError(f"Unsupported AMQP body type: {type(body)!r}")
+
+
 @pytest.mark.docker_e2e
 class AmqpDockerFlowBase:
     source_dir = ""
@@ -67,6 +107,8 @@ class AmqpDockerFlowBase:
     env: Dict[str, str] = {}
     expected_types: set[str] = set()
     expected_count = 3
+    require_cloud_events_application_properties = False
+    validate_payloads = False
 
     def test_emits_cloudevents_to_amqp_queue(self):
         client = docker.from_env()
@@ -137,10 +179,21 @@ class AmqpDockerFlowBase:
                 messages.extend(more)
                 seen = {str(_extract_ce_attrs(m).get("type")) for m in messages}
             assert self.expected_types <= seen, f"Missing event types. Seen: {sorted(seen)}"
+            validators = _load_jstruct_validators(self.source_dir) if self.validate_payloads else {}
             for msg in messages:
                 ce = _extract_ce_attrs(msg)
                 for required in ("id", "source", "type", "subject", "specversion"):
                     assert required in ce, f"Missing CE {required}: {ce}"
+                if self.require_cloud_events_application_properties:
+                    raw_props = dict(getattr(msg, "properties", None) or {})
+                    for required in ("id", "source", "type", "subject", "specversion"):
+                        assert f"cloudEvents:{required}" in raw_props, f"Missing cloudEvents:{required}: {raw_props}"
+                if self.validate_payloads:
+                    payload = _amqp_body_dict(msg)
+                    validator = validators.get(str(ce.get("type")))
+                    assert validator is not None, f"No JsonStructure schema for {ce.get('type')}"
+                    errors = list(validator.validate_instance(payload))
+                    assert not errors, f"JsonStructure validation failed for {ce.get('type')}: {errors[:3]}"
         finally:
             if feeder is not None:
                 try:
@@ -171,6 +224,20 @@ class TestKingCountyMarineAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"KING_COUNTY_MARINE_SAMPLE_MODE": "true", "ONCE_MODE": "true"}
     expected_types = {"US.WA.KingCounty.Marine.Station", "US.WA.KingCounty.Marine.WaterQualityReading"}
     expected_count = 2
+
+
+class TestDatex2AmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "datex2"
+    image = "datex2-amqp"
+    env = {"DATEX2_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {
+        "org.datex2.measured.MeasurementSite",
+        "org.datex2.measured.TrafficMeasurement",
+        "org.datex2.situation.SituationRecord",
+    }
+    expected_count = 3
+    require_cloud_events_application_properties = True
+    validate_payloads = True
 
 
 class TestVatsimAmqpDockerFlow(AmqpDockerFlowBase):

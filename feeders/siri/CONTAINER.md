@@ -20,15 +20,17 @@ This document covers the published OCI images for the generic `siri` feeder, the
 | Entry points | `python -m siri_kafka feed`, `python -m siri_mqtt feed`, `python -m siri_amqp feed` |
 | Persistent state | `STATE_FILE` |
 | Poll cadence | `POLLING_INTERVAL` seconds (default `30`) |
-| Shared source config | `SIRI_PROVIDER`, `SIRI_URL`, `SIRI_API_KEY`, `SIRI_OPERATORS`, `SIRI_DATA_TYPES` |
+| Shared source config | `SIRI_PROVIDER`, `SIRI_URL`, `SIRI_API_KEY`, `SIRI_HEADERS`, `SIRI_ET_CLIENT_NAME`, `SIRI_OPERATORS`, `SIRI_DATA_TYPES` |
 
 ## Shared source settings
 
 | Variable | Description |
 | --- | --- |
-| `SIRI_PROVIDER` | `bods`, `trafiklab`, or `custom` (default `bods`) |
-| `SIRI_URL` | Optional BODS override, Trafiklab URL template, or required direct custom URL |
+| `SIRI_PROVIDER` | `bods`, `trafiklab`, `entur`, or `custom` (default `bods`) |
+| `SIRI_URL` | Optional BODS override, Trafiklab/Entur URL template, or required direct custom URL |
 | `SIRI_API_KEY` | Provider API key |
+| `SIRI_HEADERS` | Optional semicolon-separated `Name=Value` request headers sent on every SIRI request |
+| `SIRI_ET_CLIENT_NAME` | Convenience value for Entur's `ET-Client-Name` request header; provider `entur` gets a default if unset |
 | `SIRI_OPERATORS` | Optional comma-separated operator filter / Trafiklab template expansion values |
 | `SIRI_DATA_TYPES` | Comma-separated `vm,et,sx`; default `vm` |
 | `POLLING_INTERVAL` | Poll interval in seconds |

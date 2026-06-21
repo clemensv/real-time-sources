@@ -67,6 +67,9 @@ This source follows the GTFS-style deployment model: one container, user-configu
 
 - `GBFS_FEEDS` — **required**. Either a comma-separated list of GBFS autodiscovery URLs or a file path / `@file` reference containing one URL per line.
 - `GBFS_SYSTEM_IDS` — optional. Comma-separated override labels aligned positionally with `GBFS_FEEDS`. Use this when you want stable local system labels regardless of upstream `system_id` changes.
+- `GBFS_API_KEY` — optional. Runtime upstream API key, or comma-separated keys aligned with `GBFS_FEEDS`. Keys are appended as query parameters (default `acl:consumerKey`, override with `GBFS_API_KEY_PARAM`) unless the URL template consumes `{GBFS_API_KEY}` / `${GBFS_API_KEY}` itself.
+- `GBFS_API_KEY_PARAM` — optional. Query-parameter name for injected keys. Set a comma-separated list to align different parameter names with multiple `GBFS_FEEDS`.
+- URL templates — `GBFS_FEEDS` entries may reference runtime environment variables as `{NAME}` or `${NAME}`; this lets thin wrapper images bake non-secret URL shapes while secrets arrive only at runtime.
 - `POLL_INTERVAL` — optional. Default `60` seconds.
 - `ONCE_MODE=true` — run a single polling cycle. Required by the Fabric notebook hosting path.
 

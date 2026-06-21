@@ -4,7 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from siri_core.acquisition import DEFAULT_BODS_URL, DEFAULT_TRAFIKLAB_URL, SiriClient, iter_vehicle_positions
+from siri_core.acquisition import DEFAULT_BODS_URL, DEFAULT_ENTUR_URL, DEFAULT_TRAFIKLAB_URL, SiriClient, iter_vehicle_positions
+from siri_core.config import DEFAULT_ENTUR_CLIENT_NAME, FeedConfig, parse_request_headers
 
 
 def test_iter_vehicle_positions_parses_sample_xml():
@@ -103,3 +104,81 @@ def test_bods_datafeed_requires_api_key():
 
     with pytest.raises(RuntimeError):
         client._build_request_specs()
+
+
+def test_entur_provider_defaults_to_siri_lite_paths_and_client_header():
+    config = FeedConfig.from_env(provider="entur", data_types="et,vm,sx")
+    client = SiriClient(
+        provider=config.provider,
+        siri_url=config.siri_url,
+        data_types=config.data_types,
+        request_headers=config.request_headers,
+    )
+
+    specs = client._build_request_specs()
+
+    assert config.siri_url == DEFAULT_ENTUR_URL
+    assert [spec.request_url for spec in specs] == [
+        "https://api.entur.io/realtime/v1/rest/et",
+        "https://api.entur.io/realtime/v1/rest/vm",
+        "https://api.entur.io/realtime/v1/rest/sx",
+    ]
+    assert all(spec.headers == {"ET-Client-Name": DEFAULT_ENTUR_CLIENT_NAME} for spec in specs)
+    assert all(spec.params == {} for spec in specs)
+
+
+def test_parse_request_headers_accepts_semicolon_separated_values():
+    assert parse_request_headers("ET-Client-Name=my-client;X-Trace = abc=123") == {
+        "ET-Client-Name": "my-client",
+        "X-Trace": "abc=123",
+    }
+
+
+def test_custom_headers_are_sent_with_request():
+    class FakeResponse:
+        content = b"<Siri xmlns=\"http://www.siri.org.uk/siri\"><ServiceDelivery /></Siri>"
+
+        def raise_for_status(self):
+            return None
+
+    class FakeSession:
+        def __init__(self):
+            self.headers = {}
+            self.calls = []
+
+        def get(self, url, *, headers, params, timeout):
+            self.calls.append({"url": url, "headers": headers, "params": params, "timeout": timeout})
+            return FakeResponse()
+
+    session = FakeSession()
+    client = SiriClient(
+        provider="custom",
+        siri_url="https://example.test/siri",
+        request_headers={"ET-Client-Name": "unit-test", "X-Extra": "yes"},
+        session=session,
+    )
+
+    client.load_snapshot()
+
+    assert session.calls == [
+        {
+            "url": "https://example.test/siri",
+            "headers": {"ET-Client-Name": "unit-test", "X-Extra": "yes"},
+            "params": {},
+            "timeout": 30.0,
+        }
+    ]
+
+
+def test_existing_provider_headers_are_unchanged_when_no_custom_headers():
+    client = SiriClient(
+        provider="trafiklab",
+        siri_url=DEFAULT_TRAFIKLAB_URL,
+        api_key="secret",
+        operators=("skane/skanetrafiken",),
+        data_types=("vm",),
+    )
+
+    specs = client._build_request_specs()
+
+    assert specs[0].headers == {"X-Api-Key": "secret"}

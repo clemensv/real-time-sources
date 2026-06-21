@@ -523,7 +523,7 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
 
 
 async def _run(args: argparse.Namespace) -> None:
-    producer = create_amqp_producer(args, BlueskyFirehoseAmqpProducer)
+    producer = _retry_producer_init(lambda: create_amqp_producer(args, BlueskyFirehoseAmqpProducer))
     client = AmqpClient(producer)
     collections = [x.strip() for x in args.collections.split(",") if x.strip()] if args.collections else None
     bridge = BlueskyMqttBridge(client, firehose_url=args.firehose_url, collections=collections)

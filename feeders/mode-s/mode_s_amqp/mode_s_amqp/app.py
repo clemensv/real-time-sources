@@ -348,6 +348,19 @@ def add_amqp_arguments(parser: argparse.ArgumentParser, default_address: str) ->
     parser.add_argument("--sas-key", default=os.getenv("AMQP_SAS_KEY"))
 
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def create_amqp_producer(args: argparse.Namespace, producer_cls):
     address = args.address
     if args.broker_url:
@@ -398,7 +411,7 @@ class ModeSAmqpClient:
 
 
 async def _run(args: argparse.Namespace) -> None:
-    producer = create_amqp_producer(args, ModeSAmqpProducer)
+    producer = _retry_producer_init(lambda: create_amqp_producer(args, ModeSAmqpProducer))
     client = ModeSAmqpClient(producer)
     feedurl = args.feedurl or (f"dump1090://{args.dump1090_host}:{args.dump1090_port}" if args.dump1090_host and args.dump1090_port else "mock://mode-s")
     bridge = ModeSMqttBridge(client, feedurl=feedurl, receiver_id=args.receiver_id, ref_lat=args.ref_lat or 0.0, ref_lon=args.ref_lon or 0.0)

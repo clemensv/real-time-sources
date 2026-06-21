@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/fdsn-seismology"
 LABEL org.opencontainers.image.title="FDSN Seismology → AMQP 1.0 bridge"
-LABEL org.opencontainers.image.description="Polls seven pre-configured FDSN Event service nodes for earthquake detections and publishes node reference records plus earthquake CloudEvents over AMQP 1.0 to generic brokers and Azure messaging services."
+LABEL org.opencontainers.image.description="Polls eight pre-configured FDSN Event service nodes for earthquake detections and publishes node reference records plus earthquake CloudEvents over AMQP 1.0 to generic brokers and Azure messaging services."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/fdsn-seismology/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 

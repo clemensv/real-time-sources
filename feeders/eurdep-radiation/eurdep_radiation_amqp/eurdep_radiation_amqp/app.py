@@ -12,6 +12,18 @@ def _parse(url):
  p=urlparse(url if '://' in url else f'amqp://{url}'); tls=(p.scheme or 'amqp').lower() in ('amqps','ssl','tls'); return p.hostname or 'localhost', p.port or (5671 if tls else 5672), tls, p.username, p.password, (p.path or '').lstrip('/') or None
 def _sample():
  return [Station(station_id='DE0123', country='de', name='Sample EURDEP Station', latitude=52.5, longitude=13.4, height_above_sea=35.0, site_status=1, site_status_text='in operation')],[DoseRateReading(station_id='DE0123', country='de', name='Sample EURDEP Station', value=0.09, unit='µSv/h', start_measure='2026-01-01T00:00:00Z', end_measure='2026-01-01T01:00:00Z', nuclide='Gamma-ODL-Brutto', duration='1h', validated=1)]
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            import logging; logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def producer(args):
  address=args.address
  if args.broker_url:
@@ -24,7 +36,7 @@ def producer(args):
  if args.auth_mode=='sas': return EuJrcEurdepAmqpProducer(host=host,address=address,port=port,sas_key_name=args.sas_key_name,sas_key=args.sas_key,use_tls=tls,content_mode=args.content_mode)
  return EuJrcEurdepAmqpProducer(host=host,address=address,port=port,username=username,password=password,use_tls=tls,content_mode=args.content_mode)
 def feed(args):
- prod=producer(args)
+ prod=_retry_producer_init(lambda: producer(args))
  try:
   if os.getenv('EURDEP_RADIATION_SAMPLE_MODE','').lower() in ('1','true','yes'): stations,readings=_sample()
   else:

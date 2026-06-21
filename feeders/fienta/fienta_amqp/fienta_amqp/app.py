@@ -64,6 +64,18 @@ def _patch(p):
     return p
 def _parse(url):
     p=urlparse(url if '://' in url else 'amqp://'+url); tls=(p.scheme or 'amqp').lower() in ('amqps','ssl','tls'); return p.hostname or 'localhost', p.port or (5671 if tls else 5672), tls, p.username, p.password, (p.path or '').lstrip('/') or None
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            import logging; logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('feed', nargs='?', default='feed'); ap.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL')); ap.add_argument('--host', default=os.getenv('AMQP_HOST')); ap.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT','0')) or None); ap.add_argument('--address', default=os.getenv('AMQP_ADDRESS','fienta')); ap.add_argument('--username', default=os.getenv('AMQP_USERNAME')); ap.add_argument('--password', default=os.getenv('AMQP_PASSWORD')); ap.add_argument('--tls', action='store_true', default=os.getenv('AMQP_TLS','').lower() in ('1','true','yes')); ap.add_argument('--auth-mode', choices=('password','entra','sas'), default=os.getenv('AMQP_AUTH_MODE','password')); ap.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE', DEFAULT_ENTRA_AUDIENCE_SERVICEBUS)); ap.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID')); ap.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME')); ap.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY')); args=ap.parse_args()
     address=args.address
@@ -83,7 +95,7 @@ def main():
             kwargs.update(sas_key_name=args.sas_key_name, sas_key=args.sas_key)
         else:
             kwargs.update(username=username, password=password)
-        producers.append(_patch(cls(**kwargs)))
+        producers.append(_patch(_retry_producer_init(lambda: cls(**kwargs))))
     try:
         for sh,payload in _iter_events():
             data=getattr(data_mod, sh)(**payload); values=dict(payload)

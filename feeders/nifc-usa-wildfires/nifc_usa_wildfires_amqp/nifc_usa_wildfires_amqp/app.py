@@ -11,6 +11,18 @@ def _parse(url):
  p=urlparse(url if '://' in url else f'amqp://{url}'); tls=(p.scheme or 'amqp').lower() in ('amqps','ssl','tls'); return p.hostname or 'localhost', p.port or (5671 if tls else 5672), tls, p.username, p.password, (p.path or '').lstrip('/') or None
 def _sample():
  return [WildfireIncident(irwin_id='sample-irwin-001', state='ca', status='active', incident_name='Sample Fire', unique_fire_identifier='2026-CANIF-000001', incident_type_category='WF', incident_type_kind='FI', fire_discovery_datetime='2026-01-01T00:00:00+00:00', daily_acres=100.0, calculated_acres=None, discovery_acres=10.0, percent_contained=0.0, poo_state='US-CA', poo_county='Sample', latitude=38.5, longitude=-121.5, fire_cause='Undetermined', fire_cause_general=None, gacc='ONCC', total_incident_personnel=None, incident_management_organization=None, fire_mgmt_complexity=None, residences_destroyed=None, other_structures_destroyed=None, injuries=None, fatalities=None, containment_datetime=None, control_datetime=None, fire_out_datetime=None, final_acres=None, modified_on_datetime='2026-01-01T01:00:00+00:00')]
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            import logging; logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def producer(args):
  address=args.address
  if args.broker_url:
@@ -23,7 +35,7 @@ def producer(args):
  if args.auth_mode=='sas': return GovNIFCWildfiresAmqpProducer(host=host,address=address,port=port,sas_key_name=args.sas_key_name,sas_key=args.sas_key,use_tls=tls,content_mode=args.content_mode)
  return GovNIFCWildfiresAmqpProducer(host=host,address=address,port=port,username=username,password=password,use_tls=tls,content_mode=args.content_mode)
 def feed(args):
- prod=producer(args)
+ prod=_retry_producer_init(lambda: producer(args))
  try:
   if os.getenv('NIFC_USA_WILDFIRES_SAMPLE_MODE','').lower() in ('1','true','yes'): incidents=_sample()
   else:

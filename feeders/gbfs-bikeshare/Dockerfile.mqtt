@@ -22,6 +22,8 @@ RUN pip install --no-cache-dir confluent-kafka \
 
 ENV MQTT_BROKER_URL=""
 ENV GBFS_FEEDS=""
+ENV GBFS_API_KEY=""
+ENV GBFS_API_KEY_PARAM="acl:consumerKey"
 ENV POLL_INTERVAL="60"
 
 CMD ["python", "-m", "gbfs_bikeshare_mqtt", "feed"]

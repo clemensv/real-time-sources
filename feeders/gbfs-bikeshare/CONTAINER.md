@@ -16,9 +16,13 @@ This source ships three transport-specific images that all consume the same `GBF
 |---|---:|---:|---|
 | `GBFS_FEEDS` | ✅ | — | Comma-separated GBFS autodiscovery URLs, `@file`, or path to a file containing one URL per line. |
 | `GBFS_SYSTEM_IDS` | ❌ | — | Optional comma-separated system-id overrides aligned positionally with `GBFS_FEEDS`. |
+| `GBFS_API_KEY` | ❌ | — | Optional runtime upstream API key, or comma-separated keys aligned with `GBFS_FEEDS`. Keys are appended to autodiscovery URLs unless the URL template consumes `{GBFS_API_KEY}` / `${GBFS_API_KEY}` itself. |
+| `GBFS_API_KEY_PARAM` | ❌ | `acl:consumerKey` | Query-string parameter name used with `GBFS_API_KEY` (ODPT-compatible default). A comma-separated list may be aligned with multiple `GBFS_FEEDS`. |
 | `POLL_INTERVAL` | ❌ | `60` | Telemetry polling interval in seconds. |
 | `REFERENCE_REFRESH_INTERVAL` | ❌ | `3600` | Station and system reference-data refresh cadence in seconds. |
 | `STATE_FILE` | ❌ | image-specific home-file path | JSON dedupe state file. Mount persistent storage here for long-running deployments. |
+
+`GBFS_FEEDS` entries may also reference runtime environment variables as `{NAME}` or `${NAME}`. Use this for wrapper images that bake URL shapes but keep consumer keys and other secrets in runtime environment variables.
 | `ONCE_MODE` | ❌ | `false` | When `true`, run one polling cycle and exit. Required for Fabric notebook hosting and useful for smoke tests. |
 | `LOG_LEVEL` | ❌ | `INFO` | Standard Python logging level. |
 
