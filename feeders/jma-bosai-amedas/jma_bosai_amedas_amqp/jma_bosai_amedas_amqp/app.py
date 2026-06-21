@@ -29,6 +29,19 @@ def build_parser(desc: str, default_address: str):
     parser.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE','').lower() in ('1','true','yes'))
     return parser
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            import logging; logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def make_producer(cls,args):
     if args.broker_url:
         h,p,a,u,pw,t=parse_broker_url(args.broker_url); args.host=h; args.port=p; args.address=a or args.address; args.username=args.username or (u or ''); args.password=args.password or (pw or ''); args.tls = bool(args.tls or t or args.auth_mode in ('entra', 'sas'))
@@ -42,7 +55,7 @@ def make_producer(cls,args):
         kwargs.update(sas_key_name=args.sas_key_name, sas_key=args.sas_key)
     else:
         kwargs.update(username=args.username or None, password=args.password or None)
-    return cls(**kwargs)
+    return _retry_producer_init(lambda: cls(**kwargs))
 
 from datetime import datetime, timezone, timedelta
 from jma_bosai_amedas.jma_bosai_amedas import JmaBosaiAmedasAPI, STATION_TABLE_URL, DEFAULT_STATE_FILE, _load_state, _save_state, parse_point_station_codes

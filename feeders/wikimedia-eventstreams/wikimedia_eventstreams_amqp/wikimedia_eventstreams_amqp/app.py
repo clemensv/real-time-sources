@@ -396,7 +396,7 @@ def _parse_broker(url: str) -> Tuple[str, int, bool]:
 
 
 async def _run(args: argparse.Namespace) -> None:
-    producer = create_amqp_producer(args, WikimediaEventStreamsAmqpProducer)
+    producer = _retry_producer_init(lambda: create_amqp_producer(args, WikimediaEventStreamsAmqpProducer))
     client = AmqpClient(producer)
     bridge = WikimediaMqttBridge(client, stream_url=args.stream_url, user_agent=args.user_agent)
     try:

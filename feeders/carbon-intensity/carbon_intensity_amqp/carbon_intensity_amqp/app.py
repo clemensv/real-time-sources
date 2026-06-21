@@ -81,6 +81,18 @@ class CarbonIntensityAmqpPoller(CarbonIntensityPoller):
                 last_period=emitted_key; state['last_period_from']=last_period; self.save_state(state)
             if once: return
             await asyncio.sleep(POLL_INTERVAL_SECONDS)
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 async def feed(producer, state_file: str, once: bool):
     try:
         await CarbonIntensityAmqpPoller(producer, state_file or os.path.expanduser('~/.carbon_intensity_amqp_last_polled.json')).poll_and_send_async(once=once)

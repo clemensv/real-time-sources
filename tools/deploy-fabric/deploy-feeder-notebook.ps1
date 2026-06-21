@@ -166,6 +166,17 @@ if (-not (Test-Path $notebookPath)) {
     }
 }
 
+$WheelSource = $Source
+try {
+    $notebookForWheelSource = Get-Content -LiteralPath $notebookPath -Raw -Encoding UTF8
+    $wheelSourceMatch = [regex]::Match($notebookForWheelSource, '/lakehouse/default/Files/wheels/(?<source>[^/''"`]+?)/\*\.whl')
+    if ($wheelSourceMatch.Success) {
+        $WheelSource = $wheelSourceMatch.Groups['source'].Value
+    }
+} catch {
+    $WheelSource = $Source
+}
+
 function Write-Step { param([string]$Step, [string]$Msg) Write-Host "`n[$Step] $Msg" -ForegroundColor Yellow }
 function Write-OK   { param([string]$Msg) Write-Host "  $Msg" -ForegroundColor Green }
 function Write-Info { param([string]$Msg) Write-Host "  $Msg" -ForegroundColor DarkYellow }
@@ -691,15 +702,15 @@ if (-not $SkipEnvironment) {
 
     $wheels = if ($BuildWheelsLocally) {
         Write-Info "Building wheels locally (-BuildWheelsLocally)..."
-        Build-SourceWheels -Source $Source -RepoRoot $repoRoot
+        Build-SourceWheels -Source $WheelSource -RepoRoot $repoRoot
     } else {
         Write-Info "Downloading pre-built wheel bundle from GitHub release..."
         try {
-            Get-PrebuiltWheels -Source $Source -Repo $Repo -WheelsBundleUrl $WheelsBundleUrl
+            Get-PrebuiltWheels -Source $WheelSource -Repo $Repo -WheelsBundleUrl $WheelsBundleUrl
         } catch {
             Write-Info "  bundle download failed; falling back to local build."
             Write-Info "  ($($_.Exception.Message))"
-            Build-SourceWheels -Source $Source -RepoRoot $repoRoot
+            Build-SourceWheels -Source $WheelSource -RepoRoot $repoRoot
         }
     }
     Write-OK "Got $($wheels.Count) wheel(s):"
@@ -731,13 +742,16 @@ if (-not $SkipEnvironment) {
     $LakehouseId = $lhForWheels.id
     Write-Info "Using Lakehouse '$($lhForWheels.displayName)' ($LakehouseId) for wheel storage."
 
-    # Upload wheels to OneLake: Files/wheels/<source>/<wheel>.whl
+    # Upload wheels to OneLake: Files/wheels/<wheel-source>/<wheel>.whl.
+    # Config-only wrappers can point their notebook at another feeder's wheel
+    # folder (for example uk-bods-siri -> siri) while keeping source-specific
+    # state, KQL, catalog and deployment assets.
     $oneLakeDfs = "https://onelake.dfs.fabric.microsoft.com"
     # OneLake DFS requires the storage audience token, not the Fabric API token
     $oneLakeToken = (az account get-access-token --resource https://storage.azure.com --query accessToken -o tsv 2>&1)
     if ($LASTEXITCODE -ne 0) { throw "Failed to acquire OneLake token: $oneLakeToken" }
     $oneLakeToken = ($oneLakeToken | Out-String).Trim()
-    $wheelsDir = "wheels/$Source"
+    $wheelsDir = "wheels/$WheelSource"
 
     # Create the directory (PUT with resource=directory)
     $dirUrl = "$oneLakeDfs/$WorkspaceId/$LakehouseId/Files/$wheelsDir`?resource=directory"
@@ -1201,7 +1215,7 @@ Write-Host "  Notebook:     $NotebookName ($notebookId)" -ForegroundColor Gray
 Write-Host "  Workspace:    $($wsInfo.displayName) ($WorkspaceId)" -ForegroundColor Gray
 Write-Host "  KQL Database: $($db.displayName) ($($db.id))" -ForegroundColor Gray
 if ($LakehouseId) {
-    Write-Host "  Wheels:       Files/wheels/$Source/ (Lakehouse)" -ForegroundColor Gray
+    Write-Host "  Wheels:       Files/wheels/$WheelSource/ (Lakehouse)" -ForegroundColor Gray
 }
 Write-Host "  State path:   $StatePath  (Lakehouse Files)" -ForegroundColor Gray
 Write-Host ""

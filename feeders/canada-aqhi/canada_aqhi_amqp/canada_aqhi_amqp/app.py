@@ -88,6 +88,18 @@ def _producer_classes():
         raise RuntimeError('generated AMQP producer class not found')
     return classes
 
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _build_producer(args):
     host, port, tls, user, pwd, path = _parse_amqp_url(args.broker_url or args.host)
     address=args.address or path or SOURCE_ID
@@ -145,7 +157,7 @@ def main():
     ap.add_argument('--mock-mode', action='store_true', default=_truthy(os.getenv((SOURCE_ID.replace('-','_')+'_MOCK').upper())))
     args=ap.parse_args()
     if args.command!='feed': ap.error("only 'feed' is supported")
-    producers=_build_producer(args)
+    producers = _retry_producer_init(lambda: _build_producer(args))
     try: _publish_all(producers)
     finally:
         for producer in (producers if isinstance(producers, list) else [producers]):

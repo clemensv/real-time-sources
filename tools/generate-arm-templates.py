@@ -135,7 +135,11 @@ def remove_aisstream_env_vars(env: list[dict[str, Any]]) -> list[dict[str, Any]]
 
 
 def insert_env_vars(env: list[dict[str, Any]], feeder: dict[str, Any]) -> list[dict[str, Any]]:
-    insert_at = next((i for i, item in enumerate(env) if item.get("name") in FRAMEWORK_ENV_NAMES), len(env))
+    feeder_env_names = {env_var["name"] for env_var in feeder.get("envVars", [])}
+    if "POLL_INTERVAL" in feeder_env_names:
+        feeder_env_names.add("POLLING_INTERVAL")
+    base_env = [item for item in env if item.get("name") not in feeder_env_names]
+    insert_at = next((i for i, item in enumerate(base_env) if item.get("name") in FRAMEWORK_ENV_NAMES), len(base_env))
     additions: list[dict[str, Any]] = []
     for env_var in feeder.get("envVars", []):
         parameter_ref = f"[parameters('{env_var['armParamName']}')]"
@@ -145,7 +149,7 @@ def insert_env_vars(env: list[dict[str, Any]], feeder: dict[str, Any]) -> list[d
         else:
             item["value"] = parameter_ref
         additions.append(item)
-    return env[:insert_at] + additions + env[insert_at:]
+    return base_env[:insert_at] + additions + base_env[insert_at:]
 
 
 def is_generic_description(description: str, env_name: str | None = None) -> bool:

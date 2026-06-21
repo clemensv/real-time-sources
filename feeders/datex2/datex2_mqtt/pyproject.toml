@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "datex2_mqtt"
+dynamic = ["version"]
+requires-python = ">=3.10,<4.0"
+dependencies = ["paho-mqtt>=2.1.0", "azure-identity>=1.17.0", "datex2_core", "datex2_mqtt_producer_data", "datex2_mqtt_producer_mqtt_client"]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["datex2_mqtt"]
+

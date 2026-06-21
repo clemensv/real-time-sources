@@ -55,6 +55,61 @@
       "metadata": {
         "description": "MQTT client identifier (must be globally unique per broker)."
       }
+    },
+    "gbfsFeeds": {
+      "type": "string",
+      "metadata": {
+        "description": "Tokyo Docomo GBFS autodiscovery URL served by ODPT."
+      },
+      "defaultValue": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json"
+    },
+    "gbfsSystemIds": {
+      "type": "string",
+      "metadata": {
+        "description": "Stable GBFS system id used in CloudEvents subjects and transport keys."
+      },
+      "defaultValue": "docomo-cycle-tokyo"
+    },
+    "gbfsApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "ODPT consumer key supplied at runtime. The base image appends it as acl:consumerKey=."
+      }
+    },
+    "gbfsApiKeyParam": {
+      "type": "string",
+      "metadata": {
+        "description": "Query-string parameter name used with GBFS_API_KEY; keep the default for ODPT."
+      },
+      "defaultValue": "acl:consumerKey"
+    },
+    "pollInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Station-status polling interval in seconds."
+      },
+      "defaultValue": "60"
+    },
+    "referenceRefreshInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "System and station reference refresh cadence in seconds."
+      },
+      "defaultValue": "3600"
+    },
+    "onceMode": {
+      "type": "string",
+      "metadata": {
+        "description": "Run one polling cycle and exit."
+      },
+      "defaultValue": "false"
+    },
+    "logLevel": {
+      "type": "string",
+      "metadata": {
+        "description": "Controls feeder log verbosity using standard Python logging levels such as DEBUG, INFO, WARNING, ERROR, or CRITICAL."
+      },
+      "defaultValue": "INFO"
     }
   },
   "variables": {
@@ -83,7 +138,7 @@
       ],
       "properties": {
         "osType": "Linux",
-        "restartPolicy": "Always",
+        "restartPolicy": "OnFailure",
         "diagnostics": {
           "logAnalytics": {
             "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
@@ -120,8 +175,36 @@
                   "value": "[parameters('mqttClientId')]"
                 },
                 {
+                  "name": "GBFS_FEEDS",
+                  "value": "[parameters('gbfsFeeds')]"
+                },
+                {
+                  "name": "GBFS_SYSTEM_IDS",
+                  "value": "[parameters('gbfsSystemIds')]"
+                },
+                {
+                  "name": "GBFS_API_KEY",
+                  "secureValue": "[parameters('gbfsApiKey')]"
+                },
+                {
+                  "name": "GBFS_API_KEY_PARAM",
+                  "value": "[parameters('gbfsApiKeyParam')]"
+                },
+                {
+                  "name": "POLL_INTERVAL",
+                  "value": "[parameters('pollInterval')]"
+                },
+                {
+                  "name": "REFERENCE_REFRESH_INTERVAL",
+                  "value": "[parameters('referenceRefreshInterval')]"
+                },
+                {
+                  "name": "ONCE_MODE",
+                  "value": "[parameters('onceMode')]"
+                },
+                {
                   "name": "LOG_LEVEL",
-                  "value": "INFO"
+                  "value": "[parameters('logLevel')]"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",

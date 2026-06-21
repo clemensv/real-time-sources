@@ -1,121 +1,115 @@
-<!-- source-hero:begin -->
-<table width="100%"><tr>
-<td width="80" valign="middle" align="center">
-<img src="https://flagcdn.com/64x48/jp.png" alt="Tokyo" width="64" height="48"><br>
-<sub><b>Tokyo</b></sub>
-</td>
-<td valign="middle">
+# Tokyo Docomo Bikeshare container images (Kafka, MQTT, AMQP)
 
-# Tokyo Docomo Bikeshare
+For the source overview see [README.md](README.md); for the CloudEvents contract and routing metadata see [EVENTS.md](EVENTS.md).
 
-<sub>1,794 stations, GBFS 2.3 via ODPT · Kafka · MQTT · AMQP · <a href="https://docomo-cycle.jp/tokyo/">upstream</a> · <a href="https://developer.odpt.org/info">API docs</a></sub>
-
-<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
-&nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-2_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
-&nbsp;
-<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
-
-> Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT
-
-[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#tokyo-docomo-bikeshare) &nbsp;·&nbsp;
-[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
-[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[↗ **Upstream**](https://docomo-cycle.jp/tokyo/)
-
-</td></tr></table>
-<!-- source-hero:end -->
-
-Related docs:
-
-<!-- upstream-links:begin -->
-## Upstream
-
-- Home page: <https://docomo-cycle.jp/tokyo/>
-- API / data documentation: <https://developer.odpt.org/info>
-
-<!-- upstream-links:end -->
-
-- [README.md](README.md) — source context, quick-start flow, and deployment guidance.
-- [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
-
-## Why this container
-
-These images package the Tokyo Docomo Bikeshare bridge runtime so teams can run a production feeder with consistent event contracts across Kafka, MQTT, and AMQP transports.
+These images are configuration-only wrappers over the generalized `gbfs-bikeshare` feeder. They bake the Tokyo Docomo GBFS autodiscovery URL and `docomo-cycle-tokyo` system id, while secrets such as the ODPT consumer key arrive only at runtime.
 
 ## What ships in the box
 
-| Image | Dockerfile | Purpose |
-|---|---|---|
-| `ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare:latest` | `Dockerfile` | Kafka-compatible publishing path |
-| `ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 publishing path |
-| `ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 publishing path |
+| Variant | Image | Base image | Default command | State share |
+|---|---|---|---|---|
+| Kafka | `ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare:latest` | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare:latest` | inherited `python -m gbfs_bikeshare feed` | inherited GBFS `STATE_FILE` support |
+| MQTT | `ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest` | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-mqtt:latest` | inherited `python -m gbfs_bikeshare_mqtt feed` | no state-share mount in the BYO / Event Grid MQTT ACI templates |
+| AMQP | `ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest` | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-amqp:latest` | inherited `python -m gbfs_bikeshare_amqp feed` | inherited GBFS `STATE_FILE` support |
 
-## Image contract
+## Baked source configuration
 
-| Aspect | Kafka | MQTT | AMQP |
-|---|---|---|---|
-| Base image | `python:3.10-slim` | `python:3.10-slim` | `python:3.10-slim` |
-| Default command | `CMD ["python", "-m", "tokyo_docomo_bikeshare"]` | `CMD ["python", "-m", "tokyo_docomo_bikeshare_mqtt", "feed"]` | `CMD ["python", "-m", "tokyo_docomo_bikeshare_amqp", "feed"]` |
-| Delivery format | CloudEvents to Kafka topic | CloudEvents to MQTT topic tree | CloudEvents to AMQP address |
-| Shared contract | \- | Uses same xRegistry event model | Uses same xRegistry event model |
+| Variable | Required | Default | Description |
+|---|---:|---:|---|
+| `GBFS_FEEDS` | ✅ | `https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json` | Tokyo Docomo GBFS autodiscovery URL served by ODPT. |
+| `GBFS_SYSTEM_IDS` | ✅ | `docomo-cycle-tokyo` | Stable GBFS system id used in CloudEvents subjects and transport keys. |
+| `GBFS_API_KEY` | ✅ | — | ODPT consumer key supplied at runtime. The base image appends it as `acl:consumerKey=<key>`. |
+| `GBFS_API_KEY_PARAM` | ❌ | `acl:consumerKey` | Query-string parameter name used with `GBFS_API_KEY`; keep the default for ODPT. |
+| `POLL_INTERVAL` | ❌ | `60` | Station-status polling interval in seconds. |
+| `REFERENCE_REFRESH_INTERVAL` | ❌ | `3600` | System and station reference refresh cadence in seconds. |
+| `STATE_FILE` | ❌ | inherited image default | JSON dedupe state file path. Mount persistent storage for long-running ACI deployments. |
+| `ONCE_MODE` | ❌ | `false` | Run one polling cycle and exit. |
+| `LOG_LEVEL` | ❌ | `INFO` | Controls feeder log verbosity using standard Python logging levels such as `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. |
 
-## Kafka image quick start
+## Kafka image
+
+### Environment variables
+
+| Variable | Required | Default | Description |
+|---|---:|---:|---|
+| `CONNECTION_STRING` | ✅* | — | Event Hubs / Fabric Event Stream or plain `BootstrapServer=...;EntityPath=...` connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS` | ✅* | — | Bootstrap servers when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | ❌ | `gbfs-bikeshare` from base image unless overridden by connection string | Kafka topic to publish into. Use `tokyo-docomo-bikeshare` for this wrapper. |
+| `SASL_USERNAME` | ❌ | — | SASL PLAIN username when not using `CONNECTION_STRING`. |
+| `SASL_PASSWORD` | ❌ | — | SASL PLAIN password when not using `CONNECTION_STRING`. |
+| `KAFKA_ENABLE_TLS` | ❌ | `true` | Disable only for local plaintext brokers or Docker E2E. |
+
+`*` Provide either `CONNECTION_STRING` or the explicit bootstrap / SASL settings.
 
 ```bash
-docker run --rm   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare:latest
+docker pull ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare:latest
+docker run --rm   -e GBFS_API_KEY="<odpt-consumer-key>"   -e CONNECTION_STRING="BootstrapServer=<host:port>;EntityPath=tokyo-docomo-bikeshare"   -e KAFKA_ENABLE_TLS=false   ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare:latest
 ```
 
-## MQTT image quick start
+### Azure templates
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ftokyo-docomo-bikeshare%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ftokyo-docomo-bikeshare%2Fazure-template-with-eventhub.json)
+
+## MQTT image
+
+### Environment variables
+
+| Variable | Required | Default | Description |
+|---|---:|---:|---|
+| `MQTT_BROKER_URL` | ✅* | — | Broker URL such as `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_HOST` / `MQTT_PORT` | ✅* | — | Alternate host / port inputs when not using `MQTT_BROKER_URL`. |
+| `MQTT_TLS` / `MQTT_ENABLE_TLS` | ❌ | inferred from URL | Enable broker TLS. |
+| `MQTT_AUTH_MODE` | ❌ | `anonymous` | `anonymous`, `userpass`, `tls-cert`, or `entra`. |
+| `MQTT_USERNAME` | ❌ | — | Username for `userpass`; also used by some brokers for Entra / namespace routing. |
+| `MQTT_PASSWORD` | ❌ | — | Password for `userpass`. |
+| `MQTT_CLIENT_ID` | ❌ | source-derived | MQTT client identifier. |
+| `MQTT_CA_FILE` | ❌ | system trust | Optional CA bundle path. |
+| `MQTT_CLIENT_CERT` | ❌ | — | Client certificate PEM for `tls-cert`. |
+| `MQTT_CLIENT_KEY` | ❌ | — | Client private key PEM for `tls-cert`. |
+| `MQTT_ENTRA_CLIENT_ID` | ❌ | — | Managed identity client id for `MQTT_AUTH_MODE=entra`. |
+| `MQTT_ENTRA_AUDIENCE` | ❌ | `https://eventgrid.azure.net/` | JWT audience for Event Grid namespace MQTT. |
+
+`*` Provide either `MQTT_BROKER_URL` or `MQTT_HOST` / `MQTT_PORT`.
 
 ```bash
-docker run --rm   -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest
+docker run --rm   -e GBFS_API_KEY="<odpt-consumer-key>"   -e MQTT_BROKER_URL="mqtt://broker:1883"   ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest
 ```
 
-## AMQP image quick start
+### Azure templates
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ftokyo-docomo-bikeshare%2Fazure-template-mqtt.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ftokyo-docomo-bikeshare%2Fazure-template-with-eventgrid-mqtt.json)
+
+## AMQP image
+
+### Environment variables
+
+| Variable | Required | Default | Description |
+|---|---:|---:|---|
+| `AMQP_BROKER_URL` | ✅* | — | Broker URL such as `amqp://user:pass@host:5672` or `amqps://host:5671`. |
+| `AMQP_HOST` / `AMQP_PORT` | ✅* | — | Alternate host / port inputs when not using `AMQP_BROKER_URL`. |
+| `AMQP_ADDRESS` | ❌ | `gbfs-bikeshare` from base image | Queue / topic / address name. Use `tokyo-docomo-bikeshare` for this wrapper. |
+| `AMQP_AUTH_MODE` | ❌ | `password` | `password`, `sas`, or `entra`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | ❌ | — | SASL PLAIN credentials for generic brokers. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | ❌ | — | SAS token minting inputs for Service Bus emulator or SAS-authenticated Azure targets. |
+| `AMQP_TLS` | ❌ | inferred from URL | Enable TLS. |
+| `AMQP_CONTENT_MODE` | ❌ | `binary` | CloudEvents content mode; `binary` is recommended. |
+| `AMQP_ENTRA_CLIENT_ID` | ❌ | — | Managed identity client id for `AMQP_AUTH_MODE=entra`. |
+| `AMQP_ENTRA_AUDIENCE` | ❌ | `https://servicebus.azure.net/.default` | Azure target audience for CBS token acquisition. |
+
+`*` Provide either `AMQP_BROKER_URL` or `AMQP_HOST` / `AMQP_PORT`.
 
 ```bash
-docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/tokyo-docomo-bikeshare"   ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest
+docker pull ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest
+docker run --rm   -e GBFS_API_KEY="<odpt-consumer-key>"   -e AMQP_BROKER_URL="amqp://user:pass@broker:5672"   -e AMQP_ADDRESS="tokyo-docomo-bikeshare"   ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest
 ```
 
-## Environment variable matrix
+### Azure template
 
-### Kafka image (`ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare:latest`)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ftokyo-docomo-bikeshare%2Fazure-template-with-servicebus.json)
 
-| Variable | Purpose |
-|---|---|
-| `CONNECTION_STRING` | Core configuration for this image variant. |
-| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
+## Fabric and Azure notes
 
-### MQTT image (`ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest`)
-
-| Variable | Purpose |
-|---|---|
-| `MQTT_BROKER_URL` | Core configuration for this image variant. |
-| `MQTT_USERNAME` | Core configuration for this image variant. |
-| `MQTT_PASSWORD` | Core configuration for this image variant. |
-| `MQTT_TLS` | Core configuration for this image variant. |
-
-### AMQP image (`ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest`)
-
-| Variable | Purpose |
-|---|---|
-| `AMQP_BROKER_URL or AMQP_HOST/AMQP_PORT/AMQP_ADDRESS` | Core configuration for this image variant. |
-| `AMQP_USERNAME` | Core configuration for this image variant. |
-| `AMQP_PASSWORD` | Core configuration for this image variant. |
-| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
-
-## Azure ARM deployments
-
-Only templates that exist in this source folder are listed below.
-
-- `azure-template-mqtt.json` — MQTT deployment targeting an existing MQTT broker
-  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ftokyo-docomo-bikeshare%2Fazure-template-mqtt.json)
-- `azure-template-with-eventgrid-mqtt.json` — MQTT deployment plus Azure Event Grid namespace broker provisioning
-  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ftokyo-docomo-bikeshare%2Fazure-template-with-eventgrid-mqtt.json)
-
-## Related
-
-- [README.md](README.md)
-- [EVENTS.md](EVENTS.md)
-- `xreg/`
+The wrapper inherits the `gbfs-bikeshare` runtime behavior. It emits the consolidated GBFS CloudEvents contract and requires consumers of the retired bespoke Tokyo event types to migrate to `org.gbfs.*` event names.

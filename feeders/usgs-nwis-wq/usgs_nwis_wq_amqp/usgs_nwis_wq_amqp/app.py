@@ -64,6 +64,18 @@ from urllib.parse import urlparse
 import usgs_nwis_wq_amqp_producer_data
 from usgs_nwis_wq_amqp_producer_amqp_producer.producer import *
 
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key):
     if auth_mode == 'entra':
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
@@ -78,7 +90,7 @@ def feed(host, port, address='usgs-nwis-wq', username=None, password=None, tls=F
     if not producer_classes:
         raise RuntimeError('No generated AMQP producers found')
     for cls in producer_classes:
-        producer=_build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key)
+        producer = _retry_producer_init(lambda: _build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key))
         try:
             for method in [getattr(producer,n) for n in dir(producer) if n.startswith('send_') and not n.endswith('_batch')]:
                 method(**_required_call_kwargs(method, usgs_nwis_wq_amqp_producer_data))

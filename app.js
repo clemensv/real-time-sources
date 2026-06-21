@@ -38,6 +38,7 @@ const SOURCES = [
   { id: "aviationweather", name: "AviationWeather.gov", cat: "Weather", key: false, desc: "Global — METAR, SIGMET advisories", notebook: true, mqtt: true, amqp: true },
   { id: "blitzortung", name: "Blitzortung", cat: "Weather", key: false, desc: "Global — community lightning strokes, seconds latency", mqtt: true, amqp: true },
   { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", notebook: true, mqtt: true, amqp: true },
+  { id: "cap-alerts", name: "CAP Alerts", cat: "Weather", key: false, desc: "Global — configurable CAP 1.2 public alerts", notebook: true, mqtt: true, amqp: true },
   { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", mqtt: true, amqp: true },
   { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", notebook: true, mqtt: true, amqp: true },
   { id: "dmi", name: "DMI Denmark", cat: "Weather", key: true, desc: "Denmark — Danish Meteorological Institute observations", notebook: true, mqtt: true, amqp: true },
@@ -101,6 +102,7 @@ const SOURCES = [
 
   // ── Road and Public Transport ──
   { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", notebook: true, mqtt: true, amqp: true },
+  { id: "datex2", name: "DATEX II", cat: "Transport", key: false, desc: "Europe — generalized road traffic XML profiles", notebook: true, mqtt: true, amqp: true },
   { id: "digitraffic-road", name: "Digitraffic Road", cat: "Transport", key: false, desc: "Finland — TMS sensors, road weather, traffic messages", mqtt: true, amqp: true },
   { id: "french-road-traffic", name: "French Road Traffic", cat: "Transport", key: false, desc: "France — national road network, DATEX II", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", mqtt: true, amqp: true, amqpSb: false },
@@ -901,4 +903,3 @@ async function selectFromHash() {
 }
 window.addEventListener("hashchange", selectFromHash);
 selectFromHash();
-

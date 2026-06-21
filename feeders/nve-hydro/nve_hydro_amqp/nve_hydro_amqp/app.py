@@ -200,7 +200,7 @@ def feed(
     sas_key: Optional[str] = None,
 ) -> None:
     previous_readings = _load_state(state_file)
-    producer = _build_producer(host=broker_host, port=broker_port, address=address, use_tls=tls, content_mode=content_mode, auth_mode=auth_mode, username=username, password=password, entra_audience=entra_audience, entra_client_id=entra_client_id, sas_key_name=sas_key_name, sas_key=sas_key)
+    producer = _retry_producer_init(lambda: _build_producer(host=broker_host, port=broker_port, address=address, use_tls=tls, content_mode=content_mode, auth_mode=auth_mode, username=username, password=password, entra_audience=entra_audience, entra_client_id=entra_client_id, sas_key_name=sas_key_name, sas_key=sas_key))
     if os.getenv("MOCK_MODE", "").lower() in ("1", "true", "yes"):
         _publish_mock(producer)
         producer.close()
@@ -295,6 +295,19 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     return parser
 
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def main(argv: Optional[list] = None) -> None:
     logging.basicConfig(level=logging.DEBUG if sys.gettrace() else logging.INFO)
     parser = _build_arg_parser()
