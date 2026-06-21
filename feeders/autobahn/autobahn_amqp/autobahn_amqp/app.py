@@ -288,6 +288,11 @@ def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
         if isinstance(payload, dict):
             for key, value in payload.items():
                 route.setdefault(key, value)
+        # Pre-fill route with required params from all send methods (dummy values)
+        for _m_name, _m_func in adapter._send_methods.items():
+            for _p, _param in inspect.signature(_m_func).parameters.items():
+                if _p.startswith("_") and _param.default is inspect.Parameter.empty:
+                    route.setdefault(_p[1:], f"sample-{_p[1:]}")
         try:
             method, required = adapter._choose_method("publish_" + message_name.lower().replace(".", "_"), {**route, "data": data})
             call_kwargs = {p: _topic_segment(route.get(p[1:], f"sample-{p[1:]}")) for p in required}

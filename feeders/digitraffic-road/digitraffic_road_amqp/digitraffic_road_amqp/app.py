@@ -4,6 +4,7 @@ import argparse
 import base64
 import dataclasses
 import gzip
+import inspect
 import json
 import logging
 import os
