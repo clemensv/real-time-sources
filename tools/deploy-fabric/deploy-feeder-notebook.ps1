@@ -369,7 +369,13 @@ function Build-SourceWheels {
     if (-not (Test-Path $srcDir)) { throw "Source folder not found: $srcDir" }
 
     $producerRoot = Join-Path $srcDir "$($Source -replace '-', '_')_producer"
-    if (-not (Test-Path $producerRoot)) { throw "Generated producer folder not found: $producerRoot. Run generate_producer.ps1 first." }
+    if (-not (Test-Path $producerRoot)) {
+        # Fallback: search for any *_producer directory (handles non-standard naming like gtfs_rt_producer)
+        $producerRoot = Get-ChildItem -Directory $srcDir -Filter "*_producer" |
+            Where-Object { $_.Name -notmatch "_amqp_|_mqtt_" } |
+            Select-Object -First 1 -ExpandProperty FullName
+        if (-not $producerRoot) { throw "Generated producer folder not found in $srcDir. Run generate_producer.ps1 first." }
+    }
 
     $outDir = Join-Path $TempDir "feeder-wheels-$Source-$(Get-Random)"
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
