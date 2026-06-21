@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cap_alerts_core"
+dynamic = ["version"]
+description = "Transport-agnostic CAP alert acquisition and normalization."
+requires-python = ">=3.10,<4.0"
+dependencies = ["requests>=2.32.3", "urllib3>=2.2.1"]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["cap_alerts_core"]

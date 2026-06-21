@@ -1,0 +1,249 @@
+{
+  "catalog": {
+    "title": "(41024 / SUN2) Sunset Nearshore Met and Water, NC",
+    "cdm_data_type": "TimeSeries",
+    "minTime": "2022-02-16T04:08:00Z",
+    "maxTime": "2026-06-20T14:08:00Z"
+  },
+  "info": {
+    "table": {
+      "columnNames": [
+        "Row Type",
+        "Variable Name",
+        "Attribute Name",
+        "Data Type",
+        "Value"
+      ],
+      "rows": [
+        [
+          "attribute",
+          "NC_GLOBAL",
+          "title",
+          "String",
+          "(41024 / SUN2) Sunset Nearshore Met and Water, NC"
+        ],
+        [
+          "attribute",
+          "NC_GLOBAL",
+          "cdm_data_type",
+          "String",
+          "TimeSeries"
+        ],
+        [
+          "attribute",
+          "NC_GLOBAL",
+          "license",
+          "String",
+          "These data may be redistributed and used without restriction."
+        ],
+        [
+          "variable",
+          "time",
+          "",
+          "double",
+          null
+        ],
+        [
+          "attribute",
+          "time",
+          "units",
+          "String",
+          "seconds since 1970-01-01T00:00:00Z"
+        ],
+        [
+          "attribute",
+          "time",
+          "standard_name",
+          "String",
+          "time"
+        ],
+        [
+          "variable",
+          "latitude",
+          "",
+          "double",
+          null
+        ],
+        [
+          "attribute",
+          "latitude",
+          "units",
+          "String",
+          "degrees_north"
+        ],
+        [
+          "attribute",
+          "latitude",
+          "standard_name",
+          "String",
+          "latitude"
+        ],
+        [
+          "variable",
+          "longitude",
+          "",
+          "double",
+          null
+        ],
+        [
+          "attribute",
+          "longitude",
+          "units",
+          "String",
+          "degrees_east"
+        ],
+        [
+          "attribute",
+          "longitude",
+          "standard_name",
+          "String",
+          "longitude"
+        ],
+        [
+          "variable",
+          "station",
+          "",
+          "byte",
+          null
+        ],
+        [
+          "attribute",
+          "station",
+          "cf_role",
+          "String",
+          "timeseries_id"
+        ],
+        [
+          "attribute",
+          "station",
+          "long_name",
+          "String",
+          "(41024 / SUN2) Sunset Nearshore Met and Water, NC"
+        ],
+        [
+          "attribute",
+          "station",
+          "ioos_category",
+          "String",
+          "Identifier"
+        ],
+        [
+          "variable",
+          "sea_water_temperature",
+          "",
+          "double",
+          null
+        ],
+        [
+          "attribute",
+          "sea_water_temperature",
+          "units",
+          "String",
+          "degree_Celsius"
+        ],
+        [
+          "attribute",
+          "sea_water_temperature",
+          "long_name",
+          "String",
+          "Water Temperature"
+        ],
+        [
+          "attribute",
+          "sea_water_temperature",
+          "standard_name",
+          "String",
+          "sea_water_temperature"
+        ],
+        [
+          "attribute",
+          "sea_water_temperature",
+          "ioos_category",
+          "String",
+          "Temperature"
+        ],
+        [
+          "variable",
+          "sea_water_practical_salinity",
+          "",
+          "double",
+          null
+        ],
+        [
+          "attribute",
+          "sea_water_practical_salinity",
+          "units",
+          "String",
+          "1e-3"
+        ],
+        [
+          "attribute",
+          "sea_water_practical_salinity",
+          "long_name",
+          "String",
+          "Salinity"
+        ],
+        [
+          "attribute",
+          "sea_water_practical_salinity",
+          "standard_name",
+          "String",
+          "sea_water_practical_salinity"
+        ],
+        [
+          "attribute",
+          "sea_water_practical_salinity",
+          "ioos_category",
+          "String",
+          "Salinity"
+        ]
+      ]
+    }
+  },
+  "table": {
+    "table": {
+      "columnNames": [
+        "station",
+        "time",
+        "latitude",
+        "longitude",
+        "sea_water_temperature",
+        "sea_water_practical_salinity"
+      ],
+      "columnTypes": [
+        "byte",
+        "String",
+        "double",
+        "double",
+        "double",
+        "double"
+      ],
+      "columnUnits": [
+        null,
+        "UTC",
+        "degrees_north",
+        "degrees_east",
+        "degree_Celsius",
+        "1e-3"
+      ],
+      "rows": [
+        [
+          null,
+          "2026-06-20T12:08:00Z",
+          33.8444,
+          -78.4839,
+          27.4,
+          31.1
+        ],
+        [
+          null,
+          "2026-06-20T13:08:00Z",
+          33.8444,
+          -78.4839,
+          27.5,
+          31.0
+        ]
+      ]
+    }
+  }
+}

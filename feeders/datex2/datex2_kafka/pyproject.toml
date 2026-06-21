@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "datex2_kafka"
+dynamic = ["version"]
+requires-python = ">=3.10,<4.0"
+dependencies = ["confluent-kafka>=2.5.3", "datex2_core", "datex2_producer_data", "datex2_producer_kafka_producer"]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["datex2_kafka"]
+

@@ -1,0 +1,1784 @@
+{
+  "endpoints": {
+    "org.oasis.cap.alerts.Alerts.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "cap-alerts",
+          "key": "{cap_source_id}/{identifier}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.oasis.cap.alerts.alerts"
+      ],
+      "description": "Kafka producer endpoint for generalized CAP alert messages keyed by configured source id and CAP identifier."
+    },
+    "org.oasis.cap.alerts.Zones.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "cap-alerts",
+          "key": "{cap_source_id}/{zone_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.oasis.cap.alerts.zones"
+      ],
+      "description": "Kafka producer endpoint for CAP source zone reference records keyed by configured source id and zone id."
+    },
+    "org.oasis.cap.alerts.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.oasis.cap.alerts.alerts.mqtt",
+        "#/messagegroups/org.oasis.cap.alerts.zones.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for generalized CAP alert and zone events."
+    },
+    "org.oasis.cap.alerts.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/cap-alerts"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.oasis.cap.alerts.alerts.amqp",
+        "#/messagegroups/org.oasis.cap.alerts.zones.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for generalized CAP alert and zone events."
+    }
+  },
+  "messagegroups": {
+    "org.oasis.cap.alerts.alerts": {
+      "description": "Transport-neutral generalized CAP alert events.",
+      "messages": {
+        "org.oasis.cap.alerts.CapAlert": {
+          "name": "CapAlert",
+          "envelope": "CloudEvents/1.0",
+          "description": "Generalized Common Alerting Protocol (CAP) 1.2 alert message. It preserves the full alert -> info[] -> area[]/resource[] CAP hierarchy plus standardized CAP extension arrays (eventCode, parameter, geocode) so national weather and emergency alert feeds can be represented losslessly. Convenience fields mirror typed fields emitted by existing DWD, MeteoAlarm, NOAA NWS, and NWS Alerts bespoke feeders while keeping the original CAP name/value pairs.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.oasis.cap.alerts.CapAlert"
+            },
+            "source": {
+              "value": "{provider_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{cap_source_id}/{identifier}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.jstruct/schemas/org.oasis.cap.alerts.CapAlert"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones": {
+      "description": "Transport-neutral CAP source zone reference events.",
+      "messages": {
+        "org.oasis.cap.alerts.CapZone": {
+          "name": "CapZone",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference event for an alerting zone, forecast zone, MeteoAlarm region, or other area catalog entry exposed by a configured CAP source. The feeder emits zone reference data before alerts when the source exposes metadata such as api.weather.gov /zones, enabling consumers to interpret alert geocodes temporally.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.oasis.cap.alerts.CapZone"
+            },
+            "source": {
+              "value": "{provider_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{cap_source_id}/{zone_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.jstruct/schemas/org.oasis.cap.alerts.CapZone"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.kafka": {
+      "description": "Kafka variant of CAP alert events.",
+      "messages": {
+        "org.oasis.cap.alerts.kafka.CapAlert": {
+          "name": "CapAlert",
+          "basemessageuri": "/messagegroups/org.oasis.cap.alerts.alerts/messages/org.oasis.cap.alerts.CapAlert",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{cap_source_id}/{identifier}"
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.kafka": {
+      "description": "Kafka variant of CAP zone reference events.",
+      "messages": {
+        "org.oasis.cap.alerts.kafka.CapZone": {
+          "name": "CapZone",
+          "basemessageuri": "/messagegroups/org.oasis.cap.alerts.zones/messages/org.oasis.cap.alerts.CapZone",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{cap_source_id}/{zone_id}"
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.mqtt": {
+      "description": "MQTT variant of CAP alert events.",
+      "messages": {
+        "org.oasis.cap.alerts.mqtt.CapAlert": {
+          "name": "CapAlert",
+          "basemessageuri": "/messagegroups/org.oasis.cap.alerts.alerts/messages/org.oasis.cap.alerts.CapAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/cap/{cap_source_id}/{identifier_segment}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.mqtt": {
+      "description": "MQTT variant of CAP zone reference events.",
+      "messages": {
+        "org.oasis.cap.alerts.mqtt.CapZone": {
+          "name": "CapZone",
+          "basemessageuri": "/messagegroups/org.oasis.cap.alerts.zones/messages/org.oasis.cap.alerts.CapZone",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/cap/{cap_source_id}/zones/{zone_id_segment}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.amqp": {
+      "description": "AMQP variant of CAP alert events.",
+      "messages": {
+        "org.oasis.cap.alerts.amqp.CapAlert": {
+          "name": "CapAlert",
+          "basemessageuri": "/messagegroups/org.oasis.cap.alerts.alerts/messages/org.oasis.cap.alerts.CapAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{cap_source_id}/{identifier}",
+                "description": "AMQP message subject matching CloudEvent subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "cap_source_id": {
+                "type": "uritemplate",
+                "value": "{cap_source_id}",
+                "description": "Configured CAP source id for broker filtering."
+              },
+              "event_type": {
+                "type": "uritemplate",
+                "value": "{event_type}",
+                "description": "Normalized hazard/event token for broker filtering."
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.amqp": {
+      "description": "AMQP variant of CAP zone reference events.",
+      "messages": {
+        "org.oasis.cap.alerts.amqp.CapZone": {
+          "name": "CapZone",
+          "basemessageuri": "/messagegroups/org.oasis.cap.alerts.zones/messages/org.oasis.cap.alerts.CapZone",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{cap_source_id}/{zone_id}",
+                "description": "AMQP message subject matching CloudEvent subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "cap_source_id": {
+                "type": "uritemplate",
+                "value": "{cap_source_id}",
+                "description": "Configured CAP source id for broker filtering."
+              },
+              "zone_type": {
+                "type": "uritemplate",
+                "value": "{zone_type}",
+                "description": "Provider zone type for broker filtering."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.oasis.cap.alerts.jstruct": {
+      "schemas": {
+        "org.oasis.cap.alerts.CapAlert": {
+          "name": "CapAlert",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/oasis/cap/alerts/CapAlert/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "CapAlert",
+                "type": "object",
+                "description": "Generalized Common Alerting Protocol (CAP) 1.2 alert message. It preserves the full alert -> info[] -> area[]/resource[] CAP hierarchy plus standardized CAP extension arrays (eventCode, parameter, geocode) so national weather and emergency alert feeds can be represented losslessly. Convenience fields mirror typed fields emitted by existing DWD, MeteoAlarm, NOAA NWS, and NWS Alerts bespoke feeders while keeping the original CAP name/value pairs.",
+                "required": [
+                  "cap_source_id",
+                  "identifier",
+                  "sender",
+                  "sent",
+                  "status",
+                  "msg_type",
+                  "scope",
+                  "info",
+                  "provider_url"
+                ],
+                "properties": {
+                  "cap_source_id": {
+                    "type": "string",
+                    "description": "Configuration-assigned stable source identifier qualifying CAP alert identifiers across agencies. Examples: nws-us, meteoalarm-belgium, dwd-germany. This value is the first segment of the CloudEvent subject and Kafka key."
+                  },
+                  "identifier": {
+                    "type": "string",
+                    "description": "CAP identifier assigned by the sender to this alert message. Unique only within the sender/source, so the feeder qualifies it with cap_source_id for keys. Updates and cancellations use their own identifier; the CAP references field points to prior messages."
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "CAP sender identifier for the originating alerting authority, such as w-nws.webmaster@noaa.gov or opendata@dwd.de."
+                  },
+                  "sent": {
+                    "type": "datetime",
+                    "description": "CAP sent timestamp when the message was issued by the sender, parsed as an ISO 8601 datetime."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "CAP status for operational state of this message.",
+                    "enum": [
+                      "Actual",
+                      "Exercise",
+                      "System",
+                      "Test",
+                      "Draft"
+                    ],
+                    "descriptions": {
+                      "Actual": "CAP 1.2 `Actual` value: CAP status for operational state of this message.",
+                      "Exercise": "CAP 1.2 `Exercise` value: CAP status for operational state of this message.",
+                      "System": "CAP 1.2 `System` value: CAP status for operational state of this message.",
+                      "Test": "CAP 1.2 `Test` value: CAP status for operational state of this message.",
+                      "Draft": "CAP 1.2 `Draft` value: CAP status for operational state of this message."
+                    }
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "description": "CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.",
+                    "enum": [
+                      "Alert",
+                      "Update",
+                      "Cancel",
+                      "Ack",
+                      "Error"
+                    ],
+                    "descriptions": {
+                      "Alert": "CAP 1.2 `Alert` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.",
+                      "Update": "CAP 1.2 `Update` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.",
+                      "Cancel": "CAP 1.2 `Cancel` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.",
+                      "Ack": "CAP 1.2 `Ack` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.",
+                      "Error": "CAP 1.2 `Error` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error."
+                    },
+                    "altnames": {
+                      "xml": "msgType",
+                      "json": "messageType"
+                    }
+                  },
+                  "source": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "CAP source: particular source of this alert message when supplied separately from sender. Null when omitted."
+                  },
+                  "scope": {
+                    "type": "string",
+                    "description": "CAP scope indicating intended distribution: Public, Restricted, or Private.",
+                    "enum": [
+                      "Public",
+                      "Restricted",
+                      "Private"
+                    ],
+                    "descriptions": {
+                      "Public": "CAP 1.2 `Public` value: CAP scope indicating intended distribution: Public, Restricted, or Private.",
+                      "Restricted": "CAP 1.2 `Restricted` value: CAP scope indicating intended distribution: Public, Restricted, or Private.",
+                      "Private": "CAP 1.2 `Private` value: CAP scope indicating intended distribution: Public, Restricted, or Private."
+                    }
+                  },
+                  "restriction": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "CAP restriction text describing distribution limits for Restricted scope messages. Null when not applicable."
+                  },
+                  "addresses": {
+                    "type": "array",
+                    "description": "CAP addresses list for Private messages, split into individual address tokens. Empty for Public and most Restricted alerts.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "code": {
+                    "type": "array",
+                    "description": "CAP code elements and code-like provider values preserved as name/value pairs. Used for source-specific routing or profile markers.",
+                    "items": {
+                      "type": "object",
+                      "name": "ValuePair",
+                      "description": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                      "required": [
+                        "value_name",
+                        "value"
+                      ],
+                      "properties": {
+                        "value_name": {
+                          "type": "string",
+                          "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
+                          "altnames": {
+                            "xml": "valueName",
+                            "json": "valueName"
+                          }
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                        }
+                      }
+                    }
+                  },
+                  "note": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "CAP note: message note intended for alert handling, not necessarily public display. Null when omitted."
+                  },
+                  "references": {
+                    "type": "array",
+                    "description": "CAP references entries identifying related prior messages that this message updates or cancels. Preserved as strings; not used as the CloudEvent key.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "incidents": {
+                    "type": "array",
+                    "description": "CAP incidents identifiers listing incident(s) this alert message concerns. Empty when omitted.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "info": {
+                    "type": "array",
+                    "description": "All CAP info blocks attached to the alert. Multiple blocks are common for multilingual or multi-instruction alerts and are preserved losslessly.",
+                    "items": {
+                      "type": "object",
+                      "name": "CapInfo",
+                      "description": "CAP 1.2 info block containing audience-facing alert content in a specific language and for one set of areas/resources. CAP permits multiple info blocks, commonly for multilingual MeteoAlarm alerts or updated instructions; the feeder preserves all blocks in order.",
+                      "properties": {
+                        "language": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP language code for this info block, normally an RFC 3066/BCP 47 language tag such as en-US, de-DE, fr, or nl. Null when omitted.",
+                          "altnames": {
+                            "xml": "language",
+                            "json": "language"
+                          }
+                        },
+                        "category": {
+                          "type": "array",
+                          "description": "CAP category list classifying the subject domain of the alert. CAP 1.2 defines values such as Met, Safety, Fire, Health, Env, Transport, Infra, CBRNE, and Other.",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "Geo",
+                              "Met",
+                              "Safety",
+                              "Security",
+                              "Rescue",
+                              "Fire",
+                              "Health",
+                              "Env",
+                              "Transport",
+                              "Infra",
+                              "CBRNE",
+                              "Other"
+                            ],
+                            "descriptions": {
+                              "Geo": "CAP 1.2 category `Geo` value for classifying the subject domain of an alert info block.",
+                              "Met": "CAP 1.2 category `Met` value for classifying the subject domain of an alert info block.",
+                              "Safety": "CAP 1.2 category `Safety` value for classifying the subject domain of an alert info block.",
+                              "Security": "CAP 1.2 category `Security` value for classifying the subject domain of an alert info block.",
+                              "Rescue": "CAP 1.2 category `Rescue` value for classifying the subject domain of an alert info block.",
+                              "Fire": "CAP 1.2 category `Fire` value for classifying the subject domain of an alert info block.",
+                              "Health": "CAP 1.2 category `Health` value for classifying the subject domain of an alert info block.",
+                              "Env": "CAP 1.2 category `Env` value for classifying the subject domain of an alert info block.",
+                              "Transport": "CAP 1.2 category `Transport` value for classifying the subject domain of an alert info block.",
+                              "Infra": "CAP 1.2 category `Infra` value for classifying the subject domain of an alert info block.",
+                              "CBRNE": "CAP 1.2 category `CBRNE` value for classifying the subject domain of an alert info block.",
+                              "Other": "CAP 1.2 category `Other` value for classifying the subject domain of an alert info block."
+                            }
+                          }
+                        },
+                        "event": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP event: human-readable event type such as Flood Warning, Wind, Thunderstorm, or DWD warning label. Null only for incomplete upstream records."
+                        },
+                        "response_type": {
+                          "type": "array",
+                          "description": "CAP responseType values indicating recommended response actions. CAP 1.2 defines Shelter, Evacuate, Prepare, Execute, Avoid, Monitor, Assess, AllClear, and None.",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "Shelter",
+                              "Evacuate",
+                              "Prepare",
+                              "Execute",
+                              "Avoid",
+                              "Monitor",
+                              "Assess",
+                              "AllClear",
+                              "None"
+                            ],
+                            "descriptions": {
+                              "Shelter": "CAP 1.2 responseType `Shelter` value describing a recommended protective action.",
+                              "Evacuate": "CAP 1.2 responseType `Evacuate` value describing a recommended protective action.",
+                              "Prepare": "CAP 1.2 responseType `Prepare` value describing a recommended protective action.",
+                              "Execute": "CAP 1.2 responseType `Execute` value describing a recommended protective action.",
+                              "Avoid": "CAP 1.2 responseType `Avoid` value describing a recommended protective action.",
+                              "Monitor": "CAP 1.2 responseType `Monitor` value describing a recommended protective action.",
+                              "Assess": "CAP 1.2 responseType `Assess` value describing a recommended protective action.",
+                              "AllClear": "CAP 1.2 responseType `AllClear` value describing a recommended protective action.",
+                              "None": "CAP 1.2 responseType `None` value describing a recommended protective action."
+                            }
+                          },
+                          "altnames": {
+                            "xml": "responseType",
+                            "json": "responseType"
+                          }
+                        },
+                        "urgency": {
+                          "type": "string",
+                          "description": "CAP urgency indicating how soon responsive action should be taken.",
+                          "enum": [
+                            "Immediate",
+                            "Expected",
+                            "Future",
+                            "Past",
+                            "Unknown"
+                          ],
+                          "descriptions": {
+                            "Immediate": "CAP 1.2 `Immediate` value: CAP urgency indicating how soon responsive action should be taken.",
+                            "Expected": "CAP 1.2 `Expected` value: CAP urgency indicating how soon responsive action should be taken.",
+                            "Future": "CAP 1.2 `Future` value: CAP urgency indicating how soon responsive action should be taken.",
+                            "Past": "CAP 1.2 `Past` value: CAP urgency indicating how soon responsive action should be taken.",
+                            "Unknown": "CAP 1.2 `Unknown` value: CAP urgency indicating how soon responsive action should be taken."
+                          }
+                        },
+                        "severity": {
+                          "type": "string",
+                          "description": "CAP severity indicating the intensity of the impact.",
+                          "enum": [
+                            "Extreme",
+                            "Severe",
+                            "Moderate",
+                            "Minor",
+                            "Unknown"
+                          ],
+                          "descriptions": {
+                            "Extreme": "CAP 1.2 `Extreme` value: CAP severity indicating the intensity of the impact.",
+                            "Severe": "CAP 1.2 `Severe` value: CAP severity indicating the intensity of the impact.",
+                            "Moderate": "CAP 1.2 `Moderate` value: CAP severity indicating the intensity of the impact.",
+                            "Minor": "CAP 1.2 `Minor` value: CAP severity indicating the intensity of the impact.",
+                            "Unknown": "CAP 1.2 `Unknown` value: CAP severity indicating the intensity of the impact."
+                          }
+                        },
+                        "certainty": {
+                          "type": "string",
+                          "description": "CAP certainty indicating confidence in the event.",
+                          "enum": [
+                            "Observed",
+                            "Likely",
+                            "Possible",
+                            "Unlikely",
+                            "Unknown"
+                          ],
+                          "descriptions": {
+                            "Observed": "CAP 1.2 `Observed` value: CAP certainty indicating confidence in the event.",
+                            "Likely": "CAP 1.2 `Likely` value: CAP certainty indicating confidence in the event.",
+                            "Possible": "CAP 1.2 `Possible` value: CAP certainty indicating confidence in the event.",
+                            "Unlikely": "CAP 1.2 `Unlikely` value: CAP certainty indicating confidence in the event.",
+                            "Unknown": "CAP 1.2 `Unknown` value: CAP certainty indicating confidence in the event."
+                          }
+                        },
+                        "audience": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP audience: intended audience for the alert information, if supplied by the sender."
+                        },
+                        "event_code": {
+                          "type": "array",
+                          "description": "CAP eventCode pairs. Used by DWD and other authorities to publish warning codes; preserved alongside any typed convenience fields.",
+                          "items": {
+                            "type": "object",
+                            "name": "ValuePair",
+                            "description": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                            "required": [
+                              "value_name",
+                              "value"
+                            ],
+                            "properties": {
+                              "value_name": {
+                                "type": "string",
+                                "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
+                                "altnames": {
+                                  "xml": "valueName",
+                                  "json": "valueName"
+                                }
+                              },
+                              "value": {
+                                "type": "string",
+                                "description": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                              }
+                            }
+                          },
+                          "altnames": {
+                            "xml": "eventCode",
+                            "json": "eventCode"
+                          }
+                        },
+                        "effective": {
+                          "type": [
+                            "null",
+                            "datetime"
+                          ],
+                          "description": "CAP effective date/time when this info block becomes effective. Null when omitted."
+                        },
+                        "onset": {
+                          "type": [
+                            "null",
+                            "datetime"
+                          ],
+                          "description": "CAP onset date/time when the hazard is expected to begin. Null when unknown or omitted."
+                        },
+                        "expires": {
+                          "type": [
+                            "null",
+                            "datetime"
+                          ],
+                          "description": "CAP expires date/time after which the info block should be considered stale. Null when open-ended or omitted."
+                        },
+                        "sender_name": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP senderName: human-readable issuing organization name such as National Weather Service or Deutscher Wetterdienst.",
+                          "altnames": {
+                            "xml": "senderName",
+                            "json": "senderName"
+                          }
+                        },
+                        "headline": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP headline: short public headline for display and alert summaries. Null when omitted."
+                        },
+                        "description": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP description: detailed public description of the hazard, impacts, and affected area. Null when omitted."
+                        },
+                        "instruction": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP instruction: recommended protective actions. Null when omitted."
+                        },
+                        "web": {
+                          "type": [
+                            "null",
+                            "uri"
+                          ],
+                          "description": "CAP web: public URL for additional information about this alert. Null when omitted."
+                        },
+                        "contact": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "CAP contact: contact information for the issuer. Null when omitted."
+                        },
+                        "parameter": {
+                          "type": "array",
+                          "description": "CAP parameter name/value pairs. This is the standardized CAP extension surface. NWS VTEC/SAME/UGC/eventCode, MeteoAlarm awareness_level/awareness_type, DWD event codes, and any other source-specific values are also preserved here even when surfaced as typed fields.",
+                          "items": {
+                            "type": "object",
+                            "name": "ValuePair",
+                            "description": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                            "required": [
+                              "value_name",
+                              "value"
+                            ],
+                            "properties": {
+                              "value_name": {
+                                "type": "string",
+                                "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
+                                "altnames": {
+                                  "xml": "valueName",
+                                  "json": "valueName"
+                                }
+                              },
+                              "value": {
+                                "type": "string",
+                                "description": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                              }
+                            }
+                          }
+                        },
+                        "resource": {
+                          "type": "array",
+                          "description": "CAP resource blocks attached to this info block.",
+                          "items": {
+                            "type": "object",
+                            "name": "CapResource",
+                            "description": "CAP 1.2 info/resource object describing an external resource attached to an alert, such as an image, audio file, document, or dereferenced binary payload. All standard CAP resource children are represented so alert attachments can be preserved.",
+                            "properties": {
+                              "resource_desc": {
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "description": "CAP resourceDesc: human-readable description of the resource. Null when omitted by the sender.",
+                                "altnames": {
+                                  "xml": "resourceDesc",
+                                  "json": "resourceDesc"
+                                }
+                              },
+                              "mime_type": {
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "description": "CAP mimeType: media type of the resource such as image/png or application/pdf. Null when omitted.",
+                                "altnames": {
+                                  "xml": "mimeType",
+                                  "json": "mimeType"
+                                }
+                              },
+                              "size": {
+                                "type": [
+                                  "null",
+                                  "integer"
+                                ],
+                                "description": "CAP size: approximate resource size in octets. Null when the upstream feed omits size.",
+                                "altnames": {
+                                  "xml": "size",
+                                  "json": "size"
+                                }
+                              },
+                              "uri": {
+                                "type": [
+                                  "null",
+                                  "uri"
+                                ],
+                                "description": "CAP uri: URI where the resource can be retrieved. Null when the resource is embedded through derefUri only.",
+                                "altnames": {
+                                  "xml": "uri",
+                                  "json": "uri"
+                                }
+                              },
+                              "deref_uri": {
+                                "type": [
+                                  "null",
+                                  "binary"
+                                ],
+                                "description": "CAP derefUri: base64-encoded inline resource payload. Preserved as text and null when omitted; consumers should decode according to mime_type.",
+                                "altnames": {
+                                  "xml": "derefUri",
+                                  "json": "derefUri"
+                                }
+                              },
+                              "digest": {
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "description": "CAP digest: digest value for resource integrity verification, normally a SHA-1 hash in CAP 1.2 feeds. Null when omitted.",
+                                "altnames": {
+                                  "xml": "digest",
+                                  "json": "digest"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "area": {
+                          "type": "array",
+                          "description": "CAP area blocks attached to this info block. Multi-area alerts preserve all areas in upstream order.",
+                          "items": {
+                            "type": "object",
+                            "name": "CapArea",
+                            "description": "CAP 1.2 info/area object describing one affected geographic area. It preserves textual descriptions, polygons, circles, geocodes, and altitude/ceiling constraints so consumers can display and spatially filter alerts without re-fetching the original XML.",
+                            "properties": {
+                              "area_desc": {
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "description": "CAP areaDesc: text description of the affected area, often a county, forecast zone, MeteoAlarm region, or DWD commune list. Null only for malformed upstream records.",
+                                "altnames": {
+                                  "xml": "areaDesc",
+                                  "json": "areaDesc"
+                                }
+                              },
+                              "polygon": {
+                                "type": "array",
+                                "description": "CAP polygon elements as whitespace-delimited latitude,longitude coordinate strings. Multiple polygons are preserved in upstream order.",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "circle": {
+                                "type": "array",
+                                "description": "CAP circle elements as latitude,longitude radius strings. Multiple circles are preserved in upstream order.",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "geocode": {
+                                "type": "array",
+                                "description": "CAP geocode name/value pairs. This is where NWS SAME and UGC zone codes, MeteoAlarm EMMA/NUTS regions, and DWD regional codes are preserved losslessly.",
+                                "items": {
+                                  "type": "object",
+                                  "name": "ValuePair",
+                                  "description": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                                  "required": [
+                                    "value_name",
+                                    "value"
+                                  ],
+                                  "properties": {
+                                    "value_name": {
+                                      "type": "string",
+                                      "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
+                                      "altnames": {
+                                        "xml": "valueName",
+                                        "json": "valueName"
+                                      }
+                                    },
+                                    "value": {
+                                      "type": "string",
+                                      "description": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                                    }
+                                  }
+                                }
+                              },
+                              "altitude": {
+                                "type": [
+                                  "null",
+                                  "double"
+                                ],
+                                "description": "CAP altitude: lower altitude bound for the area in feet above WGS-84 datum per CAP 1.2. Null when not supplied.",
+                                "altnames": {
+                                  "xml": "altitude",
+                                  "json": "altitude"
+                                }
+                              },
+                              "ceiling": {
+                                "type": [
+                                  "null",
+                                  "double"
+                                ],
+                                "description": "CAP ceiling: upper altitude bound for the area in feet above WGS-84 datum per CAP 1.2. Null when not supplied.",
+                                "altnames": {
+                                  "xml": "ceiling",
+                                  "json": "ceiling"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "ends": {
+                          "type": [
+                            "null",
+                            "datetime"
+                          ],
+                          "description": "NWS CAP-equivalent ends timestamp indicating the expected end of the event when distinct from CAP expires. Native CAP XML does not define ends, so this is null unless supplied by JSON-derived sources."
+                        }
+                      }
+                    }
+                  },
+                  "provider_url": {
+                    "type": "uri",
+                    "description": "URL of the configured feed or detail resource from which this alert was acquired. Used as CloudEvent source template and for traceability."
+                  },
+                  "raw_cap_xml": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Original CAP XML document text when the source supplied XML. Null for JSON-only sources such as api.weather.gov active alerts unless a raw CAP detail URL was fetched."
+                  },
+                  "area_desc": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Convenience copy of the first info/area/areaDesc or NWS areaDesc used by existing bespoke feeders. The complete area list is still preserved under info[].area[]."
+                  },
+                  "same_codes": {
+                    "type": "array",
+                    "description": "Convenience extraction of NWS SAME geocodes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ugc_codes": {
+                    "type": "array",
+                    "description": "Convenience extraction of NWS UGC zone codes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "vtec": {
+                    "type": "array",
+                    "description": "Convenience extraction of NWS VTEC tracking strings from CAP parameters. The original VTEC values are also present in info[].parameter[].",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "awareness_level": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Convenience extraction of MeteoAlarm awareness_level CAP parameter. The original name/value pair is also preserved in info[].parameter[]."
+                  },
+                  "awareness_type": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Convenience extraction of MeteoAlarm awareness_type CAP parameter. The original name/value pair is also preserved in info[].parameter[]."
+                  },
+                  "event_type": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Normalized lower-case event or hazard token for routing and legacy feeder compatibility, derived from CAP info.event when available."
+                  },
+                  "state": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Provider-specific state, territory, country, or administrative routing token when present in the upstream feed. Null when not derivable."
+                  },
+                  "affected_zones": {
+                    "type": "array",
+                    "description": "NWS API affectedZones URI list and equivalent zone references from JSON CAP-equivalent sources. CAP XML feeds generally express the same information as area/geocode entries; this array preserves JSON-native zone URI references for lossless future folds.",
+                    "items": {
+                      "type": "uri"
+                    }
+                  },
+                  "raw_source_json": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Raw upstream JSON object serialized as compact JSON when the source is a CAP-equivalent JSON API such as api.weather.gov. Null for native CAP XML feeds; retained as an escape hatch so future bespoke folds can prove no source-specific field was lost."
+                  }
+                },
+                "namespace": "org.oasis.cap.alerts"
+              }
+            }
+          }
+        },
+        "org.oasis.cap.alerts.CapZone": {
+          "name": "CapZone",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/oasis/cap/alerts/CapZone/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "CapZone",
+                "type": "object",
+                "description": "Reference event for an alerting zone, forecast zone, MeteoAlarm region, or other area catalog entry exposed by a configured CAP source. The feeder emits zone reference data before alerts when the source exposes metadata such as api.weather.gov /zones, enabling consumers to interpret alert geocodes temporally.",
+                "required": [
+                  "cap_source_id",
+                  "zone_id",
+                  "provider_url"
+                ],
+                "properties": {
+                  "cap_source_id": {
+                    "type": "string",
+                    "description": "Configuration-assigned stable source identifier qualifying zone identifiers across agencies and used as the first subject/key segment."
+                  },
+                  "zone_id": {
+                    "type": "string",
+                    "description": "Stable upstream zone or region identifier, such as an NWS UGC zone code, county zone id, MeteoAlarm region code, or DWD area code."
+                  },
+                  "name": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Human-readable zone or region name supplied by the source metadata endpoint. Null when the source exposes only codes."
+                  },
+                  "zone_type": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Provider zone type or category, for example NWS public, marine, county, fire, forecast, or MeteoAlarm region class."
+                  },
+                  "state": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "State, country, or regional routing token associated with the zone, if supplied by the metadata endpoint."
+                  },
+                  "forecast_office": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Responsible office or authority URL/code for this zone, such as an NWS Weather Forecast Office. Null when not supplied."
+                  },
+                  "time_zones": {
+                    "type": "array",
+                    "description": "IANA time-zone names associated with the zone when supplied by the metadata endpoint.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "geometry": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "GeoJSON geometry serialized as compact JSON text when supplied by the metadata endpoint. Null when no geometry is published or when disabled for payload-size reasons."
+                  },
+                  "provider_url": {
+                    "type": "uri",
+                    "description": "Metadata endpoint URL from which this zone reference was acquired. Used as CloudEvent source template and traceability link."
+                  }
+                },
+                "namespace": "org.oasis.cap.alerts"
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.avro": {
+      "schemas": {
+        "org.oasis.cap.alerts.CapAlert": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "CapAlert",
+                "namespace": "org.oasis.cap.alerts",
+                "doc": "Generalized Common Alerting Protocol (CAP) 1.2 alert message. It preserves the full alert -> info[] -> area[]/resource[] CAP hierarchy plus standardized CAP extension arrays (eventCode, parameter, geocode) so national weather and emergency alert feeds can be represented losslessly. Convenience fields mirror typed fields emitted by existing DWD, MeteoAlarm, NOAA NWS, and NWS Alerts bespoke feeders while keeping the original CAP name/value pairs.",
+                "fields": [
+                  {
+                    "name": "cap_source_id",
+                    "type": "string",
+                    "doc": "Configuration-assigned stable source identifier qualifying CAP alert identifiers across agencies. Examples: nws-us, meteoalarm-belgium, dwd-germany. This value is the first segment of the CloudEvent subject and Kafka key."
+                  },
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "CAP identifier assigned by the sender to this alert message. Unique only within the sender/source, so the feeder qualifies it with cap_source_id for keys. Updates and cancellations use their own identifier; the CAP references field points to prior messages."
+                  },
+                  {
+                    "name": "sender",
+                    "type": "string",
+                    "doc": "CAP sender identifier for the originating alerting authority, such as w-nws.webmaster@noaa.gov or opendata@dwd.de."
+                  },
+                  {
+                    "name": "sent",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "CAP sent timestamp when the message was issued by the sender, parsed as an ISO 8601 datetime."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "doc": "CAP status for operational state of this message."
+                  },
+                  {
+                    "name": "msg_type",
+                    "type": "string",
+                    "doc": "CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error."
+                  },
+                  {
+                    "name": "source",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "CAP source: particular source of this alert message when supplied separately from sender. Null when omitted.",
+                    "default": null
+                  },
+                  {
+                    "name": "scope",
+                    "type": "string",
+                    "doc": "CAP scope indicating intended distribution: Public, Restricted, or Private."
+                  },
+                  {
+                    "name": "restriction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "CAP restriction text describing distribution limits for Restricted scope messages. Null when not applicable.",
+                    "default": null
+                  },
+                  {
+                    "name": "addresses",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "CAP addresses list for Private messages, split into individual address tokens. Empty for Public and most Restricted alerts.",
+                    "default": []
+                  },
+                  {
+                    "name": "code",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "AlertCodePair",
+                        "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                        "fields": [
+                          {
+                            "name": "value_name",
+                            "type": "string",
+                            "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                          },
+                          {
+                            "name": "value",
+                            "type": "string",
+                            "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "CAP code elements and code-like provider values preserved as name/value pairs. Used for source-specific routing or profile markers.",
+                    "default": []
+                  },
+                  {
+                    "name": "note",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "CAP note: message note intended for alert handling, not necessarily public display. Null when omitted.",
+                    "default": null
+                  },
+                  {
+                    "name": "references",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "CAP references entries identifying related prior messages that this message updates or cancels. Preserved as strings; not used as the CloudEvent key.",
+                    "default": []
+                  },
+                  {
+                    "name": "incidents",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "CAP incidents identifiers listing incident(s) this alert message concerns. Empty when omitted.",
+                    "default": []
+                  },
+                  {
+                    "name": "affected_zones",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "NWS API affectedZones URI list and equivalent zone references from JSON CAP-equivalent sources. CAP XML feeds generally express the same information as area/geocode entries; this array preserves JSON-native zone URI references for lossless future folds.",
+                    "default": []
+                  },
+                  {
+                    "name": "raw_source_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Raw upstream JSON object serialized as compact JSON when the source is a CAP-equivalent JSON API such as api.weather.gov. Null for native CAP XML feeds; retained as an escape hatch so future bespoke folds can prove no source-specific field was lost.",
+                    "default": null
+                  },
+                  {
+                    "name": "info",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "CapInfo",
+                        "doc": "CAP 1.2 info block containing audience-facing alert content in a specific language and for one set of areas/resources. CAP permits multiple info blocks, commonly for multilingual MeteoAlarm alerts or updated instructions; the feeder preserves all blocks in order.",
+                        "fields": [
+                          {
+                            "name": "language",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP language code for this info block, normally an RFC 3066/BCP 47 language tag such as en-US, de-DE, fr, or nl. Null when omitted."
+                          },
+                          {
+                            "name": "category",
+                            "type": {
+                              "type": "array",
+                              "items": "string"
+                            },
+                            "default": [],
+                            "doc": "CAP category list classifying the subject domain of the alert. CAP 1.2 defines values such as Met, Safety, Fire, Health, Env, Transport, Infra, CBRNE, and Other."
+                          },
+                          {
+                            "name": "event",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP event: human-readable event type such as Flood Warning, Wind, Thunderstorm, or DWD warning label. Null only for incomplete upstream records."
+                          },
+                          {
+                            "name": "response_type",
+                            "type": {
+                              "type": "array",
+                              "items": "string"
+                            },
+                            "default": [],
+                            "doc": "CAP responseType values indicating recommended response actions. CAP 1.2 defines Shelter, Evacuate, Prepare, Execute, Avoid, Monitor, Assess, AllClear, and None."
+                          },
+                          {
+                            "name": "urgency",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP urgency indicating how soon responsive action should be taken."
+                          },
+                          {
+                            "name": "severity",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP severity indicating the intensity of the impact."
+                          },
+                          {
+                            "name": "certainty",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP certainty indicating confidence in the event."
+                          },
+                          {
+                            "name": "audience",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP audience: intended audience for the alert information, if supplied by the sender."
+                          },
+                          {
+                            "name": "event_code",
+                            "type": {
+                              "type": "array",
+                              "items": {
+                                "type": "record",
+                                "name": "InfoEventCodePair",
+                                "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                                "fields": [
+                                  {
+                                    "name": "value_name",
+                                    "type": "string",
+                                    "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                                  },
+                                  {
+                                    "name": "value",
+                                    "type": "string",
+                                    "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                                  }
+                                ]
+                              }
+                            },
+                            "default": [],
+                            "doc": "CAP eventCode pairs. Used by DWD and other authorities to publish warning codes; preserved alongside any typed convenience fields."
+                          },
+                          {
+                            "name": "effective",
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "default": null,
+                            "doc": "CAP effective date/time when this info block becomes effective. Null when omitted."
+                          },
+                          {
+                            "name": "onset",
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "default": null,
+                            "doc": "CAP onset date/time when the hazard is expected to begin. Null when unknown or omitted."
+                          },
+                          {
+                            "name": "expires",
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "default": null,
+                            "doc": "CAP expires date/time after which the info block should be considered stale. Null when open-ended or omitted."
+                          },
+                          {
+                            "name": "ends",
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "doc": "NWS CAP-equivalent ends timestamp indicating the expected end of the event when distinct from CAP expires. Native CAP XML does not define ends, so this is null unless supplied by JSON-derived sources.",
+                            "default": null
+                          },
+                          {
+                            "name": "sender_name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP senderName: human-readable issuing organization name such as National Weather Service or Deutscher Wetterdienst."
+                          },
+                          {
+                            "name": "headline",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP headline: short public headline for display and alert summaries. Null when omitted."
+                          },
+                          {
+                            "name": "description",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP description: detailed public description of the hazard, impacts, and affected area. Null when omitted."
+                          },
+                          {
+                            "name": "instruction",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP instruction: recommended protective actions. Null when omitted."
+                          },
+                          {
+                            "name": "web",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP web: public URL for additional information about this alert. Null when omitted."
+                          },
+                          {
+                            "name": "contact",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "CAP contact: contact information for the issuer. Null when omitted."
+                          },
+                          {
+                            "name": "parameter",
+                            "type": {
+                              "type": "array",
+                              "items": {
+                                "type": "record",
+                                "name": "InfoParameterPair",
+                                "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                                "fields": [
+                                  {
+                                    "name": "value_name",
+                                    "type": "string",
+                                    "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                                  },
+                                  {
+                                    "name": "value",
+                                    "type": "string",
+                                    "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                                  }
+                                ]
+                              }
+                            },
+                            "default": [],
+                            "doc": "CAP parameter name/value pairs. This is the standardized CAP extension surface. NWS VTEC/SAME/UGC/eventCode, MeteoAlarm awareness_level/awareness_type, DWD event codes, and any other source-specific values are also preserved here even when surfaced as typed fields."
+                          },
+                          {
+                            "name": "resource",
+                            "type": {
+                              "type": "array",
+                              "items": {
+                                "type": "record",
+                                "name": "CapResource",
+                                "doc": "CAP 1.2 info/resource object describing an external resource attached to an alert, such as an image, audio file, document, or dereferenced binary payload. All standard CAP resource children are represented so alert attachments can be preserved.",
+                                "fields": [
+                                  {
+                                    "name": "resource_desc",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP resourceDesc: human-readable description of the resource. Null when omitted by the sender."
+                                  },
+                                  {
+                                    "name": "mime_type",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP mimeType: media type of the resource such as image/png or application/pdf. Null when omitted."
+                                  },
+                                  {
+                                    "name": "size",
+                                    "type": [
+                                      "null",
+                                      "int"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP size: approximate resource size in octets. Null when the upstream feed omits size."
+                                  },
+                                  {
+                                    "name": "uri",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP uri: URI where the resource can be retrieved. Null when the resource is embedded through derefUri only."
+                                  },
+                                  {
+                                    "name": "deref_uri",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP derefUri: base64-encoded inline resource payload. Preserved as text and null when omitted; consumers should decode according to mime_type."
+                                  },
+                                  {
+                                    "name": "digest",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP digest: digest value for resource integrity verification, normally a SHA-1 hash in CAP 1.2 feeds. Null when omitted."
+                                  }
+                                ]
+                              }
+                            },
+                            "default": [],
+                            "doc": "CAP resource blocks attached to this info block."
+                          },
+                          {
+                            "name": "area",
+                            "type": {
+                              "type": "array",
+                              "items": {
+                                "type": "record",
+                                "name": "CapArea",
+                                "doc": "CAP 1.2 info/area object describing one affected geographic area. It preserves textual descriptions, polygons, circles, geocodes, and altitude/ceiling constraints so consumers can display and spatially filter alerts without re-fetching the original XML.",
+                                "fields": [
+                                  {
+                                    "name": "area_desc",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP areaDesc: text description of the affected area, often a county, forecast zone, MeteoAlarm region, or DWD commune list. Null only for malformed upstream records."
+                                  },
+                                  {
+                                    "name": "polygon",
+                                    "type": {
+                                      "type": "array",
+                                      "items": "string"
+                                    },
+                                    "default": [],
+                                    "doc": "CAP polygon elements as whitespace-delimited latitude,longitude coordinate strings. Multiple polygons are preserved in upstream order."
+                                  },
+                                  {
+                                    "name": "circle",
+                                    "type": {
+                                      "type": "array",
+                                      "items": "string"
+                                    },
+                                    "default": [],
+                                    "doc": "CAP circle elements as latitude,longitude radius strings. Multiple circles are preserved in upstream order."
+                                  },
+                                  {
+                                    "name": "geocode",
+                                    "type": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "record",
+                                        "name": "AreaGeocodePair",
+                                        "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless.",
+                                        "fields": [
+                                          {
+                                            "name": "value_name",
+                                            "type": "string",
+                                            "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                                          },
+                                          {
+                                            "name": "value",
+                                            "type": "string",
+                                            "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "default": [],
+                                    "doc": "CAP geocode name/value pairs. This is where NWS SAME and UGC zone codes, MeteoAlarm EMMA/NUTS regions, and DWD regional codes are preserved losslessly."
+                                  },
+                                  {
+                                    "name": "altitude",
+                                    "type": [
+                                      "null",
+                                      "double"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP altitude: lower altitude bound for the area in feet above WGS-84 datum per CAP 1.2. Null when not supplied."
+                                  },
+                                  {
+                                    "name": "ceiling",
+                                    "type": [
+                                      "null",
+                                      "double"
+                                    ],
+                                    "default": null,
+                                    "doc": "CAP ceiling: upper altitude bound for the area in feet above WGS-84 datum per CAP 1.2. Null when not supplied."
+                                  }
+                                ]
+                              }
+                            },
+                            "default": [],
+                            "doc": "CAP area blocks attached to this info block. Multi-area alerts preserve all areas in upstream order."
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "All CAP info blocks attached to the alert. Multiple blocks are common for multilingual or multi-instruction alerts and are preserved losslessly.",
+                    "default": []
+                  },
+                  {
+                    "name": "provider_url",
+                    "type": "string",
+                    "doc": "URL of the configured feed or detail resource from which this alert was acquired. Used as CloudEvent source template and for traceability."
+                  },
+                  {
+                    "name": "raw_cap_xml",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Original CAP XML document text when the source supplied XML. Null for JSON-only sources such as api.weather.gov active alerts unless a raw CAP detail URL was fetched.",
+                    "default": null
+                  },
+                  {
+                    "name": "area_desc",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Convenience copy of the first info/area/areaDesc or NWS areaDesc used by existing bespoke feeders. The complete area list is still preserved under info[].area[].",
+                    "default": null
+                  },
+                  {
+                    "name": "same_codes",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Convenience extraction of NWS SAME geocodes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays.",
+                    "default": []
+                  },
+                  {
+                    "name": "ugc_codes",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Convenience extraction of NWS UGC zone codes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays.",
+                    "default": []
+                  },
+                  {
+                    "name": "vtec",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Convenience extraction of NWS VTEC tracking strings from CAP parameters. The original VTEC values are also present in info[].parameter[].",
+                    "default": []
+                  },
+                  {
+                    "name": "awareness_level",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Convenience extraction of MeteoAlarm awareness_level CAP parameter. The original name/value pair is also preserved in info[].parameter[].",
+                    "default": null
+                  },
+                  {
+                    "name": "awareness_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Convenience extraction of MeteoAlarm awareness_type CAP parameter. The original name/value pair is also preserved in info[].parameter[].",
+                    "default": null
+                  },
+                  {
+                    "name": "event_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized lower-case event or hazard token for routing and legacy feeder compatibility, derived from CAP info.event when available.",
+                    "default": null
+                  },
+                  {
+                    "name": "state",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-specific state, territory, country, or administrative routing token when present in the upstream feed. Null when not derivable.",
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "org.oasis.cap.alerts.CapZone": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "CapZone",
+                "namespace": "org.oasis.cap.alerts",
+                "doc": "Reference event for an alerting zone, forecast zone, MeteoAlarm region, or other area catalog entry exposed by a configured CAP source. The feeder emits zone reference data before alerts when the source exposes metadata such as api.weather.gov /zones, enabling consumers to interpret alert geocodes temporally.",
+                "fields": [
+                  {
+                    "name": "cap_source_id",
+                    "type": "string",
+                    "doc": "Configuration-assigned stable source identifier qualifying zone identifiers across agencies and used as the first subject/key segment."
+                  },
+                  {
+                    "name": "zone_id",
+                    "type": "string",
+                    "doc": "Stable upstream zone or region identifier, such as an NWS UGC zone code, county zone id, MeteoAlarm region code, or DWD area code."
+                  },
+                  {
+                    "name": "name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Human-readable zone or region name supplied by the source metadata endpoint. Null when the source exposes only codes."
+                  },
+                  {
+                    "name": "zone_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Provider zone type or category, for example NWS public, marine, county, fire, forecast, or MeteoAlarm region class."
+                  },
+                  {
+                    "name": "state",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "State, country, or regional routing token associated with the zone, if supplied by the metadata endpoint."
+                  },
+                  {
+                    "name": "forecast_office",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Responsible office or authority URL/code for this zone, such as an NWS Weather Forecast Office. Null when not supplied."
+                  },
+                  {
+                    "name": "time_zones",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "default": [],
+                    "doc": "IANA time-zone names associated with the zone when supplied by the metadata endpoint."
+                  },
+                  {
+                    "name": "geometry",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "GeoJSON geometry serialized as compact JSON text when supplied by the metadata endpoint. Null when no geometry is published or when disabled for payload-size reasons."
+                  },
+                  {
+                    "name": "provider_url",
+                    "type": "string",
+                    "doc": "Metadata endpoint URL from which this zone reference was acquired. Used as CloudEvent source template and traceability link."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Generalized CAP 1.2 alert feeder for key-less public weather and emergency alert feeds. It supports configurable CAP XML/Atom/JSON sources and emits lossless alert and zone-reference CloudEvents over Kafka, MQTT, and AMQP.",
+  "documentation": {
+    "description": "Source documentation for the generalized CAP alerts feeder.",
+    "url": "README.md"
+  }
+}

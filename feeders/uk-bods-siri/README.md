@@ -1,172 +1,116 @@
 <!-- source-hero:begin -->
+
 <table width="100%"><tr>
 <td width="80" valign="middle" align="center">
-<img src="https://flagcdn.com/64x48/gb.png" alt="England" width="64" height="48"><br>
-<sub><b>England</b></sub>
+
+<img src="https://flagcdn.com/64x48/gb.png" alt="United Kingdom" width="64" height="48"><br>
+
+<sub><b>United Kingdom</b></sub>
+
 </td>
+
 <td valign="middle">
 
 # UK BODS SIRI
 
-<sub>28,000+ buses · Kafka · MQTT · AMQP · <a href="https://data.bus-data.dft.gov.uk/">upstream</a> · <a href="https://www.gov.uk/government/publications/technical-guidance-publishing-location-data-using-the-bus-open-data-service-siri-vm">API docs</a></sub>
+<sub>England bus AVL · BODS SIRI-VM · config-only wrapper over <code>siri</code> · <a href="https://www.bus-data.dft.gov.uk/">upstream</a> · <a href="https://data.bus-data.dft.gov.uk/avl/download/bulk_archive">bulk archive</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
-&nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
-&nbsp;
-<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
-> England — Department for Transport Bus Open Data Service AVL archive (requires free API key)
+&nbsp;
+
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+
+> England — BODS bulk AVL VehicleMonitoring via the generalized `siri` feeder
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#uk-bods-siri) &nbsp;·&nbsp;
+
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#uk-bods-siri/fabric-notebook) &nbsp;·&nbsp;
+
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+
 [🗄️ **KQL schema**](kql/uk-bods-siri.kql) &nbsp;·&nbsp;
-[↗ **Upstream**](https://data.bus-data.dft.gov.uk/)
+
+[↗ **Upstream**](https://www.bus-data.dft.gov.uk/)
 
 </td></tr></table>
+
 <!-- source-hero:end -->
 
-This feeder turns the UK Department for Transport **Bus Open Data Service** (**BODS**) AVL bulk archive into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 / Unified Namespace, and AMQP 1.0.
+## At a glance
 
-<!-- upstream-links:begin -->
-## Upstream
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle">England</td></tr>
+<tr><td valign="middle">🏛️</td><td valign="middle"><b>Authority</b></td><td valign="middle"><a href="https://www.gov.uk/government/organisations/department-for-transport">UK Department for Transport</a></td></tr>
+<tr><td valign="middle">📊</td><td valign="middle"><b>Coverage</b></td><td valign="middle">Bus Open Data Service AVL bulk archive</td></tr>
+<tr><td valign="middle">⏱️</td><td valign="middle"><b>Cadence</b></td><td valign="middle">30-second default poll; restart-safe dedupe state</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT 5.0 · AMQP 1.0</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{operator_ref}</code> or <code>{operator_ref}/{vehicle_ref}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle"><code>org.siri.Operator</code> · <code>org.siri.VehiclePosition</code></td></tr>
+<tr><td valign="middle">🔐</td><td valign="middle"><b>Auth</b></td><td valign="middle">BODS API key optional for the public bulk archive; supported as <code>SIRI_API_KEY</code> or <code>BODS_API_KEY</code></td></tr>
+</table>
 
-- Home page: <https://data.bus-data.dft.gov.uk/>
-- API / data documentation: <https://www.gov.uk/government/publications/technical-guidance-publishing-location-data-using-the-bus-open-data-service-siri-vm>
-- Archive reference: <https://data.datalibrary.uk/transport/BODS-ARCHIVE/sirivm/>
-
-<!-- upstream-links:end -->
-
-Companion docs:
-
-- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
-- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
-
-## Why this bridge
-
-BODS publishes bus Automatic Vehicle Location data as SIRI-VM XML snapshots. That makes the source excellent public infrastructure, but awkward operational input: every consumer otherwise has to register for an API key, download the bulk archive, unzip it, stream-parse XML, deduplicate repeated `ItemIdentifier` values, and then fan the result out to its own brokers and schemas.
-
-This bridge does that work once and re-emits the feed as typed CloudEvents so downstream systems can subscribe instead of scrape:
-
-- **Transit operations** — live fleet movement and route-progress dashboards.
-- **City intelligence** — join bus movement with roads, incidents, weather, and events.
-- **Analytics and archival** — standardized ingestion into Fabric Eventhouse, ADX, or lakehouses.
-- **Automation** — route/vehicle-based rules over stable subjects and topic trees.
-- **Digital twins** — operator and vehicle identities carried consistently across transports.
-
-## Overview
-
-**UK BODS SIRI** is a poll-based bridge. It emits two event families from the AVL bulk archive:
-
-- `uk.gov.dft.bods.Operator` — distinct operator codes observed in the archive (reference data).
-- `uk.gov.dft.bods.VehiclePosition` — one current vehicle activity per bus per poll cycle (telemetry).
-
-| Variant | Container image | Transport | Default delivery shape |
-|---|---|---|---|
-| **Kafka** | `ghcr.io/clemensv/real-time-sources-uk-bods-siri-kafka` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | Topic `uk-bods-siri`, key `{operator_ref}/{vehicle_ref}` for telemetry and `{operator_ref}` for operator references |
-| **MQTT** | `ghcr.io/clemensv/real-time-sources-uk-bods-siri-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic tree `transit/uk/dft/bods/{operator_ref}/{vehicle_ref}/position` and `transit/uk/dft/bods/{operator_ref}/info` |
-| **AMQP** | `ghcr.io/clemensv/real-time-sources-uk-bods-siri-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents on AMQP node `uk-bods-siri` |
-
-All variants share the same xRegistry contract (`xreg/uk-bods-siri.xreg.json`), generated producer packages, XML parser, dedupe model, and operator filter.
-
-## Transports
-
-Kafka, MQTT, and AMQP all carry the same payload schemas and CloudEvents types, but target different consumption styles:
-
-- **Kafka** — best for ordered stream processing, Event Hubs, and Fabric Event Streams.
-- **MQTT** — best for low-latency pub/sub and UNS-style routing by operator and vehicle.
-- **AMQP** — best for queue/topic brokers such as Azure Service Bus and Artemis where broker-side filters or enterprise messaging semantics matter.
-
-Deployment templates shipped with this source:
-
-1. Kafka container against your own Kafka/Event Hubs connection string.
-2. Kafka container plus a new Event Hubs namespace.
-3. MQTT container against your own MQTT broker.
-4. MQTT container plus a new Azure Event Grid namespace broker.
-5. AMQP container plus a new Azure Service Bus namespace.
-6. Fabric ACI deployment via the project portal.
-7. Fabric Notebook deployment for the poller via `tools/deploy-fabric/deploy-feeder-notebook.ps1`.
-
-## Repository layout
+`uk-bods-siri` is now a **configuration-only thin wrapper** around the generalized [`siri`](../siri/README.md) feeder. The source-specific folder no longer owns parser code, producer code, or an xRegistry manifest. Its images simply inherit the maintained `siri` transport images and bake the non-secret BODS configuration:
 
 ```text
-uk-bods-siri/
-  xreg/uk-bods-siri.xreg.json
-  uk_bods_siri_core/
-  uk_bods_siri_kafka/
-  uk_bods_siri_mqtt/
-  uk_bods_siri_amqp/
-  uk_bods_siri_producer/
-  uk_bods_siri_mqtt_producer/
-  uk_bods_siri_amqp_producer/
-  kql/
-  notebook/
-  tests/
-  Dockerfile.kafka
-  Dockerfile.mqtt
-  Dockerfile.amqp
+SIRI_PROVIDER=bods
+SIRI_DATA_TYPES=vm
 ```
 
-## Quick start with Docker
+At runtime, the generalized feeder uses `siri_core.config.DEFAULT_BODS_URL` (`https://data.bus-data.dft.gov.uk/avl/download/bulk_archive`) unless `SIRI_URL` is supplied. `SIRI_API_KEY` and the legacy-compatible `BODS_API_KEY` are both accepted; never bake either into an image.
 
 > [!IMPORTANT]
-> BODS requires a free API key passed as `BODS_API_KEY`.
 
-### Kafka
+> **Contract change.** Earlier `uk-bods-siri` images emitted bespoke `uk.gov.dft.bods.Operator` and `uk.gov.dft.bods.VehiclePosition` events. This thin wrapper emits the generalized `siri` contract: `org.siri.Operator` and `org.siri.VehiclePosition`, with the schemas, CloudEvents `source`, `subject`, Kafka keys, MQTT topics, and AMQP properties documented in [EVENTS.md](EVENTS.md).
 
-```bash
-docker run --rm \
-  -v "$PWD/state:/state" \
-  -e STATE_FILE=/state/uk-bods-siri.json \
-  -e BODS_API_KEY="<bods-api-key>" \
-  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
-  ghcr.io/clemensv/real-time-sources-uk-bods-siri-kafka:latest
-```
-
-### MQTT (Unified Namespace)
+## 60-second quick start
 
 ```bash
 docker run --rm \
   -v "$PWD/state:/state" \
   -e STATE_FILE=/state/uk-bods-siri.json \
-  -e BODS_API_KEY="<bods-api-key>" \
-  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
-  -e MQTT_USERNAME="<username>" \
-  -e MQTT_PASSWORD="<password>" \
-  ghcr.io/clemensv/real-time-sources-uk-bods-siri-mqtt:latest
+  -e SIRI_API_KEY="<bods-api-key>" \
+  -e CONNECTION_STRING="Endpoint=sb://<ns>.servicebus.windows.net/;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=uk-bods-siri" \
+  ghcr.io/clemensv/real-time-sources-uk-bods-siri:latest
 ```
 
-### AMQP 1.0
+The first cycle emits `org.siri.Operator` reference records for operators observed in the BODS payload and `org.siri.VehiclePosition` telemetry for changed vehicles. Mount `STATE_FILE` to persist dedupe state across restarts.
 
-```bash
-docker run --rm \
-  -v "$PWD/state:/state" \
-  -e STATE_FILE=/state/uk-bods-siri.json \
-  -e BODS_API_KEY="<bods-api-key>" \
-  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/uk-bods-siri" \
-  ghcr.io/clemensv/real-time-sources-uk-bods-siri-amqp:latest
+## Architecture
+
+```mermaid
+flowchart LR
+    A[BODS bulk AVL archive<br/>SIRI-VM ZIP] -->|HTTPS poll| B[siri_core<br/>provider=bods, data_types=vm]
+    B -->|Operator ref| C{{siri.xreg.json<br/>org.siri contract}}
+    B -->|VehiclePosition| C
+    C --> D[uk-bods-siri<br/>thin Kafka image]
+    C --> E[uk-bods-siri-mqtt<br/>thin MQTT image]
+    C --> F[uk-bods-siri-amqp<br/>thin AMQP image]
+    D -->|structured CloudEvents| K[(Kafka / Event Hubs / Fabric Event Stream)]
+    E -->|MQTT 5 binary CloudEvents| M[(MQTT broker / Event Grid namespace)]
+    F -->|AMQP 1.0 binary CloudEvents| Q[(Service Bus / Event Hubs / AMQP broker)]
 ```
 
-## Configuration reference
+All runtime behavior lives in `feeders/siri/`. This folder preserves the BODS deployment identity, documentation, catalog entry, Azure templates, Fabric notebook, and KQL script while avoiding another fork of the SIRI parser and producers.
 
-The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). The bridge accepts:
+## Configuration
+| Setting | Environment | Default in thin wrapper | Notes |
+| --- | --- | --- | --- |
+| Provider | `SIRI_PROVIDER` | `bods` | Baked into all thin images. |
+| Data types | `SIRI_DATA_TYPES` | `vm` | BODS fold-in emits VehicleMonitoring payloads. |
+| Source URL | `SIRI_URL` | generalized feeder BODS bulk archive default | Override only when using another BODS-compatible endpoint. |
+| API key | `SIRI_API_KEY` or `BODS_API_KEY` | none | Runtime secret; never baked. |
+| Operator filter | `SIRI_OPERATORS` or `OPERATORS` | empty | Optional comma-separated operator filter. |
+| Poll cadence | `POLLING_INTERVAL` | `30` | Seconds between polls. |
+| Dedupe state | `STATE_FILE` | `~/.siri_state.json` in the base image | Mount a volume for persistent state. |
+| One-shot mode | `ONCE_MODE` | false | Used by Docker E2E and scheduled notebook runs. |
+## Event contract
 
-- `BODS_API_KEY` — required unless `BODS_SAMPLE_MODE=true` is used for tests.
-- `OPERATORS` — optional comma-separated NOC filter.
-- `POLLING_INTERVAL` — poll cadence in seconds (default 30).
-- `STATE_FILE` — restart-safe dedupe state path.
-- `ONCE_MODE` / `--once` — single-cycle execution for Docker E2E and Fabric notebooks.
+Read [EVENTS.md](EVENTS.md) for the full CloudEvents contract and [kql/uk-bods-siri.kql](kql/uk-bods-siri.kql) for the Fabric Eventhouse / ADX schema. The table names are intentionally `org.siri.*` because the on-wire event types now come from the generalized SIRI contract.
 
-## Fabric notebook hosting
+## Container and deployment details
 
-Because this source is a poller, it also ships a Fabric notebook feeder in [`notebook/uk-bods-siri-feed.ipynb`](notebook/uk-bods-siri-feed.ipynb), deployable with `tools/deploy-fabric/deploy-feeder-notebook.ps1`.
+The published image and Azure deployment contract is in [CONTAINER.md](CONTAINER.md). Use this source-specific image when you want the BODS defaults baked in; use [`siri`](../siri/README.md) directly when you want to configure another SIRI-compatible provider.
 
-## Data model
-
-The feeder emits the following event families:
-
-- **uk.gov.dft.bods** — `Operator`, `VehiclePosition`.
-
-See [EVENTS.md](EVENTS.md) for the full field-level schema contract and per-transport routing details.

@@ -1,0 +1,335 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the generalized CAP Alerts MQTT feeder as an Azure Container Instance with persistent dedupe state and Log Analytics diagnostics."
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "defaultValue": "cap-alerts",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Base name for all resources."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "eventGridSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Event Grid namespace SKU."
+      }
+    },
+    "eventGridCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 40,
+      "metadata": {
+        "description": "Event Grid namespace throughput units."
+      }
+    },
+    "topicRoot": {
+      "type": "string",
+      "defaultValue": "mobility/cap/#",
+      "metadata": {
+        "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to mobility/cap/# which covers all cap-alerts output (hydro/de/wsv/cap-alerts/...)."
+      }
+    },
+    "capFeeds": {
+      "type": "string",
+      "defaultValue": "[{\"cap_source_id\":\"nws-us\",\"url\":\"https://api.weather.gov/alerts/active\",\"format\":\"nws-json\",\"zone_url\":\"https://api.weather.gov/zones?limit=25\"},{\"cap_source_id\":\"meteoalarm-belgium\",\"url\":\"https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-belgium\",\"format\":\"atom-cap\"}]",
+      "metadata": {
+        "description": "JSON array of CAP source configs {cap_source_id,url,format,zone_url}."
+      }
+    },
+    "pollInterval": {
+      "type": "int",
+      "defaultValue": 300,
+      "minValue": 5,
+      "metadata": {
+        "description": "Seconds between CAP alert polling cycles. Defaults to five minutes to stay comfortably below public feed limits."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-cap-alerts-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
+      }
+    },
+    "referenceRefreshInterval": {
+      "type": "int",
+      "defaultValue": 21600,
+      "metadata": {
+        "description": "Seconds between refreshes of CAP reference metadata such as NWS zones. Defaults to six hours."
+      }
+    }
+  },
+  "variables": {
+    "namespaceName": "[concat(parameters('namePrefix'), '-egns')]",
+    "topicSpaceName": "cap-alerts",
+    "clientGroupName": "cap-alerts-publishers",
+    "permissionBindingName": "cap-alerts-publish",
+    "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
+    "containerGroupName": "[parameters('namePrefix')]",
+    "storageAccountName": "[take(concat(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
+    "fileShareName": "bridge-state",
+    "logAnalyticsWorkspaceName": "[concat(parameters('namePrefix'), '-logs')]",
+    "publisherRoleId": "/providers/Microsoft.Authorization/roleDefinitions/a12b0b94-b317-4dcd-84a8-502ce99884c6",
+    "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
+    "namespaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces', variables('namespaceName'))]",
+    "topicSpaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces/topicSpaces', variables('namespaceName'), variables('topicSpaceName'))]",
+    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('userIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 1
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[variables('namespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('eventGridSku')]",
+        "capacity": "[parameters('eventGridCapacity')]"
+      },
+      "properties": {
+        "topicSpacesConfiguration": {
+          "state": "Enabled",
+          "maximumClientSessionsPerAuthenticationName": 1,
+          "maximumSessionExpiryInHours": 1
+        }
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces/topicSpaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[concat(variables('namespaceName'), '/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('namespaceResourceId')]"
+      ],
+      "properties": {
+        "topicTemplates": [
+          "[parameters('topicRoot')]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('roleAssignmentName')]",
+      "scope": "[concat('Microsoft.EventGrid/namespaces/', variables('namespaceName'), '/topicSpaces/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('topicSpaceResourceId')]",
+        "[variables('userIdentityResourceId')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('publisherRoleId')]",
+        "principalId": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('userIdentityResourceId')]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]",
+        "[variables('namespaceResourceId')]",
+        "[variables('topicSpaceResourceId')]",
+        "[extensionResourceId(variables('topicSpaceResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[variables('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
+                },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
+                {
+                  "name": "MQTT_ENTRA_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+                },
+                {
+                  "name": "CAP_SOURCES",
+                  "value": "[parameters('capFeeds')]"
+                },
+                {
+                  "name": "REFERENCE_REFRESH_INTERVAL",
+                  "value": "[string(parameters('referenceRefreshInterval'))]"
+                },
+                {
+                  "name": "POLL_INTERVAL",
+                  "value": "[string(parameters('pollInterval'))]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "CAP_ALERTS_MOCK",
+                  "value": "false"
+                },
+                {
+                  "name": "ONCE_MODE",
+                  "value": "false"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
+              ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "bridge-state",
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "namespaceName": {
+      "type": "string",
+      "value": "[variables('namespaceName')]"
+    },
+    "mqttHostname": {
+      "type": "string",
+      "value": "[reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname]"
+    },
+    "topicSpaceName": {
+      "type": "string",
+      "value": "[variables('topicSpaceName')]"
+    },
+    "managedIdentityClientId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+    },
+    "managedIdentityPrincipalId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+    },
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))]"
+    }
+  }
+}

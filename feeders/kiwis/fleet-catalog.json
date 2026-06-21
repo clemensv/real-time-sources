@@ -1,0 +1,49 @@
+{
+  "feeders": [
+    {
+      "slug": "kiwis",
+      "imageBase": "real-time-sources-kiwis",
+      "queueName": "kiwis",
+      "eventHubName": "kiwis",
+      "mqttTopicRoot": "hydro/kiwis/#",
+      "emptyTemplates": [
+        "feeders/kiwis/azure-template.json",
+        "feeders/kiwis/azure-template-with-eventhub.json",
+        "feeders/kiwis/azure-template-with-servicebus.json",
+        "feeders/kiwis/azure-template-amqp.json",
+        "feeders/kiwis/azure-template-mqtt.json",
+        "feeders/kiwis/azure-template-with-eventgrid-mqtt.json"
+      ],
+      "envVars": [
+        {
+          "name": "KIWIS_ENDPOINTS",
+          "armParamName": "kiwisEndpoints",
+          "description": "CSV/JSON endpoint list or @file: kiwis_id,base_url,datasource,station_filter,timeseries_filter,ts_ids,period,api_key."
+        },
+        {
+          "name": "KIWIS_MOCK",
+          "armParamName": "kiwisMock",
+          "description": "true emits one offline station, timeseries, and value for E2E.",
+          "default": "false"
+        },
+        {
+          "name": "KIWIS_MAX_TIMESERIES",
+          "armParamName": "kiwisMaxTimeseries",
+          "description": "Safety cap for discovered timeseries per endpoint.",
+          "default": "10"
+        },
+        {
+          "name": "POLLING_INTERVAL",
+          "armParamName": "pollingInterval",
+          "description": "Seconds between polling cycles.",
+          "default": "300"
+        },
+        {
+          "name": "KIWIS_STATE_FILE",
+          "armParamName": "kiwisStateFile",
+          "description": "JSON dedupe state path used by container and Azure templates."
+        }
+      ]
+    }
+  ]
+}

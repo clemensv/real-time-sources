@@ -61,6 +61,11 @@ def pegelonline_mqtt_image():
     return build_image('pegelonline', dockerfile='Dockerfile.mqtt', tag='test-pegelonline-mqtt')
 
 
+@pytest.fixture(scope='module')
+def cap_alerts_mqtt_image():
+    return build_image('cap-alerts', dockerfile='Dockerfile.mqtt', tag='test-cap-alerts-mqtt')
+
+
 @pytest.fixture()
 def mosquitto_container():
     client = docker.from_env()
@@ -240,6 +245,105 @@ class TestPegelonlineMqttDockerFlow:
         assert level_payload is not None, f"level payload not parseable: {level_msgs[0]['payload']!r}"
         assert 'station_id' in info_payload and 'water' in info_payload
         assert 'station_id' in level_payload and 'value' in level_payload
+
+
+def _load_cap_alerts_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'cap-alerts', 'xreg', 'cap-alerts.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    group = manifest['schemagroups']['org.oasis.cap.alerts.jstruct']['schemas']
+    return {
+        'org.oasis.cap.alerts.CapAlert': group['org.oasis.cap.alerts.CapAlert']['versions']['1']['schema'],
+        'org.oasis.cap.alerts.CapZone': group['org.oasis.cap.alerts.CapZone']['versions']['1']['schema'],
+    }
+
+
+class TestCapAlertsMqttDockerFlow:
+    """Verify the cap-alerts MQTT container publishes reference and alert events."""
+
+    def test_emits_cap_reference_and_telemetry(self, cap_alerts_mqtt_image):
+        container, network, host_port = _generic_mosquitto(
+            'cap-alerts-mqtt-e2e', 'cap-alerts-mqtt-e2e-broker'
+        )
+        messages: List[Dict[str, Any]] = []
+        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+
+        def on_message(_client, _userdata, msg):
+            props: Dict[str, Any] = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload})
+
+        client.on_message = on_message
+        feeder = None
+        try:
+            client.connect('127.0.0.1', host_port, 30)
+            client.subscribe('alerts/cap/#', qos=1)
+            client.loop_start()
+
+            docker_client = docker.from_env()
+            feeder = docker_client.containers.run(
+                cap_alerts_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'cap-alerts-mqtt-e2e-broker:1883',
+                    'CAP_ALERTS_MOCK': 'true',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            deadline = time.time() + 10
+            while len(messages) < 2 and time.time() < deadline:
+                time.sleep(0.25)
+        finally:
+            client.loop_stop()
+            client.disconnect()
+            if feeder is not None:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            try:
+                container.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
+
+        assert messages, 'No MQTT messages received from broker'
+        by_type: Dict[str, List[Dict[str, Any]]] = {}
+        for message in messages:
+            by_type.setdefault(message['user_properties'].get('type'), []).append(message)
+        assert 'org.oasis.cap.alerts.CapZone' in by_type, by_type.keys()
+        assert 'org.oasis.cap.alerts.CapAlert' in by_type, by_type.keys()
+        schemas = _load_cap_alerts_schemas()
+        schema_validator = SchemaValidator(extended=True)
+        for ce_type in ('org.oasis.cap.alerts.CapZone', 'org.oasis.cap.alerts.CapAlert'):
+            sample = by_type[ce_type][0]
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            payload = _to_dict(sample['payload'])
+            assert isinstance(payload, dict), sample
+            schema = schemas[ce_type]
+            assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
 
 
 # ---------------------------------------------------------------------------
@@ -751,9 +855,10 @@ class TestUkBodsSiriMqttDockerFlow:
 
         subscriber.on_message = on_message
         subscriber.connect('127.0.0.1', host_port, 30)
-        subscriber.subscribe('transit/uk/dft/bods/#', qos=1)
+        subscriber.subscribe('transit/siri/#', qos=1)
         subscriber.loop_start()
         try:
+            build_image('siri', dockerfile='Dockerfile.mqtt', tag='ghcr.io/clemensv/real-time-sources/siri-mqtt:latest')
             image = build_image('uk-bods-siri', dockerfile='Dockerfile.mqtt', tag='test-uk-bods-siri-mqtt')
             feeder = client.containers.run(
                 image.id,
@@ -781,6 +886,7 @@ class TestUkBodsSiriMqttDockerFlow:
             for msg in messages:
                 for required in ('id', 'source', 'type', 'subject', 'specversion'):
                     assert required in msg['user_properties'], msg
+                assert msg['user_properties']['type'] in {'org.siri.Operator', 'org.siri.VehiclePosition'}
         finally:
             subscriber.loop_stop()
             subscriber.disconnect()
@@ -788,6 +894,121 @@ class TestUkBodsSiriMqttDockerFlow:
             except docker.errors.APIError: pass
             try: network.remove()
             except docker.errors.APIError: pass
+
+
+@pytest.fixture(scope='module')
+def erddap_mqtt_image():
+    return build_image('erddap', dockerfile='Dockerfile.mqtt', tag='test-erddap-mqtt')
+
+
+@pytest.fixture()
+def erddap_mqtt_broker():
+    container, network, host_port = _generic_mosquitto('erddap-mqtt-e2e', 'erddap-mqtt-e2e-broker')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'erddap-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+def _erddap_payload_to_dict(payload):
+    if isinstance(payload, dict):
+        return payload
+    if isinstance(payload, str):
+        try:
+            parsed = json.loads(payload)
+        except json.JSONDecodeError:
+            return None
+        return parsed if isinstance(parsed, dict) else None
+    return None
+
+
+class TestErddapMqttDockerFlow:
+    def test_emits_mock_reference_and_telemetry(self, erddap_mqtt_broker, erddap_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"{erddap_mqtt_broker['internal_host']}:{erddap_mqtt_broker['internal_port']}"
+        messages = []
+
+        def on_message(_client, _userdata, msg):
+            props = {}
+            if msg.properties is not None:
+                for key, value in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[key] = value
+                content_type = getattr(msg.properties, 'ContentType', None)
+                if content_type:
+                    props['_contenttype'] = content_type
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({
+                'topic': msg.topic,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        subscriber = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        subscriber.on_message = on_message
+        subscriber.connect('127.0.0.1', erddap_mqtt_broker['host_port'], 30)
+        subscriber.subscribe('marine/global/erddap/#', qos=1)
+        subscriber.loop_start()
+        feeder = None
+        try:
+            feeder = client.containers.run(
+                erddap_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=erddap_mqtt_broker['network'],
+                environment={
+                    'MQTT_BROKER_URL': broker_url,
+                    'ERDDAP_MOCK': 'true',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            deadline = time.time() + 10
+            while time.time() < deadline and len(messages) < 3:
+                time.sleep(0.5)
+        finally:
+            subscriber.loop_stop()
+            subscriber.disconnect()
+            try:
+                if feeder is not None:
+                    feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        assert len(messages) >= 3, messages
+        types = {m['user_properties'].get('type') for m in messages}
+        assert {
+            'org.erddap.DatasetMetadata',
+            'org.erddap.StationMetadata',
+            'org.erddap.Observation',
+        }.issubset(types)
+        topics = {m['topic'] for m in messages}
+        assert any(t.endswith('/dataset') for t in topics), topics
+        assert any(t.endswith('/station') for t in topics), topics
+        assert any(t.endswith('/observation') for t in topics), topics
+        for message in messages:
+            props = message['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in props, f"missing CE attribute {required} on {message['topic']}: {props}"
+            assert props.get('_contenttype') == 'application/json'
+            assert isinstance(_erddap_payload_to_dict(message['payload']), dict), message
 
 # ---- bfs-odl -----------------------------------------------------------
 
@@ -5603,6 +5824,7 @@ class TestSeattleStreetClosuresMqttDockerFlow:
 
 @pytest.fixture(scope='module')
 def tokyo_docomo_bikeshare_mqtt_image():
+    build_image('gbfs-bikeshare', dockerfile='Dockerfile.mqtt', tag='ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-mqtt:latest')
     return build_image('tokyo-docomo-bikeshare', dockerfile='Dockerfile.mqtt', tag='test-tokyo-docomo-bikeshare-mqtt')
 
 @pytest.fixture()
@@ -5618,7 +5840,16 @@ def mosquitto_tokyo_docomo_bikeshare():
 
 class TestTokyoDocomoBikeshareMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_tokyo_docomo_bikeshare, tokyo_docomo_bikeshare_mqtt_image):
-        _run_mqtt_contract_flow('tokyo-docomo-bikeshare', tokyo_docomo_bikeshare_mqtt_image, mosquitto_tokyo_docomo_bikeshare, timeout=240)
+        messages = _run_mqtt_contract_flow(
+            'gbfs-bikeshare',
+            tokyo_docomo_bikeshare_mqtt_image,
+            mosquitto_tokyo_docomo_bikeshare,
+            extra_env={'GBFS_MOCK': 'true'},
+            min_messages=3,
+            timeout=240,
+        )
+        observed = {m['user_properties'].get('type') or m['user_properties'].get('ce_type') for m in messages}
+        assert {'org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'} <= observed
 
 @pytest.fixture(scope='module')
 def gbfs_bikeshare_mqtt_image():
@@ -6429,3 +6660,47 @@ class TestOpenAQMqttDockerFlow:
                 assert required in sample['user_properties'], sample
             assert sample['retain'] is True
             assert sample['qos'] == 1
+
+@pytest.fixture(scope='module')
+def datex2_mqtt_image():
+    return build_image('datex2', dockerfile='Dockerfile.mqtt', tag='test-datex2-mqtt')
+
+
+class TestDatex2MqttDockerFlow:
+    def test_emits_binary_cloudevents(self, datex2_mqtt_image):
+        client = docker.from_env()
+        broker, network, host_port = _generic_mosquitto('datex2-mqtt-e2e', 'datex2-mqtt-e2e-broker')
+        try:
+            feeder = client.containers.run(
+                datex2_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'DATEX2_MOCK': 'true',
+                    'ONCE_MODE': 'true',
+                    'MQTT_BROKER_URL': 'datex2-mqtt-e2e-broker:1883',
+                    'MQTT_ENABLE_TLS': 'false',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            try:
+                result = feeder.wait(timeout=300)
+                logs = feeder.logs().decode('utf-8', errors='replace')
+                assert result.get('StatusCode') == 0, logs
+            finally:
+                feeder.remove(force=True)
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'traffic/eu/datex2/datex2/#', timeout=20.0)
+            assert messages, 'No MQTT messages received from datex2'
+            seen = {m['user_properties'].get('type') for m in messages}
+            assert {'org.datex2.measured.MeasurementSite', 'org.datex2.measured.TrafficMeasurement', 'org.datex2.situation.SituationRecord'} <= seen
+            _assert_mqtt_contract_messages('datex2', messages)
+        finally:
+            try:
+                broker.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass

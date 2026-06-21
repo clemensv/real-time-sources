@@ -280,6 +280,22 @@ function Split-KqlChunks {
     return $chunks
 }
 
+function Repair-KqlJsonTrailingCommas {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$KqlContent
+    )
+
+    # avrotize can emit fenced JSON mapping/update-policy blocks with a
+    # trailing comma before the closing ] or }. Kusto expects those fenced
+    # blocks to be strict JSON, so remove only comma-before-close cases.
+    return [System.Text.RegularExpressions.Regex]::Replace(
+        $KqlContent,
+        ',(\s*[\]\}])',
+        '$1'
+    )
+}
+
 function Test-IsDispatchChunk {
     param(
         [Parameter(Mandatory = $true)]
@@ -384,6 +400,7 @@ try {
         }
 
         $kqlContent = Get-Content $kqlPartFile -Raw
+        $kqlContent = Repair-KqlJsonTrailingCommas -KqlContent $kqlContent
         # The update-policy KQL query that avrotize emits contains a
         # `type == '<RecordType-or-FQN>'` predicate. Set-KqlEventTypes
         # rewrites it to the real upstream CloudEvents type(s) from xreg.

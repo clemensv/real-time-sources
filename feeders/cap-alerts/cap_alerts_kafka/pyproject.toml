@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cap_alerts"
+dynamic = ["version"]
+description = "CAP alerts Kafka feeder."
+requires-python = ">=3.10,<4.0"
+dependencies = ["requests>=2.32.3", "confluent-kafka>=2.5.3", "cloudevents>=1.11.0,<2.0.0", "dataclasses_json>=0.6.7", "avro>=1.11.3", "cap_alerts_core", "cap_alerts_producer_data", "cap_alerts_producer_kafka_producer"]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["cap_alerts"]
