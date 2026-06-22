@@ -13,6 +13,7 @@ dynamic = [
 description = "iRail Belgian railway MQTT/UNS bridge"
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "irail_core @ file:../irail_core",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",

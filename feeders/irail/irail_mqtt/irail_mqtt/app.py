@@ -15,7 +15,7 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from irail.irail import IRailAPI, REQUEST_DELAY
+from irail_core import IRailAPI, REQUEST_DELAY
 from irail_mqtt_producer_mqtt_client.client import BeIrailMqttMqttClient
 import json
 
@@ -202,3 +202,4 @@ def main() -> None:
         once=args.once,
         content_mode=args.content_mode,
     ))
+
