@@ -623,7 +623,7 @@ class TestStatePersistence:
 class TestFetchMethods:
     """Tests for API fetch methods."""
 
-    @patch("aviationweather.aviationweather.requests.get")
+    @patch("aviationweather_core.aviationweather.requests.get")
     def test_fetch_metar_json_success(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_METAR_RESPONSE
@@ -634,13 +634,13 @@ class TestFetchMethods:
         assert len(result) == 2
         assert result[0]["icaoId"] == "KJFK"
 
-    @patch("aviationweather.aviationweather.requests.get")
+    @patch("aviationweather_core.aviationweather.requests.get")
     def test_fetch_metar_json_error(self, mock_get):
         mock_get.side_effect = Exception("Network error")
         result = AviationWeatherPoller.fetch_metar_json("KJFK")
         assert result == []
 
-    @patch("aviationweather.aviationweather.requests.get")
+    @patch("aviationweather_core.aviationweather.requests.get")
     def test_fetch_station_json_success(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_STATION_RESPONSE
@@ -650,7 +650,7 @@ class TestFetchMethods:
         result = AviationWeatherPoller.fetch_station_json("KJFK")
         assert len(result) == 2
 
-    @patch("aviationweather.aviationweather.requests.get")
+    @patch("aviationweather_core.aviationweather.requests.get")
     def test_fetch_airsigmet_json_success(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_AIRSIGMET_RESPONSE
@@ -660,7 +660,7 @@ class TestFetchMethods:
         result = AviationWeatherPoller.fetch_airsigmet_json()
         assert len(result) == 1
 
-    @patch("aviationweather.aviationweather.requests.get")
+    @patch("aviationweather_core.aviationweather.requests.get")
     def test_fetch_isigmet_json_success(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_ISIGMET_RESPONSE
@@ -670,7 +670,7 @@ class TestFetchMethods:
         result = AviationWeatherPoller.fetch_isigmet_json()
         assert len(result) == 1
 
-    @patch("aviationweather.aviationweather.requests.get")
+    @patch("aviationweather_core.aviationweather.requests.get")
     def test_fetch_metar_json_non_list_response(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = {"error": "bad request"}
@@ -833,3 +833,4 @@ class TestDataclassSerialization:
         data = json.loads(sigmet.to_json())
         assert data["icao_id"] == "KKCI"
         assert data["hazard"] == "CONVECTIVE"
+

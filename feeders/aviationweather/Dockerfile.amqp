@@ -1,7 +1,7 @@
         # syntax=docker/dockerfile:1.6
         FROM python:3.10-slim
         LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/aviationweather"
-        LABEL org.opencontainers.image.title="aviationweather → AMQP companion bridge"
+        LABEL org.opencontainers.image.title="aviationweather -> AMQP companion bridge"
         LABEL org.opencontainers.image.description="Publishes aviationweather CloudEvents over AMQP using the companion transport contract."
         LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/aviationweather/CONTAINER.md"
         LABEL org.opencontainers.image.license="MIT"
@@ -21,9 +21,10 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-        RUN pip install --no-cache-dir ./aviationweather_amqp_producer/aviationweather_amqp_producer_data \
+        RUN pip install --no-cache-dir ./aviationweather_producer/aviationweather_producer_data \
+ && pip install --no-cache-dir ./aviationweather_core \
+ && pip install --no-cache-dir ./aviationweather_amqp_producer/aviationweather_amqp_producer_data \
  && pip install --no-cache-dir ./aviationweather_amqp_producer/aviationweather_amqp_producer_amqp_producer \
- && pip install --no-cache-dir ./aviationweather_mqtt \
  && pip install --no-cache-dir ./aviationweather_amqp && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
         ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="aviationweather"

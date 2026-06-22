@@ -1,15 +1,31 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "aviationweather_mqtt"
-version = "0.1.0"
-description = "aviationweather MQTT companion feeder"
-requires-python = ">=3.10"
+dynamic = ["version"]
+description = "MQTT companion feeder for aviationweather."
+authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
+requires-python = ">=3.10,<4.0"
 dependencies = [
-  "paho-mqtt>=2.1.0",
+    "paho-mqtt>=2.1.0",
+    "aviationweather_core",
 ]
 
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+[project.scripts]
+aviationweather-mqtt = "aviationweather_mqtt.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["aviationweather_mqtt"]
+
+[tool.uv.sources]
+aviationweather_core = { path = "../aviationweather_core" }

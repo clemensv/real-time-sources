@@ -1,20 +1,14 @@
-
-"""AMQP 1.0 companion feeder for aviationweather."""
+"""AMQP 1.0 feeder for AviationWeather.gov."""
 from __future__ import annotations
 
 import argparse
 import asyncio
 import importlib
 import inspect
-import json
 import logging
 import os
-import pathlib
-import re
-import sys
 import time
 from datetime import datetime, timezone
-from typing import Any, Optional
 from urllib.parse import urlparse
 
 try:
@@ -25,7 +19,6 @@ except Exception:  # pragma: no cover
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 SOURCE_ID = "aviationweather"
 PY_MODULE = "aviationweather"
-ENV_PREFIX = "AVIATIONWEATHER"
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +28,6 @@ def _env_bool(name: str, default: bool = False) -> bool:
     if value is None:
         return default
     return value.lower() in {"1", "true", "yes", "on"}
-
-
-def _topic_segment(value: Any) -> str:
-    text = (str(value) if value is not None else "unknown").strip() or "unknown"
-    for forbidden in ("/", "+", "#", "\x00"):
-        text = text.replace(forbidden, "-")
-    return "-".join(text.split()) or "unknown"
 
 
 def _parse_broker_url(url: str):
@@ -56,16 +42,12 @@ def _producer_class():
     classes = [obj for _, obj in vars(mod).items() if inspect.isclass(obj) and any(name.startswith("send_") for name in dir(obj))]
     if not classes:
         raise RuntimeError(f"No AMQP producer class found in {mod.__name__}")
-    # xrcg can emit producer classes whose names do not end with "AmqpProducer"
-    # (for example after a simplified message-group manifest). Prefer the concrete
-    # class with the most send_* methods rather than relying on the old naming rule.
     classes.sort(key=lambda cls: (len([name for name in dir(cls) if name.startswith("send_")]), cls.__name__), reverse=True)
     return classes[0]
 
 
 def _apply_partition_key_workaround(producer):
-    # WORKAROUND(xregistry/codegen#294): xrcg declares AMQP message_annotations
-    # but does not emit them yet. Stamp x-opt-partition-key from CE subject.
+    # WORKAROUND(xregistry/codegen#294): stamp x-opt-partition-key from CE subject
     def stamp(msg):
         props = dict(getattr(msg, "properties", None) or {})
         ce_subject = props.get("cloudEvents:subject") or getattr(msg, "subject", None)
@@ -113,206 +95,105 @@ def _build_amqp_producer(args):
     return _apply_partition_key_workaround(_producer_class()(**kwargs))
 
 
-class MqttToAmqpAdapter:
-    """Adapter exposing generated MQTT publish_* names over AMQP send_* APIs."""
-    def __init__(self, producer: Any):
-        self.producer = producer
-        self._send_methods = {name: getattr(producer, name) for name in dir(producer) if name.startswith("send_") and not name.endswith("_batch")}
-        self.sent = 0
+async def _run_live(args: argparse.Namespace, producer) -> None:
+    """Acquire live AviationWeather.gov data and publish via AMQP."""
+    from aviationweather_core import (
+        AviationWeatherPoller,
+        DEFAULT_STATIONS,
+        METAR_POLL_INTERVAL,
+        SIGMET_POLL_INTERVAL,
+        STATION_REFRESH_HOURS,
+    )
 
-    async def connect(self, *_args, **_kwargs):
-        return None
+    station_ids = os.getenv("AVIATIONWEATHER_STATIONS", DEFAULT_STATIONS)
+    if getattr(args, "stations", None):
+        station_ids = args.stations
 
-    async def disconnect(self):
-        close = getattr(self.producer, "close", None)
-        if close:
-            close()
+    state_file = getattr(args, "state_file", None) or os.path.expanduser(f"~/.{PY_MODULE}_amqp_state.json")
 
-    def _choose_method(self, publish_name: str, kwargs: dict[str, Any]):
-        route_keys = {"_" + k for k in kwargs if k not in {"data", "qos", "retain", "topic", "content_type", "message_expiry_interval"}}
-        candidates = []
-        publish_norm = publish_name.replace("publish_", "").replace("mqtt", "amqp")
-        words = set(re.split(r"_+", publish_norm))
-        compact_publish = re.sub(r"[^a-z0-9]", "", publish_norm.lower())
-        for name, method in self._send_methods.items():
-            params = inspect.signature(method).parameters
-            required_route = {p for p, _param in params.items() if p.startswith("_") and _param.default is inspect.Parameter.empty}
-            if not required_route <= route_keys:
-                continue
-            method_words = set(re.split(r"_+", name))
-            compact_method = re.sub(r"[^a-z0-9]", "", name.lower().replace("send", ""))
-            score = len(words & method_words)
-            if compact_method and compact_method in compact_publish:
-                score += 100
-            candidates.append((score, len(required_route), name, method, required_route))
-        if not candidates:
-            raise AttributeError(f"No AMQP send method matches {publish_name} with route keys {sorted(route_keys)}")
-        candidates.sort(reverse=True)
-        return candidates[0][3], candidates[0][4]
+    poller = AviationWeatherPoller(
+        last_polled_file=state_file,
+        station_ids=station_ids,
+        metar_poll_interval=METAR_POLL_INTERVAL,
+        sigmet_poll_interval=SIGMET_POLL_INTERVAL,
+    )
 
-    def __getattr__(self, name: str):
-        if not name.startswith("publish_"):
-            raise AttributeError(name)
-        async def publish(**kwargs):
-            method, route = self._choose_method(name, kwargs)
-            call_kwargs = {p: _topic_segment(kwargs[p[1:]]) for p in route}
-            call_kwargs["data"] = kwargs.get("data")
-            if "content_type" in inspect.signature(method).parameters and kwargs.get("content_type"):
-                call_kwargs["content_type"] = kwargs["content_type"]
-            method(**call_kwargs)
-            self.sent += 1
-        return publish
+    def utcnow_iso() -> str:
+        return datetime.now(timezone.utc).isoformat()
 
+    logger.info("Emitting station reference data via AMQP...")
+    station_count = 0
+    for raw in poller.fetch_station_json(poller.station_ids):
+        station = poller.parse_station(raw)
+        if station:
+            producer.send_station(data=station, _icao_id=station.icao_id, _time=utcnow_iso())
+            station_count += 1
+    logger.info("Sent %d station(s) via AMQP", station_count)
 
-def _manifest_path() -> pathlib.Path:
-    candidates = [pathlib.Path.cwd(), pathlib.Path(__file__).resolve().parents[2]]
-    for root in candidates:
-        xreg = root / "xreg"
-        if xreg.exists():
-            matches = list(xreg.glob("*.json"))
-            if matches:
-                return matches[0]
-    raise FileNotFoundError("xRegistry manifest not found in working directory or package parents")
+    state = poller.load_state()
+    metar_timestamps = state.get("metar_timestamps", {})
+    seen_sigmet_keys: set = set(state.get("sigmet_keys", []))
+    last_sigmet_poll = 0.0
+    last_station_refresh = time.monotonic()
 
-
-def _schema_root(schema: dict[str, Any]) -> Any:
-    node = schema.get("schema", schema)
-    root = node.get("$root")
-    if root:
-        cur = node
-        for part in root.lstrip("#/").split("/"):
-            cur = cur[part]
-        return cur, node
-    return node, node
-
-
-def _resolve_ref(ref: str, doc: dict[str, Any]) -> Any:
-    cur = doc
-    for part in ref.lstrip("#/").split("/"):
-        cur = cur[part]
-    return cur
-
-
-def _sample_for_type(type_spec: Any, doc: dict[str, Any], name: str = "value") -> Any:
-    if isinstance(type_spec, list):
-        return _sample_for_type(next((t for t in type_spec if t != "null"), "string"), doc, name)
-    if isinstance(type_spec, dict):
-        if "$ref" in type_spec:
-            return _sample_for_node(_resolve_ref(type_spec["$ref"], doc), doc)
-        return _sample_for_node(type_spec, doc)
-    if type_spec in ("string", "timestamp"):
-        return "2026-01-01T00:00:00Z" if "time" in name or "date" in name else f"sample-{name.replace('_','-')}"
-    if type_spec in ("integer", "int32", "int64"):
-        return 1
-    if type_spec in ("number", "float", "double"):
-        return 1.0
-    if type_spec == "boolean":
-        return True
-    if type_spec == "array":
-        return []
-    if type_spec == "object":
-        return {}
-    return f"sample-{name}"
-
-
-def _sample_for_node(node: dict[str, Any], doc: dict[str, Any]) -> Any:
-    if "enum" in node and node["enum"]:
-        return node["enum"][0]
-    t = node.get("type", "string")
-    if t == "object" or isinstance(t, dict) and "$ref" in t:
-        if isinstance(t, dict) and "$ref" in t:
-            return _sample_for_node(_resolve_ref(t["$ref"], doc), doc)
-        props = node.get("properties", {})
-        return {name: _sample_for_node(prop, doc) for name, prop in props.items()}
-    if t == "array":
-        return [_sample_for_node(node.get("items", {"type": "string"}), doc)]
-    return _sample_for_type(t, doc, node.get("name", "value"))
-
-
-def _data_class_for(schema_name: str):
-    data_mod = importlib.import_module(f"{PY_MODULE}_amqp_producer_data")
-    class_name = schema_name.split(".")[-1]
-    return getattr(data_mod, class_name)
-
-
-def _coerce_data(cls: type[Any], payload: dict[str, Any]) -> Any:
-    for name in ("from_serializer_dict", "from_dict"):
-        if hasattr(cls, name):
-            try:
-                return getattr(cls, name)(payload)
-            except Exception:
-                pass
-    return cls(**payload)
-
-
-def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
-    manifest = json.loads(_manifest_path().read_text(encoding="utf-8"))
-    jstruct_group = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
-    amqp_group = None
-    for endpoint in manifest.get("endpoints", {}).values():
-        if endpoint.get("protocol") != "AMQP/1.0":
-            continue
-        for group_uri in endpoint.get("messagegroups", []):
-            group_name = group_uri.strip("/").rsplit("/", 1)[-1]
-            if group_name in manifest.get("messagegroups", {}):
-                amqp_group = manifest["messagegroups"][group_name]
-                break
-        if amqp_group is not None:
-            break
-    if amqp_group is None:
-        amqp_group = next(v for k, v in manifest["messagegroups"].items() if k.endswith(".amqp"))
-    for message_name, message in amqp_group["messages"].items():
-        schema_name = None
-        if "dataschemauri" in message:
-            schema_name = message["dataschemauri"].split("/")[-1]
-        else:
-            base = message["basemessageuri"].strip("/").split("/")
-            base_msg = manifest["messagegroups"][base[1]]["messages"][base[3]]
-            schema_name = base_msg["dataschemauri"].split("/")[-1]
-        schema_entry = jstruct_group["schemas"][schema_name]["versions"]["1"]["schema"]
-        root_node, doc = _schema_root(schema_entry)
-        payload = _sample_for_node(root_node, doc)
-        data = _coerce_data(_data_class_for(schema_name), payload)
-        route = {}
-        def collect_templates(node):
-            if isinstance(node, dict):
-                if node.get("type") == "uritemplate":
-                    for key in re.findall(r"\{([A-Za-z0-9_]+)\}", node.get("value", "")):
-                        route[key] = payload.get(key, f"sample-{key.replace('_','-')}") if isinstance(payload, dict) else f"sample-{key}"
-                for child in node.values():
-                    collect_templates(child)
-            elif isinstance(node, list):
-                for child in node:
-                    collect_templates(child)
-        collect_templates(message.get("protocoloptions") or {})
-        if isinstance(payload, dict):
-            for key, value in payload.items():
-                route.setdefault(key, value)
-        # Pre-fill route with required params from all send methods (dummy values)
-        for _m_name, _m_func in adapter._send_methods.items():
-            for _p, _param in inspect.signature(_m_func).parameters.items():
-                if _p.startswith("_") and _param.default is inspect.Parameter.empty:
-                    route.setdefault(_p[1:], f"sample-{_p[1:]}")
-        try:
-            method, required = adapter._choose_method("publish_" + message_name.lower().replace(".", "_"), {**route, "data": data})
-            call_kwargs = {p: _topic_segment(route.get(p[1:], f"sample-{p[1:]}")) for p in required}
-            call_kwargs["data"] = data
-            method(**call_kwargs)
-        except (AttributeError, TypeError, KeyError) as _route_err:
-            logger.debug("Skipping message %s: %s", message_name, _route_err)
-            continue
-        adapter.sent += 1
-
-
-async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> None:
-    """Emit sample corpus via AMQP (no source-specific live acquisition handler)."""
-    logger.info("Emitting sample corpus via AMQP for %s", SOURCE_ID)
     while True:
-        emit_mock_corpus(adapter)
-        logger.info("Emitted %d sample AMQP event(s) for %s", adapter.sent, SOURCE_ID)
+        now = time.monotonic()
+
+        metar_count = 0
+        for raw in poller.fetch_metar_json(poller.station_ids):
+            metar = poller.parse_metar(raw)
+            if metar is None:
+                continue
+            if metar_timestamps.get(metar.icao_id) == metar.obs_time:
+                continue
+            producer.send_metar(data=metar, _icao_id=metar.icao_id, _time=metar.obs_time)
+            metar_timestamps[metar.icao_id] = metar.obs_time
+            metar_count += 1
+        if metar_count:
+            logger.info("Sent %d new METAR(s) via AMQP", metar_count)
+
+        if now - last_sigmet_poll >= SIGMET_POLL_INTERVAL:
+            sigmet_count = 0
+            current_keys: set = set()
+            for raw in poller.fetch_airsigmet_json():
+                sigmet = poller.parse_us_sigmet(raw)
+                if sigmet:
+                    key = poller.sigmet_dedup_key(sigmet)
+                    current_keys.add(key)
+                    if key not in seen_sigmet_keys:
+                        producer.send_sigmet(data=sigmet, _region=sigmet.region, _sigmet_id=sigmet.sigmet_id, _time=sigmet.valid_time_from)
+                        sigmet_count += 1
+            for raw in poller.fetch_isigmet_json():
+                sigmet = poller.parse_intl_sigmet(raw)
+                if sigmet:
+                    key = poller.sigmet_dedup_key(sigmet)
+                    current_keys.add(key)
+                    if key not in seen_sigmet_keys:
+                        producer.send_sigmet(data=sigmet, _region=sigmet.region, _sigmet_id=sigmet.sigmet_id, _time=sigmet.valid_time_from)
+                        sigmet_count += 1
+            seen_sigmet_keys = current_keys
+            if sigmet_count:
+                logger.info("Sent %d new SIGMET(s) via AMQP", sigmet_count)
+            last_sigmet_poll = now
+
+        if now - last_station_refresh >= STATION_REFRESH_HOURS * 3600:
+            refresh_count = 0
+            for raw in poller.fetch_station_json(poller.station_ids):
+                station = poller.parse_station(raw)
+                if station:
+                    producer.send_station(data=station, _icao_id=station.icao_id, _time=utcnow_iso())
+                    refresh_count += 1
+            logger.info("Refreshed %d station(s) via AMQP", refresh_count)
+            last_station_refresh = now
+
+        poller.save_state({
+            "metar_timestamps": metar_timestamps,
+            "sigmet_keys": list(seen_sigmet_keys),
+        })
+
         if args.once:
             break
-        await asyncio.sleep(args.polling_interval if hasattr(args, 'polling_interval') else 300)
+        await asyncio.sleep(METAR_POLL_INTERVAL)
 
 
 def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -330,20 +211,9 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     parser.add_argument("--entra-client-id", default=os.getenv("AMQP_ENTRA_CLIENT_ID"))
     parser.add_argument("--sas-key-name", default=os.getenv("AMQP_SAS_KEY_NAME"))
     parser.add_argument("--sas-key", default=os.getenv("AMQP_SAS_KEY"))
-    parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "300")))
+    parser.add_argument("--stations", default=os.getenv("AVIATIONWEATHER_STATIONS", ""))
     parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser(f"~/.{PY_MODULE}_amqp_state.json")))
     parser.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE", False))
-    parser.add_argument("--mock-mode", action="store_true", default=_env_bool(f"{ENV_PREFIX}_MOCK", False) or _env_bool(f"{ENV_PREFIX}_SAMPLE_MODE", False) or _env_bool(f"{ENV_PREFIX}_AMQP_MOCK", False))
-    # Source-specific optional knobs; ignored where not used.
-    parser.add_argument("--feeds", default=os.getenv("PTWC_TSUNAMI_FEEDS", "PAAQ,PHEB"))
-    parser.add_argument("--providers", default=os.getenv("NINA_BBK_PROVIDERS", "mowas,katwarn,biwapp,dwd,lhp,police"))
-    parser.add_argument("--regions", default=os.getenv("EAWS_ALBINA_REGIONS", "AT-07-01"))
-    parser.add_argument("--lang", default=os.getenv("EAWS_ALBINA_LANG", "en"))
-    parser.add_argument("--resources", default=os.getenv("AUTOBAHN_RESOURCES", "all"))
-    parser.add_argument("--roads", default=os.getenv("AUTOBAHN_ROADS", ""))
-    parser.add_argument("--request-concurrency", type=int, default=int(os.getenv("AUTOBAHN_REQUEST_CONCURRENCY", "8")))
-    parser.add_argument("--station-filter", default=os.getenv("STATION_FILTER", ""))
-    parser.add_argument("--max-size", type=int, default=int(os.getenv("MAX_SIZE", "1000")))
     return parser
 
 
@@ -356,30 +226,15 @@ def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
             if attempt == max_attempts - 1:
                 raise
             delay = initial_delay * (2 ** attempt)
-            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+            logger.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
                           attempt + 1, max_attempts, e, delay)
-            import time; time.sleep(delay)
+            time.sleep(delay)
+
+
 async def _async_main(args: argparse.Namespace) -> None:
-    # Retry producer connection with backoff (RBAC propagation can take minutes)
-    producer = None
-    for _attempt in range(6):
-        try:
-            producer = _retry_producer_init(lambda: _build_amqp_producer(args))
-            break
-        except Exception as _conn_err:
-            logger.warning("AMQP connection attempt %d failed: %s", _attempt + 1, _conn_err)
-            if _attempt < 5:
-                await asyncio.sleep(15 * (_attempt + 1))
-    if producer is None:
-        logger.error("Failed to connect to AMQP broker after 6 attempts")
-        return
-    adapter = MqttToAmqpAdapter(producer)
+    producer = _retry_producer_init(lambda: _build_amqp_producer(args))
     try:
-        if args.mock_mode:
-            emit_mock_corpus(adapter)
-            logger.info("Published %d mock AMQP event(s)", adapter.sent)
-        else:
-            await _run_live(args, adapter)
+        await _run_live(args, producer)
     finally:
         close = getattr(producer, "close", None)
         if close:

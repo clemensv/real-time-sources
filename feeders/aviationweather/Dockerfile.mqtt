@@ -1,7 +1,7 @@
         # syntax=docker/dockerfile:1.6
         FROM python:3.10-slim
         LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/aviationweather"
-        LABEL org.opencontainers.image.title="aviationweather → MQTT companion bridge"
+        LABEL org.opencontainers.image.title="aviationweather -> MQTT companion bridge"
         LABEL org.opencontainers.image.description="Publishes aviationweather CloudEvents over MQTT using the companion transport contract."
         LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/aviationweather/CONTAINER.md"
         LABEL org.opencontainers.image.license="MIT"
@@ -11,8 +11,10 @@
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
         COPY . /app
-        RUN pip install --no-cache-dir confluent-kafka \
-         && pip install --no-cache-dir ./aviationweather_producer/aviationweather_producer_kafka_producer \
+        RUN pip install --no-cache-dir ./aviationweather_producer/aviationweather_producer_data \
+         && pip install --no-cache-dir ./aviationweather_core \
+         && pip install --no-cache-dir ./aviationweather_mqtt_producer/aviationweather_mqtt_producer_data \
+         && pip install --no-cache-dir ./aviationweather_mqtt_producer/aviationweather_mqtt_producer_mqtt_client \
          && pip install --no-cache-dir ./aviationweather_mqtt
         ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "aviationweather_mqtt", "feed"]

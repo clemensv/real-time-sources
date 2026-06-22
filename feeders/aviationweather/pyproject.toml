@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
+    "aviationweather_core",
 ]
 
 [project.scripts]
@@ -43,3 +44,6 @@ local_scheme = "no-local-version"
 packages = [
     "aviationweather",
 ]
+
+[tool.uv.sources]
+aviationweather_core = { path = "aviationweather_core" }

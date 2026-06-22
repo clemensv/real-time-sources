@@ -1,16 +1,36 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
 [project]
-      name = "aviationweather_amqp"
-      version = "0.1.0"
-      description = "aviationweather AMQP companion feeder"
-      requires-python = ">=3.10"
-      dependencies = [
-        "python-qpid-proton>=0.39.0",
-"azure-identity>=1.16.0",
-      ]
+name = "aviationweather_amqp"
+dynamic = ["version"]
+description = "AMQP 1.0 companion feeder for aviationweather."
+authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "azure-core>=1.30.0",
+    "azure-identity>=1.17.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "python-qpid-proton>=0.39.0",
+    "aviationweather_core",
+]
 
-      [build-system]
-      requires = ["setuptools>=68"]
-      build-backend = "setuptools.build_meta"
+[project.scripts]
+aviationweather-amqp = "aviationweather_amqp.app:main"
 
-      [tool.setuptools]
-      packages = ["aviationweather_amqp"]
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["aviationweather_amqp"]
+
+[tool.uv.sources]
+aviationweather_core = { path = "../aviationweather_core" }
