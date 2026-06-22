@@ -1,4 +1,4 @@
-"""BOM Australia Weather Observation Bridge - fetches real-time weather observations from the Australian Bureau of Meteorology."""
+"""BOM Australia Weather Observation Bridge - Kafka transport."""
 
 import argparse
 import json
@@ -7,367 +7,37 @@ import os
 import time
 import typing
 import logging
-import re
 import threading
-import xml.etree.ElementTree as ET
-import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from email.utils import parsedate_to_datetime
-from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor
 from confluent_kafka import Producer
 
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningEventProducer
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherEventProducer
 from bom_australia_producer_data import Station, WarningBulletin, WeatherObservation
 
+from bom_australia_core import (
+    BOMAustraliaAPI,
+    BOM_BASE_URL,
+    BOM_STATIONS_URL,
+    STATE_OBSERVATION_PAGES,
+    STATION_LINK_PATTERN,
+    STATE_TO_PRODUCT,
+    FALLBACK_STATIONS,
+    WARNING_FEEDS,
+    WARNING_TITLE_PATTERN,
+    WARNING_FEED_STATE_PATTERN,
+    USER_AGENT,
+    _warning_id_from_url,
+    _parse_warning_feed_list,
+    _normalize_state,
+    _trim_state_bucket,
+    _load_state,
+    _save_state,
+    _parse_station_list,
+    _is_http_404,
+)
+
 logger = logging.getLogger(__name__)
-
-BOM_BASE_URL = "http://reg.bom.gov.au/fwo"
-BOM_STATIONS_URL = "http://www.bom.gov.au/climate/data/lists_by_element/stations.txt"
-
-# Per-state "all observations" landing pages. Each lists every station that
-# currently publishes 30-minute observations, paired with the correct product
-# code. This is the authoritative source for (product_id, wmo) tuples — the
-# climate stations.txt list contains many stations that do not have any 30-min
-# observation product, which produces 404s when probed blindly.
-STATE_OBSERVATION_PAGES = {
-    "NSW": "http://www.bom.gov.au/nsw/observations/nswall.shtml",
-    "VIC": "http://www.bom.gov.au/vic/observations/vicall.shtml",
-    "QLD": "http://www.bom.gov.au/qld/observations/qldall.shtml",
-    "WA": "http://www.bom.gov.au/wa/observations/waall.shtml",
-    "SA": "http://www.bom.gov.au/sa/observations/saall.shtml",
-    "TAS": "http://www.bom.gov.au/tas/observations/tasall.shtml",
-    "NT": "http://www.bom.gov.au/nt/observations/ntall.shtml",
-    "ACT": "http://www.bom.gov.au/act/observations/canberra.shtml",
-}
-
-# Matches the per-station observation links on the state pages, e.g.
-# "products/IDW60801/IDW60801.94610.shtml" -> ("IDW60801", "94610").
-STATION_LINK_PATTERN = re.compile(
-    r"products/(ID[A-Z]\d{5})/(?:ID[A-Z]\d{5})\.(\d+)\.shtml"
-)
-
-# Mapping from state abbreviation (in stations.txt) to BOM product ID prefix.
-# Retained as a last-resort fallback if the state listing scrape fails.
-STATE_TO_PRODUCT = {
-    "NSW": "IDN60801",
-    "VIC": "IDV60801",
-    "QLD": "IDQ60801",
-    "WA": "IDW60801",
-    "SA": "IDS60801",
-    "TAS": "IDT60801",
-    "NT": "IDD60801",
-    "ANT": "IDT60801",  # Antarctic stations routed through Tasmania product
-}
-
-# Fallback capital-city stations used only when station discovery fails
-FALLBACK_STATIONS = [
-    ("IDN60801", 94767),   # Sydney Airport, NSW
-    ("IDV60801", 94866),   # Melbourne Airport, VIC
-    ("IDQ60801", 94576),   # Brisbane Airport, QLD
-    ("IDW60801", 94610),   # Perth Airport, WA
-    ("IDS60801", 94648),   # Adelaide (West Terrace), SA
-    ("IDT60801", 94970),   # Hobart Airport, TAS
-    ("IDD60801", 94120),   # Darwin Airport, NT
-    ("IDN60903", 94926),   # Canberra Airport, ACT
-]
-
-WARNING_FEEDS = [
-    "https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml",
-    "https://www.bom.gov.au/fwo/IDZ00059.warnings_vic.xml",
-    "https://www.bom.gov.au/fwo/IDZ00056.warnings_qld.xml",
-    "https://www.bom.gov.au/fwo/IDZ00060.warnings_wa.xml",
-    "https://www.bom.gov.au/fwo/IDZ00057.warnings_sa.xml",
-    "https://www.bom.gov.au/fwo/IDZ00058.warnings_tas.xml",
-    "https://www.bom.gov.au/fwo/IDZ00055.warnings_nt.xml",
-]
-
-WARNING_TITLE_PATTERN = re.compile(
-    r"^(?P<issued_local_time_text>\d{2}/\d{2}:\d{2}\s+[A-Z]{2,4})\s+(?P<warning_type>.+?)(?:\s+for\s+(?P<affected_area_text>.+))?$"
-)
-WARNING_FEED_STATE_PATTERN = re.compile(r"warnings_(?P<state>[a-z]+)\.xml$", re.IGNORECASE)
-
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-bom-australia/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
-)
-
-
-class BOMAustraliaAPI:
-    """Client for the BOM weather observation JSON feeds."""
-
-    def __init__(self, base_url: str = BOM_BASE_URL, polling_interval: int = 600, fetch_workers: int = 12):
-        self.base_url = base_url
-        self.polling_interval = polling_interval
-        self.fetch_workers = max(1, fetch_workers)
-        self.session = requests.Session()
-        # BOM copyright/etiquette page asks bots to identify themselves.
-        self.session.headers["User-Agent"] = USER_AGENT
-
-    def discover_stations(self, state_filter: typing.Optional[str] = None) -> list[tuple[str, int]]:
-        """Discover active BOM observing stations.
-
-        Scrapes each per-state "all observations" page (e.g. ``nswall.shtml``)
-        and extracts the (product_id, wmo_id) pair for every station that
-        currently publishes a 30-minute observation product. Falls back to the
-        climate stations.txt list and finally a hard-coded capital-city set if
-        the per-state scrape fails for every state.
-        """
-        allowed_states: typing.Optional[set[str]] = None
-        if state_filter:
-            allowed_states = {s.strip().upper() for s in state_filter.split(",") if s.strip()}
-
-        seen: set[tuple[str, int]] = set()
-        stations: list[tuple[str, int]] = []
-
-        for state, page_url in STATE_OBSERVATION_PAGES.items():
-            if allowed_states and state not in allowed_states:
-                continue
-            try:
-                response = self.session.get(page_url, timeout=30)
-                response.raise_for_status()
-            except Exception as e:
-                logger.warning("Could not fetch %s station listing %s: %s", state, page_url, e)
-                continue
-            matches = STATION_LINK_PATTERN.findall(response.text)
-            state_count = 0
-            for product_id, wmo_str in matches:
-                try:
-                    wmo_id = int(wmo_str)
-                except ValueError:
-                    continue
-                pair = (product_id, wmo_id)
-                if pair in seen:
-                    continue
-                seen.add(pair)
-                stations.append(pair)
-                state_count += 1
-            logger.info("Discovered %d %s observing stations from %s", state_count, state, page_url)
-
-        if stations:
-            logger.info("Discovered %d total observing stations across %d states",
-                        len(stations), len(STATE_OBSERVATION_PAGES) if not allowed_states else len(allowed_states))
-            return stations
-
-        logger.warning("State listing scrape returned no stations; falling back to climate stations.txt")
-        legacy = self._discover_from_climate_list(allowed_states)
-        if legacy:
-            return legacy
-        logger.warning("Climate stations.txt fallback empty; using hard-coded capital-city list")
-        return FALLBACK_STATIONS
-
-    def _discover_from_climate_list(self, allowed_states: typing.Optional[set[str]]) -> list[tuple[str, int]]:
-        """Legacy discovery path that parses the climate stations.txt list."""
-        try:
-            response = self.session.get(BOM_STATIONS_URL, timeout=60)
-            response.raise_for_status()
-        except Exception as e:
-            logger.warning("Climate station discovery failed: %s", e)
-            return []
-
-        stations: list[tuple[str, int]] = []
-        lines = response.text.strip().split("\n")
-        for line in lines[4:]:  # skip header rows
-            if len(line) < 131:
-                continue
-            try:
-                end_year = line[63:71].strip()
-                wmo_str = line[130:].strip().replace("\r", "")
-                state = line[105:110].strip()
-
-                is_active = (end_year in ("", "..") or
-                             (end_year.isdigit() and int(end_year) >= 2025))
-                has_wmo = wmo_str not in ("", "..") and wmo_str.isdigit()
-
-                if not is_active or not has_wmo:
-                    continue
-                if allowed_states and state not in allowed_states:
-                    continue
-                product_id = STATE_TO_PRODUCT.get(state)
-                if not product_id:
-                    continue
-                stations.append((product_id, int(wmo_str)))
-            except (ValueError, IndexError):
-                continue
-        return stations
-
-    def get_station_observations(self, product_id: str, wmo_id: int) -> dict:
-        """Fetch the 72-hour observation product for a single station.
-
-        Raises ``requests.HTTPError`` on non-2xx responses (callers may treat
-        404s as benign — not every (product, wmo) tuple has a live product).
-        """
-        url = f"{self.base_url}/{product_id}/{product_id}.{wmo_id}.json"
-        response = self.session.get(url, timeout=30)
-        response.raise_for_status()
-        return response.json()
-
-    def get_warning_feed(self, feed_url: str) -> str:
-        """Fetch a BOM RSS warning feed as XML text."""
-        response = self.session.get(feed_url, timeout=30)
-        response.raise_for_status()
-        return response.text
-
-    @staticmethod
-    def parse_station(product_id: str, obs_data: dict) -> typing.Optional[Station]:
-        """Parse station reference data from an observation product response."""
-        header = obs_data.get("observations", {}).get("header", [])
-        data = obs_data.get("observations", {}).get("data", [])
-        if not header or not data:
-            return None
-        hdr = header[0]
-        first_obs = data[0]
-        wmo = first_obs.get("wmo")
-        if wmo is None:
-            return None
-        return Station(
-            station_wmo=str(wmo),
-            name=first_obs.get("name", hdr.get("name", "")),
-            product_id=product_id,
-            state=hdr.get("state", ""),
-            time_zone=hdr.get("time_zone", ""),
-            latitude=float(first_obs.get("lat", 0.0)),
-            longitude=float(first_obs.get("lon", 0.0)),
-        )
-
-    @staticmethod
-    def parse_observation(obs_record: dict, default_state: typing.Optional[str] = None) -> typing.Optional[WeatherObservation]:
-        """Parse a single observation record from the BOM JSON data array."""
-        wmo = obs_record.get("wmo")
-        utc_str = obs_record.get("aifstime_utc")
-        if wmo is None or not utc_str:
-            return None
-        try:
-            ts = datetime.strptime(utc_str, "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc).isoformat()
-        except (ValueError, TypeError):
-            return None
-
-        def to_float(v):
-            if v is None or v == "-" or v == "":
-                return None
-            try:
-                return float(v)
-            except (ValueError, TypeError):
-                return None
-
-        def to_int(v):
-            if v is None or v == "-" or v == "":
-                return None
-            try:
-                return int(v)
-            except (ValueError, TypeError):
-                return None
-
-        def to_str(v):
-            if v is None or v == "-":
-                return None
-            return str(v)
-
-        return WeatherObservation(
-            station_wmo=str(wmo),
-            station_name=obs_record.get("name", ""),
-            observation_time_utc=ts,
-            local_time=obs_record.get("local_date_time_full", ""),
-            air_temp=to_float(obs_record.get("air_temp")),
-            apparent_temp=to_float(obs_record.get("apparent_t")),
-            dewpt=to_float(obs_record.get("dewpt")),
-            rel_hum=to_int(obs_record.get("rel_hum")),
-            delta_t=to_float(obs_record.get("delta_t")),
-            wind_dir=to_str(obs_record.get("wind_dir")),
-            wind_spd_kmh=to_int(obs_record.get("wind_spd_kmh")),
-            wind_spd_kt=to_int(obs_record.get("wind_spd_kt")),
-            gust_kmh=to_int(obs_record.get("gust_kmh")),
-            gust_kt=to_int(obs_record.get("gust_kt")),
-            press=to_float(obs_record.get("press")),
-            press_qnh=to_float(obs_record.get("press_qnh")),
-            press_msl=to_float(obs_record.get("press_msl")),
-            press_tend=to_str(obs_record.get("press_tend")),
-            rain_trace=to_str(obs_record.get("rain_trace")),
-            cloud=to_str(obs_record.get("cloud")),
-            cloud_oktas=to_int(obs_record.get("cloud_oktas")),
-            cloud_base_m=to_int(obs_record.get("cloud_base_m")),
-            cloud_type=to_str(obs_record.get("cloud_type")),
-            vis_km=to_str(obs_record.get("vis_km")),
-            weather=to_str(obs_record.get("weather")),
-            sea_state=to_str(obs_record.get("sea_state")),
-            swell_dir_worded=to_str(obs_record.get("swell_dir_worded")),
-            swell_height=to_float(obs_record.get("swell_height")),
-            swell_period=to_float(obs_record.get("swell_period")),
-            latitude=float(obs_record.get("lat", 0.0)),
-            longitude=float(obs_record.get("lon", 0.0)),
-            state=to_str(obs_record.get("state")) or to_str(default_state),
-        )
-
-    @staticmethod
-    def parse_warning_feed(feed_url: str, feed_xml: str) -> list[WarningBulletin]:
-        """Parse a BOM RSS warning feed into WarningBulletin records."""
-        try:
-            root = ET.fromstring(feed_xml)
-        except ET.ParseError:
-            return []
-
-        channel = root.find("channel")
-        if channel is None:
-            return []
-
-        feed_title = " ".join((channel.findtext("title") or "").split())
-        warnings: list[WarningBulletin] = []
-
-        for item in channel.findall("item"):
-            title = " ".join((item.findtext("title") or "").split())
-            warning_url = (item.findtext("link") or "").strip()
-            published_text = (item.findtext("pubDate") or "").strip()
-            guid = (item.findtext("guid") or warning_url).strip()
-
-            if not title or not warning_url or not published_text:
-                continue
-
-            try:
-                published_at = parsedate_to_datetime(published_text).astimezone(timezone.utc).isoformat()
-            except (TypeError, ValueError, IndexError):
-                continue
-
-            warning_id = _warning_id_from_url(guid)
-            if not warning_id:
-                continue
-
-            match = WARNING_TITLE_PATTERN.match(title)
-            warning_type = title
-            issued_local_time_text = None
-            affected_area_text = None
-            if match:
-                issued_local_time_text = match.group("issued_local_time_text")
-                warning_type = match.group("warning_type")
-                affected_area_text = match.group("affected_area_text")
-
-            severity = None
-            if warning_type:
-                severity_token = warning_type.split()[0].strip().lower()
-                severity = re.sub(r"[^a-z0-9]+", "-", severity_token).strip("-") or None
-
-            state = None
-            state_match = WARNING_FEED_STATE_PATTERN.search(feed_url)
-            if state_match:
-                state = state_match.group("state").lower()
-
-            warnings.append(WarningBulletin(
-                warning_id=warning_id,
-                warning_url=warning_url,
-                feed_url=feed_url,
-                feed_title=feed_title,
-                title=title,
-                published_at=published_at,
-                issued_local_time_text=issued_local_time_text,
-                warning_type=warning_type,
-                affected_area_text=affected_area_text,
-                severity=severity,
-                state=state,
-            ))
-
-        return warnings
 
 
 def parse_connection_string(connection_string: str) -> dict:
@@ -395,103 +65,8 @@ def parse_connection_string(connection_string: str) -> dict:
     return config
 
 
-def _warning_id_from_url(url: str) -> str:
-    """Extract a BOM warning identifier from the linked warning product URL."""
-    basename = os.path.basename(url.strip().rstrip("/"))
-    if basename.endswith(".shtml"):
-        basename = basename[:-6]
-    return basename
-
-
-def _parse_warning_feed_list(feed_csv: str) -> list[str]:
-    """Parse a comma-separated list of warning feed URLs or relative feed paths."""
-    feeds = []
-    for entry in feed_csv.split(","):
-        entry = entry.strip()
-        if not entry:
-            continue
-        if entry.startswith("http://") or entry.startswith("https://"):
-            feeds.append(entry)
-        else:
-            feeds.append(f"https://www.bom.gov.au{entry}")
-    return feeds
-
-
-def _normalize_state(state: typing.Any) -> dict[str, dict[str, str]]:
-    """Normalize persisted state and preserve compatibility with legacy flat observation maps."""
-    normalized = {"observations": {}, "warnings": {}}
-    if not isinstance(state, dict):
-        return normalized
-    if "observations" in state or "warnings" in state:
-        observations = state.get("observations", {})
-        warnings = state.get("warnings", {})
-        if isinstance(observations, dict):
-            normalized["observations"].update(observations)
-        if isinstance(warnings, dict):
-            normalized["warnings"].update(warnings)
-        return normalized
-
-    normalized["observations"].update(state)
-    return normalized
-
-
-def _trim_state_bucket(bucket: dict[str, str]) -> dict[str, str]:
-    """Trim a state bucket when it grows beyond the retention threshold."""
-    if len(bucket) <= 100000:
-        return bucket
-    keys = list(bucket.keys())
-    return {key: bucket[key] for key in keys[-50000:]}
-
-
-def _load_state(state_file: str) -> dict:
-    """Load persisted dedup state from a JSON file."""
-    try:
-        if state_file and os.path.exists(state_file):
-            with open(state_file, "r", encoding="utf-8") as f:
-                return _normalize_state(json.load(f))
-    except Exception as e:
-        logging.warning("Could not load state from %s: %s", state_file, e)
-    return _normalize_state(None)
-
-
-def _save_state(state_file: str, data: dict) -> None:
-    """Save dedup state to a JSON file, keeping at most 100000 entries."""
-    if not state_file:
-        return
-    try:
-        state = _normalize_state(data)
-        state["observations"] = _trim_state_bucket(state["observations"])
-        state["warnings"] = _trim_state_bucket(state["warnings"])
-        with open(state_file, "w", encoding="utf-8") as f:
-            json.dump(state, f)
-    except Exception as e:
-        logging.warning("Could not save state to %s: %s", state_file, e)
-
-
-def _parse_station_list(station_csv: str) -> list[tuple[str, int]]:
-    """Parse a comma-separated list of product_id:wmo_id pairs."""
-    stations = []
-    for entry in station_csv.split(","):
-        entry = entry.strip()
-        if ":" in entry:
-            pid, wmo = entry.split(":", 1)
-            stations.append((pid.strip(), int(wmo.strip())))
-    return stations
-
-
-def _is_http_404(exc: Exception) -> bool:
-    response = getattr(exc, "response", None)
-    return bool(response is not None and getattr(response, "status_code", None) == 404)
-
-
 def send_stations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProducer, station_list: list[tuple[str, int]]) -> int:
-    """Fetch and emit station reference data for all configured stations.
-
-    Fetches are parallelized across a thread pool because the per-station 72-h
-    product is one HTTP round-trip per station and the inventory exceeds 900
-    stations nationwide. ``confluent_kafka.Producer.produce`` is thread-safe so
-    we emit directly from worker threads.
-    """
+    """Fetch and emit station reference data for all configured stations."""
     sent_counter = {"n": 0}
     sent_lock = threading.Lock()
 
@@ -508,9 +83,18 @@ def send_stations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProducer, 
         try:
             station = api.parse_station(product_id, obs_data)
             if station:
+                kafka_station = Station(
+                    station_wmo=station.station_wmo,
+                    name=station.name,
+                    product_id=station.product_id,
+                    state=station.state,
+                    time_zone=station.time_zone,
+                    latitude=station.latitude,
+                    longitude=station.longitude,
+                )
                 producer.send_au_gov_bom_weather_station(
                     str(station.station_wmo),
-                    station,
+                    kafka_station,
                     flush_producer=False,
                 )
                 with sent_lock:
@@ -528,11 +112,7 @@ def send_stations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProducer, 
 
 def feed_observations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProducer,
                       station_list: list[tuple[str, int]], previous_readings: dict) -> int:
-    """Fetch latest observations for all stations and emit new ones.
-
-    Per-station fetches run in parallel; dedup state mutation is serialized
-    behind a lock so writes from worker threads don't race.
-    """
+    """Fetch latest observations for all stations and emit new ones."""
     sent_counter = {"n": 0}
     state_lock = threading.Lock()
 
@@ -560,9 +140,43 @@ def feed_observations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProduc
                 return
             previous_readings[reading_key] = obs.observation_time_utc
         try:
+            kafka_obs = WeatherObservation(
+                station_wmo=obs.station_wmo,
+                station_name=obs.station_name,
+                observation_time_utc=obs.observation_time_utc,
+                local_time=obs.local_time,
+                air_temp=obs.air_temp,
+                apparent_temp=obs.apparent_temp,
+                dewpt=obs.dewpt,
+                rel_hum=obs.rel_hum,
+                delta_t=obs.delta_t,
+                wind_dir=obs.wind_dir,
+                wind_spd_kmh=obs.wind_spd_kmh,
+                wind_spd_kt=obs.wind_spd_kt,
+                gust_kmh=obs.gust_kmh,
+                gust_kt=obs.gust_kt,
+                press=obs.press,
+                press_qnh=obs.press_qnh,
+                press_msl=obs.press_msl,
+                press_tend=obs.press_tend,
+                rain_trace=obs.rain_trace,
+                cloud=obs.cloud,
+                cloud_oktas=obs.cloud_oktas,
+                cloud_base_m=obs.cloud_base_m,
+                cloud_type=obs.cloud_type,
+                vis_km=obs.vis_km,
+                weather=obs.weather,
+                sea_state=obs.sea_state,
+                swell_dir_worded=obs.swell_dir_worded,
+                swell_height=obs.swell_height,
+                swell_period=obs.swell_period,
+                latitude=obs.latitude,
+                longitude=obs.longitude,
+                state=obs.state,
+            )
             producer.send_au_gov_bom_weather_weather_observation(
                 str(obs.station_wmo),
-                obs,
+                kafka_obs,
                 flush_producer=False,
             )
             with state_lock:
@@ -588,9 +202,22 @@ def feed_warnings(api: BOMAustraliaAPI, producer: AUGovBOMWarningEventProducer,
             for bulletin in bulletins:
                 if previous_warnings.get(bulletin.warning_id) == bulletin.published_at:
                     continue
+                kafka_bulletin = WarningBulletin(
+                    warning_id=bulletin.warning_id,
+                    warning_url=bulletin.warning_url,
+                    feed_url=bulletin.feed_url,
+                    feed_title=bulletin.feed_title,
+                    title=bulletin.title,
+                    published_at=bulletin.published_at,
+                    issued_local_time_text=bulletin.issued_local_time_text,
+                    warning_type=bulletin.warning_type,
+                    affected_area_text=bulletin.affected_area_text,
+                    severity=bulletin.severity,
+                    state=bulletin.state,
+                )
                 producer.send_au_gov_bom_warning_warning_bulletin(
                     bulletin.warning_id,
-                    bulletin,
+                    kafka_bulletin,
                     flush_producer=False,
                 )
                 previous_warnings[bulletin.warning_id] = bulletin.published_at
@@ -621,13 +248,10 @@ def main():
                         help="Comma-separated BOM warning RSS feed URLs or /fwo/... feed paths")
     parser.add_argument("--once", action="store_true",
                         default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
-                        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.")
+                        help="Exit after one polling cycle (also via ONCE_MODE env var).")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List configured stations")
     feed_parser = subparsers.add_parser("feed", help="Feed data to Kafka")
-    feed_parser.add_argument("--once", action="store_true",
-                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
-                             help='Exit after one polling cycle (also via ONCE_MODE env var).')
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
 
@@ -665,7 +289,7 @@ def main():
         if "sasl.username" in kafka_config:
             kafka_config["security.protocol"] = "SASL_SSL" if tls_enabled else "SASL_PLAINTEXT"
         elif tls_enabled and "security.protocol" not in kafka_config:
-            pass  # don't force SSL for plain bootstrap
+            pass
         kafka_config["client.id"] = "bom-australia-bridge"
         kafka_producer = Producer(kafka_config)
         event_producer = AUGovBOMWeatherEventProducer(kafka_producer, args.topic)

@@ -1,15 +1,33 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "bom_australia_mqtt"
-version = "0.1.0"
-description = "bom-australia MQTT companion feeder"
-requires-python = ">=3.10"
+dynamic = ["version"]
+description = "MQTT companion feeder for bom-australia."
+authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
+requires-python = ">=3.10,<4.0"
 dependencies = [
-  "paho-mqtt>=2.1.0",
+    "paho-mqtt>=2.1.0",
+    "requests>=2.34.2",
+    "dataclasses_json>=0.6.7",
+    "bom_australia_core",
 ]
 
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+[project.scripts]
+bom-australia-mqtt = "bom_australia_mqtt.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["bom_australia_mqtt"]
+
+[tool.uv.sources]
+bom_australia_core = { path = "../bom_australia_core" }
