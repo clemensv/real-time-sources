@@ -14,7 +14,12 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from seattle_911.seattle_911 import DEFAULT_LOOKBACK_HOURS, DEFAULT_OVERLAP_MINUTES, DEFAULT_POLL_INTERVAL_SECONDS, SeattleFire911Bridge
+from seattle_911_core import (
+    DEFAULT_LOOKBACK_HOURS,
+    DEFAULT_OVERLAP_MINUTES,
+    DEFAULT_POLL_INTERVAL_SECONDS,
+    SeattleFire911Bridge,
+)
 from seattle_911_mqtt_producer_mqtt_client.client import USWASeattleFire911MqttMqttClient
 import json
 

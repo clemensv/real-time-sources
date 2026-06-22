@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
+    "seattle_911_core",
 ]
 
 [project.scripts]
@@ -42,3 +43,6 @@ local_scheme = "no-local-version"
 packages = [
     "seattle_911",
 ]
+
+[tool.uv.sources]
+seattle_911_core = { path = "seattle_911_core" }
