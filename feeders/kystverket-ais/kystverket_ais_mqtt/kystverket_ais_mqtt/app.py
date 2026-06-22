@@ -50,8 +50,8 @@ from kystverket_ais_mqtt_producer_data import (
 )
 from kystverket_ais_mqtt_producer_mqtt_client.client import NOKystverketAISMqttMqttClient
 
-from kystverket_ais.nmea_decoder import NMEADecoder, DecodedAIS
-from kystverket_ais.tcp_source import TCPSource, RawNMEASentence
+from kystverket_ais_core import NMEADecoder, DecodedAIS
+from kystverket_ais_core import TCPSource, RawNMEASentence
 
 from kystverket_ais_mqtt.enrichment import (
     MID_ISO_VERSION,

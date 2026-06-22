@@ -16,8 +16,8 @@ from kystverket_ais_producer_data.staticdataclassb import StaticDataClassB
 from kystverket_ais_producer_data.aidtonavigation import AidToNavigation
 from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISEventProducer
 
-from kystverket_ais.nmea_decoder import NMEADecoder, DecodedAIS, SUPPORTED_TYPES
-from kystverket_ais.tcp_source import TCPSource, RawNMEASentence
+from kystverket_ais_core import NMEADecoder, DecodedAIS, SUPPORTED_TYPES
+from kystverket_ais_core import TCPSource, RawNMEASentence
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)

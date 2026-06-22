@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "AMQP 1.0 feeder for Kystverket AIS"
 requires-python = ">=3.10"
 dependencies = [
+    "kystverket_ais_core",
     "python-qpid-proton>=0.40.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
@@ -25,3 +26,6 @@ include = ["kystverket_ais_amqp*"]
 
 [tool.setuptools.package-data]
 kystverket_ais_amqp = ["mid_iso.csv"]
+
+[tool.uv.sources]
+kystverket_ais_core = { path = "../kystverket_ais_core" }

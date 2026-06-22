@@ -21,7 +21,7 @@ Event families:
 Per the xRegistry keying instructions, every UNS topic placeholder is a
 real field on the published dataclass: ``mmsi`` and ``geohash5`` are
 the stable identity axes, ``flag`` is derived from the MMSI's MID via
-the ITU registry shipped at :mod:`kystverket_ais_mqtt.enrichment`, and
+the ITU registry shipped at :mod:`kystverket_ais_amqp.enrichment`, and
 ``ship_type`` is derived from the ITU-R M.1371 ShipType code (with an
 in-process cache so position reports inherit the bucket published by
 the most recent ShipStatic / StaticDataClassB record for the same
@@ -46,8 +46,8 @@ from kystverket_ais_amqp_producer_data import (
 )
 from kystverket_ais_amqp_producer_amqp_producer.producer import NOKystverketAISAmqpProducer
 
-from kystverket_ais.nmea_decoder import NMEADecoder, DecodedAIS
-from kystverket_ais.tcp_source import TCPSource, RawNMEASentence
+from kystverket_ais_core import NMEADecoder, DecodedAIS
+from kystverket_ais_core import TCPSource, RawNMEASentence
 
 from .enrichment import (
     MID_ISO_VERSION,
@@ -56,7 +56,7 @@ from .enrichment import (
     ship_type_bucket,
 )
 
-logger = logging.getLogger("kystverket_ais_mqtt")
+logger = logging.getLogger("kystverket_ais_amqp")
 
 
 def _mmsi9(value: Any) -> Optional[str]:
@@ -223,7 +223,7 @@ def _build_aton(fields: Dict[str, Any], decoded: DecodedAIS,
     )
 
 
-class KystverketAisMqttBridge:
+class KystverketAisAmqpBridge:
     DEFAULT_TCP_HOST = "153.44.253.27"
     DEFAULT_TCP_PORT = 5631
 
@@ -295,7 +295,7 @@ class KystverketAisMqttBridge:
             gh = geohash5(*cached_pos) if cached_pos else "00000"
             data = _build_static(fields, decoded, flag, bucket, gh, ship_type_code)
             if data is not None:
-                await self.client.publish_no_kystverket_ais_mqtt_ship_static(
+                await self.client.publish_ship_static(
                     mmsi=data.mmsi, flag=data.flag, ship_type=data.ship_type,
                     geohash5=data.geohash5, data=data, qos=0, retain=False,
                 )
@@ -304,90 +304,17 @@ class KystverketAisMqttBridge:
             data = _build_position(fields, decoded, flag, bucket)
             if data is not None:
                 self.position_cache.set(mmsi9, data.latitude, data.longitude)
-                await self.client.publish_no_kystverket_ais_mqtt_position_report(
+                await self.client.publish_position_report(
                     mmsi=data.mmsi, flag=data.flag, ship_type=data.ship_type,
                     geohash5=data.geohash5, data=data, qos=0, retain=False,
                 )
         elif decoded.event_type == "aid_to_navigation":
             data = _build_aton(fields, decoded, flag)
             if data is not None:
-                await self.client.publish_no_kystverket_ais_mqtt_aid_to_navigation(
+                await self.client.publish_aid_to_navigation(
                     mmsi=data.mmsi, flag=data.flag, ship_type=data.ship_type,
                     geohash5=data.geohash5, data=data, qos=0, retain=False,
                 )
-
-    async def emit_mock_corpus(self) -> None:
-        """Publish one synthetic message per family for Docker E2E."""
-        now = datetime.now(timezone.utc).isoformat()
-
-        # Static — MMSI MID 257 = Norway, ShipType 70 = cargo
-        static = DecodedAIS(
-            msg_type=5,
-            event_type="static_voyage_data",
-            mmsi=257_555_001,
-            station_id="MOCK-NO",
-            receive_time=datetime.now(timezone.utc),
-            fields={
-                "mmsi": 257_555_001,
-                "imo_number": 9_111_222,
-                "callsign": "LXXX",
-                "ship_name": "MOCK FJORD CARGO",
-                "ship_type": 70,
-                "dimension_to_bow": 100,
-                "dimension_to_stern": 50,
-                "dimension_to_port": 10,
-                "dimension_to_starboard": 22,
-                "draught": 8.5,
-                "destination": "NOOSL",
-                "eta_month": 5, "eta_day": 23, "eta_hour": 12, "eta_minute": 0,
-                "timestamp": now, "station_id": "MOCK-NO",
-            },
-        )
-        await self.dispatch(static)
-
-        # Position class A
-        pos = DecodedAIS(
-            msg_type=1,
-            event_type="position_report_class_a",
-            mmsi=257_555_001,
-            station_id="MOCK-NO",
-            receive_time=datetime.now(timezone.utc),
-            fields={
-                "mmsi": 257_555_001,
-                "navigation_status": 0,
-                "rate_of_turn": 0.0,
-                "speed_over_ground": 12.3,
-                "position_accuracy": 1,
-                "longitude": 10.7522,
-                "latitude": 59.9139,
-                "course_over_ground": 95.1,
-                "true_heading": 95,
-                "timestamp": now,
-                "station_id": "MOCK-NO",
-                "msg_type": 1,
-            },
-        )
-        await self.dispatch(pos)
-
-        # AtoN (MMSI 992 257 xxx = Norwegian AtoN)
-        aton = DecodedAIS(
-            msg_type=21,
-            event_type="aid_to_navigation",
-            mmsi=992_257_001,
-            station_id="MOCK-NO",
-            receive_time=datetime.now(timezone.utc),
-            fields={
-                "mmsi": 992_257_001,
-                "aid_type": 1,
-                "name": "OSLOFJORD BUOY 7",
-                "position_accuracy": 1,
-                "longitude": 10.74,
-                "latitude": 59.40,
-                "timestamp": now,
-                "station_id": "MOCK-NO",
-            },
-        )
-        await self.dispatch(aton)
 
 
 
@@ -465,25 +392,21 @@ class KystverketAisAmqpClient:
     def __init__(self, producer: NOKystverketAISAmqpProducer):
         self.producer = producer
 
-    async def publish_no_kystverket_ais_mqtt_position_report(self, *, mmsi, flag, ship_type, geohash5, data, **_):
+    async def publish_position_report(self, *, mmsi, flag, ship_type, geohash5, data, **_):
         self.producer.send_position_report(data=data, _mmsi=mmsi, _flag=flag, _ship_type=ship_type, _geohash5=geohash5)
 
-    async def publish_no_kystverket_ais_mqtt_ship_static(self, *, mmsi, flag, ship_type, geohash5, data, **_):
+    async def publish_ship_static(self, *, mmsi, flag, ship_type, geohash5, data, **_):
         self.producer.send_ship_static(data=data, _mmsi=mmsi, _flag=flag, _ship_type=ship_type, _geohash5=geohash5)
 
-    async def publish_no_kystverket_ais_mqtt_aid_to_navigation(self, *, mmsi, flag, ship_type, geohash5, data, **_):
+    async def publish_aid_to_navigation(self, *, mmsi, flag, ship_type, geohash5, data, **_):
         self.producer.send_aid_to_navigation(data=data, _mmsi=mmsi, _flag=flag, _ship_type=ship_type, _geohash5=geohash5)
 
 
 async def _run(args: argparse.Namespace) -> None:
     producer = create_amqp_producer(args, NOKystverketAISAmqpProducer)
     client = KystverketAisAmqpClient(producer)
-    bridge = KystverketAisMqttBridge(client, tcp_host=args.tcp_host, tcp_port=args.tcp_port)
+    bridge = KystverketAisAmqpBridge(client, tcp_host=args.tcp_host, tcp_port=args.tcp_port)
     try:
-        if args.mock:
-            logger.info("Mock mode: emitting synthetic Kystverket AIS corpus to AMQP and exiting")
-            await bridge.emit_mock_corpus()
-            return
         await bridge.run(max_events=args.max_events)
     finally:
         producer.close()
@@ -507,10 +430,9 @@ def main() -> None:
     sub = p.add_subparsers(dest="command")
     feed = sub.add_parser("feed")
     add_amqp_arguments(feed, "kystverket-ais")
-    feed.add_argument("--tcp-host", default=os.getenv("AIS_TCP_HOST", KystverketAisMqttBridge.DEFAULT_TCP_HOST))
-    feed.add_argument("--tcp-port", type=int, default=int(os.getenv("AIS_TCP_PORT", str(KystverketAisMqttBridge.DEFAULT_TCP_PORT))))
+    feed.add_argument("--tcp-host", default=os.getenv("AIS_TCP_HOST", KystverketAisAmqpBridge.DEFAULT_TCP_HOST))
+    feed.add_argument("--tcp-port", type=int, default=int(os.getenv("AIS_TCP_PORT", str(KystverketAisAmqpBridge.DEFAULT_TCP_PORT))))
     feed.add_argument("--max-events", type=int, default=int(os.getenv("KYSTVERKET_AIS_MAX_EVENTS", "0")) or None)
-    feed.add_argument("--mock", action="store_true", default=os.getenv("KYSTVERKET_AIS_MOCK", "").lower() in ("1","true","yes"))
     args = p.parse_args()
     if args.command != "feed":
         p.print_help(); sys.exit(1)

@@ -6,20 +6,16 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "kystverket-ais-mqtt"
+name = "kystverket_ais_core"
 dynamic = [
     "version",
 ]
-description = "Kystverket AIS firehose -> MQTT/UNS non-retained bridge"
+description = "Transport-neutral acquisition and decoding for Kystverket AIS feeders."
 authors = [
-    { name = "clemensv" },
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "kystverket_ais_core",
-    "cloudevents>=1.11.0,<2.0.0",
-    "dataclasses_json>=0.6.7",
-    "paho-mqtt>=2.1.0",
     "pyais>=2.7.0",
 ]
 
@@ -30,8 +26,5 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "kystverket_ais_mqtt",
+    "kystverket_ais_core",
 ]
-
-[tool.uv.sources]
-kystverket_ais_core = { path = "../kystverket_ais_core" }
