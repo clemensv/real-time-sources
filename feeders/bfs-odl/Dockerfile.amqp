@@ -26,10 +26,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-
-RUN pip install --no-cache-dir ./bfs_odl_core \
-
- && pip install --no-cache-dir ./bfs_odl_amqp_producer/bfs_odl_amqp_producer_data \
+RUN pip install --no-cache-dir ./bfs_odl_amqp_producer/bfs_odl_amqp_producer_data \
  && pip install --no-cache-dir ./bfs_odl_producer/bfs_odl_producer_data && pip install --no-cache-dir ./bfs_odl_amqp_producer/bfs_odl_amqp_producer_amqp_producer \
  && pip install --no-cache-dir . \
  && pip install --no-cache-dir ./bfs_odl_amqp \

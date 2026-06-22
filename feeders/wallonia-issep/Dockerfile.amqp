@@ -26,10 +26,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-
-RUN pip install --no-cache-dir ./wallonia_issep_core \
-
- && pip install --no-cache-dir ./wallonia_issep_amqp_producer/wallonia_issep_amqp_producer_data \
+RUN pip install --no-cache-dir ./wallonia_issep_amqp_producer/wallonia_issep_amqp_producer_data \
  && pip install --no-cache-dir ./wallonia_issep_amqp_producer/wallonia_issep_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./wallonia_issep_producer/wallonia_issep_producer_data \
  && pip install --no-cache-dir ./wallonia_issep_producer/wallonia_issep_producer_kafka_producer \

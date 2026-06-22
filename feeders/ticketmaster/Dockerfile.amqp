@@ -19,6 +19,5 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./ticketmaster_core \
- && pip install --no-cache-dir ./ticketmaster_amqp_producer/ticketmaster_amqp_producer_data && pip install --no-cache-dir ./ticketmaster_amqp_producer/ticketmaster_amqp_producer_amqp_producer && pip install --no-cache-dir ./ticketmaster_amqp
+RUN pip install --no-cache-dir ./ticketmaster_amqp_producer/ticketmaster_amqp_producer_data && pip install --no-cache-dir ./ticketmaster_amqp_producer/ticketmaster_amqp_producer_amqp_producer && pip install --no-cache-dir ./ticketmaster_amqp
 CMD ["python", "-m", "ticketmaster_amqp", "feed"]

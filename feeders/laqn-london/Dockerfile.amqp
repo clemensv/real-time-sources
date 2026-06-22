@@ -20,8 +20,7 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./laqn_london_core \
- && pip install --no-cache-dir ./laqn_london_amqp_producer/laqn_london_amqp_producer_data  && pip install --no-cache-dir ./laqn_london_amqp_producer/laqn_london_amqp_producer_amqp_producer  && pip install --no-cache-dir ./laqn_london_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
+RUN pip install --no-cache-dir ./laqn_london_amqp_producer/laqn_london_amqp_producer_data  && pip install --no-cache-dir ./laqn_london_amqp_producer/laqn_london_amqp_producer_amqp_producer  && pip install --no-cache-dir ./laqn_london_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
 ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="laqn-london"
 CMD ["python", "-m", "laqn_london_amqp", "feed"]

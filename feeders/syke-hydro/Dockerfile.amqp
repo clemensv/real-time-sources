@@ -19,8 +19,7 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./syke_hydro_core \
- && pip install --no-cache-dir ./syke_hydro_amqp_producer/syke_hydro_amqp_producer_data \
+RUN pip install --no-cache-dir ./syke_hydro_amqp_producer/syke_hydro_amqp_producer_data \
  && pip install --no-cache-dir ./syke_hydro_amqp_producer/syke_hydro_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./syke_hydro_amqp \
  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \

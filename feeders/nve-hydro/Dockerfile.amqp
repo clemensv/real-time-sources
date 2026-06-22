@@ -26,10 +26,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-
-RUN pip install --no-cache-dir ./nve_hydro_core \
-
- && pip install --no-cache-dir ./nve_hydro_amqp_producer/nve_hydro_amqp_producer_data \
+RUN pip install --no-cache-dir ./nve_hydro_amqp_producer/nve_hydro_amqp_producer_data \
  && pip install --no-cache-dir ./nve_hydro_amqp_producer/nve_hydro_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./nve_hydro_producer/nve_hydro_producer_data \
  && pip install --no-cache-dir ./nve_hydro_producer/nve_hydro_producer_kafka_producer \
