@@ -305,16 +305,8 @@
                   "value": "[parameters('erddapMock')]"
                 },
                 {
-                  "name": "POLLING_INTERVAL",
-                  "value": "[parameters('pollingInterval')]"
-                },
-                {
                   "name": "REFERENCE_REFRESH_INTERVAL",
                   "value": "[parameters('referenceRefreshInterval')]"
-                },
-                {
-                  "name": "STATE_FILE",
-                  "value": "[parameters('stateFile')]"
                 },
                 {
                   "name": "ONCE_MODE",

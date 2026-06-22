@@ -372,10 +372,6 @@
                   "value": "[parameters('referenceRefreshInterval')]"
                 },
                 {
-                  "name": "STATE_FILE",
-                  "value": "[parameters('stateFile')]"
-                },
-                {
                   "name": "LOG_LEVEL",
                   "value": "[parameters('logLevel')]"
                 },

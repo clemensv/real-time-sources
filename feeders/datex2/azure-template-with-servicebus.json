@@ -312,10 +312,6 @@
                   "value": "[parameters('datex2Mock')]"
                 },
                 {
-                  "name": "POLLING_INTERVAL",
-                  "value": "[parameters('pollingInterval')]"
-                },
-                {
                   "name": "ONCE_MODE",
                   "value": "[parameters('onceMode')]"
                 },
@@ -324,16 +320,8 @@
                   "value": "[parameters('logLevel')]"
                 },
                 {
-                  "name": "STATE_FILE",
-                  "value": "[parameters('stateFile')]"
-                },
-                {
                   "name": "DATEX2_STATE_FILE",
                   "value": "[parameters('datex2StateFile')]"
-                },
-                {
-                  "name": "LOG_LEVEL",
-                  "value": "INFO"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",

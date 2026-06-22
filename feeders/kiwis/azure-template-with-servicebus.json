@@ -302,10 +302,6 @@
                   "value": "[parameters('kiwisMaxTimeseries')]"
                 },
                 {
-                  "name": "POLLING_INTERVAL",
-                  "value": "[parameters('pollingInterval')]"
-                },
-                {
                   "name": "KIWIS_STATE_FILE",
                   "value": "[parameters('kiwisStateFile')]"
                 },
