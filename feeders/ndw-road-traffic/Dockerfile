@@ -10,10 +10,10 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install --no-cache-dir ndw_road_traffic_producer/ndw_road_traffic_producer_data && \
-    pip install --no-cache-dir ndw_road_traffic_producer/ndw_road_traffic_producer_kafka_producer && \
+RUN pip install --no-cache-dir ndw_road_traffic_producer/ndw_road_traffic_producer_data \
+ && pip install --no-cache-dir ndw_road_traffic_producer/ndw_road_traffic_producer_kafka_producer \
  && pip install --no-cache-dir ./ndw_road_traffic_core \
-    pip install --no-cache-dir .
+ && pip install --no-cache-dir .
 
 ENV POLLING_INTERVAL=60
 

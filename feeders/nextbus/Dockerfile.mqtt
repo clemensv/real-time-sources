@@ -10,9 +10,9 @@ WORKDIR /app
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
- && pip install --no-cache-dir ./nextbus_mqtt_producer/nextbus_mqtt_producer_data \
+RUN pip install --no-cache-dir ./nextbus_mqtt_producer/nextbus_mqtt_producer_data \
  && pip install --no-cache-dir ./nextbus_mqtt_producer/nextbus_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./nextbus_core \
-RUN pip install --no-cache-dir ./nextbus_mqtt
+ && pip install --no-cache-dir ./nextbus_mqtt
 ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "nextbus_mqtt", "feed"]
