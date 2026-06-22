@@ -5,6 +5,7 @@ description = "smhi-weather MQTT companion feeder"
 requires-python = ">=3.10"
 dependencies = [
   "paho-mqtt>=2.1.0",
+  "smhi_weather_core",
 ]
 
 [build-system]
@@ -13,3 +14,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["smhi_weather_mqtt"]
+
+[tool.uv.sources]
+smhi_weather_core = { path = "../smhi_weather_core" }
