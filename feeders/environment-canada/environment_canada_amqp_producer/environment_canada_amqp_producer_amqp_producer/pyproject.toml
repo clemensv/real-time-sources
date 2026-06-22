@@ -8,7 +8,7 @@ packages = [{include = "environment_canada_amqp_producer_amqp_producer", from = 
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-environment-canada-amqp-producer-data = {path = "../environment_canada_amqp_producer_data", develop = true}  
+environment-canada-amqp-producer-data = "*"  
 python-qpid-proton = ">=0.39.0"
 cloudevents = ">=1.10.1,<2.0.0"
 azure-identity = ">=1.15.0"

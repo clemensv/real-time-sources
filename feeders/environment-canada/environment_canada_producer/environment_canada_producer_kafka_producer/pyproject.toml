@@ -7,7 +7,7 @@ packages = [{include = "environment_canada_producer_kafka_producer", from = "src
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-environment-canada-producer-data = {path = "../environment_canada_producer_data", develop = true}
+environment-canada-producer-data = "*"
 confluent-kafka = ">=2.4.0"
 cloudevents = ">=1.10.1,<2.0.0"
 

@@ -9,7 +9,7 @@ description = "Transport-agnostic acquisition for the GTFS bridge."
 requires-python = ">=3.10,<4.0"
 dependencies = [
     "cryptography>=48.0.1",
-    "gtfs-rt-producer-data @ file:../gtfs_rt_producer/gtfs_rt_producer_data",
+    "gtfs-rt-producer-data",
     "gtfs-realtime-bindings>=1.0.0",
     "requests>=2.34.2",
 ]

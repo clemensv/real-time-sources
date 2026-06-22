@@ -7,7 +7,7 @@ packages = [{include = "kiwis_mqtt_producer_mqtt_client", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-kiwis-mqtt-producer-data = {path = "../kiwis_mqtt_producer_data", develop = true}
+kiwis-mqtt-producer-data = "*"
 paho-mqtt = ">=2.1.0"
 cloudevents = ">=1.10.1,<2.0.0"
 

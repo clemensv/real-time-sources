@@ -8,7 +8,7 @@ packages = [{include = "hko_hong_kong_amqp_producer_amqp_producer", from = "src"
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-hko-hong-kong-amqp-producer-data = {path = "../hko_hong_kong_amqp_producer_data", develop = true}  
+hko-hong-kong-amqp-producer-data = "*"  
 python-qpid-proton = ">=0.39.0"
 cloudevents = ">=1.10.1,<2.0.0"
 azure-identity = ">=1.15.0"

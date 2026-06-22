@@ -9,9 +9,9 @@ description = "AMQP companion feeder for GTFS"
 requires-python = ">=3.10"
 dependencies = [
     "cloudevents>=1.12.1,<2.0.0",
-    "gtfs-amqp-producer-amqp-producer @ file:../gtfs_amqp_producer/gtfs_amqp_producer_amqp_producer",
-    "gtfs-amqp-producer-data @ file:../gtfs_amqp_producer/gtfs_amqp_producer_data",
-    "gtfs-core @ file:../gtfs_core",
+    "gtfs-amqp-producer-amqp-producer ",
+    "gtfs-amqp-producer-data ",
+    "gtfs-core ",
     "python-qpid-proton>=0.40.0",
 ]
 

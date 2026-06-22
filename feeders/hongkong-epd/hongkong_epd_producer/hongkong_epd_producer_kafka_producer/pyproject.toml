@@ -7,7 +7,7 @@ packages = [{include = "hongkong_epd_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-hongkong-epd-producer-data = {path = "../hongkong_epd_producer_data", develop = true}
+hongkong-epd-producer-data = "*"
 confluent-kafka = ">=2.4.0"
 cloudevents = ">=1.10.1,<2.0.0"
 
