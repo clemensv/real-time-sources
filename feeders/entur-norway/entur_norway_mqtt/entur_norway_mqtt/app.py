@@ -15,7 +15,7 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from entur_norway.entur_norway import EnturNorwayBridge, _has_more_data
+from entur_norway_core import EnturNorwayBridge, _has_more_data
 from entur_norway_mqtt_producer_mqtt_client.client import NoEnturMqttMqttClient
 import json
 

@@ -20,6 +20,7 @@ dependencies = [
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
     "requests>=2.32.3",
+    "entur_norway_core",
 ]
 
 [project.scripts]
@@ -34,3 +35,6 @@ local_scheme = "no-local-version"
 packages = [
     "entur_norway_mqtt",
 ]
+
+[tool.uv.sources]
+entur_norway_core = { path = "../entur_norway_core" }

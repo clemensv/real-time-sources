@@ -18,6 +18,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
+    "entur_norway_core",
 ]
 
 [project.scripts]
@@ -39,3 +40,6 @@ local_scheme = "no-local-version"
 packages = [
     "entur_norway",
 ]
+
+[tool.uv.sources]
+entur_norway_core = { path = "entur_norway_core" }
