@@ -19,6 +19,7 @@ dependencies = [
     "avro>=1.12.1",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
+    "jma_bosai_volcano_core",
     "python-qpid-proton>=0.40.0",
     "requests>=2.32.3",
 ]
@@ -35,3 +36,6 @@ local_scheme = "no-local-version"
 packages = [
     "jma_bosai_volcano_amqp",
 ]
+
+[tool.uv.sources]
+jma_bosai_volcano_core = { path = "../jma_bosai_volcano_core" }

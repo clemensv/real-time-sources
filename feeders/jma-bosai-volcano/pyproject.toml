@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "idna>=3.15",
+    "jma_bosai_volcano_core",
     "requests>=2.34.2",
     "urllib3>=2.7.0",
 ]
@@ -43,3 +44,6 @@ local_scheme = "no-local-version"
 packages = [
     "jma_bosai_volcano",
 ]
+
+[tool.uv.sources]
+jma_bosai_volcano_core = { path = "jma_bosai_volcano_core" }
