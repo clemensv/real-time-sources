@@ -9,9 +9,6 @@ import inspect
 import json
 import logging
 import os
-import pathlib
-import re
-import sys
 import time
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -56,9 +53,6 @@ def _producer_class():
     classes = [obj for _, obj in vars(mod).items() if inspect.isclass(obj) and any(name.startswith("send_") for name in dir(obj))]
     if not classes:
         raise RuntimeError(f"No AMQP producer class found in {mod.__name__}")
-    # xrcg can emit producer classes whose names do not end with "AmqpProducer"
-    # (for example after a simplified message-group manifest). Prefer the concrete
-    # class with the most send_* methods rather than relying on the old naming rule.
     classes.sort(key=lambda cls: (len([name for name in dir(cls) if name.startswith("send_")]), cls.__name__), reverse=True)
     return classes[0]
 
@@ -113,206 +107,334 @@ def _build_amqp_producer(args):
     return _apply_partition_key_workaround(_producer_class()(**kwargs))
 
 
-class MqttToAmqpAdapter:
-    """Adapter exposing generated MQTT publish_* names over AMQP send_* APIs."""
-    def __init__(self, producer: Any):
-        self.producer = producer
-        self._send_methods = {name: getattr(producer, name) for name in dir(producer) if name.startswith("send_") and not name.endswith("_batch")}
+class AmqpSendShim:
+    """
+    WORKAROUND(xregistry/codegen#XXX): The generated AMQP producer for noaa-goes
+    defines ``send_amqp`` multiple times in one class body — once per event type
+    (GoesXrayFlux, GoesProtonFlux, GoesElectronFlux, GoesMagnetometer,
+    SpaceWeatherAlert, XrayFlare).  Python silently overwrites each definition
+    with the next, so only the *last* definition (XrayFlare) survives at runtime.
+    Calling ``producer.send_amqp(data=GoesXrayFlux(...), ...)`` would therefore
+    build the wrong CloudEvent type/subject.
+
+    This shim bypasses the broken overloaded name by replicating the send logic
+    for each event type using the producer's internal machinery:
+    ``_serialize_payload``, ``_ce_headers_to_amqp_properties``,
+    ``_coerce_amqp_timestamp``, ``_send_via_reactor`` / ``_send_via_blocking_sender``.
+    Each helper method below constructs the correct CloudEvent attributes and
+    AMQP message independently.
+    """
+
+    def __init__(self, producer: Any) -> None:
+        self._p = producer
         self.sent = 0
 
-    async def connect(self, *_args, **_kwargs):
-        return None
+    def _send(
+        self,
+        type_attr: str,
+        source: str,
+        subject: str,
+        data: Any,
+        content_type: str = "application/json",
+        extra_app_props: Optional[dict] = None,
+    ) -> None:
+        from proton import Message
+        from cloudevents.http import CloudEvent
+        from cloudevents.conversion import to_binary, to_structured
 
-    async def disconnect(self):
-        close = getattr(self.producer, "close", None)
+        p = self._p
+        now_str = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        attributes = {
+            "type": type_attr,
+            "source": source,
+            "subject": subject,
+            "time": now_str,
+        }
+        byte_data = p._serialize_payload(data, content_type)
+        cloud_event = CloudEvent(attributes, byte_data)
+        if p.content_mode == "structured":
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode("utf-8")
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode("utf-8")
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = p.format_type or headers.get("content-type")
+        else:
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode("utf-8")
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = p._ce_headers_to_amqp_properties(headers)
+        ts = p._coerce_amqp_timestamp(now_str)
+        if ts is not None:
+            amqp_msg.creation_time = ts
+        amqp_msg.subject = subject
+        if extra_app_props:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(extra_app_props)
+        if getattr(p, "_handler", None) is not None:
+            p._send_via_reactor(amqp_msg)
+        else:
+            p._send_via_blocking_sender(amqp_msg)
+        self.sent += 1
+
+    def send_xray_flux(self, data: Any, satellite: str, energy: str, time_tag: str, event: str = "xrs") -> None:
+        self._send(
+            "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+            "https://services.swpc.noaa.gov",
+            f"{_topic_segment(satellite)}/{_topic_segment(energy)}/{_topic_segment(time_tag)}",
+            data,
+            extra_app_props={"event": str(event)},
+        )
+
+    def send_proton_flux(self, data: Any, satellite: str, energy: str, time_tag: str, event: str = "sgps") -> None:
+        self._send(
+            "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+            "https://services.swpc.noaa.gov",
+            f"{_topic_segment(satellite)}/{_topic_segment(energy)}/{_topic_segment(time_tag)}",
+            data,
+            extra_app_props={"event": str(event)},
+        )
+
+    def send_electron_flux(self, data: Any, satellite: str, energy: str, time_tag: str, event: str = "exis") -> None:
+        self._send(
+            "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+            "https://services.swpc.noaa.gov",
+            f"{_topic_segment(satellite)}/{_topic_segment(energy)}/{_topic_segment(time_tag)}",
+            data,
+            extra_app_props={"event": str(event)},
+        )
+
+    def send_magnetometer(self, data: Any, satellite: str, time_tag: str, event: str = "magnetometer") -> None:
+        self._send(
+            "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+            "https://services.swpc.noaa.gov",
+            f"{_topic_segment(satellite)}/{_topic_segment(time_tag)}",
+            data,
+            extra_app_props={"event": str(event)},
+        )
+
+    def send_space_weather_alert(self, data: Any, product_id: str) -> None:
+        self._send(
+            "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+            "https://services.swpc.noaa.gov",
+            _topic_segment(product_id),
+            data,
+        )
+
+    def send_xray_flare(self, data: Any, satellite: str, begin_time: str, flare_class: str) -> None:
+        self._send(
+            "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+            "https://services.swpc.noaa.gov",
+            f"{_topic_segment(satellite)}/{_topic_segment(begin_time)}",
+            data,
+            extra_app_props={"flare_class": str(flare_class)},
+        )
+
+    def close(self) -> None:
+        close = getattr(self._p, "close", None)
         if close:
             close()
 
-    def _choose_method(self, publish_name: str, kwargs: dict[str, Any]):
-        route_keys = {"_" + k for k in kwargs if k not in {"data", "qos", "retain", "topic", "content_type", "message_expiry_interval"}}
-        candidates = []
-        publish_norm = publish_name.replace("publish_", "").replace("mqtt", "amqp")
-        words = set(re.split(r"_+", publish_norm))
-        compact_publish = re.sub(r"[^a-z0-9]", "", publish_norm.lower())
-        for name, method in self._send_methods.items():
-            params = inspect.signature(method).parameters
-            required_route = {p for p, _param in params.items() if p.startswith("_") and _param.default is inspect.Parameter.empty}
-            if not required_route <= route_keys:
-                continue
-            method_words = set(re.split(r"_+", name))
-            compact_method = re.sub(r"[^a-z0-9]", "", name.lower().replace("send", ""))
-            score = len(words & method_words)
-            if compact_method and compact_method in compact_publish:
-                score += 100
-            candidates.append((score, len(required_route), name, method, required_route))
-        if not candidates:
-            raise AttributeError(f"No AMQP send method matches {publish_name} with route keys {sorted(route_keys)}")
-        candidates.sort(reverse=True)
-        return candidates[0][3], candidates[0][4]
 
-    def __getattr__(self, name: str):
-        if not name.startswith("publish_"):
-            raise AttributeError(name)
-        async def publish(**kwargs):
-            method, route = self._choose_method(name, kwargs)
-            call_kwargs = {p: _topic_segment(kwargs[p[1:]]) for p in route}
-            call_kwargs["data"] = kwargs.get("data")
-            if "content_type" in inspect.signature(method).parameters and kwargs.get("content_type"):
-                call_kwargs["content_type"] = kwargs["content_type"]
-            method(**call_kwargs)
-            self.sent += 1
-        return publish
-
-
-def _manifest_path() -> pathlib.Path:
-    candidates = [pathlib.Path.cwd(), pathlib.Path(__file__).resolve().parents[2]]
-    for root in candidates:
-        xreg = root / "xreg"
-        if xreg.exists():
-            matches = list(xreg.glob("*.json"))
-            if matches:
-                return matches[0]
-    raise FileNotFoundError("xRegistry manifest not found in working directory or package parents")
+def _emit_sample_events(shim: AmqpSendShim) -> int:
+    """Emit one sample event of each GOES AMQP event type via the shim."""
+    from noaa_goes_amqp_producer_data import (
+        GoesXrayFlux, GoesProtonFlux, GoesElectronFlux,
+        GoesMagnetometer, SpaceWeatherAlert, XrayFlare,
+    )
+    ts = "2026-01-01T00:00:00Z"
+    sat = "18"
+    shim.send_xray_flux(
+        GoesXrayFlux(time_tag=ts, satellite=18, flux=1.2e-6, energy="0.1-0.8nm"),
+        satellite=sat, energy="0.1-0.8nm", time_tag=ts,
+    )
+    shim.send_proton_flux(
+        GoesProtonFlux(time_tag=ts, satellite=18, flux=3.0, energy=">=10MeV"),
+        satellite=sat, energy=">=10MeV", time_tag=ts,
+    )
+    shim.send_electron_flux(
+        GoesElectronFlux(time_tag=ts, satellite=18, flux=900.0, energy=">=2MeV"),
+        satellite=sat, energy=">=2MeV", time_tag=ts,
+    )
+    shim.send_magnetometer(
+        GoesMagnetometer(time_tag=ts, satellite=18, he=1.0, hp=2.0, hn=3.0, total=3.7, arcjet_flag=False),
+        satellite=sat, time_tag=ts,
+    )
+    shim.send_space_weather_alert(
+        SpaceWeatherAlert(product_id="ALTXMF-20260101", issue_datetime="2026 Jan 01 0000 UTC", message="Synthetic SWPC alert."),
+        product_id="ALTXMF-20260101",
+    )
+    shim.send_xray_flare(
+        XrayFlare(
+            time_tag=ts, begin_time="2026-01-01T00:00:00Z", begin_class="C9.0",
+            max_time=ts, max_class="M1.0", max_xrlong=1e-5, max_ratio=0.2,
+            max_ratio_time=ts, current_int_xrlong=1e-3,
+            end_time="2026-01-01T00:10:00Z", end_class="C2.0", satellite=18,
+        ),
+        satellite=sat, begin_time="2026-01-01T00:00:00Z", flare_class="M1.0",
+    )
+    return shim.sent
 
 
-def _schema_root(schema: dict[str, Any]) -> Any:
-    node = schema.get("schema", schema)
-    root = node.get("$root")
-    if root:
-        cur = node
-        for part in root.lstrip("#/").split("/"):
-            cur = cur[part]
-        return cur, node
-    return node, node
+async def _run_live(args: argparse.Namespace, shim: AmqpSendShim) -> None:
+    """Fetch real SWPC/GOES data and emit via the AMQP shim."""
+    from noaa_goes_core import SWPCFetcher
+    from noaa_goes_amqp_producer_data import (
+        GoesXrayFlux, GoesProtonFlux, GoesElectronFlux,
+        GoesMagnetometer, SpaceWeatherAlert, XrayFlare,
+    )
 
+    fetcher = SWPCFetcher(last_polled_file=args.state_file)
+    logger.info("Starting live SWPC/GOES AMQP poller for %s", SOURCE_ID)
 
-def _resolve_ref(ref: str, doc: dict[str, Any]) -> Any:
-    cur = doc
-    for part in ref.lstrip("#/").split("/"):
-        cur = cur[part]
-    return cur
-
-
-def _sample_for_type(type_spec: Any, doc: dict[str, Any], name: str = "value") -> Any:
-    if isinstance(type_spec, list):
-        return _sample_for_type(next((t for t in type_spec if t != "null"), "string"), doc, name)
-    if isinstance(type_spec, dict):
-        if "$ref" in type_spec:
-            return _sample_for_node(_resolve_ref(type_spec["$ref"], doc), doc)
-        return _sample_for_node(type_spec, doc)
-    if type_spec in ("string", "timestamp"):
-        return "2026-01-01T00:00:00Z" if "time" in name or "date" in name else f"sample-{name.replace('_','-')}"
-    if type_spec in ("integer", "int32", "int64"):
-        return 1
-    if type_spec in ("number", "float", "double"):
-        return 1.0
-    if type_spec == "boolean":
-        return True
-    if type_spec == "array":
-        return []
-    if type_spec == "object":
-        return {}
-    return f"sample-{name}"
-
-
-def _sample_for_node(node: dict[str, Any], doc: dict[str, Any]) -> Any:
-    if "enum" in node and node["enum"]:
-        return node["enum"][0]
-    t = node.get("type", "string")
-    if t == "object" or isinstance(t, dict) and "$ref" in t:
-        if isinstance(t, dict) and "$ref" in t:
-            return _sample_for_node(_resolve_ref(t["$ref"], doc), doc)
-        props = node.get("properties", {})
-        return {name: _sample_for_node(prop, doc) for name, prop in props.items()}
-    if t == "array":
-        return [_sample_for_node(node.get("items", {"type": "string"}), doc)]
-    return _sample_for_type(t, doc, node.get("name", "value"))
-
-
-def _data_class_for(schema_name: str):
-    data_mod = importlib.import_module(f"{PY_MODULE}_amqp_producer_data")
-    class_name = schema_name.split(".")[-1]
-    return getattr(data_mod, class_name)
-
-
-def _coerce_data(cls: type[Any], payload: dict[str, Any]) -> Any:
-    for name in ("from_serializer_dict", "from_dict"):
-        if hasattr(cls, name):
-            try:
-                return getattr(cls, name)(payload)
-            except Exception:
-                pass
-    return cls(**payload)
-
-
-def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
-    manifest = json.loads(_manifest_path().read_text(encoding="utf-8"))
-    jstruct_group = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
-    amqp_group = None
-    for endpoint in manifest.get("endpoints", {}).values():
-        if endpoint.get("protocol") != "AMQP/1.0":
-            continue
-        for group_uri in endpoint.get("messagegroups", []):
-            group_name = group_uri.strip("/").rsplit("/", 1)[-1]
-            if group_name in manifest.get("messagegroups", {}):
-                amqp_group = manifest["messagegroups"][group_name]
-                break
-        if amqp_group is not None:
-            break
-    if amqp_group is None:
-        amqp_group = next(v for k, v in manifest["messagegroups"].items() if k.endswith(".amqp"))
-    for message_name, message in amqp_group["messages"].items():
-        schema_name = None
-        if "dataschemauri" in message:
-            schema_name = message["dataschemauri"].split("/")[-1]
-        else:
-            base = message["basemessageuri"].strip("/").split("/")
-            base_msg = manifest["messagegroups"][base[1]]["messages"][base[3]]
-            schema_name = base_msg["dataschemauri"].split("/")[-1]
-        schema_entry = jstruct_group["schemas"][schema_name]["versions"]["1"]["schema"]
-        root_node, doc = _schema_root(schema_entry)
-        payload = _sample_for_node(root_node, doc)
-        data = _coerce_data(_data_class_for(schema_name), payload)
-        route = {}
-        def collect_templates(node):
-            if isinstance(node, dict):
-                if node.get("type") == "uritemplate":
-                    for key in re.findall(r"\{([A-Za-z0-9_]+)\}", node.get("value", "")):
-                        route[key] = payload.get(key, f"sample-{key.replace('_','-')}") if isinstance(payload, dict) else f"sample-{key}"
-                for child in node.values():
-                    collect_templates(child)
-            elif isinstance(node, list):
-                for child in node:
-                    collect_templates(child)
-        collect_templates(message.get("protocoloptions") or {})
-        if isinstance(payload, dict):
-            for key, value in payload.items():
-                route.setdefault(key, value)
-        # Pre-fill route with required params from all send methods (dummy values)
-        for _m_name, _m_func in adapter._send_methods.items():
-            for _p, _param in inspect.signature(_m_func).parameters.items():
-                if _p.startswith("_") and _param.default is inspect.Parameter.empty:
-                    route.setdefault(_p[1:], f"sample-{_p[1:]}")
-        try:
-            method, required = adapter._choose_method("publish_" + message_name.lower().replace(".", "_"), {**route, "data": data})
-            call_kwargs = {p: _topic_segment(route.get(p[1:], f"sample-{p[1:]}")) for p in required}
-            call_kwargs["data"] = data
-            method(**call_kwargs)
-        except (AttributeError, TypeError, KeyError) as _route_err:
-            logger.debug("Skipping message %s: %s", message_name, _route_err)
-            continue
-        adapter.sent += 1
-
-
-async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> None:
-    """Emit sample corpus via AMQP (no source-specific live acquisition handler)."""
-    logger.info("Emitting sample corpus via AMQP for %s", SOURCE_ID)
     while True:
-        emit_mock_corpus(adapter)
-        logger.info("Emitted %d sample AMQP event(s) for %s", adapter.sent, SOURCE_ID)
+        count = 0
+        try:
+            state = fetcher.load_state()
+
+            # --- Space weather alerts ---
+            for alert_data in fetcher.poll_alerts():
+                pid = alert_data.get("product_id", "")
+                if not pid or pid == state.get("last_alert_id"):
+                    continue
+                shim.send_space_weather_alert(
+                    SpaceWeatherAlert(
+                        product_id=pid,
+                        issue_datetime=alert_data.get("issue_datetime", ""),
+                        message=alert_data.get("message", ""),
+                    ),
+                    product_id=pid,
+                )
+                state["last_alert_id"] = pid
+                count += 1
+
+            # --- GOES X-ray flux ---
+            rows = fetcher.poll_goes_xrays()
+            last_time = state.get("last_xray_time", "")
+            filtered = [r for r in rows if str(r.get("time_tag", "")) > last_time]
+            if filtered:
+                state["last_xray_time"] = max(str(r.get("time_tag", "")) for r in filtered)
+            for row in filtered:
+                tt = str(row.get("time_tag", ""))
+                sat = fetcher._safe_int(row.get("satellite"))
+                energy = str(row.get("energy", ""))
+                flux_val = fetcher._safe_float(row.get("flux"))
+                if not tt or sat is None or flux_val is None:
+                    continue
+                shim.send_xray_flux(
+                    GoesXrayFlux(time_tag=tt, satellite=sat, flux=flux_val, energy=energy),
+                    satellite=str(sat), energy=energy, time_tag=tt,
+                )
+                count += 1
+
+            # --- GOES proton flux ---
+            rows = fetcher.poll_goes_protons()
+            last_time = state.get("last_proton_time", "")
+            filtered = [r for r in rows if str(r.get("time_tag", "")) > last_time]
+            if filtered:
+                state["last_proton_time"] = max(str(r.get("time_tag", "")) for r in filtered)
+            for row in filtered:
+                tt = str(row.get("time_tag", ""))
+                sat = fetcher._safe_int(row.get("satellite"))
+                energy = str(row.get("energy", ""))
+                flux_val = fetcher._safe_float(row.get("flux"))
+                if not tt or sat is None or flux_val is None:
+                    continue
+                shim.send_proton_flux(
+                    GoesProtonFlux(time_tag=tt, satellite=sat, flux=flux_val, energy=energy),
+                    satellite=str(sat), energy=energy, time_tag=tt,
+                )
+                count += 1
+
+            # --- GOES electron flux ---
+            rows = fetcher.poll_goes_electrons()
+            last_time = state.get("last_electron_time", "")
+            filtered = [r for r in rows if str(r.get("time_tag", "")) > last_time]
+            if filtered:
+                state["last_electron_time"] = max(str(r.get("time_tag", "")) for r in filtered)
+            for row in filtered:
+                tt = str(row.get("time_tag", ""))
+                sat = fetcher._safe_int(row.get("satellite"))
+                energy = str(row.get("energy", ""))
+                flux_val = fetcher._safe_float(row.get("flux"))
+                if not tt or sat is None or flux_val is None:
+                    continue
+                shim.send_electron_flux(
+                    GoesElectronFlux(time_tag=tt, satellite=sat, flux=flux_val, energy=energy),
+                    satellite=str(sat), energy=energy, time_tag=tt,
+                )
+                count += 1
+
+            # --- GOES magnetometer ---
+            for row in fetcher.poll_goes_magnetometers():
+                tt = str(row.get("time_tag", ""))
+                if not tt or tt <= state.get("last_magnetometer_time", ""):
+                    continue
+                sat = fetcher._safe_int(row.get("satellite"))
+                if sat is None:
+                    continue
+                shim.send_magnetometer(
+                    GoesMagnetometer(
+                        time_tag=tt,
+                        satellite=sat,
+                        he=fetcher._safe_float(row.get("He")),
+                        hp=fetcher._safe_float(row.get("Hp")),
+                        hn=fetcher._safe_float(row.get("Hn")),
+                        total=fetcher._safe_float(row.get("total")),
+                        arcjet_flag=row.get("arcjet_flag"),
+                    ),
+                    satellite=str(sat), time_tag=tt,
+                )
+                state["last_magnetometer_time"] = tt
+                count += 1
+
+            # --- X-ray flares ---
+            for row in fetcher.poll_xray_flares():
+                tt = str(row.get("time_tag", ""))
+                begin = str(row.get("begin_time", ""))
+                if not tt or not begin or tt <= state.get("last_flare_time", ""):
+                    continue
+                sat = fetcher._safe_int(row.get("satellite"))
+                if sat is None:
+                    continue
+                flare_class = str(row.get("max_class") or row.get("begin_class") or "unknown")
+                shim.send_xray_flare(
+                    XrayFlare(
+                        time_tag=tt,
+                        begin_time=begin,
+                        begin_class=row.get("begin_class"),
+                        max_time=row.get("max_time"),
+                        max_class=row.get("max_class"),
+                        max_xrlong=fetcher._safe_float(row.get("max_xrlong")),
+                        max_ratio=fetcher._safe_float(row.get("max_ratio")),
+                        max_ratio_time=row.get("max_ratio_time"),
+                        current_int_xrlong=fetcher._safe_float(row.get("current_int_xrlong")),
+                        end_time=row.get("end_time"),
+                        end_class=row.get("end_class"),
+                        satellite=sat,
+                    ),
+                    satellite=str(sat), begin_time=begin, flare_class=flare_class,
+                )
+                state["last_flare_time"] = tt
+                count += 1
+
+            fetcher.save_state(state)
+            if count:
+                logger.info("Emitted %d AMQP event(s) for %s", count, SOURCE_ID)
+
+        except Exception as exc:
+            logger.error("Error in live polling loop: %s", exc)
+
         if args.once:
             break
-        await asyncio.sleep(args.polling_interval if hasattr(args, 'polling_interval') else 300)
+        await asyncio.sleep(args.polling_interval)
 
 
 def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -334,18 +456,7 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser(f"~/.{PY_MODULE}_amqp_state.json")))
     parser.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE", False))
     parser.add_argument("--mock-mode", action="store_true", default=_env_bool(f"{ENV_PREFIX}_MOCK", False) or _env_bool(f"{ENV_PREFIX}_SAMPLE_MODE", False) or _env_bool(f"{ENV_PREFIX}_AMQP_MOCK", False))
-    # Source-specific optional knobs; ignored where not used.
-    parser.add_argument("--feeds", default=os.getenv("PTWC_TSUNAMI_FEEDS", "PAAQ,PHEB"))
-    parser.add_argument("--providers", default=os.getenv("NINA_BBK_PROVIDERS", "mowas,katwarn,biwapp,dwd,lhp,police"))
-    parser.add_argument("--regions", default=os.getenv("EAWS_ALBINA_REGIONS", "AT-07-01"))
-    parser.add_argument("--lang", default=os.getenv("EAWS_ALBINA_LANG", "en"))
-    parser.add_argument("--resources", default=os.getenv("AUTOBAHN_RESOURCES", "all"))
-    parser.add_argument("--roads", default=os.getenv("AUTOBAHN_ROADS", ""))
-    parser.add_argument("--request-concurrency", type=int, default=int(os.getenv("AUTOBAHN_REQUEST_CONCURRENCY", "8")))
-    parser.add_argument("--station-filter", default=os.getenv("STATION_FILTER", ""))
-    parser.add_argument("--max-size", type=int, default=int(os.getenv("MAX_SIZE", "1000")))
     return parser
-
 
 
 def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
@@ -358,10 +469,11 @@ def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
                 raise
             delay = initial_delay * (2 ** attempt)
             logger.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
-                          attempt + 1, max_attempts, e, delay)
-            import time; time.sleep(delay)
+                           attempt + 1, max_attempts, e, delay)
+            time.sleep(delay)
+
+
 async def _async_main(args: argparse.Namespace) -> None:
-    # Retry producer connection with backoff (RBAC propagation can take minutes)
     producer = None
     for _attempt in range(6):
         try:
@@ -374,17 +486,15 @@ async def _async_main(args: argparse.Namespace) -> None:
     if producer is None:
         logger.error("Failed to connect to AMQP broker after 6 attempts")
         return
-    adapter = MqttToAmqpAdapter(producer)
+    shim = AmqpSendShim(producer)
     try:
         if args.mock_mode:
-            emit_mock_corpus(adapter)
-            logger.info("Published %d mock AMQP event(s)", adapter.sent)
+            _emit_sample_events(shim)
+            logger.info("Published %d mock AMQP event(s)", shim.sent)
         else:
-            await _run_live(args, adapter)
+            await _run_live(args, shim)
     finally:
-        close = getattr(producer, "close", None)
-        if close:
-            close()
+        shim.close()
 
 
 def main() -> None:
@@ -398,3 +508,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

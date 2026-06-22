@@ -7,13 +7,12 @@ and sends it to a Kafka topic as CloudEvents.
 # pylint: disable=line-too-long
 
 import os
-import json
 import sys
 import time
 import logging
 from typing import Dict, List, Optional
 import argparse
-import requests
+from noaa_goes_core import SWPCFetcher
 from noaa_goes_producer_data import (
     SpaceWeatherAlert, PlanetaryKIndex, SolarWindSummary,
     SolarWindPlasma, SolarWindMagField,
@@ -30,35 +29,16 @@ from noaa_goes_producer_kafka_producer.producer import (
 
 logger = logging.getLogger(__name__)
 
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-noaa-goes/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
-)
 
-class SWPCPoller:
+class SWPCPoller(SWPCFetcher):
     """
     Polls the NOAA Space Weather Prediction Center API endpoints and sends
     space weather data to Kafka as CloudEvents.
     """
-    ALERTS_URL = "https://services.swpc.noaa.gov/products/alerts.json"
-    K_INDEX_URL = "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json"
-    SOLAR_WIND_SPEED_URL = "https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json"
-    SOLAR_WIND_MAG_FIELD_URL = "https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json"
-    PLASMA_URL = "https://services.swpc.noaa.gov/products/solar-wind/plasma-7-day.json"
-    MAG_URL = "https://services.swpc.noaa.gov/products/solar-wind/mag-7-day.json"
-    XRAYS_URL = "https://services.swpc.noaa.gov/json/goes/primary/xrays-7-day.json"
-    PROTONS_URL = "https://services.swpc.noaa.gov/json/goes/primary/integral-protons-7-day.json"
-    ELECTRONS_URL = "https://services.swpc.noaa.gov/json/goes/primary/integral-electrons-3-day.json"
-    MAGNETOMETERS_URL = "https://services.swpc.noaa.gov/json/goes/primary/magnetometers-7-day.json"
-    FLARES_URL = "https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json"
-    POLL_INTERVAL_SECONDS = 60
 
     def __init__(self, kafka_config: Dict[str, str], kafka_topic: str, last_polled_file: str):
+        super().__init__(last_polled_file)
         self.kafka_topic = kafka_topic
-        self.last_polled_file = last_polled_file
         from confluent_kafka import Producer as KafkaProducer
         kafka_producer = KafkaProducer(kafka_config)
         self.alerts_producer = MicrosoftOpenDataUSNOAASWPCAlertsEventProducer(kafka_producer, kafka_topic)
@@ -67,123 +47,6 @@ class SWPCPoller:
         self.magnetometer_producer = MicrosoftOpenDataUSNOAASWPCGOESMagnetometerEventProducer(kafka_producer, kafka_topic)
         self.flares_producer = MicrosoftOpenDataUSNOAASWPCSolarFlaresEventProducer(kafka_producer, kafka_topic)
         self.kafka_producer = kafka_producer
-
-    def load_state(self) -> Dict:
-        try:
-            if os.path.exists(self.last_polled_file):
-                with open(self.last_polled_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-        except Exception:
-            pass
-        return {}
-
-    def save_state(self, state: Dict):
-        try:
-            os.makedirs(os.path.dirname(self.last_polled_file) if os.path.dirname(self.last_polled_file) else '.', exist_ok=True)
-            with open(self.last_polled_file, 'w', encoding='utf-8') as f:
-                json.dump(state, f, indent=2)
-        except Exception as e:
-            logger.error("Error saving state: %s", e)
-
-    def _get_json(self, url: str) -> Optional[list]:
-        try:
-            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            return data if isinstance(data, list) else [data] if isinstance(data, dict) else []
-        except Exception as err:
-            logger.warning("Error fetching %s: %s", url, err)
-            return None
-
-    def poll_alerts(self) -> List[dict]:
-        result = self._get_json(self.ALERTS_URL)
-        return result if result is not None else []
-
-    def poll_k_index(self) -> List[dict]:
-        result = self._get_json(self.K_INDEX_URL)
-        if result is None:
-            return []
-        return [row for row in result if isinstance(row, dict)]
-
-    def poll_solar_wind(self) -> List[dict]:
-        try:
-            speed_response = requests.get(self.SOLAR_WIND_SPEED_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
-            speed_response.raise_for_status()
-            speed_data = speed_response.json()
-            mag_response = requests.get(self.SOLAR_WIND_MAG_FIELD_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
-            mag_response.raise_for_status()
-            mag_data = mag_response.json()
-            if isinstance(speed_data, list) and speed_data:
-                speed_data = speed_data[0]
-            if isinstance(mag_data, list) and mag_data:
-                mag_data = mag_data[0]
-            timestamp = speed_data.get("time_tag") or speed_data.get("TimeStamp") or mag_data.get("time_tag") or mag_data.get("TimeStamp") or ""
-            wind_speed = speed_data.get("proton_speed") or speed_data.get("WindSpeed") or 0
-            bt = mag_data.get("bt") or mag_data.get("Bt") or 0
-            bz = mag_data.get("bz_gsm") or mag_data.get("Bz") or 0
-            return [{
-                "timestamp": timestamp,
-                "wind_speed": float(wind_speed) if wind_speed else 0.0,
-                "bt": float(bt) if bt else 0.0,
-                "bz": float(bz) if bz else 0.0
-            }]
-        except Exception as err:
-            logger.warning("Error fetching solar wind summary: %s", err)
-            return []
-
-    def _parse_csv_json(self, url: str) -> List[dict]:
-        """Parse CSV-in-JSON (array of arrays with header row) into list of dicts."""
-        result = self._get_json(url)
-        if not result or len(result) < 2:
-            return []
-        headers = result[0]
-        rows = []
-        for row in result[1:]:
-            if isinstance(row, list) and len(row) == len(headers):
-                rows.append(dict(zip(headers, row)))
-        return rows
-
-    def poll_plasma(self) -> List[dict]:
-        return self._parse_csv_json(self.PLASMA_URL)
-
-    def poll_mag(self) -> List[dict]:
-        return self._parse_csv_json(self.MAG_URL)
-
-    def poll_goes_xrays(self) -> List[dict]:
-        result = self._get_json(self.XRAYS_URL)
-        return [r for r in (result or []) if isinstance(r, dict)]
-
-    def poll_goes_protons(self) -> List[dict]:
-        result = self._get_json(self.PROTONS_URL)
-        return [r for r in (result or []) if isinstance(r, dict)]
-
-    def poll_goes_electrons(self) -> List[dict]:
-        result = self._get_json(self.ELECTRONS_URL)
-        return [r for r in (result or []) if isinstance(r, dict)]
-
-    def poll_goes_magnetometers(self) -> List[dict]:
-        result = self._get_json(self.MAGNETOMETERS_URL)
-        return [r for r in (result or []) if isinstance(r, dict)]
-
-    def poll_xray_flares(self) -> List[dict]:
-        result = self._get_json(self.FLARES_URL)
-        return [r for r in (result or []) if isinstance(r, dict)]
-
-    def _safe_float(self, val) -> Optional[float]:
-        if val is None:
-            return None
-        try:
-            return float(val)
-        except (ValueError, TypeError):
-            return None
-
-    def _safe_int(self, val) -> Optional[int]:
-        if val is None:
-            return None
-        try:
-            return int(val)
-        except (ValueError, TypeError):
-            return None
 
     def poll_and_send(self, once: bool = False):
         logger.info("Starting SWPC Space Weather poller, polling every %ds", self.POLL_INTERVAL_SECONDS)
