@@ -19,6 +19,7 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
+ && pip install --no-cache-dir ./singapore_nea_core \
 RUN pip install --no-cache-dir ./singapore_nea_amqp_producer/singapore_nea_amqp_producer_data \ 
  && pip install --no-cache-dir ./singapore_nea_amqp_producer/singapore_nea_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./singapore_nea_mqtt \

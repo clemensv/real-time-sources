@@ -6,6 +6,7 @@ ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir ./french_road_traffic_producer/french_road_traffic_producer_data \
  && pip install --no-cache-dir ./french_road_traffic_producer/french_road_traffic_producer_kafka_producer \
+ && pip install --no-cache-dir ./french_road_traffic_core \
  && pip install --no-cache-dir .
 
 ENV KAFKA_TOPIC_FLOW=french-road-traffic-flow

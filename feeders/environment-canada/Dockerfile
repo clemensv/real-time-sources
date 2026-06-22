@@ -17,10 +17,11 @@ RUN pip install --no-cache-dir \
     ./environment_canada_producer/environment_canada_producer_kafka_producer
 
 COPY pyproject.toml .
+COPY environment_canada_core/ environment_canada_core/
 COPY environment_canada/ environment_canada/
 
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ./environment_canada_core .
 
 CMD ["python", "-m", "environment_canada", "feed"]

@@ -18,6 +18,7 @@ ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install ./jma_japan_producer/jma_japan_producer_data \
  && pip install ./jma_japan_producer/jma_japan_producer_kafka_producer \
+ && pip install ./jma_japan_core \
  && pip install .
 
 # Define environment variables (default values)

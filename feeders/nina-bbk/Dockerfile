@@ -13,6 +13,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     nina_bbk_producer/nina_bbk_producer_data \
     nina_bbk_producer/nina_bbk_producer_kafka_producer \
+    ./nina_bbk_core \
     .
 
 CMD ["python", "-m", "nina_bbk", "feed"]

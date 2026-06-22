@@ -15,6 +15,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 
 RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./wikimedia_osm_diffs_core \
  && pip install --no-cache-dir ./wikimedia_osm_diffs_mqtt_producer/wikimedia_osm_diffs_mqtt_producer_data \
  && pip install --no-cache-dir ./wikimedia_osm_diffs_mqtt_producer/wikimedia_osm_diffs_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./wikimedia_osm_diffs_producer/wikimedia_osm_diffs_producer_kafka_producer \

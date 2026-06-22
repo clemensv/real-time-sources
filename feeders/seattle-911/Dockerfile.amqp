@@ -21,6 +21,7 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
+ && pip install --no-cache-dir ./seattle_911_core \
 RUN pip install --no-cache-dir ./seattle_911_amqp_producer/seattle_911_amqp_producer_data \
  && pip install --no-cache-dir ./seattle_911_amqp_producer/seattle_911_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./seattle_911_mqtt_producer/seattle_911_mqtt_producer_data \

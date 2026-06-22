@@ -17,10 +17,11 @@ RUN pip install --no-cache-dir \
     ./hko_hong_kong_producer/hko_hong_kong_producer_kafka_producer
 
 COPY pyproject.toml .
+COPY hko_hong_kong_core/ hko_hong_kong_core/
 COPY hko_hong_kong/ hko_hong_kong/
 
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ./hko_hong_kong_core .
 
 CMD ["python", "-m", "hko_hong_kong", "feed"]

@@ -12,6 +12,7 @@ ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install ./kystverket_ais_producer/kystverket_ais_producer_data \
  && pip install ./kystverket_ais_producer/kystverket_ais_producer_kafka_producer \
+ && pip install ./kystverket_ais_core \
  && pip install .
 
 ENV CONNECTION_STRING=""

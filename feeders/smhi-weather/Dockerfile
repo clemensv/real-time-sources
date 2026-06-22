@@ -17,10 +17,11 @@ RUN pip install --no-cache-dir \
     ./smhi_weather_producer/smhi_weather_producer_kafka_producer
 
 COPY pyproject.toml .
+COPY smhi_weather_core/ smhi_weather_core/
 COPY smhi_weather/ smhi_weather/
 
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ./smhi_weather_core .
 
 CMD ["python", "-m", "smhi_weather", "feed"]

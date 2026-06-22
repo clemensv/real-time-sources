@@ -18,6 +18,7 @@ ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install ./noaa_nws_producer/noaa_nws_producer_data \
  && pip install ./noaa_nws_producer/noaa_nws_producer_kafka_producer \
+ && pip install ./noaa_nws_core \
  && pip install .
 
 # Define environment variables (default values)

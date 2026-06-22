@@ -21,6 +21,7 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
+ && pip install --no-cache-dir ./nina_bbk_core \
 RUN pip install --no-cache-dir ./nina_bbk_amqp_producer/nina_bbk_amqp_producer_data \
  && pip install --no-cache-dir ./nina_bbk_amqp_producer/nina_bbk_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./nina_bbk_mqtt_producer/nina_bbk_mqtt_producer_data \

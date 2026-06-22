@@ -13,6 +13,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
         COPY . /app
         RUN pip install --no-cache-dir confluent-kafka \
          && pip install --no-cache-dir ./dwd_pollenflug_producer/dwd_pollenflug_producer_kafka_producer \
+ && pip install --no-cache-dir ./dwd_pollenflug_core \
          && pip install --no-cache-dir ./dwd_pollenflug_mqtt
         ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "dwd_pollenflug_mqtt", "feed"]

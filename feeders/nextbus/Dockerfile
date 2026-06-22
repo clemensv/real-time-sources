@@ -12,6 +12,7 @@ ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install ./nextbus_producer/nextbus_producer_data \
  && pip install ./nextbus_producer/nextbus_producer_kafka_producer \
+ && pip install ./nextbus_core \
  && pip install .
 
 ENV FEED_CONNECTION_STRING=""

@@ -12,6 +12,7 @@ ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install ./nws_forecasts_producer/nws_forecasts_producer_data \
  && pip install ./nws_forecasts_producer/nws_forecasts_producer_kafka_producer \
+ && pip install ./nws_forecasts_core \
  && pip install .
 
 ENV NWS_FORECAST_ZONES="WAZ312,WAZ315,WAZ316,WAZ317,PZZ130,PZZ131,PZZ132,PZZ133,PZZ134,PZZ135"

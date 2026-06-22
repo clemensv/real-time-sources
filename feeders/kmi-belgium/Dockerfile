@@ -17,10 +17,11 @@ RUN pip install --no-cache-dir \
     ./kmi_belgium_producer/kmi_belgium_producer_kafka_producer
 
 COPY pyproject.toml .
+COPY kmi_belgium_core/ kmi_belgium_core/
 COPY kmi_belgium/ kmi_belgium/
 
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ./kmi_belgium_core .
 
 CMD ["python", "-m", "kmi_belgium", "feed"]

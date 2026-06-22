@@ -13,6 +13,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     ptwc_tsunami_producer/ptwc_tsunami_producer_data \
     ptwc_tsunami_producer/ptwc_tsunami_producer_kafka_producer \
+    ./ptwc_tsunami_core \
     .
 
 CMD ["python", "-m", "ptwc_tsunami", "feed"]

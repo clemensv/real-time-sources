@@ -27,6 +27,7 @@ RUN set -eux; \
 
 COPY . /app
 
+ && pip install --no-cache-dir ./blitzortung_core \
 RUN pip install --no-cache-dir ./blitzortung_amqp_producer/blitzortung_amqp_producer_data \
  && pip install --no-cache-dir ./blitzortung_producer/blitzortung_producer_data && pip install --no-cache-dir ./blitzortung_amqp_producer/blitzortung_amqp_producer_amqp_producer \
  && pip install --no-cache-dir . \

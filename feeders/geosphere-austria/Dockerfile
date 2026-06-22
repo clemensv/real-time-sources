@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir /app/geosphere_austria_producer_data && \
     pip install --no-cache-dir /app/geosphere_austria_producer_kafka_producer
 
 COPY . /app
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir ./geosphere_austria_core -e .
 
 ENV CONNECTION_STRING=""
 ENV POLLING_INTERVAL=600

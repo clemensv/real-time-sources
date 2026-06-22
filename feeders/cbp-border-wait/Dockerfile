@@ -14,6 +14,7 @@ ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install ./cbp_border_wait_producer/cbp_border_wait_producer_data \
  && pip install ./cbp_border_wait_producer/cbp_border_wait_producer_kafka_producer \
+ && pip install ./cbp_border_wait_core \
  && pip install .
 
 ENV CONNECTION_STRING=""
