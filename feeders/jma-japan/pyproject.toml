@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
+    "jma_japan_core",
 ]
 
 [project.scripts]
@@ -43,3 +44,6 @@ local_scheme = "no-local-version"
 packages = [
     "jma_japan",
 ]
+
+[tool.uv.sources]
+jma_japan_core = { path = "jma_japan_core" }

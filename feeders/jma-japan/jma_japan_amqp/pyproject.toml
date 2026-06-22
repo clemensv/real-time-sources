@@ -6,7 +6,8 @@
       dependencies = [
         "python-qpid-proton>=0.39.0",
 "azure-identity>=1.16.0",
-      ]
+    "jma_japan_core",
+]
 
       [build-system]
       requires = ["setuptools>=68"]
@@ -14,3 +15,6 @@
 
       [tool.setuptools]
       packages = ["jma_japan_amqp"]
+
+[tool.uv.sources]
+jma_japan_core = { path = "../jma_japan_core" }

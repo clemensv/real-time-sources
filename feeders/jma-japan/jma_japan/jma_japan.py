@@ -19,13 +19,12 @@ from jma_japan_producer_data.feedtypeenum import FeedTypeenum
 from jma_japan_producer_kafka_producer.producer import (
     JpGoJmaWeatherBulletinsEventProducer,
 )
-
-
-ATOM_NS = "{http://www.w3.org/2005/Atom}"
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-jma-japan/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+from jma_japan_core import (
+    ATOM_NS, USER_AGENT, REGULAR_FEED_URL, EXTRA_FEED_URL, POLL_INTERVAL_SECONDS,
+    HEADERS, make_bulletin_id, fetch_feed, parse_entries, poll_feeds,
+    load_seen_bulletins as _core_load_seen_bulletins,
+    save_seen_bulletins as _core_save_seen_bulletins,
+    bulletin_office_segment,
 )
 
 
@@ -33,13 +32,10 @@ class JMABulletinPoller:
     """
     Polls the JMA Atom XML feeds for weather bulletins and sends them to Kafka as CloudEvents.
     """
-    REGULAR_FEED_URL = "https://www.data.jma.go.jp/developer/xml/feed/regular.xml"
-    EXTRA_FEED_URL = "https://www.data.jma.go.jp/developer/xml/feed/extra.xml"
-    HEADERS = {
-        "User-Agent": USER_AGENT,
-        "Accept": "application/xml"
-    }
-    POLL_INTERVAL_SECONDS = 60
+    REGULAR_FEED_URL = REGULAR_FEED_URL
+    EXTRA_FEED_URL = EXTRA_FEED_URL
+    HEADERS = HEADERS
+    POLL_INTERVAL_SECONDS = POLL_INTERVAL_SECONDS
 
     def __init__(self, kafka_config: Dict[str, str], kafka_topic: str, last_polled_file: str):
         """
@@ -58,124 +54,30 @@ class JMABulletinPoller:
         self.kafka_producer = kafka_producer
 
     def load_seen_bulletins(self) -> Dict:
-        """
-        Load the set of previously seen bulletin IDs from the state file.
-
-        Returns:
-            Dict with 'seen_ids' list.
-        """
-        try:
-            if os.path.exists(self.last_polled_file):
-                with open(self.last_polled_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-        except Exception:
-            pass
-        return {"seen_ids": []}
+        """Load the set of previously seen bulletin IDs from the state file."""
+        return _core_load_seen_bulletins(self.last_polled_file)
 
     def save_seen_bulletins(self, state: Dict):
-        """
-        Save the set of seen bulletin IDs to the state file.
-
-        Args:
-            state: Dict with 'seen_ids' list.
-        """
-        try:
-            os.makedirs(os.path.dirname(self.last_polled_file) if os.path.dirname(self.last_polled_file) else '.', exist_ok=True)
-            with open(self.last_polled_file, 'w', encoding='utf-8') as f:
-                json.dump(state, f, indent=2)
-        except Exception as e:
-            print(f"Error saving state: {e}")
+        """Save the set of seen bulletin IDs to the state file."""
+        _core_save_seen_bulletins(self.last_polled_file, state)
 
     @staticmethod
     def _make_bulletin_id(entry_id: str) -> str:
         """Create a stable short ID from an Atom entry ID (which is typically a long URL)."""
-        return hashlib.sha256(entry_id.encode("utf-8")).hexdigest()[:16]
+        return make_bulletin_id(entry_id)
 
     def fetch_feed(self, url: str) -> Optional[ElementTree.Element]:
-        """
-        Fetch and parse an Atom XML feed.
-
-        Args:
-            url: The feed URL to fetch.
-
-        Returns:
-            The root Element of the parsed XML, or None on error.
-        """
-        try:
-            response = requests.get(url, headers=self.HEADERS, timeout=30)
-            response.raise_for_status()
-            return ElementTree.fromstring(response.content)
-        except Exception as err:
-            print(f"Error fetching feed {url}: {err}")
-            return None
+        """Fetch and parse an Atom XML feed."""
+        return fetch_feed(url)
 
     @staticmethod
     def parse_entries(root: ElementTree.Element, feed_type: str) -> List[WeatherBulletin]:
-        """
-        Parse Atom feed entries into WeatherBulletin objects.
-
-        Args:
-            root: The root Element of the parsed Atom XML.
-            feed_type: 'regular' or 'extra'.
-
-        Returns:
-            List of WeatherBulletin objects.
-        """
-        bulletins = []
-        for entry in root.findall(f"{ATOM_NS}entry"):
-            entry_id_el = entry.find(f"{ATOM_NS}id")
-            title_el = entry.find(f"{ATOM_NS}title")
-            updated_el = entry.find(f"{ATOM_NS}updated")
-            author_el = entry.find(f"{ATOM_NS}author")
-            link_el = entry.find(f"{ATOM_NS}link")
-            content_el = entry.find(f"{ATOM_NS}content")
-
-            entry_id = entry_id_el.text if entry_id_el is not None and entry_id_el.text else ""
-            if not entry_id:
-                continue
-
-            title = title_el.text if title_el is not None and title_el.text else ""
-            updated = updated_el.text if updated_el is not None and updated_el.text else ""
-            author = None
-            if author_el is not None:
-                name_el = author_el.find(f"{ATOM_NS}name")
-                if name_el is not None and name_el.text:
-                    author = name_el.text
-            link = link_el.get("href") if link_el is not None else None
-            content = content_el.text if content_el is not None and content_el.text else None
-
-            bulletin_id = JMABulletinPoller._make_bulletin_id(entry_id)
-
-            bulletin = WeatherBulletin(
-                bulletin_id=bulletin_id,
-                office=author,
-                title=title,
-                author=author,
-                updated=updated,
-                link=link,
-                content=content,
-                feed_type=FeedTypeenum(feed_type),
-            )
-            bulletins.append(bulletin)
-        return bulletins
+        """Parse Atom feed entries into WeatherBulletin objects."""
+        return parse_entries(root, feed_type)
 
     def poll_feeds(self) -> List[WeatherBulletin]:
-        """
-        Fetch both regular and extra feeds and return all parsed bulletins.
-
-        Returns:
-            List of WeatherBulletin objects from both feeds.
-        """
-        all_bulletins: List[WeatherBulletin] = []
-        for url, feed_type in [
-            (self.REGULAR_FEED_URL, "regular"),
-            (self.EXTRA_FEED_URL, "extra"),
-        ]:
-            root = self.fetch_feed(url)
-            if root is not None:
-                bulletins = self.parse_entries(root, feed_type)
-                all_bulletins.extend(bulletins)
-        return all_bulletins
+        """Fetch both regular and extra feeds and return all parsed bulletins."""
+        return poll_feeds()
 
     def poll_and_send(self, once: bool = False):
         """
