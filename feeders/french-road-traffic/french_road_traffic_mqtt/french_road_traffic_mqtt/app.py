@@ -1,250 +1,169 @@
 from __future__ import annotations
 
-import argparse, json, os, re, time, uuid
-from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping
-
+import argparse
+import asyncio
+import json
+import logging
+import os
+import threading
+from typing import Any
 from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
-def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
-    params = {
-        "api-version": "2018-02-01",
-        "resource": audience or "https://eventgrid.azure.net/",
-    }
+import paho.mqtt.client as mqtt
+from paho.mqtt.client import CallbackAPIVersion, MQTTv5
+
+from french_road_traffic_core.french_road_traffic import (
+    DEFAULT_POLL_INTERVAL_SECONDS,
+    FEED_SOURCE_EVENTS,
+    FEED_SOURCE_FLOW,
+    FrenchRoadTrafficSource,
+    normalize_road_segment,
+)
+from french_road_traffic_mqtt_producer.french_road_traffic_mqtt_producer_data.fr.gouv.transport.bison_fute.roadevent import RoadEvent
+from french_road_traffic_mqtt_producer.french_road_traffic_mqtt_producer_data.fr.gouv.transport.bison_fute.trafficflowmeasurement import TrafficFlowMeasurement
+from french_road_traffic_mqtt_producer.french_road_traffic_mqtt_producer_mqtt_client.client import (
+    FrGouvTransportBisonFuteRoadEventMqttMqttClient,
+    FrGouvTransportBisonFuteTrafficFlowMqttMqttClient,
+)
+
+logger = logging.getLogger(__name__)
+
+
+def _fetch_entra_token(audience: str, managed_identity_client_id: str | None = None) -> str:
+    params = {"api-version": "2018-02-01", "resource": audience or "https://eventgrid.azure.net/"}
     if managed_identity_client_id:
         params["client_id"] = managed_identity_client_id
-
     request = Request(
         "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
         headers={"Metadata": "true"},
     )
     with urlopen(request, timeout=30) as response:
         payload = json.loads(response.read().decode("utf-8"))
-
     token = payload.get("accessToken") or payload.get("access_token")
     if not token:
         raise RuntimeError("IMDS token response did not contain an access token")
     return str(token)
 
-def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
-    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
-    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
+def _resolve_connection_settings(username: str | None, password: str | None) -> tuple[str, str, Any | None]:
+    auth_mode = str(os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+    resolved_username = str(username or os.getenv("MQTT_USERNAME") or "")
+    resolved_password = str(password or os.getenv("MQTT_PASSWORD") or "")
     if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or ""), None
-
+        return resolved_username, resolved_password, None
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
-    resolved_username = resolved_client_id or str(username or "").strip()
+    client_id = str(os.getenv("MQTT_CLIENT_ID") or "").strip()
+    resolved_username = client_id or resolved_username
     if not resolved_username:
-        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
-
-    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
-    from paho.mqtt.properties import Properties as _MqttConnProps
-    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
-    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
-    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
-    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
-    return resolved_client_id, resolved_username, resolved_password, _connect_props
-
-PROJECT_DIR = "french-road-traffic"
-XREG_FILE = "french_road_traffic.xreg.json"
-TRANSPORT = "mqtt"
-ROOT = Path(os.getenv("SOURCE_ROOT", os.getcwd()))
-if not (ROOT / "xreg" / XREG_FILE).exists():
-    ROOT = Path(__file__).resolve().parents[2]
-MANIFEST_PATH = ROOT / "xreg" / XREG_FILE
-TEMPLATE_RE = re.compile(r"{([^{}]+)}")
-NOW = "2025-01-15T12:00:00Z"
-
-DEFAULTS = {
-    "agencyid": "sample-agency", "agency_id": "sample-agency", "route_id": "sample-route", "route_tag": "sample-route",
-    "vehicle_id": "sample-vehicle", "trip_id": "sample-trip", "alert_id": "sample-alert", "row_id": "sample-row",
-    "road": "A1", "site_id": "sample-site", "situation_id": "sample-situation", "situation_record_id": "sample-situation",
-    "district": "centro", "sensor_id": "sample-sensor", "counter_id": "sample-counter", "neighborhood": "downtown",
-    "closure_id": "sample-closure", "road_id": "A1", "severity": "moderate", "disruption_id": "sample-disruption",
-    "system_id": "docomo-cycle", "ward": "chiyoda", "station_id": "sample-station", "region": "seattle",
-    "crossing_name": "sample-crossing", "vessel_id": "sample-vessel", "mountain_pass_id": "sample-pass",
-    "state_route_id": "SR-520", "bridge_number": "sample-bridge", "flow_data_id": "sample-flow",
-    "travel_time_id": "sample-travel-time", "trip_name": "sample-trip", "vms_controller_id": "sample-controller",
-    "vms_index": "1", "sign_id": "sample-sign", "measurement_site_id": "sample-site", "id": "sample-id",
-    "identifier": "sample-identifier", "event": "event", "ce_id": "sample-event", "date": NOW, "event_time": NOW,
-}
-
-def load_manifest() -> Dict[str, Any]:
-    with MANIFEST_PATH.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
-
-def resolve_pointer(document: Mapping[str, Any], pointer: str) -> Any:
-    if pointer.startswith('#'):
-        pointer = pointer[1:]
-    cur: Any = document
-    for raw in pointer.strip('/').split('/'):
-        if not raw:
-            continue
-        cur = cur[raw.replace('~1','/').replace('~0','~')]
-    return cur
-
-def resolve_message(document: Mapping[str, Any], message: Mapping[str, Any]) -> Dict[str, Any]:
-    base_url = message.get('basemessageuri')
-    if not base_url:
-        return dict(message)
-    base = resolve_message(document, resolve_pointer(document, str(base_url)))
-    base.update({k:v for k,v in message.items() if k != 'basemessageuri'})
-    return base
-
-def render(template: str | None, context: Mapping[str, Any]) -> str:
-    if not template:
-        return ""
-    def repl(match):
-        name = match.group(1)
-        return str(context.get(name, DEFAULTS.get(name, f"sample-{name.replace('_','-')}")))
-    return TEMPLATE_RE.sub(repl, template)
-
-def sample_for_type(spec: Any, defs: Mapping[str, Any]) -> Any:
-    if isinstance(spec, list):
-        non_null = [x for x in spec if x != 'null']
-        return sample_for_type(non_null[0] if non_null else 'string', defs)
-    if isinstance(spec, dict):
-        if '$ref' in spec:
-            resolved = resolve_pointer(defs, spec['$ref'])
-            if isinstance(resolved, Mapping) and resolved.get('enum'):
-                return resolved['enum'][0]
-            if isinstance(resolved, Mapping) and resolved.get('type') not in (None, 'object'):
-                return sample_for_type(resolved.get('type'), defs)
-            return sample_from_schema(resolved, defs)
-        if spec.get('enum'):
-            return spec['enum'][0]
-        if spec.get('type') == 'choice' and spec.get('choices'):
-            choice_name, first = next(iter(spec['choices'].items()))
-            return {choice_name: sample_for_type(first, defs)}
-        if 'type' in spec:
-            return sample_for_type(spec['type'], defs)
-    t = str(spec or 'string').lower()
-    if t in ('int','integer','long','int32','int64','uint32','uint64'): return 1
-    if t in ('float','double','number','decimal'): return 1.0
-    if t in ('bool','boolean'): return True
-    if t == 'array': return []
-    if t == 'object': return {}
-    if 'date' in t or 'time' in t: return NOW
-    return 'sample'
-
-def sample_from_schema(schema: Mapping[str, Any], defs: Mapping[str, Any] | None = None) -> Dict[str, Any]:
-    root_doc = defs or schema
-    if isinstance(schema, Mapping) and "$root" in schema:
-        schema = resolve_pointer(schema, str(schema["$root"]))
-    defs = root_doc
-    if isinstance(schema.get('type'), dict) or schema.get('type') not in (None, 'object'):
-        val = sample_for_type(schema.get('type'), defs)
-        return val if isinstance(val, dict) else {"value": val}
-    props = schema.get('properties') or {}
-    required = set(schema.get('required') or [])
-    data: Dict[str, Any] = {}
-    for name, prop in props.items():
-        if name in required:
-            if isinstance(prop, Mapping) and 'enum' in prop:
-                data[name] = prop['enum'][0]
-            else:
-                data[name] = sample_for_type(prop if isinstance(prop, Mapping) else 'string', defs)
-    return data
-
-def topic_options(message: Mapping[str, Any]) -> tuple[str,int,bool]:
-    po = message.get('protocoloptions') or {}
-    props = po.get('properties') or {}
-    topic = po.get('topic_name') or po.get('topic') or props.get('topic')
-    if isinstance(topic, Mapping): topic = topic.get('value')
-    return str(topic), int(po.get('qos', props.get('qos', 1))), bool(po.get('retain', props.get('retain', False)))
-
-def iter_contracts(protocol_prefix: str) -> Iterable[Dict[str, Any]]:
-    manifest = load_manifest()
-    for endpoint in manifest.get('endpoints', {}).values():
-        if not str(endpoint.get('protocol','')).upper().startswith(protocol_prefix.upper()):
-            continue
-        for group_ref in endpoint.get('messagegroups', []):
-            group = resolve_pointer(manifest, group_ref)
-            for key, m in (group.get('messages') or {}).items():
-                msg = resolve_message(manifest, m)
-                ce = msg.get('envelopemetadata') or {}
-                schema = resolve_pointer(manifest, msg['dataschemauri'])
-                version = schema.get('defaultversionid','1')
-                jschema = schema['versions'][version]['schema']
-                data = sample_from_schema(jschema)
-                context = dict(DEFAULTS)
-                context.update(data if isinstance(data, dict) else {})
-                subject = render((ce.get('subject') or {}).get('value'), context) or 'sample'
-                _merge_subject_context((ce.get('subject') or {}).get('value'), subject, context)
-                ce_type = (ce.get('type') or {}).get('value') or key
-                source = render((ce.get('source') or {}).get('value'), context) or f"https://example.invalid/{PROJECT_DIR}"
-                ce_id = render((ce.get('id') or {}).get('value'), context) or str(uuid.uuid4())
-                ce_time = render((ce.get('time') or {}).get('value'), context) or NOW
-                for pname in set(TEMPLATE_RE.findall(subject) + TEMPLATE_RE.findall(source) + TEMPLATE_RE.findall(ce_id) + TEMPLATE_RE.findall(ce_time)):
-                    context.setdefault(pname, DEFAULTS.get(pname, f"sample-{pname.replace('_','-')}"))
-                if isinstance(data, dict):
-                    for k,v in context.items(): data.setdefault(k, v)
-                yield {"type": ce_type, "source": source, "subject": subject, "id": ce_id, "time": ce_time, "data": data, "message": msg, "context": context}
-
-def _merge_subject_context(template: str | None, rendered: str, context: Dict[str, Any]) -> None:
-    if not template:
-        return
-    names = TEMPLATE_RE.findall(template)
-    pattern = '^' + re.escape(template) + '$'
-    for name in names:
-        pattern = pattern.replace('\\{' + name + '\\}', f'(?P<{name}>[^/]+)')
-    match = re.match(pattern, rendered)
-    if match:
-        context.update(match.groupdict())
-
-def mqtt_feed() -> None:
-    import paho.mqtt.client as mqtt
-    from paho.mqtt.client import CallbackAPIVersion, MQTTv5
-    from paho.mqtt.properties import Properties
+        raise ValueError("MQTT_CLIENT_ID is required for MQTT_AUTH_MODE=entra")
+    resolved_password = _fetch_entra_token(audience, managed_identity_client_id)
     from paho.mqtt.packettypes import PacketTypes
-    from urllib.parse import urlparse
-    url = os.getenv('MQTT_BROKER_URL') or f"mqtt://{os.getenv('MQTT_HOST','localhost')}:{os.getenv('MQTT_PORT','1883')}"
-    parsed = urlparse(url if '://' in url else f'mqtt://{url}')
-    host = parsed.hostname or 'localhost'; port = parsed.port or (8883 if parsed.scheme == 'mqtts' else 1883)
-    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
-        username=os.getenv('MQTT_USERNAME'),
-        password=os.getenv('MQTT_PASSWORD',''),
-        client_id=None,
-        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    from paho.mqtt.properties import Properties
+
+    props = Properties(PacketTypes.CONNECT)
+    props.AuthenticationMethod = "OAUTH2-JWT"
+    props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_username, resolved_password, props
+
+
+def _parse_broker_url(url: str) -> tuple[str, int, bool]:
+    parsed = urlparse(url if "://" in url else f"mqtt://{url}")
+    tls = (parsed.scheme or "mqtt").lower() in {"mqtts", "ssl", "tls"}
+    return parsed.hostname or "localhost", parsed.port or (8883 if tls else 1883), tls
+
+
+def _flow_data(record: dict[str, Any]) -> TrafficFlowMeasurement:
+    return TrafficFlowMeasurement(**record)
+
+
+def _event_data(record: dict[str, Any]) -> RoadEvent:
+    return RoadEvent(**record)
+
+
+async def _publish_cycle(
+    source: FrenchRoadTrafficSource,
+    flow_client: FrGouvTransportBisonFuteTrafficFlowMqttMqttClient,
+    event_client: FrGouvTransportBisonFuteRoadEventMqttMqttClient,
+) -> None:
+    flow_count = 0
+    event_count = 0
+    for record in source.fetch_traffic_flow():
+        await flow_client.publish_fr_gouv_transport_bison_fute_traffic_flow_measurement_mqtt(
+            feedurl=FEED_SOURCE_FLOW,
+            site_id=record["site_id"],
+            road="unknown",
+            data=_flow_data(record),
+        )
+        flow_count += 1
+    for record in source.fetch_road_events():
+        await event_client.publish_fr_gouv_transport_bison_fute_road_event_mqtt(
+            feedurl=FEED_SOURCE_EVENTS,
+            situation_id=record["situation_id"],
+            road=normalize_road_segment(record.get("road_number")),
+            data=_event_data(record),
+        )
+        event_count += 1
+    logger.info("Published %d flow measurements and %d road events", flow_count, event_count)
+
+
+async def _run(args: argparse.Namespace) -> None:
+    source = FrenchRoadTrafficSource()
+    host, port, tls = _parse_broker_url(args.broker_url)
+    username, password, entra_props = _resolve_connection_settings(args.username, args.password)
+    paho_client = mqtt.Client(
+        client_id=os.getenv("MQTT_CLIENT_ID") or "french-road-traffic-mqtt",
+        callback_api_version=CallbackAPIVersion.VERSION2,
+        protocol=MQTTv5,
     )
+    if entra_props is None and (username or password):
+        paho_client.username_pw_set(username, password)
+    if tls or os.getenv("MQTT_TLS", "").lower() in {"1", "true", "yes"}:
+        paho_client.tls_set()
 
-    client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if _entra_props is None and (resolved_username or resolved_password):
-        client.username_pw_set(resolved_username, resolved_password)
-    if parsed.scheme == 'mqtts' or os.getenv('MQTT_TLS','').lower() in ('1','true','yes'):
-        client.tls_set()
-    client.connect(host, port, 30, properties=_entra_props); client.loop_start(); time.sleep(0.5)
-    for c in iter_contracts('MQTT'):
-        topic, qos, retain = topic_options(c['message'])
-        topic = render(topic, {**c['context'], **(c['data'] if isinstance(c['data'],dict) else {})})
-        props = Properties(PacketTypes.PUBLISH)
-        props.ContentType = 'application/json'
-        props.UserProperty = [('specversion','1.0'),('type',c['type']),('source',c['source']),('subject',c['subject']),('id',c['id']),('time',c['time'])]
-        client.publish(topic, json.dumps(c['data'], ensure_ascii=False).encode('utf-8'), qos=qos, retain=retain, properties=props).wait_for_publish()
-    time.sleep(1.0); client.loop_stop(); client.disconnect()
+    loop = asyncio.get_running_loop()
+    flow_client = FrGouvTransportBisonFuteTrafficFlowMqttMqttClient(client=paho_client, content_mode=args.content_mode, loop=loop)
+    event_client = FrGouvTransportBisonFuteRoadEventMqttMqttClient(client=paho_client, content_mode=args.content_mode, loop=loop)
+    if entra_props is not None:
+        connected = threading.Event()
 
-def amqp_feed() -> None:
-    from proton import Message
-    from proton.utils import BlockingConnection
-    from urllib.parse import quote
-    host=os.getenv('AMQP_HOST','localhost'); port=int(os.getenv('AMQP_PORT','5672')); address=os.getenv('AMQP_ADDRESS') or PROJECT_DIR
-    user=os.getenv('AMQP_USERNAME'); pwd=os.getenv('AMQP_PASSWORD') or ''
-    auth = f"{quote(user)}:{quote(pwd)}@" if user else ''
-    conn=BlockingConnection(f"amqp://{auth}{host}:{port}", timeout=30, allowed_mechs='PLAIN' if user else None)
-    sender=conn.create_sender(address)
-    for c in iter_contracts('AMQP'):
-        props={f'cloudEvents:{k}':str(v) for k,v in {'specversion':'1.0','type':c['type'],'source':c['source'],'subject':c['subject'],'id':c['id'],'time':c['time']}.items()}
-        sender.send(Message(body=json.dumps(c['data'], ensure_ascii=False), subject=c['subject'], properties=props, content_type='application/json'))
-    conn.close()
+        def _on_connect(_client, _userdata, _flags, reason_code, _properties=None):
+            if (reason_code if isinstance(reason_code, int) else getattr(reason_code, "value", reason_code)) == 0:
+                connected.set()
+
+        paho_client.on_connect = _on_connect
+        paho_client.connect(host, port, keepalive=60, clean_start=True, properties=entra_props)
+        paho_client.loop_start()
+        if not await loop.run_in_executor(None, lambda: connected.wait(30)):
+            raise RuntimeError("MQTT CONNACK timeout after 30s")
+    else:
+        await event_client.connect(host, port)
+    try:
+        while True:
+            await _publish_cycle(source, flow_client, event_client)
+            if args.once:
+                break
+            await asyncio.sleep(args.polling_interval)
+    finally:
+        await event_client.disconnect()
+
 
 def main() -> None:
-    parser=argparse.ArgumentParser(); parser.add_argument('command', nargs='?', default='feed'); parser.add_argument('--once', action='store_true')
-    args=parser.parse_args()
-    if args.command != 'feed': parser.error("only 'feed' is supported")
-    if TRANSPORT == 'mqtt': mqtt_feed()
-    else: amqp_feed()
-if __name__ == '__main__': main()
+    logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper(), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    parser = argparse.ArgumentParser(description="French Road Traffic MQTT bridge")
+    parser.add_argument("feed_command", nargs="?", default="feed")
+    parser.add_argument("--broker-url", default=os.getenv("MQTT_BROKER_URL", "mqtt://localhost:1883"))
+    parser.add_argument("--username", default=os.getenv("MQTT_USERNAME"))
+    parser.add_argument("--password", default=os.getenv("MQTT_PASSWORD"))
+    parser.add_argument("--content-mode", default=os.getenv("MQTT_CONTENT_MODE", "binary"))
+    parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", str(DEFAULT_POLL_INTERVAL_SECONDS))))
+    parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in {"1", "true", "yes"})
+    args = parser.parse_args()
+    if args.feed_command != "feed":
+        parser.error("only the 'feed' command is supported")
+    asyncio.run(_run(args))
+
+
+if __name__ == "__main__":
+    main()

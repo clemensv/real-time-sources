@@ -20,6 +20,7 @@ dependencies = [
     "cloudevents>=1.12.1,<2.0.0",
     "confluent-kafka>=2.14.2",
     "dataclasses-json>=0.6.7",
+    "french_road_traffic_core",
     "requests>=2.31.0",
 ]
 
@@ -41,3 +42,6 @@ local_scheme = "no-local-version"
 packages = [
     "french_road_traffic",
 ]
+
+[tool.uv.sources]
+french_road_traffic_core = { path = "french_road_traffic_core" }
