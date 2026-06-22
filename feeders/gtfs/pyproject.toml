@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses-json>=0.6.7",
     "dataclasses>=0.6",
+    "gtfs-core @ file:./gtfs_core",
     "gtfs-realtime-bindings>=1.0.0",
     "requests>=2.34.2",
 ]

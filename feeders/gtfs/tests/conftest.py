@@ -6,6 +6,7 @@ _TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 _FEEDER_DIR = os.path.abspath(os.path.join(_TEST_DIR, ".."))
 
 _EXTRA_PATHS = [
+    os.path.join(_FEEDER_DIR, "gtfs_core"),
     os.path.join(_FEEDER_DIR, "gtfs_rt_bridge", "src"),
     os.path.join(_FEEDER_DIR, "gtfs_rt_producer", "gtfs_rt_producer_data", "src"),
     os.path.join(_FEEDER_DIR, "gtfs_rt_producer", "gtfs_rt_producer_kafka_producer", "src"),

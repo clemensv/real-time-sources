@@ -1,11 +1,26 @@
 from __future__ import annotations
 
-import argparse, json, os, re, time, uuid
-from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping
-
+import argparse
+import asyncio
+import json
+import logging
+import os
+import re
+from typing import Optional
 from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
+
+import paho.mqtt.client as mqtt
+from paho.mqtt.client import CallbackAPIVersion, MQTTv5
+
+from gtfs_core.core import DEFAULT_POLL_INTERVAL_SECONDS, DEFAULT_SCHEDULE_POLL_INTERVAL_SECONDS, poll_and_publish_gtfs
+from gtfs_mqtt_producer_mqtt_client.client import (
+    GeneralTransitFeedRealTimeMqttMqttClient,
+    GeneralTransitFeedStaticMqttMqttClient,
+)
+
+logger = logging.getLogger("gtfs_mqtt")
+
 
 def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
     params = {
@@ -21,16 +36,15 @@ def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
     )
     with urlopen(request, timeout=30) as response:
         payload = json.loads(response.read().decode("utf-8"))
-
     token = payload.get("accessToken") or payload.get("access_token")
     if not token:
         raise RuntimeError("IMDS token response did not contain an access token")
     return str(token)
 
+
 def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
     resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
-
     if auth_mode != "entra":
         return resolved_client_id, str(username or ""), str(password or ""), None
 
@@ -41,210 +55,137 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
-    from paho.mqtt.properties import Properties as _MqttConnProps
     from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
-    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
-    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
-    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
-    return resolved_client_id, resolved_username, resolved_password, _connect_props
+    from paho.mqtt.properties import Properties as _MqttConnProps
 
-PROJECT_DIR = "gtfs"
-XREG_FILE = "gtfs.xreg.json"
-TRANSPORT = "mqtt"
-ROOT = Path(os.getenv("SOURCE_ROOT", os.getcwd()))
-if not (ROOT / "xreg" / XREG_FILE).exists():
-    ROOT = Path(__file__).resolve().parents[2]
-MANIFEST_PATH = ROOT / "xreg" / XREG_FILE
-TEMPLATE_RE = re.compile(r"{([^{}]+)}")
-NOW = "2025-01-15T12:00:00Z"
+    connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, connect_props
 
-DEFAULTS = {
-    "agencyid": "sample-agency", "agency_id": "sample-agency", "route_id": "sample-route", "route_tag": "sample-route",
-    "vehicle_id": "sample-vehicle", "trip_id": "sample-trip", "alert_id": "sample-alert", "row_id": "sample-row",
-    "road": "A1", "site_id": "sample-site", "situation_id": "sample-situation", "situation_record_id": "sample-situation",
-    "district": "centro", "sensor_id": "sample-sensor", "counter_id": "sample-counter", "neighborhood": "downtown",
-    "closure_id": "sample-closure", "road_id": "A1", "severity": "moderate", "disruption_id": "sample-disruption",
-    "system_id": "docomo-cycle", "ward": "chiyoda", "station_id": "sample-station", "region": "seattle",
-    "crossing_name": "sample-crossing", "vessel_id": "sample-vessel", "mountain_pass_id": "sample-pass",
-    "state_route_id": "SR-520", "bridge_number": "sample-bridge", "flow_data_id": "sample-flow",
-    "travel_time_id": "sample-travel-time", "trip_name": "sample-trip", "vms_controller_id": "sample-controller",
-    "vms_index": "1", "sign_id": "sample-sign", "measurement_site_id": "sample-site", "id": "sample-id",
-    "identifier": "sample-identifier", "event": "event", "ce_id": "sample-event", "date": NOW, "event_time": NOW,
-}
 
-def load_manifest() -> Dict[str, Any]:
-    with MANIFEST_PATH.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
+def _parse_broker_url(url: str) -> tuple[str, int, bool, Optional[str], Optional[str]]:
+    parsed = urlparse(url if "://" in url else f"mqtt://{url}")
+    scheme = (parsed.scheme or "mqtt").lower()
+    tls = scheme in {"mqtts", "ssl", "tls"}
+    port = parsed.port or (8883 if tls else 1883)
+    host = parsed.hostname or "localhost"
+    return host, port, tls, parsed.username, parsed.password
 
-def resolve_pointer(document: Mapping[str, Any], pointer: str) -> Any:
-    if pointer.startswith('#'):
-        pointer = pointer[1:]
-    cur: Any = document
-    for raw in pointer.strip('/').split('/'):
-        if not raw:
-            continue
-        cur = cur[raw.replace('~1','/').replace('~0','~')]
-    return cur
 
-def resolve_message(document: Mapping[str, Any], message: Mapping[str, Any]) -> Dict[str, Any]:
-    base_url = message.get('basemessageuri')
-    if not base_url:
-        return dict(message)
-    base = resolve_message(document, resolve_pointer(document, str(base_url)))
-    base.update({k:v for k,v in message.items() if k != 'basemessageuri'})
-    return base
+class GtfsMqttPublisher:
+    def __init__(
+        self,
+        realtime_client: GeneralTransitFeedRealTimeMqttMqttClient,
+        static_client: GeneralTransitFeedStaticMqttMqttClient,
+    ) -> None:
+        self._realtime = realtime_client
+        self._static = static_client
 
-def render(template: str | None, context: Mapping[str, Any]) -> str:
-    if not template:
-        return ""
-    def repl(match):
-        name = match.group(1)
-        return str(context.get(name, DEFAULTS.get(name, f"sample-{name.replace('_','-')}")))
-    return TEMPLATE_RE.sub(repl, template)
+    async def flush(self) -> None:
+        return None
 
-def sample_for_type(spec: Any, defs: Mapping[str, Any]) -> Any:
-    if isinstance(spec, list):
-        non_null = [x for x in spec if x != 'null']
-        return sample_for_type(non_null[0] if non_null else 'string', defs)
-    if isinstance(spec, dict):
-        if '$ref' in spec:
-            resolved = resolve_pointer(defs, spec['$ref'])
-            if isinstance(resolved, Mapping) and resolved.get('enum'):
-                return resolved['enum'][0]
-            if isinstance(resolved, Mapping) and resolved.get('type') not in (None, 'object'):
-                return sample_for_type(resolved.get('type'), defs)
-            return sample_from_schema(resolved, defs)
-        if spec.get('enum'):
-            return spec['enum'][0]
-        if spec.get('type') == 'choice' and spec.get('choices'):
-            choice_name, first = next(iter(spec['choices'].items()))
-            return {choice_name: sample_for_type(first, defs)}
-        if 'type' in spec:
-            return sample_for_type(spec['type'], defs)
-    t = str(spec or 'string').lower()
-    if t in ('int','integer','long','int32','int64','uint32','uint64'): return 1
-    if t in ('float','double','number','decimal'): return 1.0
-    if t in ('bool','boolean'): return True
-    if t == 'array': return []
-    if t == 'object': return {}
-    if 'date' in t or 'time' in t: return NOW
-    return 'sample'
+    async def poll(self) -> None:
+        return None
 
-def sample_from_schema(schema: Mapping[str, Any], defs: Mapping[str, Any] | None = None) -> Dict[str, Any]:
-    root_doc = defs or schema
-    if isinstance(schema, Mapping) and "$root" in schema:
-        schema = resolve_pointer(schema, str(schema["$root"]))
-    defs = root_doc
-    if isinstance(schema.get('type'), dict) or schema.get('type') not in (None, 'object'):
-        val = sample_for_type(schema.get('type'), defs)
-        return val if isinstance(val, dict) else {"value": val}
-    props = schema.get('properties') or {}
-    required = set(schema.get('required') or [])
-    data: Dict[str, Any] = {}
-    for name, prop in props.items():
-        if name in required:
-            if isinstance(prop, Mapping) and 'enum' in prop:
-                data[name] = prop['enum'][0]
-            else:
-                data[name] = sample_for_type(prop if isinstance(prop, Mapping) else 'string', defs)
-    return data
+    def __getattr__(self, name: str):
+        if hasattr(self._realtime, name):
+            return getattr(self._realtime, name)
+        if hasattr(self._static, name):
+            return getattr(self._static, name)
+        raise AttributeError(name)
 
-def topic_options(message: Mapping[str, Any]) -> tuple[str,int,bool]:
-    po = message.get('protocoloptions') or {}
-    props = po.get('properties') or {}
-    topic = po.get('topic_name') or po.get('topic') or props.get('topic')
-    if isinstance(topic, Mapping): topic = topic.get('value')
-    return str(topic), int(po.get('qos', props.get('qos', 1))), bool(po.get('retain', props.get('retain', False)))
 
-def iter_contracts(protocol_prefix: str) -> Iterable[Dict[str, Any]]:
-    manifest = load_manifest()
-    for endpoint in manifest.get('endpoints', {}).values():
-        if not str(endpoint.get('protocol','')).upper().startswith(protocol_prefix.upper()):
-            continue
-        for group_ref in endpoint.get('messagegroups', []):
-            group = resolve_pointer(manifest, group_ref)
-            for key, m in (group.get('messages') or {}).items():
-                msg = resolve_message(manifest, m)
-                ce = msg.get('envelopemetadata') or {}
-                schema = resolve_pointer(manifest, msg['dataschemauri'])
-                version = schema.get('defaultversionid','1')
-                jschema = schema['versions'][version]['schema']
-                data = sample_from_schema(jschema)
-                context = dict(DEFAULTS)
-                context.update(data if isinstance(data, dict) else {})
-                subject = render((ce.get('subject') or {}).get('value'), context) or 'sample'
-                _merge_subject_context((ce.get('subject') or {}).get('value'), subject, context)
-                ce_type = (ce.get('type') or {}).get('value') or key
-                source = render((ce.get('source') or {}).get('value'), context) or f"https://example.invalid/{PROJECT_DIR}"
-                ce_id = render((ce.get('id') or {}).get('value'), context) or str(uuid.uuid4())
-                ce_time = render((ce.get('time') or {}).get('value'), context) or NOW
-                for pname in set(TEMPLATE_RE.findall(subject) + TEMPLATE_RE.findall(source) + TEMPLATE_RE.findall(ce_id) + TEMPLATE_RE.findall(ce_time)):
-                    context.setdefault(pname, DEFAULTS.get(pname, f"sample-{pname.replace('_','-')}"))
-                if isinstance(data, dict):
-                    for k,v in context.items(): data.setdefault(k, v)
-                yield {"type": ce_type, "source": source, "subject": subject, "id": ce_id, "time": ce_time, "data": data, "message": msg, "context": context}
-
-def _merge_subject_context(template: str | None, rendered: str, context: Dict[str, Any]) -> None:
-    if not template:
-        return
-    names = TEMPLATE_RE.findall(template)
-    pattern = '^' + re.escape(template) + '$'
-    for name in names:
-        pattern = pattern.replace('\\{' + name + '\\}', f'(?P<{name}>[^/]+)')
-    match = re.match(pattern, rendered)
-    if match:
-        context.update(match.groupdict())
-
-def mqtt_feed() -> None:
-    import paho.mqtt.client as mqtt
-    from paho.mqtt.client import CallbackAPIVersion, MQTTv5
-    from paho.mqtt.properties import Properties
-    from paho.mqtt.packettypes import PacketTypes
-    from urllib.parse import urlparse
-    url = os.getenv('MQTT_BROKER_URL') or f"mqtt://{os.getenv('MQTT_HOST','localhost')}:{os.getenv('MQTT_PORT','1883')}"
-    parsed = urlparse(url if '://' in url else f'mqtt://{url}')
-    host = parsed.hostname or 'localhost'; port = parsed.port or (8883 if parsed.scheme == 'mqtts' else 1883)
-    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
-        username=os.getenv('MQTT_USERNAME'),
-        password=os.getenv('MQTT_PASSWORD',''),
-        client_id=None,
-        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+async def _connect_clients(args: argparse.Namespace) -> tuple[GtfsMqttPublisher, GeneralTransitFeedRealTimeMqttMqttClient]:
+    broker_host, broker_port, tls_from_url, url_user, url_password = _parse_broker_url(args.mqtt_broker_url)
+    tls_enabled = args.mqtt_enable_tls or tls_from_url or broker_port == 8883
+    resolved_client_id, resolved_username, resolved_password, entra_props = _resolve_mqtt_connection_settings(
+        username=args.mqtt_username or url_user,
+        password=args.mqtt_password or url_password,
+        client_id=args.mqtt_client_id,
+        auth_mode=args.mqtt_auth_mode,
     )
 
-    client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if _entra_props is None and (resolved_username or resolved_password):
-        client.username_pw_set(resolved_username, resolved_password)
-    if parsed.scheme == 'mqtts' or os.getenv('MQTT_TLS','').lower() in ('1','true','yes'):
-        client.tls_set()
-    client.connect(host, port, 30, properties=_entra_props); client.loop_start(); time.sleep(0.5)
-    for c in iter_contracts('MQTT'):
-        topic, qos, retain = topic_options(c['message'])
-        topic = render(topic, {**c['context'], **(c['data'] if isinstance(c['data'],dict) else {})})
-        props = Properties(PacketTypes.PUBLISH)
-        props.ContentType = 'application/json'
-        props.UserProperty = [('specversion','1.0'),('type',c['type']),('source',c['source']),('subject',c['subject']),('id',c['id']),('time',c['time'])]
-        client.publish(topic, json.dumps(c['data'], ensure_ascii=False).encode('utf-8'), qos=qos, retain=retain, properties=props).wait_for_publish()
-    time.sleep(1.0); client.loop_stop(); client.disconnect()
+    paho_client = mqtt.Client(
+        client_id=resolved_client_id or "",
+        callback_api_version=CallbackAPIVersion.VERSION2,
+        protocol=MQTTv5,
+    )
+    if entra_props is None and (resolved_username or resolved_password):
+        paho_client.username_pw_set(resolved_username, resolved_password)
+    if tls_enabled:
+        paho_client.tls_set()
 
-def amqp_feed() -> None:
-    from proton import Message
-    from proton.utils import BlockingConnection
-    from urllib.parse import quote
-    host=os.getenv('AMQP_HOST','localhost'); port=int(os.getenv('AMQP_PORT','5672')); address=os.getenv('AMQP_ADDRESS') or PROJECT_DIR
-    user=os.getenv('AMQP_USERNAME'); pwd=os.getenv('AMQP_PASSWORD') or ''
-    auth = f"{quote(user)}:{quote(pwd)}@" if user else ''
-    conn=BlockingConnection(f"amqp://{auth}{host}:{port}", timeout=30, allowed_mechs='PLAIN' if user else None)
-    sender=conn.create_sender(address)
-    for c in iter_contracts('AMQP'):
-        props={f'cloudEvents:{k}':str(v) for k,v in {'specversion':'1.0','type':c['type'],'source':c['source'],'subject':c['subject'],'id':c['id'],'time':c['time']}.items()}
-        sender.send(Message(body=json.dumps(c['data'], ensure_ascii=False), subject=c['subject'], properties=props, content_type='application/json'))
-    conn.close()
+    realtime_client = GeneralTransitFeedRealTimeMqttMqttClient(paho_client, content_mode=args.mqtt_content_mode)
+    static_client = GeneralTransitFeedStaticMqttMqttClient(paho_client, content_mode=args.mqtt_content_mode)
+    await realtime_client.connect(broker_host, port=broker_port, keepalive=30, properties=entra_props)
+    return GtfsMqttPublisher(realtime_client, static_client), realtime_client
+
+
+async def _run(args: argparse.Namespace) -> None:
+    if not args.agency:
+        raise ValueError("No agency specified")
+    gtfs_rt_headers = [value.split("=", 1) for value in args.gtfs_rt_headers] if args.gtfs_rt_headers else None
+    gtfs_headers = [value.split("=", 1) for value in args.gtfs_headers] if args.gtfs_headers else None
+    publisher, connection_owner = await _connect_clients(args)
+    try:
+        await poll_and_publish_gtfs(
+            agency_id=args.agency,
+            publisher=publisher,
+            gtfs_rt_urls=args.gtfs_rt_urls,
+            gtfs_rt_headers=gtfs_rt_headers,
+            gtfs_urls=args.gtfs_urls,
+            gtfs_headers=gtfs_headers,
+            mdb_source_id=args.mdb_source_id,
+            route=args.route,
+            poll_interval=args.poll_interval,
+            schedule_poll_interval=args.schedule_poll_interval,
+            cache_dir=args.cache_dir,
+            force_schedule_refresh=args.force_schedule_refresh,
+            once=args.once,
+        )
+    finally:
+        await connection_owner.disconnect()
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    split_pattern = r'''(?:(?<!\\)"[^"]*"|'[^']*'|[^\s"']+)+'''
+    parser = argparse.ArgumentParser(description="GTFS MQTT bridge")
+    parser.add_argument("feed_command", nargs="?", default="feed")
+    parser.add_argument(
+        "--mqtt-broker-url",
+        default=os.getenv("MQTT_BROKER_URL") or f"mqtt://{os.getenv('MQTT_HOST', 'localhost')}:{os.getenv('MQTT_PORT', '1883')}",
+    )
+    parser.add_argument("--mqtt-username", default=os.getenv("MQTT_USERNAME"))
+    parser.add_argument("--mqtt-password", default=os.getenv("MQTT_PASSWORD", ""))
+    parser.add_argument("--mqtt-client-id", default=os.getenv("MQTT_CLIENT_ID"))
+    parser.add_argument("--mqtt-auth-mode", default=os.getenv("MQTT_AUTH_MODE", "password"))
+    parser.add_argument("--mqtt-enable-tls", action="store_true", default=os.getenv("MQTT_TLS", "").lower() in ("1", "true", "yes"))
+    parser.add_argument("--mqtt-content-mode", choices=("structured", "binary"), default=os.getenv("MQTT_CONTENT_MODE", "structured"))
+    parser.add_argument("-r", "--route", default="*" if not os.environ.get("ROUTE") else os.environ.get("ROUTE"))
+    parser.add_argument("--gtfs-rt-urls", nargs="+", default=os.environ.get("GTFS_RT_URLS").split(",") if os.environ.get("GTFS_RT_URLS") else None)
+    parser.add_argument("--gtfs-urls", nargs="+", default=os.environ.get("GTFS_URLS").split(",") if os.environ.get("GTFS_URLS") else None)
+    parser.add_argument("-m", "--mdb-source-id", default=os.environ.get("MDB_SOURCE_ID"))
+    parser.add_argument("-a", "--agency", default=os.environ.get("AGENCY"))
+    parser.add_argument("--gtfs-rt-headers", action="append", nargs="*", default=re.findall(split_pattern, os.environ.get("GTFS_RT_HEADERS")) if os.environ.get("GTFS_RT_HEADERS") else None)
+    parser.add_argument("--gtfs-headers", action="append", nargs="*", default=re.findall(split_pattern, os.environ.get("GTFS_HEADERS")) if os.environ.get("GTFS_HEADERS") else None)
+    parser.add_argument("--poll-interval", type=float, default=float(os.environ.get("POLL_INTERVAL")) if os.environ.get("POLL_INTERVAL") else DEFAULT_POLL_INTERVAL_SECONDS)
+    parser.add_argument("--schedule-poll-interval", type=float, default=float(os.environ.get("SCHEDULE_POLL_INTERVAL")) if os.environ.get("SCHEDULE_POLL_INTERVAL") else DEFAULT_SCHEDULE_POLL_INTERVAL_SECONDS)
+    parser.add_argument("--cache-dir", type=str, default=os.environ.get("CACHE_DIR"))
+    parser.add_argument("--log-level", type=str, default=os.environ.get("LOG_LEVEL", "INFO"), choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+    parser.add_argument("--force-schedule-refresh", action="store_true", default=False)
+    parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes", "on"))
+    return parser
+
 
 def main() -> None:
-    parser=argparse.ArgumentParser(); parser.add_argument('command', nargs='?', default='feed'); parser.add_argument('--once', action='store_true')
-    args=parser.parse_args()
-    if args.command != 'feed': parser.error("only 'feed' is supported")
-    if TRANSPORT == 'mqtt': mqtt_feed()
-    else: amqp_feed()
-if __name__ == '__main__': main()
+    parser = _build_parser()
+    args = parser.parse_args()
+    if args.feed_command != "feed":
+        parser.error("only the 'feed' command is supported")
+    logging.basicConfig(level=args.log_level.upper(), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    asyncio.run(_run(args))
+
+
+if __name__ == "__main__":
+    main()

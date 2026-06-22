@@ -10,8 +10,10 @@ WORKDIR /app
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
-RUN pip install --no-cache-dir confluent-kafka \
- && pip install --no-cache-dir ./gtfs_rt_producer/gtfs_rt_producer_kafka_producer \
+RUN pip install --no-cache-dir ./gtfs_rt_producer/gtfs_rt_producer_data \
+ && pip install --no-cache-dir ./gtfs_core \
+ && pip install --no-cache-dir ./gtfs_mqtt_producer/gtfs_mqtt_producer_data \
+ && pip install --no-cache-dir ./gtfs_mqtt_producer/gtfs_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./gtfs_mqtt
 ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "gtfs_mqtt", "feed"]

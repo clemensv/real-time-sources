@@ -7,7 +7,12 @@ name = "gtfs-mqtt"
 version = "0.1.0"
 description = "MQTT companion feeder for GTFS"
 requires-python = ">=3.10"
-dependencies = ["paho-mqtt>=2.1.0"]
+dependencies = [
+    "gtfs-core @ file:../gtfs_core",
+    "gtfs-mqtt-producer-data @ file:../gtfs_mqtt_producer/gtfs_mqtt_producer_data",
+    "gtfs-mqtt-producer-mqtt-client @ file:../gtfs_mqtt_producer/gtfs_mqtt_producer_mqtt_client",
+    "paho-mqtt>=2.1.0",
+]
 
 [project.scripts]
 gtfs-mqtt = "gtfs_mqtt.app:main"
