@@ -12,6 +12,7 @@ dependencies = [
     "avro",
     "geosphere_austria_producer_data",
     "geosphere_austria_producer_kafka_producer",
+    "geosphere_austria_core",
 ]
 
 [project.scripts]
@@ -23,3 +24,6 @@ include = ["geosphere_austria*"]
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.uv.sources]
+geosphere_austria_core = { path = "geosphere_austria_core" }
