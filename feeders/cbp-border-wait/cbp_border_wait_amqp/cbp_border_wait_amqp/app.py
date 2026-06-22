@@ -13,7 +13,7 @@ import pathlib
 import re
 import sys
 import time
-from datetime import datetime, timezone, timedelta, date
+from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib.parse import urlparse
 
@@ -305,93 +305,14 @@ def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
 
 
 async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> None:
-    try:
-        mqtt_app = importlib.import_module(f"{PY_MODULE}_mqtt.app")
-    except (ImportError, ModuleNotFoundError):
-        mqtt_app = None
-    if mqtt_app is None:
-        logger.warning("MQTT bridge not available; emitting sample corpus via AMQP")
+    """Emit sample corpus via AMQP (no source-specific live acquisition handler)."""
+    logger.info("Emitting sample corpus via AMQP for %s", SOURCE_ID)
+    while True:
         emit_mock_corpus(adapter)
-        return
-    # Source-specific live acquisition hooks reuse the already-shipped MQTT pollers/bridges.
-    if SOURCE_ID == "nws-alerts":
-        bridge = mqtt_app.NWSAlertsMqttBridge(adapter, state_file=args.state_file, poll_interval=args.polling_interval)
-        await bridge.poll_and_publish(once=args.once)
-    elif SOURCE_ID == "ptwc-tsunami":
-        core = importlib.import_module("ptwc_tsunami.ptwc_tsunami")
-        feeds = [p.strip() for p in args.feeds.split(",") if p.strip()]
-        poller = core.PTWCTsunamiPoller(kafka_config=None, kafka_topic="amqp", state_file=args.state_file, poll_interval=args.polling_interval, feeds=feeds)
-        while True:
-            await mqtt_app._poll_once(poller, adapter)
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "nina-bbk":
-        core = importlib.import_module("nina_bbk.nina_bbk")
-        providers = [p.strip() for p in args.providers.split(",") if p.strip()]
-        poller = core.NINABBKPoller(kafka_config=None, kafka_topic="amqp", state_file=args.state_file, poll_interval=args.polling_interval, providers=providers)
-        while True:
-            await mqtt_app._poll_once(poller, adapter)
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "gdacs":
-        core = importlib.import_module("gdacs.gdacs")
-        poller = core.GDACSPoller(kafka_config=None, kafka_topic="amqp", state_file=args.state_file, poll_interval=args.polling_interval)
-        while True:
-            await mqtt_app._poll_once(poller, adapter)
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "eaws-albina":
-        core = importlib.import_module("eaws_albina.eaws_albina")
-        regions = [p.strip() for p in args.regions.split(",") if p.strip()]
-        poller = core.AlbinaPoller(kafka_config=None, kafka_topic="amqp", last_polled_file=args.state_file, regions=regions, lang=args.lang)
-        while True:
-            today = date.today()
-            await mqtt_app._publish_date(poller, adapter, today.isoformat())
-            await mqtt_app._publish_date(poller, adapter, (today - timedelta(days=1)).isoformat())
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "cbp-border-wait":
-        logger.info("cbp-border-wait: emitting sample corpus via AMQP")
-        emit_mock_corpus(adapter)
-    elif SOURCE_ID == "seattle-911":
-        core = importlib.import_module("seattle_911.seattle_911")
-        # Inline the MQTT feed loop with the adapter to avoid opening an MQTT connection.
-        bridge = core.SeattleFire911Bridge(state_file=args.state_file)
-        while True:
-            since = datetime.utcnow() - timedelta(hours=core.DEFAULT_LOOKBACK_HOURS)
-            incidents = bridge.fetch_incidents(since=since)
-            for incident in incidents:
-                await adapter.publish_us_wa_seattle_fire911_mqtt_incident(incident_number=incident.incident_number, incident_datetime_utc=incident.incident_datetime_utc.isoformat(), incident_type_slug=incident.incident_type_slug, data=incident)
-            if args.once: break
-            await asyncio.sleep(core.DEFAULT_POLL_INTERVAL_SECONDS)
-    elif SOURCE_ID == "autobahn":
-        core = importlib.import_module("autobahn.autobahn")
-        resources = core.parse_resources_argument(args.resources)
-        roads = core.parse_roads_argument(args.roads)
-        bridge = mqtt_app.AutobahnMqttBridge(adapter, state_file=args.state_file, poll_interval_seconds=args.polling_interval, resources=resources, roads=roads, request_concurrency=args.request_concurrency)
-        await bridge.poll_and_publish(once=args.once)
-    elif SOURCE_ID == "tfl-road-traffic":
-        bridge = mqtt_app.TflRoadTrafficMqttBridge(adapter, polling_interval=args.polling_interval)
-        await bridge.poll_and_publish(once=args.once)
-    elif SOURCE_ID == "entur-norway":
-        core = importlib.import_module("entur_norway.entur_norway")
-        bridge = core.EnturNorwayBridge()
-        first = True
-        import uuid
-        et = str(uuid.uuid4()); vm = str(uuid.uuid4()); sx = str(uuid.uuid4())
-        while True:
-            await mqtt_app._publish_poll_cycle(bridge, adapter, first_run=first, et_requestor_id=et, vm_requestor_id=vm, sx_requestor_id=sx, max_size=args.max_size)
-            first = False
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "irail":
-        logger.info("irail: emitting sample corpus via AMQP")
-        emit_mock_corpus(adapter)
-    elif SOURCE_ID == "paris-bicycle-counters":
-        poller = mqtt_app.ParisBicycleCounterMqttPoller(adapter, args.state_file)
-        await poller.poll_and_send_async(once=args.once)
-    else:
-        raise RuntimeError(f"No live AMQP hook configured for {SOURCE_ID}")
+        logger.info("Emitted %d sample AMQP event(s) for %s", adapter.sent, SOURCE_ID)
+        if args.once:
+            break
+        await asyncio.sleep(args.polling_interval if hasattr(args, 'polling_interval') else 300)
 
 
 def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
