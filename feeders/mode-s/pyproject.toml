@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = "<4.0,>=3.10"
 dependencies = [
+    "mode_s_core",
     "aiohttp>=3.14.0",
     "asyncio>=3.4.3",
     "avro>=1.12.1,<2.0.0",
@@ -37,3 +38,6 @@ local_scheme = "no-local-version"
 packages = [
     "mode_s_kafka_bridge",
 ]
+
+[tool.uv.sources]
+mode_s_core = { path = "mode_s_core" }

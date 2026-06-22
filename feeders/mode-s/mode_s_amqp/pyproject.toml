@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "AMQP 1.0 feeder for Mode-S"
 requires-python = ">=3.10"
 dependencies = [
+    "mode_s_core",
     "python-qpid-proton>=0.40.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
@@ -22,3 +23,6 @@ mode-s-amqp = "mode_s_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["mode_s_amqp*"]
+
+[tool.uv.sources]
+mode_s_core = { path = "../mode_s_core" }

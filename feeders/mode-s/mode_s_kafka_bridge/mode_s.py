@@ -1,270 +1,30 @@
-"""
-Mode-S Data Poller
-Polls Mode-S data from dump1090 and sends it to a Kafka topic using SASL PLAIN authentication.
-"""
-
-import os
-import json
-import signal
-import sys
-import asyncio
-import threading
-import aiohttp
-import re
-import logging
-from datetime import datetime, time, timezone
-from typing import Dict, List, AsyncIterator, Any
-from zoneinfo import ZoneInfo
 import argparse
-import math
-import pyModeS as pms
-from pyModeS.extra.tcpclient import TcpClient
-from mode_s_producer_data import Record
-from mode_s_producer_data.mode_s.modes_adsb_record import ModeS_ADSB_Record
-from mode_s_producer_data.mode_s.messages import Messages
-from mode_s_producer_kafka_producer.producer import ModeSKafkaEventProducer
-from collections import deque
+import asyncio
+import logging
+import os
+import sys
+from typing import Dict
+
 from confluent_kafka import Producer
+from mode_s_core import ModeSBridge
+from mode_s_producer_data import Record as KafkaRecord
+from mode_s_producer_kafka_producer.producer import ModeSKafkaEventProducer
 
 logger = logging.getLogger(__name__)
 logger.handlers = []
 logger.setLevel(logging.DEBUG if sys.gettrace() else logging.INFO)
-
 stream_handler = logging.StreamHandler(sys.stdout)
 stream_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(stream_handler)
 logger.propagate = False
 
 
-class ADSBClient(TcpClient):
-    def __init__(self, host, port, producer: ModeSKafkaEventProducer, rawtype='beast', ref_lat=0, ref_lon=0, stationid='station1'):
-        super(ADSBClient, self).__init__(host, port, rawtype)
-        self.ref_lat = ref_lat
-        self.ref_lon = ref_lon
-        self.producer = producer
-        self.stationid = stationid
-        self.feedurl = f"dump1090://{host}:{port}"
-        self.messages_since_last_flush = 0
-        self.records_since_last_flush = 0
-        self.task_queue = deque()
-        self._dispatch_table = {
-            17: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
-            18: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
-            4: ("df4-altitude", self.producer.send_mode_s_kafka_altitude_reply),
-            5: ("df5-identity", self.producer.send_mode_s_kafka_identity_reply),
-            11: ("df11-acquisition", self.producer.send_mode_s_kafka_acquisition_reply),
-            20: ("df20-comm-b", self.producer.send_mode_s_kafka_comm_baltitude),
-            21: ("df21-comm-b", self.producer.send_mode_s_kafka_comm_bidentity),
-        }
-        self._queue_cap = int(os.environ.get('MODE_S_QUEUE_CAPACITY', '20000'))
-        self._flush_interval_s = int(os.environ.get('MODE_S_FLUSH_INTERVAL_SECONDS', '10'))
-        self._flush_record_threshold = int(os.environ.get('MODE_S_FLUSH_RECORD_THRESHOLD', '50000'))
-
-    def stop(self):
-        self.stop_flag = True
-        return super().stop()
-    
-    def run(self, raw_pipe_in=None, stop_flag=None, exception_queue=None):
-        while not self.stop_flag:
-            try:
-                super().run(raw_pipe_in=raw_pipe_in, stop_flag=stop_flag, exception_queue=exception_queue)
-            except Exception as e:
-                logger.error("Error in run loop: %s", e)
-                time.sleep(1)
-    
-    def handle_messages(self, messages):
-        try:
-            if self.stop_flag:
-                return
-            if len(self.task_queue) >= self._queue_cap:
-                logger.warning("Dropping input. Queue capacity exceeded (cap=%d).", self._queue_cap)
-                return
-            msgs = []
-            _dispatch = self._dispatch_table
-            _ref_lat = self.ref_lat
-            _ref_lon = self.ref_lon
-            _log10 = math.log10
-            for msg, ts in messages:
-                try:
-                    raw_msg = bytes.fromhex(msg)
-                    if len(raw_msg) < 7:
-                        continue
-                    
-                    df = pms.df(msg)
-                    if df not in _dispatch:
-                        continue
-                    icao = pms.icao(msg)
-                    if not icao:
-                        continue
-
-                    ts_ms = int(ts * 1000)
-                    raw_rssi = raw_msg[6]
-                    dbfs_rssi = round(10 * _log10((raw_rssi / 255) ** 2), 2) if raw_rssi > 0 else None
-
-                    record = ModeS_ADSB_Record(
-                        ts=ts_ms, icao=icao, df=df, rssi=dbfs_rssi, tc=None, bcode=None, alt=None, cs=None, sq=None, lat=None, lon=None, 
-                        spd=None, ang=None, vr=None, spd_type=None, dir_src=None, vr_src=None, ws=None, wd=None, at=None, ap=None, hm=None, 
-                        roll=None, trak=None, gs=None, tas=None, hd=None, ias=None, m=None, vrb=None, vri=None, emst=None, tgt=None, opst=None
-                    )
-                    if df in (17, 18):
-                        tc = pms.typecode(msg)
-                        record.tc = tc
-                        if 1 <= tc <= 4:
-                            record.cs = pms.adsb.callsign(msg)
-                        elif 5 <= tc <= 8:
-                            lat, lon = pms.adsb.surface_position_with_ref(msg, _ref_lat, _ref_lon)
-                            record.lat, record.lon = lat, lon
-                        elif 9 <= tc <= 18:
-                            record.alt = pms.adsb.altitude(msg)
-                            lat, lon = pms.adsb.airborne_position_with_ref(msg, _ref_lat, _ref_lon)
-                            record.lat, record.lon = lat, lon
-                        elif tc == 19:
-                            speed, angle, vr, spd_type = pms.adsb.velocity(msg)
-                            record.spd, record.ang, record.vr = speed, angle, vr
-                            record.spd_type = spd_type
-                        elif 20 <= tc <= 22:
-                            record.alt = pms.adsb.altitude(msg)
-                            lat, lon = pms.adsb.airborne_position_with_ref(msg, _ref_lat, _ref_lon)
-                            record.lat, record.lon = lat, lon
-                    elif df in (20, 21):
-                        bds = pms.bds.infer(msg, mrar=True)
-                        record.bcode = bds if bds else None
-                        if df == 20:
-                            record.alt = pms.common.altcode(msg)
-                        if df == 21:
-                            record.sq = str(pms.common.idcode(msg))
-                        if bds == "BDS44":
-                            ws, wd = pms.commb.wind44(msg)
-                            record.ws, record.wd = ws, wd
-                            record.at = pms.commb.temp44(msg)
-                            record.ap = pms.commb.p44(msg)
-                            record.hm = pms.commb.hum44(msg)
-                        elif bds == "BDS50":
-                            record.roll = pms.commb.roll50(msg)
-                            record.trak = pms.commb.trk50(msg)
-                            record.gs = pms.commb.gs50(msg)
-                            record.tas = pms.commb.tas50(msg)
-                        elif bds == "BDS60":
-                            record.hd = pms.commb.hdg60(msg)
-                            record.ias = pms.commb.ias60(msg)
-                            record.m = pms.commb.mach60(msg)
-                            record.vrb = pms.commb.vr60baro(msg)
-                            record.vri = pms.commb.vr60ins(msg)
-                    msgs.append(record)
-                except Exception as e:
-                    logger.error("Invalid message: %s, error: %s", msg, e)
-
-            if msgs:
-                self.task_queue.append(Messages(messages=msgs))
-        except Exception as e:
-            logger.error("Error handling messages: %s", e)
-            time.sleep(0.1)
-
-    def _send_record(self, source: ModeS_ADSB_Record) -> bool:
-        if not source.icao:
-            return False
-
-        msg_type, send = self._dispatch_table[source.df]
-        icao24 = source.icao.lower()
-        data = Record(
-            icao24=icao24,
-            receiver_id=self.stationid,
-            msg_type=msg_type,
-            ts=source.ts,
-            df=source.df,
-            tc=source.tc,
-            bcode=source.bcode,
-            alt=source.alt,
-            cs=source.cs,
-            sq=source.sq,
-            lat=source.lat,
-            lon=source.lon,
-            spd=source.spd,
-            ang=source.ang,
-            vr=source.vr,
-            rssi=source.rssi,
-        )
-        send(
-            _feedurl=self.feedurl,
-            _icao24=icao24,
-            _receiver_id=self.stationid,
-            data=data,
-            content_type="application/json",
-            flush_producer=False,
-        )
-        return True
-
-    async def queue_consumer(self, stop_event: threading.Event):
-        try:
-            flush_interval_s = self._flush_interval_s
-            flush_record_threshold = self._flush_record_threshold
-            last_flush = datetime.now()
-            last_info_log = datetime.now()
-            messages_since_last_log = 0
-            records_since_last_log = 0
-            while stop_event.is_set() is False:
-                if self.task_queue:
-                    try:
-                        # Drain all available bundles in one go before yielding
-                        batch_count = 0
-                        while self.task_queue and batch_count < 100:
-                            bundle: Messages = self.task_queue.popleft()
-                            self.messages_since_last_flush += 1
-                            bundle_len = len(bundle.messages)
-                            self.records_since_last_flush += bundle_len
-                            messages_since_last_log += 1
-                            records_since_last_log += bundle_len
-                            sent_records = 0
-                            for record in bundle.messages:
-                                if self._send_record(record):
-                                    sent_records += 1
-                            self.records_since_last_flush -= bundle_len - sent_records
-                            records_since_last_log -= bundle_len - sent_records
-                            bundle.messages.clear()
-                            del bundle
-                            batch_count += 1
-                        now = datetime.now()
-                        if (now - last_flush).total_seconds() >= flush_interval_s or self.records_since_last_flush >= flush_record_threshold:
-                            if (now - last_info_log).total_seconds() >= 300:
-                                logger.info("Messages %d, records %d, queue length is %d", messages_since_last_log, records_since_last_log, len(self.task_queue))
-                                last_info_log = now
-                                messages_since_last_log = 0
-                                records_since_last_log = 0
-                            else:
-                                logger.debug("Flushing producer, messages %d, records %d, queue length is %d", self.messages_since_last_flush, self.records_since_last_flush, len(self.task_queue))
-                            self.producer.producer.flush()
-                            self.messages_since_last_flush = 0
-                            self.records_since_last_flush = 0
-                            last_flush = now
-                        # Yield to event loop briefly so other coroutines can run
-                        await asyncio.sleep(0)
-                    except asyncio.CancelledError:
-                        logger.info("Queue consumer task cancelled")
-                        return
-                    except Exception as e:
-                        logger.error("Error sending messages: %s", e)
-                        await asyncio.sleep(0.1)
-                else:
-                    # No data available — sleep longer to avoid busy-wait
-                    await asyncio.sleep(0.2)
-        except asyncio.CancelledError:
-            logger.info("Queue consumer task cancelled")
-            return
-        except Exception as e:
-            logger.error("Queue consumer task error: %s", e)
-            raise e
-
-
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
-    """
-    Parse the connection string and extract bootstrap server, topic name, username, and password.
-    """
     config_dict = {}
     try:
         for part in connection_string.split(';'):
             if 'Endpoint' in part:
-                endpoint = part.split('=')[1].replace('sb://', '')
-                endpoint = endpoint.rstrip('/')
+                endpoint = part.split('=')[1].replace('sb://', '').rstrip('/')
                 if ':' not in endpoint:
                     endpoint += ':9093'
                 config_dict['bootstrap.servers'] = endpoint
@@ -276,164 +36,100 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
                 config_dict['sasl.password'] = connection_string.strip()
             elif 'BootstrapServer' in part:
                 config_dict['bootstrap.servers'] = part.split('=', 1)[1].strip()
-    except IndexError as e:
-        logging.error("Connection string parsing error: %s", e)
-        raise ValueError("Invalid connection string format") from e
+    except IndexError as exc:
+        raise ValueError('Invalid connection string format') from exc
     if 'sasl.username' in config_dict:
         config_dict['security.protocol'] = 'SASL_SSL'
         config_dict['sasl.mechanism'] = 'PLAIN'
     return config_dict
 
+
+class ModeSKafkaClientAdapter:
+    def __init__(self, producer: ModeSKafkaEventProducer):
+        self._producer = producer
+
+    @staticmethod
+    def _data(rec) -> KafkaRecord:
+        return KafkaRecord(**rec.__dict__)
+
+    async def publish_adsb(self, *, feedurl, icao24, receiver_id, data):
+        self._producer.send_mode_s_kafka_adsb(_feedurl=feedurl, _icao24=icao24, _receiver_id=receiver_id, data=self._data(data), content_type='application/json', flush_producer=False)
+
+    async def publish_altitude_reply(self, *, feedurl, icao24, receiver_id, data):
+        self._producer.send_mode_s_kafka_altitude_reply(_feedurl=feedurl, _icao24=icao24, _receiver_id=receiver_id, data=self._data(data), content_type='application/json', flush_producer=False)
+
+    async def publish_identity_reply(self, *, feedurl, icao24, receiver_id, data):
+        self._producer.send_mode_s_kafka_identity_reply(_feedurl=feedurl, _icao24=icao24, _receiver_id=receiver_id, data=self._data(data), content_type='application/json', flush_producer=False)
+
+    async def publish_acquisition_reply(self, *, feedurl, icao24, receiver_id, data):
+        self._producer.send_mode_s_kafka_acquisition_reply(_feedurl=feedurl, _icao24=icao24, _receiver_id=receiver_id, data=self._data(data), content_type='application/json', flush_producer=False)
+
+    async def publish_comm_baltitude(self, *, feedurl, icao24, receiver_id, data):
+        self._producer.send_mode_s_kafka_comm_baltitude(_feedurl=feedurl, _icao24=icao24, _receiver_id=receiver_id, data=self._data(data), content_type='application/json', flush_producer=False)
+
+    async def publish_comm_bidentity(self, *, feedurl, icao24, receiver_id, data):
+        self._producer.send_mode_s_kafka_comm_bidentity(_feedurl=feedurl, _icao24=icao24, _receiver_id=receiver_id, data=self._data(data), content_type='application/json', flush_producer=False)
+
+
 async def run():
-    parser = argparse.ArgumentParser(description="Mode-S ADS-B Client")
-    subparsers = parser.add_subparsers(title="subcommands", dest="subcommand")
-    feed_parser = subparsers.add_parser('feed', help="Poll ADS-B data and feed it to Kafka")
-
-    feed_parser.add_argument('--host', type=str, default=os.environ.get('DUMP1090_HOST'),
-                             help="Dump1090 host (default from DUMP1090_HOST)")
-    feed_parser.add_argument('--port', type=int, default=os.environ.get('DUMP1090_PORT'),
-                             help="Dump1090 port (default from DUMP1090_PORT)")
-    feed_parser.add_argument('--ref-lat', type=float, default=os.environ.get('REF_LAT'),
-                             help="Reference latitude (default from REF_LAT)")
-    feed_parser.add_argument('--ref-lon', type=float, default=os.environ.get('REF_LON'),
-                             help="Reference longitude (default from REF_LON)")
-    feed_parser.add_argument('--stationid', type=str, default=os.environ.get('STATIONID', 'station1'),
-                             help="Station ID (default from STATIONID)")
-
-    feed_parser.add_argument('--connection-string', type=str, default=os.environ.get('CONNECTION_STRING'),
-                             help="Kafka connection string (default from CONNECTION_STRING)")
-
-    feed_parser.add_argument('--kafka-bootstrap-servers', type=str,
-                             default=os.environ.get('KAFKA_BOOTSTRAP_SERVERS'),
-                             help="Kafka servers (default from KAFKA_BOOTSTRAP_SERVERS)")
-    feed_parser.add_argument('--kafka-topic', type=str,
-                             default=os.environ.get('KAFKA_TOPIC'),
-                             help="Kafka topic (default from KAFKA_TOPIC)")
-    feed_parser.add_argument('--sasl-username', type=str,
-                             default=os.environ.get('SASL_USERNAME'),
-                             help="SASL username (default from SASL_USERNAME)")
-    feed_parser.add_argument('--sasl-password', type=str,
-                             default=os.environ.get('SASL_PASSWORD'),
-                             help="SASL password (default from SASL_PASSWORD)")
-
-    feed_parser.add_argument('--content-mode', type=str, choices=['structured','binary'], default='structured',
-                             help="CloudEvent content mode")
-
+    parser = argparse.ArgumentParser(description='Mode-S ADS-B Client')
+    subparsers = parser.add_subparsers(title='subcommands', dest='subcommand')
+    feed_parser = subparsers.add_parser('feed', help='Poll ADS-B data and feed it to Kafka')
+    feed_parser.add_argument('--host', type=str, default=os.environ.get('DUMP1090_HOST'))
+    feed_parser.add_argument('--port', type=int, default=os.environ.get('DUMP1090_PORT'))
+    feed_parser.add_argument('--ref-lat', type=float, default=os.environ.get('REF_LAT'))
+    feed_parser.add_argument('--ref-lon', type=float, default=os.environ.get('REF_LON'))
+    feed_parser.add_argument('--stationid', type=str, default=os.environ.get('STATIONID', 'station1'))
+    feed_parser.add_argument('--feedurl', type=str, default=os.environ.get('MODE_S_FEEDURL'))
+    feed_parser.add_argument('--connection-string', type=str, default=os.environ.get('CONNECTION_STRING'))
+    feed_parser.add_argument('--kafka-bootstrap-servers', type=str, default=os.environ.get('KAFKA_BOOTSTRAP_SERVERS'))
+    feed_parser.add_argument('--kafka-topic', type=str, default=os.environ.get('KAFKA_TOPIC'))
+    feed_parser.add_argument('--sasl-username', type=str, default=os.environ.get('SASL_USERNAME'))
+    feed_parser.add_argument('--sasl-password', type=str, default=os.environ.get('SASL_PASSWORD'))
+    feed_parser.add_argument('--content-mode', type=str, choices=['structured', 'binary'], default='structured')
     args = parser.parse_args()
-    if args.subcommand == 'feed':
-        # Host/port/pos checks
-        if not args.host:
-            print("Error: Dump1090 host is required (env: DUMP1090_HOST or --host)")
-            return
-        if not args.port:
-            print("Error: Dump1090 port is required (env: DUMP1090_PORT or --port)")
-            return
-        if args.ref_lat is None:
-            print("Error: Antenna latitude is required (env: REF_LAT or --ref-lat)")
-            return
-        if args.ref_lon is None:
-            print("Error: Antenna longitude is required (env: REF_LON or --ref-lon)")
-            return
+    if args.subcommand != 'feed':
+        parser.print_help()
+        return
+    if not args.host or not args.port:
+        print('Error: Dump1090 host/port are required')
+        return
+    if args.ref_lat is None or args.ref_lon is None:
+        print('Error: REF_LAT and REF_LON are required')
+        return
+    if args.connection_string:
+        config_params = parse_connection_string(args.connection_string)
+        kafka_bootstrap_servers = config_params.get('bootstrap.servers')
+        kafka_topic = config_params.get('kafka_topic')
+        sasl_username = config_params.get('sasl.username')
+        sasl_password = config_params.get('sasl.password')
+    else:
+        kafka_bootstrap_servers = args.kafka_bootstrap_servers
+        kafka_topic = args.kafka_topic
+        sasl_username = args.sasl_username
+        sasl_password = args.sasl_password
+    if not kafka_bootstrap_servers or not kafka_topic:
+        print('Error: Kafka bootstrap servers and topic are required')
+        return
+    tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
+    kafka_config = {'bootstrap.servers': kafka_bootstrap_servers}
+    if sasl_username and sasl_password:
+        kafka_config.update({'sasl.mechanisms': 'PLAIN', 'security.protocol': 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT', 'sasl.username': sasl_username, 'sasl.password': sasl_password})
+    elif tls_enabled:
+        kafka_config['security.protocol'] = 'SSL'
+    kafka_producer = Producer(kafka_config)
+    producer = ModeSKafkaEventProducer(kafka_producer, topic=kafka_topic, content_mode=args.content_mode)
+    feedurl = args.feedurl or f'dump1090://{args.host}:{args.port}'
+    bridge = ModeSBridge(ModeSKafkaClientAdapter(producer), feedurl=feedurl, receiver_id=args.stationid, ref_lat=float(args.ref_lat), ref_lon=float(args.ref_lon))
+    try:
+        await bridge.run_from_dump1090(args.host, int(args.port))
+    finally:
+        kafka_producer.flush()
 
-        # Kafka parameter handling
-        kafka_bootstrap_servers = None
-        kafka_topic = None
-        sasl_username = None
-        sasl_password = None
-
-        if args.connection_string:
-            try:
-                config_params = parse_connection_string(args.connection_string)
-                kafka_bootstrap_servers = config_params.get('bootstrap.servers')
-                kafka_topic = config_params.get('kafka_topic')
-                sasl_username = config_params.get('sasl.username')
-                sasl_password = config_params.get('sasl.password')
-            except ValueError as e:
-                print("Error: Invalid connection string format.")
-                return
-        else:
-            kafka_bootstrap_servers = args.kafka_bootstrap_servers
-            kafka_topic = args.kafka_topic
-            sasl_username = args.sasl_username
-            sasl_password = args.sasl_password
-
-        if not kafka_bootstrap_servers:
-            print("Error: No Kafka bootstrap servers found.")
-            return
-        if not kafka_topic:
-            print("Error: No Kafka topic found.")
-            return
-
-        # Build Producer
-        try:
-            tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
-            kafka_config = {
-                'bootstrap.servers': kafka_bootstrap_servers,
-            }
-            # Optional librdkafka tuning. These are intentionally unset by
-            # default: Azure Event Hubs' Kafka surface rejects produce requests
-            # that batch records into a newer message-format version (broker
-            # returns UNSUPPORTED_FOR_MESSAGE_FORMAT, code 43). Operators who
-            # target a vanilla Kafka cluster can opt in via env vars.
-            _opt = {
-                'linger.ms': os.environ.get('KAFKA_LINGER_MS'),
-                'batch.num.messages': os.environ.get('KAFKA_BATCH_NUM_MESSAGES'),
-                'queue.buffering.max.messages': os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_MESSAGES'),
-                'queue.buffering.max.kbytes': os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_KBYTES'),
-                'compression.type': os.environ.get('KAFKA_COMPRESSION_TYPE'),
-                'socket.send.buffer.bytes': os.environ.get('KAFKA_SOCKET_SEND_BUFFER_BYTES'),
-            }
-            for _k, _v in _opt.items():
-                if _v is None or _v == '':
-                    continue
-                kafka_config[_k] = int(_v) if _k != 'compression.type' else _v
-            if sasl_username and sasl_password:
-                kafka_config.update({
-                    'sasl.mechanisms': 'PLAIN',
-                    'security.protocol': 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT',
-                    'sasl.username': sasl_username,
-                    'sasl.password': sasl_password
-                })
-            elif tls_enabled:
-                kafka_config['security.protocol'] = 'SSL'
-            kafka_producer = Producer(kafka_config)
-        except Exception as producer_err:
-            print("Error: Could not create Kafka producer.")
-            return
-
-        producer = ModeSKafkaEventProducer(kafka_producer, topic=kafka_topic, content_mode=args.content_mode)
-
-        client = ADSBClient(
-            host=args.host,
-            port=args.port,
-            producer=producer,
-            rawtype='beast',
-            ref_lat=args.ref_lat,
-            ref_lon=args.ref_lon,
-            stationid=args.stationid
-        )
-
-        stop_event = threading.Event()
-
-        def signal_handler(signum, frame):
-            stop_event.set()
-
-        signal.signal(signal.SIGINT, signal_handler)
-
-        try:
-            # Run client.run as a regular thread
-            run_thread = threading.Thread(target=client.run)
-            run_thread.start()
-            await client.queue_consumer(stop_event)
-            client.stop()
-            
-        except KeyboardInterrupt:
-            print("Interrupted")
-        except Exception as e:
-            print(f"Error: {e}")
 
 def main():
     asyncio.run(run())
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()
