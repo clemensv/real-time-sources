@@ -173,11 +173,23 @@ function Get-ContainerMdEnvVars {
     # match leading-pipe markdown table cells beginning with an env-var token, e.g.
     # | `FOO_BAR` | description |
     # | FOO_BAR | description |
-    foreach ($m in [regex]::Matches($text, '(?m)^\|\s*`?([A-Z][A-Z0-9_]{2,})`?\s*\|')) {
-        $name = $m.Groups[1].Value
-        # filter heading rows and separator markers
-        if ($name -in @('NAME','VARIABLE','KEY','VAR','ENV','PARAMETER')) { continue }
-        [void]$vars.Add($name)
+    $skipTokens = @('NAME','VARIABLE','KEY','VAR','ENV','PARAMETER')
+    foreach ($line in ($text -split "`n")) {
+        if ($line -notmatch '^\s*\|') { continue }
+        $cells = $line -split '\|'
+        if ($cells.Count -lt 2) { continue }
+        $firstCell = $cells[1]
+        # backtick-quoted env-var tokens in the first column, including `VAR` / `ALT` aliases
+        foreach ($bm in [regex]::Matches($firstCell, '`([A-Z][A-Z0-9_]{2,})`')) {
+            $name = $bm.Groups[1].Value
+            if ($name -in $skipTokens) { continue }
+            [void]$vars.Add($name)
+        }
+        # bare single-token first column without backticks, e.g. | FOO_BAR | desc |
+        $bare = $firstCell.Trim()
+        if ($bare -match '^([A-Z][A-Z0-9_]{2,})$' -and ($bare -notin $skipTokens)) {
+            [void]$vars.Add($bare)
+        }
     }
     return @($vars)
 }

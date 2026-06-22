@@ -48,12 +48,19 @@
         "description": "Container image reference for the AMQP companion feeder."
       }
     },
+    "erddapSelect": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in ERDDAP dataset catalog (for example \"ioos-sensors-sun2\"). Leave empty to run every enabled dataset; use \"*\" for all. Advanced: ERDDAP_SOURCES for an inline pipe-delimited override, or ERDDAP_SOURCES_FILE for a custom catalog."
+      }
+    },
     "erddapSources": {
       "type": "string",
       "metadata": {
         "description": "Semicolon list, JSON array, @file, or path describing configured ERDDAP datasets."
       },
-      "defaultValue": "ioos-sensors|https://erddap.sensors.ioos.us/erddap|org_cormp_sun2|sea_water_temperature,sea_water_practical_salinity|station|time>=max(time)-1day"
+      "defaultValue": ""
     },
     "erddapMock": {
       "type": "string",
@@ -284,6 +291,10 @@
                 {
                   "name": "STATE_FILE",
                   "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "ERDDAP_SELECT",
+                  "value": "[parameters('erddapSelect')]"
                 },
                 {
                   "name": "ERDDAP_SOURCES",

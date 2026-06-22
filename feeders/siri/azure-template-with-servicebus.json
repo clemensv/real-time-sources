@@ -70,6 +70,13 @@
         "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
       }
     },
+    "siriSources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in SIRI source catalog (for example \"uk-bods-bulk-archive\"). Leave empty to run the enabled entries; use \"*\" for all. Advanced: set SIRI_PROVIDER/SIRI_URL for a single inline provider, or SIRI_SOURCES_FILE for a custom catalog."
+      }
+    },
     "siriProvider": {
       "type": "string",
       "defaultValue": "bods",
@@ -313,6 +320,10 @@
                 {
                   "name": "PYTHONUNBUFFERED",
                   "value": "1"
+                },
+                {
+                  "name": "SIRI_SOURCES",
+                  "value": "[parameters('siriSources')]"
                 },
                 {
                   "name": "SIRI_PROVIDER",

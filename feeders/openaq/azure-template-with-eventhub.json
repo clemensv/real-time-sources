@@ -39,12 +39,19 @@
       },
       "defaultValue": ""
     },
+    "openaqSources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in OpenAQ query-slice catalog (for example \"us-all\"). Leave empty to run the enabled entries; use \"*\" for all. Requires OPENAQ_API_KEY. Advanced: OPENAQ_COUNTRIES/OPENAQ_LOCATIONS/OPENAQ_BBOX for an inline single query, or OPENAQ_SOURCES_FILE for a custom catalog."
+      }
+    },
     "openaqCountries": {
       "type": "string",
       "metadata": {
         "description": "Comma-separated ISO alpha-2 country filters."
       },
-      "defaultValue": "US"
+      "defaultValue": ""
     },
     "openaqLocations": {
       "type": "string",
@@ -252,6 +259,10 @@
                 {
                   "name": "OPENAQ_API_KEY",
                   "secureValue": "[parameters('openaqApiKey')]"
+                },
+                {
+                  "name": "OPENAQ_SOURCES",
+                  "value": "[parameters('openaqSources')]"
                 },
                 {
                   "name": "OPENAQ_COUNTRIES",

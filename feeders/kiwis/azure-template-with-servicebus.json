@@ -48,6 +48,13 @@
         "description": "Container image reference for the AMQP companion feeder."
       }
     },
+    "kiwisSources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in KISTERS KiWIS endpoint catalog (for example \"sepa-scotland\"). Leave empty to run the enabled entries; use \"*\" for all. Advanced: KIWIS_ENDPOINTS for an inline override, or KIWIS_SOURCES_FILE for a custom catalog."
+      }
+    },
     "kiwisEndpoints": {
       "type": "string",
       "metadata": {
@@ -277,6 +284,10 @@
                 {
                   "name": "STATE_FILE",
                   "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "KIWIS_SOURCES",
+                  "value": "[parameters('kiwisSources')]"
                 },
                 {
                   "name": "KIWIS_ENDPOINTS",

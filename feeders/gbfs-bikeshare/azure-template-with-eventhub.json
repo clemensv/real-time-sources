@@ -5,9 +5,16 @@
     "description": "Deploys the GBFS bikeshare Kafka bridge with a new Event Hub namespace, event hub, and Azure Container Instance with Log Analytics diagnostics."
   },
   "parameters": {
+    "gbfsSources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in GBFS system catalog (for example \"citibike-nyc,divvy-chicago\"). Leave empty to run every enabled system in the catalog; use \"*\" for all. Advanced: GBFS_FEEDS for an inline list of auto-discovery URLs, or GBFS_SOURCES_FILE for a custom catalog."
+      }
+    },
     "gbfsFeeds": {
       "type": "string",
-      "defaultValue": "https://gbfs.citibikenyc.com/gbfs/gbfs.json",
+      "defaultValue": "",
       "metadata": {
         "description": "Comma-separated GBFS autodiscovery URLs or a file reference passed to GBFS_FEEDS. Defaults to the Citi Bike NYC system for out-of-the-box deployment."
       }
@@ -191,6 +198,10 @@
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
                 },
                 {
+                  "name": "GBFS_SOURCES",
+                  "value": "[parameters('gbfsSources')]"
+                },
+                {
                   "name": "GBFS_FEEDS",
                   "value": "[parameters('gbfsFeeds')]"
                 },
@@ -256,6 +267,3 @@
     }
   }
 }
-
-
-

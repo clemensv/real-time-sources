@@ -28,7 +28,7 @@
     },
     "capFeeds": {
       "type": "string",
-      "defaultValue": "[{\"cap_source_id\":\"nws-us\",\"url\":\"https://api.weather.gov/alerts/active\",\"format\":\"nws-json\",\"zone_url\":\"https://api.weather.gov/zones?limit=25\"},{\"cap_source_id\":\"meteoalarm-belgium\",\"url\":\"https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-belgium\",\"format\":\"atom-cap\"}]",
+      "defaultValue": "",
       "metadata": {
         "description": "JSON array of CAP source configs. Each item includes cap_source_id, url, format (nws-json, atom-cap, cap-xml, cap-directory, dwd-directory), optional zone_url, and optional auth_env."
       }
@@ -62,6 +62,13 @@
       "defaultValue": 21600,
       "metadata": {
         "description": "Seconds between refreshes of CAP reference metadata such as NWS zones. Defaults to six hours."
+      }
+    },
+    "capSelect": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in CAP alert-source catalog (for example \"nws-us-active-alerts,meteoalarm-belgium\"). Leave empty to run every enabled source; use \"*\" for all. Advanced: CAP_SOURCES for an inline JSON override, or CAP_SOURCES_FILE for a custom catalog."
       }
     }
   },
@@ -176,6 +183,10 @@
                 {
                   "name": "PYTHONUNBUFFERED",
                   "value": "1"
+                },
+                {
+                  "name": "CAP_SELECT",
+                  "value": "[parameters('capSelect')]"
                 }
               ],
               "volumeMounts": [

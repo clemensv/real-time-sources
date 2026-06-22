@@ -56,12 +56,19 @@
         "description": "MQTT client identifier (must be globally unique per broker)."
       }
     },
+    "datex2Sources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in DATEX II source catalog (for example \"ndw-measurement-sites,ndw-roadworks\"). Leave empty to run every entry marked enabled in the catalog; use \"*\" to include disabled templates too. Advanced: set DATEX2_ENDPOINTS for an inline JSON override, or DATEX2_SOURCES_FILE (baked into a derived image) for a fully custom catalog."
+      }
+    },
     "datex2Endpoints": {
       "type": "string",
       "metadata": {
         "description": "JSON list of endpoint registry entries: id, url, publication, optional country, operator, auth_header."
       },
-      "defaultValue": "[]"
+      "defaultValue": ""
     },
     "datex2Mock": {
       "type": "string",
@@ -167,6 +174,10 @@
                 {
                   "name": "MQTT_CLIENT_ID",
                   "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "DATEX2_SOURCES",
+                  "value": "[parameters('datex2Sources')]"
                 },
                 {
                   "name": "DATEX2_ENDPOINTS",

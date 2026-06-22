@@ -25,6 +25,13 @@
         "description": "Event Hub namespace pricing tier (Basic or Standard); Standard is recommended for NASA FIRMS throughput and consumer groups."
       }
     },
+    "firmsSources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Source selector. Comma-separated FIRMS dataset specifications to poll, each \"SENSOR\" or \"SENSOR:REGION\" (for example \"VIIRS_SNPP_NRT,MODIS_NRT\"). When set, replaces the built-in default dataset list. Requires FIRMS_MAP_KEY."
+      }
+    },
     "firmsMapKey": {
       "type": "securestring",
       "minLength": 1,
@@ -174,6 +181,10 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "FIRMS_SOURCES",
+                  "value": "[parameters('firmsSources')]"
                 },
                 {
                   "name": "FIRMS_MAP_KEY",

@@ -35,6 +35,13 @@
       "maxLength": 63,
       "minLength": 1
     },
+    "firmsSources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Source selector. Comma-separated FIRMS dataset specifications to poll, each \"SENSOR\" or \"SENSOR:REGION\" (for example \"VIIRS_SNPP_NRT,MODIS_NRT\"). When set, replaces the built-in default dataset list. Requires FIRMS_MAP_KEY."
+      }
+    },
     "firmsMapKey": {
       "type": "securestring",
       "minLength": 1,
@@ -145,6 +152,10 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "FIRMS_SOURCES",
+                  "value": "[parameters('firmsSources')]"
                 },
                 {
                   "name": "FIRMS_MAP_KEY",

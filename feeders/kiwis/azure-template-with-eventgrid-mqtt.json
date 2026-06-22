@@ -42,6 +42,13 @@
         "description": "Optional MQTT client identifier override. Defaults to the managed identity principal id."
       }
     },
+    "kiwisSources": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in KISTERS KiWIS endpoint catalog (for example \"sepa-scotland\"). Leave empty to run the enabled entries; use \"*\" for all. Advanced: KIWIS_ENDPOINTS for an inline override, or KIWIS_SOURCES_FILE for a custom catalog."
+      }
+    },
     "kiwisEndpoints": {
       "type": "string",
       "metadata": {
@@ -210,6 +217,10 @@
                 {
                   "name": "MQTT_CLIENT_ID",
                   "value": "[if(empty(parameters('mqttClientId')), reference(variables('userIdentityResourceId'), '2023-01-31').principalId, parameters('mqttClientId'))]"
+                },
+                {
+                  "name": "KIWIS_SOURCES",
+                  "value": "[parameters('kiwisSources')]"
                 },
                 {
                   "name": "KIWIS_ENDPOINTS",
