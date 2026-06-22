@@ -5,6 +5,7 @@ description = "hko-hong-kong MQTT companion feeder"
 requires-python = ">=3.10"
 dependencies = [
   "paho-mqtt>=2.1.0",
+    "hko_hong_kong_core",
 ]
 
 [build-system]
@@ -13,3 +14,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["hko_hong_kong_mqtt"]
+
+[tool.uv.sources]
+hko_hong_kong_core = { path = "../hko_hong_kong_core" }
