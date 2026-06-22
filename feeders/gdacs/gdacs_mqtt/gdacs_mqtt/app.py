@@ -14,7 +14,10 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from gdacs.gdacs import GDACS_RSS_URL, GDACSPoller
+try:
+    from gdacs_core import GDACS_RSS_URL, GDACSPoller
+except ImportError:
+    from gdacs_core.gdacs import GDACS_RSS_URL, GDACSPoller
 from gdacs_mqtt_producer_mqtt_client.client import GDACSAlertsMqttMqttClient
 import json
 
@@ -167,6 +170,6 @@ def main() -> None:
     if args.feed_command != "feed":
         parser.error("only the 'feed' command is supported")
     host, port, tls = _parse_broker_url(args.broker_url)
-    poller = GDACSPoller(kafka_config=None, kafka_topic="mqtt", state_file=args.state_file, poll_interval=args.poll_interval)
+    poller = GDACSPoller(state_file=args.state_file, poll_interval=args.poll_interval)
     logger.info("Polling %s and publishing to MQTT %s:%d", GDACS_RSS_URL, host, port)
     asyncio.run(feed(poller, host, port, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))

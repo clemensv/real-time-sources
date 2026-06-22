@@ -11,9 +11,7 @@ import logging
 import os
 import pathlib
 import re
-import sys
 import time
-from datetime import datetime, timezone, timedelta, date
 from typing import Any, Optional
 from urllib.parse import urlparse
 
@@ -113,8 +111,8 @@ def _build_amqp_producer(args):
     return _apply_partition_key_workaround(_producer_class()(**kwargs))
 
 
-class MqttToAmqpAdapter:
-    """Adapter exposing generated MQTT publish_* names over AMQP send_* APIs."""
+class AmqpAdapter:
+    """Adapter exposing publish_* call semantics over AMQP send_* APIs."""
     def __init__(self, producer: Any):
         self.producer = producer
         self._send_methods = {name: getattr(producer, name) for name in dir(producer) if name.startswith("send_") and not name.endswith("_batch")}
@@ -131,7 +129,7 @@ class MqttToAmqpAdapter:
     def _choose_method(self, publish_name: str, kwargs: dict[str, Any]):
         route_keys = {"_" + k for k in kwargs if k not in {"data", "qos", "retain", "topic", "content_type", "message_expiry_interval"}}
         candidates = []
-        publish_norm = publish_name.replace("publish_", "").replace("mqtt", "amqp")
+        publish_norm = publish_name.replace("publish_", "")
         words = set(re.split(r"_+", publish_norm))
         compact_publish = re.sub(r"[^a-z0-9]", "", publish_norm.lower())
         for name, method in self._send_methods.items():
@@ -245,7 +243,7 @@ def _coerce_data(cls: type[Any], payload: dict[str, Any]) -> Any:
     return cls(**payload)
 
 
-def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
+def emit_sample_corpus(adapter: AmqpAdapter) -> None:
     manifest = json.loads(_manifest_path().read_text(encoding="utf-8"))
     jstruct_group = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
     amqp_group = None
@@ -304,94 +302,45 @@ def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
         adapter.sent += 1
 
 
-async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> None:
-    try:
-        mqtt_app = importlib.import_module(f"{PY_MODULE}_mqtt.app")
-    except (ImportError, ModuleNotFoundError):
-        mqtt_app = None
-    if mqtt_app is None:
-        logger.warning("MQTT bridge not available; emitting sample corpus via AMQP")
-        emit_mock_corpus(adapter)
-        return
-    # Source-specific live acquisition hooks reuse the already-shipped MQTT pollers/bridges.
-    if SOURCE_ID == "nws-alerts":
-        bridge = mqtt_app.NWSAlertsMqttBridge(adapter, state_file=args.state_file, poll_interval=args.polling_interval)
-        await bridge.poll_and_publish(once=args.once)
-    elif SOURCE_ID == "ptwc-tsunami":
-        core = importlib.import_module("ptwc_tsunami.ptwc_tsunami")
-        feeds = [p.strip() for p in args.feeds.split(",") if p.strip()]
-        poller = core.PTWCTsunamiPoller(kafka_config=None, kafka_topic="amqp", state_file=args.state_file, poll_interval=args.polling_interval, feeds=feeds)
-        while True:
-            await mqtt_app._poll_once(poller, adapter)
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "nina-bbk":
-        core = importlib.import_module("nina_bbk.nina_bbk")
-        providers = [p.strip() for p in args.providers.split(",") if p.strip()]
-        poller = core.NINABBKPoller(kafka_config=None, kafka_topic="amqp", state_file=args.state_file, poll_interval=args.polling_interval, providers=providers)
-        while True:
-            await mqtt_app._poll_once(poller, adapter)
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "gdacs":
-        core = importlib.import_module("gdacs.gdacs")
-        poller = core.GDACSPoller(kafka_config=None, kafka_topic="amqp", state_file=args.state_file, poll_interval=args.polling_interval)
-        while True:
-            await mqtt_app._poll_once(poller, adapter)
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "eaws-albina":
-        core = importlib.import_module("eaws_albina.eaws_albina")
-        regions = [p.strip() for p in args.regions.split(",") if p.strip()]
-        poller = core.AlbinaPoller(kafka_config=None, kafka_topic="amqp", last_polled_file=args.state_file, regions=regions, lang=args.lang)
-        while True:
-            today = date.today()
-            await mqtt_app._publish_date(poller, adapter, today.isoformat())
-            await mqtt_app._publish_date(poller, adapter, (today - timedelta(days=1)).isoformat())
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "cbp-border-wait":
-        logger.info("cbp-border-wait: emitting sample corpus via AMQP")
-        emit_mock_corpus(adapter)
-    elif SOURCE_ID == "seattle-911":
-        core = importlib.import_module("seattle_911.seattle_911")
-        # Inline the MQTT feed loop with the adapter to avoid opening an MQTT connection.
-        bridge = core.SeattleFire911Bridge(state_file=args.state_file)
-        while True:
-            since = datetime.utcnow() - timedelta(hours=core.DEFAULT_LOOKBACK_HOURS)
-            incidents = bridge.fetch_incidents(since=since)
-            for incident in incidents:
-                await adapter.publish_us_wa_seattle_fire911_mqtt_incident(incident_number=incident.incident_number, incident_datetime_utc=incident.incident_datetime_utc.isoformat(), incident_type_slug=incident.incident_type_slug, data=incident)
-            if args.once: break
-            await asyncio.sleep(core.DEFAULT_POLL_INTERVAL_SECONDS)
-    elif SOURCE_ID == "autobahn":
-        core = importlib.import_module("autobahn.autobahn")
-        resources = core.parse_resources_argument(args.resources)
-        roads = core.parse_roads_argument(args.roads)
-        bridge = mqtt_app.AutobahnMqttBridge(adapter, state_file=args.state_file, poll_interval_seconds=args.polling_interval, resources=resources, roads=roads, request_concurrency=args.request_concurrency)
-        await bridge.poll_and_publish(once=args.once)
-    elif SOURCE_ID == "tfl-road-traffic":
-        bridge = mqtt_app.TflRoadTrafficMqttBridge(adapter, polling_interval=args.polling_interval)
-        await bridge.poll_and_publish(once=args.once)
-    elif SOURCE_ID == "entur-norway":
-        core = importlib.import_module("entur_norway.entur_norway")
-        bridge = core.EnturNorwayBridge()
-        first = True
-        import uuid
-        et = str(uuid.uuid4()); vm = str(uuid.uuid4()); sx = str(uuid.uuid4())
-        while True:
-            await mqtt_app._publish_poll_cycle(bridge, adapter, first_run=first, et_requestor_id=et, vm_requestor_id=vm, sx_requestor_id=sx, max_size=args.max_size)
-            first = False
-            if args.once: break
-            await asyncio.sleep(args.polling_interval)
-    elif SOURCE_ID == "irail":
-        logger.info("irail: emitting sample corpus via AMQP")
-        emit_mock_corpus(adapter)
-    elif SOURCE_ID == "paris-bicycle-counters":
-        poller = mqtt_app.ParisBicycleCounterMqttPoller(adapter, args.state_file)
-        await poller.poll_and_send_async(once=args.once)
-    else:
-        raise RuntimeError(f"No live AMQP hook configured for {SOURCE_ID}")
+async def _run_live(args: argparse.Namespace, adapter: AmqpAdapter) -> None:
+    from gdacs_core import GDACSPoller, GDACS_RSS_URL  # pylint: disable=import-error
+    poller = GDACSPoller(state_file=args.state_file, poll_interval=args.polling_interval)
+    logger.info("Polling %s and publishing via AMQP", GDACS_RSS_URL)
+    while True:
+        started = time.monotonic()
+        try:
+            state = poller.load_state()
+            xml_text = await poller.fetch_feed()
+            alerts = poller.parse_feed(xml_text)
+            count_new = 0
+            count_updated = 0
+            for alert in alerts:
+                key = poller._state_key(alert)
+                prev_version = state.get(key)
+                current_version = alert.version if alert.version is not None else 0
+                if prev_version is not None and prev_version >= current_version:
+                    continue
+                if prev_version is None:
+                    count_new += 1
+                else:
+                    count_updated += 1
+                await adapter.publish_disaster_alert(
+                    event_type=_topic_segment(alert.event_type),
+                    alert_color=_topic_segment(alert.alert_color),
+                    country=_topic_segment(alert.country),
+                    event_id=_topic_segment(alert.event_id),
+                    data=alert,
+                )
+                state[key] = current_version
+            poller.save_state(state)
+            logger.info("Published %d new and %d updated GDACS alert(s)", count_new, count_updated)
+        except Exception:
+            logger.exception("Error fetching, parsing, or publishing GDACS alerts")
+            if args.once:
+                raise
+        if args.once:
+            break
+        await asyncio.sleep(max(0, args.polling_interval - (time.monotonic() - started)))
 
 
 def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -441,11 +390,11 @@ def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
             import time; time.sleep(delay)
 async def _async_main(args: argparse.Namespace) -> None:
     producer = _retry_producer_init(lambda: _build_amqp_producer(args))
-    adapter = MqttToAmqpAdapter(producer)
+    adapter = AmqpAdapter(producer)
     try:
         if args.mock_mode:
-            emit_mock_corpus(adapter)
-            logger.info("Published %d mock AMQP event(s)", adapter.sent)
+            emit_sample_corpus(adapter)
+            logger.info("Published %d sample AMQP event(s)", adapter.sent)
         else:
             await _run_live(args, adapter)
     finally:

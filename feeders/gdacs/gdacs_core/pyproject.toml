@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gdacs_core"
+dynamic = ["version"]
+description = "Transport-agnostic acquisition for the GDACS disaster alert bridge."
+authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "aiohttp>=3.10.5",
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["gdacs_core"]

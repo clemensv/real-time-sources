@@ -16,7 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "aiohttp>=3.10.5",
+    "gdacs_core @ file:../gdacs_core",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
