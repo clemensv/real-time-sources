@@ -22,6 +22,8 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "python-qpid-proton>=0.40.0",
+    "cbp_border_wait_core",
+
 ]
 
 [project.scripts]
@@ -36,3 +38,6 @@ local_scheme = "no-local-version"
 packages = [
     "cbp_border_wait_amqp",
 ]
+
+[tool.uv.sources]
+cbp_border_wait_core = { path = "../cbp_border_wait_core" }

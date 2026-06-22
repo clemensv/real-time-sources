@@ -17,6 +17,8 @@ dependencies = [
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
     "requests>=2.32.3",
+    "cbp_border_wait_core",
+
 ]
 
 [project.scripts]
@@ -31,3 +33,6 @@ local_scheme = "no-local-version"
 packages = [
     "cbp_border_wait_mqtt",
 ]
+
+[tool.uv.sources]
+cbp_border_wait_core = { path = "../cbp_border_wait_core" }

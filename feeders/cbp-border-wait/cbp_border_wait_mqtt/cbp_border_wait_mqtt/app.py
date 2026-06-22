@@ -15,11 +15,7 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from cbp_border_wait.cbp_border_wait import (
-    CbpBorderWaitAPI,
-    _load_state,
-    _save_state,
-)
+from cbp_border_wait_core import CbpBorderWaitAPI, _load_state, _save_state
 from cbp_border_wait_mqtt_producer_mqtt_client.client import GovCbpBorderwaitMqttMqttClient
 import json
 

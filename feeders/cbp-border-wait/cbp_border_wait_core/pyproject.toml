@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cbp_border_wait_core"
+dynamic = ["version"]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "requests>=2.34.2",
+    "cbp-border-wait-producer-data",
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["cbp_border_wait_core"]
+
+[tool.uv.sources]
+"cbp-border-wait-producer-data" = { path = "../cbp_border_wait_producer/cbp_border_wait_producer_data" }
