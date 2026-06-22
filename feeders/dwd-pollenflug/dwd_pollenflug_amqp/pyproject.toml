@@ -6,7 +6,8 @@
       dependencies = [
         "python-qpid-proton>=0.39.0",
 "azure-identity>=1.16.0",
-      ]
+    "dwd_pollenflug_core",
+]
 
       [build-system]
       requires = ["setuptools>=68"]
@@ -14,3 +15,6 @@
 
       [tool.setuptools]
       packages = ["dwd_pollenflug_amqp"]
+
+[tool.uv.sources]
+dwd_pollenflug_core = { path = "../dwd_pollenflug_core" }

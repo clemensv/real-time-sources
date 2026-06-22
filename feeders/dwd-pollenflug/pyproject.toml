@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
+    "dwd_pollenflug_core",
 ]
 
 [project.scripts]
@@ -42,3 +43,6 @@ local_scheme = "no-local-version"
 packages = [
     "dwd_pollenflug",
 ]
+
+[tool.uv.sources]
+dwd_pollenflug_core = { path = "dwd_pollenflug_core" }
