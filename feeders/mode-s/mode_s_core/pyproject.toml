@@ -1,23 +1,22 @@
 [build-system]
 requires = [
     "setuptools>=64",
-    "setuptools-scm>=8",
+    "setuptools-scm>=8"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mode_s_core"
 dynamic = [
-    "version",
+    "version"
 ]
 description = "Transport-neutral dump1090 acquisition and Mode-S decoding."
 authors = [
-    { name = "Clemens Vasters" },
+    { name = "Clemens Vasters" }
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cryptography>=48.0.1",
-    "pymodes>=2.19,<3",
+    "pymodes>=2.19,<3"
 ]
 
 [tool.setuptools_scm]
@@ -27,5 +26,5 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "mode_s_core",
+    "mode_s_core"
 ]

@@ -7,9 +7,8 @@ name = "cbp_border_wait_core"
 dynamic = ["version"]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cryptography>=48.0.1",
     "requests>=2.34.2",
-    "cbp-border-wait-producer-data",
+    "cbp-border-wait-producer-data"
 ]
 
 [tool.setuptools_scm]

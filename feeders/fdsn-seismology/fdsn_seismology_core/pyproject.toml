@@ -1,23 +1,22 @@
 [build-system]
 requires = [
     "setuptools>=64",
-    "setuptools-scm>=8",
+    "setuptools-scm>=8"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "fdsn_seismology_core"
 dynamic = [
-    "version",
+    "version"
 ]
 description = "Transport-agnostic acquisition and state management for the FDSN Seismology feeder."
 authors = [
-    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" }
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cryptography>=48.0.1",
-    "requests>=2.32.3",
+    "requests>=2.32.3"
 ]
 
 [tool.setuptools_scm]
@@ -27,11 +26,11 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "fdsn_seismology_core",
+    "fdsn_seismology_core"
 ]
 include-package-data = true
 
 [tool.setuptools.package-data]
 fdsn_seismology_core = [
-    "sources/*.json",
+    "sources/*.json"
 ]

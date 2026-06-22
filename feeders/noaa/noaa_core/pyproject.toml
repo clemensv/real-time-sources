@@ -1,19 +1,18 @@
 [build-system]
 requires = [
     "setuptools>=64",
-    "setuptools-scm>=8",
+    "setuptools-scm>=8"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "noaa-core"
 dynamic = [
-    "version",
+    "version"
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cryptography>=48.0.1",
-    "requests>=2.32.3",
+    "requests>=2.32.3"
 ]
 
 [tool.setuptools_scm]
@@ -23,5 +22,5 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "noaa_core",
+    "noaa_core"
 ]

@@ -1,24 +1,23 @@
 [build-system]
 requires = [
     "setuptools>=64",
-    "setuptools-scm>=8",
+    "setuptools-scm>=8"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "digitraffic_road_core"
 dynamic = [
-    "version",
+    "version"
 ]
 description = "Transport-neutral acquisition for Digitraffic Road feeders."
 authors = [
-    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" }
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cryptography>=48.0.1",
     "paho-mqtt>=2.1.0",
-    "requests>=2.31.0",
+    "requests>=2.31.0"
 ]
 
 [tool.setuptools_scm]
@@ -28,5 +27,5 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "digitraffic_road_core",
+    "digitraffic_road_core"
 ]

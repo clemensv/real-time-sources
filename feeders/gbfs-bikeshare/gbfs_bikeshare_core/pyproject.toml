@@ -1,25 +1,24 @@
 [build-system]
 requires = [
     "setuptools>=64",
-    "setuptools-scm>=8",
+    "setuptools-scm>=8"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "gbfs_bikeshare_core"
 dynamic = [
-    "version",
+    "version"
 ]
 description = "Transport-agnostic GBFS bikeshare acquisition and normalization."
 authors = [
-    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" }
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cryptography>=48.0.1",
     "idna>=3.7",
     "requests>=2.32.3",
-    "urllib3>=2.2.1",
+    "urllib3>=2.2.1"
 ]
 
 [tool.setuptools_scm]
@@ -29,11 +28,11 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "gbfs_bikeshare_core",
+    "gbfs_bikeshare_core"
 ]
 include-package-data = true
 
 [tool.setuptools.package-data]
 gbfs_bikeshare_core = [
-    "sources/*.json",
+    "sources/*.json"
 ]

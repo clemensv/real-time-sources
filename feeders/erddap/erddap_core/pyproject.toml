@@ -9,9 +9,8 @@ description = "ERDDAP feeder package"
 authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cryptography>=48.0.1",
     "requests>=2.32.3",
-    "urllib3>=2.2.1",
+    "urllib3>=2.2.1"
 ]
 
 [tool.setuptools_scm]
@@ -21,7 +20,7 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "erddap_core",
+    "erddap_core"
 ]
 include-package-data = true
 
