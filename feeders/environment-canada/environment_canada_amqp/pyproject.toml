@@ -6,7 +6,8 @@
       dependencies = [
         "python-qpid-proton>=0.39.0",
 "azure-identity>=1.16.0",
-      ]
+    "environment_canada_core",
+]
 
       [build-system]
       requires = ["setuptools>=68"]
@@ -14,3 +15,6 @@
 
       [tool.setuptools]
       packages = ["environment_canada_amqp"]
+
+[tool.uv.sources]
+environment_canada_core = { path = "../environment_canada_core" }
