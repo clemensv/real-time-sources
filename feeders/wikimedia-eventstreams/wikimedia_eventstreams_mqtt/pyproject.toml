@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "wikimedia_eventstreams_core",
     "aiohttp>=3.9",
     "azure-identity>=1.17.0",
     "cloudevents>=1.11.0,<2.0.0",
@@ -32,3 +33,6 @@ local_scheme = "no-local-version"
 packages = [
     "wikimedia_eventstreams_mqtt",
 ]
+
+[tool.uv.sources]
+wikimedia_eventstreams_core = { path = "../wikimedia_eventstreams_core" }
