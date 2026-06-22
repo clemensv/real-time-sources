@@ -468,3 +468,40 @@ API keys and tokens for E2E/validation runs are stored in
 `c:\rts-creds\test-creds.json` (outside the repo, git-ignored by virtue of
 location). Never commit secrets, never echo them into logs, and read them from
 that file (or the session-local gitignored runner) rather than hardcoding.
+
+### cloudevents must be pinned `<2.0.0` — 2.x removed `cloudevents.http`
+
+cloudevents **2.x** (PyPI latest 2.2.0) is a breaking rewrite that **removed
+the `cloudevents.http` module** (relocated to `cloudevents.core.bindings.http`).
+Every generated producer and every bridge imports `from cloudevents.http import
+CloudEvent` (the 1.x API), so any environment that resolves cloudevents 2.x
+fails at import with `ModuleNotFoundError: No module named 'cloudevents.http'`.
+**Every feeder pyproject must pin `cloudevents>=1.12.1,<2.0.0`** — the same cap
+the generated `*_producer/*` packages already use. A looser `<3.0.0` (or a bare
+`"cloudevents"`) lets `pip install -e .[dev]` pull 2.x and turns the per-feeder
+Bridge Tests red. **Production containers are NOT affected**: every `Dockerfile*`
+installs the producer packages (pinned `<2.0.0`) **before** `pip install .`, so
+the runtime resolves cloudevents 1.x regardless of the main package's
+constraint — the breakage is **CI-only** (dev-installs of the main package
+alone). Do not "fix" this by switching to the 2.x import path unless you rewrite
+every `cloudevents.http` import across the whole repo. Incident: 92 pyprojects
+re-capped in `bf584c928` after GTFS / USGS-IV / RSS / Bluesky went red
+~2026-06-19.
+
+### Feeder test workflows use pip + explicit producer installs — never poetry
+
+Feeder pyprojects are PEP 621 / setuptools-scm (`[project]` with
+`dynamic = ["version"]`). `poetry install` **rejects a dynamic version in
+package mode** ("Either [project.version] or [tool.poetry.version] is required"),
+so a `poetry`-based test workflow fails at the install step before any test
+runs. Every `.github/workflows/test-<source>.yml` must use the pip pattern
+(see `test-pegelonline.yml` and `test-gtfs.yml`): set up Python with
+`cache: 'pip'`, **install the generated producer packages first**
+(`pip install -e ./<src>_producer/<src>_producer_data` then
+`..._kafka_producer`, plus any mqtt/amqp producer the tests import), then
+`python -m pip install -e '.[dev]'`, then run `pytest` directly (no `poetry run`
+prefix). The producer packages must be installed explicitly because the
+setuptools-scm migration drops the old poetry `path = ...` deps — so
+`pip install -e '.[dev]'` alone does not pull them and tests fail with
+`ModuleNotFoundError: No module named '<src>_producer_data'`. Incident:
+`test-usgs-iv.yml` + `test-rss.yml` migrated off poetry in `b69774da9`.
