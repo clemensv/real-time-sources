@@ -15,7 +15,7 @@ import aiohttp
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from nina_bbk.nina_bbk import DEFAULT_POLL_INTERVAL, DEFAULT_STATE_FILE, NINABBKPoller, PROVIDERS, normalize_warning
+from nina_bbk_core import DEFAULT_POLL_INTERVAL, DEFAULT_STATE_FILE, NINABBKPoller, PROVIDERS, normalize_warning
 from nina_bbk_mqtt_producer_mqtt_client.client import NINAWarningsMqttMqttClient
 import json
 
@@ -184,5 +184,5 @@ def main() -> None:
         parser.error("only the 'feed' command is supported")
     host, port, tls = _parse_broker_url(args.broker_url)
     providers = [part.strip() for part in args.providers.split(",") if part.strip()]
-    poller = NINABBKPoller(kafka_config=None, kafka_topic="mqtt", state_file=args.state_file, poll_interval=args.poll_interval, providers=providers)
+    poller = NINABBKPoller(state_file=args.state_file, poll_interval=args.poll_interval, providers=providers)
     asyncio.run(feed(poller, host, port, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))

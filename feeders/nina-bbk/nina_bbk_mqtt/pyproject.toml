@@ -20,6 +20,8 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
+    "nina_bbk_core",
+
 ]
 
 [project.scripts]
@@ -34,3 +36,6 @@ local_scheme = "no-local-version"
 packages = [
     "nina_bbk_mqtt",
 ]
+
+[tool.uv.sources]
+nina_bbk_core = { path = "../nina_bbk_core" }

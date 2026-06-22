@@ -21,6 +21,8 @@ dependencies = [
     "cloudevents>=1.12.1,<2.0.0",
     "confluent-kafka>=2.14.2",
     "dataclasses-json>=0.6.7",
+    "nina_bbk_core",
+
 ]
 
 [project.scripts]
@@ -42,3 +44,6 @@ local_scheme = "no-local-version"
 packages = [
     "nina_bbk",
 ]
+
+[tool.uv.sources]
+nina_bbk_core = { path = "nina_bbk_core" }
