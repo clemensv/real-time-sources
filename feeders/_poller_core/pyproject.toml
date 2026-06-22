@@ -13,6 +13,7 @@ packages = [{ include = "poller_core", from = "src" }]
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 requests = ">=2.32.3"
+cryptography = ">=48.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0"

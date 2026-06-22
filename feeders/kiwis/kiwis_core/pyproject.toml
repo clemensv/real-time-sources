@@ -7,7 +7,7 @@ name = "kiwis_core"
 dynamic = ["version"]
 description = "Transport-neutral KiWIS acquisition and normalization."
 requires-python = ">=3.10,<4.0"
-dependencies = ["requests>=2.32.3", "urllib3>=2.2.1"]
+dependencies = ["cryptography>=48.0.1","requests>=2.32.3", "urllib3>=2.2.1"]
 
 [tool.setuptools_scm]
 root = "../../.."

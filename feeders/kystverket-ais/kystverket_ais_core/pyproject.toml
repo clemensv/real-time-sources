@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "cryptography>=48.0.1",
     "pyais>=2.7.0",
 ]
 

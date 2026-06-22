@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "cryptography>=48.0.1",
     "paho-mqtt>=2.1.0",
     "requests>=2.31.0",
 ]

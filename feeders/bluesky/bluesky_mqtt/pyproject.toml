@@ -17,7 +17,7 @@ authors = [
 requires-python = ">=3.10,<4.0"
 dependencies = [
     "bluesky_core",
-    "aiohttp>=3.9",
+    "aiohttp>=3.14.1",
     "atproto>=0.0.46",
     "azure-identity>=1.17.0",
     "cloudevents>=1.11.0,<2.0.0",

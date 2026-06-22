@@ -9,6 +9,7 @@ description = "Transport-neutral acquisition for Wikimedia OSM diffs bridges."
 authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "cryptography>=48.0.1",
     "requests>=2.31.0",
 ]
 

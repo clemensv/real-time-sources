@@ -15,7 +15,7 @@ dependencies = [
     "avro>=1.11.3",
     "azure-identity>=1.17.0",
     "azure-core>=1.30.0",
-    "aiohttp>=3.10.5",
+    "aiohttp>=3.14.1",
 ]
 
 [project.scripts]

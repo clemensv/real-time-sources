@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "cryptography>=48.0.1",
     "idna>=3.7",
     "requests>=2.32.3",
     "urllib3>=2.2.1",

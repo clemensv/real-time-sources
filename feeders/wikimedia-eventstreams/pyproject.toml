@@ -17,7 +17,7 @@ authors = [
 requires-python = ">=3.10,<4.0"
 dependencies = [
     "wikimedia_eventstreams_core",
-    "aiohttp>=3.14.0",
+    "aiohttp>=3.14.1",
     "avro>=1.12.1",
     "cloudevents>=1.12.1,<2.0.0",
     "confluent-kafka>=2.14.2",
