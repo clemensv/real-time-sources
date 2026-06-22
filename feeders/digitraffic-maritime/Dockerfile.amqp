@@ -25,9 +25,7 @@ RUN set -eux; \
 COPY . /app
 
 # Remove the wrapper shim that shadows the pip-installed producer_data package
-RUN rm -rf /app/digitraffic_maritime_producer_data
-
-
+RUN rm -rf /app/digitraffic_maritime_producer_data \
  && pip install --no-cache-dir ./digitraffic_maritime_amqp_producer/digitraffic_maritime_amqp_producer_data \
  && pip install --no-cache-dir ./digitraffic_maritime_producer/digitraffic_maritime_producer_data \
  && pip install --no-cache-dir ./digitraffic_maritime_producer/digitraffic_maritime_producer_kafka_producer \
