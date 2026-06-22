@@ -23,6 +23,7 @@ dependencies = [
     "idna>=3.15",
     "requests>=2.34.2",
     "urllib3>=2.7.0",
+    "singapore_nea_core",
 ]
 
 [project.scripts]

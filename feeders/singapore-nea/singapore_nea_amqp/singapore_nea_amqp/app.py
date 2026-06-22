@@ -4,15 +4,10 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import importlib
-import inspect
 import json
 import logging
 import os
-import pathlib
-import re
-import sys
-import time
+import time as _time
 from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib.parse import urlparse
@@ -37,13 +32,6 @@ def _env_bool(name: str, default: bool = False) -> bool:
     return value.lower() in {"1", "true", "yes", "on"}
 
 
-def _topic_segment(value: Any) -> str:
-    text = (str(value) if value is not None else "unknown").strip() or "unknown"
-    for forbidden in ("/", "+", "#", "\x00"):
-        text = text.replace(forbidden, "-")
-    return "-".join(text.split()) or "unknown"
-
-
 def _parse_broker_url(url: str):
     parsed = urlparse(url if "://" in url else f"amqp://{url}")
     scheme = (parsed.scheme or "amqp").lower()
@@ -51,16 +39,17 @@ def _parse_broker_url(url: str):
     return parsed.hostname or "localhost", parsed.port or (5671 if tls else 5672), tls, parsed.username, parsed.password, (parsed.path or "").lstrip("/") or None
 
 
-def _producer_class():
-    mod = importlib.import_module(f"{PY_MODULE}_amqp_producer_amqp_producer.producer")
-    classes = [obj for _, obj in vars(mod).items() if inspect.isclass(obj) and any(name.startswith("send_") for name in dir(obj))]
-    if not classes:
-        raise RuntimeError(f"No AMQP producer class found in {mod.__name__}")
-    # xrcg can emit producer classes whose names do not end with "AmqpProducer"
-    # (for example after a simplified message-group manifest). Prefer the concrete
-    # class with the most send_* methods rather than relying on the old naming rule.
-    classes.sort(key=lambda cls: (len([name for name in dir(cls) if name.startswith("send_")]), cls.__name__), reverse=True)
-    return classes[0]
+def _station_region(latitude: float, longitude: float) -> str:
+    """Assign a Singapore geographic region based on station coordinates."""
+    if latitude > 1.385:
+        return "north"
+    if latitude < 1.300:
+        return "south"
+    if longitude > 103.885:
+        return "east"
+    if longitude < 103.775:
+        return "west"
+    return "central"
 
 
 def _apply_partition_key_workaround(producer):
@@ -83,8 +72,8 @@ def _apply_partition_key_workaround(producer):
     return producer
 
 
-def _build_amqp_producer(args):
-    address = args.address
+def _extract_producer_kwargs(args) -> dict:
+    """Extract AMQP connection kwargs from parsed args."""
     if args.broker_url:
         host, port, tls, url_user, url_pwd, path = _parse_broker_url(args.broker_url)
         username = args.username or url_user
@@ -93,226 +82,374 @@ def _build_amqp_producer(args):
             port = args.port
         if args.tls:
             tls = True
-        address = path or address
+        address = path or args.address
     else:
         host = args.host or "localhost"
         tls = bool(args.tls) or args.auth_mode == "entra"
         port = args.port or (5671 if tls else 5672)
         username = args.username
         password = args.password
-    kwargs = dict(host=host, address=address, port=port, content_mode=args.content_mode, use_tls=tls)
+        address = args.address
+    kwargs: dict[str, Any] = dict(
+        host=host, address=address, port=port,
+        content_mode=args.content_mode, use_tls=tls,
+    )
     if args.auth_mode == "entra":
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
-        kwargs.update(credential=ManagedIdentityCredential(client_id=args.entra_client_id) if args.entra_client_id else DefaultAzureCredential(), entra_audience=args.entra_audience)
+        kwargs.update(
+            credential=ManagedIdentityCredential(client_id=args.entra_client_id) if args.entra_client_id else DefaultAzureCredential(),
+            entra_audience=args.entra_audience,
+        )
     elif args.auth_mode == "sas":
         if not args.sas_key_name or not args.sas_key:
             raise RuntimeError("AMQP auth-mode=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY")
         kwargs.update(sas_key_name=args.sas_key_name, sas_key=args.sas_key)
     else:
         kwargs.update(username=username, password=password)
-    return _apply_partition_key_workaround(_producer_class()(**kwargs))
+    return kwargs
 
 
-class MqttToAmqpAdapter:
-    """Adapter exposing generated MQTT publish_* names over AMQP send_* APIs."""
-    def __init__(self, producer: Any):
-        self.producer = producer
-        self._send_methods = {name: getattr(producer, name) for name in dir(producer) if name.startswith("send_") and not name.endswith("_batch")}
-        self.sent = 0
+# ---------------------------------------------------------------------------
+# Source-local AMQP send helpers
+#
+# WORKAROUND(xregistry/codegen#shadowedmethods): The generated AMQP producer
+# classes declare multiple send_amqp overloads for different message types.
+# Python only retains the LAST definition per class, so earlier overloads are
+# silently shadowed at class-definition time:
+#   SGGovNEAWeatherAmqpProducer  : Station (shadowed), WeatherObservation (live)
+#   SGGovNEAAirQualityAmqpProducer: Region (shadowed), PSIReading (shadowed), PM25Reading (live)
+# We replicate the CloudEvent + AMQP serialisation pattern for the shadowed
+# variants using the producer's internal infrastructure. A codegen bug should
+# be filed upstream (xregistry/codegen) to emit distinct method names per
+# message type instead of overloading send_amqp.
+# ---------------------------------------------------------------------------
 
-    async def connect(self, *_args, **_kwargs):
-        return None
+def _build_and_send_amqp_message(
+    producer: Any,
+    data: Any,
+    ce_type: str,
+    subject: str,
+    app_properties: dict[str, str],
+    _time_val: Optional[Any] = None,
+) -> None:
+    """Build a CloudEvent AMQP message and send it via the producer's internals."""
+    try:
+        from proton import Message
+        from cloudevents.http import CloudEvent
+        from cloudevents.conversion import to_binary, to_structured
+    except ImportError as exc:  # pragma: no cover
+        raise RuntimeError("proton / cloudevents packages required for AMQP send") from exc
 
-    async def disconnect(self):
-        close = getattr(self.producer, "close", None)
-        if close:
-            close()
-
-    def _choose_method(self, publish_name: str, kwargs: dict[str, Any]):
-        route_keys = {"_" + k for k in kwargs if k not in {"data", "qos", "retain", "topic", "content_type", "message_expiry_interval"}}
-        candidates = []
-        publish_norm = publish_name.replace("publish_", "").replace("mqtt", "amqp")
-        words = set(re.split(r"_+", publish_norm))
-        compact_publish = re.sub(r"[^a-z0-9]", "", publish_norm.lower())
-        for name, method in self._send_methods.items():
-            params = inspect.signature(method).parameters
-            required_route = {p for p, _param in params.items() if p.startswith("_") and _param.default is inspect.Parameter.empty}
-            if not required_route <= route_keys:
-                continue
-            method_words = set(re.split(r"_+", name))
-            compact_method = re.sub(r"[^a-z0-9]", "", name.lower().replace("send", ""))
-            score = len(words & method_words)
-            if compact_method and compact_method in compact_publish:
-                score += 100
-            candidates.append((score, len(required_route), name, method, required_route))
-        if not candidates:
-            raise AttributeError(f"No AMQP send method matches {publish_name} with route keys {sorted(route_keys)}")
-        candidates.sort(reverse=True)
-        return candidates[0][3], candidates[0][4]
-
-    def __getattr__(self, name: str):
-        if not name.startswith("publish_"):
-            raise AttributeError(name)
-        async def publish(**kwargs):
-            method, route = self._choose_method(name, kwargs)
-            call_kwargs = {p: _topic_segment(kwargs[p[1:]]) for p in route}
-            call_kwargs["data"] = kwargs.get("data")
-            if "content_type" in inspect.signature(method).parameters and kwargs.get("content_type"):
-                call_kwargs["content_type"] = kwargs["content_type"]
-            method(**call_kwargs)
-            self.sent += 1
-        return publish
-
-
-def _manifest_path() -> pathlib.Path:
-    candidates = [pathlib.Path.cwd(), pathlib.Path(__file__).resolve().parents[2]]
-    for root in candidates:
-        xreg = root / "xreg"
-        if xreg.exists():
-            matches = list(xreg.glob("*.json"))
-            if matches:
-                return matches[0]
-    raise FileNotFoundError("xRegistry manifest not found in working directory or package parents")
-
-
-def _schema_root(schema: dict[str, Any]) -> Any:
-    node = schema.get("schema", schema)
-    root = node.get("$root")
-    if root:
-        cur = node
-        for part in root.lstrip("#/").split("/"):
-            cur = cur[part]
-        return cur, node
-    return node, node
-
-
-def _resolve_ref(ref: str, doc: dict[str, Any]) -> Any:
-    cur = doc
-    for part in ref.lstrip("#/").split("/"):
-        cur = cur[part]
-    return cur
-
-
-def _sample_for_type(type_spec: Any, doc: dict[str, Any], name: str = "value") -> Any:
-    if isinstance(type_spec, list):
-        return _sample_for_type(next((t for t in type_spec if t != "null"), "string"), doc, name)
-    if isinstance(type_spec, dict):
-        if "$ref" in type_spec:
-            return _sample_for_node(_resolve_ref(type_spec["$ref"], doc), doc)
-        return _sample_for_node(type_spec, doc)
-    if type_spec in ("string", "timestamp"):
-        return "2026-01-01T00:00:00Z" if "time" in name or "date" in name else f"sample-{name.replace('_','-')}"
-    if type_spec in ("integer", "int32", "int64"):
-        return 1
-    if type_spec in ("number", "float", "double"):
-        return 1.0
-    if type_spec == "boolean":
-        return True
-    if type_spec == "array":
-        return []
-    if type_spec == "object":
-        return {}
-    return f"sample-{name}"
-
-
-def _sample_for_node(node: dict[str, Any], doc: dict[str, Any]) -> Any:
-    if "enum" in node and node["enum"]:
-        return node["enum"][0]
-    t = node.get("type", "string")
-    if t == "object" or isinstance(t, dict) and "$ref" in t:
-        if isinstance(t, dict) and "$ref" in t:
-            return _sample_for_node(_resolve_ref(t["$ref"], doc), doc)
-        props = node.get("properties", {})
-        return {name: _sample_for_node(prop, doc) for name, prop in props.items()}
-    if t == "array":
-        return [_sample_for_node(node.get("items", {"type": "string"}), doc)]
-    return _sample_for_type(t, doc, node.get("name", "value"))
-
-
-def _data_class_for(schema_name: str):
-    data_mod = importlib.import_module(f"{PY_MODULE}_amqp_producer_data")
-    class_name = schema_name.split(".")[-1]
-    return getattr(data_mod, class_name)
-
-
-def _coerce_data(cls: type[Any], payload: dict[str, Any]) -> Any:
-    for name in ("from_serializer_dict", "from_dict"):
-        if hasattr(cls, name):
-            try:
-                return getattr(cls, name)(payload)
-            except Exception:
-                pass
-    return cls(**payload)
-
-
-def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
-    manifest = json.loads(_manifest_path().read_text(encoding="utf-8"))
-    jstruct_group = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
-    amqp_group = None
-    for endpoint in manifest.get("endpoints", {}).values():
-        if endpoint.get("protocol") != "AMQP/1.0":
-            continue
-        for group_uri in endpoint.get("messagegroups", []):
-            group_name = group_uri.strip("/").rsplit("/", 1)[-1]
-            if group_name in manifest.get("messagegroups", {}):
-                amqp_group = manifest["messagegroups"][group_name]
-                break
-        if amqp_group is not None:
-            break
-    if amqp_group is None:
-        amqp_group = next(v for k, v in manifest["messagegroups"].items() if k.endswith(".amqp"))
-    for message_name, message in amqp_group["messages"].items():
-        schema_name = None
-        if "dataschemauri" in message:
-            schema_name = message["dataschemauri"].split("/")[-1]
+    now_str = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    if _time_val is not None:
+        if isinstance(_time_val, datetime):
+            if _time_val.tzinfo is None:
+                _time_val = _time_val.replace(tzinfo=timezone.utc)
+            resolved_time = _time_val.isoformat().replace("+00:00", "Z")
         else:
-            base = message["basemessageuri"].strip("/").split("/")
-            base_msg = manifest["messagegroups"][base[1]]["messages"][base[3]]
-            schema_name = base_msg["dataschemauri"].split("/")[-1]
-        schema_entry = jstruct_group["schemas"][schema_name]["versions"]["1"]["schema"]
-        root_node, doc = _schema_root(schema_entry)
-        payload = _sample_for_node(root_node, doc)
-        data = _coerce_data(_data_class_for(schema_name), payload)
-        route = {}
-        def collect_templates(node):
-            if isinstance(node, dict):
-                if node.get("type") == "uritemplate":
-                    for key in re.findall(r"\{([A-Za-z0-9_]+)\}", node.get("value", "")):
-                        route[key] = payload.get(key, f"sample-{key.replace('_','-')}") if isinstance(payload, dict) else f"sample-{key}"
-                for child in node.values():
-                    collect_templates(child)
-            elif isinstance(node, list):
-                for child in node:
-                    collect_templates(child)
-        collect_templates(message.get("protocoloptions") or {})
-        if isinstance(payload, dict):
-            for key, value in payload.items():
-                route.setdefault(key, value)
-        # Pre-fill route with required params from all send methods (dummy values)
-        for _m_name, _m_func in adapter._send_methods.items():
-            for _p, _param in inspect.signature(_m_func).parameters.items():
-                if _p.startswith("_") and _param.default is inspect.Parameter.empty:
-                    route.setdefault(_p[1:], f"sample-{_p[1:]}")
-        try:
-            method, required = adapter._choose_method("publish_" + message_name.lower().replace(".", "_"), {**route, "data": data})
-            call_kwargs = {p: _topic_segment(route.get(p[1:], f"sample-{p[1:]}")) for p in required}
-            call_kwargs["data"] = data
-            method(**call_kwargs)
-        except (AttributeError, TypeError, KeyError) as _route_err:
-            logger.debug("Skipping message %s: %s", message_name, _route_err)
-            continue
-        adapter.sent += 1
+            resolved_time = str(_time_val)
+    else:
+        resolved_time = now_str
+
+    attributes = {
+        "type": ce_type,
+        "source": "https://api.data.gov.sg",
+        "subject": subject,
+        "time": resolved_time,
+    }
+    attributes = {k: v for k, v in attributes.items() if v is not None}
+
+    byte_data = producer._serialize_payload(data, "application/json")
+    cloud_event = CloudEvent(attributes, byte_data)
+
+    if producer.content_mode == "structured":
+        headers, body = to_structured(cloud_event)
+        msg_body = (
+            json.dumps(body).encode("utf-8")
+            if isinstance(body, dict)
+            else (body if isinstance(body, bytes) else str(body).encode("utf-8"))
+        )
+        amqp_msg = Message(body=msg_body, inferred=True)
+        amqp_msg.content_type = getattr(producer, "format_type", None) or headers.get("content-type")
+    else:
+        headers, body = to_binary(cloud_event)
+        if isinstance(body, str):
+            body = body.encode("utf-8")
+        amqp_msg = Message(body=body, inferred=True)
+        amqp_msg.content_type = "application/json"
+        if headers:
+            amqp_msg.properties = producer._ce_headers_to_amqp_properties(headers)
+
+    ts = producer._coerce_amqp_timestamp(resolved_time)
+    if ts is not None:
+        amqp_msg.creation_time = ts
+    amqp_msg.subject = subject
+
+    if amqp_msg.properties is None:
+        amqp_msg.properties = {}
+    amqp_msg.properties.update(app_properties)
+
+    if getattr(producer, "_handler", None) is not None:
+        producer._send_via_reactor(amqp_msg)
+    else:
+        producer._send_via_blocking_sender(amqp_msg)
 
 
-async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> None:
-    """Emit sample corpus via AMQP (no source-specific live acquisition handler)."""
-    logger.info("Emitting sample corpus via AMQP for %s", SOURCE_ID)
-    while True:
-        emit_mock_corpus(adapter)
-        logger.info("Emitted %d sample AMQP event(s) for %s", adapter.sent, SOURCE_ID)
-        if args.once:
-            break
-        await asyncio.sleep(args.polling_interval if hasattr(args, 'polling_interval') else 300)
+def _send_station_amqp(producer, data, station_id: str, region: str, event: str) -> None:
+    """Send a Station event (shadowed send_amqp overload workaround)."""
+    _build_and_send_amqp_message(
+        producer, data,
+        ce_type="SG.Gov.NEA.Weather.Station",
+        subject=station_id,
+        app_properties={"region": region, "event": event},
+    )
+
+
+def _send_region_amqp(producer, data, region: str, station_id: str, event: str) -> None:
+    """Send a Region event (shadowed send_amqp overload workaround)."""
+    _build_and_send_amqp_message(
+        producer, data,
+        ce_type="SG.Gov.NEA.AirQuality.Region",
+        subject=region,
+        app_properties={"station_id": station_id, "event": event},
+    )
+
+
+def _send_psireading_amqp(
+    producer, data, region: str, station_id: str, event: str, ts: Optional[Any] = None
+) -> None:
+    """Send a PSIReading event (shadowed send_amqp overload workaround)."""
+    _build_and_send_amqp_message(
+        producer, data,
+        ce_type="SG.Gov.NEA.AirQuality.PSIReading",
+        subject=region,
+        app_properties={"station_id": station_id, "event": event},
+        _time_val=ts,
+    )
+
+
+
+def _build_both_producers(args):
+    """Build weather + air quality AMQP producers."""
+    from singapore_nea_amqp_producer_amqp_producer.producer import (
+        SGGovNEAWeatherAmqpProducer,
+        SGGovNEAAirQualityAmqpProducer,
+    )
+    kwargs = _extract_producer_kwargs(args)
+    weather_producer = _apply_partition_key_workaround(SGGovNEAWeatherAmqpProducer(**kwargs))
+    aq_producer = _apply_partition_key_workaround(SGGovNEAAirQualityAmqpProducer(**kwargs))
+    return weather_producer, aq_producer
+
+
+def _emit_sample_events(weather_producer, aq_producer) -> int:
+    """Send one sample event per message type via AMQP (sample/test mode)."""
+    from singapore_nea_amqp_producer_data import Station, WeatherObservation, Region, PSIReading, PM25Reading
+
+    now = datetime.now(timezone.utc)
+    sent = 0
+
+    station = Station(
+        station_id="S109", device_id="S109", name="Ang Mo Kio Avenue 5",
+        latitude=1.3764, longitude=103.8492, data_types="air_temperature,rainfall",
+    )
+    _send_station_amqp(weather_producer, station, "S109", "central", "info")
+    sent += 1
+
+    observation = WeatherObservation(
+        station_id="S109", station_name="Ang Mo Kio Avenue 5", observation_time=now,
+        air_temperature=30.5, rainfall=0.0, relative_humidity=75.0,
+        wind_speed=2.1, wind_direction=180.0,
+    )
+    weather_producer.send_amqp(
+        data=observation, _station_id="S109", _region="central", _event="weather", _time=now,
+    )
+    sent += 1
+
+    region = Region(region="central", latitude=1.357, longitude=103.82)
+    _send_region_amqp(aq_producer, region, "central", "central", "info")
+    sent += 1
+
+    psi = PSIReading(
+        region="central", timestamp=now, update_timestamp=now,
+        psi_twenty_four_hourly=52, o3_sub_index=10, pm10_sub_index=20,
+        pm10_twenty_four_hourly=25, pm25_sub_index=30, pm25_twenty_four_hourly=12,
+        co_sub_index=5, co_eight_hour_max=1, so2_sub_index=2,
+        so2_twenty_four_hourly=3, no2_one_hour_max=8, o3_eight_hour_max=10,
+    )
+    _send_psireading_amqp(aq_producer, psi, "central", "central", "psi", now)
+    sent += 1
+
+    pm25 = PM25Reading(region="central", timestamp=now, update_timestamp=now, pm25_one_hourly=11)
+    aq_producer.send_amqp(
+        data=pm25, _region="central", _station_id="central", _event="pm25", _time=now,
+    )
+    sent += 1
+
+    return sent
+
+
+async def _run_live(args: argparse.Namespace) -> None:
+    """Live acquisition loop: fetch real NEA data and send via AMQP."""
+    from singapore_nea_core import (
+        NEAWeatherAPI,
+        NEAAirQualityAPI,
+        merge_observations,
+        fetch_psi_readings,
+        fetch_pm25_readings,
+        load_state,
+        save_state,
+        split_state,
+        compose_state,
+        AIR_QUALITY_REFERENCE_REFRESH_INTERVAL,
+    )
+    from singapore_nea_amqp_producer_data import Station, WeatherObservation, Region, PSIReading, PM25Reading
+    from singapore_nea_amqp_producer_amqp_producer.producer import (
+        SGGovNEAWeatherAmqpProducer,
+        SGGovNEAAirQualityAmqpProducer,
+    )
+
+    producer_kwargs = _extract_producer_kwargs(args)
+    weather_producer = _apply_partition_key_workaround(SGGovNEAWeatherAmqpProducer(**producer_kwargs))
+    aq_producer = _apply_partition_key_workaround(SGGovNEAAirQualityAmqpProducer(**producer_kwargs))
+
+    polling_interval = getattr(args, "polling_interval", 300)
+    aq_polling_interval = int(os.getenv("AIRQUALITY_POLLING_INTERVAL", "3600"))
+
+    weather_api = NEAWeatherAPI(polling_interval=polling_interval)
+    aq_api = NEAAirQualityAPI(polling_interval=aq_polling_interval)
+
+    previous_state = load_state(args.state_file)
+    weather_state, psi_state, pm25_state = split_state(previous_state)
+
+    # Emit station reference data at startup
+    stations = weather_api.get_all_stations()
+    for sid, sd in stations.items():
+        station = Station(
+            station_id=sd.station_id, device_id=sd.device_id, name=sd.name,
+            latitude=sd.latitude, longitude=sd.longitude, data_types=sd.data_types,
+        )
+        _send_station_amqp(weather_producer, station, sid, _station_region(sd.latitude, sd.longitude), "info")
+    logger.info("Sent %d weather station reference events via AMQP", len(stations))
+
+    # Emit region reference data at startup
+    regions = aq_api.get_regions()
+    for region_name, rd in regions.items():
+        region = Region(region=rd.region, latitude=rd.latitude, longitude=rd.longitude)
+        _send_region_amqp(aq_producer, region, region_name, region_name, "info")
+    logger.info("Sent %d region reference events via AMQP", len(regions))
+
+    now = _time.monotonic()
+    next_weather_poll = now
+    next_aq_poll = now
+    next_aq_region_refresh = now + AIR_QUALITY_REFERENCE_REFRESH_INTERVAL
+    did_weather = False
+    did_aq = False
+
+    try:
+        while True:
+            now = _time.monotonic()
+            next_due = min(next_weather_poll, next_aq_poll, next_aq_region_refresh)
+            if now < next_due:
+                await asyncio.sleep(max(1, min(int(next_due - now), 30)))
+                continue
+
+            state_changed = False
+
+            if now >= next_weather_poll:
+                did_weather = True
+                next_weather_poll = now + polling_interval
+                try:
+                    all_stations, observations = merge_observations(weather_api)
+                    sent = 0
+                    for obs in observations:
+                        key = f"{obs.station_id}:{obs.observation_time.isoformat()}"
+                        if key in weather_state:
+                            continue
+                        observation = WeatherObservation(
+                            station_id=obs.station_id, station_name=obs.station_name,
+                            observation_time=obs.observation_time,
+                            air_temperature=obs.air_temperature, rainfall=obs.rainfall,
+                            relative_humidity=obs.relative_humidity,
+                            wind_speed=obs.wind_speed, wind_direction=obs.wind_direction,
+                        )
+                        sd = all_stations.get(obs.station_id)
+                        region_val = _station_region(sd.latitude, sd.longitude) if sd else "central"
+                        weather_producer.send_amqp(
+                            data=observation, _station_id=obs.station_id,
+                            _region=region_val, _event="weather", _time=obs.observation_time,
+                        )
+                        weather_state[key] = obs.observation_time.isoformat()
+                        sent += 1
+                    logger.info("Sent %d weather observations via AMQP", sent)
+                    state_changed = True
+                except Exception as exc:  # pragma: no cover - runtime safety
+                    logger.error("Error fetching/sending weather: %s", exc)
+
+            if now >= next_aq_region_refresh:
+                next_aq_region_refresh = now + AIR_QUALITY_REFERENCE_REFRESH_INTERVAL
+                try:
+                    regions = aq_api.get_regions()
+                    for region_name, rd in regions.items():
+                        region = Region(region=rd.region, latitude=rd.latitude, longitude=rd.longitude)
+                        _send_region_amqp(aq_producer, region, region_name, region_name, "info")
+                except Exception as exc:  # pragma: no cover - runtime safety
+                    logger.error("Error refreshing regions: %s", exc)
+
+            if now >= next_aq_poll:
+                did_aq = True
+                next_aq_poll = now + aq_polling_interval
+                try:
+                    psi_readings = fetch_psi_readings(aq_api, psi_state)
+                    for psi_data in psi_readings:
+                        psi_obj = PSIReading(
+                            region=psi_data.region, timestamp=psi_data.timestamp,
+                            update_timestamp=psi_data.update_timestamp,
+                            psi_twenty_four_hourly=psi_data.psi_twenty_four_hourly,
+                            o3_sub_index=psi_data.o3_sub_index,
+                            pm10_sub_index=psi_data.pm10_sub_index,
+                            pm10_twenty_four_hourly=psi_data.pm10_twenty_four_hourly,
+                            pm25_sub_index=psi_data.pm25_sub_index,
+                            pm25_twenty_four_hourly=psi_data.pm25_twenty_four_hourly,
+                            co_sub_index=psi_data.co_sub_index,
+                            co_eight_hour_max=psi_data.co_eight_hour_max,
+                            so2_sub_index=psi_data.so2_sub_index,
+                            so2_twenty_four_hourly=psi_data.so2_twenty_four_hourly,
+                            no2_one_hour_max=psi_data.no2_one_hour_max,
+                            o3_eight_hour_max=psi_data.o3_eight_hour_max,
+                        )
+                        _send_psireading_amqp(
+                            aq_producer, psi_obj, psi_data.region, psi_data.region, "psi", psi_data.timestamp
+                        )
+                    pm25_readings = fetch_pm25_readings(aq_api, pm25_state)
+                    for pm25_data in pm25_readings:
+                        pm25_obj = PM25Reading(
+                            region=pm25_data.region, timestamp=pm25_data.timestamp,
+                            update_timestamp=pm25_data.update_timestamp,
+                            pm25_one_hourly=pm25_data.pm25_one_hourly,
+                        )
+                        aq_producer.send_amqp(
+                            data=pm25_obj, _region=pm25_data.region,
+                            _station_id=pm25_data.region, _event="pm25", _time=pm25_data.timestamp,
+                        )
+                    logger.info(
+                        "Sent %d PSI and %d PM2.5 readings via AMQP",
+                        len(psi_readings), len(pm25_readings),
+                    )
+                    state_changed = True
+                except Exception as exc:  # pragma: no cover - runtime safety
+                    logger.error("Error fetching/sending air quality: %s", exc)
+
+            if state_changed:
+                save_state(args.state_file, compose_state(weather_state, psi_state, pm25_state))
+
+            if args.once and did_weather and did_aq:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
+    finally:
+        for p in [weather_producer, aq_producer]:
+            close = getattr(p, "close", None)
+            if close:
+                close()
 
 
 def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -333,8 +470,7 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "300")))
     parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser(f"~/.{PY_MODULE}_amqp_state.json")))
     parser.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE", False))
-    parser.add_argument("--mock-mode", action="store_true", default=_env_bool(f"{ENV_PREFIX}_MOCK", False) or _env_bool(f"{ENV_PREFIX}_SAMPLE_MODE", False) or _env_bool(f"{ENV_PREFIX}_AMQP_MOCK", False))
-    # Source-specific optional knobs; ignored where not used.
+    parser.add_argument("--sample-mode", action="store_true", default=_env_bool(f"{ENV_PREFIX}_MOCK", False) or _env_bool(f"{ENV_PREFIX}_SAMPLE_MODE", False) or _env_bool(f"{ENV_PREFIX}_AMQP_SAMPLE", False))
     parser.add_argument("--feeds", default=os.getenv("PTWC_TSUNAMI_FEEDS", "PAAQ,PHEB"))
     parser.add_argument("--providers", default=os.getenv("NINA_BBK_PROVIDERS", "mowas,katwarn,biwapp,dwd,lhp,police"))
     parser.add_argument("--regions", default=os.getenv("EAWS_ALBINA_REGIONS", "AT-07-01"))
@@ -347,8 +483,7 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     return parser
 
 
-
-def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+def _retry_producer_build(factory, max_attempts=5, initial_delay=10):
     """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
     for attempt in range(max_attempts):
         try:
@@ -360,31 +495,25 @@ def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
             logger.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
                           attempt + 1, max_attempts, e, delay)
             import time; time.sleep(delay)
+
+
 async def _async_main(args: argparse.Namespace) -> None:
-    # Retry producer connection with backoff (RBAC propagation can take minutes)
-    producer = None
-    for _attempt in range(6):
+    if args.sample_mode:
+        # Sample path: build both producers, send one event of each type, then close.
+        weather_producer, aq_producer = await asyncio.get_running_loop().run_in_executor(
+            None, lambda: _retry_producer_build(lambda: _build_both_producers(args))
+        )
         try:
-            producer = _retry_producer_init(lambda: _build_amqp_producer(args))
-            break
-        except Exception as _conn_err:
-            logger.warning("AMQP connection attempt %d failed: %s", _attempt + 1, _conn_err)
-            if _attempt < 5:
-                await asyncio.sleep(15 * (_attempt + 1))
-    if producer is None:
-        logger.error("Failed to connect to AMQP broker after 6 attempts")
-        return
-    adapter = MqttToAmqpAdapter(producer)
-    try:
-        if args.mock_mode:
-            emit_mock_corpus(adapter)
-            logger.info("Published %d mock AMQP event(s)", adapter.sent)
-        else:
-            await _run_live(args, adapter)
-    finally:
-        close = getattr(producer, "close", None)
-        if close:
-            close()
+            sent = _emit_sample_events(weather_producer, aq_producer)
+            logger.info("Published %d sample AMQP event(s)", sent)
+        finally:
+            for p in [weather_producer, aq_producer]:
+                close = getattr(p, "close", None)
+                if close:
+                    close()
+    else:
+        # Live path: two producers (weather + air quality) with real NEA data.
+        await _run_live(args)
 
 
 def main() -> None:

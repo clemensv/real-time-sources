@@ -1,20 +1,27 @@
 """Singapore NEA Weather and Air Quality Bridge."""
 
 import argparse
-import json
 import logging
 import os
 import sys
 import time
-from datetime import datetime, timezone
 
-import requests
 from confluent_kafka import Producer
 
 from singapore_nea_producer_data import Station, WeatherObservation
 from singapore_nea_producer_kafka_producer.producer import (
     SGGovNEAAirQualityEventProducer,
     SGGovNEAWeatherEventProducer,
+)
+
+from singapore_nea_core import (
+    NEAWeatherAPI,
+    merge_observations,
+    load_state,
+    save_state,
+    split_state,
+    compose_state,
+    AIR_QUALITY_REFERENCE_REFRESH_INTERVAL,
 )
 
 from singapore_nea.air_quality import (
@@ -25,130 +32,6 @@ from singapore_nea.air_quality import (
 )
 
 logger = logging.getLogger(__name__)
-
-NEA_BASE_URL = "https://api.data.gov.sg/v1/environment"
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-singapore-nea/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
-)
-AIR_QUALITY_REFERENCE_REFRESH_INTERVAL = 24 * 60 * 60
-
-ENDPOINTS = ["air-temperature", "rainfall", "relative-humidity", "wind-speed", "wind-direction"]
-
-FIELD_MAP = {
-    "air-temperature": "air_temperature",
-    "rainfall": "rainfall",
-    "relative-humidity": "relative_humidity",
-    "wind-speed": "wind_speed",
-    "wind-direction": "wind_direction",
-}
-
-
-class NEAWeatherAPI:
-    """Client for the Singapore NEA weather API on data.gov.sg."""
-
-    def __init__(self, base_url: str = NEA_BASE_URL, polling_interval: int = 300):
-        self.base_url = base_url
-        self.polling_interval = polling_interval
-        self.session = requests.Session()
-        self.session.headers["User-Agent"] = USER_AGENT
-
-    def get_endpoint(self, endpoint: str) -> dict:
-        """Fetch a single environment endpoint."""
-        url = f"{self.base_url}/{endpoint}"
-        response = self.session.get(url, timeout=30)
-        response.raise_for_status()
-        return response.json()
-
-    def get_all_stations(self) -> dict[str, Station]:
-        """Collect station metadata from all endpoints and merge."""
-        station_types: dict[str, set[str]] = {}
-        station_info: dict[str, dict] = {}
-
-        for endpoint in ENDPOINTS:
-            try:
-                data = self.get_endpoint(endpoint)
-                field = FIELD_MAP[endpoint]
-                for sdata in data.get("metadata", {}).get("stations", []):
-                    sid = sdata["id"]
-                    if sid not in station_types:
-                        station_types[sid] = set()
-                        station_info[sid] = sdata
-                    station_types[sid].add(field)
-            except Exception as exc:  # pragma: no cover - defensive logging
-                logger.warning("Failed to fetch stations from %s: %s", endpoint, exc)
-
-        stations: dict[str, Station] = {}
-        for sid, info in station_info.items():
-            loc = info.get("location", {})
-            stations[sid] = Station(
-                station_id=sid,
-                device_id=info.get("device_id", sid),
-                name=info.get("name", ""),
-                latitude=float(loc.get("latitude", 0.0)),
-                longitude=float(loc.get("longitude", 0.0)),
-                data_types=",".join(sorted(station_types.get(sid, set()))),
-            )
-        return stations
-
-    @staticmethod
-    def parse_readings(data: dict) -> tuple[str, dict[str, float]]:
-        """Parse a single endpoint response into station/value pairs."""
-        items = data.get("items", [])
-        if not items:
-            return "", {}
-        item = items[0]
-        timestamp = item.get("timestamp", "")
-        readings: dict[str, float] = {}
-        for reading in item.get("readings", []):
-            readings[reading["station_id"]] = float(reading["value"])
-        return timestamp, readings
-
-
-def merge_observations(api: NEAWeatherAPI) -> tuple[dict[str, Station], list[WeatherObservation]]:
-    """Fetch all weather endpoints and merge per-station observations."""
-    stations = api.get_all_stations()
-    param_data: dict[str, dict[str, float]] = {}
-    latest_ts = ""
-
-    for endpoint in ENDPOINTS:
-        try:
-            data = api.get_endpoint(endpoint)
-            timestamp, readings = api.parse_readings(data)
-            param_data[FIELD_MAP[endpoint]] = readings
-            if timestamp and timestamp > latest_ts:
-                latest_ts = timestamp
-        except Exception as exc:  # pragma: no cover - defensive logging
-            logger.warning("Failed to fetch %s: %s", endpoint, exc)
-
-    try:
-        obs_time = datetime.fromisoformat(latest_ts)
-    except (ValueError, TypeError):
-        obs_time = datetime.now(timezone.utc)
-
-    name_map = {sid: station.name for sid, station in stations.items()}
-    all_station_ids = set()
-    for readings in param_data.values():
-        all_station_ids.update(readings.keys())
-
-    observations: list[WeatherObservation] = []
-    for station_id in sorted(all_station_ids):
-        observations.append(
-            WeatherObservation(
-                station_id=station_id,
-                station_name=name_map.get(station_id, station_id),
-                observation_time=obs_time,
-                air_temperature=param_data.get("air_temperature", {}).get(station_id),
-                rainfall=param_data.get("rainfall", {}).get(station_id),
-                relative_humidity=param_data.get("relative_humidity", {}).get(station_id),
-                wind_speed=param_data.get("wind_speed", {}).get(station_id),
-                wind_direction=param_data.get("wind_direction", {}).get(station_id),
-            )
-        )
-    return stations, observations
 
 
 def parse_connection_string(connection_string: str) -> dict:
@@ -177,96 +60,52 @@ def parse_connection_string(connection_string: str) -> dict:
     return config
 
 
-def _load_state(state_file: str) -> dict:
-    try:
-        if state_file and os.path.exists(state_file):
-            with open(state_file, "r", encoding="utf-8") as file_handle:
-                return json.load(file_handle)
-    except Exception as exc:  # pragma: no cover - defensive logging
-        logging.warning("Could not load state from %s: %s", state_file, exc)
-    return {}
-
-
-def _save_state(state_file: str, data: dict) -> None:
-    if not state_file:
-        return
-    try:
-        if "weather" in data or "air_quality" in data:
-            weather_state = data.get("weather", {})
-            air_quality_state = data.get("air_quality", {})
-            data = {
-                "weather": _truncate_state_entries(weather_state),
-                "air_quality": {
-                    "psi": _truncate_state_entries(air_quality_state.get("psi", {})),
-                    "pm25": _truncate_state_entries(air_quality_state.get("pm25", {})),
-                },
-            }
-        else:
-            data = _truncate_state_entries(data)
-        with open(state_file, "w", encoding="utf-8") as file_handle:
-            json.dump(data, file_handle)
-    except Exception as exc:  # pragma: no cover - defensive logging
-        logging.warning("Could not save state to %s: %s", state_file, exc)
-
-
-def _truncate_state_entries(data: dict) -> dict:
-    """Keep persisted dedupe maps from growing without bound."""
-    if not isinstance(data, dict) or len(data) <= 100000:
-        return data
-    keys = list(data.keys())
-    return {key: data[key] for key in keys[-50000:]}
-
-
-def _split_state(state: dict) -> tuple[dict, dict, dict]:
-    """Split persisted state into weather, PSI, and PM2.5 dedupe maps."""
-    if "weather" in state or "air_quality" in state:
-        weather_state = state.get("weather", {})
-        air_quality_state = state.get("air_quality", {})
-        return (
-            weather_state,
-            air_quality_state.get("psi", {}),
-            air_quality_state.get("pm25", {}),
-        )
-    return state, {}, {}
-
-
-def _compose_state(weather_state: dict, psi_state: dict, pm25_state: dict) -> dict:
-    """Compose the persisted state document."""
-    return {
-        "weather": weather_state,
-        "air_quality": {
-            "psi": psi_state,
-            "pm25": pm25_state,
-        },
-    }
-
-
 def send_stations(api: NEAWeatherAPI, producer: SGGovNEAWeatherEventProducer) -> int:
     """Fetch and emit station reference data."""
-    stations = api.get_all_stations()
-    for station_id, station in stations.items():
+    station_data = api.get_all_stations()
+    for station_id, sd in station_data.items():
+        station = Station(
+            station_id=sd.station_id,
+            device_id=sd.device_id,
+            name=sd.name,
+            latitude=sd.latitude,
+            longitude=sd.longitude,
+            data_types=sd.data_types,
+        )
         producer.send_sg_gov_nea_weather_station(station_id, station, flush_producer=False)
     producer.producer.flush()
-    logger.info("Sent %d weather station reference events", len(stations))
-    return len(stations)
+    logger.info("Sent %d weather station reference events", len(station_data))
+    return len(station_data)
 
 
 def feed_observations(
-    api: NEAWeatherAPI, producer: SGGovNEAWeatherEventProducer, previous_readings: dict
+    api: NEAWeatherAPI,
+    producer: SGGovNEAWeatherEventProducer,
+    previous_readings: dict,
 ) -> int:
     """Fetch and emit weather observation events."""
     _, observations = merge_observations(api)
     sent = 0
-    for observation in observations:
-        reading_key = f"{observation.station_id}:{observation.observation_time.isoformat()}"
+    for obs in observations:
+        reading_key = f"{obs.station_id}:{obs.observation_time.isoformat()}"
         if reading_key in previous_readings:
             continue
+        observation = WeatherObservation(
+            station_id=obs.station_id,
+            station_name=obs.station_name,
+            observation_time=obs.observation_time,
+            air_temperature=obs.air_temperature,
+            rainfall=obs.rainfall,
+            relative_humidity=obs.relative_humidity,
+            wind_speed=obs.wind_speed,
+            wind_direction=obs.wind_direction,
+        )
         producer.send_sg_gov_nea_weather_weather_observation(
-            observation.station_id,
+            obs.station_id,
             observation,
             flush_producer=False,
         )
-        previous_readings[reading_key] = observation.observation_time.isoformat()
+        previous_readings[reading_key] = obs.observation_time.isoformat()
         sent += 1
     producer.producer.flush()
     return sent
@@ -367,11 +206,13 @@ def main():
     weather_event_producer = SGGovNEAWeatherEventProducer(kafka_producer, weather_topic)
     airquality_topic = args.airquality_topic or None
     airquality_event_producer = (
-        SGGovNEAAirQualityEventProducer(kafka_producer, airquality_topic) if airquality_topic else None
+        SGGovNEAAirQualityEventProducer(kafka_producer, airquality_topic)
+        if airquality_topic
+        else None
     )
 
-    previous_state = _load_state(args.state_file)
-    weather_state, psi_state, pm25_state = _split_state(previous_state)
+    previous_state = load_state(args.state_file)
+    weather_state, psi_state, pm25_state = split_state(previous_state)
 
     logger.info(
         "Starting Singapore NEA bridge. Weather every %d seconds; air quality every %d seconds",
@@ -422,7 +263,9 @@ def main():
             did_airquality = True
             next_airquality_poll = now + args.airquality_polling_interval
             try:
-                psi_count = fetch_and_send_psi(air_quality_api, airquality_event_producer, psi_state)
+                psi_count = fetch_and_send_psi(
+                    air_quality_api, airquality_event_producer, psi_state
+                )
                 pm25_count = fetch_and_send_pm25(
                     air_quality_api,
                     airquality_event_producer,
@@ -438,7 +281,7 @@ def main():
                 logger.error("Error fetching/sending air quality data: %s", exc)
 
         if state_changed:
-            _save_state(args.state_file, _compose_state(weather_state, psi_state, pm25_state))
+            save_state(args.state_file, compose_state(weather_state, psi_state, pm25_state))
 
         if args.once and did_weather and did_airquality:
             logger.info("--once mode: exiting after first polling cycle")

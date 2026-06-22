@@ -20,6 +20,7 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "python-qpid-proton>=0.40.0",
+    "singapore_nea_core",
 ]
 
 [project.scripts]
