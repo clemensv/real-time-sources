@@ -22,6 +22,9 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "python-qpid-proton>=0.40.0",
+    "nws_alerts_core",
+    "aiohttp>=3.10.5",
+
 ]
 
 [project.scripts]
@@ -36,3 +39,6 @@ local_scheme = "no-local-version"
 packages = [
     "nws_alerts_amqp",
 ]
+
+[tool.uv.sources]
+nws_alerts_core = { path = "../nws_alerts_core" }

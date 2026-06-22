@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nws_alerts_core"
+dynamic = ["version"]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "aiohttp>=3.10.5",
+    "nws-alerts-producer-data",
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["nws_alerts_core"]
+
+[tool.uv.sources]
+"nws-alerts-producer-data" = { path = "../nws_alerts_producer/nws_alerts_producer_data" }

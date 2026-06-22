@@ -19,6 +19,8 @@ dependencies = [
     "aiohttp>=3.10.5",
     "azure-identity>=1.17.0",
     "paho-mqtt>=2.1.0",
+    "nws_alerts_core",
+
 ]
 
 [project.scripts]
@@ -33,3 +35,6 @@ local_scheme = "no-local-version"
 packages = [
     "nws_alerts_mqtt",
 ]
+
+[tool.uv.sources]
+nws_alerts_core = { path = "../nws_alerts_core" }

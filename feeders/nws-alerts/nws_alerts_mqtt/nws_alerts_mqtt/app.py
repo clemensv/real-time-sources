@@ -15,7 +15,7 @@ import aiohttp
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from nws_alerts.nws_alerts import (
+from nws_alerts_core import (
     DEFAULT_POLL_INTERVAL,
     DEFAULT_STATE_FILE,
     NWSAlertsPoller,
@@ -66,7 +66,7 @@ class NWSAlertsMqttBridge:
         poll_interval: int = DEFAULT_POLL_INTERVAL,
     ) -> None:
         self.client = client
-        self.poller = NWSAlertsPoller(kafka_config=None, state_file=state_file, poll_interval=poll_interval)
+        self.poller = NWSAlertsPoller(state_file=state_file, poll_interval=poll_interval)
 
     async def _publish_alert(self, alert: Any) -> None:
         severity = normalize_cap_severity(alert.severity)
