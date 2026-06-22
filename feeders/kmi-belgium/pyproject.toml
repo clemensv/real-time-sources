@@ -23,6 +23,7 @@ dependencies = [
     "idna>=3.15",
     "requests>=2.34.2",
     "urllib3>=2.7.0",
+    "kmi_belgium_core",
 ]
 
 [project.scripts]
@@ -45,3 +46,6 @@ local_scheme = "no-local-version"
 packages = [
     "kmi_belgium",
 ]
+
+[tool.uv.sources]
+kmi_belgium_core = { path = "kmi_belgium_core" }

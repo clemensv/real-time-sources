@@ -6,7 +6,8 @@
       dependencies = [
         "python-qpid-proton>=0.39.0",
 "azure-identity>=1.16.0",
-      ]
+    "kmi_belgium_core",
+]
 
       [build-system]
       requires = ["setuptools>=68"]
@@ -14,3 +15,6 @@
 
       [tool.setuptools]
       packages = ["kmi_belgium_amqp"]
+
+[tool.uv.sources]
+kmi_belgium_core = { path = "../kmi_belgium_core" }
