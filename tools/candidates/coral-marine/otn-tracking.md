@@ -1,4 +1,5 @@
 # Ocean Tracking Network (OTN) ERDDAP
+> ✅ **SHIPPED** · feeder: `erddap` · entry: `otn-tracking` · 2026-06-22
 **Country/Region**: Global (primarily North Atlantic, but worldwide coverage)
 **Publisher**: Ocean Tracking Network, Dalhousie University, Halifax, Canada
 **API Endpoint**: `https://members.oceantrack.org/erddap/`

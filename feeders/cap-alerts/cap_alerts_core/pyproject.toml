@@ -15,4 +15,8 @@ version_scheme = "post-release"
 local_scheme = "no-local-version"
 
 [tool.setuptools]
-packages = ["cap_alerts_core"]
+packages = ["cap_alerts_core", "cap_alerts_core.sources"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+cap_alerts_core = ["sources/*.json"]

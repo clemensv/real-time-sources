@@ -14,7 +14,7 @@ from gbfs_bikeshare_amqp_producer_amqp_producer.producer import (
     OrgGbfsAmqpSystemProducer,
 )
 from gbfs_bikeshare_amqp_producer_data import FreeBikeStatus, StationInformation, StationStatus, SystemInformation
-from gbfs_bikeshare_core import build_offline_client_and_feeds, load_state, parse_bool, parse_feed_configuration, save_state
+from gbfs_bikeshare_core import build_offline_client_and_feeds, load_feeds, load_state, parse_bool, save_state
 from gbfs_bikeshare_core.acquisition import (
     GbfsSourceClient,
     FreeBikeStatusRecord,
@@ -150,7 +150,7 @@ def feed(args: argparse.Namespace) -> None:
         client, configured_feeds = build_offline_client_and_feeds()
         args.once = True
     else:
-        configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids, args.gbfs_api_key, args.gbfs_api_key_param)
+        configured_feeds = load_feeds(args.gbfs_feeds, args.gbfs_system_ids, args.gbfs_api_key, args.gbfs_api_key_param, sources_file=args.gbfs_sources_file, selector=args.gbfs_sources)
         client = GbfsSourceClient()
     sources = discover_sources(client, configured_feeds)
     if not sources:
@@ -209,6 +209,8 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
     feed_parser = subparsers.add_parser("feed", help="Poll GBFS feeds and publish CloudEvents to AMQP")
     feed_parser.add_argument("--gbfs-feeds", default=os.getenv("GBFS_FEEDS"))
+    feed_parser.add_argument("--gbfs-sources-file", default=os.getenv("GBFS_SOURCES_FILE", ""))
+    feed_parser.add_argument("--gbfs-sources", default=os.getenv("GBFS_SOURCES", ""))
     feed_parser.add_argument("--gbfs-system-ids", default=os.getenv("GBFS_SYSTEM_IDS"))
     feed_parser.add_argument("--gbfs-api-key", default=os.getenv("GBFS_API_KEY"))
     feed_parser.add_argument("--gbfs-api-key-param", default=os.getenv("GBFS_API_KEY_PARAM", "acl:consumerKey"))

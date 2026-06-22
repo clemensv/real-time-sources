@@ -9,7 +9,7 @@ from typing import Optional
 
 from confluent_kafka import Producer
 
-from openaq_core import OpenAQClient, build_kafka_config, build_mock_client, load_state, parse_bool, parse_csv, parse_kafka_connection_string, save_state, should_publish_measurement, slug_segment
+from openaq_core import OpenAQClient, build_kafka_config, build_mock_client, load_query_slices, load_state, parse_bool, parse_kafka_connection_string, save_state, should_publish_measurement, slug_segment
 from openaq_core.acquisition import LocationRecord, MeasurementRecord, SensorRecord
 from openaq_producer_data import Location, Measurement, Sensor
 from openaq_producer_data.org.openaq.parameternameenum import ParameterNameenum
@@ -39,10 +39,6 @@ def build_measurement(r: MeasurementRecord) -> Measurement:
     return Measurement(**data)
 
 
-def _configured_ids(value: Optional[str]) -> list[int]:
-    return [int(v) for v in parse_csv(value)]
-
-
 def feed(args: argparse.Namespace) -> None:
     if args.connection_string:
         cfg = parse_kafka_connection_string(args.connection_string)
@@ -67,8 +63,16 @@ def feed(args: argparse.Namespace) -> None:
     client = build_mock_client() if args.mock else OpenAQClient(args.openaq_api_key)
     if args.mock:
         args.once = True
-    countries = [c.upper() for c in parse_csv(args.openaq_countries)]
-    location_ids = _configured_ids(args.openaq_locations)
+    query_slices = load_query_slices(
+        args.openaq_countries,
+        args.openaq_locations,
+        args.openaq_bbox,
+        args.page_limit,
+        args.max_pages,
+        mock=args.mock,
+        sources_file=args.openaq_sources_file,
+        selector=args.openaq_sources,
+    )
     last_reference_refresh = 0.0
     reference_refresh = max(300, args.reference_refresh_interval)
     locations_cache: list[LocationRecord] = []
@@ -79,14 +83,15 @@ def feed(args: argparse.Namespace) -> None:
             refreshed_locations: list[LocationRecord] = []
             refreshed_sensors: dict[int, dict[int, SensorRecord]] = {}
             try:
-                for location in client.iter_locations(countries, location_ids, args.openaq_bbox, args.page_limit, args.max_pages):
-                    refreshed_locations.append(location)
-                    location_producer.send_org_openaq_kafka_location(_location_id=str(location.location_id), data=build_location(location), flush_producer=False)
-                    sensor_map: dict[int, SensorRecord] = {}
-                    for sensor in client.sensors_for_location(location):
-                        sensor_map[sensor.sensor_id] = sensor
-                        sensor_producer.send_org_openaq_kafka_sensor(_location_id=str(sensor.location_id), _sensor_id=str(sensor.sensor_id), data=build_sensor(sensor), flush_producer=False)
-                    refreshed_sensors[location.location_id] = sensor_map
+                for query_slice in query_slices:
+                    for location in client.iter_locations(query_slice.countries, query_slice.locations, query_slice.bbox, query_slice.page_limit, query_slice.max_pages):
+                        refreshed_locations.append(location)
+                        location_producer.send_org_openaq_kafka_location(_location_id=str(location.location_id), data=build_location(location), flush_producer=False)
+                        sensor_map: dict[int, SensorRecord] = {}
+                        for sensor in client.sensors_for_location(location):
+                            sensor_map[sensor.sensor_id] = sensor
+                            sensor_producer.send_org_openaq_kafka_sensor(_location_id=str(sensor.location_id), _sensor_id=str(sensor.sensor_id), data=build_sensor(sensor), flush_producer=False)
+                        refreshed_sensors[location.location_id] = sensor_map
                 location_producer.flush(timeout=120)
                 sensor_producer.flush(timeout=120)
                 locations_cache = refreshed_locations
@@ -119,9 +124,11 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
     feed_parser = subparsers.add_parser("feed", help="Poll OpenAQ API v3 and publish CloudEvents to Kafka")
     feed_parser.add_argument("--openaq-api-key", default=os.getenv("OPENAQ_API_KEY"), help="OpenAQ API key sent in X-API-Key header")
-    feed_parser.add_argument("--openaq-countries", default=os.getenv("OPENAQ_COUNTRIES", "US"), help="Comma-separated ISO 3166-1 alpha-2 countries to poll")
+    feed_parser.add_argument("--openaq-countries", default=os.getenv("OPENAQ_COUNTRIES"), help="Legacy comma-separated ISO 3166-1 alpha-2 countries to poll; overrides the source catalog when set")
     feed_parser.add_argument("--openaq-locations", default=os.getenv("OPENAQ_LOCATIONS"), help="Comma-separated OpenAQ location ids; overrides country discovery")
     feed_parser.add_argument("--openaq-bbox", default=os.getenv("OPENAQ_BBOX"), help="Optional WGS84 bbox minLon,minLat,maxLon,maxLat")
+    feed_parser.add_argument("--openaq-sources-file", default=os.getenv("OPENAQ_SOURCES_FILE", ""), help="Path to an OpenAQ query-slice catalog JSON file")
+    feed_parser.add_argument("--openaq-sources", default=os.getenv("OPENAQ_SOURCES", ""), help="Comma-separated query-slice catalog entry names, or '*' for all entries")
     feed_parser.add_argument("--page-limit", type=int, default=int(os.getenv("OPENAQ_PAGE_LIMIT", "25")))
     feed_parser.add_argument("--max-pages", type=int, default=int(os.getenv("OPENAQ_MAX_PAGES", "1")))
     feed_parser.add_argument("--kafka-bootstrap-servers", default=os.getenv("KAFKA_BOOTSTRAP_SERVERS"))
@@ -154,4 +161,3 @@ def main(argv: Optional[list[str]] = None) -> None:
 
 if __name__ == "__main__":
     main()
-

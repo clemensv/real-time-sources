@@ -1,4 +1,5 @@
 # EMSC FDSN - Iraq/Zagros Seismic Region
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `emsc` · 2026-06-22
 
 - **Country/Region**: Iraq, Iran-Iraq border, Turkey-Iraq-Iran tri-border (Zagros fault zone)
 - **Endpoint**: `https://www.seismicportal.eu/fdsnws/event/1/query`

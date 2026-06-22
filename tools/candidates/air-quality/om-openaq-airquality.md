@@ -1,5 +1,8 @@
 # OpenAQ - Oman Air Quality Monitoring
 
+> ✅ **SHIPPED** · feeder: `openaq` · entry: `oman` · 2026-06-22
+
+
 - **Country/Region**: Global (filter for Oman, country code `OM`)
 - **Endpoint**: `https://api.openaq.org/v3/locations?countries=OM` (v3 API)
 - **Protocol**: REST (HTTP JSON API)

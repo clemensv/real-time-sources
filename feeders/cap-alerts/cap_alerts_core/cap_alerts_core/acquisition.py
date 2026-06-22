@@ -19,6 +19,14 @@ DEFAULT_CAP_SOURCES = json.dumps([
     {"cap_source_id":"meteoalarm-belgium", "url":"https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-belgium", "format":"atom-cap"}
 ])
 
+DEFAULT_SOURCES_FILE = os.path.join(os.path.dirname(__file__), "sources", "cap-sources.json")
+_ENV_REF = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
+# Wire formats this client knows how to fetch and parse. Any other value is a
+# configuration error: previously an unknown format silently fell through to the
+# Atom/CAP-XML heuristic below, mis-parsing (or emitting nothing) without a word.
+SUPPORTED_FORMATS = frozenset({"cap-xml", "atom-cap", "nws-json", "cap-directory", "dwd-directory"})
+
 @dataclass(frozen=True)
 class CapSource:
     cap_source_id: str
@@ -26,6 +34,14 @@ class CapSource:
     format: str = "cap-xml"
     zone_url: str | None = None
     auth_env: str | None = None
+    auth_header: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.format not in SUPPORTED_FORMATS:
+            raise ValueError(
+                f"cap source {self.cap_source_id!r}: unsupported format {self.format!r}; "
+                f"expected one of {sorted(SUPPORTED_FORMATS)}"
+            )
 
 
 def _dt(value: str | None) -> datetime | None:
@@ -126,9 +142,81 @@ def parse_nws_alerts_json(payload: dict[str, Any], cap_source_id: str, provider_
     return [a for a in alerts if a.get("identifier")]
 
 
-def load_sources(config_text: str | None) -> list[CapSource]:
-    raw = json.loads(config_text or os.getenv("CAP_SOURCES") or DEFAULT_CAP_SOURCES)
-    return [CapSource(cap_source_id=str(x["cap_source_id"]), url=str(x["url"]), format=str(x.get("format","cap-xml")), zone_url=x.get("zone_url"), auth_env=x.get("auth_env")) for x in raw]
+def _interpolate_env(value: Any) -> Any:
+    if isinstance(value, str):
+        return _ENV_REF.sub(lambda m: os.environ.get(m.group(1), ""), value)
+    if isinstance(value, list):
+        return [_interpolate_env(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _interpolate_env(item) for key, item in value.items()}
+    return value
+
+
+def _read_config_text(raw: str) -> str:
+    raw = raw.strip()
+    if raw.startswith("@"):
+        with open(raw[1:].strip(), "r", encoding="utf-8") as handle:
+            return handle.read()
+    if raw.startswith("[") or raw.startswith("{"):
+        return raw
+    if os.path.exists(raw):
+        with open(raw, "r", encoding="utf-8") as handle:
+            return handle.read()
+    return raw
+
+
+def _coerce_entries(data: Any) -> list[dict[str, Any]]:
+    if isinstance(data, dict):
+        data = data.get("sources", [])
+    if not isinstance(data, list):
+        return []
+    return [dict(item) for item in data if isinstance(item, dict)]
+
+
+def select_entries(entries: list[dict[str, Any]], selector: str = "") -> list[dict[str, Any]]:
+    selector = (selector or "").strip()
+    if selector == "*":
+        return list(entries)
+    if not selector:
+        return [entry for entry in entries if entry.get("enabled", True)]
+    by_name = {entry["name"]: entry for entry in entries if entry.get("name")}
+    chosen: list[dict[str, Any]] = []
+    unknown: list[str] = []
+    for token in (part.strip() for part in selector.split(",")):
+        if not token:
+            continue
+        if token in by_name:
+            chosen.append(by_name[token])
+        else:
+            unknown.append(token)
+    if unknown:
+        known = ", ".join(sorted(by_name)) or "(none)"
+        raise ValueError(f"Unknown CAP_SELECT entries: {', '.join(unknown)}. Known names: {known}")
+    return chosen
+
+
+def _entries_to_sources(entries: list[dict[str, Any]]) -> list[CapSource]:
+    sources: list[CapSource] = []
+    for raw_item in entries:
+        x = _interpolate_env(raw_item)
+        if not x.get("cap_source_id") or not x.get("url"):
+            continue
+        sources.append(CapSource(cap_source_id=str(x["cap_source_id"]), url=str(x["url"]), format=str(x.get("format", "cap-xml")), zone_url=x.get("zone_url"), auth_env=x.get("auth_env"), auth_header=x.get("auth_header") or x.get("authorization")))
+    return sources
+
+
+def load_sources(config_text: str | None = "", sources_file: str = "", selector: str = "") -> list[CapSource]:
+    legacy = config_text if config_text and str(config_text).strip() else os.getenv("CAP_SOURCES")
+    if legacy and str(legacy).strip():
+        entries = _coerce_entries(json.loads(_read_config_text(str(legacy))))
+    else:
+        path = (sources_file or os.getenv("CAP_SOURCES_FILE") or DEFAULT_SOURCES_FILE).strip()
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as handle:
+                entries = _coerce_entries(json.load(handle))
+        else:
+            entries = _coerce_entries(json.loads(DEFAULT_CAP_SOURCES))
+    return _entries_to_sources(select_entries(entries, selector or os.getenv("CAP_SELECT", "")))
 
 class CapClient:
     def __init__(self, session: requests.Session | None = None):
@@ -138,7 +226,10 @@ class CapClient:
         self.session.headers.update({"User-Agent":"real-time-sources-cap-alerts/0.1"})
     def fetch_alerts(self, source: CapSource) -> list[dict[str, Any]]:
         headers={}
-        if source.auth_env and os.getenv(source.auth_env): headers["Authorization"] = os.getenv(source.auth_env, "")
+        if source.auth_header:
+            headers["Authorization"] = source.auth_header
+        elif source.auth_env and os.getenv(source.auth_env):
+            headers["Authorization"] = os.getenv(source.auth_env, "")
         r=self.session.get(source.url, timeout=30, headers=headers); r.raise_for_status()
         if source.format == "nws-json": return parse_nws_alerts_json(r.json(), source.cap_source_id, source.url)
         text=r.text

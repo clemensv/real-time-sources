@@ -1,5 +1,8 @@
 # Citi Bike NYC
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `citibike-nyc` · 2026-06-22
+
+
 **Country/Region**: United States — New York City
 **Publisher**: Lyft (operator), NYC DOT (sponsor)
 **API Endpoint**: `https://gbfs.citibikenyc.com/gbfs/gbfs.json`

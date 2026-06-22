@@ -9,7 +9,7 @@ from typing import Optional
 
 from confluent_kafka import Producer
 
-from gbfs_bikeshare_core import build_kafka_config, build_offline_client_and_feeds, load_state, parse_bool, parse_feed_configuration, parse_kafka_connection_string, save_state
+from gbfs_bikeshare_core import build_kafka_config, build_offline_client_and_feeds, load_feeds, load_state, parse_bool, parse_kafka_connection_string, save_state
 from gbfs_bikeshare_core.acquisition import (
     GbfsSourceClient,
     StationInformationRecord,
@@ -89,7 +89,7 @@ def _build_free_bike_status(record: FreeBikeStatusRecord) -> FreeBikeStatus:
 def feed(args: argparse.Namespace) -> None:
     mock_mode = getattr(args, "mock", False)
     configured_feeds = (
-        [] if mock_mode else parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids, args.gbfs_api_key, args.gbfs_api_key_param)
+        [] if mock_mode else load_feeds(args.gbfs_feeds, args.gbfs_system_ids, args.gbfs_api_key, args.gbfs_api_key_param, sources_file=args.gbfs_sources_file, selector=args.gbfs_sources)
     )
     if args.connection_string:
         cfg = parse_kafka_connection_string(args.connection_string)
@@ -205,6 +205,8 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
     feed_parser = subparsers.add_parser("feed", help="Poll GBFS feeds and publish CloudEvents to Kafka")
     feed_parser.add_argument("--gbfs-feeds", default=os.getenv("GBFS_FEEDS"), help="Comma-separated GBFS auto-discovery URLs, @file, or path to a file containing URLs")
+    feed_parser.add_argument("--gbfs-sources-file", default=os.getenv("GBFS_SOURCES_FILE", ""), help="Path to a GBFS source catalog JSON file")
+    feed_parser.add_argument("--gbfs-sources", default=os.getenv("GBFS_SOURCES", ""), help="Comma-separated source catalog entry names, or '*' for all entries")
     feed_parser.add_argument("--gbfs-system-ids", default=os.getenv("GBFS_SYSTEM_IDS"), help="Optional comma-separated system-id overrides aligned with GBFS_FEEDS")
     feed_parser.add_argument("--gbfs-api-key", default=os.getenv("GBFS_API_KEY"), help="Optional upstream API key appended to configured GBFS auto-discovery URLs")
     feed_parser.add_argument("--gbfs-api-key-param", default=os.getenv("GBFS_API_KEY_PARAM", "acl:consumerKey"), help="Query parameter name used with --gbfs-api-key")

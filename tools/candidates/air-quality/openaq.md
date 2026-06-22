@@ -1,5 +1,8 @@
 # OpenAQ
 
+> ✅ **SHIPPED** · feeder: `openaq` · entry: `us-all` · 2026-06-22
+
+
 **Country/Region**: Global
 **Publisher**: OpenAQ (non-profit)
 **API Endpoint**: `https://api.openaq.org/v3/`

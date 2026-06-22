@@ -1,5 +1,8 @@
 # Scotland — SEPA Water Level and Flow
 
+> ✅ **SHIPPED** · feeder: `kiwis` · entry: `sepa-scotland` · 2026-06-22
+
+
 **Country/Region**: Scotland, UK
 **Publisher**: Scottish Environment Protection Agency (SEPA)
 **API Endpoint**: `https://timeseries.sepa.org.uk/KiWIS/KiWIS`

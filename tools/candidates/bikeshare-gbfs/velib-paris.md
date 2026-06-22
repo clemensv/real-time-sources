@@ -1,5 +1,8 @@
 # Vélib' Métropole Paris
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `velib-paris` · 2026-06-22
+
+
 **Country/Region**: France — Paris / Île-de-France
 **Publisher**: Smovengo (operator) / Paris Open Data
 **API Endpoint**: `https://velib-metropole-opendata.smovengo.cloud/opendata/Velib_Metropole/gbfs.json` (GBFS) and `https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records` (Opendatasoft)

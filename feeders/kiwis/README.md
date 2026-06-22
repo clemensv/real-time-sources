@@ -30,14 +30,107 @@ Validated public instance: `https://timeseries.sepa.org.uk/KiWIS/KiWIS`. SEPA re
 
 Fabric notebook hosting is available via `tools/deploy-fabric/deploy-feeder-notebook.ps1`; the notebook runs the Kafka feeder in `--once` mode and looks up the Event Stream connection string at runtime.
 
-## Configuration quick start
+## Quick start
+
+Kafka/Event Hubs using the packaged default catalog:
 
 ```powershell
-# Kafka local/Fabric/Event Hubs style
-$env:CONNECTION_STRING='BootstrapServer=localhost:9092;EntityPath=kiwis'
-$env:KAFKA_ENABLE_TLS='false'
-$env:KIWIS_MOCK='true'
-python -m kiwis_kafka feed --once
+docker run --rm `
+  -e CONNECTION_STRING="BootstrapServer=broker:9092;EntityPath=kiwis" `
+  -e KAFKA_ENABLE_TLS=false `
+  ghcr.io/clemensv/real-time-sources-kiwis:latest
 ```
 
-Set `KIWIS_ENDPOINTS` to a CSV or JSON list to poll more agencies. API keys are optional and can be supplied through environment expansion such as `${KIWIS_API_KEY}` in the config file. Default polling is 300 seconds, well below the practical rate pressure for a small configured timeseries set; SEPA's public KiWIS endpoint did not publish an explicit rate-limit statement in the audited response.
+Select the shipped SEPA entry explicitly:
+
+```powershell
+docker run --rm `
+  -e KIWIS_SOURCES="sepa-scotland" `
+  -e CONNECTION_STRING="BootstrapServer=broker:9092;EntityPath=kiwis" `
+  -e KAFKA_ENABLE_TLS=false `
+  ghcr.io/clemensv/real-time-sources-kiwis:latest
+```
+
+## Configuring sources
+
+The feeder ships a checked-in source catalog at `kiwis_core/kiwis_core/sources/kiwis-sources.json`. Use the catalog for repeatable deployments and keep `KIWIS_ENDPOINTS` as a one-off override.
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `KIWIS_SOURCES_FILE` | Path to a JSON catalog with KiWIS/KISTERS source entries. Mount your own copy when you need private agency endpoints or different station/timeseries filters. | Packaged catalog |
+| `KIWIS_SOURCES` | Comma-separated catalog entry `name`s to run, or `*` for every entry including disabled templates. When unset, entries with `enabled: true` run. | enabled entries |
+| `KIWIS_ENDPOINTS` | Legacy inline CSV/JSON endpoint list or `@file`. Takes precedence over the catalog whenever it is set. | unset |
+
+### Catalog format
+
+```json
+{
+  "description": "KiWIS/KISTERS source catalog...",
+  "sources": [
+    {
+      "name": "sepa-scotland",
+      "enabled": true,
+      "description": "Scottish Environment Protection Agency public KiWIS endpoint.",
+      "kiwis_id": "sepa",
+      "base_url": "https://timeseries.sepa.org.uk/KiWIS/KiWIS",
+      "datasource": "0",
+      "station_filter": "station_id=36870",
+      "timeseries_filter": "station_id=36870",
+      "ts_ids": "65452010",
+      "period": "PT6H",
+      "api_key": ""
+    }
+  ]
+}
+```
+
+| Field | Required | Description |
+| --- | ---: | --- |
+| `name` | ✅ | Stable catalog selector used by `KIWIS_SOURCES`. |
+| `enabled` | ❌ | Defaults to `true`; disabled templates are skipped unless `KIWIS_SOURCES=*` or selected by name. |
+| `description` | ✅ | Human-readable publisher, geography, and access notes. |
+| `kiwis_id` | ✅ | Stable source identifier emitted in event keys and subjects. |
+| `base_url` | ✅ | KiWIS QueryServices endpoint URL, for example `https://timeseries.sepa.org.uk/KiWIS/KiWIS`. |
+| `datasource` | ❌ | KiWIS datasource number passed to QueryServices; defaults to `0`. |
+| `station_filter` | ❌ | Filter string for `getStationList`, such as `station_id=36870`. |
+| `timeseries_filter` | ❌ | Filter string for `getTimeseriesList`, such as `station_id=36870`. |
+| `ts_ids` | ❌ | Optional comma-separated allow-list of timeseries IDs to fetch values for. |
+| `period` | ❌ | Query period passed to `getTimeseriesValues`; defaults to `PT6H`. |
+| `api_key` | ❌ | Optional KiWIS API key. Use `${ENV_VAR}` or `$ENV_VAR` so secrets come from the runtime environment. |
+
+### Selecting sources
+
+- Unset `KIWIS_SOURCES` — poll every catalog entry with `enabled: true`.
+- `KIWIS_SOURCES=sepa-scotland` — poll only that entry.
+- `KIWIS_SOURCES=agency-b,agency-a` — poll named entries in the requested order.
+- `KIWIS_SOURCES=*` — load every entry, including disabled templates. This is mostly useful for validation after editing a private catalog.
+- Unknown names fail fast with a `ValueError` that lists known names.
+
+### Keeping secrets out of the catalog
+
+Put placeholders in the catalog and provide the secret at runtime:
+
+```powershell
+docker run --rm `
+  -v ${PWD}\my-kiwis.sources.json:/app/kiwis-sources.json:ro `
+  -e KIWIS_SOURCES_FILE="/app/kiwis-sources.json" `
+  -e KIWIS_SOURCES="private-agency" `
+  -e SOME_KIWIS_KEY="<secret>" `
+  -e CONNECTION_STRING="BootstrapServer=broker:9092;EntityPath=kiwis" `
+  -e KAFKA_ENABLE_TLS=false `
+  ghcr.io/clemensv/real-time-sources-kiwis:latest
+```
+
+### Known KiWIS/KISTERS sources
+
+KiWIS/KISTERS is a hydrology data platform used by many water agencies. This feeder ships the already verified SEPA Scotland public default (enabled), two disabled Australian Bureau of Meteorology entries (Water Data Online + Water Storage, same KiWIS protocol), and one disabled template for private or key-protected KiWIS hosts; add other publishers by copying the catalog and choosing filters that match the contract.
+
+| Catalog name | Status | Publisher | Public URL / notes |
+| --- | --- | --- | --- |
+| `sepa-scotland` | Shipped enabled | Scottish Environment Protection Agency time-series service | `https://timeseries.sepa.org.uk/KiWIS/KiWIS` |
+| `bom-australia-water` | Shipped disabled | Australian Bureau of Meteorology — Water Data Online (~3500+ level/discharge/rainfall stations, CC BY 3.0 AU) | `https://www.bom.gov.au/waterdata/services` |
+| `bom-australia-storage` | Shipped disabled | Australian Bureau of Meteorology — Water Storage (~613 reservoirs/dams, Storage Volume, CC BY 3.0 AU) | `https://www.bom.gov.au/waterdata/services` |
+| `key-protected-template` | Shipped disabled template | Any KiWIS/KISTERS publisher that requires a key | Replace the catalog's placeholder with the publisher's real KiWIS service URL. |
+| not shipped | Known KiWIS/KISTERS publisher to configure separately | Bayerisches Landesamt für Umwelt / Gewässerkundlicher Dienst Bayern | `https://www.gkd.bayern.de/` |
+
+Default polling is 300 seconds, well below the practical rate pressure for a small configured timeseries set; SEPA's public KiWIS endpoint did not publish an explicit rate-limit statement in the audited response.

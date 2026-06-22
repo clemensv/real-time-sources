@@ -1,4 +1,5 @@
 # ETHZ Swiss Seismological Service (SED)
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `ethz` · 2026-06-22
 
 ## Source Identity
 

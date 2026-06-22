@@ -1,4 +1,5 @@
 # GFZ GEOFON — GeoForschungsZentrum Potsdam
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `gfz` · 2026-06-22
 
 ## Source Identity
 

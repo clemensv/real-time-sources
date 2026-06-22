@@ -1,5 +1,8 @@
 # Barcelona Bicing
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `barcelona-bicing` · 2026-06-22
+
+
 **Country/Region**: Spain — Barcelona
 **Publisher**: Ajuntament de Barcelona / PBSC Urban Solutions
 **API Endpoint**: `https://barcelona.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json`

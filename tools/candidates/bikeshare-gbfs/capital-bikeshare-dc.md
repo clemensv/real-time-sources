@@ -1,5 +1,8 @@
 # Capital Bikeshare Washington DC
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `capital-bikeshare-dc` · 2026-06-22
+
+
 **Country/Region**: United States — Washington DC Metro Area
 **Publisher**: Lyft (operator), DDOT (sponsor)
 **API Endpoint**: `https://gbfs.capitalbikeshare.com/gbfs/gbfs.json`

@@ -12,6 +12,5 @@ RUN pip install --no-cache-dir ./erddap_mqtt_producer/erddap_mqtt_producer_data 
  && pip install --no-cache-dir ./erddap_mqtt_producer/erddap_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./erddap_core \
  && pip install --no-cache-dir ./erddap_mqtt
-ENV ERDDAP_SOURCES="ioos-sensors|https://erddap.sensors.ioos.us/erddap|org_cormp_sun2|sea_water_temperature,sea_water_practical_salinity|station|time>=max(time)-1day"
 CMD ["python", "-m", "erddap_mqtt", "feed"]
 

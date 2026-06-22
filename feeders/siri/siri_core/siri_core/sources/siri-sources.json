@@ -1,0 +1,42 @@
+{
+  "description": "SIRI source catalog for the siri feeder. Each entry is a pollable SIRI endpoint or provider profile. Choose which entries run with the SIRI_SOURCES environment variable: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. Point SIRI_SOURCES_FILE at a copy of this file to maintain your own catalog. Secrets may be written as ${ENV_VAR} and are expanded from the environment at load time, so keys never live in this file. The legacy SIRI_PROVIDER / SIRI_URL / SIRI_API_KEY / SIRI_OPERATORS / SIRI_DATA_TYPES inline configuration still works and takes precedence when SIRI_URL is set or SIRI_PROVIDER is not the default 'bods'.",
+  "sources": [
+    {
+      "name": "uk-bods-bulk-archive",
+      "enabled": true,
+      "description": "UK Bus Open Data Service (BODS) public bulk SIRI Vehicle Monitoring archive. The default bulk archive is public; export BODS_API_KEY or SIRI_API_KEY if your BODS deployment requires a key.",
+      "provider": "bods",
+      "siri_url": "https://data.bus-data.dft.gov.uk/avl/download/bulk_archive",
+      "data_types": [
+        "vm"
+      ]
+    },
+    {
+      "name": "trafiklab-sweden",
+      "enabled": false,
+      "description": "Samtrafiken / Trafiklab Sweden API-key-protected SIRI Vehicle Monitoring endpoint for regional operators. Add 'trafiklab-sweden' to SIRI_SOURCES to enable.",
+      "provider": "custom",
+      "siri_url": "https://opendata.samtrafiken.se/siri/{operator}/{data_type}?key=${TRAFIKLAB_SIRI_API_KEY}",
+      "data_types": [
+        "vm"
+      ],
+      "operators": [
+        "sl",
+        "skane",
+        "otraf"
+      ]
+    },
+    {
+      "name": "key-protected-siri-template",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry for a key-protected SIRI provider, replace siri_url with the operator's documented endpoint, export SIRI_API_KEY in the runtime environment, set headers / operators / data_types as required, and set enabled to true.",
+      "provider": "custom",
+      "siri_url": "REPLACE_WITH_SIRI_URL",
+      "api_key": "${SIRI_API_KEY}",
+      "data_types": [
+        "vm"
+      ],
+      "headers": {}
+    }
+  ]
+}

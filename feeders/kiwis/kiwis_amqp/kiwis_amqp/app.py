@@ -52,7 +52,7 @@ def feed(args: argparse.Namespace) -> None:
     state = load_state(args.state_file)
     while True:
         pending = dict(state)
-        for endpoint in load_endpoints(args.kiwis_endpoints, mock=args.mock):
+        for endpoint in load_endpoints(args.kiwis_endpoints, mock=args.mock, sources_file=args.kiwis_sources_file, selector=args.kiwis_sources):
             _emit_cycle(station_producer, ts_producer, endpoint, KiWISClient(endpoint, mock=args.mock), pending)
         state = pending; save_state(args.state_file, state)
         if args.once: break
@@ -60,7 +60,7 @@ def feed(args: argparse.Namespace) -> None:
 
 def _parser() -> argparse.ArgumentParser:
     parser=argparse.ArgumentParser(description='Generalized KiWIS → AMQP feeder'); sub=parser.add_subparsers(dest='command'); p=sub.add_parser('feed')
-    p.add_argument('--kiwis-endpoints', default=os.getenv('KIWIS_ENDPOINTS','')); p.add_argument('--mock', action='store_true', default=os.getenv('KIWIS_MOCK','').lower()=='true'); p.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE','').lower()=='true')
+    p.add_argument('--kiwis-endpoints', default=os.getenv('KIWIS_ENDPOINTS','')); p.add_argument('--kiwis-sources-file', default=os.getenv('KIWIS_SOURCES_FILE','')); p.add_argument('--kiwis-sources', default=os.getenv('KIWIS_SOURCES','')); p.add_argument('--mock', action='store_true', default=os.getenv('KIWIS_MOCK','').lower()=='true'); p.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE','').lower()=='true')
     p.add_argument('--state-file', default=os.getenv('KIWIS_STATE_FILE', os.getenv('STATE_FILE',''))); p.add_argument('-i','--polling-interval', type=int, default=int(os.getenv('POLLING_INTERVAL','300')))
     p.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL','amqp://localhost:5672/kiwis')); p.add_argument('--host', default=os.getenv('AMQP_HOST')); p.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT','0')) or None); p.add_argument('--address', default=os.getenv('AMQP_ADDRESS'))
     p.add_argument('--username', default=os.getenv('AMQP_USERNAME')); p.add_argument('--password', default=os.getenv('AMQP_PASSWORD')); p.add_argument('--tls', action='store_true', default=os.getenv('AMQP_TLS','').lower()=='true')

@@ -18,6 +18,9 @@ DEFAULT_BASE_URL = "https://timeseries.sepa.org.uk/KiWIS/KiWIS"
 STATION_FIELDS = "station_id,station_no,station_name,station_latitude,station_longitude,river_name,catchment_name"
 TS_FIELDS = "ts_id,ts_name,ts_shortname,station_id,station_name,parametertype_name,stationparameter_name,ts_unitname,ts_unitsymbol,coverage"
 VALUE_FIELDS = "Timestamp,Value,Quality Code"
+DEFAULT_SOURCES_FILE = os.path.join(os.path.dirname(__file__), "sources", "kiwis-sources.json")
+_ENV_REF = re.compile(r"\$(?:\{([A-Za-z_][A-Za-z0-9_]*)\}|([A-Za-z_][A-Za-z0-9_]*))")
+_CATALOG_METADATA_KEYS = {"name", "enabled", "description"}
 
 @dataclass(frozen=True)
 class KiWISEndpoint:
@@ -30,7 +33,8 @@ class KiWISEndpoint:
     period: str = "PT6H"
     api_key: str = ""
 
-MOCK_ENDPOINTS = [KiWISEndpoint(kiwis_id="sepa", base_url=DEFAULT_BASE_URL, station_filter="station_id=36870", timeseries_filter="station_id=36870", ts_ids="65452010")]
+DEFAULT_ENDPOINTS = [{"kiwis_id": "sepa", "base_url": DEFAULT_BASE_URL, "station_filter": "station_id=36870", "timeseries_filter": "station_id=36870", "ts_ids": "65452010"}]
+MOCK_ENDPOINTS = [KiWISEndpoint(**DEFAULT_ENDPOINTS[0])]
 
 def build_retry_session() -> requests.Session:
     retry = Retry(total=3, connect=3, read=3, backoff_factor=0.5, status_forcelist=(429, 500, 502, 503, 504), allowed_methods=("GET",))
@@ -44,30 +48,92 @@ def build_retry_session() -> requests.Session:
 def _expand_env(text: str) -> str:
     return Template(text).safe_substitute(os.environ)
 
+def _interpolate_env(value: Any) -> Any:
+    """Expand $VAR / ${VAR} placeholders in strings, recursing into lists/dicts."""
+    if isinstance(value, str):
+        return _ENV_REF.sub(lambda match: os.environ.get(match.group(1) or match.group(2), ""), value)
+    if isinstance(value, list):
+        return [_interpolate_env(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _interpolate_env(item) for key, item in value.items()}
+    return value
+
 def _read_config_text(value: str) -> str:
     value = value.strip()
     if value.startswith("@"):
         return Path(value[1:]).read_text(encoding="utf-8")
+    if value.startswith("[") or value.startswith("{"):
+        return value
     if value and Path(value).exists():
         return Path(value).read_text(encoding="utf-8")
     return value
 
-def load_endpoints(value: Optional[str] = None, *, mock: bool = False) -> List[KiWISEndpoint]:
+def _coerce_entries(data: Any) -> List[Dict[str, Any]]:
+    """Accept either a {"sources": [...]} catalog or a bare list of entries."""
+    if isinstance(data, dict):
+        data = data.get("sources", [])
+    if not isinstance(data, list):
+        return []
+    return [dict(item) for item in data if isinstance(item, dict)]
+
+def select_entries(entries: List[Dict[str, Any]], selector: str = "") -> List[Dict[str, Any]]:
+    """Filter catalog entries by the KIWIS_SOURCES selector."""
+    selector = (selector or "").strip()
+    if selector == "*":
+        return list(entries)
+    if not selector:
+        return [entry for entry in entries if entry.get("enabled", True)]
+    by_name = {entry["name"]: entry for entry in entries if entry.get("name")}
+    chosen: List[Dict[str, Any]] = []
+    unknown: List[str] = []
+    for token in (part.strip() for part in selector.split(",")):
+        if not token:
+            continue
+        if token in by_name:
+            chosen.append(by_name[token])
+        else:
+            unknown.append(token)
+    if unknown:
+        known = ", ".join(sorted(by_name)) or "(none)"
+        raise ValueError(f"Unknown KIWIS_SOURCES entries: {', '.join(unknown)}. Known names: {known}")
+    return chosen
+
+def _entries_to_endpoints(entries: Iterable[Dict[str, Any]]) -> List[KiWISEndpoint]:
+    endpoints: List[KiWISEndpoint] = []
+    for raw_item in entries:
+        item = _interpolate_env(raw_item)
+        endpoint_args = {key: value for key, value in item.items() if key not in _CATALOG_METADATA_KEYS}
+        endpoints.append(KiWISEndpoint(**endpoint_args))
+    return endpoints
+
+def load_endpoints(value: Optional[str] = None, *, mock: bool = False, sources_file: str = "", selector: str = "") -> List[KiWISEndpoint]:
+    """Resolve KiWIS endpoints to poll.
+
+    Resolution order: ``mock`` -> inline ``KIWIS_ENDPOINTS`` (legacy CSV/JSON/
+    @file/path/inline) -> catalog file override -> packaged default catalog.
+    The ``selector`` (KIWIS_SOURCES) then narrows catalog entries.
+    """
     if mock:
         return MOCK_ENDPOINTS
     raw = _read_config_text(value or os.getenv("KIWIS_ENDPOINTS", ""))
-    if not raw.strip():
-        return [KiWISEndpoint(kiwis_id="sepa", base_url=DEFAULT_BASE_URL, station_filter="station_id=36870", timeseries_filter="station_id=36870", ts_ids="65452010")]
-    raw = _expand_env(raw)
-    if raw.lstrip().startswith("["):
-        return [KiWISEndpoint(**item) for item in json.loads(raw)]
-    endpoints: List[KiWISEndpoint] = []
-    for row in csv.reader([line for line in raw.splitlines() if line.strip() and not line.strip().startswith("#")]):
-        parts = [p.strip() for p in row]
-        while len(parts) < 8:
-            parts.append("")
-        endpoints.append(KiWISEndpoint(parts[0], parts[1], parts[2] or "0", parts[3] or "station_no=*", parts[4] or "station_id=36870", parts[5], parts[6] or "PT6H", parts[7]))
-    return endpoints
+    if raw.strip():
+        raw = _expand_env(raw)
+        if raw.lstrip().startswith("[") or raw.lstrip().startswith("{"):
+            entries = _coerce_entries(json.loads(raw))
+            return _entries_to_endpoints(select_entries(entries, selector))
+        endpoints: List[KiWISEndpoint] = []
+        for row in csv.reader([line for line in raw.splitlines() if line.strip() and not line.strip().startswith("#")]):
+            parts = [p.strip() for p in row]
+            while len(parts) < 8:
+                parts.append("")
+            endpoints.append(KiWISEndpoint(parts[0], parts[1], parts[2] or "0", parts[3] or "station_no=*", parts[4] or "station_id=36870", parts[5], parts[6] or "PT6H", parts[7]))
+        return endpoints
+    path = sources_file.strip() if sources_file and sources_file.strip() else os.getenv("KIWIS_SOURCES_FILE", "").strip() or DEFAULT_SOURCES_FILE
+    if Path(path).exists():
+        entries = _coerce_entries(json.loads(Path(path).read_text(encoding="utf-8")))
+    else:
+        entries = [dict(item) for item in DEFAULT_ENDPOINTS]
+    return _entries_to_endpoints(select_entries(entries, selector or os.getenv("KIWIS_SOURCES", "")))
 
 def parse_datetime(value: Any) -> Optional[datetime]:
     if value in (None, ""):

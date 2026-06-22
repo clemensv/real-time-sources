@@ -107,7 +107,15 @@ def parse_datetime(value: str) -> datetime:
 
 
 def format_datetime(value: datetime) -> str:
-    return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    """Format a datetime for an FDSN-WS ``starttime`` / ``endtime`` query parameter.
+
+    FDSN-WS time parameters are ISO-8601 in *implicit UTC* and must NOT carry a
+    timezone designator. Strict nodes (e.g. INGV, ISC) reject a trailing ``Z``
+    with HTTP 400 Bad Request; USGS tolerates it. Emitting the bare
+    ``YYYY-MM-DDTHH:MM:SS`` form is accepted by every node, so the poll cursor
+    works against the whole federation.
+    """
+    return value.astimezone(timezone.utc).replace(tzinfo=None, microsecond=0).isoformat()
 
 
 

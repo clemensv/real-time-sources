@@ -1,5 +1,8 @@
 # Montreal BIXI
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `montreal-bixi` · 2026-06-22
+
+
 **Country/Region**: Canada — Montreal
 **Publisher**: BIXI Montréal
 **API Endpoint**: `https://gbfs.velobixi.com/gbfs/gbfs.json`

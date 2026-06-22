@@ -1,4 +1,5 @@
 # EMODnet Physics — European Marine Observation ERDDAP
+> ✅ **SHIPPED** · feeder: `erddap` · entry: `emodnet-physics-sea-level` · 2026-06-22
 
 **Country/Region**: Europe (pan-European marine observations network)
 **Publisher**: EMODnet (European Marine Observation and Data Network), funded by EU DG MARE

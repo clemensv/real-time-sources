@@ -1,5 +1,8 @@
 # Météo-France Open Data
 
+> ✅ **SHIPPED** · feeder: `cap-alerts` · entry: `meteoalarm-france` · 2026-06-22
+
+
 **Country/Region**: France
 **Publisher**: Météo-France (French national meteorological service)
 **API Endpoint**: `https://portail-api.meteofrance.fr/`

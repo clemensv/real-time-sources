@@ -1,4 +1,5 @@
 # Qatar-Saudi Arabia Border Seismic Sequence (EMSC)
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `emsc` · 2026-06-22
 
 - **Country/Region**: Qatar / Saudi Arabia border region
 - **Endpoint**: `https://www.seismicportal.eu/fdsnws/event/1/query?minlat=24.0&maxlat=27.0&minlon=50.0&maxlon=52.0&minmag=2.0&format=json`

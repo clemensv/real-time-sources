@@ -1,4 +1,5 @@
 # USGS Earthquake Hazards Program - Iraq Coverage
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `usgs` · 2026-06-22
 
 - **Country/Region**: Global (includes Iraq and Zagros seismic zone)
 - **Endpoint**: `https://earthquake.usgs.gov/fdsnws/event/1/query`

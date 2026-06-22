@@ -1,0 +1,57 @@
+{
+  "description": "KiWIS/KISTERS source catalog for the kiwis feeder. Each entry is a KISTERS Web Interoperability Solution endpoint plus the filters used to discover stations, timeseries metadata, and values. Choose which entries run with the KIWIS_SOURCES environment variable: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. Point KIWIS_SOURCES_FILE at a copy of this file to maintain your own catalog. Secrets may be written as ${ENV_VAR} or $ENV_VAR and are expanded from the environment at load time, so keys never live in this file. The legacy KIWIS_ENDPOINTS inline CSV/JSON configuration still works and takes precedence over this catalog when it is set.",
+  "sources": [
+    {
+      "name": "sepa-scotland",
+      "enabled": true,
+      "description": "Scottish Environment Protection Agency (SEPA) public KiWIS endpoint. The packaged default polls one verified Abbey St Bathans rainfall timeseries.",
+      "kiwis_id": "sepa",
+      "base_url": "https://timeseries.sepa.org.uk/KiWIS/KiWIS",
+      "datasource": "0",
+      "station_filter": "station_id=36870",
+      "timeseries_filter": "station_id=36870",
+      "ts_ids": "65452010",
+      "period": "PT6H",
+      "api_key": ""
+    },
+    {
+      "name": "bom-australia-water",
+      "enabled": false,
+      "description": "Australian Bureau of Meteorology Water Data Online (KISTERS KiWIS, same protocol as SEPA). National hydrometric network (~3500+ Water Course Level / Discharge / Rainfall stations supplied by state agencies). Open access, CC BY 3.0 AU, no key. Packaged default polls one verified station (410730 Cotter River at Gingera, ACT, hourly discharge ts 1571010). To broaden, set station_filter/timeseries_filter to 'parametertype_name=Water Course Level' (or 'Water Course Discharge' / 'Rainfall') and clear ts_ids. Add 'bom-australia-water' to KIWIS_SOURCES to enable.",
+      "kiwis_id": "bom",
+      "base_url": "https://www.bom.gov.au/waterdata/services",
+      "datasource": "0",
+      "station_filter": "station_no=410730",
+      "timeseries_filter": "station_no=410730",
+      "ts_ids": "1571010",
+      "period": "P2D",
+      "api_key": ""
+    },
+    {
+      "name": "bom-australia-storage",
+      "enabled": false,
+      "description": "Australian Bureau of Meteorology Water Storage (KISTERS KiWIS, same endpoint as bom-australia-water, parametertype_name=Storage Volume). ~613 major reservoirs/dams nationwide with current storage volume in megalitres. Open access, CC BY 3.0 AU, no key. Packaged default polls one verified storage (212243.6 Warragamba Dam, Sydney, daily storage-volume ts 273865010). To broaden, set station_filter/timeseries_filter to 'parametertype_name=Storage Volume' and clear ts_ids. Add 'bom-australia-storage' to KIWIS_SOURCES to enable.",
+      "kiwis_id": "bom",
+      "base_url": "https://www.bom.gov.au/waterdata/services",
+      "datasource": "0",
+      "station_filter": "station_no=212243.6",
+      "timeseries_filter": "station_no=212243.6",
+      "ts_ids": "273865010",
+      "period": "P7D",
+      "api_key": ""
+    },
+    {
+      "name": "key-protected-template",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry for a key-protected KiWIS/KISTERS host, replace base_url with the publisher's KiWIS service URL, export SOME_KIWIS_KEY in the runtime environment, and set enabled to true.",
+      "kiwis_id": "replace-me",
+      "base_url": "REPLACE_WITH_KIWIS_BASE_URL",
+      "datasource": "0",
+      "station_filter": "station_no=*",
+      "timeseries_filter": "station_id=36870",
+      "ts_ids": "",
+      "period": "PT6H",
+      "api_key": "${SOME_KIWIS_KEY}"
+    }
+  ]
+}

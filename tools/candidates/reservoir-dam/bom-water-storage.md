@@ -1,5 +1,8 @@
 # BOM Water Storage Dashboard (Australia)
 
+> ✅ **SHIPPED** · feeder: `kiwis` · entry: `bom-australia-storage` · 2026-06-22
+
+
 **Country/Region**: Australia (all states and territories)
 **Publisher**: Bureau of Meteorology (BOM), Australian Government
 **API Endpoint**: `https://www.bom.gov.au/water/dashboards/#/water-storages` (web dashboard)

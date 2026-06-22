@@ -16,3 +16,7 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["kiwis_core"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+kiwis_core = ["sources/*.json"]

@@ -1,0 +1,86 @@
+{
+  "description": "DATEX II source catalog for the datex2 feeder. Each entry is a pollable DATEX II XML endpoint. Choose which entries run with the DATEX2_SOURCES environment variable: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. Point DATEX2_SOURCES_FILE at a copy of this file to maintain your own catalog. Secrets may be written as ${ENV_VAR} and are expanded from the environment at load time, so keys never live in this file.",
+  "sources": [
+    {
+      "name": "ndw-measurement-sites",
+      "enabled": true,
+      "description": "NDW (Netherlands) national measurement-site reference table.",
+      "id": "ndw",
+      "url": "https://opendata.ndw.nu/measurement_current.xml.gz",
+      "publication": "MeasurementSiteTablePublication",
+      "country": "nl",
+      "operator": "ndw"
+    },
+    {
+      "name": "ndw-trafficspeed",
+      "enabled": true,
+      "description": "NDW (Netherlands) measured traffic speed and flow.",
+      "id": "ndw",
+      "url": "https://opendata.ndw.nu/trafficspeed.xml.gz",
+      "publication": "MeasuredDataPublication",
+      "country": "nl",
+      "operator": "ndw"
+    },
+    {
+      "name": "ndw-traveltime",
+      "enabled": true,
+      "description": "NDW (Netherlands) measured travel times.",
+      "id": "ndw",
+      "url": "https://opendata.ndw.nu/traveltime.xml.gz",
+      "publication": "MeasuredDataPublication",
+      "country": "nl",
+      "operator": "ndw"
+    },
+    {
+      "name": "ndw-roadworks",
+      "enabled": true,
+      "description": "NDW (Netherlands) planned roadworks and events (situations).",
+      "id": "ndw",
+      "url": "https://opendata.ndw.nu/planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz",
+      "publication": "SituationPublication",
+      "country": "nl",
+      "operator": "ndw"
+    },
+    {
+      "name": "cita-luxembourg-a6",
+      "enabled": false,
+      "description": "CITA Luxembourg A6 motorway corridor DATEX II measured traffic (MeasuredDataPublication, siteMeasurements: speed/flow from induction loops). Open access, no key. Minute-scale updates. Add 'cita-luxembourg-a6' to DATEX2_SOURCES to enable. Other CITA corridors: trafficstatus_a1/a3/a4/a7/a13/b40 (copy this entry and swap the url).",
+      "id": "cita",
+      "url": "https://www.cita.lu/info_trafic/datex/trafficstatus_a6",
+      "publication": "MeasuredDataPublication",
+      "country": "lu",
+      "operator": "cita"
+    },
+    {
+      "name": "cita-luxembourg-a1",
+      "enabled": false,
+      "description": "CITA Luxembourg A1 motorway corridor DATEX II measured traffic (MeasuredDataPublication, siteMeasurements). Open access, no key. Add 'cita-luxembourg-a1' to DATEX2_SOURCES to enable.",
+      "id": "cita",
+      "url": "https://www.cita.lu/info_trafic/datex/trafficstatus_a1",
+      "publication": "MeasuredDataPublication",
+      "country": "lu",
+      "operator": "cita"
+    },
+    {
+      "name": "cita-luxembourg-a4",
+      "enabled": false,
+      "description": "CITA Luxembourg A4 motorway corridor DATEX II measured traffic (MeasuredDataPublication, siteMeasurements). Open access, no key. Add 'cita-luxembourg-a4' to DATEX2_SOURCES to enable.",
+      "id": "cita",
+      "url": "https://www.cita.lu/info_trafic/datex/trafficstatus_a4",
+      "publication": "MeasuredDataPublication",
+      "country": "lu",
+      "operator": "cita"
+    },
+    {
+      "name": "trafikverket-sweden",
+      "enabled": false,
+      "description": "TEMPLATE - Trafikverket (Sweden) DATEX II road data. Register for a free API key at https://data.trafikverket.se/, export TRAFIKVERKET_KEY in the environment, replace 'url' with the DATEX II feed you requested, and set enabled to true.",
+      "id": "trafikverket",
+      "url": "https://datex.trafikverket.se/REPLACE_WITH_DATEX_FEED.xml",
+      "publication": "SituationPublication",
+      "country": "se",
+      "operator": "trafikverket",
+      "auth_header": "Bearer ${TRAFIKVERKET_KEY}"
+    }
+  ]
+}

@@ -44,7 +44,7 @@ def _digest(row: Dict[str, object]) -> str:
 
 
 def _emit_cycle(measured: OrgDatex2MeasuredEventProducer, situation: OrgDatex2SituationEventProducer, args: argparse.Namespace, state: Dict[str, str]) -> Dict[str, str]:
-    batch = collect_batches(load_endpoints(args.datex2_endpoints, mock=args.mock), mock=args.mock, max_records=args.max_records)
+    batch = collect_batches(load_endpoints(args.datex2_endpoints, mock=args.mock, sources_file=args.datex2_sources_file, selector=args.datex2_sources), mock=args.mock, max_records=args.max_records)
     pending = dict(state)
     for row in batch.measurement_sites:
         key = f"site/{row['supplier_id']}/{row['measurement_site_id']}"
@@ -92,6 +92,8 @@ def _parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command")
     feed_parser = sub.add_parser("feed")
     feed_parser.add_argument("--datex2-endpoints", default=os.getenv("DATEX2_ENDPOINTS", ""))
+    feed_parser.add_argument("--datex2-sources-file", default=os.getenv("DATEX2_SOURCES_FILE", ""))
+    feed_parser.add_argument("--datex2-sources", default=os.getenv("DATEX2_SOURCES", ""))
     feed_parser.add_argument("--mock", action="store_true", default=os.getenv("DATEX2_MOCK", "").lower() == "true")
     feed_parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() == "true")
     feed_parser.add_argument("--state-file", default=os.getenv("DATEX2_STATE_FILE", os.getenv("STATE_FILE", "")))

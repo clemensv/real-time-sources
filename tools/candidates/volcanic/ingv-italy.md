@@ -1,4 +1,5 @@
 # INGV Volcanic Monitoring (Istituto Nazionale di Geofisica e Vulcanologia)
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `ingv` · 2026-06-22
 
 **Country/Region**: Italy
 **Publisher**: INGV — Istituto Nazionale di Geofisica e Vulcanologia (National Institute of Geophysics and Volcanology)

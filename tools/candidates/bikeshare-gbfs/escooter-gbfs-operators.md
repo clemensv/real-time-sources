@@ -1,5 +1,8 @@
 # E-Scooter / Micromobility GBFS Operators
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `dott-paris, lime-paris, bolt-brussels, voi-oslo-entur` · 2026-06-22
+
+
 **Region**: Global (Europe-focused)
 **Publishers**: Dott, Bird, Lime, Bolt, Voi
 **Protocol**: GBFS 2.2–3.0

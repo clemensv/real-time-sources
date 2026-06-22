@@ -46,7 +46,7 @@ def feed(args: argparse.Namespace) -> None:
     situation = OrgDatex2SituationAmqpProducer(**kwargs)
     try:
         while True:
-            batch = collect_batches(load_endpoints(args.datex2_endpoints, mock=args.mock), mock=args.mock, max_records=args.max_records)
+            batch = collect_batches(load_endpoints(args.datex2_endpoints, mock=args.mock, sources_file=args.datex2_sources_file, selector=args.datex2_sources), mock=args.mock, max_records=args.max_records)
             for row in batch.measurement_sites:
                 sites.send_amqp(data=MeasurementSite(**row), _feed_url=row["feed_url"], _supplier_id=row["supplier_id"], _measurement_site_id=row["measurement_site_id"])
             for row in batch.traffic_measurements:
@@ -68,6 +68,8 @@ def _parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command")
     feed_parser = sub.add_parser("feed")
     feed_parser.add_argument("--datex2-endpoints", default=os.getenv("DATEX2_ENDPOINTS", ""))
+    feed_parser.add_argument("--datex2-sources-file", default=os.getenv("DATEX2_SOURCES_FILE", ""))
+    feed_parser.add_argument("--datex2-sources", default=os.getenv("DATEX2_SOURCES", ""))
     feed_parser.add_argument("--mock", action="store_true", default=os.getenv("DATEX2_MOCK", "").lower() == "true")
     feed_parser.add_argument("--max-records", type=int, default=int(os.getenv("MAX_RECORDS_PER_FAMILY", "25")))
     feed_parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "300")))

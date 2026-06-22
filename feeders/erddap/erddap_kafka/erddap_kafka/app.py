@@ -9,7 +9,7 @@ from ._common import _dataset_obj, _observation_obj, _station_obj, build_parser,
 logger = logging.getLogger(__name__)
 
 def feed(args: argparse.Namespace) -> None:
-    sources = parse_sources(args.erddap_sources)
+    sources = parse_sources(args.erddap_sources, mock=args.mock, sources_file=args.erddap_sources_file, selector=args.erddap_select)
     if args.connection_string:
         cfg = parse_kafka_connection_string(args.connection_string); bootstrap = cfg.pop('bootstrap.servers', None); topic = cfg.pop('kafka_topic', None) or args.kafka_topic; sasl_username = cfg.get('sasl.username'); sasl_password = cfg.get('sasl.password')
     else:
@@ -51,3 +51,4 @@ def build_app_parser():
 
 def main(): main_dispatch(build_app_parser(), feed)
 if __name__ == '__main__': main()
+

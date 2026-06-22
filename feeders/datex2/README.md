@@ -16,9 +16,80 @@ Kept for this build: `SituationPublication`, `MeasuredDataPublication`, `Measure
 | `datex2_mqtt` | `ghcr.io/clemensv/real-time-sources-datex2-mqtt:latest` | MQTT 5 | Binary CloudEvents under `traffic/{country}/{operator}/datex2/...`. |
 | `datex2_amqp` | `ghcr.io/clemensv/real-time-sources-datex2-amqp:latest` | AMQP 1.0 | Binary CloudEvents to one queue/topic address. |
 
-Set `DATEX2_ENDPOINTS` to a JSON list of endpoint objects with `id`, `url`, `publication` or `profile`, optional `country`, `operator`, and optional `auth_header`. If omitted, the bridge uses representative no-auth NDW public endpoints. Set `DATEX2_MOCK=true` for deterministic local and Docker E2E validation.
+Sources are defined in a checked-in catalog file and selected with an environment variable — see [Configuring sources](#configuring-sources). Set `DATEX2_MOCK=true` for deterministic local and Docker E2E validation.
 
 Fabric notebook hosting is included via `notebook/datex2-feed.ipynb` and can be deployed with `tools/deploy-fabric/deploy-feeder-notebook.ps1`.
+
+## Configuring sources
+
+The feeder ships a checked-in source catalog at `datex2_core/datex2_core/sources/datex2.sources.json`. Each entry is a pollable DATEX II XML endpoint. Use the catalog for repeatable deployments and keep `DATEX2_ENDPOINTS` as a one-off override.
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `DATEX2_SOURCES_FILE` | Path to a JSON catalog of DATEX II source entries. Mount your own copy to poll road authorities not shipped by default. | Packaged catalog |
+| `DATEX2_SOURCES` | Comma-separated catalog entry `name`s to run, or `*` for every entry including disabled templates. When unset, entries with `enabled: true` run. | enabled entries |
+| `DATEX2_ENDPOINTS` | Legacy inline JSON endpoint list or `@file`. Takes precedence over the catalog whenever it is set. | unset |
+
+### Catalog format
+
+```json
+{
+  "description": "DATEX II source catalog...",
+  "sources": [
+    {
+      "name": "ndw-trafficspeed",
+      "enabled": true,
+      "description": "NDW (Netherlands) measured traffic speed and flow.",
+      "id": "ndw",
+      "url": "https://opendata.ndw.nu/trafficspeed.xml.gz",
+      "publication": "MeasuredDataPublication",
+      "country": "nl",
+      "operator": "ndw"
+    }
+  ]
+}
+```
+
+| Field | Required | Description |
+| --- | --- | --- |
+| `name` | ✅ | Stable catalog selector used by `DATEX2_SOURCES`. |
+| `enabled` | ❌ | Defaults to `true`; disabled entries are skipped unless `DATEX2_SOURCES=*` or selected by name. |
+| `description` | ✅ | Human-readable summary of the feed. |
+| `id` | ✅ | Short supplier identifier used in event keys and subjects. |
+| `url` | ✅ | DATEX II XML endpoint URL (plain or gzipped). |
+| `publication` | ✅ | DATEX II publication type, e.g. `MeasuredDataPublication`, `SituationPublication`, `MeasurementSiteTablePublication`. |
+| `country` | ❌ | ISO country code used in MQTT topics and event metadata. |
+| `operator` | ❌ | Operator label used in MQTT topics and event metadata. |
+| `auth_header` | ❌ | Optional `Authorization` header value; use `${ENV_VAR}` placeholders for secrets. |
+
+### Selecting sources
+
+- Unset `DATEX2_SOURCES` — poll every catalog entry with `enabled: true` (the four NDW feeds).
+- `DATEX2_SOURCES=ndw-trafficspeed,cita-luxembourg-a6` — poll only those entries, in that order.
+- `DATEX2_SOURCES=*` — load every entry, including disabled templates.
+- Unknown names fail fast with a `ValueError` that lists the known names.
+
+### Keeping secrets out of the catalog
+
+Write `${ENV_VAR}` placeholders in string fields (for example `"auth_header": "Bearer ${TRAFIKVERKET_KEY}"`) and provide the secret at runtime; the loader expands them from the environment at load time.
+
+### Known DATEX II sources
+
+DATEX II is published by many European road authorities. This feeder ships the four no-auth NDW (Netherlands) feeds enabled, three open CITA Luxembourg motorway corridors disabled, and a disabled key-protected Trafikverket (Sweden) template; add other publishers by copying the catalog and choosing the publication that matches the contract.
+
+| Catalog name | Status | Publisher | Public URL / notes |
+| --- | --- | --- | --- |
+| `ndw-measurement-sites` | Shipped enabled | Nationaal Dataportaal Wegverkeer (NL) | `https://opendata.ndw.nu/measurement_current.xml.gz` — MeasurementSiteTablePublication reference data. |
+| `ndw-trafficspeed` | Shipped enabled | NDW (NL) | `https://opendata.ndw.nu/trafficspeed.xml.gz` — MeasuredDataPublication speed/flow. |
+| `ndw-traveltime` | Shipped enabled | NDW (NL) | `https://opendata.ndw.nu/traveltime.xml.gz` — MeasuredDataPublication travel times. |
+| `ndw-roadworks` | Shipped enabled | NDW (NL) | `https://opendata.ndw.nu/planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz` — SituationPublication roadworks and events. |
+| `cita-luxembourg-a6` | Shipped disabled | CITA Luxembourg (LU) | `https://www.cita.lu/info_trafic/datex/trafficstatus_a6` — A6 corridor MeasuredDataPublication. Other corridors: `trafficstatus_a1/a3/a4/a7/a13/b40`. |
+| `cita-luxembourg-a1` | Shipped disabled | CITA Luxembourg (LU) | `https://www.cita.lu/info_trafic/datex/trafficstatus_a1` — A1 corridor. |
+| `cita-luxembourg-a4` | Shipped disabled | CITA Luxembourg (LU) | `https://www.cita.lu/info_trafic/datex/trafficstatus_a4` — A4 corridor. |
+| `trafikverket-sweden` | Shipped disabled template | Trafikverket (SE) | Key-protected DATEX II; register at `https://data.trafikverket.se/`, export `TRAFIKVERKET_KEY`, then set the requested feed `url`. |
+| not shipped | Custom DATEX II publisher | Any national/regional road authority | Copy an entry, set `url` + `publication`, add `auth_header` for key-protected feeds. |
+
+Parking (`ParkingStatusPublication`) and EV-charging DATEX II profiles are out of scope for this feeder's parser, which targets situation, measured-data, and measurement-site publications.
 
 ## Quick start
 

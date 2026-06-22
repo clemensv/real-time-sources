@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import json
 import os
+import re
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, Mapping, Optional
+from typing import Any, Dict, Iterable, Mapping, Optional
 
 SUPPORTED_PROVIDERS = ("bods", "trafiklab", "entur", "custom")
 SUPPORTED_DATA_TYPES = ("vm", "et", "sx")
@@ -10,6 +12,8 @@ DEFAULT_BODS_URL = "https://data.bus-data.dft.gov.uk/avl/download/bulk_archive"
 DEFAULT_TRAFIKLAB_URL = "https://api.trafiklab.se/siri2.x/{data_type}/{operator}"
 DEFAULT_ENTUR_URL = "https://api.entur.io/realtime/v1/rest/{data_type}"
 DEFAULT_ENTUR_CLIENT_NAME = "clemensv-realtimesources"
+DEFAULT_SOURCES_FILE = os.path.join(os.path.dirname(__file__), "sources", "siri-sources.json")
+_ENV_REF = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 
 def parse_csv_tokens(value: Optional[str]) -> Optional[tuple[str, ...]]:
@@ -52,6 +56,63 @@ def parse_request_headers(value: Optional[str]) -> dict[str, str]:
     return headers
 
 
+def _interpolate_env(value: Any) -> Any:
+    """Expand ${ENV_VAR} placeholders in strings (recursing into lists/dicts)."""
+    if isinstance(value, str):
+        return _ENV_REF.sub(lambda match: os.environ.get(match.group(1), ""), value)
+    if isinstance(value, list):
+        return [_interpolate_env(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _interpolate_env(item) for key, item in value.items()}
+    return value
+
+
+def _read_config_text(raw: str) -> str:
+    """Resolve an inline-config string: JSON literal, @path, or bare path."""
+    raw = raw.strip()
+    if raw.startswith("@"):
+        with open(raw[1:].strip(), "r", encoding="utf-8") as handle:
+            return handle.read()
+    if raw.startswith("[") or raw.startswith("{"):
+        return raw
+    if os.path.exists(raw):
+        with open(raw, "r", encoding="utf-8") as handle:
+            return handle.read()
+    return raw
+
+
+def _coerce_entries(data: Any) -> list[dict[str, Any]]:
+    """Accept either a {"sources": [...]} catalog or a bare list of entries."""
+    if isinstance(data, dict):
+        data = data.get("sources", [])
+    if not isinstance(data, list):
+        return []
+    return [dict(item) for item in data if isinstance(item, dict)]
+
+
+def select_entries(entries: list[dict[str, Any]], selector: str = "") -> list[dict[str, Any]]:
+    """Filter catalog entries by the SIRI_SOURCES selector."""
+    selector = (selector or "").strip()
+    if selector == "*":
+        return list(entries)
+    if not selector:
+        return [entry for entry in entries if entry.get("enabled", True)]
+    by_name = {entry["name"]: entry for entry in entries if entry.get("name")}
+    chosen: list[dict[str, Any]] = []
+    unknown: list[str] = []
+    for token in (part.strip() for part in selector.split(",")):
+        if not token:
+            continue
+        if token in by_name:
+            chosen.append(by_name[token])
+        else:
+            unknown.append(token)
+    if unknown:
+        known = ", ".join(sorted(by_name)) or "(none)"
+        raise ValueError(f"Unknown SIRI_SOURCES entries: {', '.join(unknown)}. Known names: {known}")
+    return chosen
+
+
 def _has_header(headers: Mapping[str, str], name: str) -> bool:
     return any(header_name.lower() == name.lower() for header_name in headers)
 
@@ -75,7 +136,7 @@ class FeedConfig:
         provider: Optional[str] = None,
         siri_url: Optional[str] = None,
         api_key: Optional[str] = None,
-        operators: Optional[Iterable[str]] = None,
+        operators: Optional[Iterable[str] | str] = None,
         data_types: Optional[Iterable[str] | str] = None,
         polling_interval: Optional[int] = None,
         state_file: Optional[str] = None,
@@ -105,6 +166,8 @@ class FeedConfig:
 
         if operators is None:
             operators = parse_csv_tokens(os.getenv("SIRI_OPERATORS") or os.getenv("OPERATORS"))
+        elif isinstance(operators, str):
+            operators = parse_csv_tokens(operators)
         elif not isinstance(operators, tuple):
             operators = tuple(token.strip() for token in operators if token and token.strip()) or None
 
@@ -144,6 +207,94 @@ class FeedConfig:
             once=once,
             request_headers=resolved_headers,
         )
+
+
+def _legacy_single_source_requested(*, provider: Optional[str] = None, siri_url: Optional[str] = None) -> bool:
+    resolved_provider = (provider if provider is not None else os.getenv("SIRI_PROVIDER", "bods") or "bods").strip().lower()
+    resolved_url = (siri_url if siri_url is not None else os.getenv("SIRI_URL", "") or "").strip()
+    return bool(resolved_url) or resolved_provider != "bods"
+
+
+def _entry_to_config(entry: Mapping[str, Any]) -> FeedConfig:
+    item = dict(_interpolate_env(dict(entry)))
+    for key in ("name", "enabled", "description"):
+        item.pop(key, None)
+    if "base_url" in item and "siri_url" not in item:
+        item["siri_url"] = item.pop("base_url")
+    if "url" in item and "siri_url" not in item:
+        item["siri_url"] = item.pop("url")
+    if "headers" in item and "request_headers" not in item:
+        item["request_headers"] = item.pop("headers")
+    return FeedConfig.from_env(
+        provider=item.get("provider"),
+        siri_url=item.get("siri_url"),
+        api_key=item.get("api_key"),
+        operators=item.get("operators"),
+        data_types=item.get("data_types"),
+        request_headers=item.get("request_headers"),
+        et_client_name=item.get("et_client_name"),
+    )
+
+
+def load_feed_configs(
+    raw: str = "",
+    *,
+    sources_file: str = "",
+    selector: str = "",
+    provider: Optional[str] = None,
+    siri_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+    operators: Optional[Iterable[str] | str] = None,
+    data_types: Optional[Iterable[str] | str] = None,
+    polling_interval: Optional[int] = None,
+    state_file: Optional[str] = None,
+    once: Optional[bool] = None,
+    request_headers: Optional[Mapping[str, str] | str] = None,
+    et_client_name: Optional[str] = None,
+) -> list[FeedConfig]:
+    """Load SIRI source configs from legacy env/CLI or the source catalog.
+
+    Legacy single-source configuration takes precedence when SIRI_URL is set or
+    SIRI_PROVIDER resolves to anything other than the default BODS profile.
+    """
+    if raw and raw.strip():
+        entries = _coerce_entries(json.loads(_read_config_text(raw)))
+    elif _legacy_single_source_requested(provider=provider, siri_url=siri_url):
+        return [
+            FeedConfig.from_env(
+                provider=provider,
+                siri_url=siri_url,
+                api_key=api_key,
+                operators=operators,
+                data_types=data_types,
+                polling_interval=polling_interval,
+                state_file=state_file,
+                once=once,
+                request_headers=request_headers,
+                et_client_name=et_client_name,
+            )
+        ]
+    else:
+        path = sources_file.strip() if sources_file and sources_file.strip() else DEFAULT_SOURCES_FILE
+        with open(path, "r", encoding="utf-8") as handle:
+            entries = _coerce_entries(json.load(handle))
+    configs = [_entry_to_config(entry) for entry in select_entries(entries, selector)]
+    if polling_interval is not None or state_file is not None or once is not None:
+        configs = [
+            FeedConfig(
+                provider=config.provider,
+                siri_url=config.siri_url,
+                api_key=config.api_key,
+                operators=config.operators,
+                data_types=config.data_types,
+                polling_interval=polling_interval if polling_interval is not None else config.polling_interval,
+                state_file=state_file if state_file is not None else config.state_file,
+                once=once if once is not None else config.once,
+                request_headers=config.request_headers,
+            )
+            for config in configs
+        ]
+    return configs
 
 
 def parse_kafka_connection_string(connection_string: str) -> Dict[str, str]:

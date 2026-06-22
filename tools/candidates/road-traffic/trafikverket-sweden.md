@@ -1,5 +1,8 @@
 # Trafikverket Sweden
 
+> ✅ **SHIPPED** · feeder: `datex2` · entry: `trafikverket-sweden` · 2026-06-22
+
+
 **Country/Region**: Sweden
 **Publisher**: Trafikverket (Swedish Transport Administration)
 **API Endpoint**: `https://api.trafikinfo.trafikverket.se/v2/data.json` (Trafikinfo API) and `https://datex.trafikverket.se/` (DATEX II portal)

@@ -139,6 +139,94 @@ docker run --rm \
 
 The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
 
+## Configuring sources
+
+GTFS has no universal public default feed. The feeder therefore supports both the original single-feed environment variables and a packaged file-based catalog. The legacy single-feed variables take precedence whenever `GTFS_RT_URLS`, `GTFS_URLS`, or `MDB_SOURCE_ID` is set.
+
+| Variable / argument | Description |
+|---|---|
+| `GTFS_SOURCES_FILE` / `--gtfs-sources-file` | Path to a JSON catalog. Defaults to the packaged `gtfs_core/sources/gtfs-sources.json`. |
+| `GTFS_SOURCES` / `--gtfs-sources` | Selector: comma-separated catalog `name` values, `*` for all entries, or unset for `enabled: true` entries only. |
+| `GTFS_RT_URLS` / `--gtfs-rt-urls` | Legacy comma-separated GTFS-Realtime URLs. Takes precedence over the catalog. |
+| `GTFS_URLS` / `--gtfs-urls` | Legacy comma-separated GTFS Schedule zip URLs. |
+| `MDB_SOURCE_ID` / `--mdb-source-id` | Legacy Mobility Database source ID; the bridge resolves GTFS-RT and schedule URLs from the MDB cache path. |
+| `AGENCY` / `--agency` | Agency tag used in CloudEvents subject/key identity. Required for legacy config and recommended in catalog entries. |
+| `ROUTE` / `--route` | Optional route filter; defaults to `*`. |
+| `GTFS_RT_HEADERS` / `--gtfs-rt-headers` | Optional realtime request headers as `Name=value` tokens. |
+| `GTFS_HEADERS` / `--gtfs-headers` | Optional schedule request headers as `Name=value` tokens. |
+
+### Catalog format
+
+```json
+{
+  "sources": [
+    {
+      "name": "mbta-boston",
+      "enabled": false,
+      "description": "Massachusetts Bay Transportation Authority public feeds.",
+      "agency": "mbta",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://cdn.mbta.com/realtime/TripUpdates.pb",
+        "https://cdn.mbta.com/realtime/VehiclePositions.pb",
+        "https://cdn.mbta.com/realtime/Alerts.pb"
+      ],
+      "gtfs_urls": ["https://cdn.mbta.com/MBTA_GTFS.zip"]
+    }
+  ]
+}
+```
+
+| Field | Description |
+|---|---|
+| `name` | Stable catalog selector name. |
+| `enabled` | Runs when `GTFS_SOURCES` is unset if `true`; disabled templates are skipped by default. |
+| `description` | Human-readable operator/source note. |
+| `gtfs_rt_urls` | List of GTFS-Realtime protobuf endpoint URLs. |
+| `gtfs_urls` | List of GTFS Schedule zip URLs. |
+| `mdb_source_id` | Optional Mobility Database source ID alternative to explicit URLs. |
+| `agency` | Agency tag emitted in CloudEvents subjects/keys. |
+| `route` | Optional route filter, default `*`. |
+| `gtfs_rt_headers` / `gtfs_headers` | Optional object/list of request headers. |
+
+### Selecting sources
+
+- Unset `GTFS_SOURCES`: run only entries with `enabled: true`. The shipped catalog has none enabled, preserving the old “operator must configure a feed” behavior.
+- `GTFS_SOURCES=*`: run every catalog entry, including disabled examples/templates.
+- `GTFS_SOURCES=mbta-boston,other`: run named entries in that order; unknown names raise an error.
+
+### Keeping secrets out of the catalog
+
+Catalog string values expand `${ENV_VAR}` at runtime, so keys can live in the container environment or a mounted secret file instead of JSON:
+
+```json
+{
+  "name": "keyed-operator",
+  "enabled": true,
+  "agency": "operator",
+  "gtfs_rt_urls": ["https://operator.example/REPLACE_WITH_GTFS_RT_URL"],
+  "gtfs_rt_headers": {"x-api-key": "${SOME_GTFS_KEY}"}
+}
+```
+
+```bash
+docker run --rm \
+  -e CONNECTION_STRING='<connection-string>' \
+  -e GTFS_SOURCES_FILE=/config/gtfs-sources.json \
+  -e GTFS_SOURCES=keyed-operator \
+  -e SOME_GTFS_KEY='<secret>' \
+  -v "$PWD/gtfs-sources.json:/config/gtfs-sources.json:ro" \
+  ghcr.io/clemensv/real-time-sources-gtfs:latest
+```
+
+### Known GTFS-Realtime sources
+
+The GTFS ecosystem is decentralized: MobilityData’s [Mobility Database](https://database.mobilitydata.org/) catalogs many schedule and realtime feeds, and agencies often publish their own GTFS-Realtime endpoints. Many are free and keyless; others require registration, an API key, or custom headers. The packaged catalog intentionally ships only disabled entries:
+
+- `mbta-boston` — disabled, fully worked, keyless MBTA GTFS-Realtime URLs plus the public GTFS Schedule zip.
+- `tfnsw-sydney` — disabled, ready-to-enable Transport for NSW GTFS-Realtime feeds for Sydney / NSW trains, buses, ferries, light rail, and rail alerts; requires `TFNSW_API_KEY` in the documented `Authorization: apikey ...` header.
+- `keyed-operator-template` — disabled template showing `REPLACE_WITH_*` URLs and `${SOME_GTFS_KEY}` header expansion.
+
 ## Data model
 
 This source exposes **31 event type(s)** across **2 base message group(s)**:

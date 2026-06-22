@@ -1,0 +1,55 @@
+{
+  "description": "OpenAQ query-slice catalog for the openaq feeder. Each entry is a named query against the single OpenAQ API v3 base URL (https://api.openaq.org/v3), not a separate server. Choose which slices run with the OPENAQ_SOURCES environment variable: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. Point OPENAQ_SOURCES_FILE at a copy of this file to maintain your own catalog. The shared OpenAQ API key stays in OPENAQ_API_KEY and is sent as X-API-Key; do not store API keys in this catalog. String fields may use ${ENV_VAR} and are expanded from the environment at load time. The legacy OPENAQ_COUNTRIES / OPENAQ_LOCATIONS / OPENAQ_BBOX single-query configuration still works and takes precedence over this catalog when any of those variables is set.",
+  "sources": [
+    {
+      "name": "us-all",
+      "enabled": true,
+      "description": "United States OpenAQ locations; matches the legacy OPENAQ_COUNTRIES=US default.",
+      "countries": "US"
+    },
+    {
+      "name": "eu-west",
+      "enabled": false,
+      "description": "Western Europe bounding-box example spanning Ireland, Great Britain, Benelux, northern France, and western Germany.",
+      "bbox": "-10.50,41.00,15.50,56.50"
+    },
+    {
+      "name": "india",
+      "enabled": false,
+      "description": "India country slice using ISO 3166-1 alpha-2 country code IN.",
+      "countries": "IN"
+    },
+    {
+      "name": "california-bay-area",
+      "enabled": false,
+      "description": "San Francisco Bay Area bounding-box example for local smoke and urban air-quality monitoring.",
+      "bbox": "-123.10,36.80,-121.50,38.40",
+      "page_limit": 50,
+      "max_pages": 2
+    },
+    {
+      "name": "africa",
+      "enabled": false,
+      "description": "Pan-African bounding box (South Africa, Nigeria, Kenya, Egypt, Ghana, Ethiopia, Uganda, Rwanda, Morocco, Tunisia, and more) against the OpenAQ v3 API. Coverage depends on current OpenAQ station availability per country. Add 'africa' to OPENAQ_SOURCES to enable.",
+      "bbox": "-20.00,-35.00,52.00,38.00"
+    },
+    {
+      "name": "bahrain",
+      "enabled": false,
+      "description": "Bahrain country slice (ISO 3166-1 alpha-2 BH) against the OpenAQ v3 API. Coverage is conditional on current OpenAQ station availability for Bahrain. Add 'bahrain' to OPENAQ_SOURCES to enable.",
+      "countries": "BH"
+    },
+    {
+      "name": "kuwait",
+      "enabled": false,
+      "description": "Kuwait country slice (ISO 3166-1 alpha-2 KW; OpenAQ countries_id 119) against the OpenAQ v3 API. Coverage is conditional on current OpenAQ station availability for Kuwait. Add 'kuwait' to OPENAQ_SOURCES to enable.",
+      "countries": "KW"
+    },
+    {
+      "name": "oman",
+      "enabled": false,
+      "description": "Oman country slice (ISO 3166-1 alpha-2 OM) against the OpenAQ v3 API. Coverage is conditional on current OpenAQ station availability for Oman. Add 'oman' to OPENAQ_SOURCES to enable.",
+      "countries": "OM"
+    }
+  ]
+}

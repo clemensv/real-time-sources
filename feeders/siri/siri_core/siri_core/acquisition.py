@@ -221,6 +221,29 @@ class SiriClient:
         return response.content
 
 
+class SiriClientGroup:
+    def __init__(self, clients: tuple[SiriClient, ...]) -> None:
+        if not clients:
+            raise ValueError("At least one SIRI source config is required")
+        self._clients = clients
+
+    def load_snapshot(self) -> FeedSnapshot:
+        operators: set[str] = set()
+        positions_by_identity: dict[str, VehiclePositionRecord] = {}
+        operator_feed_urls: dict[str, str] = {}
+        for client in self._clients:
+            snapshot = client.load_snapshot()
+            operators.update(snapshot.operators)
+            operator_feed_urls.update(snapshot.operator_feed_urls)
+            for position in snapshot.vehicle_positions:
+                _merge_position(positions_by_identity, position)
+        return FeedSnapshot(
+            operators=tuple(sorted(operators)),
+            vehicle_positions=tuple(sorted(positions_by_identity.values(), key=lambda item: (item.operator_ref, item.vehicle_ref))),
+            operator_feed_urls=operator_feed_urls,
+        )
+
+
 def _default_sample_path() -> Path:
     candidates = [
         Path.cwd() / "sample_data" / "siri.xml",

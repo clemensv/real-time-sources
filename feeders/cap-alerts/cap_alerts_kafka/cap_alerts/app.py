@@ -27,7 +27,7 @@ def build_zone(row):
 
 def feed(args):
     mock=getattr(args,"mock",False)
-    sources=load_sources(args.cap_sources) if not mock else []
+    sources=load_sources(args.cap_sources, sources_file=args.cap_sources_file, selector=args.cap_select) if not mock else []
     client=CapClient()
     if mock:
         client,sources=mock_client_and_sources(); args.once=True
@@ -56,7 +56,7 @@ def feed(args):
         time.sleep(max(1,args.poll_interval-int(time.time()-started)))
 def build_parser():
     p=argparse.ArgumentParser(description="CAP alerts -> Kafka bridge"); sp=p.add_subparsers(dest="command"); f=sp.add_parser("feed")
-    f.add_argument("--cap-sources", default=os.getenv("CAP_SOURCES")); f.add_argument("--kafka-bootstrap-servers", default=os.getenv("KAFKA_BOOTSTRAP_SERVERS")); f.add_argument("--kafka-topic", default=os.getenv("KAFKA_TOPIC","cap-alerts")); f.add_argument("--sasl-username", default=os.getenv("SASL_USERNAME")); f.add_argument("--sasl-password", default=os.getenv("SASL_PASSWORD")); f.add_argument("--connection-string", default=os.getenv("CONNECTION_STRING")); f.add_argument("--kafka-enable-tls", default=os.getenv("KAFKA_ENABLE_TLS","true")); f.add_argument("--poll-interval", type=int, default=int(os.getenv("POLL_INTERVAL","300"))); f.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL","21600"))); f.add_argument("--state-file", default=os.getenv("STATE_FILE",DEFAULT_STATE_FILE)); f.add_argument("--once", action="store_true", default=parse_bool(os.getenv("ONCE_MODE"),False)); f.add_argument("--mock", action="store_true", default=parse_bool(os.getenv("CAP_ALERTS_MOCK"),False)); return p
+    f.add_argument("--cap-sources", default=os.getenv("CAP_SOURCES")); f.add_argument("--cap-sources-file", default=os.getenv("CAP_SOURCES_FILE", "")); f.add_argument("--cap-select", default=os.getenv("CAP_SELECT", "")); f.add_argument("--kafka-bootstrap-servers", default=os.getenv("KAFKA_BOOTSTRAP_SERVERS")); f.add_argument("--kafka-topic", default=os.getenv("KAFKA_TOPIC","cap-alerts")); f.add_argument("--sasl-username", default=os.getenv("SASL_USERNAME")); f.add_argument("--sasl-password", default=os.getenv("SASL_PASSWORD")); f.add_argument("--connection-string", default=os.getenv("CONNECTION_STRING")); f.add_argument("--kafka-enable-tls", default=os.getenv("KAFKA_ENABLE_TLS","true")); f.add_argument("--poll-interval", type=int, default=int(os.getenv("POLL_INTERVAL","300"))); f.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL","21600"))); f.add_argument("--state-file", default=os.getenv("STATE_FILE",DEFAULT_STATE_FILE)); f.add_argument("--once", action="store_true", default=parse_bool(os.getenv("ONCE_MODE"),False)); f.add_argument("--mock", action="store_true", default=parse_bool(os.getenv("CAP_ALERTS_MOCK"),False)); return p
 def main(argv=None):
     logging.basicConfig(level=os.getenv("LOG_LEVEL","INFO")); args=build_parser().parse_args(argv);
     if args.command in (None,"feed"): feed(args)

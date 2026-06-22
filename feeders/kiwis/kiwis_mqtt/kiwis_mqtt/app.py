@@ -77,7 +77,7 @@ async def feed(args: argparse.Namespace) -> None:
     try:
         while True:
             pending = dict(state)
-            for endpoint in load_endpoints(args.kiwis_endpoints, mock=args.mock):
+            for endpoint in load_endpoints(args.kiwis_endpoints, mock=args.mock, sources_file=args.kiwis_sources_file, selector=args.kiwis_sources):
                 await _emit_cycle(station_client, ts_client, endpoint, KiWISClient(endpoint, mock=args.mock), pending)
             state = pending; save_state(args.state_file, state)
             if args.once: break
@@ -87,7 +87,7 @@ async def feed(args: argparse.Namespace) -> None:
 
 def _parser() -> argparse.ArgumentParser:
     parser=argparse.ArgumentParser(description='Generalized KiWIS → MQTT feeder'); sub=parser.add_subparsers(dest='command'); p=sub.add_parser('feed')
-    p.add_argument('--kiwis-endpoints', default=os.getenv('KIWIS_ENDPOINTS','')); p.add_argument('--mock', action='store_true', default=os.getenv('KIWIS_MOCK','').lower()=='true'); p.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE','').lower()=='true')
+    p.add_argument('--kiwis-endpoints', default=os.getenv('KIWIS_ENDPOINTS','')); p.add_argument('--kiwis-sources-file', default=os.getenv('KIWIS_SOURCES_FILE','')); p.add_argument('--kiwis-sources', default=os.getenv('KIWIS_SOURCES','')); p.add_argument('--mock', action='store_true', default=os.getenv('KIWIS_MOCK','').lower()=='true'); p.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE','').lower()=='true')
     p.add_argument('--state-file', default=os.getenv('KIWIS_STATE_FILE', os.getenv('STATE_FILE',''))); p.add_argument('-i','--polling-interval', type=int, default=int(os.getenv('POLLING_INTERVAL','300')))
     p.add_argument('--broker-url', default=os.getenv('MQTT_BROKER_URL','localhost:1883')); p.add_argument('--username', default=os.getenv('MQTT_USERNAME')); p.add_argument('--password', default=os.getenv('MQTT_PASSWORD')); p.add_argument('--client-id', default=os.getenv('MQTT_CLIENT_ID'))
     p.add_argument('--auth-mode', choices=['anonymous','userpass','tls-cert','entra'], default=os.getenv('MQTT_AUTH_MODE','anonymous').lower())

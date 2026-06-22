@@ -33,7 +33,9 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=description)
     sub = parser.add_subparsers(dest="command")
     feed = sub.add_parser("feed")
-    feed.add_argument("--erddap-sources", default=os.getenv("ERDDAP_SOURCES"), help="Semicolon-separated erddap_id|base_url|datasetID|variables|station_var|time_constraint entries, JSON array, @file, or path")
+    feed.add_argument("--erddap-sources", default=os.getenv("ERDDAP_SOURCES"), help="Legacy inline semicolon list, JSON array/object, @file, or path; takes precedence over the catalog")
+    feed.add_argument("--erddap-sources-file", default=os.getenv("ERDDAP_SOURCES_FILE", ""), help="Path to an ERDDAP source catalog JSON file; defaults to the packaged catalog")
+    feed.add_argument("--erddap-select", default=os.getenv("ERDDAP_SELECT", ""), help="Comma-separated catalog entry names, '*' for all, or unset for enabled-only")
     feed.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", os.getenv("POLL_INTERVAL", "300"))))
     feed.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL", "21600")))
     feed.add_argument("--state-file", default=os.getenv("STATE_FILE", DEFAULT_STATE_FILE))
@@ -48,3 +50,4 @@ def main_dispatch(parser: argparse.ArgumentParser, feed_func) -> None:
         parser.print_help()
         raise SystemExit(2)
     feed_func(args)
+

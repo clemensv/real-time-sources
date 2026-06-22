@@ -1,0 +1,104 @@
+{
+  "description": "ERDDAP source catalog for the erddap feeder. Each entry is a pollable ERDDAP tabledap dataset. Choose which entries run with ERDDAP_SELECT: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. Point ERDDAP_SOURCES_FILE at a copy of this file to maintain your own catalog. Secrets may be written as ${ENV_VAR} and are expanded from the environment at load time, so keys never live in this file. The legacy ERDDAP_SOURCES inline configuration still works and takes precedence over this catalog when set.",
+  "sources": [
+    {
+      "name": "ioos-sensors-sun2",
+      "enabled": true,
+      "description": "IOOS Sensors ERDDAP CORMP SUN2 station tabledap observations for water temperature and salinity.",
+      "erddap_id": "ioos-sensors",
+      "base_url": "https://erddap.sensors.ioos.us/erddap",
+      "dataset_id": "org_cormp_sun2",
+      "variables": [
+        "sea_water_temperature",
+        "sea_water_practical_salinity"
+      ],
+      "station_id_variable": "station",
+      "time_constraint": "time>=max(time)-1day",
+      "auth_header": null
+    },
+    {
+      "name": "token-protected-template",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry for a token-protected ERDDAP tabledap dataset, replace base_url and dataset_id, export ERDDAP_TOKEN in the runtime environment, set variables/station_id_variable/time_constraint for the dataset, and set enabled to true.",
+      "erddap_id": "protected-erddap",
+      "base_url": "REPLACE_WITH_ERDDAP_BASE_URL",
+      "dataset_id": "REPLACE_WITH_DATASET_ID",
+      "variables": [
+        "REPLACE_WITH_VARIABLE"
+      ],
+      "station_id_variable": "station",
+      "time_constraint": "time>=max(time)-1day",
+      "auth_header": "Bearer ${ERDDAP_TOKEN}"
+    },
+    {
+      "name": "otn-tracking",
+      "enabled": false,
+      "description": "Ocean Tracking Network acoustic telemetry detections from OTN ERDDAP tabledap dataset otn_aat_detections. Add 'otn-tracking' to ERDDAP_SELECT to enable.",
+      "erddap_id": "otn-tracking",
+      "base_url": "https://members.oceantrack.org/erddap",
+      "dataset_id": "otn_aat_detections",
+      "variables": [
+        "detection_id",
+        "detection_guid",
+        "detection_quality",
+        "receiver_log_id",
+        "deployment_id"
+      ],
+      "station_id_variable": "transmitter_id",
+      "time_constraint": "time>=max(time)-30days",
+      "auth_header": null
+    },
+    {
+      "name": "nanoos-puget-sound-orca2",
+      "enabled": false,
+      "description": "NANOOS/NWEM Puget Sound ORCA2 Hoodsport profile observations from ERDDAP tabledap dataset orca2_L1_profiles. Add 'nanoos-puget-sound-orca2' to ERDDAP_SELECT to enable.",
+      "erddap_id": "nanoos-puget-sound",
+      "base_url": "https://nwem.apl.uw.edu/erddap",
+      "dataset_id": "orca2_L1_profiles",
+      "variables": [
+        "sea_water_temperature",
+        "sea_water_practical_salinity",
+        "mass_concentration_of_oxygen_in_sea_water",
+        "sea_water_turbidity"
+      ],
+      "station_id_variable": "buoy_name",
+      "time_constraint": "time>=max(time)-1day",
+      "auth_header": null
+    },
+    {
+      "name": "emodnet-physics-sea-level",
+      "enabled": false,
+      "description": "EMODnet Physics near-real-time European sea-level TimeSeries observations from ERDDAP tabledap dataset EP_ERD_INT_SLEV_AL_TS_NRT. Add 'emodnet-physics-sea-level' to ERDDAP_SELECT to enable.",
+      "erddap_id": "emodnet-physics",
+      "base_url": "https://erddap.emodnet-physics.eu/erddap",
+      "dataset_id": "EP_ERD_INT_SLEV_AL_TS_NRT",
+      "variables": [
+        "SLEV",
+        "SLEV_QC",
+        "SOURCE",
+        "SENSOR",
+        "url_metadata"
+      ],
+      "station_id_variable": "PLATFORMCODE",
+      "time_constraint": "time>=max(time)-3days",
+      "auth_header": null
+    },
+    {
+      "name": "uhslc-hourly-fast",
+      "enabled": false,
+      "description": "University of Hawaii Sea Level Center fast-delivery hourly tide-gauge sea level observations from ERDDAP tabledap dataset global_hourly_fast. Add 'uhslc-hourly-fast' to ERDDAP_SELECT to enable.",
+      "erddap_id": "uhslc",
+      "base_url": "https://uhslc.soest.hawaii.edu/erddap",
+      "dataset_id": "global_hourly_fast",
+      "variables": [
+        "sea_level",
+        "record_id",
+        "gloss_id",
+        "ssc_id"
+      ],
+      "station_id_variable": "uhslc_id",
+      "time_constraint": "time>=max(time)-30days",
+      "auth_header": null
+    }
+  ]
+}

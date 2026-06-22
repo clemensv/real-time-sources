@@ -5,18 +5,22 @@ from .acquisition import (
     DEFAULT_TRAFIKLAB_URL,
     FeedSnapshot,
     SiriClient,
+    SiriClientGroup,
     VehiclePositionRecord,
     iter_vehicle_positions,
 )
 from .config import (
+    DEFAULT_SOURCES_FILE,
     SUPPORTED_DATA_TYPES,
     SUPPORTED_PROVIDERS,
     FeedConfig,
     build_kafka_config,
+    load_feed_configs,
     parse_csv_tokens,
     parse_data_types,
     parse_kafka_connection_string,
     parse_request_headers,
+    select_entries,
 )
 from .state import load_state, save_state
 
@@ -30,13 +34,17 @@ __all__ = [
     "FeedConfig",
     "FeedSnapshot",
     "SiriClient",
+    "SiriClientGroup",
     "VehiclePositionRecord",
+    "DEFAULT_SOURCES_FILE",
     "build_kafka_config",
     "iter_vehicle_positions",
+    "load_feed_configs",
     "load_state",
     "parse_csv_tokens",
     "parse_data_types",
     "parse_kafka_connection_string",
     "parse_request_headers",
+    "select_entries",
     "save_state",
 ]

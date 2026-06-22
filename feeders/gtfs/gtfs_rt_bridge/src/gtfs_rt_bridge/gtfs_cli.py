@@ -23,6 +23,7 @@ from gtfs_core.core import (
     DEFAULT_POLL_INTERVAL_SECONDS,
     DEFAULT_SCHEDULE_POLL_INTERVAL_SECONDS,
     fetch_and_publish_schedule as _core_fetch_and_publish_schedule,
+    load_source_configs,
     poll_and_publish_gtfs,
     poll_and_publish_realtime_feed as _core_poll_and_publish_realtime_feed,
 )
@@ -332,12 +333,26 @@ def _build_kafka_publisher(
 async def run_feed(args):
     if args.log_level:
         logger.setLevel(getattr(logging, args.log_level))
-    if not args.agency:
+    source_configs = load_source_configs(
+        gtfs_rt_urls=args.gtfs_rt_urls,
+        gtfs_urls=args.gtfs_urls,
+        mdb_source_id=args.mdb_source_id,
+        agency=args.agency,
+        route=args.route,
+        gtfs_rt_headers=args.gtfs_rt_headers,
+        gtfs_headers=args.gtfs_headers,
+        sources_file=args.gtfs_sources_file,
+        selector=args.gtfs_sources,
+    )
+    if not source_configs:
+        if args.agency:
+            raise ValueError("No GTFS URL or Mobility Database source ID specified")
         raise ValueError("No agency specified")
-    if not args.gtfs_urls and not args.gtfs_rt_urls and not args.mdb_source_id:
-        raise ValueError("No GTFS URL or Mobility Database source ID specified")
-    gtfs_rt_headers = [v.split("=", 1) for v in args.gtfs_rt_headers] if args.gtfs_rt_headers else None
-    gtfs_headers = [v.split("=", 1) for v in args.gtfs_headers] if args.gtfs_headers else None
+    for source_config in source_configs:
+        if not source_config.get("agency"):
+            raise ValueError("No agency specified")
+        if not source_config.get("gtfs_urls") and not source_config.get("gtfs_rt_urls") and not source_config.get("mdb_source_id"):
+            raise ValueError("No GTFS URL or Mobility Database source ID specified")
 
     if args.connection_string:
         config_params = parse_connection_string(args.connection_string)
@@ -363,21 +378,28 @@ async def run_feed(args):
         sasl_password,
         args.cloudevents_mode,
     )
-    await poll_and_publish_gtfs(
-        agency_id=args.agency,
-        publisher=publisher,
-        gtfs_rt_urls=args.gtfs_rt_urls,
-        gtfs_rt_headers=gtfs_rt_headers,
-        gtfs_urls=args.gtfs_urls,
-        gtfs_headers=gtfs_headers,
-        mdb_source_id=args.mdb_source_id,
-        route=args.route,
-        poll_interval=args.poll_interval,
-        schedule_poll_interval=args.schedule_poll_interval,
-        cache_dir=args.cache_dir,
-        force_schedule_refresh=args.force_schedule_refresh,
-        once=False,
-    )
+    tasks = [
+        poll_and_publish_gtfs(
+            agency_id=source_config.get("agency"),
+            publisher=publisher,
+            gtfs_rt_urls=source_config.get("gtfs_rt_urls"),
+            gtfs_rt_headers=source_config.get("gtfs_rt_headers"),
+            gtfs_urls=source_config.get("gtfs_urls"),
+            gtfs_headers=source_config.get("gtfs_headers"),
+            mdb_source_id=source_config.get("mdb_source_id"),
+            route=source_config.get("route", "*"),
+            poll_interval=args.poll_interval,
+            schedule_poll_interval=args.schedule_poll_interval,
+            cache_dir=args.cache_dir,
+            force_schedule_refresh=args.force_schedule_refresh,
+            once=False,
+        )
+        for source_config in source_configs
+    ]
+    if len(tasks) == 1:
+        await tasks[0]
+    else:
+        await asyncio.gather(*tasks)
 
 
 async def main():
@@ -399,6 +421,8 @@ async def main():
     feed_parser.add_argument("--gtfs-urls", nargs="+", default=os.environ.get("GTFS_URLS").split(",") if os.environ.get("GTFS_URLS") else None)
     feed_parser.add_argument("-m", "--mdb-source-id", default=os.environ.get("MDB_SOURCE_ID"))
     feed_parser.add_argument("-a", "--agency", default=os.environ.get("AGENCY"))
+    feed_parser.add_argument("--gtfs-sources-file", default=os.environ.get("GTFS_SOURCES_FILE", ""))
+    feed_parser.add_argument("--gtfs-sources", default=os.environ.get("GTFS_SOURCES", ""))
     feed_parser.add_argument("--gtfs-rt-headers", action="append", nargs="*", default=re.findall(split_pattern, os.environ.get("GTFS_RT_HEADERS")) if os.environ.get("GTFS_RT_HEADERS") else None)
     feed_parser.add_argument("--gtfs-headers", action="append", nargs="*", default=re.findall(split_pattern, os.environ.get("GTFS_HEADERS")) if os.environ.get("GTFS_HEADERS") else None)
     feed_parser.add_argument("--poll-interval", type=float, default=float(os.environ.get("POLL_INTERVAL")) if os.environ.get("POLL_INTERVAL") else DEFAULT_POLL_INTERVAL_SECONDS)

@@ -23,5 +23,4 @@ RUN pip install --no-cache-dir ./erddap_amqp_producer/erddap_amqp_producer_data 
         build-essential cmake pkg-config swig \
         libssl-dev libsasl2-dev python3-dev \
  && rm -rf /root/.cache /var/lib/apt/lists/*
-ENV ERDDAP_SOURCES="ioos-sensors|https://erddap.sensors.ioos.us/erddap|org_cormp_sun2|sea_water_temperature,sea_water_practical_salinity|station|time>=max(time)-1day"
 CMD ["python", "-m", "erddap_amqp", "feed"]

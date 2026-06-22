@@ -1,5 +1,8 @@
 # Careem BIKE Dubai (GBFS)
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `careem-dubai` · 2026-06-22
+
+
 - **Country/Region**: United Arab Emirates / Dubai
 - **Endpoint**: `https://careem.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json`
 - **Protocol**: GBFS 3.0 (General Bikeshare Feed Specification)

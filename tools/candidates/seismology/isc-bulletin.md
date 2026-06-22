@@ -1,4 +1,5 @@
 # ISC — International Seismological Centre
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `isc` · 2026-06-22
 
 ## Source Identity
 

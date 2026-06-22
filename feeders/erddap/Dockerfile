@@ -12,6 +12,5 @@ RUN pip install --no-cache-dir ./erddap_producer/erddap_producer_data \
  && pip install --no-cache-dir ./erddap_producer/erddap_producer_kafka_producer \
  && pip install --no-cache-dir ./erddap_core \
  && pip install --no-cache-dir ./erddap_kafka
-ENV ERDDAP_SOURCES="ioos-sensors|https://erddap.sensors.ioos.us/erddap|org_cormp_sun2|sea_water_temperature,sea_water_practical_salinity|station|time>=max(time)-1day"
 CMD ["python", "-m", "erddap_kafka", "feed"]
 

@@ -1,4 +1,5 @@
 # Trafiklab / Samtrafiken SIRI Regional
+> ✅ **SHIPPED** · feeder: `siri` · entry: `trafiklab-sweden` · 2026-06-22
 
 **Country/Region**: Sweden
 **Publisher**: Samtrafiken / Trafiklab (Swedish public transport data platform)

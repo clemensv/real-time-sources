@@ -1,5 +1,8 @@
 # Met Éireann — Ireland Open Weather Data
 
+> ✅ **SHIPPED** · feeder: `cap-alerts` · entry: `meteoalarm-ireland` · 2026-06-22
+
+
 **Country/Region**: Ireland
 **Publisher**: Met Éireann (Irish Meteorological Service)
 **API Endpoint**: `https://www.met.ie/Open_Data/json/`

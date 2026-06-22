@@ -19,7 +19,7 @@ from gbfs_bikeshare_core.acquisition import (  # noqa: E402
     should_publish_free_bike_status,
     should_publish_station_status,
 )
-from gbfs_bikeshare_core.config import ConfiguredFeed, parse_feed_configuration  # noqa: E402
+from gbfs_bikeshare_core.config import ConfiguredFeed, DEFAULT_SOURCES_FILE, load_feeds, parse_feed_configuration, select_entries  # noqa: E402
 
 
 class FakeResponse:
@@ -162,6 +162,68 @@ def test_parse_feed_configuration_with_overrides():
     configured = parse_feed_configuration("https://a.example/gbfs.json,https://b.example/gbfs.json", "alpha,beta")
     assert [item.autodiscovery_url for item in configured] == ["https://a.example/gbfs.json", "https://b.example/gbfs.json"]
     assert [item.system_id_override for item in configured] == ["alpha", "beta"]
+
+
+@pytest.mark.unit
+def test_default_catalog_loads_enabled_sources():
+    configured = load_feeds()
+    assert len(configured) >= 6
+    assert all(item.autodiscovery_url for item in configured)
+    with open(DEFAULT_SOURCES_FILE, "r", encoding="utf-8") as handle:
+        catalog = json.load(handle)
+    enabled_entries = [entry for entry in catalog["sources"] if entry.get("enabled", True)]
+    assert len(configured) == len(enabled_entries)
+    assert all(entry.get("autodiscovery_url") for entry in enabled_entries)
+
+
+@pytest.mark.unit
+def test_catalog_selector_returns_named_entries_in_order():
+    configured = load_feeds(selector="bike-share-toronto,citibike-nyc")
+    assert [item.system_id_override for item in configured] == ["bike-share-toronto", "citibike-nyc"]
+
+
+@pytest.mark.unit
+def test_catalog_selector_star_includes_disabled_templates():
+    configured = load_feeds(selector="*")
+    assert any("operator.example" in item.autodiscovery_url for item in configured)
+
+
+@pytest.mark.unit
+def test_unknown_catalog_selector_raises():
+    with pytest.raises(ValueError, match="Unknown GBFS_SOURCES entries"):
+        load_feeds(selector="does-not-exist")
+
+
+@pytest.mark.unit
+def test_inline_catalog_object_with_secret_interpolation(monkeypatch, tmp_path):
+    monkeypatch.setenv("SAMPLE_GBFS_KEY", "secret-123")
+    catalog = tmp_path / "custom.sources.json"
+    catalog.write_text(json.dumps({"sources": [{"name": "secret", "autodiscovery_url": "https://example.invalid/gbfs.json", "api_key": "${SAMPLE_GBFS_KEY}", "api_key_param": "token"}]}), encoding="utf-8")
+    configured = load_feeds(sources_file=str(catalog))
+    assert configured[0].autodiscovery_url == "https://example.invalid/gbfs.json?token=secret-123"
+
+
+@pytest.mark.unit
+def test_sources_file_override(tmp_path):
+    catalog = tmp_path / "custom.sources.json"
+    catalog.write_text(json.dumps({"sources": [{"name": "only", "autodiscovery_url": "https://example.invalid/only/gbfs.json", "system_id": "only-system"}]}), encoding="utf-8")
+    configured = load_feeds(sources_file=str(catalog))
+    assert len(configured) == 1
+    assert configured[0].system_id_override == "only-system"
+
+
+@pytest.mark.unit
+def test_legacy_gbfs_feeds_inline_takes_precedence(tmp_path):
+    catalog = tmp_path / "custom.sources.json"
+    catalog.write_text(json.dumps({"sources": [{"name": "catalog", "autodiscovery_url": "https://example.invalid/catalog/gbfs.json"}]}), encoding="utf-8")
+    configured = load_feeds("https://example.invalid/legacy/gbfs.json", sources_file=str(catalog), selector="catalog")
+    assert configured[0].autodiscovery_url == "https://example.invalid/legacy/gbfs.json"
+
+
+@pytest.mark.unit
+def test_select_entries_default_skips_disabled():
+    entries = [{"name": "a", "enabled": True}, {"name": "b", "enabled": False}]
+    assert [entry["name"] for entry in select_entries(entries)] == ["a"]
 
 
 @pytest.mark.unit

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import json
+
+import fdsn_seismology_core
 from fdsn_seismology_core.fdsn_client import EarthquakeRecord, deduplicate_events, load_mock_events, parse_fdsn_text
-from fdsn_seismology_core.nodes import NODE_CATALOG, get_active_nodes, parse_node_filter
+from fdsn_seismology_core.nodes import DEFAULT_SOURCES_FILE, NODE_CATALOG, get_active_nodes, load_node_catalog, parse_node_filter
+import pytest
 
 
 SAMPLE_TEXT = """#EventID|Time|Latitude|Longitude|Depth/km|Author|Catalog|Contributor|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName|EventType
@@ -63,10 +67,23 @@ class TestMockEvents:
 
 class TestNodeCatalog:
     def test_catalog_contains_expected_nodes(self):
-        assert set(NODE_CATALOG) == {"emsc", "gfz", "ingv", "ethz", "resif", "ipgp", "niep", "usgs"}
+        assert {"emsc", "gfz", "ingv", "ethz", "resif", "ipgp", "niep", "usgs"}.issubset(NODE_CATALOG)
+        assert "custom" in NODE_CATALOG
         assert NODE_CATALOG["gfz"]["country"] == "DE"
         assert NODE_CATALOG["usgs"]["base_url"] == "https://earthquake.usgs.gov/fdsnws/event/1/"
         assert NODE_CATALOG["emsc"]["coverage"] == "Global aggregator"
+
+    def test_default_active_nodes_skip_disabled_template(self):
+        active = get_active_nodes(None, None)
+
+        assert set(active) == {"emsc", "gfz", "ingv", "ethz", "resif", "ipgp", "niep", "usgs"}
+        assert "custom" not in active
+
+    def test_include_filter_can_force_include_disabled_node(self):
+        active = get_active_nodes(["custom"], None)
+
+        assert list(active) == ["custom"]
+        assert active["custom"]["base_url"] == "REPLACE_WITH_FDSN_BASE_URL"
 
     def test_include_exclude_filters(self):
         active = get_active_nodes(["emsc", "gfz", "niep"], ["gfz"])
@@ -77,6 +94,51 @@ class TestNodeCatalog:
 
         assert list(active) == ["usgs"]
         assert active["usgs"]["country"] == "US"
+
+    def test_exclude_filter_subtracts_from_default_enabled_nodes(self):
+        active = get_active_nodes(None, parse_node_filter("emsc,gfz"))
+
+        assert "emsc" not in active
+        assert "gfz" not in active
+        assert "usgs" in active
+
+    def test_unknown_node_filter_raises_value_error(self):
+        with pytest.raises(ValueError):
+            get_active_nodes(["does-not-exist"], None)
+
+    def test_sources_file_override_honors_enabled_and_include(self, tmp_path):
+        catalog = tmp_path / "custom.sources.json"
+        catalog.write_text(
+            json.dumps(
+                {
+                    "sources": [
+                        {"name": "enabled", "enabled": True, "node_id": "enabled", "base_url": "https://example.invalid/fdsnws/event/1/", "coverage": "Enabled node", "country": "ZZ"},
+                        {"name": "disabled", "enabled": False, "node_id": "disabled", "base_url": "https://example.invalid/private/fdsnws/event/1/", "coverage": "Disabled node", "country": "ZZ"},
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        assert list(get_active_nodes(None, None, sources_file=str(catalog))) == ["enabled"]
+        assert list(get_active_nodes(["disabled"], None, sources_file=str(catalog))) == ["disabled"]
+
+    def test_env_interpolation_in_sources_file(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PRIVATE_FDSN_BASE_URL", "https://example.invalid/env/fdsnws/event/1/")
+        catalog = tmp_path / "env.sources.json"
+        catalog.write_text(
+            json.dumps({"sources": [{"name": "env", "node_id": "env", "base_url": "${PRIVATE_FDSN_BASE_URL}", "coverage": "Interpolated", "country": "ZZ"}]}),
+            encoding="utf-8",
+        )
+
+        active = get_active_nodes(["env"], None, sources_file=str(catalog))
+
+        assert active["env"]["base_url"] == "https://example.invalid/env/fdsnws/event/1/"
+
+    def test_packaged_catalog_path_resolves(self):
+        assert fdsn_seismology_core.__file__ is not None
+        assert DEFAULT_SOURCES_FILE.endswith("fdsn-seismology.sources.json")
+        assert load_node_catalog(DEFAULT_SOURCES_FILE)["usgs"]["country"] == "US"
 
 
 class TestDeduplication:
@@ -121,3 +183,23 @@ class TestDeduplication:
         assert len(deduped) == 1
         assert deduped[0].event_type == "earthquake"
         assert deduped[0].node_url == "https://geofon.gfz-potsdam.de/fdsnws/event/1/"
+
+
+class TestFormatDatetime:
+    def test_emits_no_timezone_designator(self):
+        """FDSN-WS time params are implicit-UTC; strict nodes (INGV/ISC) 400 on a trailing 'Z'."""
+        from datetime import datetime, timezone
+
+        from fdsn_seismology_core.fdsn_client import format_datetime
+
+        out = format_datetime(datetime(2026, 6, 22, 12, 0, 0, 500000, tzinfo=timezone.utc))
+        assert out == "2026-06-22T12:00:00"
+        assert "Z" not in out and "+" not in out
+
+    def test_converts_offset_input_to_utc(self):
+        from datetime import datetime, timedelta, timezone
+
+        from fdsn_seismology_core.fdsn_client import format_datetime
+
+        plus2 = timezone(timedelta(hours=2))
+        assert format_datetime(datetime(2026, 6, 22, 14, 0, 0, tzinfo=plus2)) == "2026-06-22T12:00:00"

@@ -1,1 +1,1 @@
-from .core import (KiWISClient, KiWISEndpoint, MOCK_ENDPOINTS, build_retry_session, load_endpoints, load_state, save_state, parse_connection_string, build_kafka_config, parse_datetime)
+from .core import (KiWISClient, KiWISEndpoint, MOCK_ENDPOINTS, build_retry_session, load_endpoints, load_state, save_state, parse_connection_string, build_kafka_config, parse_datetime, select_entries)

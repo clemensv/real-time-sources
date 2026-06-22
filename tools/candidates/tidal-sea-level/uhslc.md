@@ -1,4 +1,5 @@
 # University of Hawaii Sea Level Center (UHSLC)
+> ✅ **SHIPPED** · feeder: `erddap` · entry: `uhslc-hourly-fast` · 2026-06-22
 
 **Country/Region**: Global (approximately 500 stations, strong Pacific/tropical coverage)
 **Publisher**: University of Hawaii at Manoa, School of Ocean and Earth Science and Technology (SOEST)

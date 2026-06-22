@@ -11,7 +11,7 @@ logger=logging.getLogger(__name__)
 def _split_broker(url: str):
     host, _, port = url.partition(':'); return host, int(port or '1883')
 async def _run(args):
-    sources=parse_sources(args.erddap_sources); host,port=_split_broker(args.mqtt_broker_url)
+    sources=parse_sources(args.erddap_sources, mock=args.mock, sources_file=args.erddap_sources_file, selector=args.erddap_select); host,port=_split_broker(args.mqtt_broker_url)
     c1=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=args.mqtt_client_id+'-dataset', protocol=mqtt.MQTTv5); c2=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=args.mqtt_client_id+'-station', protocol=mqtt.MQTTv5)
     if args.mqtt_username: c1.username_pw_set(args.mqtt_username,args.mqtt_password); c2.username_pw_set(args.mqtt_username,args.mqtt_password)
     if parse_bool(args.mqtt_enable_tls, False): c1.tls_set(ca_certs=args.mqtt_ca_file or None); c2.tls_set(ca_certs=args.mqtt_ca_file or None)
@@ -47,3 +47,4 @@ def build_app_parser():
     return p
 def main(): main_dispatch(build_app_parser(), feed)
 if __name__=='__main__': main()
+

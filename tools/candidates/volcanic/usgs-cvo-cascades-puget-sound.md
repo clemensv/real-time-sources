@@ -1,4 +1,5 @@
 # USGS Volcano Hazards — Cascades Volcano Observatory (CVO)
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `usgs` · 2026-06-22
 
 - **Country/Region**: US — Pacific Northwest (Mt. Rainier, Mt. Baker, Mt. St. Helens, Glacier Peak, Mt. Adams)
 - **Publisher**: USGS Volcano Hazards Program / Cascades Volcano Observatory

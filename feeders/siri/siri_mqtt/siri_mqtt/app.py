@@ -14,7 +14,7 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 
-from siri_core import SUPPORTED_PROVIDERS, FeedConfig, SiriClient, load_state, parse_csv_tokens, parse_data_types, save_state
+from siri_core import SUPPORTED_PROVIDERS, SiriClient, SiriClientGroup, load_feed_configs, load_state, parse_csv_tokens, parse_data_types, save_state
 from siri_mqtt_producer_data import Operator, VehiclePosition
 from siri_mqtt_producer_mqtt_client.client import OrgSiriMqttMqttClient
 
@@ -221,6 +221,8 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument("--et-client-name", type=str, default=os.getenv("SIRI_ET_CLIENT_NAME"))
     feed_parser.add_argument("--operators", type=str, default=os.getenv("SIRI_OPERATORS") or os.getenv("OPERATORS"))
     feed_parser.add_argument("--data-types", type=str, default=os.getenv("SIRI_DATA_TYPES", "vm"))
+    feed_parser.add_argument("--siri-sources-file", type=str, default=os.getenv("SIRI_SOURCES_FILE", ""))
+    feed_parser.add_argument("--siri-sources", type=str, default=os.getenv("SIRI_SOURCES", ""))
     feed_parser.add_argument("--broker-url", type=str, default=os.getenv("MQTT_BROKER_URL"))
     feed_parser.add_argument("--host", type=str, default=os.getenv("MQTT_HOST"))
     feed_parser.add_argument("--port", type=int, default=int(os.getenv("MQTT_PORT", "0")) or None)
@@ -246,7 +248,9 @@ def main(argv: Optional[list] = None) -> None:
         parser.print_help()
         return
 
-    config = FeedConfig.from_env(
+    configs = load_feed_configs(
+        sources_file=args.siri_sources_file,
+        selector=args.siri_sources,
         provider=args.provider,
         siri_url=args.siri_url,
         api_key=args.api_key,
@@ -258,6 +262,7 @@ def main(argv: Optional[list] = None) -> None:
         request_headers=args.headers,
         et_client_name=args.et_client_name,
     )
+    config = configs[0]
 
     if args.broker_url:
         host, port, tls, user, pwd = _parse_broker_url(args.broker_url)
@@ -274,14 +279,18 @@ def main(argv: Optional[list] = None) -> None:
         username = args.username
         password = args.password
 
-    api = SiriClient(
-        provider=config.provider,
-        siri_url=config.siri_url,
-        api_key=config.api_key,
-        operators=config.operators,
-        data_types=config.data_types,
-        request_headers=config.request_headers,
+    clients = tuple(
+        SiriClient(
+            provider=item.provider,
+            siri_url=item.siri_url,
+            api_key=item.api_key,
+            operators=item.operators,
+            data_types=item.data_types,
+            request_headers=item.request_headers,
+        )
+        for item in configs
     )
+    api = clients[0] if len(clients) == 1 else SiriClientGroup(clients)
     asyncio.run(
         feed(
             api,

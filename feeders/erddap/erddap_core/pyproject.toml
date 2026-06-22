@@ -22,3 +22,7 @@ local_scheme = "no-local-version"
 packages = [
     "erddap_core",
 ]
+include-package-data = true
+
+[tool.setuptools.package-data]
+erddap_core = ["sources/*.json"]

@@ -1,4 +1,5 @@
 # East Africa Rift Seismicity (EMSC + USGS)
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `emsc` · 2026-06-22
 
 - **Country/Region**: East Africa (Ethiopia, Tanzania, Mozambique, Malawi, DRC, Kenya, Uganda, Rwanda, Botswana, South Africa)
 - **Endpoint**: `https://seismicportal.eu/fdsnws/event/1/query?format=json&minlat=-35&maxlat=15&minlon=20&maxlon=55&limit=50&orderby=time`

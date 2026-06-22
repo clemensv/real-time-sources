@@ -1,5 +1,8 @@
 # OpenAQ Air Quality — African Stations
 
+> ✅ **SHIPPED** · feeder: `openaq` · entry: `africa` · 2026-06-22
+
+
 - **Country/Region**: Pan-African (South Africa, Nigeria, Kenya, Egypt, Ghana, Ethiopia, Uganda, Rwanda, Morocco, Tunisia, and more)
 - **Endpoint**: `https://api.openaq.org/v3/locations?country=ZA&limit=100`
 - **Protocol**: REST

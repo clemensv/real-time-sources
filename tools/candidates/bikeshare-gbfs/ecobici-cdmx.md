@@ -1,5 +1,8 @@
 # ECOBICI CDMX — Mexico City Bikeshare (GBFS)
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `ecobici-cdmx` · 2026-06-22
+
+
 **Country/Region**: Mexico (Mexico City / CDMX)
 **Publisher**: Gobierno de la Ciudad de México / Lyft (operator)
 **API Endpoint**: `https://gbfs.mex.lyftbikes.com/gbfs/gbfs.json`

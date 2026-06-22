@@ -1,0 +1,150 @@
+{
+  "description": "GBFS bikeshare source catalog for the gbfs-bikeshare feeder. Each entry is a GBFS auto-discovery endpoint. Choose which entries run with the GBFS_SOURCES environment variable: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. Point GBFS_SOURCES_FILE at a copy of this file to maintain your own catalog. Secrets may be written as ${ENV_VAR} and are expanded from the environment at load time, so keys never live in this file. The legacy GBFS_FEEDS / GBFS_SYSTEM_IDS / GBFS_API_KEY / GBFS_API_KEY_PARAM inline configuration still works and takes precedence over this catalog when GBFS_FEEDS is set.",
+  "sources": [
+    {
+      "name": "citibike-nyc",
+      "enabled": true,
+      "description": "Citi Bike (New York City, US) public GBFS v2.3 auto-discovery feed operated by Lyft.",
+      "autodiscovery_url": "https://gbfs.citibikenyc.com/gbfs/2.3/gbfs.json",
+      "system_id": "citibike-nyc"
+    },
+    {
+      "name": "divvy-chicago",
+      "enabled": true,
+      "description": "Divvy (Chicago, US) public GBFS v2.3 auto-discovery feed operated by Lyft.",
+      "autodiscovery_url": "https://gbfs.divvybikes.com/gbfs/2.3/gbfs.json",
+      "system_id": "divvy-chicago"
+    },
+    {
+      "name": "bay-wheels-sf",
+      "enabled": true,
+      "description": "Bay Wheels (San Francisco Bay Area, US) public GBFS v2.3 auto-discovery feed operated by Lyft.",
+      "autodiscovery_url": "https://gbfs.baywheels.com/gbfs/2.3/gbfs.json",
+      "system_id": "bay-wheels-sf"
+    },
+    {
+      "name": "capital-bikeshare-dc",
+      "enabled": true,
+      "description": "Capital Bikeshare (Washington, DC, US) public GBFS v2.3 auto-discovery feed.",
+      "autodiscovery_url": "https://gbfs.capitalbikeshare.com/gbfs/2.3/gbfs.json",
+      "system_id": "capital-bikeshare-dc"
+    },
+    {
+      "name": "bluebikes-boston",
+      "enabled": true,
+      "description": "Bluebikes (Boston metro, US) public GBFS auto-discovery feed.",
+      "autodiscovery_url": "https://gbfs.bluebikes.com/gbfs/gbfs.json",
+      "system_id": "bluebikes-boston"
+    },
+    {
+      "name": "bike-share-toronto",
+      "enabled": true,
+      "description": "Bike Share Toronto (Toronto, Canada) public GBFS v3.0 auto-discovery feed.",
+      "autodiscovery_url": "https://toronto.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json",
+      "system_id": "bike-share-toronto"
+    },
+    {
+      "name": "barcelona-bicing",
+      "enabled": false,
+      "description": "Bicing (Barcelona, Spain) public GBFS 3.0 feed on the PBSC/publicbikesystem platform; ~540 docking stations with mechanical and electric bikes. No key required. Add 'barcelona-bicing' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://barcelona.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json",
+      "system_id": "barcelona-bicing"
+    },
+    {
+      "name": "dublin-bikes",
+      "enabled": false,
+      "description": "Dublinbikes (Dublin, Ireland) public GBFS feed operated by JCDecaux on the Cyclocity platform; docked city-bike system. No key required. Add 'dublin-bikes' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://api.cyclocity.fr/contracts/dublin/gbfs/gbfs.json",
+      "system_id": "dublin-bikes"
+    },
+    {
+      "name": "ecobici-cdmx",
+      "enabled": false,
+      "description": "ECOBICI (Mexico City, Mexico) public GBFS feed operated by Lyft; large docked system with several hundred stations. No key required. Add 'ecobici-cdmx' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://gbfs.mex.lyftbikes.com/gbfs/gbfs.json",
+      "system_id": "ecobici-cdmx"
+    },
+    {
+      "name": "oslo-bysykkel",
+      "enabled": false,
+      "description": "Oslo Bysykkel (Oslo, Norway) public GBFS feed operated by Urban Sharing; docked city-bike system. No key required. Add 'oslo-bysykkel' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://gbfs.urbansharing.com/oslobysykkel.no/gbfs.json",
+      "system_id": "oslo-bysykkel"
+    },
+    {
+      "name": "montreal-bixi",
+      "enabled": false,
+      "description": "BIXI (Montreal, Canada) public GBFS feed; ~900 docking stations with mechanical and electric bikes. No key required. Add 'montreal-bixi' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://gbfs.velobixi.com/gbfs/gbfs.json",
+      "system_id": "montreal-bixi"
+    },
+    {
+      "name": "velib-paris",
+      "enabled": false,
+      "description": "Velib' Metropole (Paris, France) public GBFS feed operated by Smovengo; ~1400 docking stations with mechanical and electric bikes. No key required. Add 'velib-paris' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://velib-metropole-opendata.smovengo.cloud/opendata/Velib_Metropole/gbfs.json",
+      "system_id": "velib-paris"
+    },
+    {
+      "name": "careem-dubai",
+      "enabled": false,
+      "description": "Careem BIKE (Dubai, United Arab Emirates) public GBFS 3.0 feed on the PBSC/publicbikesystem platform; docked bike-share. No key required. Add 'careem-dubai' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://careem.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json",
+      "system_id": "careem-dubai"
+    },
+    {
+      "name": "dott-paris",
+      "enabled": false,
+      "description": "Dott free-floating e-scooters and e-bikes (Paris, France) public GBFS feed; vehicle-level availability via free_bike_status. No key required. Add 'dott-paris' to GBFS_SOURCES to enable. The same host serves other Dott cities at /public/v2/{city}/gbfs.json.",
+      "autodiscovery_url": "https://gbfs.api.ridedott.com/public/v2/paris/gbfs.json",
+      "system_id": "dott-paris"
+    },
+    {
+      "name": "lime-paris",
+      "enabled": false,
+      "description": "Lime free-floating e-scooters and e-bikes (Paris, France) public partner GBFS feed; vehicle-level availability via free_bike_status. No key required. Add 'lime-paris' to GBFS_SOURCES to enable. The same host serves other Lime cities at /api/partners/v2/gbfs/{city}/gbfs.json.",
+      "autodiscovery_url": "https://data.lime.bike/api/partners/v2/gbfs/paris/gbfs.json",
+      "system_id": "lime-paris"
+    },
+    {
+      "name": "bolt-brussels",
+      "enabled": false,
+      "description": "Bolt free-floating e-scooters (Brussels, Belgium) public GBFS feed (system id 336); vehicle-level availability via free_bike_status. No key required. Add 'bolt-brussels' to GBFS_SOURCES to enable.",
+      "autodiscovery_url": "https://mds.bolt.eu/gbfs/3/336/gbfs",
+      "system_id": "bolt-brussels"
+    },
+    {
+      "name": "voi-oslo-entur",
+      "enabled": false,
+      "description": "Voi free-floating e-scooters (Oslo, Norway) public GBFS 3.0 feed served via Entur, Norway's national mobility aggregator; vehicle-level availability via vehicle_status. No key required. Add 'voi-oslo-entur' to GBFS_SOURCES to enable. Entur publishes many other Norwegian micromobility operators at /mobility/v2/gbfs/v3/{operator}/gbfs.",
+      "autodiscovery_url": "https://api.entur.io/mobility/v2/gbfs/v3/voioslo/gbfs",
+      "system_id": "voi-oslo-entur"
+    },
+    {
+      "name": "nextbike-template",
+      "enabled": false,
+      "description": "TEMPLATE for nextbike, a pan-European docked/hybrid operator running 300+ separate city systems on one GBFS host. Replace the SYSTEM_ID path segment with a specific nextbike system id (the MobilityData systems catalog lists each city's nextbike system id and gbfs.json URL), set a descriptive system_id, and set enabled to true. No key required.",
+      "autodiscovery_url": "https://gbfs.nextbike.net/maps/gbfs/v2/SYSTEM_ID/gbfs.json",
+      "system_id": "nextbike-replace-me"
+    },
+    {
+      "name": "api-key-template-query-param",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry, replace autodiscovery_url with an operator GBFS gbfs.json endpoint, export SOME_GBFS_KEY in the runtime environment, set api_key_param to the operator's documented query parameter, and set enabled to true.",
+      "autodiscovery_url": "https://operator.example/REPLACE_ME/gbfs.json",
+      "system_id": "replace-me",
+      "api_key": "${SOME_GBFS_KEY}",
+      "api_key_param": "api_key"
+    },
+    {
+      "name": "api-key-template-url-template",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry for a second key-protected operator, replace autodiscovery_url, export OTHER_GBFS_KEY, set api_key_param to the documented query parameter, and set enabled to true.",
+      "autodiscovery_url": "https://operator.example/REPLACE_ME/gbfs.json",
+      "system_id": "replace-me-token",
+      "api_key": "${OTHER_GBFS_KEY}",
+      "api_key_param": "token"
+    }
+  ]
+}
+

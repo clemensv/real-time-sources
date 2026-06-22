@@ -1,5 +1,8 @@
 # Oslo Bysykkel
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `oslo-bysykkel` · 2026-06-22
+
+
 **Country/Region**: Norway — Oslo
 **Publisher**: Oslo Bysykkel / Urban Sharing AS
 **API Endpoint**: `https://gbfs.urbansharing.com/oslobysykkel.no/gbfs.json`

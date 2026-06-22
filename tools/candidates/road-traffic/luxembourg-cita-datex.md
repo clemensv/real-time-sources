@@ -1,5 +1,8 @@
 # Luxembourg CITA DATEX II Traffic Feeds
 
+> ✅ **SHIPPED** · feeder: `datex2` · entry: `cita-luxembourg-a6` · 2026-06-22
+
+
 **Country/Region**: Luxembourg
 **Publisher**: CITA Luxembourg
 **API Endpoint**: `https://www.cita.lu/info_trafic/datex/`

@@ -1,4 +1,5 @@
 # NANOOS / ORCA Puget Sound ERDDAP
+> ✅ **SHIPPED** · feeder: `erddap` · entry: `nanoos-puget-sound-orca2` · 2026-06-22
 
 **Country/Region**: US — Puget Sound / Pacific Northwest
 **Publisher**: NANOOS (Northwest Association of Networked Ocean Observing Systems) with NW Environmental Moorings / University of Washington Applied Physics Laboratory

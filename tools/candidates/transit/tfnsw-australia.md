@@ -1,4 +1,5 @@
 # Transport for NSW — Australia Open Data
+> ✅ **SHIPPED** · feeder: `gtfs` · entry: `tfnsw-sydney` · 2026-06-22
 
 **Country/Region**: Australia (New South Wales)
 **Publisher**: Transport for NSW (TfNSW)

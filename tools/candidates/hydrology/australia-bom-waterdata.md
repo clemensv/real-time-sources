@@ -1,5 +1,8 @@
 # Australia — BOM Water Data Online
 
+> ✅ **SHIPPED** · feeder: `kiwis` · entry: `bom-australia-water` · 2026-06-22
+
+
 **Country/Region**: Australia (nationwide)
 **Publisher**: Bureau of Meteorology (BOM)
 **API Endpoint**: `http://www.bom.gov.au/waterdata/services`

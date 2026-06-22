@@ -1,0 +1,105 @@
+{
+  "description": "FDSN Seismology source catalog for the fdsn-seismology feeder. Each entry is an FDSN Event web-service node. Select nodes with the existing FDSN_NODES include list and FDSN_EXCLUDE_NODES deny list; when FDSN_NODES is unset, every entry whose 'enabled' flag is true is polled, and FDSN_EXCLUDE_NODES subtracts from that default set. Point FDSN_SOURCES_FILE at a copy of this file to maintain your own catalog. Secrets or private endpoint fragments may be written as ${ENV_VAR} and are expanded from the environment at load time.",
+  "sources": [
+    {
+      "name": "emsc",
+      "enabled": true,
+      "description": "European-Mediterranean Seismological Centre global aggregator FDSN Event service.",
+      "node_id": "emsc",
+      "base_url": "https://seismicportal.eu/fdsnws/event/1/",
+      "coverage": "Global aggregator",
+      "country": "FR",
+      "display_name": "European-Mediterranean Seismological Centre (EMSC)"
+    },
+    {
+      "name": "gfz",
+      "enabled": true,
+      "description": "GFZ GEOFON global M4+ FDSN Event service.",
+      "node_id": "gfz",
+      "base_url": "https://geofon.gfz-potsdam.de/fdsnws/event/1/",
+      "coverage": "Global M4+",
+      "country": "DE",
+      "display_name": "GFZ German Research Centre for Geosciences (GEOFON)"
+    },
+    {
+      "name": "ingv",
+      "enabled": true,
+      "description": "INGV Italy and Mediterranean FDSN Event service.",
+      "node_id": "ingv",
+      "base_url": "https://webservices.ingv.it/fdsnws/event/1/",
+      "coverage": "Italy + Mediterranean",
+      "country": "IT",
+      "display_name": "Istituto Nazionale di Geofisica e Vulcanologia (INGV)"
+    },
+    {
+      "name": "ethz",
+      "enabled": true,
+      "description": "ETH Zurich Swiss Seismological Service FDSN Event service for Switzerland and the Alpine region.",
+      "node_id": "ethz",
+      "base_url": "https://eida.ethz.ch/fdsnws/event/1/",
+      "coverage": "Switzerland + Alpine",
+      "country": "CH",
+      "display_name": "Swiss Seismological Service at ETH Zurich (SED)"
+    },
+    {
+      "name": "resif",
+      "enabled": true,
+      "description": "RESIF French and global M5+ FDSN Event service.",
+      "node_id": "resif",
+      "base_url": "https://ws.resif.fr/fdsnws/event/1/",
+      "coverage": "France + global M5+",
+      "country": "FR",
+      "display_name": "Réseau Sismologique et géodésique Français (RESIF)"
+    },
+    {
+      "name": "ipgp",
+      "enabled": true,
+      "description": "IPGP Mayotte volcanic swarm FDSN Event service.",
+      "node_id": "ipgp",
+      "base_url": "https://ws.ipgp.fr/fdsnws/event/1/",
+      "coverage": "Mayotte volcanic swarm",
+      "country": "FR",
+      "display_name": "Institut de Physique du Globe de Paris (IPGP)"
+    },
+    {
+      "name": "niep",
+      "enabled": true,
+      "description": "NIEP Romania and Vrancea FDSN Event service.",
+      "node_id": "niep",
+      "base_url": "https://eida-sc3.infp.ro/fdsnws/event/1/",
+      "coverage": "Romania + Vrancea",
+      "country": "RO",
+      "display_name": "National Institute for Earth Physics (NIEP)"
+    },
+    {
+      "name": "usgs",
+      "enabled": true,
+      "description": "USGS Earthquake Hazards Program global earthquake catalog FDSN Event service.",
+      "node_id": "usgs",
+      "base_url": "https://earthquake.usgs.gov/fdsnws/event/1/",
+      "coverage": "Global earthquake catalog",
+      "country": "US",
+      "display_name": "U.S. Geological Survey Earthquake Hazards Program (USGS)"
+    },
+    {
+      "name": "isc",
+      "enabled": false,
+      "description": "International Seismological Centre global FDSN Event service for the ISC bulletin and preliminary global catalog. Add 'isc' to FDSN_NODES to enable.",
+      "node_id": "isc",
+      "base_url": "https://www.isc.ac.uk/fdsnws/event/1/",
+      "coverage": "Global ISC bulletin and preliminary catalog",
+      "country": "GB",
+      "display_name": "International Seismological Centre (ISC)"
+    },
+    {
+      "name": "custom",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry, replace base_url with another FDSN Event service base URL, set node_id and metadata, then set enabled to true or select it with FDSN_NODES.",
+      "node_id": "custom",
+      "base_url": "REPLACE_WITH_FDSN_BASE_URL",
+      "coverage": "REPLACE_WITH_COVERAGE",
+      "country": "REPLACE_WITH_COUNTRY",
+      "display_name": "Custom FDSN Event service template"
+    }
+  ]
+}

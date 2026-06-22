@@ -1,4 +1,5 @@
 # RESIF — French Seismological and Geodetic Network
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `resif` · 2026-06-22
 
 ## Source Identity
 

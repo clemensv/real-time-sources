@@ -139,7 +139,7 @@ async def _publish_nodes(
 
 
 async def feed(args: argparse.Namespace) -> None:
-    active_nodes = get_active_nodes(parse_node_filter(args.nodes), parse_node_filter(args.exclude_nodes))
+    active_nodes = get_active_nodes(parse_node_filter(args.nodes), parse_node_filter(args.exclude_nodes), sources_file=args.fdsn_sources_file)
     if not active_nodes:
         raise RuntimeError("Node selection is empty after include/exclude filters.")
 
@@ -258,6 +258,7 @@ def main() -> None:
     parser.add_argument("--min-magnitude", type=float, default=float(os.getenv("MIN_MAGNITUDE", "0")))
     parser.add_argument("--nodes", default=os.getenv("FDSN_NODES") or os.getenv("NODES", ""))
     parser.add_argument("--exclude-nodes", default=os.getenv("FDSN_EXCLUDE_NODES") or os.getenv("EXCLUDE_NODES", ""))
+    parser.add_argument("--fdsn-sources-file", default=os.getenv("FDSN_SOURCES_FILE", ""))
     parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser("~/.fdsn_seismology_state_mqtt.json")))
     parser.add_argument("--limit", type=int, default=int(os.getenv("FDSN_LIMIT", "500")))
     parser.add_argument("--content-mode", choices=("binary", "structured"), default=os.getenv("MQTT_CONTENT_MODE", "binary"))

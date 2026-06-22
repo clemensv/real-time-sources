@@ -1,5 +1,8 @@
 # Bahrain Air Quality - OpenAQ Coverage
 
+> ✅ **SHIPPED** · feeder: `openaq` · entry: `bahrain` · 2026-06-22
+
+
 - **Country/Region**: Bahrain (BH)
 - **Endpoint**: `https://api.openaq.org/v3/locations?countries=BH` (OpenAQ API v3)
 - **Protocol**: REST / HTTP GET

@@ -1,0 +1,58 @@
+{
+  "description": "GTFS source catalog for the gtfs feeder. Each entry describes one transit feed: GTFS-Realtime URL(s), optional GTFS Schedule URL(s), Mobility Database source ID, agency tag, route selector, and optional headers. Choose which entries run with the GTFS_SOURCES environment variable: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. This packaged catalog intentionally ships only disabled examples/templates because GTFS has no universal default feed. Point GTFS_SOURCES_FILE at a copy of this file to maintain your own catalog. Secrets may be written as ${ENV_VAR} and are expanded from the environment at load time, so keys never live in this file. The legacy GTFS_RT_URLS / GTFS_URLS / MDB_SOURCE_ID / AGENCY / ROUTE / GTFS_RT_HEADERS / GTFS_HEADERS inline configuration still works and takes precedence over this catalog when any legacy feed URL or MDB source ID is set.",
+  "sources": [
+    {
+      "name": "mbta-boston",
+      "enabled": false,
+      "description": "Massachusetts Bay Transportation Authority (Boston, US) public keyless GTFS-Realtime feeds and public GTFS Schedule archive.",
+      "agency": "mbta",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://cdn.mbta.com/realtime/TripUpdates.pb",
+        "https://cdn.mbta.com/realtime/VehiclePositions.pb",
+        "https://cdn.mbta.com/realtime/Alerts.pb"
+      ],
+      "gtfs_urls": [
+        "https://cdn.mbta.com/MBTA_GTFS.zip"
+      ]
+    },
+    {
+      "name": "tfnsw-sydney",
+      "enabled": false,
+      "description": "Transport for NSW (Sydney and New South Wales, Australia) API-key-protected GTFS-Realtime feeds for trains, buses, ferries, light rail, and service alerts. Add 'tfnsw-sydney' to GTFS_SOURCES to enable.",
+      "agency": "tfnsw",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/sydneytrains",
+        "https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/buses",
+        "https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/ferries",
+        "https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/lightrail",
+        "https://api.transport.nsw.gov.au/v1/gtfs/realtime/sydneytrains",
+        "https://api.transport.nsw.gov.au/v1/gtfs/alerts/sydneytrains"
+      ],
+      "gtfs_urls": [],
+      "gtfs_rt_headers": {
+        "Authorization": "apikey ${TFNSW_API_KEY}"
+      }
+    },
+    {
+      "name": "keyed-operator-template",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry for an operator that requires an API key. Replace the URLs and agency tag with the operator's documented GTFS-Realtime and GTFS Schedule endpoints, export SOME_GTFS_KEY in the runtime environment, and set enabled to true.",
+      "agency": "replace-me",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://operator.example/REPLACE_WITH_GTFS_RT_URL"
+      ],
+      "gtfs_urls": [
+        "https://operator.example/REPLACE_WITH_GTFS_SCHEDULE_URL"
+      ],
+      "gtfs_rt_headers": {
+        "x-api-key": "${SOME_GTFS_KEY}"
+      },
+      "gtfs_headers": {
+        "x-api-key": "${SOME_GTFS_KEY}"
+      }
+    }
+  ]
+}

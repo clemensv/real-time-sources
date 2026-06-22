@@ -18,7 +18,7 @@ def _producer(cls, host, port, address, tls, user, pwd, args):
         return cls(host=host, port=port, address=address, credential=cred, entra_audience=args.amqp_entra_audience, use_tls=True, content_mode="binary")
     return cls(host=host, port=port, address=address, username=user, password=pwd, use_tls=tls, content_mode="binary")
 def feed(args: argparse.Namespace) -> None:
-    sources=parse_sources(args.erddap_sources); host,port,address,tls,user,pwd=_parts(args)
+    sources=parse_sources(args.erddap_sources, mock=args.mock, sources_file=args.erddap_sources_file, selector=args.erddap_select); host,port,address,tls,user,pwd=_parts(args)
     ds=_producer(OrgErddapAmqpDatasetProducer,host,port,address,tls,user,pwd,args); st=_producer(OrgErddapAmqpStationProducer,host,port,address,tls,user,pwd,args)
     client=ErddapClient(); state=load_state(args.state_file); last_ref=0.0
     if args.mock: args.once=True
@@ -50,3 +50,4 @@ def build_app_parser():
     return p
 def main(): main_dispatch(build_app_parser(), feed)
 if __name__=='__main__': main()
+

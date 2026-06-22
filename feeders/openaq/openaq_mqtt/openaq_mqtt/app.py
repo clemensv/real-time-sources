@@ -15,7 +15,7 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 
-from openaq_core import OpenAQClient, build_mock_client, load_state, parse_bool, parse_csv, save_state, should_publish_measurement
+from openaq_core import OpenAQClient, build_mock_client, load_query_slices, load_state, parse_bool, save_state, should_publish_measurement
 from openaq_core.acquisition import LocationRecord, MeasurementRecord, SensorRecord
 from openaq_mqtt_producer_data import Location, Measurement, Sensor
 from openaq_mqtt_producer_data.org.openaq.parameternameenum import ParameterNameenum
@@ -32,8 +32,6 @@ def build_sensor(r: SensorRecord) -> Sensor:
     d=dict(r.__dict__); d["parameter_name"]=_enum(r.parameter_name); return Sensor(**d)
 def build_measurement(r: MeasurementRecord) -> Measurement:
     d=dict(r.__dict__); d["parameter_name"]=_enum(r.parameter_name); return Measurement(**d)
-def _configured_ids(value: Optional[str]) -> list[int]: return [int(v) for v in parse_csv(value)]
-
 def _parse_broker_settings(args: argparse.Namespace) -> tuple[str, int, bool]:
     broker_url = args.mqtt_broker_url or (f"mqtt://{args.mqtt_host}:{args.mqtt_port}" if args.mqtt_host else None)
     if not broker_url: raise SystemExit("MQTT_BROKER_URL or MQTT_HOST/MQTT_PORT must be provided.")
@@ -53,8 +51,7 @@ async def feed(args: argparse.Namespace) -> None:
     state = load_state(args.state_file)
     client = build_mock_client() if args.mock else OpenAQClient(args.openaq_api_key)
     if args.mock: args.once = True
-    countries=[c.upper() for c in parse_csv(args.openaq_countries)]
-    location_ids=_configured_ids(args.openaq_locations)
+    query_slices = load_query_slices(args.openaq_countries, args.openaq_locations, args.openaq_bbox, args.page_limit, args.max_pages, mock=args.mock, sources_file=args.openaq_sources_file, selector=args.openaq_sources)
     paho_client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=args.mqtt_client_id or "", protocol=MQTTv5)
     auth_mode = (args.mqtt_auth_mode or "anonymous").lower()
     if auth_mode == "userpass" and args.mqtt_username: paho_client.username_pw_set(args.mqtt_username, args.mqtt_password or "")
@@ -77,14 +74,15 @@ async def feed(args: argparse.Namespace) -> None:
             cycle_started=time.time()
             if last_reference_refresh == 0.0 or cycle_started-last_reference_refresh >= reference_refresh:
                 locs=[]; sens={}
-                for location in client.iter_locations(countries, location_ids, args.openaq_bbox, args.page_limit, args.max_pages):
-                    locs.append(location)
-                    await loc_client.publish_org_openaq_mqtt_location(location_id=str(location.location_id), country_iso=location.country_iso, data=build_location(location))
-                    m={}
-                    for sensor in client.sensors_for_location(location):
-                        m[sensor.sensor_id]=sensor
-                        await sensor_client.publish_org_openaq_mqtt_sensor(location_id=str(sensor.location_id), sensor_id=str(sensor.sensor_id), country_iso=sensor.country_iso, parameter_name=sensor.parameter_name, data=build_sensor(sensor))
-                    sens[location.location_id]=m
+                for query_slice in query_slices:
+                    for location in client.iter_locations(query_slice.countries, query_slice.locations, query_slice.bbox, query_slice.page_limit, query_slice.max_pages):
+                        locs.append(location)
+                        await loc_client.publish_org_openaq_mqtt_location(location_id=str(location.location_id), country_iso=location.country_iso, data=build_location(location))
+                        m={}
+                        for sensor in client.sensors_for_location(location):
+                            m[sensor.sensor_id]=sensor
+                            await sensor_client.publish_org_openaq_mqtt_sensor(location_id=str(sensor.location_id), sensor_id=str(sensor.sensor_id), country_iso=sensor.country_iso, parameter_name=sensor.parameter_name, data=build_sensor(sensor))
+                        sens[location.location_id]=m
                 locations_cache=locs; sensors_cache=sens; last_reference_refresh=cycle_started
             for location in locations_cache:
                 for measurement in client.latest_for_location(location, sensors_cache.get(location.location_id, {})):
@@ -99,7 +97,8 @@ async def feed(args: argparse.Namespace) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser=argparse.ArgumentParser(description="OpenAQ global air quality -> MQTT bridge"); sub=parser.add_subparsers(dest="command"); f=sub.add_parser("feed")
-    for name, env, default in [("openaq-api-key","OPENAQ_API_KEY",None),("openaq-countries","OPENAQ_COUNTRIES","US"),("openaq-locations","OPENAQ_LOCATIONS",None),("openaq-bbox","OPENAQ_BBOX",None)]: f.add_argument("--"+name, default=os.getenv(env, default) if default is not None else os.getenv(env))
+    for name, env, default in [("openaq-api-key","OPENAQ_API_KEY",None),("openaq-countries","OPENAQ_COUNTRIES",None),("openaq-locations","OPENAQ_LOCATIONS",None),("openaq-bbox","OPENAQ_BBOX",None)]: f.add_argument("--"+name, default=os.getenv(env, default) if default is not None else os.getenv(env))
+    f.add_argument("--openaq-sources-file", default=os.getenv("OPENAQ_SOURCES_FILE", "")); f.add_argument("--openaq-sources", default=os.getenv("OPENAQ_SOURCES", ""))
     f.add_argument("--page-limit", type=int, default=int(os.getenv("OPENAQ_PAGE_LIMIT","25"))); f.add_argument("--max-pages", type=int, default=int(os.getenv("OPENAQ_MAX_PAGES","1")))
     f.add_argument("--poll-interval", type=int, default=int(os.getenv("POLL_INTERVAL","900"))); f.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL","21600"))); f.add_argument("--state-file", default=os.getenv("STATE_FILE",DEFAULT_STATE_FILE)); f.add_argument("--once", action="store_true", default=parse_bool(os.getenv("ONCE_MODE"),False)); f.add_argument("--mock", action="store_true", default=parse_bool(os.getenv("OPENAQ_MOCK"),False))
     f.add_argument("--mqtt-broker-url", default=os.getenv("MQTT_BROKER_URL")); f.add_argument("--mqtt-host", default=os.getenv("MQTT_HOST")); f.add_argument("--mqtt-port", default=os.getenv("MQTT_PORT","1883")); f.add_argument("--mqtt-tls", default=os.getenv("MQTT_ENABLE_TLS","false")); f.add_argument("--mqtt-auth-mode", default=os.getenv("MQTT_AUTH_MODE","anonymous")); f.add_argument("--mqtt-username", default=os.getenv("MQTT_USERNAME")); f.add_argument("--mqtt-password", default=os.getenv("MQTT_PASSWORD")); f.add_argument("--mqtt-client-cert", default=os.getenv("MQTT_CLIENT_CERT")); f.add_argument("--mqtt-client-key", default=os.getenv("MQTT_CLIENT_KEY")); f.add_argument("--mqtt-ca-file", default=os.getenv("MQTT_CA_FILE")); f.add_argument("--mqtt-client-id", default=os.getenv("MQTT_CLIENT_ID")); f.add_argument("--mqtt-entra-client-id", default=os.getenv("MQTT_ENTRA_CLIENT_ID")); f.add_argument("--mqtt-entra-audience", default=os.getenv("MQTT_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE))

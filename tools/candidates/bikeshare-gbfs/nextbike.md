@@ -1,5 +1,8 @@
 # nextbike
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `nextbike-template` · 2026-06-22
+
+
 **Country/Region**: Pan-European (30+ countries, 300+ cities)
 **Publisher**: nextbike GmbH (TIER Mobility subsidiary)
 **API Endpoint**: `https://gbfs.nextbike.net/maps/gbfs/v2/{system_id}/gbfs.json`

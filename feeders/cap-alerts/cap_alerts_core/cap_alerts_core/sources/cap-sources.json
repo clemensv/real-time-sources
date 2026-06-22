@@ -1,0 +1,110 @@
+{
+  "description": "Common Alerting Protocol (CAP) source catalog for the cap-alerts feeder. Each entry is a pollable CAP XML, Atom/CAP, or provider CAP-equivalent JSON endpoint. Choose which entries run with CAP_SELECT: a comma-separated list of names, or '*' for all; when unset, every entry whose 'enabled' flag is true is polled. Point CAP_SOURCES_FILE at a copy of this file to maintain your own catalog. The legacy CAP_SOURCES inline JSON configuration still works and takes precedence when set. Secrets may be written as ${ENV_VAR} and are expanded from the environment at load time, so keys never live in this file.",
+  "sources": [
+    {
+      "name": "nws-us-active-alerts",
+      "enabled": true,
+      "description": "US National Weather Service active-alerts CAP-equivalent JSON feed, with NWS zone metadata refreshed as reference data.",
+      "cap_source_id": "nws-us",
+      "url": "https://api.weather.gov/alerts/active",
+      "format": "nws-json",
+      "zone_url": "https://api.weather.gov/zones?limit=25"
+    },
+    {
+      "name": "meteoalarm-belgium",
+      "enabled": true,
+      "description": "MeteoAlarm Belgium legacy Atom feed whose entries link to CAP alert XML documents.",
+      "cap_source_id": "meteoalarm-belgium",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-belgium",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-ireland",
+      "enabled": false,
+      "description": "MeteoAlarm Ireland legacy Atom feed aggregating Met Eireann official weather warnings; entries link to CAP alert XML. Add 'meteoalarm-ireland' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-ireland",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-ireland",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-france",
+      "enabled": false,
+      "description": "MeteoAlarm France legacy Atom feed aggregating Meteo-France Vigilance weather warnings; entries link to CAP alert XML. Add 'meteoalarm-france' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-france",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-france",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-spain",
+      "enabled": false,
+      "description": "MeteoAlarm Spain legacy Atom feed aggregating AEMET official weather warnings; entries link to CAP alert XML. Add 'meteoalarm-spain' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-spain",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-spain",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-germany",
+      "enabled": false,
+      "description": "MeteoAlarm Germany legacy Atom feed aggregating Deutscher Wetterdienst (DWD) weather warnings; entries link to CAP alert XML. Add 'meteoalarm-germany' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-germany",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-germany",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-austria",
+      "enabled": false,
+      "description": "MeteoAlarm Austria legacy Atom feed aggregating GeoSphere Austria (ZAMG) weather warnings; entries link to CAP alert XML. Add 'meteoalarm-austria' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-austria",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-austria",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-italy",
+      "enabled": false,
+      "description": "MeteoAlarm Italy legacy Atom feed aggregating Italian national weather warnings; entries link to CAP alert XML. Add 'meteoalarm-italy' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-italy",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-italy",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-netherlands",
+      "enabled": false,
+      "description": "MeteoAlarm Netherlands legacy Atom feed aggregating KNMI weather warnings; entries link to CAP alert XML. Add 'meteoalarm-netherlands' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-netherlands",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-netherlands",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-portugal",
+      "enabled": false,
+      "description": "MeteoAlarm Portugal legacy Atom feed aggregating IPMA weather warnings; entries link to CAP alert XML. Add 'meteoalarm-portugal' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-portugal",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-portugal",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-switzerland",
+      "enabled": false,
+      "description": "MeteoAlarm Switzerland legacy Atom feed aggregating MeteoSwiss weather warnings; entries link to CAP alert XML. Add 'meteoalarm-switzerland' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-switzerland",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-switzerland",
+      "format": "atom-cap"
+    },
+    {
+      "name": "meteoalarm-poland",
+      "enabled": false,
+      "description": "MeteoAlarm Poland legacy Atom feed aggregating IMGW weather warnings; entries link to CAP alert XML. Add 'meteoalarm-poland' to CAP_SELECT to enable.",
+      "cap_source_id": "meteoalarm-poland",
+      "url": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-poland",
+      "format": "atom-cap"
+    },
+    {
+      "name": "national-cap-feed-template",
+      "enabled": false,
+      "description": "TEMPLATE - copy this entry for another national CAP feed, replace url with the agency's CAP endpoint, set cap_source_id to a stable short identifier, add auth_header or auth_env if the feed is key-protected, and set enabled to true.",
+      "cap_source_id": "replace-me-national-cap",
+      "url": "REPLACE_WITH_CAP_FEED_URL",
+      "format": "cap-xml"
+    }
+  ]
+}

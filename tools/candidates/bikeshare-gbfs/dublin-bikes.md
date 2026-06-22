@@ -1,5 +1,8 @@
 # Dublin Bikes (JCDecaux CycloCity)
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `dublin-bikes` · 2026-06-22
+
+
 **Country/Region**: Ireland — Dublin
 **Publisher**: JCDecaux Ireland / Dublin City Council
 **API Endpoint**: `https://api.cyclocity.fr/contracts/dublin/gbfs/gbfs.json`

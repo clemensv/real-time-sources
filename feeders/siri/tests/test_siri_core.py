@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
 
 from siri_core.acquisition import DEFAULT_BODS_URL, DEFAULT_ENTUR_URL, DEFAULT_TRAFIKLAB_URL, SiriClient, iter_vehicle_positions
-from siri_core.config import DEFAULT_ENTUR_CLIENT_NAME, FeedConfig, parse_request_headers
+from siri_core.config import DEFAULT_ENTUR_CLIENT_NAME, FeedConfig, load_feed_configs, parse_request_headers, select_entries
 
 
 def test_iter_vehicle_positions_parses_sample_xml():
@@ -182,3 +183,135 @@ def test_existing_provider_headers_are_unchanged_when_no_custom_headers():
     specs = client._build_request_specs()
 
     assert specs[0].headers == {"X-Api-Key": "secret"}
+
+
+def test_default_catalog_loads_enabled_bods(monkeypatch):
+    monkeypatch.delenv("SIRI_PROVIDER", raising=False)
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    configs = load_feed_configs()
+
+    assert len(configs) == 1
+    assert configs[0].provider == "bods"
+    assert configs[0].siri_url == DEFAULT_BODS_URL
+    assert configs[0].data_types == ("vm",)
+
+
+def test_select_entries_default_skips_disabled():
+    entries = [{"name": "a", "enabled": True}, {"name": "b", "enabled": False}]
+    assert [entry["name"] for entry in select_entries(entries)] == ["a"]
+
+
+def test_selector_returns_named_entries_in_order(monkeypatch):
+    monkeypatch.delenv("SIRI_PROVIDER", raising=False)
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    configs = load_feed_configs(selector="key-protected-siri-template,uk-bods-bulk-archive")
+
+    assert [config.provider for config in configs] == ["custom", "bods"]
+    assert configs[0].siri_url == "REPLACE_WITH_SIRI_URL"
+    assert configs[1].siri_url == DEFAULT_BODS_URL
+
+
+def test_selector_star_includes_disabled_templates(monkeypatch):
+    monkeypatch.delenv("SIRI_PROVIDER", raising=False)
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    configs = load_feed_configs(selector="*")
+
+    assert len(configs) == 3
+    assert any(config.provider == "custom" for config in configs)
+
+
+def test_unknown_selector_raises(monkeypatch):
+    monkeypatch.delenv("SIRI_PROVIDER", raising=False)
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    with pytest.raises(ValueError):
+        load_feed_configs(selector="does-not-exist")
+
+
+def test_legacy_siri_url_single_source_takes_precedence(monkeypatch):
+    monkeypatch.setenv("SIRI_URL", "https://example.test/legacy")
+    monkeypatch.setenv("SIRI_PROVIDER", "custom")
+    monkeypatch.setenv("SIRI_API_KEY", "legacy-key")
+    monkeypatch.setenv("SIRI_OPERATORS", "op-a,op-b")
+    monkeypatch.setenv("SIRI_DATA_TYPES", "vm,et")
+
+    configs = load_feed_configs(selector="uk-bods-bulk-archive")
+
+    assert len(configs) == 1
+    assert configs[0].provider == "custom"
+    assert configs[0].siri_url == "https://example.test/legacy"
+    assert configs[0].api_key == "legacy-key"
+    assert configs[0].operators == ("op-a", "op-b")
+    assert configs[0].data_types == ("vm", "et")
+
+
+def test_legacy_non_default_provider_single_source_takes_precedence(monkeypatch):
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    monkeypatch.setenv("SIRI_PROVIDER", "entur")
+
+    configs = load_feed_configs()
+
+    assert len(configs) == 1
+    assert configs[0].provider == "entur"
+    assert configs[0].siri_url == DEFAULT_ENTUR_URL
+
+
+def test_catalog_interpolates_api_key(monkeypatch):
+    monkeypatch.delenv("SIRI_PROVIDER", raising=False)
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    monkeypatch.setenv("PRIVATE_SIRI_KEY", "secret-123")
+    raw = json.dumps({
+        "sources": [
+            {
+                "name": "private",
+                "provider": "custom",
+                "siri_url": "https://example.test/siri",
+                "api_key": "${PRIVATE_SIRI_KEY}",
+            }
+        ]
+    })
+
+    configs = load_feed_configs(raw)
+
+    assert configs[0].api_key == "secret-123"
+
+
+def test_catalog_accepts_string_operators(monkeypatch):
+    monkeypatch.delenv("SIRI_PROVIDER", raising=False)
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    raw = json.dumps({
+        "sources": [
+            {
+                "name": "regional",
+                "provider": "trafiklab",
+                "operators": "skane/skanetrafiken,stockholm/sl",
+            }
+        ]
+    })
+
+    configs = load_feed_configs(raw)
+
+    assert configs[0].operators == ("skane/skanetrafiken", "stockholm/sl")
+
+
+def test_sources_file_override(tmp_path, monkeypatch):
+    monkeypatch.delenv("SIRI_PROVIDER", raising=False)
+    monkeypatch.delenv("SIRI_URL", raising=False)
+    catalog = tmp_path / "custom.sources.json"
+    catalog.write_text(
+        json.dumps({
+            "sources": [
+                {
+                    "name": "only",
+                    "provider": "entur",
+                    "siri_url": "https://api.entur.io/realtime/v1/rest/{data_type}",
+                    "data_types": ["vm"],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+
+    configs = load_feed_configs(sources_file=str(catalog))
+
+    assert len(configs) == 1
+    assert configs[0].provider == "entur"

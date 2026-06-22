@@ -1,5 +1,8 @@
 # AEMET OpenData — Spain
 
+> ✅ **SHIPPED** · feeder: `cap-alerts` · entry: `meteoalarm-spain` · 2026-06-22
+
+
 **Country/Region**: Spain (including Canary Islands, Ceuta, Melilla)
 **Publisher**: AEMET (Agencia Estatal de Meteorología)
 **API Endpoint**: `https://opendata.aemet.es/opendata/api/`

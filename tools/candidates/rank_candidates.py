@@ -151,6 +151,36 @@ def is_skip(text: str, title: str = "") -> bool:
     return False
 
 
+# A candidate is "shipped" once it has been folded into a generalized feeder's
+# source catalog as a config entry (the "generalize the feeder, don't fork it"
+# rule played out). Mark such a note with a one-line banner near the top:
+#   > \u2705 **SHIPPED** \u00b7 feeder: `gbfs-bikeshare` \u00b7 entry: `barcelona-bicing` \u00b7 2026-06-22
+# Shipped notes leave the active backlog (this generator moves them to the
+# Shipped section) yet stay in the tree as an auditable record. The banner is
+# regen-stable -- unlike a hand-ticked `- [x]` checkbox, which this script
+# overwrites on every run.
+SHIPPED_BANNER = re.compile(r"\u2705\s*\*\*SHIPPED\*\*", re.I)
+SHIPPED_MARK = re.compile(
+    r"\u2705\s*\*\*SHIPPED\*\*[^\n]*?feeder:\s*`([^`]+)`"
+    r"[^\n]*?entry:\s*`([^`]+)`"
+    r"(?:[^\n]*?(\d{4}-\d{2}-\d{2}))?", re.I)
+
+
+def parse_shipped(text: str):
+    """Return (shipped, feeder, entry, date) parsed from the SHIPPED banner.
+
+    The banner presence alone removes the note from the backlog (so a slightly
+    malformed feeder/entry still crosses it off); the structured `feeder:` /
+    `entry:` backtick fields are captured for the Shipped section when present.
+    """
+    if not SHIPPED_BANNER.search(text):
+        return False, "", "", ""
+    m = SHIPPED_MARK.search(text)
+    if m:
+        return True, m.group(1).strip(), m.group(2).strip(), (m.group(3) or "").strip()
+    return True, "", "", ""
+
+
 FIELD_RX = {
     "region": re.compile(r"^\s*[-*]?\s*\*\*(?:Country/Region|Region|Country)\*\*\s*[:\-]\s*(.+?)\s*$", re.I | re.M),
     "protocol": re.compile(r"^\s*[-*]?\s*\*\*Protocol\*\*\s*[:\-]\s*(.+?)\s*$", re.I | re.M),
@@ -198,6 +228,7 @@ def parse_note(path: str):
             break
     rel = os.path.relpath(path, REPO).replace("\\", "/")
     reuse, reuse_label = reuse_leverage(text)
+    shipped, ship_feeder, ship_entry, ship_date = parse_shipped(text)
     return {
         "domain": cat,
         "slug": slug,
@@ -207,6 +238,10 @@ def parse_note(path: str):
         "score_src": score_src,
         "kind": classify_kind(cat, slug, title, text, reuse_label),
         "skip": is_skip(text, title),
+        "shipped": shipped,
+        "ship_feeder": ship_feeder,
+        "ship_entry": ship_entry,
+        "ship_date": ship_date,
         "region": field(FIELD_RX["region"], text),
         "protocol": field(FIELD_RX["protocol"], text),
         "freshness": field(FIELD_RX["freshness"], text),
@@ -227,8 +262,12 @@ def main():
             continue
         rows.append(parse_note(path))
 
+    shipped = [r for r in rows if r["shipped"]]
+    shipped.sort(key=lambda r: (r["ship_feeder"], r["ship_entry"],
+                                r["title"].lower()))
     qualified = [r for r in rows
-                 if r["score"] is not None and r["score"] >= 10 and not r["skip"]]
+                 if r["score"] is not None and r["score"] >= 10
+                 and not r["skip"] and not r["shipped"]]
 
     # ranking key
     def sort_key(r):
@@ -311,7 +350,11 @@ def main():
     A("# Real-Time Sources — Definitive Implementation Ranking\n")
     A("> **Generated** by `tools/candidates/rank_candidates.py` on "
       f"{today}. Re-run after scoring or adding candidate notes; do not "
-      "hand-edit (edits are overwritten). Tick a box when the feeder ships.\n")
+      "hand-edit (edits are overwritten). To **cross a candidate off**, add a "
+      "shipped marker line to its note — `> \u2705 **SHIPPED** \u00b7 feeder: "
+      "`<feeder-dir>` \u00b7 entry: `<catalog-name>` \u00b7 <date>` — then re-run: "
+      "shipped candidates move to the **Shipped** section and leave the "
+      "backlog. (A hand-ticked `- [x]` box does not survive regeneration.)\n")
     A("This is the single ordered backlog for building out the qualifying "
       "candidate feeders catalogued under `tools/candidates/`. Work it "
       "top-to-bottom. Within each wave, rows are in strict priority order "
@@ -351,6 +394,7 @@ def main():
     # dashboard
     A("## Backlog at a glance\n")
     A(f"- **Qualifying feeders:** {len(qualified)}\n"
+      f"- **Shipped — folded into a generalized feeder:** {len(shipped)}\n"
       f"- **Quick-win configs (Wave 0):** {len(configs)}\n"
       f"- **Flagship new builds 15–18/18 (Wave 1):** {len(w1)}\n"
       f"- **Solid new builds 12–14/18 (Wave 2):** {len(w2)}\n"
@@ -417,6 +461,22 @@ def main():
             A(row_line(r))
         A("")
 
+    if shipped:
+        A(f"## \u2705 Shipped — folded into a generalized feeder  ({len(shipped)})\n")
+        A("These candidates have been integrated as **configuration entries** "
+          "in an existing generalized feeder's source catalog and are no "
+          "longer open backlog items. Enable them via the feeder's source "
+          "selector — see each feeder's README \u201cConfiguring sources\u201d "
+          "section.\n")
+        for r in shipped:
+            tgt = f"`{r['ship_feeder']}`" if r["ship_feeder"] else "`?`"
+            ent = f" \u00b7 entry `{r['ship_entry']}`" if r["ship_entry"] else ""
+            dt = f" \u00b7 {r['ship_date']}" if r["ship_date"] else ""
+            note = os.path.relpath(r["path"], "tools/candidates").replace(os.sep, "/")
+            A(f"- [x] **{r['title']}** \u2192 {tgt}{ent}{dt} \u00b7 "
+              f"`{r['domain']}` \u00b7 [`note`]({note})")
+        A("")
+
     section("Wave 0 — Quick-win configs",
             "Existing **generalized** feeders (`gtfs`/`siri` transit, "
             "`gbfs-bikeshare`, `fdsn-seismology`) just need a feed/node entry "
@@ -444,6 +504,7 @@ def main():
     # console summary
     print(f"notes scanned: {len(rows)}")
     print(f"qualified:     {len(qualified)}")
+    print(f"shipped:       {len(shipped)}")
     print(f"  configs (Wave0): {len(configs)}")
     print(f"  W1 15-18: {len(w1)}   W2 12-14: {len(w2)}   W3 10-11: {len(w3)}")
     print(f"  reuse builds:    {sum(1 for r in builds if r['reuse'])}")

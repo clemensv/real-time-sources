@@ -1,5 +1,8 @@
 # OpenAQ Kuwait Air Quality Stations
 
+> ✅ **SHIPPED** · feeder: `openaq` · entry: `kuwait` · 2026-06-22
+
+
 - **Country/Region**: Kuwait
 - **Endpoint**: `https://api.openaq.org/v3/locations?countries_id=119` (v3 API)
 - **Protocol**: REST / HTTP JSON

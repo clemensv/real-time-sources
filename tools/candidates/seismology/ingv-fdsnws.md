@@ -1,4 +1,5 @@
 # INGV — Istituto Nazionale di Geofisica e Vulcanologia (Italy)
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `ingv` · 2026-06-22
 
 ## Source Identity
 

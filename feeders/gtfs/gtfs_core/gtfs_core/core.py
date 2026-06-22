@@ -204,6 +204,159 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
     + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
 
+# Packaged source catalog shipped inside the wheel/Docker image. Override at
+# runtime with GTFS_SOURCES_FILE (a path to a copy of this JSON document).
+DEFAULT_SOURCES_FILE = os.path.join(os.path.dirname(__file__), "sources", "gtfs-sources.json")
+
+# ${ENV_VAR} placeholders in catalog string fields are expanded from the
+# process environment at load time so secrets never live in the file.
+_ENV_REF = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
+_CATALOG_METADATA_KEYS = {"name", "enabled", "description"}
+
+
+def _interpolate_env(value: Any) -> Any:
+    """Expand ${ENV_VAR} placeholders in strings (recursing into lists/dicts)."""
+    if isinstance(value, str):
+        return _ENV_REF.sub(lambda m: os.environ.get(m.group(1), ""), value)
+    if isinstance(value, list):
+        return [_interpolate_env(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _interpolate_env(item) for key, item in value.items()}
+    return value
+
+
+def _read_config_text(raw: str) -> str:
+    """Resolve an inline-config string: JSON literal, @path, or bare path."""
+    raw = raw.strip()
+    if raw.startswith("@"):
+        with open(raw[1:].strip(), "r", encoding="utf-8") as handle:
+            return handle.read()
+    if raw.startswith("[") or raw.startswith("{"):
+        return raw
+    if os.path.exists(raw):
+        with open(raw, "r", encoding="utf-8") as handle:
+            return handle.read()
+    return raw
+
+
+def _coerce_entries(data: Any) -> List[Dict[str, Any]]:
+    """Accept either a {"sources": [...]} catalog or a bare list of entries."""
+    if isinstance(data, dict):
+        data = data.get("sources", [])
+    if not isinstance(data, list):
+        return []
+    return [dict(item) for item in data if isinstance(item, dict)]
+
+
+def select_entries(entries: List[Dict[str, Any]], selector: str = "") -> List[Dict[str, Any]]:
+    """Filter catalog entries by the GTFS_SOURCES selector.
+
+    Empty selector -> every entry whose ``enabled`` flag is true (default true).
+    ``*`` -> every entry, including disabled templates.
+    Otherwise a comma-separated allow-list of entry ``name`` values, returned in
+    the order requested. An unknown name raises ``ValueError``.
+    """
+    selector = (selector or "").strip()
+    if selector == "*":
+        return list(entries)
+    if not selector:
+        return [entry for entry in entries if entry.get("enabled", True)]
+    by_name = {entry["name"]: entry for entry in entries if entry.get("name")}
+    chosen: List[Dict[str, Any]] = []
+    unknown: List[str] = []
+    for token in (part.strip() for part in selector.split(",")):
+        if not token:
+            continue
+        if token in by_name:
+            chosen.append(by_name[token])
+        else:
+            unknown.append(token)
+    if unknown:
+        known = ", ".join(sorted(by_name)) or "(none)"
+        raise ValueError(f"Unknown GTFS_SOURCES entries: {', '.join(unknown)}. Known names: {known}")
+    return chosen
+
+
+def _normalize_headers(value: Any) -> List[List[str]] | None:
+    """Normalize env/CLI/catalog header forms to [[name, value], ...]."""
+    if not value:
+        return None
+    if isinstance(value, dict):
+        return [[str(key), str(item)] for key, item in value.items()]
+    if isinstance(value, str):
+        return [value.split("=", 1)] if "=" in value else None
+    if not isinstance(value, list):
+        return None
+    headers: List[List[str]] = []
+    for item in value:
+        if isinstance(item, dict):
+            headers.extend([[str(key), str(val)] for key, val in item.items()])
+        elif isinstance(item, str):
+            if "=" in item:
+                headers.append(item.split("=", 1))
+        elif isinstance(item, (list, tuple)):
+            if len(item) == 2 and all(not isinstance(part, (list, tuple, dict)) for part in item):
+                headers.append([str(item[0]), str(item[1])])
+            else:
+                nested = _normalize_headers(list(item))
+                if nested:
+                    headers.extend(nested)
+    return headers or None
+
+
+def _clean_source_config(entry: Dict[str, Any]) -> Dict[str, Any]:
+    item = _interpolate_env(entry)
+    config = {key: value for key, value in item.items() if key not in _CATALOG_METADATA_KEYS}
+    if "route" not in config or config.get("route") in (None, ""):
+        config["route"] = "*"
+    config["gtfs_rt_headers"] = _normalize_headers(config.get("gtfs_rt_headers"))
+    config["gtfs_headers"] = _normalize_headers(config.get("gtfs_headers"))
+    return config
+
+
+def load_source_configs(
+    *,
+    gtfs_rt_urls: List[str] | None = None,
+    gtfs_urls: List[str] | None = None,
+    mdb_source_id: str | None = None,
+    agency: str | None = None,
+    route: str | None = None,
+    gtfs_rt_headers: Any = None,
+    gtfs_headers: Any = None,
+    sources_file: str = "",
+    selector: str = "",
+) -> List[Dict[str, Any]]:
+    """Resolve GTFS feeds to run.
+
+    Legacy one-feed configuration (GTFS_RT_URLS, GTFS_URLS, or MDB_SOURCE_ID)
+    takes precedence over the file catalog. Otherwise the selected catalog
+    entries are returned with metadata keys stripped.
+    """
+    if gtfs_rt_urls or gtfs_urls or mdb_source_id:
+        return [
+            _clean_source_config(
+                {
+                    "gtfs_rt_urls": gtfs_rt_urls,
+                    "gtfs_urls": gtfs_urls,
+                    "mdb_source_id": mdb_source_id,
+                    "agency": agency,
+                    "route": route or "*",
+                    "gtfs_rt_headers": gtfs_rt_headers,
+                    "gtfs_headers": gtfs_headers,
+                }
+            )
+        ]
+
+    path = sources_file.strip() if sources_file and sources_file.strip() else DEFAULT_SOURCES_FILE
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as handle:
+            entries = _coerce_entries(json.load(handle))
+    elif sources_file and sources_file.strip():
+        raise FileNotFoundError(path)
+    else:
+        entries = []
+    return [_clean_source_config(entry) for entry in select_entries(entries, selector)]
+
 def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, gtfs_headers: List[List[str]], etag: str, cache_dir: str | None) -> Tuple[str, str]:
     """
     Fetches the latest schedule file from the schedule URL if the file does not exist in the cache.
@@ -1144,16 +1297,26 @@ async def run_feed(args):
     if args.log_level:
         llevel = getattr(logging, args.log_level)
         logger.setLevel(llevel)
-    if not args.agency:
+    source_configs = load_source_configs(
+        gtfs_rt_urls=args.gtfs_rt_urls,
+        gtfs_urls=args.gtfs_urls,
+        mdb_source_id=args.mdb_source_id,
+        agency=args.agency,
+        route=args.route,
+        gtfs_rt_headers=args.gtfs_rt_headers,
+        gtfs_headers=args.gtfs_headers,
+        sources_file=args.gtfs_sources_file,
+        selector=args.gtfs_sources,
+    )
+    if not source_configs:
+        if args.agency:
+            raise ValueError("No GTFS URL or Mobility Database source ID specified")
         raise ValueError("No agency specified")
-    if not args.gtfs_urls and not args.gtfs_rt_urls and not args.mdb_source_id:
-        raise ValueError("No GTFS URL or Mobility Database source ID specified")
-    gtfs_rt_headers = None
-    gtfs_headers = None
-    if args.gtfs_rt_headers:
-        gtfs_rt_headers = [v.split("=", 1) for v in args.gtfs_rt_headers]
-    if args.gtfs_headers:
-        gtfs_headers = [v.split("=", 1) for v in args.gtfs_headers]
+    for source_config in source_configs:
+        if not source_config.get("agency"):
+            raise ValueError("No agency specified")
+        if not source_config.get("gtfs_urls") and not source_config.get("gtfs_rt_urls") and not source_config.get("mdb_source_id"):
+            raise ValueError("No GTFS URL or Mobility Database source ID specified")
 
     if args.connection_string:
         config_params = parse_connection_string(args.connection_string)
@@ -1167,8 +1330,9 @@ async def run_feed(args):
         sasl_username = args.sasl_username
         sasl_password = args.sasl_password
 
-    feed_realtime_messages(args.agency, kafka_bootstrap_servers, kafka_topic, sasl_username, sasl_password,
-                           args.gtfs_rt_urls, gtfs_rt_headers, args.gtfs_urls, gtfs_headers, args.mdb_source_id, args.route, args.poll_interval, args.schedule_poll_interval, args.cloudevents_mode, args.cache_dir, args.force_schedule_refresh)
+    for source_config in source_configs:
+        feed_realtime_messages(source_config.get("agency"), kafka_bootstrap_servers, kafka_topic, sasl_username, sasl_password,
+                               source_config.get("gtfs_rt_urls"), source_config.get("gtfs_rt_headers"), source_config.get("gtfs_urls"), source_config.get("gtfs_headers"), source_config.get("mdb_source_id"), source_config.get("route", "*"), args.poll_interval, args.schedule_poll_interval, args.cloudevents_mode, args.cache_dir, args.force_schedule_refresh)
 
 async def main():
     """
@@ -1191,6 +1355,8 @@ async def main():
     feed_parser.add_argument("--gtfs-urls", help="the URL(s) of the GTFS Schedule feed", nargs='+', required=False,default=os.environ.get("GTFS_URLS").split(",") if os.environ.get("GTFS_URLS") else None)
     feed_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Realtime feed", required=False, default=os.environ.get("MDB_SOURCE_ID"))
     feed_parser.add_argument("-a", "--agency", help="the tag of the agency to get vehicle locations for", required=False, default=os.environ.get("AGENCY"))
+    feed_parser.add_argument("--gtfs-sources-file", help="path to a GTFS source catalog JSON file", required=False, default=os.environ.get("GTFS_SOURCES_FILE", ""))
+    feed_parser.add_argument("--gtfs-sources", help="comma-separated catalog source names to run, or '*' for all", required=False, default=os.environ.get("GTFS_SOURCES", ""))
     feed_parser.add_argument('--gtfs-rt-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ.get("GTFS_RT_HEADERS")) if os.environ.get("GTFS_RT_HEADERS") else None)
     feed_parser.add_argument('--gtfs-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ.get("GTFS_HEADERS")) if os.environ.get("GTFS_HEADERS") else None)
     feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=float(os.environ.get("POLL_INTERVAL")) if os.environ.get("POLL_INTERVAL") else 90)

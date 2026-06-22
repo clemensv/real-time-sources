@@ -1,5 +1,8 @@
 # MobilityData GBFS Catalog
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `(discovery index)` · 2026-06-22
+
+
 **Country/Region**: Global
 **Publisher**: MobilityData (formerly NABSA)
 **API Endpoint**: `https://raw.githubusercontent.com/MobilityData/gbfs/master/systems.csv`

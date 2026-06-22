@@ -23,6 +23,14 @@ DEFAULT_ENDPOINTS = [
     {"id": "ndw", "url": "https://opendata.ndw.nu/planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz", "publication": "SituationPublication", "country": "nl", "operator": "ndw"},
 ]
 
+# Packaged source catalog shipped inside the wheel/Docker image. Override at
+# runtime with DATEX2_SOURCES_FILE (a path to a copy of this JSON document).
+DEFAULT_SOURCES_FILE = os.path.join(os.path.dirname(__file__), "sources", "datex2.sources.json")
+
+# ${ENV_VAR} placeholders in catalog string fields are expanded from the
+# process environment at load time so secrets never live in the file.
+_ENV_REF = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
 
 @dataclass(frozen=True)
 class Datex2Endpoint:
@@ -55,10 +63,73 @@ def build_retry_session() -> requests.Session:
     return session
 
 
-def load_endpoints(raw: str, mock: bool = False) -> List[Datex2Endpoint]:
-    data = [{"id": "sample", "url": "https://example.invalid/datex2/sample", "publication": "mock", "country": "eu", "operator": "datex2"}] if mock else (json.loads(raw) if raw.strip() else DEFAULT_ENDPOINTS)
+def _interpolate_env(value: Any) -> Any:
+    """Expand ${ENV_VAR} placeholders in strings (recursing into lists/dicts)."""
+    if isinstance(value, str):
+        return _ENV_REF.sub(lambda m: os.environ.get(m.group(1), ""), value)
+    if isinstance(value, list):
+        return [_interpolate_env(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _interpolate_env(item) for key, item in value.items()}
+    return value
+
+
+def _read_config_text(raw: str) -> str:
+    """Resolve an inline-config string: JSON literal, @path, or bare path."""
+    raw = raw.strip()
+    if raw.startswith("@"):
+        with open(raw[1:].strip(), "r", encoding="utf-8") as handle:
+            return handle.read()
+    if raw.startswith("[") or raw.startswith("{"):
+        return raw
+    if os.path.exists(raw):
+        with open(raw, "r", encoding="utf-8") as handle:
+            return handle.read()
+    return raw
+
+
+def _coerce_entries(data: Any) -> List[Dict[str, Any]]:
+    """Accept either a {"sources": [...]} catalog or a bare list of entries."""
+    if isinstance(data, dict):
+        data = data.get("sources", [])
+    if not isinstance(data, list):
+        return []
+    return [dict(item) for item in data if isinstance(item, dict)]
+
+
+def select_entries(entries: List[Dict[str, Any]], selector: str = "") -> List[Dict[str, Any]]:
+    """Filter catalog entries by the DATEX2_SOURCES selector.
+
+    Empty selector -> every entry whose ``enabled`` flag is true (default true).
+    ``*`` -> every entry, including disabled templates.
+    Otherwise a comma-separated allow-list of entry ``name`` values, returned in
+    the order requested. An unknown name raises ``ValueError``.
+    """
+    selector = (selector or "").strip()
+    if selector == "*":
+        return list(entries)
+    if not selector:
+        return [entry for entry in entries if entry.get("enabled", True)]
+    by_name = {entry["name"]: entry for entry in entries if entry.get("name")}
+    chosen: List[Dict[str, Any]] = []
+    unknown: List[str] = []
+    for token in (part.strip() for part in selector.split(",")):
+        if not token:
+            continue
+        if token in by_name:
+            chosen.append(by_name[token])
+        else:
+            unknown.append(token)
+    if unknown:
+        known = ", ".join(sorted(by_name)) or "(none)"
+        raise ValueError(f"Unknown DATEX2_SOURCES entries: {', '.join(unknown)}. Known names: {known}")
+    return chosen
+
+
+def _entries_to_endpoints(entries: Iterable[Dict[str, Any]]) -> List[Datex2Endpoint]:
     endpoints: List[Datex2Endpoint] = []
-    for item in data:
+    for raw_item in entries:
+        item = _interpolate_env(raw_item)
         endpoints.append(Datex2Endpoint(
             id=str(item.get("id") or item.get("supplier_id") or "datex2"),
             url=str(item.get("url") or item.get("base_url") or item.get("endpoint") or ""),
@@ -67,7 +138,29 @@ def load_endpoints(raw: str, mock: bool = False) -> List[Datex2Endpoint]:
             operator=str(item.get("operator") or item.get("operator_id") or item.get("id") or "datex2").lower(),
             auth_header=item.get("auth_header") or item.get("authorization"),
         ))
-    return [e for e in endpoints if e.url]
+    return [endpoint for endpoint in endpoints if endpoint.url]
+
+
+def load_endpoints(raw: str = "", mock: bool = False, sources_file: str = "", selector: str = "") -> List[Datex2Endpoint]:
+    """Resolve the DATEX II endpoints to poll.
+
+    Resolution order: ``mock`` -> inline ``raw`` (legacy DATEX2_ENDPOINTS: a JSON
+    array, a ``{"sources": [...]}`` object, or ``@/path/to/file.json``) -> the
+    catalog file (``sources_file`` override or the packaged default). The
+    ``selector`` (DATEX2_SOURCES) then narrows which catalog entries run.
+    """
+    if mock:
+        return _entries_to_endpoints([{"id": "sample", "url": "https://example.invalid/datex2/sample", "publication": "mock", "country": "eu", "operator": "datex2"}])
+    if raw and raw.strip():
+        entries = _coerce_entries(json.loads(_read_config_text(raw)))
+    else:
+        path = sources_file.strip() if sources_file and sources_file.strip() else DEFAULT_SOURCES_FILE
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as handle:
+                entries = _coerce_entries(json.load(handle))
+        else:
+            entries = [dict(item) for item in DEFAULT_ENDPOINTS]
+    return _entries_to_endpoints(select_entries(entries, selector))
 
 
 def load_state(path: str) -> Dict[str, str]:

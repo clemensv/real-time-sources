@@ -1,5 +1,8 @@
 # Bay Wheels San Francisco
 
+> ✅ **SHIPPED** · feeder: `gbfs-bikeshare` · entry: `bay-wheels-sf` · 2026-06-22
+
+
 **Country/Region**: United States — San Francisco Bay Area
 **Publisher**: Lyft (operator)
 **API Endpoint**: `https://gbfs.baywheels.com/gbfs/gbfs.json`

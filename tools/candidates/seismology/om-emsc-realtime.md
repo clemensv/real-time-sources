@@ -1,4 +1,5 @@
 # EMSC Real-Time Earthquakes (Oman/Arabian Peninsula Region)
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `emsc` · 2026-06-22
 
 - **Country/Region**: Global (regional filter for Oman/Arabian Peninsula: 16-27°N, 52-60°E)
 - **Endpoint**: `https://www.seismicportal.eu/fdsnws/event/1/query?format=json`

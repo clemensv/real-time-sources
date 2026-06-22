@@ -1,4 +1,5 @@
 # EMSC / SeismicPortal — European-Mediterranean Seismological Centre
+> ✅ **SHIPPED** · feeder: `fdsn-seismology` · entry: `emsc` · 2026-06-22
 
 ## Source Identity
 
