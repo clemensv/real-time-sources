@@ -27,7 +27,7 @@ from digitraffic_road_producer_kafka_producer.producer import (
     FiDigitrafficRoadStationsEventProducer,
 )
 
-from digitraffic_road.mqtt_source import MQTTSource
+from digitraffic_road_core import MQTTSource
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)

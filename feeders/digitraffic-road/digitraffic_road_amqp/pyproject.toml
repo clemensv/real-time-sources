@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "digitraffic_road_core",
     "azure-core>=1.30.0",
     "azure-identity>=1.17.0",
     "cloudevents>=1.11.0,<2.0.0",
@@ -37,3 +38,6 @@ local_scheme = "no-local-version"
 packages = [
     "digitraffic_road_amqp",
 ]
+
+[tool.uv.sources]
+digitraffic_road_core = { path = "../digitraffic_road_core" }
