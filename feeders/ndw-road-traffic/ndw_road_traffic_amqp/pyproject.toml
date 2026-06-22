@@ -7,7 +7,13 @@ name = "ndw-road-traffic-amqp"
 version = "0.1.0"
 description = "AMQP companion feeder for NDW Road Traffic"
 requires-python = ">=3.10"
-dependencies = ["python-qpid-proton>=0.40.0"]
+dependencies = [
+    "python-qpid-proton>=0.40.0",
+    "ndw-road-traffic-core",
+]
+
+[tool.uv.sources]
+ndw-road-traffic-core = { path = "../ndw_road_traffic_core", editable = true }
 
 [project.scripts]
 ndw-road-traffic-amqp = "ndw_road_traffic_amqp.app:main"

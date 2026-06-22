@@ -1,250 +1,577 @@
+"""MQTT companion feeder for ndw-road-traffic.
+
+Polls NDW open-data XML feeds and publishes CloudEvents to an MQTT 5 broker
+using the generated NLNDWAVGMqttMqttClient / NLNDWDRIPMqttMqttClient /
+NLNDWMSIMqttMqttClient / NLNDWSituationsMqttMqttClient producers.
+
+Transport-neutral acquisition lives in ndw_road_traffic_core.
+"""
+
 from __future__ import annotations
 
-import argparse, json, os, re, time, uuid
-from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping
-
-from urllib.parse import urlencode, urlparse
+import argparse
+import asyncio
+import logging
+import os
+import sys
+import time
+from typing import Optional
+from urllib.parse import urlparse
+from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
-    params = {
-        "api-version": "2018-02-01",
-        "resource": audience or "https://eventgrid.azure.net/",
-    }
-    if managed_identity_client_id:
-        params["client_id"] = managed_identity_client_id
+import paho.mqtt.client as mqtt
 
-    request = Request(
+from ndw_road_traffic_mqtt_producer_mqtt_client.client import (
+    NLNDWAVGMqttMqttClient,
+    NLNDWDRIPMqttMqttClient,
+    NLNDWMSIMqttMqttClient,
+    NLNDWSituationsMqttMqttClient,
+)
+from ndw_road_traffic_mqtt_producer_data import (
+    PointMeasurementSite,
+    RouteMeasurementSite,
+    TrafficObservation,
+    TravelTimeObservation,
+    DripSign,
+    DripDisplayState,
+    MsiSign,
+    MsiDisplayState,
+    Roadwork,
+    BridgeOpening,
+    TemporaryClosure,
+    TemporarySpeedLimit,
+    SafetyRelatedMessage,
+)
+from ndw_road_traffic_core.ndw_road_traffic import (
+    BASE_URL,
+    SITUATION_FEEDS,
+    DEFAULT_POLL_INTERVAL_SECONDS,
+    DEFAULT_REFERENCE_REFRESH_SECONDS,
+    DEFAULT_SITUATION_INTERVAL_SECONDS,
+    DEFAULT_STATE_FILE,
+    DEFAULT_MAX_RECORDS_PER_FAMILY,
+    StateManager,
+    NdwAcquirer,
+)
+
+logger = logging.getLogger(__name__)
+
+DEFAULT_ENTRA_AUDIENCE = "https://eventgrid.azure.net/"
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    val = os.getenv(name)
+    if val is None:
+        return default
+    return val.lower() in {"1", "true", "yes", "on"}
+
+
+def _topic_safe(value: object) -> str:
+    """Sanitise a value for use as an MQTT topic segment."""
+    text = (str(value) if value is not None else "unknown").strip() or "unknown"
+    for ch in ("/", "+", "#", "\x00"):
+        text = text.replace(ch, "-")
+    return "-".join(text.split()) or "unknown"
+
+
+def _fetch_entra_token(audience: str, client_id: Optional[str] = None) -> str:
+    params = {"api-version": "2018-02-01", "resource": audience}
+    if client_id:
+        params["client_id"] = client_id
+    req = Request(
         "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
         headers={"Metadata": "true"},
     )
-    with urlopen(request, timeout=30) as response:
-        payload = json.loads(response.read().decode("utf-8"))
-
+    with urlopen(req, timeout=30) as resp:
+        payload = __import__("json").loads(resp.read().decode())
     token = payload.get("accessToken") or payload.get("access_token")
     if not token:
-        raise RuntimeError("IMDS token response did not contain an access token")
+        raise RuntimeError("IMDS did not return an access token")
     return str(token)
 
-def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
-    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
-    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
-    if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or ""), None
+def _build_mqtt_client(args: argparse.Namespace) -> tuple[mqtt.Client, str, int, Optional[str]]:
+    """Return (paho_client, broker_host, broker_port, optional_entra_token)."""
+    url = args.broker_url or f"mqtt://{args.host or 'localhost'}:{args.port or 1883}"
+    if "://" not in url:
+        url = f"mqtt://{url}"
+    parsed = urlparse(url)
+    host = parsed.hostname or "localhost"
+    port = parsed.port or (8883 if parsed.scheme in ("mqtts", "ssl") else 1883)
 
-    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
-    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
-    resolved_username = resolved_client_id or str(username or "").strip()
-    if not resolved_username:
-        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
-
-    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
-    from paho.mqtt.properties import Properties as _MqttConnProps
-    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
-    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
-    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
-    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
-    return resolved_client_id, resolved_username, resolved_password, _connect_props
-
-PROJECT_DIR = "ndw-road-traffic"
-XREG_FILE = "ndw-road-traffic.xreg.json"
-TRANSPORT = "mqtt"
-ROOT = Path(os.getenv("SOURCE_ROOT", os.getcwd()))
-if not (ROOT / "xreg" / XREG_FILE).exists():
-    ROOT = Path(__file__).resolve().parents[2]
-MANIFEST_PATH = ROOT / "xreg" / XREG_FILE
-TEMPLATE_RE = re.compile(r"{([^{}]+)}")
-NOW = "2025-01-15T12:00:00Z"
-
-DEFAULTS = {
-    "agencyid": "sample-agency", "agency_id": "sample-agency", "route_id": "sample-route", "route_tag": "sample-route",
-    "vehicle_id": "sample-vehicle", "trip_id": "sample-trip", "alert_id": "sample-alert", "row_id": "sample-row",
-    "road": "A1", "site_id": "sample-site", "situation_id": "sample-situation", "situation_record_id": "sample-situation",
-    "district": "centro", "sensor_id": "sample-sensor", "counter_id": "sample-counter", "neighborhood": "downtown",
-    "closure_id": "sample-closure", "road_id": "A1", "severity": "moderate", "disruption_id": "sample-disruption",
-    "system_id": "docomo-cycle", "ward": "chiyoda", "station_id": "sample-station", "region": "seattle",
-    "crossing_name": "sample-crossing", "vessel_id": "sample-vessel", "mountain_pass_id": "sample-pass",
-    "state_route_id": "SR-520", "bridge_number": "sample-bridge", "flow_data_id": "sample-flow",
-    "travel_time_id": "sample-travel-time", "trip_name": "sample-trip", "vms_controller_id": "sample-controller",
-    "vms_index": "1", "sign_id": "sample-sign", "measurement_site_id": "sample-site", "id": "sample-id",
-    "identifier": "sample-identifier", "event": "event", "ce_id": "sample-event", "date": NOW, "event_time": NOW,
-}
-
-def load_manifest() -> Dict[str, Any]:
-    with MANIFEST_PATH.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
-
-def resolve_pointer(document: Mapping[str, Any], pointer: str) -> Any:
-    if pointer.startswith('#'):
-        pointer = pointer[1:]
-    cur: Any = document
-    for raw in pointer.strip('/').split('/'):
-        if not raw:
-            continue
-        cur = cur[raw.replace('~1','/').replace('~0','~')]
-    return cur
-
-def resolve_message(document: Mapping[str, Any], message: Mapping[str, Any]) -> Dict[str, Any]:
-    base_url = message.get('basemessageuri')
-    if not base_url:
-        return dict(message)
-    base = resolve_message(document, resolve_pointer(document, str(base_url)))
-    base.update({k:v for k,v in message.items() if k != 'basemessageuri'})
-    return base
-
-def render(template: str | None, context: Mapping[str, Any]) -> str:
-    if not template:
-        return ""
-    def repl(match):
-        name = match.group(1)
-        return str(context.get(name, DEFAULTS.get(name, f"sample-{name.replace('_','-')}")))
-    return TEMPLATE_RE.sub(repl, template)
-
-def sample_for_type(spec: Any, defs: Mapping[str, Any]) -> Any:
-    if isinstance(spec, list):
-        non_null = [x for x in spec if x != 'null']
-        return sample_for_type(non_null[0] if non_null else 'string', defs)
-    if isinstance(spec, dict):
-        if '$ref' in spec:
-            resolved = resolve_pointer(defs, spec['$ref'])
-            if isinstance(resolved, Mapping) and resolved.get('enum'):
-                return resolved['enum'][0]
-            if isinstance(resolved, Mapping) and resolved.get('type') not in (None, 'object'):
-                return sample_for_type(resolved.get('type'), defs)
-            return sample_from_schema(resolved, defs)
-        if spec.get('enum'):
-            return spec['enum'][0]
-        if spec.get('type') == 'choice' and spec.get('choices'):
-            choice_name, first = next(iter(spec['choices'].items()))
-            return {choice_name: sample_for_type(first, defs)}
-        if 'type' in spec:
-            return sample_for_type(spec['type'], defs)
-    t = str(spec or 'string').lower()
-    if t in ('int','integer','long','int32','int64','uint32','uint64'): return 1
-    if t in ('float','double','number','decimal'): return 1.0
-    if t in ('bool','boolean'): return True
-    if t == 'array': return []
-    if t == 'object': return {}
-    if 'date' in t or 'time' in t: return NOW
-    return 'sample'
-
-def sample_from_schema(schema: Mapping[str, Any], defs: Mapping[str, Any] | None = None) -> Dict[str, Any]:
-    root_doc = defs or schema
-    if isinstance(schema, Mapping) and "$root" in schema:
-        schema = resolve_pointer(schema, str(schema["$root"]))
-    defs = root_doc
-    if isinstance(schema.get('type'), dict) or schema.get('type') not in (None, 'object'):
-        val = sample_for_type(schema.get('type'), defs)
-        return val if isinstance(val, dict) else {"value": val}
-    props = schema.get('properties') or {}
-    required = set(schema.get('required') or [])
-    data: Dict[str, Any] = {}
-    for name, prop in props.items():
-        if name in required:
-            if isinstance(prop, Mapping) and 'enum' in prop:
-                data[name] = prop['enum'][0]
-            else:
-                data[name] = sample_for_type(prop if isinstance(prop, Mapping) else 'string', defs)
-    return data
-
-def topic_options(message: Mapping[str, Any]) -> tuple[str,int,bool]:
-    po = message.get('protocoloptions') or {}
-    props = po.get('properties') or {}
-    topic = po.get('topic_name') or po.get('topic') or props.get('topic')
-    if isinstance(topic, Mapping): topic = topic.get('value')
-    return str(topic), int(po.get('qos', props.get('qos', 1))), bool(po.get('retain', props.get('retain', False)))
-
-def iter_contracts(protocol_prefix: str) -> Iterable[Dict[str, Any]]:
-    manifest = load_manifest()
-    for endpoint in manifest.get('endpoints', {}).values():
-        if not str(endpoint.get('protocol','')).upper().startswith(protocol_prefix.upper()):
-            continue
-        for group_ref in endpoint.get('messagegroups', []):
-            group = resolve_pointer(manifest, group_ref)
-            for key, m in (group.get('messages') or {}).items():
-                msg = resolve_message(manifest, m)
-                ce = msg.get('envelopemetadata') or {}
-                schema = resolve_pointer(manifest, msg['dataschemauri'])
-                version = schema.get('defaultversionid','1')
-                jschema = schema['versions'][version]['schema']
-                data = sample_from_schema(jschema)
-                context = dict(DEFAULTS)
-                context.update(data if isinstance(data, dict) else {})
-                subject = render((ce.get('subject') or {}).get('value'), context) or 'sample'
-                _merge_subject_context((ce.get('subject') or {}).get('value'), subject, context)
-                ce_type = (ce.get('type') or {}).get('value') or key
-                source = render((ce.get('source') or {}).get('value'), context) or f"https://example.invalid/{PROJECT_DIR}"
-                ce_id = render((ce.get('id') or {}).get('value'), context) or str(uuid.uuid4())
-                ce_time = render((ce.get('time') or {}).get('value'), context) or NOW
-                for pname in set(TEMPLATE_RE.findall(subject) + TEMPLATE_RE.findall(source) + TEMPLATE_RE.findall(ce_id) + TEMPLATE_RE.findall(ce_time)):
-                    context.setdefault(pname, DEFAULTS.get(pname, f"sample-{pname.replace('_','-')}"))
-                if isinstance(data, dict):
-                    for k,v in context.items(): data.setdefault(k, v)
-                yield {"type": ce_type, "source": source, "subject": subject, "id": ce_id, "time": ce_time, "data": data, "message": msg, "context": context}
-
-def _merge_subject_context(template: str | None, rendered: str, context: Dict[str, Any]) -> None:
-    if not template:
-        return
-    names = TEMPLATE_RE.findall(template)
-    pattern = '^' + re.escape(template) + '$'
-    for name in names:
-        pattern = pattern.replace('\\{' + name + '\\}', f'(?P<{name}>[^/]+)')
-    match = re.match(pattern, rendered)
-    if match:
-        context.update(match.groupdict())
-
-def mqtt_feed() -> None:
-    import paho.mqtt.client as mqtt
     from paho.mqtt.client import CallbackAPIVersion, MQTTv5
-    from paho.mqtt.properties import Properties
-    from paho.mqtt.packettypes import PacketTypes
-    from urllib.parse import urlparse
-    url = os.getenv('MQTT_BROKER_URL') or f"mqtt://{os.getenv('MQTT_HOST','localhost')}:{os.getenv('MQTT_PORT','1883')}"
-    parsed = urlparse(url if '://' in url else f'mqtt://{url}')
-    host = parsed.hostname or 'localhost'; port = parsed.port or (8883 if parsed.scheme == 'mqtts' else 1883)
-    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
-        username=os.getenv('MQTT_USERNAME'),
-        password=os.getenv('MQTT_PASSWORD',''),
-        client_id=None,
-        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    client = mqtt.Client(
+        client_id=args.client_id or "",
+        callback_api_version=CallbackAPIVersion.VERSION2,
+        protocol=MQTTv5,
     )
 
-    client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if _entra_props is None and (resolved_username or resolved_password):
-        client.username_pw_set(resolved_username, resolved_password)
-    if parsed.scheme == 'mqtts' or os.getenv('MQTT_TLS','').lower() in ('1','true','yes'):
-        client.tls_set()
-    client.connect(host, port, 30, properties=_entra_props); client.loop_start(); time.sleep(0.5)
-    for c in iter_contracts('MQTT'):
-        topic, qos, retain = topic_options(c['message'])
-        topic = render(topic, {**c['context'], **(c['data'] if isinstance(c['data'],dict) else {})})
-        props = Properties(PacketTypes.PUBLISH)
-        props.ContentType = 'application/json'
-        props.UserProperty = [('specversion','1.0'),('type',c['type']),('source',c['source']),('subject',c['subject']),('id',c['id']),('time',c['time'])]
-        client.publish(topic, json.dumps(c['data'], ensure_ascii=False).encode('utf-8'), qos=qos, retain=retain, properties=props).wait_for_publish()
-    time.sleep(1.0); client.loop_stop(); client.disconnect()
+    entra_token: Optional[str] = None
+    auth_mode = (args.auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).lower()
+    if auth_mode == "entra":
+        audience = args.entra_audience or DEFAULT_ENTRA_AUDIENCE
+        entra_token = _fetch_entra_token(audience, args.entra_client_id)
+    else:
+        username = args.username or parsed.username or ""
+        password = args.password or parsed.password or ""
+        if username or password:
+            client.username_pw_set(username, password)
 
-def amqp_feed() -> None:
-    from proton import Message
-    from proton.utils import BlockingConnection
-    from urllib.parse import quote
-    host=os.getenv('AMQP_HOST','localhost'); port=int(os.getenv('AMQP_PORT','5672')); address=os.getenv('AMQP_ADDRESS') or PROJECT_DIR
-    user=os.getenv('AMQP_USERNAME'); pwd=os.getenv('AMQP_PASSWORD') or ''
-    auth = f"{quote(user)}:{quote(pwd)}@" if user else ''
-    conn=BlockingConnection(f"amqp://{auth}{host}:{port}", timeout=30, allowed_mechs='PLAIN' if user else None)
-    sender=conn.create_sender(address)
-    for c in iter_contracts('AMQP'):
-        props={f'cloudEvents:{k}':str(v) for k,v in {'specversion':'1.0','type':c['type'],'source':c['source'],'subject':c['subject'],'id':c['id'],'time':c['time']}.items()}
-        sender.send(Message(body=json.dumps(c['data'], ensure_ascii=False), subject=c['subject'], properties=props, content_type='application/json'))
-    conn.close()
+    if parsed.scheme in ("mqtts", "ssl") or _env_bool("MQTT_TLS"):
+        client.tls_set()
+
+    return client, host, port, entra_token
+
+
+async def _run_feed(args: argparse.Namespace) -> None:
+    paho_client, host, port, entra_token = _build_mqtt_client(args)
+
+    avg_client = NLNDWAVGMqttMqttClient(paho_client)
+    drip_client = NLNDWDRIPMqttMqttClient(paho_client)
+    msi_client = NLNDWMSIMqttMqttClient(paho_client)
+    sit_client = NLNDWSituationsMqttMqttClient(paho_client)
+
+    await avg_client.connect(host, port, token=entra_token)
+
+    acquirer = NdwAcquirer(
+        base_url=args.base_url,
+        max_records_per_family=args.max_records_per_family,
+    )
+    state = StateManager(args.state_file)
+
+    last_ref = 0.0
+    last_sit = 0.0
+
+    while True:
+        now = time.monotonic()
+
+        # Reference data
+        if now - last_ref >= args.reference_refresh_interval:
+            await _emit_reference(acquirer, avg_client, drip_client, msi_client)
+            last_ref = time.monotonic()
+
+        # Telemetry
+        await _emit_speed(acquirer, state, avg_client)
+        await _emit_traveltime(acquirer, state, avg_client)
+        await _emit_drip_states(acquirer, state, drip_client)
+        await _emit_msi_states(acquirer, state, msi_client)
+
+        # Situations (lower frequency)
+        if now - last_sit >= args.situation_interval:
+            await _emit_situations(acquirer, state, sit_client)
+            last_sit = time.monotonic()
+
+        state.save()
+
+        if args.once:
+            break
+        await asyncio.sleep(args.poll_interval)
+
+    await avg_client.disconnect()
+
+
+async def _emit_reference(
+    acquirer: NdwAcquirer,
+    avg_client: NLNDWAVGMqttMqttClient,
+    drip_client: NLNDWDRIPMqttMqttClient,
+    msi_client: NLNDWMSIMqttMqttClient,
+) -> None:
+    # Measurement sites
+    try:
+        point_sites, route_sites = acquirer.fetch_measurement_sites()
+    except Exception:
+        logger.exception("Failed to fetch measurement sites")
+        point_sites, route_sites = [], []
+
+    for rec in point_sites:
+        road = _topic_safe(rec.get("road_name"))
+        data = PointMeasurementSite(
+            measurement_site_id=rec["measurement_site_id"],
+            name=rec["name"],
+            measurement_site_type=rec["measurement_site_type"],
+            period=rec["period"],
+            latitude=rec["latitude"],
+            longitude=rec["longitude"],
+            road_name=rec["road_name"],
+            lane_count=rec["lane_count"],
+            carriageway_type=rec["carriageway_type"],
+        )
+        try:
+            await avg_client.publish_nl_ndw_avg_point_measurement_site_mqtt(
+                measurement_site_id=rec["measurement_site_id"],
+                road=road,
+                data=data,
+            )
+        except Exception:
+            logger.exception("MQTT publish failed for PointMeasurementSite %s", rec["measurement_site_id"])
+
+    for rec in route_sites:
+        road = _topic_safe(rec.get("road_name"))
+        data = RouteMeasurementSite(
+            measurement_site_id=rec["measurement_site_id"],
+            name=rec["name"],
+            measurement_site_type=rec["measurement_site_type"],
+            period=rec["period"],
+            start_latitude=rec["start_latitude"],
+            start_longitude=rec["start_longitude"],
+            end_latitude=rec["end_latitude"],
+            end_longitude=rec["end_longitude"],
+            road_name=rec["road_name"],
+            length_metres=rec["length_metres"],
+        )
+        try:
+            await avg_client.publish_nl_ndw_avg_route_measurement_site_mqtt(
+                measurement_site_id=rec["measurement_site_id"],
+                road=road,
+                data=data,
+            )
+        except Exception:
+            logger.exception("MQTT publish failed for RouteMeasurementSite %s", rec["measurement_site_id"])
+
+    logger.info("Emitted %d point + %d route measurement site events via MQTT",
+                len(point_sites), len(route_sites))
+
+    # DRIP signs
+    try:
+        drip_signs, _ = acquirer.fetch_drip()
+    except Exception:
+        logger.exception("Failed to fetch DRIP signs")
+        drip_signs = []
+
+    for rec in drip_signs:
+        road = _topic_safe(rec.get("road_name"))
+        data = DripSign(
+            vms_controller_id=rec["vms_controller_id"],
+            vms_index=rec["vms_index"],
+            vms_type=rec["vms_type"],
+            latitude=rec["latitude"],
+            longitude=rec["longitude"],
+            road_name=rec["road_name"],
+            description=rec["description"],
+        )
+        try:
+            await drip_client.publish_nl_ndw_drip_drip_sign_mqtt(
+                vms_controller_id=rec["vms_controller_id"],
+                vms_index=rec["vms_index"],
+                road=road,
+                data=data,
+            )
+        except Exception:
+            logger.exception("MQTT publish failed for DripSign %s", rec["vms_controller_id"])
+
+    logger.info("Emitted %d DripSign reference events via MQTT", len(drip_signs))
+
+    # MSI signs
+    try:
+        msi_signs, _ = acquirer.fetch_msi()
+    except Exception:
+        logger.exception("Failed to fetch MSI signs")
+        msi_signs = []
+
+    for rec in msi_signs:
+        road = _topic_safe(rec.get("road_name"))
+        data = MsiSign(
+            sign_id=rec["sign_id"],
+            sign_type=rec["sign_type"],
+            latitude=rec["latitude"],
+            longitude=rec["longitude"],
+            road_name=rec["road_name"],
+            lane=rec["lane"],
+            description=rec["description"],
+        )
+        try:
+            await msi_client.publish_nl_ndw_msi_msi_sign_mqtt(
+                sign_id=rec["sign_id"],
+                road=road,
+                data=data,
+            )
+        except Exception:
+            logger.exception("MQTT publish failed for MsiSign %s", rec["sign_id"])
+
+    logger.info("Emitted %d MsiSign reference events via MQTT", len(msi_signs))
+
+
+async def _emit_speed(
+    acquirer: NdwAcquirer,
+    state: StateManager,
+    avg_client: NLNDWAVGMqttMqttClient,
+) -> None:
+    try:
+        records = acquirer.fetch_speed_observations()
+    except Exception:
+        logger.exception("Failed to fetch speed observations")
+        return
+
+    count = 0
+    for rec in records:
+        sid = rec["measurement_site_id"]
+        mtime = rec["measurement_time"]
+        if state.state.get("speed", {}).get(sid) == mtime:
+            continue
+        data = TrafficObservation(
+            measurement_site_id=sid,
+            measurement_time=mtime,
+            average_speed=rec["average_speed"],
+            vehicle_flow_rate=rec["vehicle_flow_rate"],
+            number_of_lanes_with_data=rec["number_of_lanes_with_data"],
+        )
+        try:
+            await avg_client.publish_nl_ndw_avg_traffic_observation_mqtt(
+                measurement_site_id=sid,
+                road="unknown",
+                data=data,
+            )
+            state.state.setdefault("speed", {})[sid] = mtime
+            count += 1
+        except Exception:
+            logger.exception("MQTT publish failed for TrafficObservation %s", sid)
+
+    logger.info("Emitted %d TrafficObservation events via MQTT", count)
+
+
+async def _emit_traveltime(
+    acquirer: NdwAcquirer,
+    state: StateManager,
+    avg_client: NLNDWAVGMqttMqttClient,
+) -> None:
+    try:
+        records = acquirer.fetch_traveltime_observations()
+    except Exception:
+        logger.exception("Failed to fetch travel time observations")
+        return
+
+    count = 0
+    for rec in records:
+        sid = rec["measurement_site_id"]
+        mtime = rec["measurement_time"]
+        if state.state.get("traveltime", {}).get(sid) == mtime:
+            continue
+        data = TravelTimeObservation(
+            measurement_site_id=sid,
+            measurement_time=mtime,
+            duration=rec["duration"],
+            reference_duration=rec["reference_duration"],
+            accuracy=rec["accuracy"],
+            data_quality=rec["data_quality"],
+            number_of_input_values=rec["number_of_input_values"],
+        )
+        try:
+            await avg_client.publish_nl_ndw_avg_travel_time_observation_mqtt(
+                measurement_site_id=sid,
+                road="unknown",
+                data=data,
+            )
+            state.state.setdefault("traveltime", {})[sid] = mtime
+            count += 1
+        except Exception:
+            logger.exception("MQTT publish failed for TravelTimeObservation %s", sid)
+
+    logger.info("Emitted %d TravelTimeObservation events via MQTT", count)
+
+
+async def _emit_drip_states(
+    acquirer: NdwAcquirer,
+    state: StateManager,
+    drip_client: NLNDWDRIPMqttMqttClient,
+) -> None:
+    try:
+        _, states = acquirer.fetch_drip()
+    except Exception:
+        logger.exception("Failed to fetch DRIP display states")
+        return
+
+    count = 0
+    for rec in states:
+        key = f"{rec['vms_controller_id']}/{rec['vms_index']}"
+        pub_time = rec["publication_time"]
+        if state.state.get("drip", {}).get(key) == pub_time:
+            continue
+        data = DripDisplayState(
+            vms_controller_id=rec["vms_controller_id"],
+            vms_index=rec["vms_index"],
+            publication_time=pub_time,
+            active=rec["active"],
+            vms_text=rec["vms_text"],
+            pictogram_code=rec["pictogram_code"],
+            state=rec["state"],
+        )
+        try:
+            await drip_client.publish_nl_ndw_drip_drip_display_state_mqtt(
+                vms_controller_id=rec["vms_controller_id"],
+                vms_index=rec["vms_index"],
+                road="unknown",
+                data=data,
+            )
+            state.state.setdefault("drip", {})[key] = pub_time
+            count += 1
+        except Exception:
+            logger.exception("MQTT publish failed for DripDisplayState %s", key)
+
+    logger.info("Emitted %d DripDisplayState events via MQTT", count)
+
+
+async def _emit_msi_states(
+    acquirer: NdwAcquirer,
+    state: StateManager,
+    msi_client: NLNDWMSIMqttMqttClient,
+) -> None:
+    try:
+        _, states = acquirer.fetch_msi()
+    except Exception:
+        logger.exception("Failed to fetch MSI display states")
+        return
+
+    count = 0
+    for rec in states:
+        sid = rec["sign_id"]
+        pub_time = rec["publication_time"]
+        if state.state.get("msi", {}).get(sid) == pub_time:
+            continue
+        data = MsiDisplayState(
+            sign_id=sid,
+            publication_time=pub_time,
+            image_code=rec["image_code"],
+            state=rec["state"],
+            speed_limit=rec["speed_limit"],
+        )
+        try:
+            await msi_client.publish_nl_ndw_msi_msi_display_state_mqtt(
+                sign_id=sid,
+                road="unknown",
+                data=data,
+            )
+            state.state.setdefault("msi", {})[sid] = pub_time
+            count += 1
+        except Exception:
+            logger.exception("MQTT publish failed for MsiDisplayState %s", sid)
+
+    logger.info("Emitted %d MsiDisplayState events via MQTT", count)
+
+
+async def _emit_situations(
+    acquirer: NdwAcquirer,
+    state: StateManager,
+    sit_client: NLNDWSituationsMqttMqttClient,
+) -> None:
+    for feed_file, feed_type in SITUATION_FEEDS:
+        try:
+            records = acquirer.fetch_situations(feed_file, feed_type)
+        except Exception:
+            logger.exception("Failed to fetch situation feed %s", feed_file)
+            continue
+
+        count = 0
+        for rec in records:
+            rid = rec["situation_record_id"]
+            vtime = rec["version_time"]
+            if state.state.get("situation", {}).get(rid) == vtime:
+                continue
+            road = _topic_safe(rec.get("road_name"))
+            try:
+                if feed_type == "roadwork":
+                    data = Roadwork(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"), description=rec.get("description"),
+                        location_description=rec.get("location_description"),
+                        probability=rec.get("probability"), severity=rec.get("severity"),
+                        management_type=rec.get("management_type"),
+                    )
+                    await sit_client.publish_nl_ndw_situations_roadwork_mqtt(
+                        situation_record_id=rid, road=road, data=data)
+                elif feed_type == "bridge_opening":
+                    data = BridgeOpening(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        bridge_name=rec.get("bridge_name"), road_name=rec.get("road_name"),
+                        description=rec.get("description"),
+                    )
+                    await sit_client.publish_nl_ndw_situations_bridge_opening_mqtt(
+                        situation_record_id=rid, road=road, data=data)
+                elif feed_type == "temporary_closure":
+                    data = TemporaryClosure(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"), description=rec.get("description"),
+                        location_description=rec.get("location_description"),
+                        severity=rec.get("severity"),
+                    )
+                    await sit_client.publish_nl_ndw_situations_temporary_closure_mqtt(
+                        situation_record_id=rid, road=road, data=data)
+                elif feed_type == "temporary_speed_limit":
+                    data = TemporarySpeedLimit(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"),
+                        speed_limit_kmh=rec.get("speed_limit_kmh"),
+                        description=rec.get("description"),
+                        location_description=rec.get("location_description"),
+                    )
+                    await sit_client.publish_nl_ndw_situations_temporary_speed_limit_mqtt(
+                        situation_record_id=rid, road=road, data=data)
+                elif feed_type == "safety_related_message":
+                    data = SafetyRelatedMessage(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"),
+                        message_type=rec.get("message_type"),
+                        description=rec.get("description"),
+                        urgency=rec.get("urgency"),
+                    )
+                    await sit_client.publish_nl_ndw_situations_safety_related_message_mqtt(
+                        situation_record_id=rid, road=road, data=data)
+                else:
+                    continue
+                state.state.setdefault("situation", {})[rid] = vtime
+                count += 1
+            except Exception:
+                logger.exception("MQTT publish failed for %s situation %s", feed_type, rid)
+
+        logger.info("Emitted %d %s situation events via MQTT", count, feed_type)
+
+
+def _add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    parser.add_argument("feed_command", nargs="?", default="feed")
+    parser.add_argument("--broker-url", default=os.getenv("MQTT_BROKER_URL"))
+    parser.add_argument("--host", default=os.getenv("MQTT_HOST"))
+    parser.add_argument("--port", type=int, default=int(os.getenv("MQTT_PORT", "0")) or None)
+    parser.add_argument("--client-id", default=os.getenv("MQTT_CLIENT_ID", ""))
+    parser.add_argument("--username", default=os.getenv("MQTT_USERNAME"))
+    parser.add_argument("--password", default=os.getenv("MQTT_PASSWORD"))
+    parser.add_argument("--tls", action="store_true", default=_env_bool("MQTT_TLS"))
+    parser.add_argument("--auth-mode", choices=("password", "entra"), default=os.getenv("MQTT_AUTH_MODE", "password"))
+    parser.add_argument("--entra-audience", default=os.getenv("MQTT_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE))
+    parser.add_argument("--entra-client-id", default=os.getenv("MQTT_ENTRA_CLIENT_ID"))
+    parser.add_argument("--base-url", default=os.getenv("NDW_BASE_URL", BASE_URL))
+    parser.add_argument("--poll-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", DEFAULT_POLL_INTERVAL_SECONDS)))
+    parser.add_argument("--reference-refresh-interval", type=int,
+                        default=int(os.getenv("REFERENCE_REFRESH_INTERVAL", DEFAULT_REFERENCE_REFRESH_SECONDS)))
+    parser.add_argument("--situation-interval", type=int,
+                        default=int(os.getenv("SITUATION_INTERVAL", DEFAULT_SITUATION_INTERVAL_SECONDS)))
+    parser.add_argument("--state-file", default=os.getenv("STATE_FILE", DEFAULT_STATE_FILE))
+    parser.add_argument("--max-records-per-family", type=int,
+                        default=int(os.getenv("MAX_RECORDS_PER_FAMILY", "0")) or None)
+    parser.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE"))
+    return parser
+
 
 def main() -> None:
-    parser=argparse.ArgumentParser(); parser.add_argument('command', nargs='?', default='feed'); parser.add_argument('--once', action='store_true')
-    args=parser.parse_args()
-    if args.command != 'feed': parser.error("only 'feed' is supported")
-    if TRANSPORT == 'mqtt': mqtt_feed()
-    else: amqp_feed()
-if __name__ == '__main__': main()
+    logging.basicConfig(
+        level=os.getenv("LOG_LEVEL", "INFO").upper(),
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+    parser = _add_args(argparse.ArgumentParser(description="NDW Road Traffic MQTT feeder"))
+    args = parser.parse_args()
+    if args.feed_command != "feed":
+        parser.error("only the 'feed' command is supported")
+    asyncio.run(_run_feed(args))
+
+
+if __name__ == "__main__":
+    main()

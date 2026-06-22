@@ -20,9 +20,11 @@ dependencies = [
     "cloudevents>=1.12.1,<2.0.0",
     "confluent-kafka>=2.14.2",
     "dataclasses-json>=0.6.7",
-    "requests>=2.34.2",
-    "urllib3>=1.26.0",
+    "ndw-road-traffic-core",
 ]
+
+[tool.uv.sources]
+ndw-road-traffic-core = { path = "ndw_road_traffic_core", editable = true }
 
 [project.scripts]
 ndw-road-traffic = "ndw_road_traffic:main"

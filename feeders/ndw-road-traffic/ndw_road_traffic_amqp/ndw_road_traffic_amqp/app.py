@@ -1,89 +1,160 @@
+"""AMQP 1.0 companion feeder for ndw-road-traffic.
 
-"""AMQP 1.0 companion feeder for ndw-road-traffic."""
+Polls NDW open-data XML feeds and sends CloudEvents via AMQP 1.0 using the
+family-specific generated AMQP producer classes.
+
+KNOWN BLOCKER — xrcg send_amqp name collision (xregistry/codegen#482):
+  Each generated AMQP producer class (NLNDWAVGAmqpProducer, etc.) contains
+  multiple methods all named `send_amqp`, one per message type.  Python only
+  retains the *last* definition, making the earlier ones unreachable.
+  Workaround: build and dispatch AMQP messages directly via the producer's
+  lower-level `_send_via_reactor` / `_send_via_blocking_sender` methods plus
+  `_serialize_payload` and `_ce_headers_to_amqp_properties`, bypassing the
+  colliding `send_amqp` name entirely.  The workaround is localised to the
+  `_send_direct` helper below and can be removed once the codegen emits
+  distinct method names per message type.
+"""
+
 from __future__ import annotations
 
 import argparse
 import asyncio
-import importlib
-import inspect
 import json
 import logging
 import os
-import pathlib
-import re
 import sys
 import time
 from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib.parse import urlparse
 
-try:
-    from proton import symbol
-except Exception:  # pragma: no cover
-    symbol = lambda value: value  # type: ignore
+from proton import Message, symbol
 
-DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
-SOURCE_ID = "ndw-road-traffic"
-PY_MODULE = "ndw_road_traffic"
-ENV_PREFIX = "NDW_ROAD_TRAFFIC"
+from ndw_road_traffic_amqp_producer_amqp_producer.producer import (
+    NLNDWAVGAmqpProducer,
+    NLNDWDRIPAmqpProducer,
+    NLNDWMSIAmqpProducer,
+    NLNDWSituationsAmqpProducer,
+)
+from ndw_road_traffic_amqp_producer_data import (
+    PointMeasurementSite,
+    RouteMeasurementSite,
+    TrafficObservation,
+    TravelTimeObservation,
+    DripSign,
+    DripDisplayState,
+    MsiSign,
+    MsiDisplayState,
+    Roadwork,
+    BridgeOpening,
+    TemporaryClosure,
+    TemporarySpeedLimit,
+    SafetyRelatedMessage,
+)
+from ndw_road_traffic_core.ndw_road_traffic import (
+    BASE_URL,
+    SITUATION_FEEDS,
+    DEFAULT_POLL_INTERVAL_SECONDS,
+    DEFAULT_REFERENCE_REFRESH_SECONDS,
+    DEFAULT_SITUATION_INTERVAL_SECONDS,
+    DEFAULT_STATE_FILE,
+    DEFAULT_MAX_RECORDS_PER_FAMILY,
+    StateManager,
+    NdwAcquirer,
+)
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
+SOURCE_ID = "ndw-road-traffic"
+
 
 def _env_bool(name: str, default: bool = False) -> bool:
-    value = os.getenv(name)
-    if value is None:
+    val = os.getenv(name)
+    if val is None:
         return default
-    return value.lower() in {"1", "true", "yes", "on"}
+    return val.lower() in {"1", "true", "yes", "on"}
 
 
-def _topic_segment(value: Any) -> str:
-    text = (str(value) if value is not None else "unknown").strip() or "unknown"
-    for forbidden in ("/", "+", "#", "\x00"):
-        text = text.replace(forbidden, "-")
-    return "-".join(text.split()) or "unknown"
+def _now_utc() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
+
+# ---------------------------------------------------------------------------
+# WORKAROUND(xregistry/codegen#482): send_amqp name collision
+#
+# xrcg generates multiple methods all named `send_amqp` inside a single
+# producer class (one per message type). Python retains only the last.
+# We bypass the collision by building the AMQP Message directly and calling
+# the producer's internal low-level send path.  This is intentionally
+# minimal: we only replicate the attribute-assembly logic that every
+# send_amqp body shares.
+# ---------------------------------------------------------------------------
+
+def _send_direct(
+    producer: Any,
+    ce_type: str,
+    source: str,
+    subject: str,
+    data: Any,
+    content_type: str = "application/json",
+) -> None:
+    """Send a single CloudEvent via AMQP bypassing the send_amqp name collision."""
+    from cloudevents.http import CloudEvent
+    from cloudevents.conversion import to_binary, to_structured
+
+    attributes = {
+        "type": ce_type,
+        "source": source,
+        "subject": subject,
+        "time": _now_utc(),
+    }
+
+    byte_data = producer._serialize_payload(data, content_type)
+    cloud_event = CloudEvent(attributes, byte_data)
+
+    if getattr(producer, "content_mode", "structured") == "structured":
+        headers, body = to_structured(cloud_event)
+        msg_body = body if isinstance(body, bytes) else str(body).encode("utf-8")
+        amqp_msg = Message(body=msg_body, inferred=True)
+        amqp_msg.content_type = getattr(producer, "format_type", "application/json")
+    else:
+        headers, body = to_binary(cloud_event)
+        if isinstance(body, str):
+            body = body.encode("utf-8")
+        amqp_msg = Message(body=body, inferred=True)
+        amqp_msg.content_type = content_type
+        if headers:
+            amqp_msg.properties = producer._ce_headers_to_amqp_properties(headers)
+
+    amqp_msg.subject = subject
+    amqp_msg.annotations = {symbol("x-opt-partition-key"): subject[:128]}
+
+    if getattr(producer, "_handler", None) is not None:
+        producer._send_via_reactor(amqp_msg)
+    else:
+        producer._send_via_blocking_sender(amqp_msg)
+
+
+# ---------------------------------------------------------------------------
+# AMQP producer factory helpers
+# ---------------------------------------------------------------------------
 
 def _parse_broker_url(url: str):
     parsed = urlparse(url if "://" in url else f"amqp://{url}")
     scheme = (parsed.scheme or "amqp").lower()
     tls = scheme in ("amqps", "ssl", "tls")
-    return parsed.hostname or "localhost", parsed.port or (5671 if tls else 5672), tls, parsed.username, parsed.password, (parsed.path or "").lstrip("/") or None
+    return (
+        parsed.hostname or "localhost",
+        parsed.port or (5671 if tls else 5672),
+        tls,
+        parsed.username,
+        parsed.password,
+        (parsed.path or "").lstrip("/") or None,
+    )
 
 
-def _producer_class():
-    mod = importlib.import_module(f"{PY_MODULE}_amqp_producer_amqp_producer.producer")
-    classes = [obj for _, obj in vars(mod).items() if inspect.isclass(obj) and any(name.startswith("send_") for name in dir(obj))]
-    if not classes:
-        raise RuntimeError(f"No AMQP producer class found in {mod.__name__}")
-    # xrcg can emit producer classes whose names do not end with "AmqpProducer"
-    # (for example after a simplified message-group manifest). Prefer the concrete
-    # class with the most send_* methods rather than relying on the old naming rule.
-    classes.sort(key=lambda cls: (len([name for name in dir(cls) if name.startswith("send_")]), cls.__name__), reverse=True)
-    return classes[0]
-
-
-def _apply_partition_key_workaround(producer):
-    # WORKAROUND(xregistry/codegen#294): xrcg declares AMQP message_annotations
-    # but does not emit them yet. Stamp x-opt-partition-key from CE subject.
-    def stamp(msg):
-        props = dict(getattr(msg, "properties", None) or {})
-        ce_subject = props.get("cloudEvents:subject") or getattr(msg, "subject", None)
-        if ce_subject:
-            annotations = dict(getattr(msg, "annotations", None) or {})
-            annotations[symbol("x-opt-partition-key")] = str(ce_subject)
-            msg.annotations = annotations
-        return msg
-    if getattr(producer, "_sender", None) is not None:
-        original_send = producer._sender.send
-        producer._sender.send = lambda msg, *a, **kw: original_send(stamp(msg), *a, **kw)
-    if hasattr(producer, "_send_via_reactor"):
-        original_reactor_send = producer._send_via_reactor
-        producer._send_via_reactor = lambda msg: original_reactor_send(stamp(msg))
-    return producer
-
-
-def _build_amqp_producer(args):
+def _build_producer(cls, args: argparse.Namespace):
     address = args.address
     if args.broker_url:
         host, port, tls, url_user, url_pwd, path = _parse_broker_url(args.broker_url)
@@ -100,222 +171,438 @@ def _build_amqp_producer(args):
         port = args.port or (5671 if tls else 5672)
         username = args.username
         password = args.password
-    kwargs = dict(host=host, address=address, port=port, content_mode=args.content_mode, use_tls=tls)
+
+    kwargs: dict[str, Any] = dict(
+        host=host,
+        address=address,
+        port=port,
+        content_mode=args.content_mode,
+        use_tls=tls,
+    )
     if args.auth_mode == "entra":
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
-        kwargs.update(credential=ManagedIdentityCredential(client_id=args.entra_client_id) if args.entra_client_id else DefaultAzureCredential(), entra_audience=args.entra_audience)
+        kwargs["credential"] = (
+            ManagedIdentityCredential(client_id=args.entra_client_id)
+            if args.entra_client_id
+            else DefaultAzureCredential()
+        )
+        kwargs["entra_audience"] = args.entra_audience
     elif args.auth_mode == "sas":
         if not args.sas_key_name or not args.sas_key:
             raise RuntimeError("AMQP auth-mode=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY")
-        kwargs.update(sas_key_name=args.sas_key_name, sas_key=args.sas_key)
+        kwargs["sas_key_name"] = args.sas_key_name
+        kwargs["sas_key"] = args.sas_key
     else:
-        kwargs.update(username=username, password=password)
-    return _apply_partition_key_workaround(_producer_class()(**kwargs))
+        kwargs["username"] = username
+        kwargs["password"] = password
+
+    return cls(**kwargs)
 
 
-class MqttToAmqpAdapter:
-    """Adapter exposing generated MQTT publish_* names over AMQP send_* APIs."""
-    def __init__(self, producer: Any):
-        self.producer = producer
-        self._send_methods = {name: getattr(producer, name) for name in dir(producer) if name.startswith("send_") and not name.endswith("_batch")}
-        self.sent = 0
+def _retry_build(cls, args, max_attempts=5, initial_delay=10):
+    for attempt in range(max_attempts):
+        try:
+            return _build_producer(cls, args)
+        except Exception as exc:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logger.warning("Producer init attempt %d/%d failed: %s; retrying in %ds",
+                           attempt + 1, max_attempts, exc, delay)
+            time.sleep(delay)
 
-    async def connect(self, *_args, **_kwargs):
-        return None
 
-    async def disconnect(self):
-        close = getattr(self.producer, "close", None)
-        if close:
-            close()
+# ---------------------------------------------------------------------------
+# Emission helpers
+# ---------------------------------------------------------------------------
 
-    def _choose_method(self, publish_name: str, kwargs: dict[str, Any]):
-        route_keys = {"_" + k for k in kwargs if k not in {"data", "qos", "retain", "topic", "content_type", "message_expiry_interval"}}
-        candidates = []
-        publish_norm = publish_name.replace("publish_", "").replace("mqtt", "amqp")
-        words = set(re.split(r"_+", publish_norm))
-        compact_publish = re.sub(r"[^a-z0-9]", "", publish_norm.lower())
-        for name, method in self._send_methods.items():
-            params = inspect.signature(method).parameters
-            required_route = {p for p, _param in params.items() if p.startswith("_") and _param.default is inspect.Parameter.empty}
-            if not required_route <= route_keys:
+_AVG_BASE = "https://opendata.ndw.nu"
+_DRIP_SRC = f"{_AVG_BASE}/dynamische_route_informatie_paneel.xml.gz"
+_MSI_SRC = f"{_AVG_BASE}/Matrixsignaalinformatie.xml.gz"
+
+_SITUATION_SOURCES = {
+    "roadwork": f"{_AVG_BASE}/planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz",
+    "bridge_opening": f"{_AVG_BASE}/planningsfeed_brugopeningen.xml.gz",
+    "temporary_closure": f"{_AVG_BASE}/tijdelijke_verkeersmaatregelen_afsluitingen.xml.gz",
+    "temporary_speed_limit": f"{_AVG_BASE}/tijdelijke_verkeersmaatregelen_maximum_snelheden.xml.gz",
+    "safety_related_message": f"{_AVG_BASE}/veiligheidsgerelateerde_berichten_srti.xml.gz",
+}
+
+_SITUATION_TYPES = {
+    "roadwork": "NL.NDW.Situations.Roadwork",
+    "bridge_opening": "NL.NDW.Situations.BridgeOpening",
+    "temporary_closure": "NL.NDW.Situations.TemporaryClosure",
+    "temporary_speed_limit": "NL.NDW.Situations.TemporarySpeedLimit",
+    "safety_related_message": "NL.NDW.Situations.SafetyRelatedMessage",
+}
+
+
+def _emit_measurement_sites(avg_prod, acquirer):
+    try:
+        point_sites, route_sites = acquirer.fetch_measurement_sites()
+    except Exception:
+        logger.exception("Failed to fetch measurement sites")
+        return
+
+    src = f"{_AVG_BASE}/measurement_current.xml.gz"
+    for rec in point_sites:
+        data = PointMeasurementSite(
+            measurement_site_id=rec["measurement_site_id"],
+            name=rec["name"],
+            measurement_site_type=rec["measurement_site_type"],
+            period=rec["period"],
+            latitude=rec["latitude"],
+            longitude=rec["longitude"],
+            road_name=rec["road_name"],
+            lane_count=rec["lane_count"],
+            carriageway_type=rec["carriageway_type"],
+        )
+        subject = f"measurement-sites/{rec['measurement_site_id']}"
+        try:
+            _send_direct(avg_prod, "NL.NDW.AVG.PointMeasurementSite", src, subject, data)
+        except Exception:
+            logger.exception("AMQP send failed for PointMeasurementSite %s", rec["measurement_site_id"])
+
+    for rec in route_sites:
+        data = RouteMeasurementSite(
+            measurement_site_id=rec["measurement_site_id"],
+            name=rec["name"],
+            measurement_site_type=rec["measurement_site_type"],
+            period=rec["period"],
+            start_latitude=rec["start_latitude"],
+            start_longitude=rec["start_longitude"],
+            end_latitude=rec["end_latitude"],
+            end_longitude=rec["end_longitude"],
+            road_name=rec["road_name"],
+            length_metres=rec["length_metres"],
+        )
+        subject = f"measurement-sites/{rec['measurement_site_id']}"
+        try:
+            _send_direct(avg_prod, "NL.NDW.AVG.RouteMeasurementSite", src, subject, data)
+        except Exception:
+            logger.exception("AMQP send failed for RouteMeasurementSite %s", rec["measurement_site_id"])
+
+    logger.info("Emitted %d point + %d route measurement site events via AMQP",
+                len(point_sites), len(route_sites))
+
+
+def _emit_drip_signs(drip_prod, acquirer):
+    try:
+        signs, _ = acquirer.fetch_drip()
+    except Exception:
+        logger.exception("Failed to fetch DRIP signs")
+        return
+
+    for rec in signs:
+        data = DripSign(
+            vms_controller_id=rec["vms_controller_id"],
+            vms_index=rec["vms_index"],
+            vms_type=rec["vms_type"],
+            latitude=rec["latitude"],
+            longitude=rec["longitude"],
+            road_name=rec["road_name"],
+            description=rec["description"],
+        )
+        subject = f"drips/{rec['vms_controller_id']}/{rec['vms_index']}"
+        try:
+            _send_direct(drip_prod, "NL.NDW.DRIP.DripSign", _DRIP_SRC, subject, data)
+        except Exception:
+            logger.exception("AMQP send failed for DripSign %s", rec["vms_controller_id"])
+
+    logger.info("Emitted %d DripSign reference events via AMQP", len(signs))
+
+
+def _emit_msi_signs(msi_prod, acquirer):
+    try:
+        signs, _ = acquirer.fetch_msi()
+    except Exception:
+        logger.exception("Failed to fetch MSI signs")
+        return
+
+    for rec in signs:
+        data = MsiSign(
+            sign_id=rec["sign_id"],
+            sign_type=rec["sign_type"],
+            latitude=rec["latitude"],
+            longitude=rec["longitude"],
+            road_name=rec["road_name"],
+            lane=rec["lane"],
+            description=rec["description"],
+        )
+        subject = f"msi-signs/{rec['sign_id']}"
+        try:
+            _send_direct(msi_prod, "NL.NDW.MSI.MsiSign", _MSI_SRC, subject, data)
+        except Exception:
+            logger.exception("AMQP send failed for MsiSign %s", rec["sign_id"])
+
+    logger.info("Emitted %d MsiSign reference events via AMQP", len(signs))
+
+
+def _emit_speed(avg_prod, state, acquirer):
+    try:
+        records = acquirer.fetch_speed_observations()
+    except Exception:
+        logger.exception("Failed to fetch speed observations")
+        return 0
+
+    src = f"{_AVG_BASE}/trafficspeed.xml.gz"
+    count = 0
+    for rec in records:
+        sid = rec["measurement_site_id"]
+        mtime = rec["measurement_time"]
+        if state.state.get("speed", {}).get(sid) == mtime:
+            continue
+        data = TrafficObservation(
+            measurement_site_id=sid,
+            measurement_time=mtime,
+            average_speed=rec["average_speed"],
+            vehicle_flow_rate=rec["vehicle_flow_rate"],
+            number_of_lanes_with_data=rec["number_of_lanes_with_data"],
+        )
+        subject = f"measurement-sites/{sid}"
+        try:
+            _send_direct(avg_prod, "NL.NDW.AVG.TrafficObservation", src, subject, data)
+            state.state.setdefault("speed", {})[sid] = mtime
+            count += 1
+        except Exception:
+            logger.exception("AMQP send failed for TrafficObservation %s", sid)
+
+    logger.info("Emitted %d TrafficObservation events via AMQP", count)
+    return count
+
+
+def _emit_traveltime(avg_prod, state, acquirer):
+    try:
+        records = acquirer.fetch_traveltime_observations()
+    except Exception:
+        logger.exception("Failed to fetch travel time observations")
+        return 0
+
+    src = f"{_AVG_BASE}/traveltime.xml.gz"
+    count = 0
+    for rec in records:
+        sid = rec["measurement_site_id"]
+        mtime = rec["measurement_time"]
+        if state.state.get("traveltime", {}).get(sid) == mtime:
+            continue
+        data = TravelTimeObservation(
+            measurement_site_id=sid,
+            measurement_time=mtime,
+            duration=rec["duration"],
+            reference_duration=rec["reference_duration"],
+            accuracy=rec["accuracy"],
+            data_quality=rec["data_quality"],
+            number_of_input_values=rec["number_of_input_values"],
+        )
+        subject = f"measurement-sites/{sid}"
+        try:
+            _send_direct(avg_prod, "NL.NDW.AVG.TravelTimeObservation", src, subject, data)
+            state.state.setdefault("traveltime", {})[sid] = mtime
+            count += 1
+        except Exception:
+            logger.exception("AMQP send failed for TravelTimeObservation %s", sid)
+
+    logger.info("Emitted %d TravelTimeObservation events via AMQP", count)
+    return count
+
+
+def _emit_drip_states(drip_prod, state, acquirer):
+    try:
+        _, states = acquirer.fetch_drip()
+    except Exception:
+        logger.exception("Failed to fetch DRIP display states")
+        return 0
+
+    count = 0
+    for rec in states:
+        key = f"{rec['vms_controller_id']}/{rec['vms_index']}"
+        pub_time = rec["publication_time"]
+        if state.state.get("drip", {}).get(key) == pub_time:
+            continue
+        data = DripDisplayState(
+            vms_controller_id=rec["vms_controller_id"],
+            vms_index=rec["vms_index"],
+            publication_time=pub_time,
+            active=rec["active"],
+            vms_text=rec["vms_text"],
+            pictogram_code=rec["pictogram_code"],
+            state=rec["state"],
+        )
+        subject = f"drips/{rec['vms_controller_id']}/{rec['vms_index']}"
+        try:
+            _send_direct(drip_prod, "NL.NDW.DRIP.DripDisplayState", _DRIP_SRC, subject, data)
+            state.state.setdefault("drip", {})[key] = pub_time
+            count += 1
+        except Exception:
+            logger.exception("AMQP send failed for DripDisplayState %s", key)
+
+    logger.info("Emitted %d DripDisplayState events via AMQP", count)
+    return count
+
+
+def _emit_msi_states(msi_prod, state, acquirer):
+    try:
+        _, states = acquirer.fetch_msi()
+    except Exception:
+        logger.exception("Failed to fetch MSI display states")
+        return 0
+
+    count = 0
+    for rec in states:
+        sid = rec["sign_id"]
+        pub_time = rec["publication_time"]
+        if state.state.get("msi", {}).get(sid) == pub_time:
+            continue
+        data = MsiDisplayState(
+            sign_id=sid,
+            publication_time=pub_time,
+            image_code=rec["image_code"],
+            state=rec["state"],
+            speed_limit=rec["speed_limit"],
+        )
+        subject = f"msi-signs/{sid}"
+        try:
+            _send_direct(msi_prod, "NL.NDW.MSI.MsiDisplayState", _MSI_SRC, subject, data)
+            state.state.setdefault("msi", {})[sid] = pub_time
+            count += 1
+        except Exception:
+            logger.exception("AMQP send failed for MsiDisplayState %s", sid)
+
+    logger.info("Emitted %d MsiDisplayState events via AMQP", count)
+    return count
+
+
+def _emit_situations(sit_prod, state, acquirer):
+    for feed_file, feed_type in SITUATION_FEEDS:
+        try:
+            records = acquirer.fetch_situations(feed_file, feed_type)
+        except Exception:
+            logger.exception("Failed to fetch situation feed %s", feed_file)
+            continue
+
+        src = _SITUATION_SOURCES.get(feed_type, _AVG_BASE)
+        ce_type = _SITUATION_TYPES.get(feed_type, f"NL.NDW.Situations.{feed_type}")
+
+        count = 0
+        for rec in records:
+            rid = rec["situation_record_id"]
+            vtime = rec["version_time"]
+            if state.state.get("situation", {}).get(rid) == vtime:
                 continue
-            method_words = set(re.split(r"_+", name))
-            compact_method = re.sub(r"[^a-z0-9]", "", name.lower().replace("send", ""))
-            score = len(words & method_words)
-            if compact_method and compact_method in compact_publish:
-                score += 100
-            candidates.append((score, len(required_route), name, method, required_route))
-        if not candidates:
-            raise AttributeError(f"No AMQP send method matches {publish_name} with route keys {sorted(route_keys)}")
-        candidates.sort(reverse=True)
-        return candidates[0][3], candidates[0][4]
-
-    def __getattr__(self, name: str):
-        if not name.startswith("publish_"):
-            raise AttributeError(name)
-        async def publish(**kwargs):
-            method, route = self._choose_method(name, kwargs)
-            call_kwargs = {p: _topic_segment(kwargs[p[1:]]) for p in route}
-            call_kwargs["data"] = kwargs.get("data")
-            if "content_type" in inspect.signature(method).parameters and kwargs.get("content_type"):
-                call_kwargs["content_type"] = kwargs["content_type"]
-            method(**call_kwargs)
-            self.sent += 1
-        return publish
-
-
-def _manifest_path() -> pathlib.Path:
-    candidates = [pathlib.Path.cwd(), pathlib.Path(__file__).resolve().parents[2]]
-    for root in candidates:
-        xreg = root / "xreg"
-        if xreg.exists():
-            matches = list(xreg.glob("*.json"))
-            if matches:
-                return matches[0]
-    raise FileNotFoundError("xRegistry manifest not found in working directory or package parents")
-
-
-def _schema_root(schema: dict[str, Any]) -> Any:
-    node = schema.get("schema", schema)
-    root = node.get("$root")
-    if root:
-        cur = node
-        for part in root.lstrip("#/").split("/"):
-            cur = cur[part]
-        return cur, node
-    return node, node
-
-
-def _resolve_ref(ref: str, doc: dict[str, Any]) -> Any:
-    cur = doc
-    for part in ref.lstrip("#/").split("/"):
-        cur = cur[part]
-    return cur
-
-
-def _sample_for_type(type_spec: Any, doc: dict[str, Any], name: str = "value") -> Any:
-    if isinstance(type_spec, list):
-        return _sample_for_type(next((t for t in type_spec if t != "null"), "string"), doc, name)
-    if isinstance(type_spec, dict):
-        if "$ref" in type_spec:
-            return _sample_for_node(_resolve_ref(type_spec["$ref"], doc), doc)
-        return _sample_for_node(type_spec, doc)
-    if type_spec in ("string", "timestamp"):
-        return "2026-01-01T00:00:00Z" if "time" in name or "date" in name else f"sample-{name.replace('_','-')}"
-    if type_spec in ("integer", "int32", "int64"):
-        return 1
-    if type_spec in ("number", "float", "double"):
-        return 1.0
-    if type_spec == "boolean":
-        return True
-    if type_spec == "array":
-        return []
-    if type_spec == "object":
-        return {}
-    return f"sample-{name}"
-
-
-def _sample_for_node(node: dict[str, Any], doc: dict[str, Any]) -> Any:
-    if "enum" in node and node["enum"]:
-        return node["enum"][0]
-    t = node.get("type", "string")
-    if t == "object" or isinstance(t, dict) and "$ref" in t:
-        if isinstance(t, dict) and "$ref" in t:
-            return _sample_for_node(_resolve_ref(t["$ref"], doc), doc)
-        props = node.get("properties", {})
-        return {name: _sample_for_node(prop, doc) for name, prop in props.items()}
-    if t == "array":
-        return [_sample_for_node(node.get("items", {"type": "string"}), doc)]
-    return _sample_for_type(t, doc, node.get("name", "value"))
-
-
-def _data_class_for(schema_name: str):
-    data_mod = importlib.import_module(f"{PY_MODULE}_amqp_producer_data")
-    class_name = schema_name.split(".")[-1]
-    return getattr(data_mod, class_name)
-
-
-def _coerce_data(cls: type[Any], payload: dict[str, Any]) -> Any:
-    for name in ("from_serializer_dict", "from_dict"):
-        if hasattr(cls, name):
+            subject = f"situations/{rid}"
             try:
-                return getattr(cls, name)(payload)
+                if feed_type == "roadwork":
+                    data = Roadwork(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"), description=rec.get("description"),
+                        location_description=rec.get("location_description"),
+                        probability=rec.get("probability"), severity=rec.get("severity"),
+                        management_type=rec.get("management_type"),
+                    )
+                elif feed_type == "bridge_opening":
+                    data = BridgeOpening(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        bridge_name=rec.get("bridge_name"), road_name=rec.get("road_name"),
+                        description=rec.get("description"),
+                    )
+                elif feed_type == "temporary_closure":
+                    data = TemporaryClosure(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"), description=rec.get("description"),
+                        location_description=rec.get("location_description"),
+                        severity=rec.get("severity"),
+                    )
+                elif feed_type == "temporary_speed_limit":
+                    data = TemporarySpeedLimit(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"),
+                        speed_limit_kmh=rec.get("speed_limit_kmh"),
+                        description=rec.get("description"),
+                        location_description=rec.get("location_description"),
+                    )
+                elif feed_type == "safety_related_message":
+                    data = SafetyRelatedMessage(
+                        situation_record_id=rid, version_time=vtime,
+                        validity_status=rec.get("validity_status"),
+                        start_time=rec.get("start_time"), end_time=rec.get("end_time"),
+                        road_name=rec.get("road_name"),
+                        message_type=rec.get("message_type"),
+                        description=rec.get("description"),
+                        urgency=rec.get("urgency"),
+                    )
+                else:
+                    continue
+                _send_direct(sit_prod, ce_type, src, subject, data)
+                state.state.setdefault("situation", {})[rid] = vtime
+                count += 1
+            except Exception:
+                logger.exception("AMQP send failed for %s situation %s", feed_type, rid)
+
+        logger.info("Emitted %d %s situation events via AMQP", count, feed_type)
+
+
+# ---------------------------------------------------------------------------
+# Main feed loop
+# ---------------------------------------------------------------------------
+
+async def _async_main(args: argparse.Namespace) -> None:
+    avg_prod = _retry_build(NLNDWAVGAmqpProducer, args)
+    drip_prod = _retry_build(NLNDWDRIPAmqpProducer, args)
+    msi_prod = _retry_build(NLNDWMSIAmqpProducer, args)
+    sit_prod = _retry_build(NLNDWSituationsAmqpProducer, args)
+
+    acquirer = NdwAcquirer(
+        base_url=args.base_url,
+        max_records_per_family=args.max_records_per_family,
+    )
+    state = StateManager(args.state_file)
+
+    last_ref = 0.0
+    last_sit = 0.0
+
+    try:
+        while True:
+            now = time.monotonic()
+
+            if now - last_ref >= args.reference_refresh_interval:
+                _emit_measurement_sites(avg_prod, acquirer)
+                _emit_drip_signs(drip_prod, acquirer)
+                _emit_msi_signs(msi_prod, acquirer)
+                last_ref = time.monotonic()
+
+            _emit_speed(avg_prod, state, acquirer)
+            _emit_traveltime(avg_prod, state, acquirer)
+            _emit_drip_states(drip_prod, state, acquirer)
+            _emit_msi_states(msi_prod, state, acquirer)
+
+            if now - last_sit >= args.situation_interval:
+                _emit_situations(sit_prod, state, acquirer)
+                last_sit = time.monotonic()
+
+            state.save()
+
+            if args.once:
+                break
+            await asyncio.sleep(args.poll_interval)
+    finally:
+        for prod in (avg_prod, drip_prod, msi_prod, sit_prod):
+            try:
+                close = getattr(prod, "close", None)
+                if close:
+                    close()
             except Exception:
                 pass
-    return cls(**payload)
 
 
-def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
-    manifest = json.loads(_manifest_path().read_text(encoding="utf-8"))
-    jstruct_group = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
-    amqp_group = None
-    for endpoint in manifest.get("endpoints", {}).values():
-        if endpoint.get("protocol") != "AMQP/1.0":
-            continue
-        for group_uri in endpoint.get("messagegroups", []):
-            group_name = group_uri.strip("/").rsplit("/", 1)[-1]
-            if group_name in manifest.get("messagegroups", {}):
-                amqp_group = manifest["messagegroups"][group_name]
-                break
-        if amqp_group is not None:
-            break
-    if amqp_group is None:
-        amqp_group = next(v for k, v in manifest["messagegroups"].items() if k.endswith(".amqp"))
-    for message_name, message in amqp_group["messages"].items():
-        schema_name = None
-        if "dataschemauri" in message:
-            schema_name = message["dataschemauri"].split("/")[-1]
-        else:
-            base = message["basemessageuri"].strip("/").split("/")
-            base_msg = manifest["messagegroups"][base[1]]["messages"][base[3]]
-            schema_name = base_msg["dataschemauri"].split("/")[-1]
-        schema_entry = jstruct_group["schemas"][schema_name]["versions"]["1"]["schema"]
-        root_node, doc = _schema_root(schema_entry)
-        payload = _sample_for_node(root_node, doc)
-        data = _coerce_data(_data_class_for(schema_name), payload)
-        route = {}
-        def collect_templates(node):
-            if isinstance(node, dict):
-                if node.get("type") == "uritemplate":
-                    for key in re.findall(r"\{([A-Za-z0-9_]+)\}", node.get("value", "")):
-                        route[key] = payload.get(key, f"sample-{key.replace('_','-')}") if isinstance(payload, dict) else f"sample-{key}"
-                for child in node.values():
-                    collect_templates(child)
-            elif isinstance(node, list):
-                for child in node:
-                    collect_templates(child)
-        collect_templates(message.get("protocoloptions") or {})
-        if isinstance(payload, dict):
-            for key, value in payload.items():
-                route.setdefault(key, value)
-        # Pre-fill route with required params from all send methods (dummy values)
-        for _m_name, _m_func in adapter._send_methods.items():
-            for _p, _param in inspect.signature(_m_func).parameters.items():
-                if _p.startswith("_") and _param.default is inspect.Parameter.empty:
-                    route.setdefault(_p[1:], f"sample-{_p[1:]}")
-        try:
-            method, required = adapter._choose_method("publish_" + message_name.lower().replace(".", "_"), {**route, "data": data})
-            call_kwargs = {p: _topic_segment(route.get(p[1:], f"sample-{p[1:]}")) for p in required}
-            call_kwargs["data"] = data
-            method(**call_kwargs)
-        except (AttributeError, TypeError, KeyError) as _route_err:
-            logger.debug("Skipping message %s: %s", message_name, _route_err)
-            continue
-        adapter.sent += 1
-
-
-async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> None:
-    """Emit sample corpus via AMQP (no source-specific live acquisition handler)."""
-    logger.info("Emitting sample corpus via AMQP for %s", SOURCE_ID)
-    while True:
-        emit_mock_corpus(adapter)
-        logger.info("Emitted %d sample AMQP event(s) for %s", adapter.sent, SOURCE_ID)
-        if args.once:
-            break
-        await asyncio.sleep(args.polling_interval if hasattr(args, 'polling_interval') else 300)
-
-
-def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+def _add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument("feed_command", nargs="?", default="feed")
     parser.add_argument("--broker-url", default=os.getenv("AMQP_BROKER_URL"))
     parser.add_argument("--host", default=os.getenv("AMQP_HOST"))
@@ -323,73 +610,36 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     parser.add_argument("--address", default=os.getenv("AMQP_ADDRESS", SOURCE_ID))
     parser.add_argument("--username", default=os.getenv("AMQP_USERNAME"))
     parser.add_argument("--password", default=os.getenv("AMQP_PASSWORD"))
-    parser.add_argument("--tls", action="store_true", default=_env_bool("AMQP_TLS", False))
-    parser.add_argument("--content-mode", choices=("binary", "structured"), default=os.getenv("AMQP_CONTENT_MODE", "binary"))
-    parser.add_argument("--auth-mode", choices=("password", "entra", "sas"), default=os.getenv("AMQP_AUTH_MODE", "password"))
-    parser.add_argument("--entra-audience", default=os.getenv("AMQP_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE_SERVICEBUS))
+    parser.add_argument("--tls", action="store_true", default=_env_bool("AMQP_TLS"))
+    parser.add_argument("--content-mode", choices=("binary", "structured"),
+                        default=os.getenv("AMQP_CONTENT_MODE", "binary"))
+    parser.add_argument("--auth-mode", choices=("password", "entra", "sas"),
+                        default=os.getenv("AMQP_AUTH_MODE", "password"))
+    parser.add_argument("--entra-audience",
+                        default=os.getenv("AMQP_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE_SERVICEBUS))
     parser.add_argument("--entra-client-id", default=os.getenv("AMQP_ENTRA_CLIENT_ID"))
     parser.add_argument("--sas-key-name", default=os.getenv("AMQP_SAS_KEY_NAME"))
     parser.add_argument("--sas-key", default=os.getenv("AMQP_SAS_KEY"))
-    parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "300")))
-    parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser(f"~/.{PY_MODULE}_amqp_state.json")))
-    parser.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE", False))
-    parser.add_argument("--mock-mode", action="store_true", default=_env_bool(f"{ENV_PREFIX}_MOCK", False) or _env_bool(f"{ENV_PREFIX}_SAMPLE_MODE", False) or _env_bool(f"{ENV_PREFIX}_AMQP_MOCK", False))
-    # Source-specific optional knobs; ignored where not used.
-    parser.add_argument("--feeds", default=os.getenv("PTWC_TSUNAMI_FEEDS", "PAAQ,PHEB"))
-    parser.add_argument("--providers", default=os.getenv("NINA_BBK_PROVIDERS", "mowas,katwarn,biwapp,dwd,lhp,police"))
-    parser.add_argument("--regions", default=os.getenv("EAWS_ALBINA_REGIONS", "AT-07-01"))
-    parser.add_argument("--lang", default=os.getenv("EAWS_ALBINA_LANG", "en"))
-    parser.add_argument("--resources", default=os.getenv("AUTOBAHN_RESOURCES", "all"))
-    parser.add_argument("--roads", default=os.getenv("AUTOBAHN_ROADS", ""))
-    parser.add_argument("--request-concurrency", type=int, default=int(os.getenv("AUTOBAHN_REQUEST_CONCURRENCY", "8")))
-    parser.add_argument("--station-filter", default=os.getenv("STATION_FILTER", ""))
-    parser.add_argument("--max-size", type=int, default=int(os.getenv("MAX_SIZE", "1000")))
+    parser.add_argument("--base-url", default=os.getenv("NDW_BASE_URL", BASE_URL))
+    parser.add_argument("--poll-interval", type=int,
+                        default=int(os.getenv("POLLING_INTERVAL", DEFAULT_POLL_INTERVAL_SECONDS)))
+    parser.add_argument("--reference-refresh-interval", type=int,
+                        default=int(os.getenv("REFERENCE_REFRESH_INTERVAL", DEFAULT_REFERENCE_REFRESH_SECONDS)))
+    parser.add_argument("--situation-interval", type=int,
+                        default=int(os.getenv("SITUATION_INTERVAL", DEFAULT_SITUATION_INTERVAL_SECONDS)))
+    parser.add_argument("--state-file", default=os.getenv("STATE_FILE", DEFAULT_STATE_FILE))
+    parser.add_argument("--max-records-per-family", type=int,
+                        default=int(os.getenv("MAX_RECORDS_PER_FAMILY", "0")) or None)
+    parser.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE"))
     return parser
 
 
-
-def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
-    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
-    for attempt in range(max_attempts):
-        try:
-            return factory()
-        except Exception as e:
-            if attempt == max_attempts - 1:
-                raise
-            delay = initial_delay * (2 ** attempt)
-            logger.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
-                          attempt + 1, max_attempts, e, delay)
-            import time; time.sleep(delay)
-async def _async_main(args: argparse.Namespace) -> None:
-    # Retry producer connection with backoff (RBAC propagation can take minutes)
-    producer = None
-    for _attempt in range(6):
-        try:
-            producer = _retry_producer_init(lambda: _build_amqp_producer(args))
-            break
-        except Exception as _conn_err:
-            logger.warning("AMQP connection attempt %d failed: %s", _attempt + 1, _conn_err)
-            if _attempt < 5:
-                await asyncio.sleep(15 * (_attempt + 1))
-    if producer is None:
-        logger.error("Failed to connect to AMQP broker after 6 attempts")
-        return
-    adapter = MqttToAmqpAdapter(producer)
-    try:
-        if args.mock_mode:
-            emit_mock_corpus(adapter)
-            logger.info("Published %d mock AMQP event(s)", adapter.sent)
-        else:
-            await _run_live(args, adapter)
-    finally:
-        close = getattr(producer, "close", None)
-        if close:
-            close()
-
-
 def main() -> None:
-    logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper(), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    parser = _add_common_args(argparse.ArgumentParser(description=f"{SOURCE_ID} AMQP 1.0 bridge"))
+    logging.basicConfig(
+        level=os.getenv("LOG_LEVEL", "INFO").upper(),
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+    parser = _add_args(argparse.ArgumentParser(description=f"{SOURCE_ID} AMQP 1.0 bridge"))
     args = parser.parse_args()
     if args.feed_command != "feed":
         parser.error("only the 'feed' command is supported")

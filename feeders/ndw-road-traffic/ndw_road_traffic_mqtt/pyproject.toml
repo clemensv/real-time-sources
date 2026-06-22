@@ -7,7 +7,13 @@ name = "ndw-road-traffic-mqtt"
 version = "0.1.0"
 description = "MQTT companion feeder for NDW Road Traffic"
 requires-python = ">=3.10"
-dependencies = ["paho-mqtt>=2.1.0"]
+dependencies = [
+    "paho-mqtt>=2.1.0",
+    "ndw-road-traffic-core",
+]
+
+[tool.uv.sources]
+ndw-road-traffic-core = { path = "../ndw_road_traffic_core", editable = true }
 
 [project.scripts]
 ndw-road-traffic-mqtt = "ndw_road_traffic_mqtt.app:main"
