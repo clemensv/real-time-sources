@@ -22,6 +22,7 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "python-qpid-proton>=0.40.0",
+    "tfl_road_traffic_core",
 ]
 
 [project.scripts]
@@ -36,3 +37,6 @@ local_scheme = "no-local-version"
 packages = [
     "tfl_road_traffic_amqp",
 ]
+
+[tool.uv.sources]
+tfl_road_traffic_core = { path = "../tfl_road_traffic_core" }

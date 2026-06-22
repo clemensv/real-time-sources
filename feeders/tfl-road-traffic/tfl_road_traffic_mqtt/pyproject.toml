@@ -19,6 +19,7 @@ dependencies = [
     "azure-identity>=1.17.0",
     "paho-mqtt>=2.1.0",
     "requests>=2.32.3",
+    "tfl_road_traffic_core",
 ]
 
 [project.scripts]
@@ -33,3 +34,6 @@ local_scheme = "no-local-version"
 packages = [
     "tfl_road_traffic_mqtt",
 ]
+
+[tool.uv.sources]
+tfl_road_traffic_core = { path = "../tfl_road_traffic_core" }
