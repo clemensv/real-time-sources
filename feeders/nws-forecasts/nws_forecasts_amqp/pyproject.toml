@@ -20,6 +20,8 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "python-qpid-proton>=0.40.0",
+    "requests>=2.32.3",
+    "nws_forecasts_core",
 ]
 
 [project.scripts]

@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
+    "nws_forecasts_core",
 ]
 
 [project.scripts]

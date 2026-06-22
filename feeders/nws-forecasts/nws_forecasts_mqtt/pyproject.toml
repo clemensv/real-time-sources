@@ -20,6 +20,7 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
+    "nws_forecasts_core",
 ]
 
 [project.scripts]

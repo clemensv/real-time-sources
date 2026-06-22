@@ -1,24 +1,43 @@
-"""NWS forecast zone bridge."""
+"""NWS forecast zone bridge – Kafka transport wrapper."""
 
 from __future__ import annotations
 
 import argparse
-import hashlib
-import json
 import logging
 import os
-import re
 import sys
 import time
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, Iterable, List, Optional
-from urllib.parse import urlparse
+from typing import Dict, List, Optional
 
 import requests
 from confluent_kafka import Producer
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+
+try:
+    from nws_forecasts_core import (
+        DEFAULT_POLL_INTERVAL_SECONDS,
+        DEFAULT_REFERENCE_REFRESH_SECONDS,
+        DEFAULT_STATE_FILE,
+        DEFAULT_ZONES,
+        NWSForecastFetcher,
+        NWSForecastZone,
+        NWSLandZoneForecast,
+        NWSMarineZoneForecast,
+        build_retrying_session,
+        parse_zone_list,
+    )
+except ImportError:
+    from nws_forecasts_core.nws_forecasts import (  # type: ignore[no-redef]
+        DEFAULT_POLL_INTERVAL_SECONDS,
+        DEFAULT_REFERENCE_REFRESH_SECONDS,
+        DEFAULT_STATE_FILE,
+        DEFAULT_ZONES,
+        NWSForecastFetcher,
+        NWSForecastZone,
+        NWSLandZoneForecast,
+        NWSMarineZoneForecast,
+        build_retrying_session,
+        parse_zone_list,
+    )
 
 from nws_forecasts_producer_data import (
     ForecastZone,
@@ -34,53 +53,6 @@ from nws_forecasts_producer_kafka_producer.producer import (
 
 
 LOGGER = logging.getLogger(__name__)
-DEFAULT_ZONES = "WAZ312,WAZ315,WAZ316,WAZ317,PZZ130,PZZ131,PZZ132,PZZ133,PZZ134,PZZ135"
-ZONE_DETAIL_URL = "https://api.weather.gov/zones/forecast/{zone_id}"
-LAND_FORECAST_URL = "https://api.weather.gov/zones/forecast/{zone_id}/forecast"
-MARINE_PRODUCTS_URL = "https://api.weather.gov/products?type=CWF&location={office}&limit=1"
-MARINE_PRODUCT_URL = "https://api.weather.gov/products/{product_id}"
-DEFAULT_POLL_INTERVAL_SECONDS = 900
-DEFAULT_REFERENCE_REFRESH_SECONDS = 21600
-DEFAULT_STATE_FILE = "/mnt/fileshare/nws_forecasts_state.json"
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-nws-forecasts/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
-)
-HEADERS = {
-    "User-Agent": USER_AGENT,
-    "Accept": "application/geo+json",
-}
-MARINE_PERIOD_RE = re.compile(r"^\.(?P<name>[A-Z0-9 /]+)\.\.\.(?P<body>.*)$")
-ZONE_HEADER_RE = re.compile(r"^(?P<zone_id>[A-Z]{3}[0-9]{3})-[0-9]{6,}-?$")
-
-
-@dataclass
-class PendingState:
-    land_updates: Dict[str, str]
-    marine_hashes: Dict[str, str]
-
-
-def build_retrying_session() -> requests.Session:
-    """Create a requests session with bounded retries for transient failures."""
-    retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        status=3,
-        backoff_factor=1.0,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["GET"],
-        raise_on_status=False,
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session = requests.Session()
-    session.mount("https://", adapter)
-    session.mount("http://", adapter)
-    session.headers.update(HEADERS)
-    return session
 
 
 def parse_connection_string(connection_string: str, enable_tls: bool = True) -> Dict[str, str]:
@@ -122,9 +94,8 @@ def build_kafka_config(args: argparse.Namespace) -> tuple[Dict[str, str], str]:
         topic = args.kafka_topic or parsed_topic
         if not topic:
             raise ValueError("Kafka topic must be provided in KAFKA_TOPIC or EntityPath.")
-        # Keep connection alive between infrequent poll cycles
         config["socket.keepalive.enable"] = "true"
-        config["connections.max.idle.ms"] = "540000"  # 9 min (below Event Hubs 10-min idle timeout)
+        config["connections.max.idle.ms"] = "540000"
         return config, topic
 
     if not args.kafka_bootstrap_servers or not args.kafka_topic:
@@ -147,15 +118,67 @@ def build_kafka_config(args: argparse.Namespace) -> tuple[Dict[str, str], str]:
     return config, args.kafka_topic
 
 
-def parse_zone_list(raw: str) -> List[str]:
-    zones = [zone.strip().upper() for zone in raw.split(",") if zone.strip()]
-    if not zones:
-        raise ValueError("At least one zone ID must be configured.")
-    return zones
+def _to_producer_zone(zone: NWSForecastZone) -> ForecastZone:
+    """Convert a transport-neutral NWSForecastZone to a generated ForecastZone."""
+    return ForecastZone(
+        zone_id=zone.zone_id,
+        zone_type=ZoneTypeenum(zone.zone_type),
+        name=zone.name,
+        state=zone.state,
+        forecast_office_url=zone.forecast_office_url,
+        grid_identifier=zone.grid_identifier,
+        awips_location_identifier=zone.awips_location_identifier,
+        cwa_ids=zone.cwa_ids,
+        forecast_office_urls=zone.forecast_office_urls,
+        time_zones=zone.time_zones,
+        observation_station_ids=zone.observation_station_ids,
+        radar_station=zone.radar_station,
+        effective_date=zone.effective_date,
+        expiration_date=zone.expiration_date,
+    )
+
+
+def _to_producer_land(forecast: NWSLandZoneForecast) -> LandZoneForecast:
+    """Convert a transport-neutral NWSLandZoneForecast to a generated LandZoneForecast."""
+    return LandZoneForecast(
+        zone_id=forecast.zone_id,
+        updated=forecast.updated,
+        periods=[
+            LandForecastPeriod(
+                period_number=p.period_number,
+                period_name=p.period_name,
+                detailed_forecast=p.detailed_forecast,
+            )
+            for p in forecast.periods
+        ],
+    )
+
+
+def _to_producer_marine(forecast: NWSMarineZoneForecast) -> MarineZoneForecast:
+    """Convert a transport-neutral NWSMarineZoneForecast to a generated MarineZoneForecast."""
+    return MarineZoneForecast(
+        zone_id=forecast.zone_id,
+        zone_name=forecast.zone_name,
+        product_title=forecast.product_title,
+        office_name=forecast.office_name,
+        issued_at_text=forecast.issued_at_text,
+        expires_text=forecast.expires_text,
+        wmo_header=forecast.wmo_header,
+        bulletin_awips_id=forecast.bulletin_awips_id,
+        synopsis=forecast.synopsis,
+        periods=[
+            MarineForecastPeriod(
+                period_name=p.period_name,
+                forecast_text=p.forecast_text,
+            )
+            for p in forecast.periods
+        ],
+        bulletin_text=forecast.bulletin_text,
+    )
 
 
 class NWSForecastPoller:
-    """Poll NWS land-zone and marine-zone forecasts and emit them as CloudEvents."""
+    """Kafka transport wrapper over the transport-neutral NWS forecast fetcher."""
 
     def __init__(
         self,
@@ -167,85 +190,37 @@ class NWSForecastPoller:
         reference_refresh_seconds: int = DEFAULT_REFERENCE_REFRESH_SECONDS,
         session: Optional[requests.Session] = None,
     ) -> None:
-        self.zones = zones
-        self.state_file = state_file
-        self.poll_interval_seconds = poll_interval_seconds
-        self.reference_refresh_seconds = reference_refresh_seconds
-        self.session = session or build_retrying_session()
         self.kafka_client = Producer(kafka_config)
         self.producer = MicrosoftOpenDataUSNOAANWSForecastsEventProducer(self.kafka_client, kafka_topic)
-        self.zone_cache: Dict[str, ForecastZone] = {}
-        self._last_reference_refresh = 0.0
-        self._marine_offices: Dict[str, List[str]] = {}  # office -> [zone_ids]
-
-    def load_state(self) -> Dict[str, Dict[str, str]]:
-        if not os.path.exists(self.state_file):
-            return {"land_updates": {}, "marine_hashes": {}}
-        with open(self.state_file, "r", encoding="utf-8") as handle:
-            raw = handle.read().strip()
-        if not raw:
-            return {"land_updates": {}, "marine_hashes": {}}
-        return json.loads(raw)
-
-    def save_state(self, state: Dict[str, Dict[str, str]]) -> None:
-        directory = os.path.dirname(self.state_file)
-        if directory:
-            os.makedirs(directory, exist_ok=True)
-        with open(self.state_file, "w", encoding="utf-8") as handle:
-            json.dump(state, handle, indent=2, sort_keys=True)
-
-    def _get_json(self, url: str) -> Dict[str, Any]:
-        response = self.session.get(url, timeout=30)
-        response.raise_for_status()
-        return response.json()
-
-    @staticmethod
-    def _station_ids(urls: Iterable[str]) -> List[str]:
-        station_ids: List[str] = []
-        for url in urls:
-            path = urlparse(url).path.rstrip("/")
-            station_ids.append(path.split("/")[-1])
-        return station_ids
-
-    def fetch_zone(self, zone_id: str) -> ForecastZone:
-        data = self._get_json(ZONE_DETAIL_URL.format(zone_id=zone_id))
-        props = data["properties"]
-        return ForecastZone(
-            zone_id=props["id"],
-            zone_type=ZoneTypeenum(props["type"]),
-            name=props["name"],
-            state=props["state"],
-            forecast_office_url=props["forecastOffice"],
-            grid_identifier=props.get("gridIdentifier"),
-            awips_location_identifier=props.get("awipsLocationIdentifier"),
-            cwa_ids=props.get("cwa", []),
-            forecast_office_urls=props.get("forecastOffices", []),
-            time_zones=props.get("timeZone", []),
-            observation_station_ids=self._station_ids(props.get("observationStations", [])),
-            radar_station=props.get("radarStation"),
-            effective_date=datetime.fromisoformat(props["effectiveDate"]),
-            expiration_date=datetime.fromisoformat(props["expirationDate"]),
+        self._fetcher = NWSForecastFetcher(
+            zones=zones,
+            state_file=state_file,
+            poll_interval_seconds=poll_interval_seconds,
+            reference_refresh_seconds=reference_refresh_seconds,
+            session=session,
+            on_zone=self._on_zone,
+            on_land_forecast=self._on_land_forecast,
+            on_marine_forecast=self._on_marine_forecast,
+            flush_callback=self._flush,
         )
 
-    def refresh_zone_cache(self) -> None:
-        next_cache = dict(self.zone_cache)
-        marine_offices: Dict[str, List[str]] = {}
-        for zone_id in self.zones:
-            try:
-                next_cache[zone_id] = self.fetch_zone(zone_id)
-            except (requests.RequestException, ValueError, KeyError) as exc:
-                if zone_id in next_cache:
-                    LOGGER.warning("Keeping cached zone %s after refresh failure: %s", zone_id, exc)
-                else:
-                    LOGGER.error("Failed to fetch zone %s: %s", zone_id, exc)
-        self.zone_cache = next_cache
-        # Build marine office → zone mapping from cached zone metadata
-        for zone_id, zone in self.zone_cache.items():
-            if zone.zone_type != ZoneTypeenum.public:
-                for cwa in (zone.cwa_ids or []):
-                    marine_offices.setdefault(cwa, []).append(zone_id)
-        self._marine_offices = marine_offices
-        self._last_reference_refresh = time.time()
+    def _on_zone(self, zone_id: str, zone: NWSForecastZone) -> None:
+        self.producer.send_microsoft_open_data_us_noaa_nws_forecast_zone(
+            zone_id, _to_producer_zone(zone), flush_producer=False
+        )
+
+    def _on_land_forecast(self, zone_id: str, forecast: NWSLandZoneForecast) -> None:
+        self.producer.send_microsoft_open_data_us_noaa_nws_land_zone_forecast(
+            zone_id, _to_producer_land(forecast), flush_producer=False
+        )
+
+    def _on_marine_forecast(self, zone_id: str, forecast: NWSMarineZoneForecast) -> None:
+        self.producer.send_microsoft_open_data_us_noaa_nws_marine_zone_forecast(
+            zone_id, _to_producer_marine(forecast), flush_producer=False
+        )
+
+    def _flush(self) -> None:
+        self._flush_with_retry()
 
     def _flush_with_retry(self, timeout: int = 30, retries: int = 3, context: str = "messages") -> None:
         """Flush Kafka producer with retries and exponential backoff."""
@@ -265,239 +240,14 @@ class NWSForecastPoller:
                     f"Kafka flush left {remaining} {context} unsent after {retries} attempts."
                 )
 
-    def emit_reference_data(self) -> None:
-        if not self.zone_cache:
-            self.refresh_zone_cache()
-
-        for zone_id in self.zones:
-            zone = self.zone_cache.get(zone_id)
-            if zone is None:
-                continue
-            self.producer.send_microsoft_open_data_us_noaa_nws_forecast_zone(
-                zone_id, zone, flush_producer=False
-            )
-
-        self._flush_with_retry(context="reference messages")
-
-    def fetch_land_forecast(self, zone_id: str) -> LandZoneForecast:
-        data = self._get_json(LAND_FORECAST_URL.format(zone_id=zone_id))
-        props = data["properties"]
-        periods = [
-            LandForecastPeriod(
-                period_number=period["number"],
-                period_name=period["name"],
-                detailed_forecast=period["detailedForecast"],
-            )
-            for period in props.get("periods", [])
-        ]
-        return LandZoneForecast(
-            zone_id=zone_id,
-            updated=datetime.fromisoformat(props["updated"]),
-            periods=periods,
-        )
-
-    @staticmethod
-    def _normalize_whitespace(value: str) -> str:
-        return re.sub(r"\s+", " ", value.strip())
-
-    def parse_marine_forecast(self, zone_id: str, text: str) -> MarineZoneForecast:
-        lines = [line.rstrip() for line in text.splitlines()]
-        # The tgftp format has an "Expires:" header; the API products format does not.
-        expires_text = lines[0][len("Expires:"):].strip() if lines and lines[0].startswith("Expires:") else None
-        non_empty = [line for line in lines if line.strip()]
-
-        # Locate standard bulletin headers (WMO header, AWIPS ID, product title, office)
-        # Skip leading noise tokens like "000" that appear in the API products format
-        header_start = 0
-        for idx, line in enumerate(non_empty):
-            if len(line.strip()) >= 10 and " " in line.strip():
-                header_start = idx
-                break
-        wmo_header = non_empty[header_start] if len(non_empty) > header_start else None
-        bulletin_awips_id = non_empty[header_start + 1] if len(non_empty) > header_start + 1 else None
-        product_title = non_empty[header_start + 2] if len(non_empty) > header_start + 2 else None
-        office_name = non_empty[header_start + 3] if len(non_empty) > header_start + 3 else None
-
-        zone_header_index = next(
-            (index for index, line in enumerate(lines) if ZONE_HEADER_RE.match(line.strip()) and line.startswith(zone_id)),
-            None,
-        )
-        if zone_header_index is None:
-            raise ValueError(f"Marine bulletin for {zone_id} did not contain a zone header.")
-
-        zone_name_line = lines[zone_header_index + 1].strip()
-        issued_at_text = lines[zone_header_index + 2].strip()
-        # Find the first zone header to delimit the bulletin preamble/synopsis area
-        first_zone_header = next(
-            (index for index, line in enumerate(lines) if ZONE_HEADER_RE.match(line.strip())),
-            zone_header_index,
-        )
-        synopsis_lines = [
-            line.strip()
-            for line in lines[first_zone_header:zone_header_index]
-            if line.strip() and not ZONE_HEADER_RE.match(line.strip())
-        ]
-        synopsis = "\n".join(synopsis_lines) if synopsis_lines else None
-
-        period_items: List[MarineForecastPeriod] = []
-        current_name: Optional[str] = None
-        current_lines: List[str] = []
-        zone_body_lines: List[str] = []
-
-        for line in lines[zone_header_index + 3:]:
-            if line.strip() == "$$":
-                break
-            zone_body_lines.append(line)
-            match = MARINE_PERIOD_RE.match(line.strip())
-            if match:
-                if current_name is not None:
-                    period_items.append(
-                        MarineForecastPeriod(
-                            period_name=current_name,
-                            forecast_text=self._normalize_whitespace(" ".join(current_lines)),
-                        )
-                    )
-                current_name = match.group("name")
-                current_lines = [match.group("body").strip()]
-            elif current_name is not None:
-                current_lines.append(line.strip())
-
-        if current_name is not None:
-            period_items.append(
-                MarineForecastPeriod(
-                    period_name=current_name,
-                    forecast_text=self._normalize_whitespace(" ".join(current_lines)),
-                )
-            )
-
-        if not period_items:
-            raise ValueError(f"Marine bulletin for {zone_id} did not contain any forecast periods.")
-
-        bulletin_text = "\n".join(zone_body_lines).strip()
-        return MarineZoneForecast(
-            zone_id=zone_id,
-            zone_name=zone_name_line.rstrip("-"),
-            product_title=product_title,
-            office_name=office_name,
-            issued_at_text=issued_at_text,
-            expires_text=expires_text,
-            wmo_header=wmo_header,
-            bulletin_awips_id=bulletin_awips_id,
-            synopsis=synopsis,
-            periods=period_items,
-            bulletin_text=bulletin_text,
-        )
-
-    def fetch_marine_forecast(self, zone_id: str) -> MarineZoneForecast:
-        """Fetch the latest CWF bulletin from the NWS Products API and extract this zone."""
-        zone = self.zone_cache.get(zone_id)
-        if zone is None:
-            raise ValueError(f"No cached zone metadata for {zone_id}")
-        offices = zone.cwa_ids or []
-        if not offices:
-            raise ValueError(f"Zone {zone_id} has no CWA office identifier")
-        office = offices[0]
-        # Get the latest CWF product for this office
-        products_data = self._get_json(MARINE_PRODUCTS_URL.format(office=office))
-        products = products_data.get("@graph", [])
-        if not products:
-            raise ValueError(f"No CWF product found for office {office}")
-        product_id = products[0]["id"]
-        product_data = self._get_json(MARINE_PRODUCT_URL.format(product_id=product_id))
-        text = product_data.get("productText", "")
-        if not text:
-            raise ValueError(f"CWF product {product_id} has no text content")
-        return self.parse_marine_forecast(zone_id, text)
-
-    @staticmethod
-    def _marine_digest(forecast: MarineZoneForecast) -> str:
-        return hashlib.sha256(forecast.bulletin_text.encode("utf-8")).hexdigest()
-
-    def poll_once(self) -> int:
-        state = self.load_state()
-        current_land = dict(state.get("land_updates", {}))
-        current_marine = dict(state.get("marine_hashes", {}))
-
-        pending = PendingState(land_updates=dict(current_land), marine_hashes=dict(current_marine))
-        emitted = 0
-
-        for zone_id in self.zones:
-            zone = self.zone_cache.get(zone_id)
-            if zone is None:
-                LOGGER.warning("Skipping %s because no zone metadata is cached yet.", zone_id)
-                continue
-
-            try:
-                if zone.zone_type == ZoneTypeenum.public:
-                    forecast = self.fetch_land_forecast(zone_id)
-                    updated_value = forecast.updated.isoformat()
-                    if current_land.get(zone_id) == updated_value:
-                        continue
-                    self.producer.send_microsoft_open_data_us_noaa_nws_land_zone_forecast(
-                        zone_id, forecast, flush_producer=False
-                    )
-                    pending.land_updates[zone_id] = updated_value
-                    emitted += 1
-                else:
-                    forecast = self.fetch_marine_forecast(zone_id)
-                    digest = self._marine_digest(forecast)
-                    if current_marine.get(zone_id) == digest:
-                        continue
-                    self.producer.send_microsoft_open_data_us_noaa_nws_marine_zone_forecast(
-                        zone_id, forecast, flush_producer=False
-                    )
-                    pending.marine_hashes[zone_id] = digest
-                    emitted += 1
-            except (requests.RequestException, ValueError, KeyError) as exc:
-                LOGGER.error("Failed to process forecast slice %s: %s", zone_id, exc)
-
-        self._flush_with_retry(context="forecast messages")
-
-        if emitted > 0:
-            self.save_state(
-                {
-                    "land_updates": pending.land_updates,
-                    "marine_hashes": pending.marine_hashes,
-                }
-            )
-        return emitted
-
-    def run(self, once: bool = False) -> None:
-        LOGGER.info("Starting NWS forecast poller for zones: %s", ", ".join(self.zones))
-        self.refresh_zone_cache()
-        self._emit_reference_with_backoff()
-
-        consecutive_failures = 0
-        max_consecutive_failures = 5
-
-        while True:
-            now = time.time()
-            if now - self._last_reference_refresh >= self.reference_refresh_seconds:
-                self.refresh_zone_cache()
-                self._emit_reference_with_backoff()
-
-            try:
-                emitted = self.poll_once()
-                consecutive_failures = 0
-                LOGGER.info("Completed forecast poll; emitted %s changed forecast snapshot(s).", emitted)
-            except RuntimeError as exc:
-                consecutive_failures += 1
-                LOGGER.error("Poll cycle failed (%d/%d): %s", consecutive_failures, max_consecutive_failures, exc)
-                if consecutive_failures >= max_consecutive_failures:
-                    raise RuntimeError(
-                        f"Kafka delivery failed {max_consecutive_failures} consecutive times, giving up."
-                    ) from exc
-
-            if once:
-                return
-            time.sleep(self.poll_interval_seconds)
-
     def _emit_reference_with_backoff(self) -> None:
-        """Emit reference data with tolerance for initial Kafka unavailability."""
         try:
-            self.emit_reference_data()
+            self._fetcher.emit_reference_data()
         except RuntimeError as exc:
             LOGGER.warning("Reference data emission failed (will retry next refresh): %s", exc)
+
+    def run(self, once: bool = False) -> None:
+        self._fetcher.run(once=once, emit_reference_with_backoff=self._emit_reference_with_backoff)
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
