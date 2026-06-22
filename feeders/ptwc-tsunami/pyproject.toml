@@ -21,6 +21,8 @@ dependencies = [
     "cloudevents>=1.12.1,<2.0.0",
     "confluent-kafka>=2.14.2",
     "dataclasses-json>=0.6.7",
+    "ptwc_tsunami_core",
+
 ]
 
 [project.scripts]
@@ -42,3 +44,6 @@ local_scheme = "no-local-version"
 packages = [
     "ptwc_tsunami",
 ]
+
+[tool.uv.sources]
+ptwc_tsunami_core = { path = "ptwc_tsunami_core" }

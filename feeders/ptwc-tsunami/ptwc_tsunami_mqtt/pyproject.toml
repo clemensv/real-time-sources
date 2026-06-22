@@ -20,6 +20,8 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
+    "ptwc_tsunami_core",
+
 ]
 
 [project.scripts]
@@ -34,3 +36,6 @@ local_scheme = "no-local-version"
 packages = [
     "ptwc_tsunami_mqtt",
 ]
+
+[tool.uv.sources]
+ptwc_tsunami_core = { path = "../ptwc_tsunami_core" }

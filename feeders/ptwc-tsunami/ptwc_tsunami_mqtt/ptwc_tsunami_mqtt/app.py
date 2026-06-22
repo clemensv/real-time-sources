@@ -15,7 +15,7 @@ import aiohttp
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from ptwc_tsunami.ptwc_tsunami import DEFAULT_POLL_INTERVAL, DEFAULT_STATE_FILE, FEEDS, NS, PTWCTsunamiPoller, _text, parse_entry
+from ptwc_tsunami_core import DEFAULT_POLL_INTERVAL, DEFAULT_STATE_FILE, FEEDS, NS, PTWCTsunamiPoller, _text, parse_entry
 from ptwc_tsunami_mqtt_producer_mqtt_client.client import PTWCBulletinsMqttMqttClient
 import json
 
@@ -180,5 +180,5 @@ def main() -> None:
         parser.error("only the 'feed' command is supported")
     host, port, tls = _parse_broker_url(args.broker_url)
     feeds = [part.strip() for part in args.feeds.split(",") if part.strip()]
-    poller = PTWCTsunamiPoller(kafka_config=None, kafka_topic="mqtt", state_file=args.state_file, poll_interval=args.poll_interval, feeds=feeds)
+    poller = PTWCTsunamiPoller(state_file=args.state_file, poll_interval=args.poll_interval, feeds=feeds)
     asyncio.run(feed(poller, host, port, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))
