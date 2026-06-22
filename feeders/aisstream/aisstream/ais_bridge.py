@@ -21,7 +21,7 @@ from aisstream_producer_data import (
 )
 from aisstream_producer_kafka_producer.producer import IOAISstreamEventProducer
 
-from aisstream.ws_source import WebSocketSource
+from aisstream_core import WebSocketSource
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)

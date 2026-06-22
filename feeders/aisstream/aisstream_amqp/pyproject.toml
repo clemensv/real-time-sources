@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "AMQP 1.0 feeder for AISstream.io"
 requires-python = ">=3.10"
 dependencies = [
+    "aisstream_core",
     "python-qpid-proton>=0.40.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
@@ -25,3 +26,6 @@ include = ["aisstream_amqp*"]
 
 [tool.setuptools.package-data]
 aisstream_amqp = ["mid_iso.csv"]
+
+[tool.uv.sources]
+aisstream_core = { path = "../aisstream_core" }

@@ -6,21 +6,16 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aisstream-mqtt"
+name = "aisstream_core"
 dynamic = [
     "version",
 ]
-description = "AISstream.io firehose -> MQTT/UNS non-retained bridge"
+description = "Transport-neutral acquisition and normalization for AISstream feeders."
 authors = [
-    { name = "clemensv" },
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "aisstream_core",
-    "azure-identity>=1.17.0",
-    "cloudevents>=1.11.0,<2.0.0",
-    "dataclasses_json>=0.6.7",
-    "paho-mqtt>=2.1.0",
     "websockets>=12.0",
 ]
 
@@ -31,11 +26,8 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = [
-    "aisstream_mqtt",
+    "aisstream_core",
 ]
 
 [tool.setuptools.package-data]
-aisstream_mqtt = ["*.csv"]
-
-[tool.uv.sources]
-aisstream_core = { path = "../aisstream_core" }
+aisstream_core = ["mid_iso.csv"]
