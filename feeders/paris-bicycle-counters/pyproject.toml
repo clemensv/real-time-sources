@@ -20,6 +20,7 @@ dependencies = [
     "cloudevents>=1.12.1,<2.0.0",
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
+    "paris_bicycle_counters_core @ file:paris_bicycle_counters_core",
     "requests>=2.34.2",
 ]
 

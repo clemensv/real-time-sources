@@ -15,7 +15,7 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from paris_bicycle_counters.paris_bicycle_counters import ParisBicycleCounterPoller
+from paris_bicycle_counters_core import ParisBicycleCounterPoller
 from paris_bicycle_counters_mqtt_producer_mqtt_client.client import FRParisOpenDataVeloMqttMqttClient
 
 def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
