@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "blitzortung_core",
     "avro>=1.12.1",
     "azure-core>=1.30.0",
     "azure-identity>=1.17.0",
@@ -36,3 +37,6 @@ local_scheme = "no-local-version"
 packages = [
     "blitzortung_amqp",
 ]
+
+[tool.uv.sources]
+blitzortung_core = { path = "../blitzortung_core" }

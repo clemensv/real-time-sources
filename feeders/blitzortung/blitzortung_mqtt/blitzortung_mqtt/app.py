@@ -1,227 +1,179 @@
-
 from __future__ import annotations
-import argparse, json, os, re, time, uuid
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Mapping
 
+import argparse
+import asyncio
+import json
+import logging
+import os
+import sys
+from typing import Any, Optional
 from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
+import paho.mqtt.client as mqtt
+import websockets
+from paho.mqtt.client import CallbackAPIVersion, MQTTv5
+
+from blitzortung_core.blitzortung import DEFAULT_BBOX, DEFAULT_USER_AGENT, DEFAULT_WS_URLS, normalize_stroke
+from blitzortung_mqtt_producer_data import LightningStroke
+from blitzortung_mqtt_producer_mqtt_client.client import BlitzortungLightningMqttMqttClient
+
+logger = logging.getLogger(__name__)
+
+
 def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
-    params = {
-        "api-version": "2018-02-01",
-        "resource": audience or "https://eventgrid.azure.net/",
-    }
+    params = {"api-version": "2018-02-01", "resource": audience or "https://eventgrid.azure.net/"}
     if managed_identity_client_id:
         params["client_id"] = managed_identity_client_id
-
-    request = Request(
-        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
-        headers={"Metadata": "true"},
-    )
+    request = Request("http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params), headers={"Metadata": "true"})
     with urlopen(request, timeout=30) as response:
         payload = json.loads(response.read().decode("utf-8"))
-
     token = payload.get("accessToken") or payload.get("access_token")
     if not token:
         raise RuntimeError("IMDS token response did not contain an access token")
     return str(token)
 
+
 def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
     resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
-
     if auth_mode != "entra":
         return resolved_client_id, str(username or ""), str(password or ""), None
-
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
     resolved_username = resolved_client_id or str(username or "").strip()
     if not resolved_username:
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
-
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     from paho.mqtt.properties import Properties as _MqttConnProps
     from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
-    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
-    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
-    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
-    return resolved_client_id, resolved_username, resolved_password, _connect_props
+    connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, connect_props
 
-_TEMPLATE = re.compile(r"\{([^}]+)\}")
 
-def _xreg_path() -> Path:
-    candidates = [Path.cwd() / "xreg", Path(__file__).resolve().parents[2] / "xreg"]
-    for candidate in candidates:
-        if candidate.exists():
-            return next(candidate.glob("*.xreg.json"))
-    raise FileNotFoundError("Could not locate source xreg directory")
+class BlitzortungMqttBridge:
+    def __init__(self, client: BlitzortungLightningMqttMqttClient, *, ws_urls=DEFAULT_WS_URLS, bbox=DEFAULT_BBOX, user_agent: str = DEFAULT_USER_AGENT) -> None:
+        self.client = client
+        self.ws_urls = list(ws_urls)
+        self.bbox = bbox
+        self.user_agent = user_agent
+        self._count = 0
 
-def _ptr(doc: Mapping[str, Any], ref: str) -> Any:
-    obj: Any = doc
-    for part in ref.strip("#/").split("/"):
-        if part:
-            obj = obj[part]
-    return obj
+    async def run(self, max_events: Optional[int] = None) -> None:
+        bbox_msg = json.dumps({"west": self.bbox[3], "east": self.bbox[1], "north": self.bbox[0], "south": self.bbox[2], "limit": 0})
+        retry_delay = 1
+        max_retry_delay = 60
+        url_idx = 0
+        while True:
+            url = self.ws_urls[url_idx % len(self.ws_urls)]
+            try:
+                async with websockets.connect(url, user_agent_header=self.user_agent, max_size=2**22) as ws:
+                    await ws.send(bbox_msg)
+                    logger.info("Connected to Blitzortung WS at %s", url)
+                    retry_delay = 1
+                    async for raw in ws:
+                        try:
+                            envelope = json.loads(raw)
+                        except (TypeError, ValueError):
+                            continue
+                        await self._dispatch_envelope(envelope)
+                        if max_events and self._count >= max_events:
+                            return
+            except (asyncio.CancelledError, KeyboardInterrupt):
+                raise
+            except Exception as exc:
+                logger.error("Blitzortung WS error: %s. Retrying in %ds", exc, retry_delay)
+                await asyncio.sleep(retry_delay)
+                retry_delay = min(retry_delay * 2, max_retry_delay)
+                url_idx += 1
 
-def _resolve_message(doc: Mapping[str, Any], message: Mapping[str, Any]) -> dict[str, Any]:
-    base = message.get("basemessageuri")
-    if not base:
-        return dict(message)
-    merged = _resolve_message(doc, _ptr(doc, base))
-    merged.update({k: v for k, v in message.items() if k != "basemessageuri"})
-    return merged
+    async def _dispatch_envelope(self, envelope: Any) -> None:
+        if isinstance(envelope, dict) and isinstance(envelope.get("strokes"), list):
+            for raw in envelope["strokes"]:
+                await self._publish_one(raw)
+        elif isinstance(envelope, dict):
+            await self._publish_one(envelope)
+        elif isinstance(envelope, list):
+            for raw in envelope:
+                await self._publish_one(raw)
 
-def _root_schema(schema: dict[str, Any]) -> dict[str, Any]:
-    root = schema.get("$root")
-    if root:
-        return _ptr(schema, root)
-    return schema
+    async def _publish_one(self, raw: dict[str, Any]) -> None:
+        try:
+            data = LightningStroke.from_serializer_dict(normalize_stroke(raw))
+        except (KeyError, TypeError, ValueError):
+            return
+        await self.client.publish_blitzortung_lightning_mqtt_lightning_stroke(
+            source_id=str(data.source_id),
+            geohash5=data.geohash5,
+            geohash7=data.geohash7,
+            stroke_id=data.stroke_id,
+            _time=data.event_time,
+            data=data,
+            qos=0,
+            retain=False,
+        )
+        self._count += 1
 
-def _schema_for(doc: Mapping[str, Any], message: Mapping[str, Any]) -> dict[str, Any]:
-    rec = _ptr(doc, message["dataschemauri"])
-    schema = rec["versions"][rec["defaultversionid"]]["schema"]
-    return _root_schema(schema)
 
-def _sample_for_type(name: str, typ: Any) -> Any:
-    if isinstance(typ, list):
-        typ = next((t for t in typ if t != "null"), "string")
-    if isinstance(typ, dict) and "$ref" in typ:
-        return {}
-    if typ in ("string", "datetime", "date", "time"):
-        if name.endswith("time") or name in {"timestamp", "sent", "effective", "expires", "updated", "published_at", "observation_time", "obs_time", "report_time", "valid_time_from", "valid_time_to", "last_update", "next_update", "modified", "run"}:
-            return "2026-01-01T00:00:00Z"
-        return name.replace("_", "-") + "-sample"
-    if typ in ("int32", "int64", "integer"):
-        return 1
-    if typ in ("double", "float", "number"):
-        return 1.0
-    if typ == "boolean":
-        return True
-    if typ == "array":
-        return []
-    if typ == "object":
-        return {}
-    return "sample"
+def _parse_broker(url: str) -> tuple[str, int, bool]:
+    parsed = urlparse(url if "://" in url else f"mqtt://{url}")
+    scheme = (parsed.scheme or "mqtt").lower()
+    return parsed.hostname or "localhost", parsed.port or (8883 if scheme == "mqtts" else 1883), scheme == "mqtts"
 
-def _build_payload(schema: dict[str, Any], placeholders: Mapping[str, str]) -> dict[str, Any]:
-    payload: dict[str, Any] = {}
-    props = schema.get("properties", {})
-    required = set(schema.get("required", []))
-    for name, spec in props.items():
-        if name in placeholders:
-            payload[name] = placeholders[name]
-        elif name in required:
-            payload[name] = _sample_for_type(name, spec.get("type", "string"))
-    for name, value in placeholders.items():
-        payload.setdefault(name, value)
-    return payload
 
-def _render(template: str, values: Mapping[str, Any]) -> str:
-    return _TEMPLATE.sub(lambda m: str(values[m.group(1)]), template)
-
-def _contracts(protocol_prefix: str) -> list[dict[str, Any]]:
-    doc = json.loads(_xreg_path().read_text(encoding="utf-8"))
-    out = []
-    for ep in doc.get("endpoints", {}).values():
-        if not str(ep.get("protocol", "")).startswith(protocol_prefix):
-            continue
-        for ref in ep.get("messagegroups", []):
-            group = _ptr(doc, ref)
-            for msg in group.get("messages", {}).values():
-                resolved = _resolve_message(doc, msg)
-                schema = _schema_for(doc, resolved)
-                meta = resolved.get("envelopemetadata", {})
-                opts = resolved.get("protocoloptions", {}) or {}
-                props = opts.get("properties", {}) if isinstance(opts.get("properties"), dict) else {}
-                topic = opts.get("topic_name") or opts.get("topic") or props.get("topic")
-                if isinstance(topic, dict): topic = topic.get("value")
-                subj = meta.get("subject", {}).get("value", "sample")
-                placeholders = {name: name.replace("_", "-") + "-sample" for name in set(_TEMPLATE.findall(str(topic or "")) + _TEMPLATE.findall(subj))}
-                # Stable prettier samples for common axes.
-                placeholders.update({
-                    "icao_id":"KJFK", "region":"intl", "sigmet_id":"sigmet-001", "state":"wa", "severity":"severe",
-                    "event_type":"winter-storm", "station_id":"station-001", "station_wmo":"94610", "msc_id":"6158350",
-                    "place_id":"hko", "station_code":"06447", "bulletin_id":"bulletin-001", "office":"tokyo",
-                    "province":"on", "bundesland":"wien", "district":"central-and-western", "lan":"stockholm",
-                    "zone_id":"waz001", "alert_id":"alert-001", "warning_id":"warning-001", "identifier":"dwd-alert-001",
-                    "kind":"radar", "product_type":"rx", "file_id":"file-001", "variable":"temperature",
-                    "region_id":"11", "pollen_type":"hazel", "geohash5":"u0yjx", "geohash7":"u0yjx7p", "stroke_id":"123456789", "source_id":"4"
-                })
-                payload = _build_payload(schema, placeholders)
-                subject = _render(subj, {**payload, **placeholders})
-                out.append({"message": resolved, "schema": schema, "payload": payload, "topic": _render(topic, {**payload, **placeholders}) if topic else None,
-                            "qos": int(opts.get("qos", props.get("qos", 1))), "retain": bool(opts.get("retain", props.get("retain", False))),
-                            "type": meta.get("type", {}).get("value"), "source": meta.get("source", {}).get("value", "sample"), "subject": subject})
-    return out
-
-def publish_mqtt(args: argparse.Namespace) -> None:
-    import paho.mqtt.client as mqtt
-    from paho.mqtt.client import CallbackAPIVersion, MQTTv5
-    from paho.mqtt.properties import Properties
-    from paho.mqtt.packettypes import PacketTypes
-    from urllib.parse import urlparse
-    parsed = urlparse(args.broker_url if "://" in args.broker_url else "mqtt://" + args.broker_url)
-    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
-        username=parsed.username,
-        password=parsed.password or "",
-        client_id=None,
+async def _run(args: argparse.Namespace) -> None:
+    broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
+    tls = tls or args.mqtt_enable_tls
+    resolved_client_id, resolved_username, resolved_password, entra_props = _resolve_mqtt_connection_settings(
+        username=args.mqtt_username,
+        password=args.mqtt_password or "",
+        client_id=args.mqtt_client_id or "",
         auth_mode=os.getenv("MQTT_AUTH_MODE"),
     )
-
-    client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if _entra_props is None and (resolved_username or resolved_password):
-        client.username_pw_set(resolved_username, resolved_password)
-    if parsed.scheme in ("mqtts", "ssl", "tls") or args.tls or _entra_props is not None: client.tls_set()
-    client.connect(parsed.hostname or "localhost", parsed.port or (8883 if parsed.scheme == "mqtts" else 1883), 30, properties=_entra_props)
-    client.loop_start()
+    paho_client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if entra_props is None and (resolved_username or resolved_password):
+        paho_client.username_pw_set(resolved_username, resolved_password)
+    if tls or entra_props is not None:
+        paho_client.tls_set()
+    loop = asyncio.get_running_loop()
+    client = BlitzortungLightningMqttMqttClient(client=paho_client, content_mode="binary", loop=loop)
+    if entra_props is not None:
+        paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=entra_props)
+        paho_client.loop_start()
+    else:
+        await client.connect(broker_host, broker_port)
     try:
-        for c in _contracts("MQTT"):
-            props = Properties(PacketTypes.PUBLISH)
-            props.ContentType = "application/json"
-            props.UserProperty = [("specversion", "1.0"), ("id", str(uuid.uuid4())), ("source", str(c["source"])), ("type", str(c["type"])), ("subject", c["subject"]), ("time", datetime.now(timezone.utc).isoformat())]
-            info = client.publish(c["topic"], json.dumps(c["payload"], ensure_ascii=False).encode("utf-8"), qos=c["qos"], retain=c["retain"], properties=props)
-            info.wait_for_publish()
+        await BlitzortungMqttBridge(client).run(max_events=args.max_events)
     finally:
-        time.sleep(0.5)
-        client.loop_stop()
-        client.disconnect()
+        await client.disconnect()
 
-def publish_amqp(args: argparse.Namespace) -> None:
-    from proton import Message
-    from proton.utils import BlockingConnection
-    from urllib.parse import quote
-    user = quote(args.username or "")
-    pwd = quote(args.password or "")
-    auth = f"{user}:{pwd}@" if args.username else ""
-    url = f"amqp://{auth}{args.host}:{args.port}"
-    conn = BlockingConnection(url, timeout=30, allowed_mechs="PLAIN")
-    sender = conn.create_sender(args.address)
-    try:
-        for c in _contracts("AMQP"):
-            props = {"cloudEvents:specversion":"1.0", "cloudEvents:id":str(uuid.uuid4()), "cloudEvents:source":str(c["source"]), "cloudEvents:type":str(c["type"]), "cloudEvents:subject":c["subject"], "cloudEvents:time":datetime.now(timezone.utc).isoformat(), "content-type":"application/json"}
-            msg = Message(body=json.dumps(c["payload"], ensure_ascii=False), subject=c["subject"], properties=props, content_type="application/json")
-            sender.send(msg)
-    finally:
-        conn.close()
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("command", nargs="?", default="feed")
-    parser.add_argument("--broker-url", default=os.getenv("MQTT_BROKER_URL", "mqtt://localhost:1883"))
-    parser.add_argument("--tls", action="store_true", default=os.getenv("MQTT_TLS", "").lower() in ("1","true","yes"))
-    parser.add_argument("--host", default=os.getenv("AMQP_HOST", "localhost"))
-    parser.add_argument("--port", type=int, default=int(os.getenv("AMQP_PORT", "5672")))
-    parser.add_argument("--address", default=os.getenv("AMQP_ADDRESS", "blitzortung"))
-    parser.add_argument("--username", default=os.getenv("AMQP_USERNAME"))
-    parser.add_argument("--password", default=os.getenv("AMQP_PASSWORD"))
-    parser.add_argument("--once", action="store_true", default=True)
-    parser.add_argument("--mock-mode", action="store_true", default=True)
-    args = parser.parse_args()
-    if "amqp" in __package__:
-        publish_amqp(args)
+    if sys.gettrace() is not None:
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     else:
-        publish_mqtt(args)
-if __name__ == "__main__": main()
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    p = argparse.ArgumentParser(description="Blitzortung -> MQTT bridge")
+    sub = p.add_subparsers(dest="command")
+    feed = sub.add_parser("feed", help="Stream Blitzortung strokes to MQTT")
+    feed.add_argument("--mqtt-broker-url", default=os.getenv("MQTT_BROKER_URL", "mqtt://localhost:1883"))
+    feed.add_argument("--mqtt-enable-tls", action="store_true", default=os.getenv("MQTT_ENABLE_TLS", "false").lower() in ("true", "1", "yes"))
+    feed.add_argument("--mqtt-username", default=os.getenv("MQTT_USERNAME"))
+    feed.add_argument("--mqtt-password", default=os.getenv("MQTT_PASSWORD"))
+    feed.add_argument("--mqtt-client-id", default=os.getenv("MQTT_CLIENT_ID"))
+    feed.add_argument("--max-events", type=int, default=int(os.getenv("BLITZORTUNG_MAX_EVENTS", "0")) or None)
+    args = p.parse_args()
+    if args.command != "feed":
+        p.print_help()
+        sys.exit(1)
+    try:
+        asyncio.run(_run(args))
+    except KeyboardInterrupt:
+        logger.info("Shutting down")
+
+
+if __name__ == "__main__":
+    main()
+
