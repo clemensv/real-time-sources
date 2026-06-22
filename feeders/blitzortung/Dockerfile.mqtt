@@ -12,7 +12,8 @@
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
         COPY . /app
         RUN pip install --no-cache-dir confluent-kafka \
-         && pip install --no-cache-dir ./blitzortung_producer/blitzortung_producer_kafka_producer \
+ && pip install --no-cache-dir ./blitzortung_mqtt_producer/blitzortung_mqtt_producer_data \
+ && pip install --no-cache-dir ./blitzortung_mqtt_producer/blitzortung_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./blitzortung_core \
          && pip install --no-cache-dir ./blitzortung_mqtt
         ENV MQTT_BROKER_URL=""
