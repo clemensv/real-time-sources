@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["kmi_belgium_amqp"]
-
-[tool.uv.sources]
-kmi_belgium_core = { path = "../kmi_belgium_core" }

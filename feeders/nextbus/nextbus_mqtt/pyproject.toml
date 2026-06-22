@@ -9,7 +9,7 @@ description = "MQTT companion feeder for Nextbus"
 requires-python = ">=3.10"
 dependencies = [
     "paho-mqtt>=2.1.0",
-    "nextbus_core @ file:../nextbus_core",
+    "nextbus_core",
     "requests>=2.32.3",
 ]
 

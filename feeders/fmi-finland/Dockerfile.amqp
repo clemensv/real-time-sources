@@ -20,7 +20,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./fmi_finland_amqp_producer/fmi_finland_amqp_producer_data  && pip install --no-cache-dir ./fmi_finland_amqp_producer/fmi_finland_amqp_producer_amqp_producer  && pip install --no-cache-dir ./fmi_finland_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
+RUN pip install --no-cache-dir ./fmi_finland_core \
+ && pip install --no-cache-dir ./fmi_finland_amqp_producer/fmi_finland_amqp_producer_data  && pip install --no-cache-dir ./fmi_finland_amqp_producer/fmi_finland_amqp_producer_amqp_producer  && pip install --no-cache-dir ./fmi_finland_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
 ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="fmi-finland"
 CMD ["python", "-m", "fmi_finland_amqp", "feed"]

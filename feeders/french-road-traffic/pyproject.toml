@@ -42,6 +42,3 @@ local_scheme = "no-local-version"
 packages = [
     "french_road_traffic",
 ]
-
-[tool.uv.sources]
-french_road_traffic_core = { path = "french_road_traffic_core" }

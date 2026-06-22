@@ -226,6 +226,13 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `NOAA_POLLING_INTERVAL` | Seconds between poll cycles (default `300`). |
+| `MOCK_MODE` | Set to a truthy value to emit deterministic offline sample data instead of calling the live upstream (offline testing / Docker E2E). |
+
 ### Common (all images)
 
 | Variable | Description |
@@ -233,6 +240,9 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `NOAA_STATIONS` | Optional single station ID or comma-separated list of station IDs to poll (e.g. `9447130,9446484`). Also accepted as `NOAA_STATION` or the `--station` argument. Omit to poll the full station catalog. |
 | `NOAA_LAST_POLLED_FILE` | Path to the checkpoint file that stores the last successful poll watermark per station/product. Default `~/.noaa_last_polled.json`. |
 | `POLLING_INTERVAL` | Optional global polling interval override in seconds. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 

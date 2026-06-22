@@ -13,8 +13,8 @@ COPY . /app
 RUN apt-get update \
  && apt-get install -y --no-install-recommends gcc libc6-dev \
  && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir ./datex2_amqp_producer/datex2_amqp_producer_data \
+RUN pip install --no-cache-dir ./datex2_core \
+ && pip install --no-cache-dir ./datex2_amqp_producer/datex2_amqp_producer_data \
  && pip install --no-cache-dir ./datex2_amqp_producer/datex2_amqp_producer_amqp_producer \
- && pip install --no-cache-dir ./datex2_core \
  && pip install --no-cache-dir ./datex2_amqp
 CMD ["python", "-m", "datex2_amqp", "feed"]

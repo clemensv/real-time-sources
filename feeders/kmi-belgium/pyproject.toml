@@ -46,6 +46,3 @@ local_scheme = "no-local-version"
 packages = [
     "kmi_belgium",
 ]
-
-[tool.uv.sources]
-kmi_belgium_core = { path = "kmi_belgium_core" }

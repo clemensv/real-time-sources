@@ -44,6 +44,3 @@ local_scheme = "no-local-version"
 packages = [
     "nws_alerts",
 ]
-
-[tool.uv.sources]
-nws_alerts_core = { path = "nws_alerts_core" }

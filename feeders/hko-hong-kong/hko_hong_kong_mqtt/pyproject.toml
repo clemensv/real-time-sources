@@ -14,6 +14,3 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["hko_hong_kong_mqtt"]
-
-[tool.uv.sources]
-hko_hong_kong_core = { path = "../hko_hong_kong_core" }

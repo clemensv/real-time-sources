@@ -46,6 +46,3 @@ local_scheme = "no-local-version"
 packages = [
     "environment_canada",
 ]
-
-[tool.uv.sources]
-environment_canada_core = { path = "environment_canada_core" }

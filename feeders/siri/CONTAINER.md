@@ -29,6 +29,10 @@ SIRI containers turn European transit real-time feeds into CloudEvents for passe
 | `STATE_FILE` | JSON dedupe state file. Mount persistent storage here for long-running deployments. | `~/.siri_state.json` |
 | `ONCE_MODE` | Run one polling cycle and exit. Required for Fabric notebook hosting and useful for smoke tests. | `false` |
 | `LOG_LEVEL` | Standard Python logging level. | `INFO` |
+| `SIRI_SAMPLE_MODE` / `BODS_SAMPLE_MODE` | Set to a truthy value to read bundled sample SIRI/BODS data instead of calling the live API (offline testing; avoids needing `SIRI_API_KEY`). | `false` |
+| `SIRI_SAMPLE_FILE` / `BODS_SAMPLE_FILE` | Path to a SIRI/BODS sample XML file used when sample mode is enabled. | packaged sample |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |  |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |  |
 
 ## Configuring sources
 

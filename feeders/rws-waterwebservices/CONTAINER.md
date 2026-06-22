@@ -160,6 +160,15 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+| `MOCK_MODE` | Set to a truthy value to emit deterministic offline sample data instead of calling the live upstream (offline testing / Docker E2E). |
+
 ### Kafka image
 
 | Variable | Description |
@@ -170,6 +179,7 @@ docker run --rm \
 | `KAFKA_TOPIC` | Kafka destination topic. |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
 | `POLLING_INTERVAL` | Poll interval in seconds. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
 
 ### MQTT image
 
@@ -182,6 +192,11 @@ docker run --rm \
 | `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
 | `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
 | `POLLING_INTERVAL` | Poll interval in seconds. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_HOST` | MQTT broker host (component-level alternative to `MQTT_BROKER_URL`). |
+| `MQTT_PORT` | MQTT broker port (component-level alternative to `MQTT_BROKER_URL`). |
+| `MQTT_TLS` | Set `true` to use TLS (`mqtts`) for the component-level connection. |
 
 ### AMQP image
 
@@ -195,6 +210,10 @@ docker run --rm \
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
 | `POLLING_INTERVAL` | Poll interval in seconds. |
+| `AMQP_CLIENT_ID` | AMQP container / client identifier. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
 
 ## Deploying into Azure Container Instances
 

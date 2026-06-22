@@ -120,6 +120,25 @@ $ docker run --rm \
 
 ## Environment Variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `GDACS_MQTT_STATE_FILE` | Path to the MQTT image dedupe state file (default `~/.gdacs_mqtt_state.json`). |
+| `GDACS_POLL_INTERVAL` | Seconds between GDACS disaster-feed polls (default `300`). |
+| `MAX_SIZE` | Maximum number of records to fetch and emit per poll cycle (default `1000`). |
+| `STATION_FILTER` | Comma-separated event/area identifiers to include; empty includes all. |
+| `GDACS_MOCK` | Set to a truthy value to emit deterministic offline GDACS sample data (offline testing / Docker E2E). |
+| `GDACS_SAMPLE_MODE` | Set to a truthy value to emit a bundled GDACS sample payload once (offline testing). |
+
 | Variable | Description | Required |
 |---|---|---|
 | `CONNECTION_STRING` | Azure Event Hubs or Fabric Event Stream connection string | Yes (or use `KAFKA_BOOTSTRAP_SERVERS`) |
@@ -180,6 +199,9 @@ docker run --rm \
 | topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `alerts/intl/gdacs/gdacs`. |
 | retain default | Per message in xRegistry; see the topic table below. |
 | QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### MQTT topic patterns
 
@@ -205,5 +227,23 @@ Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgdacs%2Fazure-template-with-eventgrid-mqtt.json)
 
 ## AMQP 1.0 companion
+
+### AMQP environment variables
+
+| Variable | Description |
+|---|---|
+| `AMQP_HOST` | AMQP broker host (component-level alternative to `AMQP_BROKER_URL`). |
+| `AMQP_ADDRESS` | AMQP node (queue / topic) name to publish to. |
+| `AMQP_AUTH_MODE` | `password` (default), `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs), or `sas` for SAS-token CBS. |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_PORT` | AMQP broker port (default `5672`, or `5671` with TLS). |
+| `AMQP_TLS` | Set `true` to use TLS (`amqps`) for the component-level connection. |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). Required when `AMQP_AUTH_MODE=sas`. |
+
 
 This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.

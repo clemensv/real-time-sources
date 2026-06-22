@@ -44,6 +44,3 @@ local_scheme = "no-local-version"
 packages = [
     "ptwc_tsunami",
 ]
-
-[tool.uv.sources]
-ptwc_tsunami_core = { path = "ptwc_tsunami_core" }

@@ -36,6 +36,3 @@ local_scheme = "no-local-version"
 packages = [
     "eaws_albina_mqtt",
 ]
-
-[tool.uv.sources]
-eaws_albina_core = { path = "../eaws_albina_core" }

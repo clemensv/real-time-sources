@@ -19,6 +19,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["eaws_albina_core"]
-
-[tool.uv.sources]
-"eaws-albina-producer-data" = { path = "../eaws_albina_producer/eaws_albina_producer_data" }

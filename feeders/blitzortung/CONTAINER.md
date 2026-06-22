@@ -221,6 +221,13 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `BLITZORTUNG_MAX_EVENTS` | Optional cap on the number of lightning-stroke events emitted before exit; `0` means run indefinitely (mainly for testing) (default `0`). |
+| `BLITZORTUNG_MOCK` | Set to a truthy value to emit a deterministic synthetic corpus of strokes and exit, instead of connecting to the live stream (offline testing / Docker E2E). |
+
 ### Common (all images)
 
 | Variable | Description |
@@ -235,6 +242,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `BLITZORTUNG_STATE_FILE` | Path to the feeder-specific JSON state file used for websocket resume and dedupe state. |
 | `BLITZORTUNG_DEDUPE_SIZE` | Maximum number of event identifiers retained in the in-memory dedupe cache. Default `5000`. |
 | `BLITZORTUNG_USER_AGENT` | HTTP User-Agent header sent to the upstream service. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -258,6 +266,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. |
 | `MQTT_CLIENT_ID` | MQTT client identifier (must be globally unique per broker). |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
 
 ### AMQP image
 

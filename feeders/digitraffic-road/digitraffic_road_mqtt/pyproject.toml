@@ -36,6 +36,3 @@ local_scheme = "no-local-version"
 packages = [
     "digitraffic_road_mqtt",
 ]
-
-[tool.uv.sources]
-digitraffic_road_core = { path = "../digitraffic_road_core" }

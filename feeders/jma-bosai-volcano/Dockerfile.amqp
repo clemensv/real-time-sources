@@ -21,8 +21,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
- && pip install --no-cache-dir ./jma_bosai_volcano_core \
-RUN pip install --no-cache-dir ./jma_bosai_volcano_amqp_producer/jma_bosai_volcano_amqp_producer_data && pip install --no-cache-dir ./jma_bosai_volcano_amqp_producer/jma_bosai_volcano_amqp_producer_amqp_producer && pip install --no-cache-dir ./jma_bosai_volcano_mqtt && pip install --no-cache-dir ./jma_bosai_volcano_amqp && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
+RUN pip install --no-cache-dir ./jma_bosai_volcano_core \
+ && pip install --no-cache-dir ./jma_bosai_volcano_amqp_producer/jma_bosai_volcano_amqp_producer_data && pip install --no-cache-dir ./jma_bosai_volcano_amqp_producer/jma_bosai_volcano_amqp_producer_amqp_producer && pip install --no-cache-dir ./jma_bosai_volcano_amqp && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
 
 ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="jma-bosai-volcano"

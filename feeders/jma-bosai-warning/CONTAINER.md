@@ -163,6 +163,12 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `OFFICE_METADATA_REFRESH_HOURS` | Hours between refreshes of the forecast-office metadata catalog (reference data) (default `720`). |
+
 ### Common source runtime variables
 
 | Variable | Description |
@@ -173,6 +179,10 @@ docker run --rm \
 | `POLLING_INTERVAL_WARNING` | Polling interval (seconds) for warning feed polling. |
 | `POLLING_INTERVAL_TSUNAMI` | Polling interval (seconds) for tsunami feed polling. |
 | `JMA_WARNING_OFFICE_CODES` | Optional office-code filter for warning issuance areas. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image variables
 
@@ -183,6 +193,8 @@ docker run --rm \
 | `KAFKA_TOPIC` | Destination Kafka topic. |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
 | `KAFKA_ENABLE_TLS` | Set `false` to disable TLS (default `true`). |
+| `KAFKA_TOPIC_TSUNAMI` | Kafka topic for tsunami warning events. |
+| `KAFKA_TOPIC_WARNING` | Kafka topic for general weather / disaster warning events. |
 
 ### MQTT image variables
 
@@ -211,6 +223,7 @@ docker run --rm \
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra auth settings for `AMQP_AUTH_MODE=entra`. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy/key pair for `AMQP_AUTH_MODE=sas`. |
 | `AMQP_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+| `AMQP_CLIENT_ID` | AMQP container / client identifier. |
 
 ## Deploying into Microsoft Fabric
 

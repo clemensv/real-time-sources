@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["geosphere_austria_amqp"]
-
-[tool.uv.sources]
-geosphere_austria_core = { path = "../geosphere_austria_core" }

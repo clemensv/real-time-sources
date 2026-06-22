@@ -33,6 +33,3 @@ local_scheme = "no-local-version"
 packages = [
     "mode_s_mqtt",
 ]
-
-[tool.uv.sources]
-mode_s_core = { path = "../mode_s_core" }

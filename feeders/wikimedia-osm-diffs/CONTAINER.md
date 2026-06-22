@@ -155,6 +155,24 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `OSM_DIFFS_BASE_URL` | Base URL for OpenStreetMap minutely diff files; defaults to the public planet.openstreetmap.org replication endpoint. |
+| `OSM_DIFFS_MAX_RETRY_DELAY` | Maximum back-off delay in seconds between failed-fetch retries (default `120`). |
+| `OSM_DIFFS_ONCE` | Set to a truthy value to process one diff batch and exit (default `false`). |
+| `OSM_DIFFS_POLL_INTERVAL` | Seconds between replication-state polls (default `60`). |
+| `OSM_DIFFS_STATE_URL` | URL of the replication `state.txt` used to discover the latest diff sequence number. |
+| `OSM_DIFFS_USER_AGENT` | User-Agent header sent to the OSM replication server; set a contact address per the OSM usage policy. |
+
 ### Kafka image
 
 | Variable | Description |
@@ -175,6 +193,8 @@ docker run --rm \
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
 | State variable | `OSM_DIFFS_STATE_FILE` |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 
@@ -186,6 +206,7 @@ docker run --rm \
 | `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
 | `AMQP_TLS` | Enable TLS where supported. |
 | State variable | `OSM_DIFFS_STATE_FILE` |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
 ## Deploying into Microsoft Fabric
 

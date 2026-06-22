@@ -81,20 +81,31 @@ docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e AMQP_BROKER_URL="amqp://
 
 ## Environment variable matrix
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
 ### Kafka image (`ghcr.io/clemensv/real-time-sources-entsoe:latest`)
 
 | Variable | Purpose |
 |---|---|
 | `ENTSOE_SECURITY_TOKEN` | ENTSO-E Transparency Platform security token used to authenticate upstream API requests. |
-| `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Core configuration for this image variant. |
-| `KAFKA_TOPIC` | Core configuration for this image variant. |
+| `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Event Hubs / Fabric connection string (shortcut), or Kafka bootstrap servers (`host:port`) when configuring the broker directly. |
+| `KAFKA_TOPIC` | Kafka topic the feeder publishes to. |
 | `ENTSOE_DOMAINS` | Comma-separated ENTSO-E domain identifiers to poll, such as `10Y1001A1001A83F` for the DE-LU bidding zone. |
 | `ENTSOE_DOCUMENT_TYPES` | Comma-separated ENTSO-E document type codes to fetch, such as `A75` (prices), `A65` (load), `A11` (generation), or `A09` (cross-border flows). |
 | `ENTSOE_LOOKBACK_HOURS` | Number of hours of upstream history to re-read on startup so the feeder can backfill gaps after downtime. Defaults to `24`. |
 | `ENTSOE_CROSS_BORDER_PAIRS` | Optional comma-separated `in>out` EIC domain pairs that narrow cross-border flow polling to specific interconnectors. |
 | `ENTSOE_SAMPLE_MODE` | Set to `true` only for sample-data smoke tests; production deployments should leave it `false`. |
-| `POLLING_INTERVAL` | Core configuration for this image variant. |
-| `STATE_FILE` | Core configuration for this image variant. |
+| `POLLING_INTERVAL` | Seconds between poll cycles. |
+| `STATE_FILE` | Path to the JSON dedupe/resume state file; mount persistent storage here for long-running deployments. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+| `SASL_PASSWORD` | SASL PLAIN password. For Event Hubs use the full connection string. |
+| `SASL_USERNAME` | SASL PLAIN username. For Event Hubs use `$ConnectionString`. |
 
 ### MQTT image (`ghcr.io/clemensv/real-time-sources-entsoe-mqtt:latest`)
 
@@ -106,10 +117,16 @@ docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e AMQP_BROKER_URL="amqp://
 | `ENTSOE_LOOKBACK_HOURS` | Number of hours of upstream history to re-read on startup so the feeder can backfill gaps after downtime. Defaults to `24`. |
 | `ENTSOE_CROSS_BORDER_PAIRS` | Optional comma-separated `in>out` EIC domain pairs that narrow cross-border flow polling to specific interconnectors. |
 | `ENTSOE_SAMPLE_MODE` | Set to `true` only for sample-data smoke tests; production deployments should leave it `false`. |
-| `MQTT_BROKER_URL` | Core configuration for this image variant. |
-| `MQTT_AUTH_MODE` | Core configuration for this image variant. |
-| `MQTT_USERNAME / MQTT_PASSWORD` | Core configuration for this image variant. |
-| `MQTT_ENTRA_CLIENT_ID` | Core configuration for this image variant. |
+| `MQTT_BROKER_URL` | MQTT broker URL (`mqtt://` or `mqtts://host:port`). |
+| `MQTT_AUTH_MODE` | MQTT authentication mode — `password` (default) or `entra` (Azure Event Grid with Microsoft Entra ID). |
+| `MQTT_USERNAME / MQTT_PASSWORD` | Username and password for MQTT `password` auth mode. |
+| `MQTT_ENTRA_CLIENT_ID` | Managed-identity client ID for MQTT `entra` auth mode (optional). |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_HOST` | MQTT broker host (component-level alternative to `MQTT_BROKER_URL`). |
+| `MQTT_PORT` | MQTT broker port (component-level alternative to `MQTT_BROKER_URL`). |
+| `MQTT_TLS` | Set `true` to use TLS (`mqtts`) for the component-level connection. |
 
 ### AMQP image (`ghcr.io/clemensv/real-time-sources-entsoe-amqp:latest`)
 
@@ -121,11 +138,17 @@ docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e AMQP_BROKER_URL="amqp://
 | `ENTSOE_LOOKBACK_HOURS` | Number of hours of upstream history to re-read on startup so the feeder can backfill gaps after downtime. Defaults to `24`. |
 | `ENTSOE_CROSS_BORDER_PAIRS` | Optional comma-separated `in>out` EIC domain pairs that narrow cross-border flow polling to specific interconnectors. |
 | `ENTSOE_SAMPLE_MODE` | Set to `true` only for sample-data smoke tests; production deployments should leave it `false`. |
-| `AMQP_BROKER_URL` | Core configuration for this image variant. |
-| `AMQP_ADDRESS` | Core configuration for this image variant. |
-| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
-| `AMQP_ENTRA_CLIENT_ID` | Core configuration for this image variant. |
-| `AMQP_SAS_KEY_NAME / AMQP_SAS_KEY` | Core configuration for this image variant. |
+| `AMQP_BROKER_URL` | AMQP 1.0 connection URL shortcut (host, port, TLS, credentials). |
+| `AMQP_ADDRESS` | AMQP destination address (queue/topic/entity) to publish to. |
+| `AMQP_AUTH_MODE` | AMQP authentication mode — `password` (SASL PLAIN), `entra` (Service Bus + Microsoft Entra CBS), or `sas` (SAS-token CBS). |
+| `AMQP_ENTRA_CLIENT_ID` | Managed-identity client ID for AMQP `entra` auth mode (optional). |
+| `AMQP_SAS_KEY_NAME / AMQP_SAS_KEY` | Shared Access key name and key, required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
+| `AMQP_HOST` | AMQP broker host (component-level alternative to `AMQP_BROKER_URL`). |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PORT` | AMQP broker port (default `5672`, or `5671` with TLS). |
+| `AMQP_TLS` | Set `true` to use TLS (`amqps`) for the component-level connection. |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
 
 ## Azure ARM deployments
 

@@ -155,6 +155,13 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
 ### Kafka image
 
 | Variable | Description |
@@ -175,6 +182,7 @@ docker run --rm \
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
 | `CARBON_INTENSITY_MQTT_STATE_FILE` | Path to the JSON state file that remembers the last successfully published forecast timestamp for the MQTT bridge across restarts. Mount durable storage at `/state` when you need dedupe continuity. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 
@@ -186,6 +194,7 @@ docker run --rm \
 | `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
 | `AMQP_TLS` | Enable TLS where supported. |
 | `CARBON_INTENSITY_AMQP_STATE_FILE` | Path to the JSON state file that remembers the last successfully published forecast timestamp for the AMQP bridge across restarts. Mount durable storage at `/state` when you need dedupe continuity. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
 ## Deploying into Microsoft Fabric
 

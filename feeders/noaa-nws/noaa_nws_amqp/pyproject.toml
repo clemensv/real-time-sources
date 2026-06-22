@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "noaa-nws AMQP 1.0 companion feeder"
 requires-python = ">=3.10"
 dependencies = [
-  "noaa_nws_core @ file:../noaa_nws_core",
+  "noaa_nws_core",
   "python-qpid-proton>=0.39.0",
   "azure-identity>=1.16.0",
 ]

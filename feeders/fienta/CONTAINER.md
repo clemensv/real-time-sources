@@ -84,36 +84,61 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/fie
 
 ## Environment variable matrix
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `SOURCE_MANIFEST` | Advanced: path to the xRegistry manifest the bridge loads at startup; defaults to the packaged copy under `/app/xreg/`. Normally only overridden in custom builds. |
+
 ### Kafka image (`ghcr.io/clemensv/real-time-sources-fienta:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `CONNECTION_STRING` | Core configuration for this image variant. |
-| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
-| `FIENTA_STATE_FILE` | Core configuration for this image variant. |
-| `FIENTA_COUNTRY` | Core configuration for this image variant. |
-| `FIENTA_LOCALE` | Core configuration for this image variant. |
+| `CONNECTION_STRING` | Event Hubs / Fabric custom-endpoint connection string; a shortcut supplying bootstrap server, credentials, and topic in one value. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local/plaintext brokers (default `true`). |
+| `FIENTA_STATE_FILE` | Path to the JSON dedupe/resume state file. |
+| `FIENTA_COUNTRY` | Optional ISO country filter for Fienta events. |
+| `FIENTA_LOCALE` | Response locale for Fienta event data. |
 
 ### MQTT image (`ghcr.io/clemensv/real-time-sources-fienta-mqtt:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `MQTT_BROKER_URL` | Core configuration for this image variant. |
-| `MQTT_USERNAME` | Core configuration for this image variant. |
-| `MQTT_PASSWORD` | Core configuration for this image variant. |
-| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
-| `FIENTA_COUNTRY` | Core configuration for this image variant. |
-| `FIENTA_LOCALE` | Core configuration for this image variant. |
+| `MQTT_BROKER_URL` | MQTT broker URL (`mqtt://` or `mqtts://host:port`). |
+| `MQTT_USERNAME` | Username for MQTT `password` auth mode. |
+| `MQTT_PASSWORD` | Password for MQTT `password` auth mode. |
+| `MQTT_CLIENT_ID` | Stable MQTT client identifier; set a unique value per running instance. |
+| `FIENTA_COUNTRY` | Optional ISO country filter for Fienta events. |
+| `FIENTA_LOCALE` | Response locale for Fienta event data. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image (`ghcr.io/clemensv/real-time-sources-fienta-amqp:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `AMQP_BROKER_URL` | Core configuration for this image variant. |
-| `AMQP_ADDRESS` | Core configuration for this image variant. |
-| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
-| `FIENTA_COUNTRY` | Core configuration for this image variant. |
-| `FIENTA_LOCALE` | Core configuration for this image variant. |
+| `AMQP_BROKER_URL` | AMQP 1.0 connection URL shortcut (host, port, TLS, credentials). |
+| `AMQP_ADDRESS` | AMQP destination address (queue/topic/entity) to publish to. |
+| `AMQP_AUTH_MODE` | AMQP authentication mode — `password` (SASL PLAIN), `entra` (Service Bus + Microsoft Entra CBS), or `sas` (SAS-token CBS). |
+| `FIENTA_COUNTRY` | Optional ISO country filter for Fienta events. |
+| `FIENTA_LOCALE` | Response locale for Fienta event data. |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+| `AMQP_HOST` | AMQP broker host (component-level alternative to `AMQP_BROKER_URL`). |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PORT` | AMQP broker port (default `5672`, or `5671` with TLS). |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_TLS` | Set `true` to use TLS (`amqps`) for the component-level connection. |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
 
 ## Azure ARM deployments
 

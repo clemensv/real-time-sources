@@ -21,14 +21,11 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
+RUN pip install --no-cache-dir ./nws_alerts_producer/nws_alerts_producer_data \
+ && pip install --no-cache-dir --no-deps . \
  && pip install --no-cache-dir ./nws_alerts_core \
-RUN pip install --no-cache-dir ./nws_alerts_amqp_producer/nws_alerts_amqp_producer_data \
+ && pip install --no-cache-dir ./nws_alerts_amqp_producer/nws_alerts_amqp_producer_data \
  && pip install --no-cache-dir ./nws_alerts_amqp_producer/nws_alerts_amqp_producer_amqp_producer \
- && pip install --no-cache-dir ./nws_alerts_mqtt_producer/nws_alerts_mqtt_producer_data \
- && pip install --no-cache-dir ./nws_alerts_mqtt_producer/nws_alerts_mqtt_producer_mqtt_client \
- && pip install --no-cache-dir ./nws_alerts_producer/nws_alerts_producer_data \
- && pip install --no-cache-dir . \
- && pip install --no-cache-dir ./nws_alerts_mqtt \
  && pip install --no-cache-dir ./nws_alerts_amqp \
  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
  && rm -rf /root/.cache /var/lib/apt/lists/*

@@ -70,6 +70,9 @@ air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation
 | `POLLING_INTERVAL` | No | `600` | Poll interval in seconds |
 | `STATE_FILE` | No | `~/.wallonia_issep_mqtt_state.json` | Deduplication state file |
 | `ONCE_MODE` | No | `false` | Exit after first poll cycle (for testing) |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |  |  |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |  |  |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |  |  |
 
 ### Docker example (MQTT)
 
@@ -81,6 +84,13 @@ docker run --rm `
 ```
 
 ## Environment variables
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
@@ -219,6 +229,7 @@ docker run --rm \
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy and key for CBS SAS auth / emulator. | empty |
 | `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
 | `MOCK_MODE` | Emit deterministic reference + telemetry mock events and exit; used by Docker E2E. | `false` |
+| `AMQP_CLIENT_ID` | AMQP container / client identifier. |  |
 
 Deploy to Azure with `azure-template-with-servicebus.json` (mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus namespace and queue, user-assigned managed identity, Data Sender role assignment, ACI container group, Log Analytics workspace, and Azure Files state share.
 

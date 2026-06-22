@@ -163,6 +163,14 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `POINT_REQUEST_DELAY` | Seconds to wait between per-station point-detail requests, to respect upstream rate limits. |
+| `POINT_STATION_CODES` | Comma-separated station codes, or 'all', for per-station point-detail enrichment. |
+| `STATION_METADATA_REFRESH_HOURS` | Hours between refreshes of the AMeDAS station metadata catalog (reference data) (default `168`). |
+
 ### Common source runtime variables
 
 | Variable | Description |
@@ -170,6 +178,10 @@ docker run --rm \
 | `STATE_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
 | `POLLING_INTERVAL` | Polling interval in seconds. |
 | `JMA_BOSAI_AMEDAS_MOCK` | Mock/source test mode switch used for local validation. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image variables
 

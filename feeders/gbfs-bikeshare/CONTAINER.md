@@ -28,6 +28,8 @@ GBFS Bikeshare containers turn station inventory, dock availability, and dockles
 | `ONCE_MODE` | Run one polling cycle and exit. Required for Fabric notebook hosting and useful for smoke tests. | `false` |
 | `GBFS_MOCK` | Emit deterministic offline GBFS sample events once; used by CI flow tests. | `false` |
 | `LOG_LEVEL` | Standard Python logging level. | `INFO` |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. | maintainer contact |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. | maintainer e-mail |
 
 ## Configuring sources
 

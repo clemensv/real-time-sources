@@ -52,6 +52,3 @@ local_scheme = "no-local-version"
 packages = [
     "bluesky",
 ]
-
-[tool.uv.sources]
-bluesky_core = { path = "bluesky_core" }

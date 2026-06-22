@@ -24,6 +24,9 @@ DATEX II containers turn European road-traffic XML publications into CloudEvents
 | `DATEX2_STATE_FILE` | Optional DATEX II-specific persistent dedupe state file path for Kafka/Event Hubs deployments. | unset |
 | `STATE_FILE` | Optional generic persistent dedupe state file path for Kafka/Event Hubs deployments. | unset |
 | `ONCE_MODE` | Run one polling cycle and exit. | `false` |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |  |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |  |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |  |
 
 ## Configuring sources
 

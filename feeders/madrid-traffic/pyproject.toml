@@ -42,6 +42,3 @@ local_scheme = "no-local-version"
 packages = [
     "madrid_traffic",
 ]
-
-[tool.uv.sources]
-madrid_traffic_core = { path = "madrid_traffic_core" }

@@ -154,12 +154,27 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `MAX_RECORDS_PER_FAMILY` | Optional cap on records emitted per event family per poll; `0` disables the cap (default `0`). |
+| `NDW_BASE_URL` | NDW open-data base URL. |
+| `REFERENCE_REFRESH_INTERVAL` | Seconds between refreshes of reference data (measurement-site metadata). |
+| `SITUATION_INTERVAL` | Seconds between polls of the situation (incident/road-works) feed. |
+| `DRY_RUN` | Set to a truthy value to run without publishing to the broker; payloads are parsed and logged only. |
+
 ### Common
 
 | Variable | Description |
 |---|---|
 | `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
 | `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -180,6 +195,8 @@ docker run --rm \
 | `MQTT_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra JWT. |
 | `MQTT_CLIENT_ID` | Client identifier; must be unique per broker namespace. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image
 

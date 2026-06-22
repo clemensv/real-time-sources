@@ -44,6 +44,3 @@ local_scheme = "no-local-version"
 packages = [
     "jma_japan",
 ]
-
-[tool.uv.sources]
-jma_japan_core = { path = "jma_japan_core" }

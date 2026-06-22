@@ -151,6 +151,19 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `SOURCE_MANIFEST` | Advanced: path to the xRegistry manifest the bridge loads at startup; defaults to the packaged copy under `/app/xreg/`. Normally only overridden in custom builds. |
+
 ### Kafka image
 
 | Variable | Description |
@@ -176,6 +189,7 @@ docker run --rm \
 | `BIDDING_ZONE` | ENTSO-E bidding-zone code used for spot-price and public-power slices. Defaults to `DE-LU`. |
 | `ENERGY_CHARTS_LAST_POLLED_FILE` | Present on Azure templates for shared state-share wiring; the current MQTT companion app does not read it. |
 | State variable | Not used by current MQTT companion app |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 

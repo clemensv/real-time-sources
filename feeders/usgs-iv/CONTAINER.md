@@ -162,6 +162,24 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `USGS_FORCE_DATA_REFRESH` | Set to a truthy value to force a full re-fetch of instantaneous values, ignoring dedupe state. |
+| `USGS_FORCE_SITE_REFRESH` | Set to a truthy value to force an immediate refresh of the site reference catalog at startup. |
+| `USGS_STATE` | Two-letter US state code to scope the sites polled (for example `NY`); empty uses the configured site list. |
+| `USGS_IV_MOCK` | Set to a truthy value to emit deterministic offline sample data instead of calling the live USGS Instantaneous Values service (offline testing / Docker E2E). |
+
 ### Kafka image
 
 | Variable | Description |
@@ -172,6 +190,7 @@ docker run --rm \
 | `KAFKA_TOPIC` | Kafka destination topic. |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
 | `POLLING_INTERVAL` | Poll interval in seconds. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
 
 ### MQTT image
 
@@ -184,6 +203,8 @@ docker run --rm \
 | `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
 | `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
 | `POLLING_INTERVAL` | Poll interval in seconds. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 
@@ -197,6 +218,10 @@ docker run --rm \
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
 | `POLLING_INTERVAL` | Poll interval in seconds. |
+| `AMQP_CLIENT_ID` | AMQP container / client identifier. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
 
 ## Deploying into Azure Container Instances
 

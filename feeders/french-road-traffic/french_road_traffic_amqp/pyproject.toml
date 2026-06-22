@@ -17,6 +17,3 @@ french-road-traffic-amqp = "french_road_traffic_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["french_road_traffic_amqp*"]
-
-[tool.uv.sources]
-french_road_traffic_core = { path = "../french_road_traffic_core" }

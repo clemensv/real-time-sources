@@ -163,6 +163,12 @@ docker run --rm \
 | `PTWC_TSUNAMI_POLL_INTERVAL` | Poll interval in seconds for MQTT/UNS deployments. Defaults to `300`. |
 | `PTWC_TSUNAMI_MQTT_STATE_FILE` | Source-specific state/resume setting. |
 | `PTWC_TSUNAMI_STATE_FILE` | Source-specific state/resume setting. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+| `DRY_RUN` | Set to a truthy value to run without publishing to the broker; payloads are parsed and logged only. |
 
 ### Kafka image
 
@@ -184,6 +190,8 @@ docker run --rm \
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 | `PTWC_TSUNAMI_POLL_INTERVAL` | Poll interval in seconds for MQTT/UNS publishing. Defaults to `300`. |
 | `PTWC_TSUNAMI_FEEDS` | Comma-separated list of bulletin feeds to ingest. Defaults to `PAAQ,PHEB`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image
 

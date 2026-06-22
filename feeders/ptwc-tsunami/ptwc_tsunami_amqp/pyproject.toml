@@ -38,6 +38,3 @@ local_scheme = "no-local-version"
 packages = [
     "ptwc_tsunami_amqp",
 ]
-
-[tool.uv.sources]
-ptwc_tsunami_core = { path = "../ptwc_tsunami_core" }

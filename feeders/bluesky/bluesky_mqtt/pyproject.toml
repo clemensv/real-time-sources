@@ -34,6 +34,3 @@ local_scheme = "no-local-version"
 packages = [
     "bluesky_mqtt",
 ]
-
-[tool.uv.sources]
-bluesky_core = { path = "../bluesky_core" }

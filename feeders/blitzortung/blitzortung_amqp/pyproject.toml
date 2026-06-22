@@ -37,6 +37,3 @@ local_scheme = "no-local-version"
 packages = [
     "blitzortung_amqp",
 ]
-
-[tool.uv.sources]
-blitzortung_core = { path = "../blitzortung_core" }

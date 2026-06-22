@@ -19,6 +19,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["madrid_traffic_core"]
-
-[tool.uv.sources]
-"madrid-traffic-producer-data" = { path = "../madrid_traffic_producer/madrid_traffic_producer_data" }

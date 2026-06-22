@@ -67,6 +67,15 @@ CAP (Common Alerting Protocol) schema with SAME/UGC geocodes.
 
 ## Environment Variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+
 | Variable | Required | Description |
 |---|---|---|
 | `CONNECTION_STRING` | Yes* | Event Hubs / Fabric connection string |
@@ -80,8 +89,44 @@ CAP (Common Alerting Protocol) schema with SAME/UGC geocodes.
 | `MQTT_AUTH_MODE` | MQTT only | `anonymous`, `userpass`, `tls-cert`, or `entra` |
 | `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT only | Username/password credentials |
 | `NWS_ALERTS_MQTT_EMIT_MOCK_CORPUS` | MQTT only | Emit five synthetic alerts, one per severity, then exit |
+| `NWS_CONNECTION_STRING` | No | Source-specific override for the Kafka / Event Hubs connection string; falls back to `CONNECTION_STRING`. |
+| `NWS_STATE_FILE` | No | State-file path used by the MQTT and AMQP images (the Kafka image uses `NWS_ALERTS_STATE_FILE`). |
+| `POLLING_INTERVAL` | No | Seconds between alert polls. |
 
 *One of `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS` is required for the Kafka image.
+
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
+| `MQTT_CA_FILE` | Path to a CA certificate bundle for verifying the broker's TLS certificate. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+| `MQTT_CLIENT_CERT` | Path to a client certificate for mutual-TLS authentication. |
+| `MQTT_CLIENT_KEY` | Path to the client private key for mutual-TLS authentication. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_HOST` | AMQP broker host (component-level alternative to `AMQP_BROKER_URL`). |
+| `AMQP_ADDRESS` | AMQP node (queue / topic) name to publish to. |
+| `AMQP_AUTH_MODE` | `password` (default), `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs), or `sas` for SAS-token CBS. |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_PORT` | AMQP broker port (default `5672`, or `5671` with TLS). |
+| `AMQP_TLS` | Set `true` to use TLS (`amqps`) for the component-level connection. |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). Required when `AMQP_AUTH_MODE=sas`. |
+
 
 ## Azure Container Instance
 

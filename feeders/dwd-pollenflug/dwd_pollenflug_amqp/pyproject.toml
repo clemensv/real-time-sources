@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["dwd_pollenflug_amqp"]
-
-[tool.uv.sources]
-dwd_pollenflug_core = { path = "../dwd_pollenflug_core" }

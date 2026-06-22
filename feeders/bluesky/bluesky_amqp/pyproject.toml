@@ -25,6 +25,3 @@ bluesky-amqp = "bluesky_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["bluesky_amqp*"]
-
-[tool.uv.sources]
-bluesky_core = { path = "../bluesky_core" }

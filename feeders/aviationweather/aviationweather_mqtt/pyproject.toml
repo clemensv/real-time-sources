@@ -26,6 +26,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["aviationweather_mqtt"]
-
-[tool.uv.sources]
-aviationweather_core = { path = "../aviationweather_core" }

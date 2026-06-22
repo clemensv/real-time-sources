@@ -81,39 +81,65 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/rss
 
 ## Environment variable matrix
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `RSS_SAMPLE_MODE` | Set to a truthy value to emit one synthetic sample feed item and exit (offline testing / Docker E2E). |
+
 ### Kafka image (`ghcr.io/clemensv/real-time-sources-rss:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Core configuration for this image variant. |
-| `KAFKA_TOPIC` | Core configuration for this image variant. |
-| `SASL_USERNAME / SASL_PASSWORD` | Core configuration for this image variant. |
-| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
-| `FEED_URLS` | Core configuration for this image variant. |
-| `STATE_DIR` | Core configuration for this image variant. |
+| `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Event Hubs / Fabric connection string (shortcut), or Kafka bootstrap servers (`host:port`) when configuring the broker directly. |
+| `KAFKA_TOPIC` | Kafka topic the feeder publishes to. |
+| `SASL_USERNAME / SASL_PASSWORD` | SASL/PLAIN credentials. For Event Hubs use `$ConnectionString` as the username and the connection string as the password. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local/plaintext brokers (default `true`). |
+| `FEED_URLS` | Comma-separated list of RSS/Atom feed URLs to poll. |
+| `STATE_DIR` | Directory for per-feed dedupe/resume state; mount persistent storage here for long-running deployments. |
 
 ### MQTT image (`ghcr.io/clemensv/real-time-sources-rss-mqtt:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `MQTT_BROKER_URL` | Core configuration for this image variant. |
-| `MQTT_USERNAME` | Core configuration for this image variant. |
-| `MQTT_PASSWORD` | Core configuration for this image variant. |
-| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
-| `MQTT_CONTENT_MODE` | Core configuration for this image variant. |
-| `FEED_URLS` | Core configuration for this image variant. |
-| `STATE_DIR` | Core configuration for this image variant. |
+| `MQTT_BROKER_URL` | MQTT broker URL (`mqtt://` or `mqtts://host:port`). |
+| `MQTT_USERNAME` | Username for MQTT `password` auth mode. |
+| `MQTT_PASSWORD` | Password for MQTT `password` auth mode. |
+| `MQTT_CLIENT_ID` | Stable MQTT client identifier; set a unique value per running instance. |
+| `MQTT_CONTENT_MODE` | CloudEvents content mode for MQTT — `binary` or `structured`. |
+| `FEED_URLS` | Comma-separated list of RSS/Atom feed URLs to poll. |
+| `STATE_DIR` | Directory for per-feed dedupe/resume state; mount persistent storage here for long-running deployments. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image (`ghcr.io/clemensv/real-time-sources-rss-amqp:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `AMQP_BROKER_URL` | Core configuration for this image variant. |
-| `AMQP_ADDRESS` | Core configuration for this image variant. |
-| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
-| `AMQP_CONTENT_MODE` | Core configuration for this image variant. |
-| `FEED_URLS` | Core configuration for this image variant. |
-| `STATE_DIR` | Core configuration for this image variant. |
+| `AMQP_BROKER_URL` | AMQP 1.0 connection URL shortcut (host, port, TLS, credentials). |
+| `AMQP_ADDRESS` | AMQP destination address (queue/topic/entity) to publish to. |
+| `AMQP_AUTH_MODE` | AMQP authentication mode — `password` (SASL PLAIN), `entra` (Service Bus + Microsoft Entra CBS), or `sas` (SAS-token CBS). |
+| `AMQP_CONTENT_MODE` | CloudEvents content mode for AMQP — `binary` or `structured`. |
+| `FEED_URLS` | Comma-separated list of RSS/Atom feed URLs to poll. |
+| `STATE_DIR` | Directory for per-feed dedupe/resume state; mount persistent storage here for long-running deployments. |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+| `AMQP_HOST` | AMQP broker host (component-level alternative to `AMQP_BROKER_URL`). |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PORT` | AMQP broker port (default `5672`, or `5671` with TLS). |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_TLS` | Set `true` to use TLS (`amqps`) for the component-level connection. |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
 
 ## Azure ARM deployments
 

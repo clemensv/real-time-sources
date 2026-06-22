@@ -14,6 +14,3 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["dwd_mqtt"]
-
-[tool.uv.sources]
-dwd_core = { path = "../dwd_core" }

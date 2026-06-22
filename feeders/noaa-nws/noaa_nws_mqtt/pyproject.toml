@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "noaa-nws MQTT companion feeder"
 requires-python = ">=3.10"
 dependencies = [
-  "noaa_nws_core @ file:../noaa_nws_core",
+  "noaa_nws_core",
   "paho-mqtt>=2.1.0",
 ]
 

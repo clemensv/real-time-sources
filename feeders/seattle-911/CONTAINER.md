@@ -241,6 +241,11 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 |---|---|
 | `SEATTLE_911_LAST_POLLED_FILE` | Path to the dedupe / resume state file (default `~/.seattle_911_state.json`). Mount a volume so it survives restarts. |
 | `POLLING_INTERVAL` | Seconds between Socrata polling cycles (default `60`). The upstream dataset refreshes every ~5 minutes; polling more often than every 60 s adds no new records. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `STATE_FILE` | Path to the JSON dedupe / resume state file. Mount persistent storage here for long-running deployments. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 

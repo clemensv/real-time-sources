@@ -238,6 +238,10 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `STATE_FILE` | Path to the de-duplication state file. Defaults differ by image: Kafka `~/.german_waters_state.json`, MQTT `~/.german_waters_mqtt_state.json`, AMQP `~/.german_waters_amqp_state.json`. |
 | `PROVIDERS` | Comma-separated provider keys to include. Available keys: `bayern_gkd`, `nrw_hygon`, `sh_lkn`, `nds_nlwkn`, `sa_lhw`, `he_hlnug`, `sn_lfulg`, `bw_hvz`, `bb_lfu`, `th_tlubn`, `mv_lung`, `be_senumvk`. |
 | `EXCLUDE_PROVIDERS` | Comma-separated provider keys to exclude from polling. Uses the same key set as `PROVIDERS`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+| `MOCK_MODE` | Set to a truthy value to emit deterministic offline sample data instead of calling the live upstream (offline testing / Docker E2E). |
 
 ### Kafka image
 
@@ -276,6 +280,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). **Required when `AMQP_AUTH_MODE=sas`.** |
 | `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). **Required when `AMQP_AUTH_MODE=sas`.** |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_CLIENT_ID` | AMQP container / client identifier. |
 
 ## Deploying into Azure Container Instances
 

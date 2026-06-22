@@ -27,7 +27,9 @@ RUN set -eux; \
 
 COPY . /app
 
-RUN pip install --no-cache-dir ./usgs_iv_amqp_producer/usgs_iv_amqp_producer_data \
+RUN pip install --no-cache-dir ./usgs_iv_core \
+
+ && pip install --no-cache-dir ./usgs_iv_amqp_producer/usgs_iv_amqp_producer_data \
  && pip install --no-cache-dir ./usgs_iv_producer/usgs_iv_producer_data && pip install --no-cache-dir ./usgs_iv_amqp_producer/usgs_iv_amqp_producer_amqp_producer \
  && pip install --no-cache-dir . \
  && pip install --no-cache-dir ./usgs_iv_amqp \

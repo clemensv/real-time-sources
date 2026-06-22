@@ -170,6 +170,9 @@ docker run --rm \
 | `STATE_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
 | `POLLING_INTERVAL` | Polling interval in seconds. |
 | `BFS_ODL_SAMPLE_MODE` | Optional sampling/test mode flag for development runs. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image variables
 
@@ -206,6 +209,7 @@ docker run --rm \
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra auth settings for `AMQP_AUTH_MODE=entra`. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy/key pair for `AMQP_AUTH_MODE=sas`. |
 | `AMQP_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+| `AMQP_CLIENT_ID` | AMQP container / client identifier. |
 
 ## Deploying into Microsoft Fabric
 

@@ -111,6 +111,24 @@ QoS is 1, retained messages are disabled, and queued PUBLISH packets expire afte
 
 ## Environment Variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `STATE_FILE` | Path to the JSON dedupe / resume state file. Mount persistent storage here for long-running deployments. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `INPE_DETER_MOCK` | Set to a truthy value to emit a deterministic synthetic deforestation alert instead of calling the live INPE DETER service (offline testing / Docker E2E). |
+| `PAGE_SIZE` | Number of alert records to request per API page. |
+| `POLL_INTERVAL_MINUTES` | Minutes between INPE DETER poll cycles (default `10`). |
+| `SINCE_DATE` | ISO date (`YYYY-MM-DD`); only alerts on or after this date are fetched. Empty uses the feeder's default look-back window. |
+
 ### `CONNECTION_STRING`
 
 An Azure Event Hubs-style connection string.
@@ -151,6 +169,31 @@ Optional comma-separated biome filter for the MQTT image variant. Defaults to `a
 
 The file path where the bridge stores the last polled state. Default:
 `~/.inpe_deter_brazil_last_polled.json`.
+
+
+### `KAFKA_ENABLE_TLS`
+
+`false` disables TLS (default `true`).
+
+### `MQTT_AUTH_MODE`
+
+`password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid).
+
+### `MQTT_CONTENT_MODE`
+
+`binary` (default) or `structured` CloudEvents content mode.
+
+### `MQTT_ENTRA_AUDIENCE`
+
+JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`).
+
+### `MQTT_ENTRA_CLIENT_ID`
+
+Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used.
+
+### `AMQP_CLIENT_ID`
+
+AMQP container / client identifier.
 
 ## Deploying into Azure Container Instances
 

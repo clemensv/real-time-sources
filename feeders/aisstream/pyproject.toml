@@ -42,6 +42,3 @@ local_scheme = "no-local-version"
 packages = [
     "aisstream",
 ]
-
-[tool.uv.sources]
-aisstream_core = { path = "aisstream_core" }

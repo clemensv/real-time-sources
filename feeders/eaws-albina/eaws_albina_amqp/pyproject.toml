@@ -37,6 +37,3 @@ local_scheme = "no-local-version"
 packages = [
     "eaws_albina_amqp",
 ]
-
-[tool.uv.sources]
-eaws_albina_core = { path = "../eaws_albina_core" }

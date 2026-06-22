@@ -16,7 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "gdacs_core @ file:../gdacs_core",
+    "gdacs_core",
     "avro>=1.12.1",
     "azure-core>=1.30.0",
     "azure-identity>=1.17.0",

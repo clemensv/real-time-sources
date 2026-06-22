@@ -151,6 +151,20 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `SOURCE_MANIFEST` | Advanced: path to the xRegistry manifest the bridge loads at startup; defaults to the packaged copy under `/app/xreg/`. Normally only overridden in custom builds. |
+
 ### Kafka image
 
 | Variable | Description |
@@ -173,6 +187,7 @@ docker run --rm \
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
 | State variable | Not used by current MQTT companion app |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 

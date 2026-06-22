@@ -172,6 +172,13 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `REGION_FILTER` | Comma-separated WSDOT region names to include; empty includes all regions. |
+| `SOURCE_ROOT` | Advanced: filesystem path to the source root containing the `xreg/` manifest; defaults to the working directory. Normally only set for non-container test runs. |
+
 ### Common
 
 | Variable | Description |
@@ -180,6 +187,8 @@ docker run --rm \
 | `STATE_FILE` | Path to persisted poll/dedupe state file. |
 | `POLLING_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
 | `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -201,6 +210,7 @@ docker run --rm \
 | `MQTT_ENTRA_CLIENT_ID` / `MQTT_ENTRA_AUDIENCE` | Entra token configuration for Event Grid MQTT. |
 | `MQTT_CLIENT_ID` | MQTT client identifier. |
 | `MQTT_CONTENT_MODE` | `binary` or `structured` CloudEvents payload mode. |
+| `MQTT_TLS` | Set `true` to use TLS (`mqtts`) for the component-level connection. |
 
 ### AMQP image
 

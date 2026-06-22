@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["hko_hong_kong_amqp"]
-
-[tool.uv.sources]
-hko_hong_kong_core = { path = "../hko_hong_kong_core" }

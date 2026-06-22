@@ -35,6 +35,3 @@ local_scheme = "no-local-version"
 packages = [
     "nws_alerts_mqtt",
 ]
-
-[tool.uv.sources]
-nws_alerts_core = { path = "../nws_alerts_core" }

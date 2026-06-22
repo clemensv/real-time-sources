@@ -155,6 +155,21 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `STATION_FILTER` | Comma-separated station IDs or names to include; empty includes all stations. |
+
 ### Kafka image
 
 | Variable | Description |
@@ -175,6 +190,7 @@ docker run --rm \
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
 | State variable | `STATE_FILE` |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 
@@ -186,6 +202,7 @@ docker run --rm \
 | `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
 | `AMQP_TLS` | Enable TLS where supported. |
 | State variable | `STATE_FILE` |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
 ## Deploying into Microsoft Fabric
 

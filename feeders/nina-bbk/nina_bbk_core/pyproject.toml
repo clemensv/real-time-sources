@@ -19,6 +19,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["nina_bbk_core"]
-
-[tool.uv.sources]
-"nina-bbk-producer-data" = { path = "../nina_bbk_producer/nina_bbk_producer_data" }

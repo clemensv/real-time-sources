@@ -23,6 +23,3 @@ mode-s-amqp = "mode_s_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["mode_s_amqp*"]
-
-[tool.uv.sources]
-mode_s_core = { path = "../mode_s_core" }

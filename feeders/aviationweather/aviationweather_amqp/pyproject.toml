@@ -31,6 +31,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["aviationweather_amqp"]
-
-[tool.uv.sources]
-aviationweather_core = { path = "../aviationweather_core" }

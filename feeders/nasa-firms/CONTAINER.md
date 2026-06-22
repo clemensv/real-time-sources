@@ -244,6 +244,12 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `FIRMS_AREA` | Area to query for active-fire detections — `world`, a three-letter ISO country code, or a `min-lon,min-lat,max-lon,max-lat` bounding box. |
+
 ### Common source runtime variables
 
 | Variable | Description |
@@ -255,6 +261,8 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `FIRMS_LAST_POLLED_FILE` | Path to persisted dedupe/checkpoint state. Default: `/state/nasa-firms.json`. |
 | `ONCE_MODE` | `true` runs a single polling cycle and exits. The runtime also supports `--once`. |
 | `LOG_LEVEL` | `DEBUG`, `INFO`, `WARNING`, or `ERROR`. Default: `INFO`. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 

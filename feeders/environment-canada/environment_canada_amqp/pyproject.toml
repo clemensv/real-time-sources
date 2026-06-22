@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["environment_canada_amqp"]
-
-[tool.uv.sources]
-environment_canada_core = { path = "../environment_canada_core" }

@@ -46,6 +46,3 @@ local_scheme = "no-local-version"
 packages = [
     "smhi_weather",
 ]
-
-[tool.uv.sources]
-smhi_weather_core = { path = "smhi_weather_core" }

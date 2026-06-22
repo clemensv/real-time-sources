@@ -33,6 +33,3 @@ local_scheme = "no-local-version"
 packages = [
     "wikimedia_eventstreams_mqtt",
 ]
-
-[tool.uv.sources]
-wikimedia_eventstreams_core = { path = "../wikimedia_eventstreams_core" }

@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["dwd_amqp"]
-
-      [tool.uv.sources]
-      dwd_core = { path = "../dwd_core" }

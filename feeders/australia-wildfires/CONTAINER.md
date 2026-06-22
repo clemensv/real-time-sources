@@ -170,6 +170,9 @@ docker run --rm \
 | `STATE_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
 | `POLLING_INTERVAL` | Polling interval in seconds. |
 | `AUSTRALIA_WILDFIRES_SAMPLE_MODE` | Optional sampling/test mode flag for development runs. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image variables
 
@@ -180,6 +183,8 @@ docker run --rm \
 | `KAFKA_TOPIC` | Destination Kafka topic. |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
 | `KAFKA_ENABLE_TLS` | Set `false` to disable TLS (default `true`). |
+| `KAFKA_BROKER` | Kafka broker `host:port` (alternative to `KAFKA_BOOTSTRAP_SERVERS`). |
+| `KAFKA_CONNECTION_STRING` | Event Hubs / Fabric connection string for the Kafka endpoint (alias of `CONNECTION_STRING`). |
 
 ### MQTT image variables
 

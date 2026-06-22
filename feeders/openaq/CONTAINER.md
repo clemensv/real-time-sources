@@ -29,6 +29,7 @@ OpenAQ CloudEvents support public-health alerting, epidemiological exposure anal
 | `STATE_FILE` | no | user home | JSON dedupe file. |
 | `OPENAQ_MOCK` | no | `false` | Emit deterministic synthetic events and exit once. |
 | `LOG_LEVEL` | no | `INFO` | Python logging level. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |  |  |
 
 > **Rate-limit sizing:** OpenAQ documents free-tier limits of 60 requests/minute and 2,000 requests/hour. Defaults (`OPENAQ_PAGE_LIMIT=25`, `OPENAQ_MAX_PAGES=1`, `POLL_INTERVAL=900`) are about 104 requests/hour; increase `POLL_INTERVAL` or pin `OPENAQ_LOCATIONS` before scaling toward hundreds of locations.
 
@@ -136,6 +137,9 @@ docker run --rm -e CONNECTION_STRING -e KAFKA_ENABLE_TLS=false -e OPENAQ_MOCK=tr
 | `MQTT_USERNAME`, `MQTT_PASSWORD` | conditional | — | Username/password auth or Event Grid client name. |
 | `MQTT_CLIENT_CERT`, `MQTT_CLIENT_KEY`, `MQTT_CA_FILE` | conditional | — | TLS client certificate auth. |
 | `MQTT_ENTRA_CLIENT_ID`, `MQTT_ENTRA_AUDIENCE` | conditional | `https://eventgrid.azure.net/` | Event Grid namespace MQTT Entra auth. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |  |  |
+| `MQTT_HOST` | MQTT broker host (component-level alternative to `MQTT_BROKER_URL`). |  |  |
+| `MQTT_PORT` | MQTT broker port (component-level alternative to `MQTT_BROKER_URL`). |  |  |
 
 ```powershell
 docker pull ghcr.io/clemensv/real-time-sources-openaq-mqtt:latest
@@ -153,6 +157,7 @@ docker run --rm -e MQTT_BROKER_URL=host.docker.internal:1883 -e OPENAQ_MOCK=true
 | `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE` | conditional | Service Bus scope | Azure managed identity auth. |
 | `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY` | conditional | — | SAS CBS auth / Service Bus emulator. |
 | `AMQP_TLS` | no | `false` | Use TLS / AMQPS. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |  |  |
 
 ```powershell
 docker pull ghcr.io/clemensv/real-time-sources-openaq-amqp:latest

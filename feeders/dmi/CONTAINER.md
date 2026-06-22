@@ -209,6 +209,8 @@ $ docker run --rm \
 | `POLLING_INTERVAL` | Seconds between polling cycles (default `300`). |
 | `STATE_FILE` | Path to the dedupe state file. |
 | `ONCE_MODE` | `true` runs a single polling cycle and exits. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -234,6 +236,7 @@ $ docker run --rm \
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 | `MQTT_CA_FILE` | Path to broker CA chain. |
 | `MQTT_CLIENT_CERT` / `MQTT_CLIENT_KEY` | PEM paths for `tls-cert` auth. |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
 
 ### AMQP image
 

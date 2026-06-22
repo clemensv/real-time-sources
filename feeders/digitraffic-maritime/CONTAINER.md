@@ -95,6 +95,16 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `DIGITRAFFIC_FILTER_MMSI` | Comma-separated MMSI numbers to include (default: all). |
+| `DIGITRAFFIC_FLUSH_INTERVAL` | Flush Kafka producer every N events (default `1000`). |
+| `DIGITRAFFIC_MODE` | Acquisition mode — `stream` consumes the live MQTT firehose (default `stream`). |
+| `DIGITRAFFIC_PORTCALL_POLL_INTERVAL` | Poll interval in seconds for the port call REST feed (default `300`). |
+| `DIGITRAFFIC_SUBSCRIBE` | Comma-separated: location,metadata (default: both) (default `location,metadata`). |
+
 ### Common
 
 | Variable | Description |
@@ -102,6 +112,10 @@ docker run --rm \
 | `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
 | `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
 | `DIGITRAFFIC_PORTCALL_STATE_FILE` | Source-specific state/resume setting. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -110,6 +124,37 @@ docker run --rm \
 | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port,...`). |
 | `KAFKA_TOPIC` | Destination topic (default from contract). |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials for Kafka-compatible brokers. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CA_FILE` | Path to a CA certificate bundle for verifying the broker's TLS certificate. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_USERNAME` | Username when `MQTT_AUTH_MODE=password` (default). |
+| `MQTT_PASSWORD` | Password when `MQTT_AUTH_MODE=password` (default). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL, e.g. `amqp://user:pw@host:5672/address` or `amqps://host:5671/address`. |
+| `AMQP_ADDRESS` | AMQP node (queue / topic) name to publish to. |
+| `AMQP_AUTH_MODE` | `password` (default), `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs), or `sas` for SAS-token CBS. |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_HOST` | AMQP broker host (component-level alternative to `AMQP_BROKER_URL`). |
+| `AMQP_PORT` | AMQP broker port (default `5672`, or `5671` with TLS). |
+| `AMQP_TLS` | Set `true` to use TLS (`amqps`) for the component-level connection. |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+
 
 ## Deploying into Azure Container Instances
 

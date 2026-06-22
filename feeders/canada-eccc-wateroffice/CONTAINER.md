@@ -224,6 +224,9 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 |---|---|
 | `STATE_FILE` | Path to the JSON state file that persists the last-seen station observations across restarts. Mount durable storage at `/mnt/bridge-state` or `/state` when you need dedupe continuity. |
 | `POLLING_INTERVAL` | Polling interval in seconds for observation fetches. Default `300` (5 minutes). |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -234,6 +237,8 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `KAFKA_TOPIC` | Target Kafka topic. Default `canada-eccc-wateroffice`. |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
 | `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+| `KAFKA_BROKER` | Kafka broker `host:port` (alternative to `KAFKA_BOOTSTRAP_SERVERS`). |
+| `KAFKA_CONNECTION_STRING` | Event Hubs / Fabric connection string for the Kafka endpoint (alias of `CONNECTION_STRING`). |
 
 ### MQTT image
 

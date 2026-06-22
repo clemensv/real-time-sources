@@ -21,15 +21,9 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
- && pip install --no-cache-dir ./gdacs_core \
-RUN pip install --no-cache-dir ./gdacs_amqp_producer/gdacs_amqp_producer_data \
+RUN pip install --no-cache-dir ./gdacs_core \
+ && pip install --no-cache-dir ./gdacs_amqp_producer/gdacs_amqp_producer_data \
  && pip install --no-cache-dir ./gdacs_amqp_producer/gdacs_amqp_producer_amqp_producer \
- && pip install --no-cache-dir ./gdacs_mqtt_producer/gdacs_mqtt_producer_data \
- && pip install --no-cache-dir ./gdacs_mqtt_producer/gdacs_mqtt_producer_mqtt_client \
- && pip install --no-cache-dir ./gdacs_producer/gdacs_producer_data \
- && pip install --no-cache-dir ./gdacs_producer/gdacs_producer_kafka_producer \
- && pip install --no-cache-dir . \
- && pip install --no-cache-dir ./gdacs_mqtt \
  && pip install --no-cache-dir ./gdacs_amqp \
  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
  && rm -rf /root/.cache /var/lib/apt/lists/*

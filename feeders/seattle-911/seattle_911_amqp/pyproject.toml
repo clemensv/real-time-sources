@@ -37,6 +37,3 @@ local_scheme = "no-local-version"
 packages = [
     "seattle_911_amqp",
 ]
-
-[tool.uv.sources]
-seattle_911_core = { path = "../seattle_911_core" }

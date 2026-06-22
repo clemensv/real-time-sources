@@ -152,6 +152,16 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `AIS_TCP_HOST` | Hostname or IP of the Kystverket AIS TCP stream (default `153.44.253.27`, the public Norwegian Coastal Administration feed). |
+| `AIS_TCP_PORT` | TCP port of the AIS stream (default `5631`). |
+| `AIS_MESSAGE_TYPES` | Comma-separated AIS message-type numbers to decode and emit (default `1,2,3,5,18,19,24,21`). |
+| `AIS_FILTER_MMSI` | Optional comma-separated MMSI allow-list; when unset, all vessels are emitted. |
+| `AIS_FLUSH_INTERVAL` | Flush the producer after this many events (default `1000`). |
+
 ### Common
 
 | Variable | Description |
@@ -179,6 +189,9 @@ docker run --rm \
 | `KYSTVERKET_AIS_MOCK` | Set to `true` to publish deterministic sample AIS events instead of opening the live TCP feed. |
 | `KYSTVERKET_AIS_MAX_EVENTS` | Optional cap on the number of AIS events to publish before exiting. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image
 

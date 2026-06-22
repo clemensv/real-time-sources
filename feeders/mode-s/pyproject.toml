@@ -38,6 +38,3 @@ local_scheme = "no-local-version"
 packages = [
     "mode_s_kafka_bridge",
 ]
-
-[tool.uv.sources]
-mode_s_core = { path = "mode_s_core" }

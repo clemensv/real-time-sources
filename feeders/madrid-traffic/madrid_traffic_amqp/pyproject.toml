@@ -17,6 +17,3 @@ madrid-traffic-amqp = "madrid_traffic_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["madrid_traffic_amqp*"]
-
-[tool.uv.sources]
-madrid_traffic_core = { path = "../madrid_traffic_core" }

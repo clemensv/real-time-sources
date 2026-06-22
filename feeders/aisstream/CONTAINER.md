@@ -246,6 +246,13 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `AISSTREAM_MAX_EVENTS` | Optional cap on the number of events emitted before the feeder exits; `0` means run indefinitely (mainly for testing) (default `0`). |
+| `AISSTREAM_WS_URL` | WebSocket endpoint URL for the AISStream service; normally left at the built-in default. |
+
 ### Common (all images)
 
 | Variable | Description |
@@ -254,6 +261,8 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `AISSTREAM_BOUNDING_BOXES` | Server-side geographic filter as semicolon-separated bounding boxes: `lat1,lon1,lat2,lon2;...`. Default `-90,-180,90,180` (global). |
 | `AISSTREAM_MESSAGE_TYPES` | Comma-separated list of AIS message-type names to subscribe to. Default: all 23 types. |
 | `AISSTREAM_FILTER_MMSI` | Comma-separated list of MMSI numbers to include (client-side filter applied after the server-side AISstream.io filter). Default: all vessels. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -279,6 +288,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `MQTT_CLIENT_ID` | MQTT client identifier (must be globally unique per broker). |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 | `AISSTREAM_MOCK` | `true` emits one canned message per family (used by Docker E2E). |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
 
 ### AMQP image
 

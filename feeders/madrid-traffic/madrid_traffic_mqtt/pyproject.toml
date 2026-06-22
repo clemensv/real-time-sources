@@ -14,6 +14,3 @@ madrid-traffic-mqtt = "madrid_traffic_mqtt.app:main"
 
 [tool.setuptools.packages.find]
 include = ["madrid_traffic_mqtt*"]
-
-[tool.uv.sources]
-madrid_traffic_core = { path = "../madrid_traffic_core" }

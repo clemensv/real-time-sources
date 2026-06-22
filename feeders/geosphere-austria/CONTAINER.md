@@ -123,12 +123,22 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austri
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `STATION_REFRESH_INTERVAL` | Seconds between refreshes of the station metadata catalog (reference data) (default matches the bridge constant). |
+
 ### Common (all images)
 
 | Variable | Description |
 |---|---|
 | `STATE_FILE` | Path to the dedupe/resume state file. Mount `/state` so it survives restarts. |
 | `POLLING_INTERVAL` | Seconds between polling cycles. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -150,6 +160,7 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austri
 | `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. |
 | `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 

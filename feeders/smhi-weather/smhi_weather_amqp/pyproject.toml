@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["smhi_weather_amqp"]
-
-[tool.uv.sources]
-smhi_weather_core = { path = "../smhi_weather_core" }

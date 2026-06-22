@@ -38,6 +38,3 @@ local_scheme = "no-local-version"
 packages = [
     "nina_bbk_amqp",
 ]
-
-[tool.uv.sources]
-nina_bbk_core = { path = "../nina_bbk_core" }

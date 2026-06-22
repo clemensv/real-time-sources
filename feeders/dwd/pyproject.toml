@@ -49,6 +49,3 @@ packages = [
     "dwd.parsers",
     "dwd.util",
 ]
-
-[tool.uv.sources]
-dwd_core = { path = "dwd_core" }

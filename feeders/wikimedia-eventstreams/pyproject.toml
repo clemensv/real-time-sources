@@ -43,6 +43,3 @@ local_scheme = "no-local-version"
 packages = [
     "wikimedia_eventstreams",
 ]
-
-[tool.uv.sources]
-wikimedia_eventstreams_core = { path = "wikimedia_eventstreams_core" }

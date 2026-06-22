@@ -26,6 +26,3 @@ include = ["aisstream_amqp*"]
 
 [tool.setuptools.package-data]
 aisstream_amqp = ["mid_iso.csv"]
-
-[tool.uv.sources]
-aisstream_core = { path = "../aisstream_core" }

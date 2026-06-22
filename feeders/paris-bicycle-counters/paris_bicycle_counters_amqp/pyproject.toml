@@ -21,7 +21,7 @@ dependencies = [
     "azure-identity>=1.17.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
-    "paris_bicycle_counters_core @ file:../paris_bicycle_counters_core",
+    "paris_bicycle_counters_core",
     "python-qpid-proton>=0.40.0",
 ]
 

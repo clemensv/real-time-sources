@@ -19,6 +19,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["ptwc_tsunami_core"]
-
-[tool.uv.sources]
-"ptwc-tsunami-producer-data" = { path = "../ptwc_tsunami_producer/ptwc_tsunami_producer_data" }

@@ -19,6 +19,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["cbp_border_wait_core"]
-
-[tool.uv.sources]
-"cbp-border-wait-producer-data" = { path = "../cbp_border_wait_producer/cbp_border_wait_producer_data" }

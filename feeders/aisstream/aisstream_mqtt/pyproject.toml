@@ -36,6 +36,3 @@ packages = [
 
 [tool.setuptools.package-data]
 aisstream_mqtt = ["*.csv"]
-
-[tool.uv.sources]
-aisstream_core = { path = "../aisstream_core" }

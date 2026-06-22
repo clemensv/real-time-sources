@@ -191,12 +191,20 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `PYTHONDEBUG` | Set to any non-empty value to raise the log level to `DEBUG`; otherwise logging stays at `INFO`. |
+
 ### Common source selection
 
 | Variable | Description |
 |---|---|
 | `DIGITRAFFIC_ROAD_SUBSCRIBE` | Comma-separated family selectors: `tms`, `weather`, `traffic-messages`, `maintenance`. Default: all families. Use this to reduce traffic volume or split families across deployments. |
 | `DIGITRAFFIC_ROAD_STATION_FILTER` | Comma-separated station IDs to include for station-based sensor families. Default: all stations. Useful for regional or corridor-specific deployments. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -223,6 +231,7 @@ docker run --rm \
 | `MQTT_ENTRA_AUDIENCE` | JWT audience for Entra authentication. Default `https://eventgrid.azure.net/`. |
 | `DIGITRAFFIC_ROAD_SUBSCRIBE` | Same source-family selection described above. |
 | `DIGITRAFFIC_ROAD_STATION_FILTER` | Same station filter described above. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
 
 ### AMQP image
 
@@ -238,6 +247,9 @@ docker run --rm \
 | `AMQP_ENTRA_CLIENT_ID` | Optional managed identity client id for Entra auth. |
 | `DIGITRAFFIC_ROAD_SUBSCRIBE` | Same source-family selection described above. |
 | `DIGITRAFFIC_ROAD_STATION_FILTER` | Same station filter described above. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). Required when `AMQP_AUTH_MODE=sas`. |
 
 ## Deploying into Azure Container Instances
 

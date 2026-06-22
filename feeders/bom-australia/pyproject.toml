@@ -46,6 +46,3 @@ local_scheme = "no-local-version"
 packages = [
     "bom_australia",
 ]
-
-[tool.uv.sources]
-bom_australia_core = { path = "bom_australia_core" }

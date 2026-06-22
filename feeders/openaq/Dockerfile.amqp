@@ -19,11 +19,10 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./openaq_amqp_producer/openaq_amqp_producer_data \
+RUN pip install --no-cache-dir ./openaq_core \
+ && pip install --no-cache-dir ./openaq_amqp_producer/openaq_amqp_producer_data \
  && pip install --no-cache-dir ./openaq_amqp_producer/openaq_amqp_producer_amqp_producer \
- && pip install --no-cache-dir ./openaq_core \
  && pip install --no-cache-dir ./openaq_amqp
 CMD ["python", "-m", "openaq_amqp", "feed"]
-
 
 

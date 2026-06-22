@@ -19,6 +19,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["nws_alerts_core"]
-
-[tool.uv.sources]
-"nws-alerts-producer-data" = { path = "../nws_alerts_producer/nws_alerts_producer_data" }

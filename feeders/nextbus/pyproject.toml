@@ -18,7 +18,7 @@ requires-python = ">=3.10,<4.0"
 dependencies = [
     "cloudevents>=1.10.1,<2.0.0",
     "requests>=2.34.2,<3.0.0",
-    "nextbus_core @ file:./nextbus_core",
+    "nextbus_core",
 ]
 
 [project.scripts]

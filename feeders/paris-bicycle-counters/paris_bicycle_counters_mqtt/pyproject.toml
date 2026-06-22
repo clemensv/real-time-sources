@@ -18,7 +18,7 @@ requires-python = ">=3.10,<4.0"
 dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
-    "paris_bicycle_counters_core @ file:../paris_bicycle_counters_core",
+    "paris_bicycle_counters_core",
     "paho-mqtt>=2.1.0",
     "requests>=2.32.3",
 ]

@@ -32,6 +32,3 @@ local_scheme = "no-local-version"
 packages = [
     "wikimedia_osm_diffs_mqtt",
 ]
-
-[tool.uv.sources]
-wikimedia_osm_diffs_core = { path = "../wikimedia_osm_diffs_core" }

@@ -151,6 +151,16 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `DUMP1090_HOST` | Hostname or IP of the dump1090 receiver feed (required for live mode). |
+| `DUMP1090_PORT` | TCP port of the dump1090 feed (e.g. `30002` for AVR text, `30005` for Beast binary). |
+| `REF_LAT` | Receiver reference latitude in decimal degrees, used to resolve aircraft positions from CPR-encoded messages. |
+| `REF_LON` | Receiver reference longitude in decimal degrees. |
+| `STATIONID` | Identifier of the local receiver station reported as the source of decoded messages. |
+
 ### Common
 
 | Variable | Description |
@@ -183,6 +193,9 @@ docker run --rm \
 | `MODE_S_MAX_EVENTS` | Stop after publishing this many decoded events; `0` means run continuously. |
 | `MODE_S_MOCK` | Emit one synthetic event per DF family and exit instead of connecting to a live receiver. |
 | `MODE_S_RECEIVER_ID` | Stable receiver identifier used in MQTT topics and CloudEvent subjects. |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image
 

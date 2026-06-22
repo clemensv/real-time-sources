@@ -25,6 +25,15 @@ The KiWIS images publish hydrological station reference data, timeseries metadat
 | `KIWIS_STATE_FILE` | JSON dedupe state path used by container and Azure templates. | none |
 | `STATE_FILE` | Alternate state file environment variable used by Fabric notebook hosting. | none |
 | `LOG_LEVEL` | Python logging level. | `INFO` |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |  |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |  |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |  |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |  |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |  |
+| `AMQP_AUTH_MODE` | `password` (default), `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs), or `sas` for SAS-token CBS. |  |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |  |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |  |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |  |
 
 ### Catalog format
 

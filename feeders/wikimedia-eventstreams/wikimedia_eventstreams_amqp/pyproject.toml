@@ -23,6 +23,3 @@ wikimedia-eventstreams-amqp = "wikimedia_eventstreams_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["wikimedia_eventstreams_amqp*"]
-
-[tool.uv.sources]
-wikimedia_eventstreams_core = { path = "../wikimedia_eventstreams_core" }

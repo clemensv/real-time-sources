@@ -26,9 +26,10 @@ RUN set -eux; \
 
 COPY . /app
 
-RUN pip install --no-cache-dir ./dmi_amqp_producer/dmi_amqp_producer_data \
+RUN pip install --no-cache-dir ./dmi_core \
+
+ && pip install --no-cache-dir ./dmi_amqp_producer/dmi_amqp_producer_data \
  && pip install --no-cache-dir ./dmi_amqp_producer/dmi_amqp_producer_amqp_producer \
- && pip install --no-cache-dir ./dmi_core \
  && pip install --no-cache-dir ./dmi_amqp \
  && apt-get purge -y --auto-remove \
         build-essential cmake pkg-config swig \

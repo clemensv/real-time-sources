@@ -25,7 +25,9 @@ RUN set -eux; \
 
 COPY . /app
 
-RUN pip install --no-cache-dir ./meteoalarm_amqp_producer/meteoalarm_amqp_producer_data  && pip install --no-cache-dir ./meteoalarm_producer/meteoalarm_producer_data && pip install --no-cache-dir ./meteoalarm_amqp_producer/meteoalarm_amqp_producer_amqp_producer  && pip install --no-cache-dir .  && pip install --no-cache-dir ./meteoalarm_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev  && rm -rf /root/.cache /var/lib/apt/lists/*
+RUN pip install --no-cache-dir ./meteoalarm_core \
+
+ && pip install --no-cache-dir ./meteoalarm_amqp_producer/meteoalarm_amqp_producer_data  && pip install --no-cache-dir ./meteoalarm_producer/meteoalarm_producer_data && pip install --no-cache-dir ./meteoalarm_amqp_producer/meteoalarm_amqp_producer_amqp_producer  && pip install --no-cache-dir .  && pip install --no-cache-dir ./meteoalarm_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev  && rm -rf /root/.cache /var/lib/apt/lists/*
 
 ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="meteoalarm"

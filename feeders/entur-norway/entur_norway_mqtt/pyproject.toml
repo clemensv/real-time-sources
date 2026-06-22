@@ -35,6 +35,3 @@ local_scheme = "no-local-version"
 packages = [
     "entur_norway_mqtt",
 ]
-
-[tool.uv.sources]
-entur_norway_core = { path = "../entur_norway_core" }

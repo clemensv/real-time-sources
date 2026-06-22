@@ -19,6 +19,3 @@ local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["dwd_core"]
-
-[tool.uv.sources]
-"dwd-producer-data" = { path = "../dwd_producer/dwd_producer_data" }

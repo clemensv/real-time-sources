@@ -133,6 +133,10 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/hongkong-epd.jso
 |---|---|
 | `STATE_FILE` | Path to persistent poller resume/dedupe state file. |
 | `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -143,6 +147,8 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/hongkong-epd.jso
 | `KAFKA_TOPIC` | Output topic name. |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
 | `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local brokers. |
+| `KAFKA_BROKER` | Kafka broker `host:port` (alternative to `KAFKA_BOOTSTRAP_SERVERS`). |
+| `KAFKA_CONNECTION_STRING` | Event Hubs / Fabric connection string for the Kafka endpoint (alias of `CONNECTION_STRING`). |
 
 ### MQTT image
 
@@ -153,6 +159,11 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/hongkong-epd.jso
 | `MQTT_USERNAME` / `MQTT_PASSWORD` | Username/password credentials for `password` mode. |
 | `MQTT_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
 | `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_HOST` | MQTT broker host (component-level alternative to `MQTT_BROKER_URL`). |
+| `MQTT_PORT` | MQTT broker port (component-level alternative to `MQTT_BROKER_URL`). |
+| `MQTT_TLS` | Set `true` to use TLS (`mqtts`) for the component-level connection. |
 
 ### AMQP image
 
@@ -166,6 +177,8 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/hongkong-epd.jso
 | `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
 | `HONGKONG_EPD_MOCK` | Set to `true` to publish deterministic sample AQHI station and reading events instead of polling the live EPD endpoint. Primarily for local validation and canary diagnostics. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
 
 ## Deploying into Azure Container Instances
 

@@ -124,12 +124,24 @@ docker run --rm   -v "$PWD/state:/state"   -e NWS_FORECAST_STATE_FILE=/state/nws
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `NWS_FORECAST_POLL_INTERVAL_SECONDS` | Seconds between forecast polls. |
+| `NWS_FORECAST_REFERENCE_REFRESH_SECONDS` | Seconds between refreshes of the forecast-zone reference catalog (reference data). |
+| `NWS_FORECAST_ZONES` | Comma-separated NWS public forecast zone IDs to poll (for example `WAZ558,ORZ012`). |
+
 ### Common (all images)
 
 | Variable | Description |
 |---|---|
 | `NWS_FORECAST_STATE_FILE` | Path to the dedupe/resume state file. Mount `/state` so it survives restarts. |
 | `POLLING_INTERVAL` | Seconds between polling cycles. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -151,6 +163,7 @@ docker run --rm   -v "$PWD/state:/state"   -e NWS_FORECAST_STATE_FILE=/state/nws
 | `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. |
 | `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 

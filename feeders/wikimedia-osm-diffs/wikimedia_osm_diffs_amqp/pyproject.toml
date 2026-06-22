@@ -23,6 +23,3 @@ wikimedia-osm-diffs-amqp = "wikimedia_osm_diffs_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["wikimedia_osm_diffs_amqp*"]
-
-[tool.uv.sources]
-wikimedia_osm_diffs_core = { path = "../wikimedia_osm_diffs_core" }

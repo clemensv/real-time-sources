@@ -23,9 +23,6 @@ dependencies = [
     "ndw-road-traffic-core",
 ]
 
-[tool.uv.sources]
-ndw-road-traffic-core = { path = "ndw_road_traffic_core", editable = true }
-
 [project.scripts]
 ndw-road-traffic = "ndw_road_traffic:main"
 

@@ -62,6 +62,15 @@ CAP (Common Alerting Protocol) schema.
 
 ## Environment Variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+
 | Variable | Required | Description |
 |---|---|---|
 | `CONNECTION_STRING` | Yes* | Event Hubs / Fabric connection string |
@@ -135,6 +144,9 @@ docker run --rm \
 | topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `alerts/intl/meteoalarm/meteoalarm`. |
 | retain default | Per message in xRegistry; see the topic table below. |
 | QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### MQTT topic patterns
 

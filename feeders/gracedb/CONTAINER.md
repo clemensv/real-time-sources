@@ -155,6 +155,23 @@ docker run --rm \
 
 ## Environment variables
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `STATE_FILE` | Path to the JSON dedupe / resume state file. Mount persistent storage here for long-running deployments. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `GRACEDB_CATEGORIES` | Comma-separated GraceDB superevent categories to include (for example `Production,Test`). |
+| `GRACEDB_MOCK` | Set to a truthy value to use a deterministic canned superevent instead of the live GraceDB API (offline testing / Docker E2E). |
+| `GRACEDB_POLL_COUNT` | Number of most-recent superevents to request on each poll. |
+
 ### Kafka image
 
 | Variable | Description |
@@ -176,6 +193,7 @@ docker run --rm \
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
 | `GRACEDB_MQTT_LAST_POLLED_FILE` | Transport-specific state file path for the MQTT companion. |
 | `GRACEDB_LAST_POLLED_FILE` | Generic state file alias used by the generated Azure MQTT templates; the MQTT companion accepts either this or `GRACEDB_MQTT_LAST_POLLED_FILE`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
 
 ### AMQP image
 
@@ -188,6 +206,8 @@ docker run --rm \
 | `AMQP_TLS` | Enable TLS where supported. |
 | `GRACEDB_AMQP_LAST_POLLED_FILE` | Transport-specific state file path for the AMQP companion. |
 | `GRACEDB_LAST_POLLED_FILE` | Generic state file alias used by generated Azure companion templates; the AMQP companion also falls back to this name. |
+| `AMQP_CLIENT_ID` | AMQP container / client identifier. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
 ## Deploying into Microsoft Fabric
 

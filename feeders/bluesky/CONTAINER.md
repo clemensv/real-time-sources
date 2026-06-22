@@ -81,36 +81,71 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/blu
 
 ## Environment variable matrix
 
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `BLUESKY_MAX_EVENTS` | Optional cap on the number of events emitted before the feeder exits; `0` means run indefinitely (mainly for testing) (default `0`). |
+| `BOTFINDER_KUSTO_DATABASE` | Kusto database name for the optional offline bot-finder analysis tool (also `--kusto-database`); not used by the live feeder. |
+| `BOTFINDER_KUSTO_URI` | Kusto cluster URI for the optional offline bot-finder analysis tool (also `--kusto-uri`); not used by the live feeder. |
+| `CLOUDEVENTS_MODE` | CloudEvents encoding mode — `structured` or `binary` (default `structured`). |
+| `CONTENT_TYPE` | Event payload content type — `application/json` or `application/vnd.apache.avro+avro` (default `application/json`). |
+| `USE_COMPRESSION` | Set to a truthy value to gzip-compress the emitted CloudEvent payloads. |
+
 ### Kafka image (`ghcr.io/clemensv/real-time-sources-bluesky:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `CONNECTION_STRING` | Core configuration for this image variant. |
-| `BLUESKY_FIREHOSE_URL` | Core configuration for this image variant. |
-| `BLUESKY_COLLECTIONS` | Core configuration for this image variant. |
-| `BLUESKY_SAMPLE_RATE` | Core configuration for this image variant. |
-| `BLUESKY_CURSOR_FILE` | Core configuration for this image variant. |
-| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
+| `CONNECTION_STRING` | Event Hubs / Fabric custom-endpoint connection string; a shortcut supplying bootstrap server, credentials, and topic in one value. |
+| `BLUESKY_FIREHOSE_URL` | Bluesky firehose WebSocket endpoint URL. |
+| `BLUESKY_COLLECTIONS` | Comma-separated AT Protocol collection NSIDs to emit (for example `app.bsky.feed.post`). |
+| `BLUESKY_SAMPLE_RATE` | Fraction (0–1) of firehose events to sample and emit. |
+| `BLUESKY_CURSOR_FILE` | Path to the firehose cursor file used to resume the stream after restarts. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local/plaintext brokers (default `true`). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Comma-separated `host:port` list of TLS-enabled Kafka brokers. |
+| `KAFKA_TOPIC` | Target Kafka topic. |
+| `SASL_PASSWORD` | SASL PLAIN password. For Event Hubs use the full connection string. |
+| `SASL_USERNAME` | SASL PLAIN username. For Event Hubs use `$ConnectionString`. |
 
 ### MQTT image (`ghcr.io/clemensv/real-time-sources-bluesky-mqtt:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `MQTT_BROKER_URL` | Core configuration for this image variant. |
-| `MQTT_USERNAME` | Core configuration for this image variant. |
-| `MQTT_PASSWORD` | Core configuration for this image variant. |
-| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
-| `BLUESKY_COLLECTIONS` | Core configuration for this image variant. |
+| `MQTT_BROKER_URL` | MQTT broker URL (`mqtt://` or `mqtts://host:port`). |
+| `MQTT_USERNAME` | Username for MQTT `password` auth mode. |
+| `MQTT_PASSWORD` | Password for MQTT `password` auth mode. |
+| `MQTT_CLIENT_ID` | Stable MQTT client identifier; set a unique value per running instance. |
+| `BLUESKY_COLLECTIONS` | Comma-separated AT Protocol collection NSIDs to emit (for example `app.bsky.feed.post`). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra ID (Azure Event Grid). |
+| `MQTT_ENABLE_TLS` | Set `true` to use TLS (`mqtts`) for the MQTT connection. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image (`ghcr.io/clemensv/real-time-sources-bluesky-amqp:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `AMQP_BROKER_URL` | Core configuration for this image variant. |
-| `AMQP_ADDRESS` | Core configuration for this image variant. |
-| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
-| `AMQP_CONTENT_MODE` | Core configuration for this image variant. |
-| `BLUESKY_COLLECTIONS` | Core configuration for this image variant. |
+| `AMQP_BROKER_URL` | AMQP 1.0 connection URL shortcut (host, port, TLS, credentials). |
+| `AMQP_ADDRESS` | AMQP destination address (queue/topic/entity) to publish to. |
+| `AMQP_AUTH_MODE` | AMQP authentication mode — `password` (SASL PLAIN), `entra` (Service Bus + Microsoft Entra CBS), or `sas` (SAS-token CBS). |
+| `AMQP_CONTENT_MODE` | CloudEvents content mode for AMQP — `binary` or `structured`. |
+| `BLUESKY_COLLECTIONS` | Comma-separated AT Protocol collection NSIDs to emit (for example `app.bsky.feed.post`). |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for `entra` mode (default `https://servicebus.azure.net/.default`). |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
+| `AMQP_HOST` | AMQP broker host (component-level alternative to `AMQP_BROKER_URL`). |
+| `AMQP_PASSWORD` | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PORT` | AMQP broker port (default `5672`, or `5671` with TLS). |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_TLS` | Set `true` to use TLS (`amqps`) for the component-level connection. |
+| `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
 
 ## Azure ARM deployments
 

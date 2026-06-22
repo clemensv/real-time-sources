@@ -42,6 +42,3 @@ local_scheme = "no-local-version"
 packages = [
     "wikimedia_osm_diffs",
 ]
-
-[tool.uv.sources]
-wikimedia_osm_diffs_core = { path = "wikimedia_osm_diffs_core" }

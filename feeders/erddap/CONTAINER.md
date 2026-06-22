@@ -26,6 +26,8 @@ Base image: `python:3.10-slim`. Entry points: `python -m erddap_kafka feed`, `py
 | `REFERENCE_REFRESH_INTERVAL` | `21600` | Seconds between dataset/station reference refreshes. |
 | `STATE_FILE` | `~/.erddap_state.json` | Dedupe state file; mount a volume in containers. |
 | `ONCE_MODE` | `false` | Exit after one poll cycle; used by tests and Fabric Notebook hosting. |
+| `LOG_LEVEL` |  | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `POLL_INTERVAL` |  | Seconds between poll cycles. |
 
 ### Catalog format
 

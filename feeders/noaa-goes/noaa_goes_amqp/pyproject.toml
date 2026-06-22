@@ -16,7 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "noaa_goes_core @ file://../noaa_goes_core",
+    "noaa_goes_core",
     "avro>=1.12.1",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",

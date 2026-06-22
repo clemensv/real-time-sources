@@ -48,6 +48,21 @@ This document covers the published OCI images for **FDSN Seismology**, their env
 | `ONCE_MODE` | `false` | Run exactly one cycle and exit. Required for Fabric notebook hosting. |
 | `FDSN_LIMIT` | `500` | Per-node maximum record count per query. |
 | `LOG_LEVEL` | `INFO` | Python logging level. |
+| `USER_AGENT` |  | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` |  | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
+| `KAFKA_BOOTSTRAP_SERVERS` |  | Comma-separated `host:port` list of TLS-enabled Kafka brokers. |
+| `KAFKA_TOPIC` |  | Target Kafka topic. |
+| `KAFKA_CONTENT_MODE` |  | `binary` (default) or `structured` CloudEvents content mode for Kafka. |
+| `SASL_USERNAME` |  | SASL PLAIN username. For Event Hubs use `$ConnectionString`. |
+| `SASL_PASSWORD` |  | SASL PLAIN password. For Event Hubs use the full connection string. |
+| `SASL_MECHANISM` |  | SASL mechanism (default `PLAIN`). |
+| `MQTT_CONTENT_MODE` |  | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENTRA_AUDIENCE` |  | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `AMQP_USERNAME` |  | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_PASSWORD` |  | SASL PLAIN password, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_SAS_KEY_NAME` |  | SAS policy / key name (e.g. `RootManageSharedAccessKey`). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_SAS_KEY` |  | SAS key value (base64-encoded shared secret). Required when `AMQP_AUTH_MODE=sas`. |
+| `AMQP_CONTENT_MODE` |  | `binary` (default) or `structured` CloudEvents content mode. |
 
 ## Configuring sources
 

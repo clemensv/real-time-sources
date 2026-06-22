@@ -12,9 +12,6 @@ dependencies = [
     "ndw-road-traffic-core",
 ]
 
-[tool.uv.sources]
-ndw-road-traffic-core = { path = "../ndw_road_traffic_core", editable = true }
-
 [project.scripts]
 ndw-road-traffic-amqp = "ndw_road_traffic_amqp.app:main"
 

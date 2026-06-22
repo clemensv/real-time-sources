@@ -150,12 +150,32 @@ docker run --rm \
 
 ## Environment variables
 
+### Source configuration
+
+| Variable | Description |
+|---|---|
+| `AGENCY` | Transit agency tag to poll (e.g. `sf-muni`). Required for live mode. |
+| `ROUTE` | Route tag to poll, or `*` for all routes (default `*`). |
+| `FEED_CONNECTION_STRING` | Connection string for the vehicle-position (telemetry) stream. Falls back to `CONNECTION_STRING`. |
+| `FEED_EVENT_HUB_NAME` | Target topic / Event Hub for telemetry. Falls back to `KAFKA_TOPIC`. |
+| `REFERENCE_CONNECTION_STRING` | Connection string for the reference (route/stop metadata) stream, so reference data can be published to a separate Event Hub or topic. |
+| `REFERENCE_EVENT_HUB_NAME` | Target topic / Event Hub for reference data (alias `REFERENCE_KAFKA_TOPIC`). |
+| `BACKOFF_INTERVAL` | Seconds to wait after an upstream error before retrying. |
+| `SOURCE_ROOT` | Advanced: directory used to locate the bundled `xreg/` contract (defaults to the working directory); rarely changed. |
+| `POLL_INTERVAL` | Seconds between poll cycles. |
+
 ### Common
 
 | Variable | Description |
 |---|---|
 | `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
 | `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
+| `LOG_LEVEL` | Standard Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). Default `INFO`. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. Required for Fabric notebook hosting and useful for smoke tests. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+| `STATE_FILE` | Path to the JSON dedupe / resume state file. Mount persistent storage here for long-running deployments. |
+| `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
+| `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
 ### Kafka image
 
@@ -175,6 +195,8 @@ docker run --rm \
 | `MQTT_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra JWT. |
 | `MQTT_CLIENT_ID` | Client identifier; must be unique per broker namespace. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID for `entra` mode; otherwise `DefaultAzureCredential` is used. |
 
 ### AMQP image
 

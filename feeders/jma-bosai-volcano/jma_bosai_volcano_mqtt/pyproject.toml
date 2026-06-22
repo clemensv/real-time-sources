@@ -36,6 +36,3 @@ local_scheme = "no-local-version"
 packages = [
     "jma_bosai_volcano_mqtt",
 ]
-
-[tool.uv.sources]
-jma_bosai_volcano_core = { path = "../jma_bosai_volcano_core" }

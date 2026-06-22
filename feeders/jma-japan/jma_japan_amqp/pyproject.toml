@@ -15,6 +15,3 @@
 
       [tool.setuptools]
       packages = ["jma_japan_amqp"]
-
-[tool.uv.sources]
-jma_japan_core = { path = "../jma_japan_core" }
