@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
+    "eaws_albina_core",
 ]
 
 [project.scripts]
@@ -43,3 +44,6 @@ local_scheme = "no-local-version"
 packages = [
     "eaws_albina",
 ]
+
+[tool.uv.sources]
+eaws_albina_core = { path = "eaws_albina_core" }

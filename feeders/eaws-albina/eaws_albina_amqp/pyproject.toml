@@ -22,6 +22,7 @@ dependencies = [
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "python-qpid-proton>=0.40.0",
+    "eaws_albina_core",
 ]
 
 [project.scripts]
@@ -36,3 +37,6 @@ local_scheme = "no-local-version"
 packages = [
     "eaws_albina_amqp",
 ]
+
+[tool.uv.sources]
+eaws_albina_core = { path = "../eaws_albina_core" }

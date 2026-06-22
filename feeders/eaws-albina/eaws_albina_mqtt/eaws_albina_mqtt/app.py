@@ -15,7 +15,7 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from eaws_albina.eaws_albina import DEFAULT_LANG, DEFAULT_REGIONS, POLL_INTERVAL_SECONDS, AlbinaPoller
+from eaws_albina_core import DEFAULT_LANG, DEFAULT_REGIONS, POLL_INTERVAL_SECONDS, AlbinaPoller
 from eaws_albina_mqtt_producer_mqtt_client.client import OrgEAWSALBINAMqttMqttClient
 import json
 
@@ -158,5 +158,5 @@ def main() -> None:
         parser.error("only the 'feed' command is supported")
     host, port, tls = _parse_broker_url(args.broker_url)
     regions = [part.strip() for part in args.regions.split(",") if part.strip()]
-    poller = AlbinaPoller(kafka_config=None, kafka_topic="mqtt", last_polled_file=args.last_polled_file, regions=regions, lang=args.lang)
+    poller = AlbinaPoller(last_polled_file=args.last_polled_file, regions=regions, lang=args.lang)
     asyncio.run(feed(poller, host, port, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))

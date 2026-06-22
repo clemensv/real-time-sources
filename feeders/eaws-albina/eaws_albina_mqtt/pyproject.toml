@@ -20,6 +20,8 @@ dependencies = [
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
     "requests>=2.32.3",
+    "eaws_albina_core",
+
 ]
 
 [project.scripts]
@@ -34,3 +36,6 @@ local_scheme = "no-local-version"
 packages = [
     "eaws_albina_mqtt",
 ]
+
+[tool.uv.sources]
+eaws_albina_core = { path = "../eaws_albina_core" }

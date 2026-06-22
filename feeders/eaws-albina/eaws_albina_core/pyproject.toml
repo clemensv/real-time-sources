@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eaws_albina_core"
+dynamic = ["version"]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "requests>=2.32.3",
+    "eaws-albina-producer-data",
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["eaws_albina_core"]
+
+[tool.uv.sources]
+"eaws-albina-producer-data" = { path = "../eaws_albina_producer/eaws_albina_producer_data" }
