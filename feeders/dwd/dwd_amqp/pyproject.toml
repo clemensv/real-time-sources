@@ -5,8 +5,9 @@
       requires-python = ">=3.10"
       dependencies = [
         "python-qpid-proton>=0.39.0",
-"azure-identity>=1.16.0",
-      ]
+              "azure-identity>=1.16.0",
+              "dwd_core",
+            ]
 
       [build-system]
       requires = ["setuptools>=68"]
@@ -14,3 +15,6 @@
 
       [tool.setuptools]
       packages = ["dwd_amqp"]
+
+      [tool.uv.sources]
+      dwd_core = { path = "../dwd_core" }

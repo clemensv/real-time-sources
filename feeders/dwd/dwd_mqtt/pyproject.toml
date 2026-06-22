@@ -5,6 +5,7 @@ description = "dwd MQTT companion feeder"
 requires-python = ">=3.10"
 dependencies = [
   "paho-mqtt>=2.1.0",
+  "dwd_core",
 ]
 
 [build-system]
@@ -13,3 +14,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["dwd_mqtt"]
+
+[tool.uv.sources]
+dwd_core = { path = "../dwd_core" }

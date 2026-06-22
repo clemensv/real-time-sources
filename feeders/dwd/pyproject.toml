@@ -23,6 +23,7 @@ dependencies = [
     "eccodes>=2.47.0",
     "numpy>=2.2.6",
     "requests>=2.34.2",
+    "dwd_core",
 ]
 
 [project.scripts]
@@ -48,3 +49,6 @@ packages = [
     "dwd.parsers",
     "dwd.util",
 ]
+
+[tool.uv.sources]
+dwd_core = { path = "dwd_core" }
