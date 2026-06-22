@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "AMQP 1.0 feeder for Wikimedia OSM diffs"
 requires-python = ">=3.10"
 dependencies = [
+    "wikimedia_osm_diffs_core",
     "python-qpid-proton>=0.40.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
@@ -22,3 +23,6 @@ wikimedia-osm-diffs-amqp = "wikimedia_osm_diffs_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["wikimedia_osm_diffs_amqp*"]
+
+[tool.uv.sources]
+wikimedia_osm_diffs_core = { path = "../wikimedia_osm_diffs_core" }

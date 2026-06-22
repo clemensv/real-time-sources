@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "wikimedia_osm_diffs_core",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "paho-mqtt>=2.1.0",
@@ -31,3 +32,6 @@ local_scheme = "no-local-version"
 packages = [
     "wikimedia_osm_diffs_mqtt",
 ]
+
+[tool.uv.sources]
+wikimedia_osm_diffs_core = { path = "../wikimedia_osm_diffs_core" }

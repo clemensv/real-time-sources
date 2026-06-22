@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wikimedia_osm_diffs_core"
+dynamic = ["version"]
+description = "Transport-neutral acquisition for Wikimedia OSM diffs bridges."
+authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "requests>=2.31.0",
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["wikimedia_osm_diffs_core"]

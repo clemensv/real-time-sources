@@ -24,19 +24,21 @@ from wikimedia_osm_diffs_producer_kafka_producer.producer import (
     OrgOpenStreetMapDiffsStateEventProducer,
 )
 
-
-STATE_URL = "https://planet.openstreetmap.org/replication/minute/state.txt"
-DIFF_BASE_URL = "https://planet.openstreetmap.org/replication/minute"
 DEFAULT_TOPIC = "wikimedia-osm-diffs"
-DEFAULT_STATE_FILE = os.path.expanduser("~/.wikimedia_osm_diffs_state.json")
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-wikimedia-osm-diffs/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+from wikimedia_osm_diffs_core.wikimedia_osm_diffs import (
+    DEFAULT_STATE_FILE,
+    DEFAULT_USER_AGENT,
+    DIFF_BASE_URL,
+    STATE_URL,
+    StateStore,
+    build_session,
+    fetch_sequence_changes,
+    fetch_state,
+    parse_osmchange_xml,
+    parse_state_txt,
+    sequence_to_path,
+    sequence_to_url,
 )
-DEFAULT_USER_AGENT = USER_AGENT
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")
@@ -50,220 +52,6 @@ logger = logging.getLogger(__name__)
 # State.txt parsing
 # ---------------------------------------------------------------------------
 
-def parse_state_txt(text: str) -> dict[str, Any]:
-    """Parse an OSM replication state.txt into a dict with sequence_number and timestamp."""
-    result: dict[str, Any] = {}
-    for line in text.splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        if "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        key = key.strip()
-        value = value.strip()
-        if key == "sequenceNumber":
-            result["sequence_number"] = int(value)
-        elif key == "timestamp":
-            ts_str = value.replace("\\:", ":")
-            if ts_str.endswith("Z"):
-                ts_str = ts_str[:-1] + "+00:00"
-            result["timestamp"] = datetime.datetime.fromisoformat(ts_str)
-    return result
-
-
-# ---------------------------------------------------------------------------
-# Sequence number to URL path
-# ---------------------------------------------------------------------------
-
-def sequence_to_path(seq: int) -> str:
-    """Convert a sequence number to the /NNN/NNN/NNN path segment."""
-    a = seq // 1_000_000
-    b = (seq % 1_000_000) // 1_000
-    c = seq % 1_000
-    return f"{a:03d}/{b:03d}/{c:03d}"
-
-
-def sequence_to_url(seq: int, base_url: str = DIFF_BASE_URL) -> str:
-    """Build the full diff .osc.gz URL for a given sequence number."""
-    return f"{base_url}/{sequence_to_path(seq)}.osc.gz"
-
-
-# ---------------------------------------------------------------------------
-# Geohash5 (mirrors aisstream_mqtt.enrichment.geohash5)
-# ---------------------------------------------------------------------------
-
-_GEOHASH_ALPHABET = "0123456789bcdefghjkmnpqrstuvwxyz"
-
-
-def _geohash5(latitude: Optional[float], longitude: Optional[float]) -> str:
-    """Return the 5-character base32 geohash, or 'nogeo' if unresolvable.
-
-    OSM ways and relations do not carry coordinates directly; nodes do.
-    We emit ``'nogeo'`` whenever a coordinate is missing so that downstream
-    MQTT topic placeholders always resolve to a fixed-shape lowercase ASCII
-    segment (never empty, never with a slash).
-    """
-    if latitude is None or longitude is None:
-        return "nogeo"
-    try:
-        lat = float(latitude)
-        lon = float(longitude)
-    except (TypeError, ValueError):
-        return "nogeo"
-    if not (-90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0):
-        return "nogeo"
-    precision = 5
-    lat_range = [-90.0, 90.0]
-    lon_range = [-180.0, 180.0]
-    bits: list[int] = []
-    even = True
-    while len(bits) < precision * 5:
-        if even:
-            mid = (lon_range[0] + lon_range[1]) / 2
-            if lon >= mid:
-                bits.append(1)
-                lon_range[0] = mid
-            else:
-                bits.append(0)
-                lon_range[1] = mid
-        else:
-            mid = (lat_range[0] + lat_range[1]) / 2
-            if lat >= mid:
-                bits.append(1)
-                lat_range[0] = mid
-            else:
-                bits.append(0)
-                lat_range[1] = mid
-        even = not even
-    out = []
-    for i in range(0, len(bits), 5):
-        idx = (bits[i] << 4) | (bits[i + 1] << 3) | (bits[i + 2] << 2) | (bits[i + 3] << 1) | bits[i + 4]
-        out.append(_GEOHASH_ALPHABET[idx])
-    return "".join(out)
-
-
-# ---------------------------------------------------------------------------
-# OsmChange XML parsing
-# ---------------------------------------------------------------------------
-
-def parse_osmchange_xml(xml_bytes: bytes, sequence_number: int) -> list[dict[str, Any]]:
-    """Parse OsmChange XML and return a list of change dicts."""
-    root = ET.fromstring(xml_bytes)
-    changes: list[dict[str, Any]] = []
-
-    for action_elem in root:
-        change_type = action_elem.tag
-        if change_type not in ("create", "modify", "delete"):
-            continue
-
-        for elem in action_elem:
-            element_type = elem.tag
-            if element_type not in ("node", "way", "relation"):
-                continue
-
-            tags: dict[str, str] = {}
-            for tag_elem in elem.findall("tag"):
-                k = tag_elem.get("k", "")
-                v = tag_elem.get("v", "")
-                if k:
-                    tags[k] = v
-
-            ts_str = elem.get("timestamp", "")
-            if ts_str:
-                if ts_str.endswith("Z"):
-                    ts_str = ts_str[:-1] + "+00:00"
-                ts = datetime.datetime.fromisoformat(ts_str)
-            else:
-                ts = datetime.datetime.now(datetime.timezone.utc)
-
-            uid_str = elem.get("uid")
-            user_id = int(uid_str) if uid_str else None
-            user_name = elem.get("user") or None
-
-            lat_str = elem.get("lat")
-            lon_str = elem.get("lon")
-            latitude = float(lat_str) if lat_str else None
-            longitude = float(lon_str) if lon_str else None
-
-            change: dict[str, Any] = {
-                "change_type": change_type,
-                "element_type": element_type,
-                "element_id": int(elem.get("id", "0")),
-                "geohash5": _geohash5(latitude, longitude),
-                "version": int(elem.get("version", "0")),
-                "timestamp": ts,
-                "changeset_id": int(elem.get("changeset", "0")),
-                "user_name": user_name,
-                "user_id": user_id,
-                "latitude": latitude,
-                "longitude": longitude,
-                "tags": json.dumps(tags, separators=(",", ":"), ensure_ascii=False),
-                "sequence_number": sequence_number,
-            }
-            changes.append(change)
-
-    return changes
-
-
-# ---------------------------------------------------------------------------
-# Connection string parsing
-# ---------------------------------------------------------------------------
-
-def parse_connection_string(connection_string: str) -> dict[str, str]:
-    """Parse an Event Hubs / Fabric Event Stream connection string."""
-    config_dict: dict[str, str] = {}
-    try:
-        for part in connection_string.split(";"):
-            if "Endpoint" in part:
-                config_dict["bootstrap.servers"] = (
-                    part.split("=", 1)[1].strip('"').strip().replace("sb://", "").replace("/", "")
-                    + ":9093"
-                )
-            elif "EntityPath" in part:
-                config_dict["kafka_topic"] = part.split("=", 1)[1].strip('"').strip()
-            elif "SharedAccessKeyName" in part:
-                config_dict["sasl.username"] = "$ConnectionString"
-            elif "SharedAccessKey" in part:
-                config_dict["sasl.password"] = connection_string.strip()
-            elif "BootstrapServer" in part:
-                config_dict["bootstrap.servers"] = part.split("=", 1)[1].strip()
-    except IndexError as exc:
-        raise ValueError("Invalid connection string format") from exc
-
-    if "sasl.username" in config_dict:
-        config_dict["security.protocol"] = "SASL_SSL"
-        config_dict["sasl.mechanism"] = "PLAIN"
-
-    return config_dict
-
-
-# ---------------------------------------------------------------------------
-# Bridge state
-# ---------------------------------------------------------------------------
-
-class StateStore:
-    """Persisted bridge state for tracking the last processed sequence number."""
-
-    def __init__(self, path: str) -> None:
-        self._path = Path(path)
-
-    def load(self) -> Optional[int]:
-        """Load the last processed sequence number, or None if no state."""
-        if not self._path.exists():
-            return None
-        try:
-            payload = json.loads(self._path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            logger.warning("Failed to load state file %s: %s", self._path, exc)
-            return None
-        return payload.get("last_sequence_number")
-
-    def save(self, last_sequence_number: int) -> None:
-        """Persist the last processed sequence number."""
-        self._path.parent.mkdir(parents=True, exist_ok=True)
-        payload = {"last_sequence_number": last_sequence_number}
-        self._path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -299,8 +87,7 @@ class OsmDiffsBridge:
         self._once = once
         self._last_sequence = state_store.load()
         self._total_events = 0
-        self._session = requests.Session()
-        self._session.headers["User-Agent"] = user_agent
+        self._session = build_session(user_agent)
 
     def run(self) -> None:
         """Run the polling loop until interrupted."""
@@ -325,7 +112,7 @@ class OsmDiffsBridge:
 
     def _poll_cycle(self) -> None:
         """Fetch the current state and process any new diffs."""
-        state = self._fetch_state()
+        state = fetch_state(self._session, self._state_url)
         if state is None:
             return
 
@@ -363,33 +150,16 @@ class OsmDiffsBridge:
             self._total_events,
         )
 
-    def _fetch_state(self) -> Optional[dict[str, Any]]:
-        """Fetch and parse the replication state.txt."""
-        try:
-            resp = self._session.get(self._state_url, timeout=30)
-            resp.raise_for_status()
-            return parse_state_txt(resp.text)
-        except (requests.RequestException, ValueError, KeyError) as exc:
-            logger.warning("Failed to fetch state: %s", exc)
-            return None
-
     def _process_sequence(self, seq: int) -> None:
         """Download, decompress, parse, and emit events for one sequence."""
-        url = sequence_to_url(seq, self._diff_base_url)
         try:
-            resp = self._session.get(url, timeout=60)
-            resp.raise_for_status()
+            changes = fetch_sequence_changes(self._session, seq, self._diff_base_url)
         except requests.RequestException as exc:
             logger.warning("Failed to download diff %d: %s", seq, exc)
             return
-
-        try:
-            xml_bytes = gzip.decompress(resp.content)
         except (gzip.BadGzipFile, OSError) as exc:
             logger.warning("Failed to decompress diff %d: %s", seq, exc)
             return
-
-        changes = parse_osmchange_xml(xml_bytes, seq)
         for change in changes:
             data = MapChange.from_serializer_dict(change)
             self._diffs_producer.send_org_open_street_map_diffs_map_change(
@@ -410,6 +180,31 @@ class OsmDiffsBridge:
 # ---------------------------------------------------------------------------
 # Kafka configuration
 # ---------------------------------------------------------------------------
+
+def parse_connection_string(connection_string: str) -> dict[str, str]:
+    """Parse an Event Hubs / Fabric Event Stream connection string."""
+    config_dict: dict[str, str] = {}
+    try:
+        for part in connection_string.split(";"):
+            if "Endpoint" in part:
+                config_dict["bootstrap.servers"] = (
+                    part.split("=", 1)[1].strip('"').strip().replace("sb://", "").replace("/", "") + ":9093"
+                )
+            elif "EntityPath" in part:
+                config_dict["kafka_topic"] = part.split("=", 1)[1].strip('"').strip()
+            elif "SharedAccessKeyName" in part:
+                config_dict["sasl.username"] = "$ConnectionString"
+            elif "SharedAccessKey" in part:
+                config_dict["sasl.password"] = connection_string.strip()
+            elif "BootstrapServer" in part:
+                config_dict["bootstrap.servers"] = part.split("=", 1)[1].strip()
+    except IndexError as exc:
+        raise ValueError("Invalid connection string format") from exc
+    if "sasl.username" in config_dict:
+        config_dict["security.protocol"] = "SASL_SSL"
+        config_dict["sasl.mechanism"] = "PLAIN"
+    return config_dict
+
 
 def build_kafka_config(args: argparse.Namespace) -> tuple[dict[str, str], str]:
     """Build Kafka config and resolve topic."""
@@ -589,3 +384,4 @@ def main() -> int:
 
     parser.print_help()
     return 1
+
