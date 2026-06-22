@@ -5,44 +5,45 @@ from __future__ import annotations
 import argparse
 import asyncio
 import importlib
-import json
 import logging
 import os
 import sys
 import unicodedata
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any, Iterable, Optional
 from urllib.parse import urlparse
 
-import aiohttp
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from autobahn.autobahn import (
-    DEFAULT_POLL_INTERVAL_SECONDS,
-    DEFAULT_REQUEST_CONCURRENCY,
-    DEFAULT_RESOURCES,
-    DEFAULT_STATE_FILE,
-    EVENT_FAMILIES,
-    SELECTION_SENTINEL,
-    AutobahnPoller,
-    build_family_snapshot,
-    diff_items,
-    merge_snapshots,
-    parse_resources_argument,
-    parse_roads_argument,
-)
+try:
+    from autobahn_core import (
+        DEFAULT_POLL_INTERVAL_SECONDS,
+        DEFAULT_REQUEST_CONCURRENCY,
+        DEFAULT_RESOURCES,
+        DEFAULT_STATE_FILE,
+        EVENT_FAMILIES,
+        SELECTION_SENTINEL,
+        AutobahnPoller,
+        parse_resources_argument,
+        parse_roads_argument,
+    )
+except ImportError:
+    from autobahn_core.autobahn_core import (
+        DEFAULT_POLL_INTERVAL_SECONDS,
+        DEFAULT_REQUEST_CONCURRENCY,
+        DEFAULT_RESOURCES,
+        DEFAULT_STATE_FILE,
+        EVENT_FAMILIES,
+        SELECTION_SENTINEL,
+        AutobahnPoller,
+        parse_resources_argument,
+        parse_roads_argument,
+    )
 from autobahn_mqtt_producer_mqtt_client.client import DEAutobahnMqttMqttClient
 
 logger = logging.getLogger("autobahn_mqtt")
-
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-autobahn/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
-)
 
 STABLE_RETAINED_FAMILIES = {
     "weight_limit_35_restriction",
@@ -106,7 +107,6 @@ class AutobahnMqttBridge:
     ) -> None:
         self.client = client
         self.poller = AutobahnPoller(
-            kafka_config=None,
             state_file=state_file,
             poll_interval_seconds=poll_interval_seconds,
             resources=resources,
@@ -130,85 +130,38 @@ class AutobahnMqttBridge:
         data_kwargs["event_time"] = event_time
         return self.data_classes[config["schema"]](**data_kwargs)
 
-    async def _publish_change(self, family: str, action: str, snapshot: dict[str, Any], poll_time: datetime) -> None:
+    async def _publish_change(self, family: str, action: str, snapshot: dict[str, Any], event_time: str) -> None:
         config = EVENT_FAMILIES[family]
         road = _uns_slug(snapshot.get("road") or (snapshot.get("road_ids") or ["unknown"])[0])
         identifier = _uns_slug(snapshot["identifier"])
-        event_time = self.poller._get_event_time(action, snapshot, poll_time)  # pylint: disable=protected-access
         data = self._data_for(family, action, snapshot, event_time)
         method_name = f"publish_de_autobahn_{config['method_stem']}_{action}_mqtt"
         method = getattr(self.client, method_name)
         retain = family in STABLE_RETAINED_FAMILIES
         await method(identifier=identifier, event_time=event_time, road=road, data=data, qos=1, retain=retain)
 
-    async def poll_once(self, session: aiohttp.ClientSession, poll_time: datetime) -> dict[str, dict[str, int]]:
-        roads = self.poller.roads if self.poller.roads is not None else await self.poller.fetch_roads(session)
-        tasks = [self.poller.fetch_resource(session, road_id, resource_type) for resource_type in self.poller.resources for road_id in roads]
-        results = await asyncio.gather(*tasks)
-
-        for result in results:
-            if result.error:
-                logger.warning("Fetch failed for %s/%s: %s", result.road_id, result.resource_type, result.error)
-                continue
-            if result.status == 304:
-                if result.etag:
-                    self.state.setdefault("etags", {}).setdefault(result.resource_type, {})[result.road_id] = result.etag
-                continue
-
-            resource_state = self.state.setdefault("resource_items", {}).setdefault(result.resource_type, {})
-            road_state: dict[str, dict[str, Any]] = {}
-            for raw_item in result.items:
-                if not isinstance(raw_item, dict):
-                    continue
-                built = build_family_snapshot(result.road_id, result.resource_type, raw_item)
-                if built is None:
-                    continue
-                family, snapshot = built
-                identifier = snapshot["identifier"]
-                existing = road_state.get(identifier)
-                entry = {"family": family, "snapshot": snapshot}
-                if existing is None:
-                    road_state[identifier] = entry
-                else:
-                    road_state[identifier] = {
-                        "family": family,
-                        "snapshot": merge_snapshots(existing["snapshot"], snapshot),
-                    }
-            resource_state[result.road_id] = road_state
-            self.state.setdefault("etags", {}).setdefault(result.resource_type, {})[result.road_id] = result.etag
-
-        current_by_family = self.poller._aggregate_current_items(roads)  # pylint: disable=protected-access
-        changes_by_family = {family: {"appeared": 0, "updated": 0, "resolved": 0} for family in EVENT_FAMILIES}
-        previous_by_family = self.state.setdefault("items", {})
-        for family in EVENT_FAMILIES:
-            previous = previous_by_family.get(family, {})
-            current = current_by_family.get(family, {})
-            for action, snapshots in diff_items(previous, current).items():
-                for snapshot in snapshots:
-                    await self._publish_change(family, action, snapshot, poll_time)
-                    changes_by_family[family][action] += 1
-            previous_by_family[family] = current
-
+    async def poll_once(self, poll_time: datetime) -> dict[str, dict[str, int]]:
+        changes, detected_changes = await asyncio.to_thread(self.poller.poll_once, poll_time)
+        for change in detected_changes:
+            await self._publish_change(change.family, change.action, change.snapshot, change.event_time)
         self.poller.save_state()
-        return changes_by_family
+        return changes
 
     async def poll_and_publish(self, once: bool = False) -> None:
-        timeout = aiohttp.ClientTimeout(total=60)
-        async with aiohttp.ClientSession(timeout=timeout, headers={"User-Agent": USER_AGENT}) as session:
-            while True:
-                cycle_started = datetime.now(timezone.utc)
-                changes = await self.poll_once(session, cycle_started)
-                summary = self.poller._summarize_changes(changes)  # pylint: disable=protected-access
-                logger.info("Autobahn MQTT cycle complete: %s", summary or "no changes")
-                if once:
-                    return
-                elapsed = datetime.now(timezone.utc) - cycle_started
-                remaining = timedelta(seconds=self.poller.poll_interval_seconds) - elapsed
-                if remaining.total_seconds() > 0:
-                    await asyncio.sleep(remaining.total_seconds())
+        while True:
+            cycle_started = datetime.now(timezone.utc)
+            changes = await self.poll_once(cycle_started)
+            summary = self.poller.summarize_changes(changes)
+            logger.info("Autobahn MQTT cycle complete: %s", summary or "no changes")
+            if once:
+                return
+            elapsed = datetime.now(timezone.utc) - cycle_started
+            remaining = timedelta(seconds=self.poller.poll_interval_seconds) - elapsed
+            if remaining.total_seconds() > 0:
+                await asyncio.sleep(remaining.total_seconds())
 
     async def emit_mock_corpus(self) -> None:
-        now = datetime(2024, 1, 1, tzinfo=timezone.utc)
+        now = datetime(2024, 1, 1, tzinfo=timezone.utc).isoformat()
         for index, family in enumerate(EVENT_FAMILIES, start=1):
             snapshot = _mock_snapshot(family, index)
             await self._publish_change(family, "appeared", snapshot, now)

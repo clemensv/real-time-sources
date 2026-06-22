@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "autobahn_core @ file:../autobahn_core",
     "avro>=1.12.1",
     "azure-core>=1.30.0",
     "azure-identity>=1.17.0",
