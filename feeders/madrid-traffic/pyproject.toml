@@ -21,6 +21,7 @@ dependencies = [
     "confluent-kafka>=2.14.2",
     "dataclasses-json>=0.6.7",
     "requests>=2.31.0",
+    "madrid_traffic_core",
 ]
 
 [project.scripts]
@@ -41,3 +42,6 @@ local_scheme = "no-local-version"
 packages = [
     "madrid_traffic",
 ]
+
+[tool.uv.sources]
+madrid_traffic_core = { path = "madrid_traffic_core" }

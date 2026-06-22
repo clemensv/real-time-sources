@@ -7,10 +7,13 @@ name = "madrid-traffic-mqtt"
 version = "0.1.0"
 description = "MQTT companion feeder for Madrid Traffic"
 requires-python = ">=3.10"
-dependencies = ["paho-mqtt>=2.1.0"]
+dependencies = ["paho-mqtt>=2.1.0", "madrid_traffic_core"]
 
 [project.scripts]
 madrid-traffic-mqtt = "madrid_traffic_mqtt.app:main"
 
 [tool.setuptools.packages.find]
 include = ["madrid_traffic_mqtt*"]
+
+[tool.uv.sources]
+madrid_traffic_core = { path = "../madrid_traffic_core" }

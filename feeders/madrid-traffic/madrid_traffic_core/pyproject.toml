@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "madrid_traffic_core"
+dynamic = ["version"]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "requests>=2.31.0",
+    "madrid-traffic-producer-data",
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["madrid_traffic_core"]
+
+[tool.uv.sources]
+"madrid-traffic-producer-data" = { path = "../madrid_traffic_producer/madrid_traffic_producer_data" }

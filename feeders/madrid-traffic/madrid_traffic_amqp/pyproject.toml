@@ -7,10 +7,16 @@ name = "madrid-traffic-amqp"
 version = "0.1.0"
 description = "AMQP companion feeder for Madrid Traffic"
 requires-python = ">=3.10"
-dependencies = ["python-qpid-proton>=0.40.0"]
+dependencies = [
+    "python-qpid-proton>=0.40.0",
+    "madrid_traffic_core",
+]
 
 [project.scripts]
 madrid-traffic-amqp = "madrid_traffic_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["madrid_traffic_amqp*"]
+
+[tool.uv.sources]
+madrid_traffic_core = { path = "../madrid_traffic_core" }
