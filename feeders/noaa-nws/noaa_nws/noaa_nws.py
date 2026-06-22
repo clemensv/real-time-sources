@@ -6,12 +6,16 @@ Polls the NWS alerts API and sends alerts to a Kafka topic as CloudEvents.
 # pylint: disable=line-too-long
 
 import os
-import json
 import sys
 import time
 from typing import Dict, List
 import argparse
-import requests
+from noaa_nws_core import NWSFetcher, parse_connection_string
+from noaa_nws_core.noaa_nws import (
+    ALERTS_URL,
+    POLL_INTERVAL_SECONDS,
+    OBSERVATION_INTERVAL_SECONDS,
+)
 from noaa_nws_producer_data import WeatherAlert, Zone
 from noaa_nws_producer_data.observationstation import ObservationStation
 from noaa_nws_producer_data.weatherobservation import WeatherObservation
@@ -22,27 +26,11 @@ from noaa_nws_producer_kafka_producer.producer import (
 )
 
 
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-noaa-nws/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
-)
-
 class NWSAlertPoller:
     """
     Polls the NWS Weather Alerts API and sends alerts to Kafka as CloudEvents.
+    Delegates data acquisition to NWSFetcher from noaa_nws_core.
     """
-    ALERTS_URL = "https://api.weather.gov/alerts/active"
-    ZONES_URL = "https://api.weather.gov/zones?type=forecast"
-    STATIONS_URL = "https://api.weather.gov/stations"
-    HEADERS = {
-        "User-Agent": USER_AGENT,
-        "Accept": "application/geo+json"
-    }
-    POLL_INTERVAL_SECONDS = 60
-    OBSERVATION_INTERVAL_SECONDS = 300  # Poll observations every 5 minutes
 
     def __init__(self, kafka_config: Dict[str, str], kafka_topic: str, last_polled_file: str):
         """
@@ -54,177 +42,13 @@ class NWSAlertPoller:
             last_polled_file: File to store seen alert IDs for deduplication.
         """
         self.kafka_topic = kafka_topic
-        self.last_polled_file = last_polled_file
+        self.fetcher = NWSFetcher(last_polled_file=last_polled_file)
         from confluent_kafka import Producer
         kafka_producer = Producer(kafka_config)
         self.alerts_producer = MicrosoftOpenDataUSNOAANWSAlertsEventProducer(kafka_producer, kafka_topic)
         self.zones_producer = MicrosoftOpenDataUSNOAANWSZonesEventProducer(kafka_producer, kafka_topic)
         self.observations_producer = MicrosoftOpenDataUSNOAANWSObservationsEventProducer(kafka_producer, kafka_topic)
         self.kafka_producer = kafka_producer
-        self.station_ids: List[str] = []
-        self.station_context: Dict[str, Dict[str, str | None]] = {}
-
-    def load_seen_alerts(self) -> Dict:
-        """
-        Load the set of previously seen alert IDs from the state file.
-
-        Returns:
-            Dict with 'seen_ids' list.
-        """
-        try:
-            if os.path.exists(self.last_polled_file):
-                with open(self.last_polled_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-        except Exception:
-            pass
-        return {"seen_ids": []}
-
-    def save_seen_alerts(self, state: Dict):
-        """
-        Save the set of seen alert IDs to the state file.
-
-        Args:
-            state: Dict with 'seen_ids' list.
-        """
-        try:
-            os.makedirs(os.path.dirname(self.last_polled_file) if os.path.dirname(self.last_polled_file) else '.', exist_ok=True)
-            with open(self.last_polled_file, 'w', encoding='utf-8') as f:
-                json.dump(state, f, indent=2)
-        except Exception as e:
-            print(f"Error saving state: {e}")
-
-    def fetch_zones(self):
-        """Fetch all NWS forecast zones as reference data."""
-        zones = []
-        url = self.ZONES_URL
-        try:
-            while url:
-                response = requests.get(url, headers=self.HEADERS, timeout=30)
-                response.raise_for_status()
-                data = response.json()
-                features = data.get("features", [])
-                for feature in features:
-                    props = feature.get("properties", {})
-                    zone = Zone(
-                        zone_id=props.get("id", ""),
-                        name=props.get("name", ""),
-                        type=props.get("type", ""),
-                        state=props.get("state", ""),
-                        forecast_office=props.get("forecastOffice", ""),
-                        timezone=props.get("timeZone", ""),
-                        radar_station=props.get("radarStation", "")
-                    )
-                    zones.append(zone)
-                # Handle pagination
-                pagination = data.get("pagination", {})
-                url = pagination.get("next") if pagination else None
-        except Exception as err:
-            print(f"Error fetching NWS zones: {err}")
-        return zones
-
-    def fetch_observation_stations(self, max_stations: int = 2500) -> List[ObservationStation]:
-        """Fetch observation stations from the NWS stations endpoint."""
-        stations: List[ObservationStation] = []
-        url = f"{self.STATIONS_URL}?limit=500"
-        try:
-            while url and len(stations) < max_stations:
-                response = requests.get(url, headers=self.HEADERS, timeout=30)
-                response.raise_for_status()
-                data = response.json()
-                for feature in data.get("features", []):
-                    props = feature.get("properties", {})
-                    sid = props.get("stationIdentifier", "")
-                    if not sid:
-                        continue
-                    elev = props.get("elevation", {})
-                    elev_val = elev.get("value") if isinstance(elev, dict) else None
-                    forecast_url = props.get("forecast", "")
-                    forecast_zone = forecast_url.rsplit("/", 1)[-1] if forecast_url else None
-                    state = forecast_zone[:2] if forecast_zone and len(forecast_zone) >= 2 else None
-                    county_url = props.get("county", "")
-                    county_zone = county_url.rsplit("/", 1)[-1] if county_url else None
-                    fire_url = props.get("fireWeatherZone", "")
-                    fire_zone = fire_url.rsplit("/", 1)[-1] if fire_url else None
-                    station = ObservationStation(
-                        station_id=sid,
-                        name=props.get("name", ""),
-                        elevation_m=float(elev_val) if elev_val is not None else None,
-                        time_zone=props.get("timeZone"),
-                        forecast_zone=forecast_zone,
-                        county=county_zone,
-                        fire_weather_zone=fire_zone,
-                        state=state,
-                        zone_id=forecast_zone,
-                    )
-                    stations.append(station)
-                    self.station_context[sid] = {"state": state, "zone_id": forecast_zone}
-                pagination = data.get("pagination", {})
-                url = pagination.get("next") if pagination else None
-        except Exception as err:
-            print(f"Error fetching NWS stations: {err}")
-        return stations
-
-    @staticmethod
-    def _extract_value(quantity) -> float | None:
-        """Extract the numeric value from a NWS quantity object like {'value': 11, 'unitCode': 'wmoUnit:degC'}."""
-        if quantity is None:
-            return None
-        if isinstance(quantity, dict):
-            v = quantity.get("value")
-            return float(v) if v is not None else None
-        return None
-
-    def fetch_latest_observation(self, station_id: str) -> WeatherObservation | None:
-        """Fetch the latest observation for a single station."""
-        url = f"{self.STATIONS_URL}/{station_id}/observations/latest"
-        try:
-            response = requests.get(url, headers=self.HEADERS, timeout=15)
-            if response.status_code == 404:
-                return None
-            response.raise_for_status()
-            data = response.json()
-            props = data.get("properties", {})
-            ts = props.get("timestamp")
-            if not ts:
-                return None
-            station_context = self.station_context.get(station_id, {})
-            return WeatherObservation(
-                station_id=station_id,
-                timestamp=ts,
-                text_description=props.get("textDescription"),
-                temperature=self._extract_value(props.get("temperature")),
-                dewpoint=self._extract_value(props.get("dewpoint")),
-                wind_direction=self._extract_value(props.get("windDirection")),
-                wind_speed=self._extract_value(props.get("windSpeed")),
-                wind_gust=self._extract_value(props.get("windGust")),
-                barometric_pressure=self._extract_value(props.get("barometricPressure")),
-                sea_level_pressure=self._extract_value(props.get("seaLevelPressure")),
-                visibility=self._extract_value(props.get("visibility")),
-                relative_humidity=self._extract_value(props.get("relativeHumidity")),
-                wind_chill=self._extract_value(props.get("windChill")),
-                heat_index=self._extract_value(props.get("heatIndex")),
-                state=station_context.get("state"),
-                zone_id=station_context.get("zone_id"),
-            )
-        except Exception as err:
-            print(f"Error fetching observation for {station_id}: {err}")
-            return None
-
-    def poll_alerts(self) -> List[dict]:
-        """
-        Fetch active alerts from the NWS API.
-
-        Returns:
-            List of alert feature dicts from the GeoJSON response.
-        """
-        try:
-            response = requests.get(self.ALERTS_URL, headers=self.HEADERS, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            return data.get("features", [])
-        except Exception as err:
-            print(f"Error fetching NWS alerts: {err}")
-            return []
 
     def poll_and_send(self, once: bool = False):
         """
@@ -235,37 +59,38 @@ class NWSAlertPoller:
             once: If True, exit after one polling cycle (alerts + observations).
                 Used for scheduled execution in Fabric notebooks.
         """
-        print(f"Starting NWS Weather Alert poller, polling every {self.POLL_INTERVAL_SECONDS}s")
-        print(f"  Alerts URL: {self.ALERTS_URL}")
+        print(f"Starting NWS Weather Alert poller, polling every {POLL_INTERVAL_SECONDS}s")
+        print(f"  Alerts URL: {ALERTS_URL}")
         print(f"  Kafka topic: {self.kafka_topic}")
 
         # Send reference data (zones) at startup
         print("Sending NWS forecast zones as reference data...")
-        zones = self.fetch_zones()
-        for zone in zones:
+        zone_dicts = self.fetcher.fetch_zones()
+        for d in zone_dicts:
+            zone = Zone(**d)
             self.zones_producer.send_microsoft_open_data_us_noaa_nws_zone(
                 zone.zone_id, zone, flush_producer=False)
         self.kafka_producer.flush()
-        print(f"Sent {len(zones)} zones as reference data")
+        print(f"Sent {len(zone_dicts)} zones as reference data")
 
         # Send observation stations at startup
         print("Sending NWS observation stations as reference data...")
-        obs_stations = self.fetch_observation_stations()
-        self.station_ids = [s.station_id for s in obs_stations]
-        for station in obs_stations:
+        station_dicts = self.fetcher.fetch_observation_stations()
+        for d in station_dicts:
+            station = ObservationStation(**d)
             self.observations_producer.send_microsoft_open_data_us_noaa_nws_observation_station(
                 station.station_id, station, flush_producer=False)
         self.kafka_producer.flush()
-        print(f"Sent {len(obs_stations)} observation stations as reference data")
+        print(f"Sent {len(station_dicts)} observation stations as reference data")
 
         last_obs_time = 0.0
         obs_seen: Dict[str, str] = {}  # station_id -> last observation timestamp
 
         while True:
             try:
-                state = self.load_seen_alerts()
+                state = self.fetcher.load_seen_alerts()
                 seen_ids = set(state.get("seen_ids", []))
-                features = self.poll_alerts()
+                features = self.fetcher.poll_alerts()
 
                 new_count = 0
                 for feature in features:
@@ -307,21 +132,21 @@ class NWSAlertPoller:
                 if len(seen_list) > 10000:
                     seen_list = seen_list[-10000:]
                 state["seen_ids"] = seen_list
-                self.save_seen_alerts(state)
+                self.fetcher.save_seen_alerts(state)
 
                 # Poll observations on a slower cadence
                 now = time.time()
-                if now - last_obs_time >= self.OBSERVATION_INTERVAL_SECONDS:
+                if now - last_obs_time >= OBSERVATION_INTERVAL_SECONDS:
                     obs_count = 0
-                    for sid in self.station_ids:
-                        obs = self.fetch_latest_observation(sid)
-                        if obs and obs.timestamp:
-                            obs_key = f"{sid}:{obs.timestamp}"
-                            if obs_seen.get(sid) != obs.timestamp:
+                    for sid in self.fetcher.station_ids:
+                        obs_dict = self.fetcher.fetch_latest_observation(sid)
+                        if obs_dict and obs_dict.get("timestamp"):
+                            if obs_seen.get(sid) != obs_dict["timestamp"]:
+                                obs = WeatherObservation(**obs_dict)
                                 self.observations_producer.send_microsoft_open_data_us_noaa_nws_weather_observation(
                                     sid, obs, flush_producer=False)
                                 obs_count += 1
-                                obs_seen[sid] = obs.timestamp
+                                obs_seen[sid] = obs_dict["timestamp"]
                     if obs_count > 0:
                         self.kafka_producer.flush()
                         print(f"Sent {obs_count} weather observation(s)")
@@ -334,39 +159,7 @@ class NWSAlertPoller:
                 print("--once mode: exiting after first polling cycle")
                 break
 
-            time.sleep(self.POLL_INTERVAL_SECONDS)
-
-
-def parse_connection_string(connection_string: str) -> Dict[str, str]:
-    """
-    Parse an Azure Event Hubs-style connection string and extract Kafka parameters.
-
-    Args:
-        connection_string: The connection string.
-
-    Returns:
-        Dict with bootstrap.servers, kafka_topic, sasl.username, sasl.password.
-    """
-    config_dict = {}
-    try:
-        for part in connection_string.split(';'):
-            if 'Endpoint' in part:
-                config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                    '"').replace('sb://', '').replace('/', '') + ':9093'
-            elif 'EntityPath' in part:
-                config_dict['kafka_topic'] = part.split('=')[1].strip('"')
-            elif 'SharedAccessKeyName' in part:
-                config_dict['sasl.username'] = '$ConnectionString'
-            elif 'SharedAccessKey' in part:
-                config_dict['sasl.password'] = connection_string.strip()
-            elif 'BootstrapServer' in part:
-                config_dict['bootstrap.servers'] = part.split('=', 1)[1].strip()
-    except IndexError as e:
-        raise ValueError("Invalid connection string format") from e
-    if 'sasl.username' in config_dict:
-        config_dict['security.protocol'] = 'SASL_SSL'
-        config_dict['sasl.mechanism'] = 'PLAIN'
-    return config_dict
+            time.sleep(POLL_INTERVAL_SECONDS)
 
 
 def main():

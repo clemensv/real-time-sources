@@ -1,16 +1,17 @@
 [project]
-      name = "noaa_nws_amqp"
-      version = "0.1.0"
-      description = "noaa-nws AMQP companion feeder"
-      requires-python = ">=3.10"
-      dependencies = [
-        "python-qpid-proton>=0.39.0",
-"azure-identity>=1.16.0",
-      ]
+name = "noaa_nws_amqp"
+version = "0.1.0"
+description = "noaa-nws AMQP 1.0 companion feeder"
+requires-python = ">=3.10"
+dependencies = [
+  "noaa_nws_core @ file:../noaa_nws_core",
+  "python-qpid-proton>=0.39.0",
+  "azure-identity>=1.16.0",
+]
 
-      [build-system]
-      requires = ["setuptools>=68"]
-      build-backend = "setuptools.build_meta"
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
 
-      [tool.setuptools]
-      packages = ["noaa_nws_amqp"]
+[tool.setuptools]
+packages = ["noaa_nws_amqp"]
