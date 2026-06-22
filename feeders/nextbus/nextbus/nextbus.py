@@ -1,93 +1,29 @@
 from datetime import datetime, timezone
 import os
 import time
-import requests
-import xml.etree.ElementTree as ET
 import argparse
 import json
 from dataclasses import dataclass
 from cloudevents.http import CloudEvent
 
-NEXTBUS_BASE_URL = "https://retro.umoiq.com/service/publicXMLFeed"   
-# Outbound HTTP identity. Operators can override the entire string with the
-# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
-USER_AGENT = os.environ.get("USER_AGENT") or (
-    "real-time-sources-nextbus/0.1.0 "
-    "(+https://github.com/clemensv/real-time-sources; "
-    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+from nextbus_core import (
+    NEXTBUS_BASE_URL,
+    USER_AGENT,
+    element_to_dict,
+    get_route_config_updates,
+    get_schedule_updates,
+    get_message_updates,
+    get_vehicle_positions,
+    print_agencies,
+    print_routes,
+    print_route_predictions,
+    print_stops,
+    print_vehicle_locations,
+    print_predictions,
 )
+
 backoff_time: float = 0
 poll_interval: float = 10
-
-def print_route_predictions(agency_tag, route_tag):
-    # Make a request to the NextBus API to get the predictions for the specified route
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-    
-    response.raise_for_status()
-
-    # Parse the XML response and print the predictions for the route
-    root = ET.fromstring(response.content)
-    for direction in root.findall("predictions/direction"):
-        print(f"Direction: {direction.get('title')}")
-        for prediction in direction.findall("prediction"):
-            print(f"  {prediction.get('minutes')} minutes")
-
-def print_stops(agency_tag, route_tag):
-    # Make a request to the NextBus API to get the configuration for the specified route
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-
-    response.raise_for_status()
-
-    # Parse the XML response and print the stops for the route
-    root = ET.fromstring(response.content)
-    for stop in root.findall("route/stop"):
-        print(f"{stop.get('tag')}: {stop.get('title')}, ({stop.get('lat')},{stop.get('lon')}), https://geohack.toolforge.org/geohack.php?language=en&params={stop.get('lat')};{stop.get('lon')}")
-        
-def print_agencies():
-    # Make a request to the NextBus API to get the list of agencies
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "agencyList"}, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-
-    # Parse the XML response and print the list of agencies with tags and names
-    root = ET.fromstring(response.content)
-    for agency in root.findall("agency"):
-        print(f"{agency.get('tag')}: {agency.get('title')}")
-
-def print_routes(agency_tag):
-    # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-    
-    response.raise_for_status()
-
-    # Parse the XML response and print the list of routes for the agency
-    root = ET.fromstring(response.content)
-    for route in root.findall("route"):
-        print(f"{route.get('tag')}: {route.get('title')}")
-
-
-def element_to_dict(element):
-    data = {}
-    for child in element:
-        if len(child) > 0 or child.attrib:
-            if child.tag in data:
-                if not isinstance(data[child.tag], list):
-                    data[child.tag] = [data[child.tag]]
-                data[child.tag].append(element_to_dict(child))
-            else:
-                data[child.tag] = element_to_dict(child)
-        else:
-            data[child.tag] = child.text
-
-    # Add attributes directly to the dictionary
-    data.update(element.attrib)
-    return data
 
 @dataclass
 class KafkaEventData:
@@ -196,43 +132,10 @@ class NextbusKafkaProducerClient:
             raise ValueError(f"Unsupported Nextbus event type: {event_type}")
 
 
-route_checksums = {}
 def poll_and_submit_route_config(producer_client: NextbusKafkaProducerClient, agency_tag: str):
-    # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-    
-    response.raise_for_status()
-
-    # Parse the XML response and submit the route configuration for each route to the Event Hub
-    root = ET.fromstring(response.content)
-    for route in root.findall("route"):
-        route_tag = route.get("tag")
-        # slow down the request rate
-        time.sleep(backoff_time)        
-        
-        response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
-        if response.status_code == 404:
-            # API is flaky, try again
-            response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
-            if response.status_code == 404:
-                print(f"404 for {agency_tag}/{route_tag}")
-                continue
-        
-        response.raise_for_status()
-        content = response.content
-        checksum = hash(content)
-        if route_tag in route_checksums and route_checksums[route_tag] == checksum:
-            continue
-        route_checksums[route_tag] = checksum
-        root = ET.fromstring(response.content)
-        route_config = {
-            "agency": agency_tag,
-            "routeTag": route_tag,
-            "routeConfig": json.dumps(element_to_dict(root)),
-        }
-        # Create a CloudEvent of type nextbus.routeConfig
+    """Fetch changed route configs and submit as CloudEvents to Kafka."""
+    for rc_data in get_route_config_updates(agency_tag, backoff_time=backoff_time):
+        route_tag = rc_data["routeTag"]
         event = CloudEvent({
             "specversion": "1.0",
             "type": "nextbus.RouteConfig",
@@ -240,46 +143,16 @@ def poll_and_submit_route_config(producer_client: NextbusKafkaProducerClient, ag
             "subject": f"{agency_tag}/{route_tag}/route-config/{route_tag}",
             "datacontenttype": "application/json",
             "time": datetime.now(timezone.utc).isoformat()
-        })  
-        event.data = route_config      
-        event_data = create_event_data(event)
-        producer_client.send_event(event_data, partition_key=f"route/{agency_tag}/{route_tag}")
+        })
+        event.data = rc_data
+        producer_client.send_event(create_event_data(event), partition_key=f"route/{agency_tag}/{route_tag}")
         print(f"Sent route config for {agency_tag}/{route_tag}")
-        
 
-schedule_checksums = {}
 
 def poll_and_submit_schedule(producer_client: NextbusKafkaProducerClient, agency_tag: str):
-    # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-    
-    response.raise_for_status()
-
-    # Parse the XML response and submit the schedule for each route to the Event Hub
-    root = ET.fromstring(response.content)
-    for route in root.findall("route"):
-        route_tag = route.get("tag")
-        # slow down the request rate
-        time.sleep(backoff_time)        
-        response = requests.get(NEXTBUS_BASE_URL, params={"command": "schedule", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
-        if response.status_code == 404:
-            print(f"404 for {agency_tag}/{route_tag}")
-            continue
-        response.raise_for_status()
-        content = response.content
-        checksum = hash(content)
-        if route_tag in schedule_checksums and schedule_checksums[route_tag] == checksum:
-            continue
-        schedule_checksums[route_tag] = checksum
-        root = ET.fromstring(response.content)
-        schedule = {
-            "agency": agency_tag,
-            "routeTag": route_tag,
-            "schedule": json.dumps(element_to_dict(root)),
-        }
-        # Create a CloudEvent of type nextbus.schedule
+    """Fetch changed schedules and submit as CloudEvents to Kafka."""
+    for sched_data in get_schedule_updates(agency_tag, backoff_time=backoff_time):
+        route_tag = sched_data["routeTag"]
         event = CloudEvent({
             "specversion": "1.0",
             "type": "nextbus.Schedule",
@@ -287,44 +160,16 @@ def poll_and_submit_schedule(producer_client: NextbusKafkaProducerClient, agency
             "subject": f"{agency_tag}/{route_tag}/schedule/{route_tag}",
             "datacontenttype": "application/json",
             "time": datetime.now(timezone.utc).isoformat()
-        })  
-        event.data = schedule      
-        event_data = create_event_data(event)
-        producer_client.send_event(event_data, partition_key=f"schedule/{agency_tag}/{route_tag}")
+        })
+        event.data = sched_data
+        producer_client.send_event(create_event_data(event), partition_key=f"schedule/{agency_tag}/{route_tag}")
         print(f"Sent schedule for {agency_tag}/{route_tag}")
 
-messages_checksums = {}
-def poll_and_submit_messages(producer_client : NextbusKafkaProducerClient, agency_tag : str):
-    # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-    
-    response.raise_for_status()
 
-    # Parse the XML response and submit the schedule for each route to the Event Hub
-    root = ET.fromstring(response.content)
-    for route in root.findall("route"):
-        route_tag = route.get("tag")
-        # slow down the request rate
-        time.sleep(backoff_time)        
-        response = requests.get(NEXTBUS_BASE_URL, params={"command": "messages", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
-        if response.status_code == 404:
-            print(f"404 for {agency_tag}/{route_tag}")
-            continue
-        response.raise_for_status()
-        content = response.content
-        checksum = hash(content)
-        if route_tag in messages_checksums and messages_checksums[route_tag] == checksum:
-            continue
-        messages_checksums[route_tag] = checksum
-        root = ET.fromstring(response.content)
-        messages = {
-            "agency": agency_tag,
-            "routeTag": route_tag,
-            "messages": json.dumps(element_to_dict(root)),
-        }
-        # Create a CloudEvent of type nextbus.messages
+def poll_and_submit_messages(producer_client: NextbusKafkaProducerClient, agency_tag: str):
+    """Fetch changed messages and submit as CloudEvents to Kafka."""
+    for msg_data in get_message_updates(agency_tag, backoff_time=backoff_time):
+        route_tag = msg_data["routeTag"]
         event = CloudEvent({
             "specversion": "1.0",
             "type": "nextbus.Message",
@@ -332,87 +177,37 @@ def poll_and_submit_messages(producer_client : NextbusKafkaProducerClient, agenc
             "subject": f"{agency_tag}/{route_tag}/message/{route_tag}",
             "datacontenttype": "application/json",
             "time": datetime.now(timezone.utc).isoformat()
-        })  
-        event.data = messages      
-        event_data = create_event_data(event)
-        producer_client.send_event(event_data, partition_key=f"messages/{agency_tag}/{route_tag}")
+        })
+        event.data = msg_data
+        producer_client.send_event(create_event_data(event), partition_key=f"messages/{agency_tag}/{route_tag}")
         print(f"Sent messages for {agency_tag}/{route_tag}")
 
 
-
-vehicle_last_report_times = {}
-
-def poll_and_submit_vehicle_locations(producer_client: NextbusKafkaProducerClient, agency_tag: str, route: str | None, last_time : float | None):
-    # Make a request to the NextBus API to get the vehicle locations for the specified route
-    params = {"command": "vehicleLocations", "a": agency_tag}
-    if route != "*":
-        params["r"] = route
-    if last_time is not None:
-        params["t"] = int(last_time)
-
-    
-    response = requests.get(NEXTBUS_BASE_URL, params=params, headers={"User-Agent": USER_AGENT})
-    if response.status_code == 404:
-        return
-    
-    response.raise_for_status()
-
-    # Parse the XML response and submit each vehicle location to the Event Hub
-    root = ET.fromstring(response.content)
-
-    # A vehicleLocations response always carries a <lastTime> element. When it is
-    # absent the upstream returned an <Error> document instead (e.g. a retired or
-    # invalid agency tag, a rate-limit, or scheduled maintenance). Do not crash
-    # the feed loop on that - log the upstream message and keep the prior
-    # watermark so the next cycle retries.
-    last_time_el = root.find("lastTime")
-    if last_time_el is None:
-        err_el = root.find("Error")
-        detail = (err_el.text or "").strip() if err_el is not None else response.text[:200].strip()
-        print(f"NextBus vehicleLocations returned no data for agency '{agency_tag}': {detail}")
+def poll_and_submit_vehicle_locations(producer_client: NextbusKafkaProducerClient, agency_tag: str, route: str | None, last_time: float | None):
+    """Fetch vehicle positions and submit as CloudEvents to Kafka."""
+    positions, feed_last_time = get_vehicle_positions(agency_tag, route, last_time)
+    if feed_last_time is None:
         return last_time
-    feed_last_time = float(last_time_el.get("time"))
 
     event_data_batch = producer_client.create_batch(partition_key=agency_tag)
-    vehicles = root.findall("vehicle")
-    for vehicle in vehicles:
-        vehicle_id = f"{agency_tag}/{vehicle.get('id')}"
-        last_report_time = feed_last_time/1000 - float(vehicle.get("secsSinceReport"))
-        if vehicle_id in vehicle_last_report_times and last_report_time <= vehicle_last_report_times[vehicle_id]:
-            continue
-        event_detail = {
-            "agency": agency_tag,
-            "routeTag": vehicle.get("routeTag"),
-            "dirTag": vehicle.get("dirTag"),
-            "id": vehicle.get("id"),
-            "lat": vehicle.get("lat"),
-            "lon": vehicle.get("lon"),
-            "predictable": vehicle.get("predictable"),
-            "heading": vehicle.get("heading"),
-            "speedKmHr": vehicle.get("speedKmHr"),
-            "timestamp": last_report_time
-        }
-        last_report_time_iso = datetime.utcfromtimestamp(last_report_time).isoformat()
-            
+    for vp in positions:
+        last_report_time_iso = datetime.utcfromtimestamp(vp["timestamp"]).isoformat()
         event = CloudEvent({
             "specversion": "1.0",
             "type": "nextbus.VehiclePosition",
             "source": "https://retro.umoiq.com/service/publicXMLFeed",
-            "subject": f"{agency_tag}/{vehicle.get('routeTag')}/vehicle/{vehicle.get('id')}",
+            "subject": f"{agency_tag}/{vp.get('routeTag')}/vehicle/{vp.get('id')}",
             "datacontenttype": "application/json",
             "time": last_report_time_iso
         })
-        event.data = event_detail
+        event.data = vp
         try:
             event_data_batch.add(create_event_data(event))
         except ValueError:
-            # batch is full, send it and create a new one
             producer_client.send_batch(event_data_batch)
             event_data_batch = producer_client.create_batch(partition_key=agency_tag)
             event_data_batch.add(create_event_data(event))
-        vehicle_last_report_times[vehicle_id] = last_report_time
-        
-    
+
     producer_client.send_batch(event_data_batch)
     print(f"Sent {len(event_data_batch)} vehicle positions")
     return feed_last_time
@@ -456,28 +251,6 @@ def feed(feed_connection_string: str, feed_topic: str | None, reference_connecti
             if reference_producer_client is not feed_producer_client:
                 reference_producer_client.close()
 
-
-def print_vehicle_locations(agency, route):
-    # Make a request to the NextBus API to get the vehicle locations for the specified route
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "vehicleLocations", "a" : agency, "r": route}, headers={"User-Agent": USER_AGENT})
-    response.raise_for_status()
-
-    # Parse the XML response and print the vehicle locations for the route
-    root = ET.fromstring(response.content)
-    for vehicle in root.findall("vehicle"):
-        print(f"{vehicle.get('id')}: ({vehicle.get('lat')},{vehicle.get('lon')}), heading {vehicle.get('heading')}°, {vehicle.get('speedKmHr')} km/h, https://geohack.toolforge.org/geohack.php?language=en&params={vehicle.get('lat')};{vehicle.get('lon')}")
-
-def print_predictions(agency_tag, stop_id, route_tag):
- 
-    # Make a request to the NextBus API to get the predictions for the specified stop
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "s": stop_id, "r": route_tag}, headers={"User-Agent": USER_AGENT})
-    response.raise_for_status()
-
-    # Parse the XML response and print the predictions for the stop
-    root = ET.fromstring(response.content)
-    print(f"Predictions for stop {root.find('predictions').get('stopTitle')}")
-    for prediction in root.findall("predictions/direction/prediction"):
-        print(f"{prediction.get('minutes')} minutes ({prediction.get('seconds')} seconds), Vehicle {prediction.get('vehicle')}")
 
 def main():
     # Define the command-line arguments and subcommands

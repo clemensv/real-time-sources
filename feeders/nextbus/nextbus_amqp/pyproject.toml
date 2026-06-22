@@ -1,16 +1,25 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=68.0", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "nextbus-amqp"
-version = "0.1.0"
+dynamic = ["version"]
 description = "AMQP companion feeder for Nextbus"
 requires-python = ">=3.10"
-dependencies = ["python-qpid-proton>=0.40.0"]
+dependencies = [
+    "python-qpid-proton>=0.40.0",
+    "nextbus_core @ file:../nextbus_core",
+    "requests>=2.32.3",
+]
 
 [project.scripts]
 nextbus-amqp = "nextbus_amqp.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
 
 [tool.setuptools.packages.find]
 include = ["nextbus_amqp*"]
