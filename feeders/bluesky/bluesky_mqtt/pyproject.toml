@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "bluesky_core",
     "aiohttp>=3.9",
     "atproto>=0.0.46",
     "azure-identity>=1.17.0",
@@ -33,3 +34,6 @@ local_scheme = "no-local-version"
 packages = [
     "bluesky_mqtt",
 ]
+
+[tool.uv.sources]
+bluesky_core = { path = "../bluesky_core" }

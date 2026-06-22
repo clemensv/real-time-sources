@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "AMQP 1.0 feeder for Bluesky firehose"
 requires-python = ">=3.10"
 dependencies = [
+    "bluesky_core",
     "python-qpid-proton>=0.40.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
@@ -24,3 +25,6 @@ bluesky-amqp = "bluesky_amqp.app:main"
 
 [tool.setuptools.packages.find]
 include = ["bluesky_amqp*"]
+
+[tool.uv.sources]
+bluesky_core = { path = "../bluesky_core" }
