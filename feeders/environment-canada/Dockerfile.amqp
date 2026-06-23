@@ -22,6 +22,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 
 COPY . /app
 RUN pip install --no-cache-dir ./environment_canada_core \
+ && pip install --no-cache-dir ./environment_canada_producer/environment_canada_producer_data \
  && pip install --no-cache-dir ./environment_canada_amqp_producer/environment_canada_amqp_producer_data \
  && pip install --no-cache-dir ./environment_canada_amqp_producer/environment_canada_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./environment_canada_amqp && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*

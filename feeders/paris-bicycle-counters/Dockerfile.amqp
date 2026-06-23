@@ -22,6 +22,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
 RUN pip install --no-cache-dir ./paris_bicycle_counters_core \
+ && pip install --no-cache-dir ./paris_bicycle_counters_producer/paris_bicycle_counters_producer_data \
  && pip install --no-cache-dir ./paris_bicycle_counters_amqp_producer/paris_bicycle_counters_amqp_producer_data \
  && pip install --no-cache-dir ./paris_bicycle_counters_amqp_producer/paris_bicycle_counters_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./paris_bicycle_counters_amqp \

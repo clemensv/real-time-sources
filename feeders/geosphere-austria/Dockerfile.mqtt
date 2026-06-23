@@ -15,6 +15,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
  && pip install --no-cache-dir ./geosphere_austria_mqtt_producer/geosphere_austria_mqtt_producer_data \
  && pip install --no-cache-dir ./geosphere_austria_mqtt_producer/geosphere_austria_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./geosphere_austria_core \
+ && pip install --no-cache-dir ./geosphere_austria_producer/geosphere_austria_producer_data \
          && pip install --no-cache-dir ./geosphere_austria_mqtt
         ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "geosphere_austria_mqtt", "feed"]
