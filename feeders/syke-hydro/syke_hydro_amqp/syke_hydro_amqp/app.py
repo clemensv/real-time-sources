@@ -11,7 +11,7 @@ import time
 from typing import Optional, Set, Dict, List, Any
 from urllib.parse import urlparse
 
-from syke_hydro.syke_hydro import SykeHydroAPI, _load_state, _save_state
+from syke_hydro.syke_hydro import SYKEHydroAPI, _load_state, _save_state
 from syke_hydro_amqp_producer_data import Station, WaterLevelObservation
 from syke_hydro_amqp_producer_amqp_producer.producer import FISykeHydrologyAmqpProducer
 
@@ -59,7 +59,7 @@ def feed(host, port, address='syke-hydro', username=None, password=None, tls=Fal
         host, port, address, tls, content_mode, auth_mode, username, password,
         entra_audience, entra_client_id, sas_key_name, sas_key))
 
-    api = SykeHydroAPI()
+    api = SYKEHydroAPI()
     previous = _load_state(state_file)
 
     # Emit reference data (stations)
