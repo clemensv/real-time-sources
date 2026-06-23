@@ -19,7 +19,9 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./nepal_bipad_hydrology_amqp_producer/nepal_bipad_hydrology_amqp_producer_data \
+RUN pip install --no-cache-dir ./nepal_bipad_hydrology_producer/nepal_bipad_hydrology_producer_data \
+ && pip install --no-cache-dir ./nepal_bipad_hydrology_producer/nepal_bipad_hydrology_producer_kafka_producer \
+ && pip install --no-cache-dir ./nepal_bipad_hydrology_amqp_producer/nepal_bipad_hydrology_amqp_producer_data \
  && pip install --no-cache-dir ./nepal_bipad_hydrology_amqp_producer/nepal_bipad_hydrology_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./nepal_bipad_hydrology_amqp \
  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
