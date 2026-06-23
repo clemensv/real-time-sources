@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 from syke_hydro.syke_hydro import SYKEHydroAPI, _load_state, _save_state
 from syke_hydro_amqp_producer_data import Station, WaterLevelObservation
-from syke_hydro_amqp_producer_amqp_producer.producer import FISykeHydrologyAmqpProducer
+from syke_hydro_amqp_producer_amqp_producer.producer import FISYKEHydrologyAmqpProducer
 
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 logger = logging.getLogger(__name__)
@@ -38,14 +38,14 @@ def _build_producer(host, port, address, tls, content_mode, auth_mode, username,
     if auth_mode == 'entra':
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
         cred = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
-        return FISykeHydrologyAmqpProducer(
+        return FISYKEHydrologyAmqpProducer(
             host=host, address=address, port=port, content_mode=content_mode,
             credential=cred, entra_audience=entra_audience, use_tls=tls)
     if auth_mode == 'sas':
-        return FISykeHydrologyAmqpProducer(
+        return FISYKEHydrologyAmqpProducer(
             host=host, address=address, port=port, content_mode=content_mode,
             sas_key_name=sas_key_name, sas_key=sas_key, use_tls=tls)
-    return FISykeHydrologyAmqpProducer(
+    return FISYKEHydrologyAmqpProducer(
         host=host, address=address, port=port, username=username, password=password,
         content_mode=content_mode, use_tls=tls)
 
