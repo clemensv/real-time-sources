@@ -68,82 +68,7 @@ def _sample_value(name, annotation):
     return "mock"
 
 
-def _make_instance(cls):
-    kwargs = {}
-    for fld in dataclasses.fields(cls):
-        if not fld.init:
-            continue
-        ann = fld.type
-        origin = typing.get_origin(ann)
-        args = typing.get_args(ann)
-        if origin in (typing.Union, getattr(typing, "Optional", object)) and args:
-            ann = next((a for a in args if a is not type(None)), args[0])
-        try:
-            if dataclasses.is_dataclass(ann):
-                kwargs[fld.name] = _make_instance(ann)
-                continue
-        except Exception:  # noqa: BLE001
-            pass
-        kwargs[fld.name] = _sample_value(fld.name, ann)
-    return cls(**kwargs)
 
-
-def _required_call_kwargs(method):
-    out = {}
-    for name, param in inspect.signature(method).parameters.items():
-        if name in ("self", "topic", "qos", "retain", "content_type", "flush_producer"):
-            continue
-        if name == "data":
-            ann = param.annotation
-            if isinstance(ann, str):
-                ann = None
-            if ann is inspect.Parameter.empty or ann is None:
-                raise RuntimeError(f"No data annotation for {method}")
-            out[name] = _make_instance(ann)
-        else:
-            key = name[1:] if name.startswith("_") else name
-            out[name] = _sample_value(key, str(param.annotation))
-    return out
-
-
-def _emit_mock(producer):
-    """Publish one synthetic instance of every generated send_* type."""
-    for method in [getattr(producer, n) for n in dir(producer) if n.startswith("send_") and not n.endswith("_batch")]:
-        method(**_required_call_kwargs(method))
-
-
-# Map a NOAA product key onto the AMQP producer send-method suffix. Note the
-# product `currents_predictions` maps onto the `current_predictions` method.
-_SEND_SUFFIX = {
-    "water_level": "water_level",
-    "predictions": "predictions",
-    "air_temperature": "air_temperature",
-    "wind": "wind",
-    "air_pressure": "air_pressure",
-    "water_temperature": "water_temperature",
-    "conductivity": "conductivity",
-    "visibility": "visibility",
-    "humidity": "humidity",
-    "salinity": "salinity",
-    "currents": "currents",
-    "currents_predictions": "current_predictions",
-}
-
-# Telemetry data classes keyed by product (water_level handled separately
-# because it carries the QualityLevel enum).
-_DATA_CLASSES = {
-    "predictions": ncd.Predictions,
-    "air_temperature": ncd.AirTemperature,
-    "wind": ncd.Wind,
-    "air_pressure": ncd.AirPressure,
-    "water_temperature": ncd.WaterTemperature,
-    "conductivity": ncd.Conductivity,
-    "visibility": ncd.Visibility,
-    "humidity": ncd.Humidity,
-    "salinity": ncd.Salinity,
-    "currents": ncd.Currents,
-    "currents_predictions": ncd.CurrentPredictions,
-}
 
 
 def _build_data(product, station_id, region, ts_iso, fields):
@@ -216,18 +141,9 @@ def feed(
     state_file=None,
     polling_interval=300,
     once=False,
-    mock=False,
 ):
     cls = next(obj for obj in globals().values() if isinstance(obj, type) and obj.__name__.endswith("AmqpProducer"))
     producer = _retry_producer_init(lambda: _build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key))
-    if mock:
-        try:
-            _emit_mock(producer)
-        finally:
-            close = getattr(producer, "close", None)
-            if close:
-                close()
-        return
     api = NOAAClient()
     try:
         raw_stations = api.fetch_stations_raw()
@@ -351,5 +267,4 @@ def main(argv=None):
         state_file=args.state_file,
         polling_interval=args.polling_interval,
         once=args.once,
-        mock=args.mock,
     )

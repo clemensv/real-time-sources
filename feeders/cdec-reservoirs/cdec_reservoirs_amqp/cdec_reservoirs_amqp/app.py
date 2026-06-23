@@ -1,68 +1,25 @@
+"""CDEC Reservoirs -> AMQP 1.0 bridge.
 
-import dataclasses, importlib, inspect, os, pkgutil, sys, typing
-from datetime import datetime, timezone
+Polls the California CDEC API for reservoir readings and publishes them as CloudEvents over AMQP 1.0.
+"""
 
-def _slug(v):
-    return str(v or 'unknown').replace('/', '-').replace(' ', '-').lower()
-
-def _sample_value(name, annotation):
-    lname = name.lower().rstrip('_')
-    if lname in ('station_id','station_number','code_station','station_ref','station_reference','site_number'):
-        return 'mock-station'
-    if lname in ('sensor_num',): return 1
-    if lname in ('parameter_code',): return '00010'
-    if lname in ('state',): return 'CA'
-    if lname in ('region',): return 'PACIFIC'
-    if lname in ('basin','river','water_body','water_body_name','river_name','libelle_cours_eau','water_area_name'):
-        return 'mock-basin'
-    if 'time' in lname or 'date' in lname: return datetime.now(timezone.utc).isoformat()
-    if 'lat' in lname: return 45.0
-    if lname in ('longitude','long','lng') or 'lon' in lname: return -75.0
-    if any(x in lname for x in ('level','value','temperature','speed','pressure','height','depth','salinity','conductivity','humidity','visibility','discharge','flow','elevation','latitude')): return 1.0
-    if any(x in lname for x in ('count','code','num','bin','direction','timezonecorr')): return 1
-    if lname.startswith('is_') or lname in ('tidal','greatlakes','observedst','stormsurge','forecast','outlook','nonNavigational'.lower(),'en_service','outside_sigma_band','flat_tolerance_limit','rate_of_change_limit','max_min_expected_height','max_pressure_exceeded','min_pressure_exceeded','rate_of_change_exceeded','max_temp_exceeded','min_temp_exceeded','max_humidity_exceeded','min_humidity_exceeded','max_conductivity_exceeded','min_conductivity_exceeded'):
-        return False
-    return 'mock'
-
-def _make_instance(cls):
-    kwargs={}
-    for f in dataclasses.fields(cls):
-        if not f.init: continue
-        ann=f.type
-        origin=typing.get_origin(ann)
-        args=typing.get_args(ann)
-        if origin in (typing.Union, getattr(typing, 'Optional', object)) and args:
-            ann=next((a for a in args if a is not type(None)), args[0])
-        try:
-            if dataclasses.is_dataclass(ann):
-                kwargs[f.name]=_make_instance(ann); continue
-        except Exception:
-            pass
-        kwargs[f.name]=_sample_value(f.name, ann)
-    return cls(**kwargs)
-
-def _required_call_kwargs(method, data_pkg):
-    sig=inspect.signature(method)
-    out={}
-    data_obj=None
-    for name,param in sig.parameters.items():
-        if name in ('self','topic','qos','retain','content_type','flush_producer'): continue
-        if name == 'data':
-            ann=param.annotation
-            if isinstance(ann, str): ann=None
-            if ann is inspect._empty or ann is None:
-                raise RuntimeError(f'No data annotation for {method}')
-            data_obj=_make_instance(ann)
-            out[name]=data_obj
-        else:
-            key=name[1:] if name.startswith('_') else name
-            out[name]=_sample_value(key, str(param.annotation))
-    return out
-
-import argparse, logging
+import argparse
+import logging
+import os
+import sys
+import time
+from datetime import datetime, timedelta, timezone
+from typing import Optional, Dict, List, Any
 from urllib.parse import urlparse
-import cdec_reservoirs_amqp_producer_data
-from cdec_reservoirs_amqp_producer_amqp_producer.producer import *
+
+from cdec_reservoirs.cdec_reservoirs import CdecReservoirsAPI
+from cdec_reservoirs_amqp_producer_data import ReservoirReading
+from cdec_reservoirs_amqp_producer_amqp_producer.producer import GovCaWaterCdecAmqpProducer
+
+DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
+BASE_URL = "https://cdec.water.ca.gov/dynamicapp/req/JSONDataServlet"
+logger = logging.getLogger(__name__)
+
 
 def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
     """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
@@ -73,56 +30,157 @@ def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
             if attempt == max_attempts - 1:
                 raise
             delay = initial_delay * (2 ** attempt)
-            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+            logger.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
                           attempt + 1, max_attempts, e, delay)
-            import time; time.sleep(delay)
-def _build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key):
+            time.sleep(delay)
+
+
+def _build_producer(host, port, address, tls, content_mode, auth_mode, username, password,
+                    entra_audience, entra_client_id, sas_key_name, sas_key):
     if auth_mode == 'entra':
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
-        cred=ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
-        return cls(host=host, address=address, port=port, content_mode=content_mode, credential=cred, entra_audience=entra_audience, use_tls=tls)
+        cred = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
+        return GovCaWaterCdecAmqpProducer(
+            host=host, address=address, port=port, content_mode=content_mode,
+            credential=cred, entra_audience=entra_audience, use_tls=tls)
     if auth_mode == 'sas':
-        return cls(host=host, address=address, port=port, content_mode=content_mode, sas_key_name=sas_key_name, sas_key=sas_key, use_tls=tls)
-    return cls(host=host, address=address, port=port, username=username, password=password, content_mode=content_mode, use_tls=tls)
+        return GovCaWaterCdecAmqpProducer(
+            host=host, address=address, port=port, content_mode=content_mode,
+            sas_key_name=sas_key_name, sas_key=sas_key, use_tls=tls)
+    return GovCaWaterCdecAmqpProducer(
+        host=host, address=address, port=port, username=username, password=password,
+        content_mode=content_mode, use_tls=tls)
 
-def feed(host, port, address='cdec-reservoirs', username=None, password=None, tls=False, content_mode='binary', auth_mode='password', entra_audience='https://servicebus.azure.net/.default', entra_client_id=None, sas_key_name=None, sas_key=None, once=False):
-    cls=next(obj for obj in globals().values() if isinstance(obj,type) and obj.__name__.endswith('AmqpProducer'))
-    producer = _retry_producer_init(lambda: _build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key))
+
+def feed(host, port, address='cdec-reservoirs', username=None, password=None, tls=False,
+         content_mode='binary', auth_mode='password', entra_audience=DEFAULT_ENTRA_AUDIENCE_SERVICEBUS,
+         entra_client_id=None, sas_key_name=None, sas_key=None, once=False,
+         polling_interval=300, state_file=''):
+    """Poll CDEC API and emit reservoir readings via AMQP."""
+    producer = _retry_producer_init(lambda: _build_producer(
+        host, port, address, tls, content_mode, auth_mode, username, password,
+        entra_audience, entra_client_id, sas_key_name, sas_key))
+
+    api = CdecReservoirsAPI()
+    previous_keys = set()
+    if state_file and os.path.exists(state_file):
+        import json
+        try:
+            with open(state_file, 'r') as f:
+                previous_keys = set(json.load(f).get("seen", []))
+        except Exception:
+            pass
+
     try:
-        for method in [getattr(producer,n) for n in dir(producer) if n.startswith('send_') and not n.endswith('_batch')]:
-            method(**_required_call_kwargs(method, cdec_reservoirs_amqp_producer_data))
+        while True:
+            try:
+                end = datetime.now(timezone.utc)
+                start = end - timedelta(hours=24)
+                readings = api.fetch_readings(
+                    start.strftime("%Y-%m-%d"),
+                    end.strftime("%Y-%m-%d")
+                )
+                count = 0
+                for r in readings:
+                    station_id = r.get("stationId", "") or r.get("station_id", "")
+                    sensor_num = str(r.get("sensorNumber", "") or r.get("sensor_num", ""))
+                    date_str = r.get("date", "") or r.get("obsDate", "")
+                    obs_key = f"{station_id}:{sensor_num}:{date_str}"
+                    if obs_key in previous_keys:
+                        continue
+                    basin = r.get("basin", "") or "unknown"
+                    reading = ReservoirReading(
+                        station_id=station_id,
+                        sensor_num=sensor_num,
+                        sensor_type=r.get("sensorType", "") or r.get("sensor_type", ""),
+                        value=r.get("value"),
+                        units=r.get("units", ""),
+                        date=date_str,
+                        dur_code=r.get("durCode", "") or r.get("dur_code", ""),
+                        data_flag=r.get("dataFlag", "") or r.get("data_flag", ""),
+                        basin=basin if basin != "unknown" else None,
+                    )
+                    producer.send_reservoir_reading(
+                        data=reading, _feedurl=BASE_URL,
+                        _station_id=station_id, _sensor_num=sensor_num,
+                        _basin=basin)
+                    previous_keys.add(obs_key)
+                    count += 1
+                if len(previous_keys) > 100000:
+                    previous_keys = set(list(previous_keys)[-50000:])
+                if state_file:
+                    import json
+                    with open(state_file, 'w') as f:
+                        json.dump({"seen": list(previous_keys)[-50000:]}, f)
+                logger.info("Published %d reservoir readings", count)
+            except KeyboardInterrupt:
+                break
+            except Exception as exc:
+                logger.error("Error in polling loop: %s", exc)
+            if once:
+                break
+            time.sleep(polling_interval)
     finally:
-        close=getattr(producer,'close',None)
-        if close: close()
+        try:
+            producer.close()
+        except Exception:
+            pass
+
 
 def _parse_broker_url(url):
-    parsed=urlparse(url if '://' in url else f'amqp://{url}')
-    tls=(parsed.scheme or 'amqp').lower() in ('amqps','ssl','tls')
+    parsed = urlparse(url if '://' in url else f'amqp://{url}')
+    tls = (parsed.scheme or 'amqp').lower() in ('amqps', 'ssl', 'tls')
     return parsed.hostname or 'localhost', parsed.port or (5671 if tls else 5672), tls, parsed.username, parsed.password, (parsed.path or '').lstrip('/') or None
 
-def main(argv=None):
-    logging.basicConfig(level=logging.INFO)
-    p=argparse.ArgumentParser(description='cdec-reservoirs AMQP 1.0 bridge')
-    sub=p.add_subparsers(dest='command'); f=sub.add_parser('feed')
-    f.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL'))
-    f.add_argument('--broker-host', default=os.getenv('AMQP_HOST'))
-    f.add_argument('--broker-port', type=int, default=int(os.getenv('AMQP_PORT','0')) or None)
-    f.add_argument('--address', default=os.getenv('AMQP_ADDRESS','cdec-reservoirs'))
-    f.add_argument('--username', default=os.getenv('AMQP_USERNAME'))
-    f.add_argument('--password', default=os.getenv('AMQP_PASSWORD'))
-    f.add_argument('--tls', action='store_true', default=os.getenv('AMQP_TLS','').lower() in ('1','true','yes'))
-    f.add_argument('--content-mode', default=os.getenv('AMQP_CONTENT_MODE','binary'), choices=['binary','structured'])
-    f.add_argument('--auth-mode', default=os.getenv('AMQP_AUTH_MODE','password'), choices=['password','entra','sas'])
-    f.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE','https://servicebus.azure.net/.default'))
-    f.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID'))
-    f.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME'))
-    f.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY'))
-    f.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE','').lower() in ('1','true','yes'))
-    args=p.parse_args(argv)
-    if args.command!='feed': p.print_help(); return
-    if args.broker_url:
-        host, port, tls, user, pwd, path=_parse_broker_url(args.broker_url); username=args.username or user; password=args.password or pwd; port=args.broker_port or port; tls=tls or args.tls; address=path or args.address
-    else:
-        tls=args.tls or args.auth_mode in ('entra','sas'); host=args.broker_host or 'localhost'; port=args.broker_port or (5671 if tls else 5672); username=args.username; password=args.password; address=args.address
-    feed(host, port, address=address, username=username, password=password, tls=tls, content_mode=args.content_mode, auth_mode=args.auth_mode, entra_audience=args.entra_audience, entra_client_id=args.entra_client_id, sas_key_name=args.sas_key_name, sas_key=args.sas_key, once=args.once)
 
+def main(argv=None):
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
+    parser = argparse.ArgumentParser(description='CDEC Reservoirs AMQP 1.0 bridge')
+    sub = parser.add_subparsers(dest='command')
+    fp = sub.add_parser('feed', help='Feed events as CloudEvents over AMQP')
+    fp.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL'))
+    fp.add_argument('--host', default=os.getenv('AMQP_HOST', 'localhost'))
+    fp.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT', '0')) or None)
+    fp.add_argument('--address', default=os.getenv('AMQP_ADDRESS', 'cdec-reservoirs'))
+    fp.add_argument('--tls', action='store_true', default=os.getenv('AMQP_TLS', '').lower() in ('1', 'true', 'yes'))
+    fp.add_argument('--username', default=os.getenv('AMQP_USERNAME'))
+    fp.add_argument('--password', default=os.getenv('AMQP_PASSWORD'))
+    fp.add_argument('--content-mode', default=os.getenv('AMQP_CONTENT_MODE', 'binary'), choices=['binary', 'structured'])
+    fp.add_argument('--auth-mode', default=os.getenv('AMQP_AUTH_MODE', 'password'), choices=['password', 'entra', 'sas'])
+    fp.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE', DEFAULT_ENTRA_AUDIENCE_SERVICEBUS))
+    fp.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID'))
+    fp.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME'))
+    fp.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY'))
+    fp.add_argument('-i', '--polling-interval', type=int, default=int(os.getenv('POLLING_INTERVAL', '300')))
+    fp.add_argument('--state-file', default=os.getenv('STATE_FILE', os.path.expanduser('~/.cdec_reservoirs_amqp_state.json')))
+    fp.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'))
+    args = parser.parse_args(argv)
+
+    if args.command != 'feed':
+        parser.print_help()
+        return
+
+    if args.broker_url:
+        host, port, tls, user, pwd, path = _parse_broker_url(args.broker_url)
+        username = args.username or user
+        password = args.password or pwd
+        if args.port: port = args.port
+        if args.tls: tls = True
+        address = path or args.address
+    else:
+        host = args.host
+        tls = args.tls or args.auth_mode == 'entra'
+        port = args.port or (5671 if tls else 5672)
+        username = args.username
+        password = args.password
+        address = args.address
+
+    feed(host, port, address=address, username=username, password=password, tls=tls,
+         content_mode=args.content_mode, auth_mode=args.auth_mode,
+         entra_audience=args.entra_audience, entra_client_id=args.entra_client_id,
+         sas_key_name=args.sas_key_name, sas_key=args.sas_key,
+         once=args.once, polling_interval=args.polling_interval, state_file=args.state_file)
+
+
+if __name__ == '__main__':
+    main()

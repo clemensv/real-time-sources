@@ -21,7 +21,13 @@ class _AmqpPublishFacade:
     def __getattr__(self,name):
         if not name.startswith("publish_"): raise AttributeError(name)
         suffix=name.split("_mqtt_",1)[1] if "_mqtt_" in name else name[len("publish_"):]
-        target=getattr(self._producer,"send_"+suffix)
+        parts=suffix.split("_")
+        target=None
+        for start in range(len(parts)):
+            send_name="send_"+"_".join(parts[start:])
+            target=getattr(self._producer,send_name,None)
+            if target: break
+        if target is None: raise AttributeError("send_"+suffix)
         async def _publish(**kwargs):
             accepted=set(target.__code__.co_varnames[:target.__code__.co_argcount])
             call={}

@@ -63,8 +63,12 @@ class _AmqpPublishFacade:
         if not name.startswith("publish_"): raise AttributeError(name)
         suffix=name.split("_mqtt_",1)[1] if "_mqtt_" in name else name[len("publish_"):]
         target=None
-        for p in self._producers:
-            target=getattr(p,"send_"+suffix,None)
+        parts=suffix.split('_')
+        for start in range(len(parts)):
+            send_name='send_'+'_'.join(parts[start:])
+            for p in self._producers:
+                target=getattr(p,send_name,None)
+                if target: break
             if target: break
         if target is None: raise AttributeError("send_"+suffix)
         async def _publish(**kwargs):
