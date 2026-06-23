@@ -84,6 +84,7 @@ def feed(host, port, address='ireland-opw-waterlevel', username=None, password=N
                     station = Station(
                         station_ref=ref,
                         station_name=info.get("name", ""),
+                        region_id=int(info.get("region_id", 0) or 0),
                         latitude=info.get("lat"),
                         longitude=info.get("lon"),
                         basin=basin if basin != "unknown" else None,
@@ -103,8 +104,10 @@ def feed(host, port, address='ireland-opw-waterlevel', username=None, password=N
                     reading = WaterLevelReading(
                         station_ref=station_ref,
                         station_name=r.get("station_name", ""),
+                        sensor_ref=r.get("sensor_ref", "") or "",
                         value=r.get("value"),
-                        datetime_str=r.get("datetime", ""),
+                        datetime=r.get("datetime", ""),
+                        err_code=int(r.get("err_code", 0) or 0),
                         basin=basin if basin != "unknown" else None,
                     )
                     producer.send_water_level_reading(data=reading, _feedurl=FEED_URL, _station_ref=station_ref, _basin=basin)

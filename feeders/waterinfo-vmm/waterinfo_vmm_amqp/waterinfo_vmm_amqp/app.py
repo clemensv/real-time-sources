@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 import time
+from datetime import datetime, timezone
 from typing import Optional, Set, Dict, List, Any
 from urllib.parse import urlparse
 
@@ -77,8 +78,14 @@ def feed(host, port, address='waterinfo-vmm', username=None, password=None, tls=
             station = Station(
                 station_no=station_no,
                 station_name=name,
+                station_id=None,
+                station_latitude=0.0,
+                station_longitude=0.0,
                 water_body=water_body or None,
                 river_name=water_body or None,
+                stationparameter_name=None,
+                ts_id=None,
+                ts_unitname=None,
             )
             producer.send_station(data=station, _station_no=station_no, _water_body=water_body or "unknown")
         logger.info("Finished publishing stations")
@@ -93,15 +100,21 @@ def feed(host, port, address='waterinfo-vmm', username=None, password=None, tls=
                 count = 0
                 for record in levels:
                     station_no = str(record.get("station_no", ""))
-                    ts = record.get("timestamp", "") or record.get("Timestamp", "")
-                    obs_key = f"{station_no}:{ts}"
+                    ts_raw = record.get("timestamp", "") or record.get("Timestamp", "")
+                    obs_key = f"{station_no}:{ts_raw}"
                     if obs_key in previous:
                         continue
+                    ts = datetime.fromisoformat(ts_raw) if ts_raw else datetime.now(timezone.utc)
                     water_body = station_water_bodies.get(station_no, record.get("water_body", "unknown"))
+                    raw_value = record.get("value") or record.get("Value") or 0
                     reading = WaterLevelReading(
+                        ts_id=record.get("ts_id", "") or "",
                         station_no=station_no,
+                        station_name=record.get("station_name"),
                         timestamp=ts,
-                        value=record.get("value") or record.get("Value"),
+                        value=float(raw_value),
+                        unit_name=record.get("unit_name") or record.get("ts_unitname"),
+                        parameter_name=record.get("parameter_name") or record.get("stationparameter_name"),
                         water_body=water_body if water_body != "unknown" else None,
                     )
                     producer.send_water_level_reading(data=reading, _station_no=station_no, _water_body=water_body)

@@ -69,10 +69,12 @@ def feed(host, port, address='syke-hydro', username=None, password=None, tls=Fal
         for pid, info in stations_data.items():
             station = Station(
                 station_id=str(pid),
-                station_name=info.get("name", ""),
+                name=info.get("name", ""),
                 latitude=info.get("lat"),
                 longitude=info.get("lon"),
                 river_name=info.get("river_name"),
+                water_area_name=info.get("water_area_name"),
+                municipality=info.get("municipality"),
                 basin=info.get("basin"),
             )
             basin = str(station.basin or 'unknown')
@@ -96,7 +98,11 @@ def feed(host, port, address='syke-hydro', username=None, password=None, tls=Fal
                     obs = WaterLevelObservation(
                         station_id=station_id,
                         water_level=record.get("value") or record.get("water_level"),
-                        timestamp=ts,
+                        water_level_unit=record.get("unit") or record.get("water_level_unit"),
+                        water_level_timestamp=ts,
+                        discharge=record.get("discharge"),
+                        discharge_unit=record.get("discharge_unit"),
+                        discharge_timestamp=None,
                         basin=record.get("basin"),
                     )
                     basin = str(obs.basin or 'unknown')

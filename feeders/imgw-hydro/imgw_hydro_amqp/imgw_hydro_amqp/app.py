@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 import time
+from datetime import datetime, timezone
 from typing import Optional, Set, Dict, List, Any
 from urllib.parse import urlparse
 
@@ -75,6 +76,7 @@ def feed(host, port, address='imgw-hydro', username=None, password=None, tls=Fal
                 station_id=station_id,
                 station_name=item.get("stacja", "") or item.get("station_name", ""),
                 river=item.get("rzeka", None) or item.get("river", None),
+                voivodeship=item.get("wojewodztwo", None) or item.get("voivodeship", None),
                 basin=item.get("dorzecze", None) or item.get("basin", None),
                 latitude=item.get("latitude"),
                 longitude=item.get("longitude"),
@@ -96,12 +98,25 @@ def feed(host, port, address='imgw-hydro', username=None, password=None, tls=Fal
                     obs_key = f"{station_id}:{item.get('stan_wody_data_pomiaru', item.get('date', ''))}"
                     if obs_key in previous:
                         continue
+                    wl_ts_raw = item.get("stan_wody_data_pomiaru", "") or item.get("date", "")
+                    wl_ts = datetime.fromisoformat(wl_ts_raw) if wl_ts_raw else datetime.now(timezone.utc)
+                    wt_raw = item.get("temperatura_wody_data_pomiaru") or item.get("water_temperature_timestamp")
+                    wt_ts = datetime.fromisoformat(wt_raw) if wt_raw else None
+                    disch_raw = item.get("przeplyw_data_pomiaru") or item.get("discharge_timestamp")
+                    disch_ts = datetime.fromisoformat(disch_raw) if disch_raw else None
                     obs = WaterLevelObservation(
                         station_id=station_id,
                         station_name=item.get("stacja", "") or item.get("station_name", ""),
-                        water_level=item.get("stan_wody", None) or item.get("water_level", None),
-                        measurement_date=item.get("stan_wody_data_pomiaru", "") or item.get("date", ""),
+                        water_level=float(item["stan_wody"]) if item.get("stan_wody") is not None else float(item.get("water_level", 0) or 0),
+                        water_level_timestamp=wl_ts,
+                        water_temperature=float(item["temperatura_wody"]) if item.get("temperatura_wody") is not None else (float(item["water_temperature"]) if item.get("water_temperature") is not None else None),
+                        water_temperature_timestamp=wt_ts,
+                        discharge=float(item["przeplyw"]) if item.get("przeplyw") is not None else (float(item["discharge"]) if item.get("discharge") is not None else None),
+                        discharge_timestamp=disch_ts,
+                        ice_phenomenon_code=item.get("zjawisko_lodowe") or item.get("ice_phenomenon_code"),
+                        overgrowth_code=item.get("zjawisko_zarastania") or item.get("overgrowth_code"),
                         river=item.get("rzeka", None) or item.get("river", None),
+                        voivodeship=item.get("wojewodztwo", None) or item.get("voivodeship", None),
                         basin=item.get("dorzecze", None) or item.get("basin", None),
                     )
                     basin = str(obs.basin or 'unknown')

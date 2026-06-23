@@ -79,8 +79,11 @@ def feed(host, port, address='uk-ea-flood-monitoring', username=None, password=N
                 river_name=river if river != "unknown" else None,
                 catchment_name=s.get("catchmentName"),
                 town=s.get("town"),
-                latitude=s.get("lat"),
-                longitude=s.get("long"),
+                lat=s.get("lat", 0.0) or 0.0,
+                long=s.get("long", 0.0) or 0.0,
+                notation=s.get("notation", station_ref) or station_ref,
+                status=s.get("status"),
+                date_opened=s.get("dateOpened"),
                 river=river if river != "unknown" else None,
             )
             producer.send_station(data=station, _station_reference=station_ref, _river=river)

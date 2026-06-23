@@ -120,6 +120,9 @@ def feed(host, port, address='hubeau-hydrometrie', username=None, password=None,
                         grandeur_hydro=obs.get("grandeur_hydro", ""),
                         libelle_station=obs.get("libelle_station", ""),
                         libelle_cours_eau=obs.get("libelle_cours_eau", "") or "",
+                        libelle_methode_obs=obs.get("libelle_methode_obs"),
+                        libelle_qualification_obs=obs.get("libelle_qualification_obs"),
+                        basin=basin if basin != "unknown" else None,
                     )
                     producer.send_observation(data=data, _code_station=code, _basin=basin)
                     previous_observations[obs_key] = date_obs
