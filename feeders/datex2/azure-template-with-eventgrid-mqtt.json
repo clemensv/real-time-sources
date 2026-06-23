@@ -46,7 +46,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in DATEX II source catalog (for example \"ndw-measurement-sites,ndw-roadworks\"). Leave empty to run every entry marked enabled in the catalog; use \"*\" to include disabled templates too. Advanced: set DATEX2_ENDPOINTS for an inline JSON override, or DATEX2_SOURCES_FILE (baked into a derived image) for a fully custom catalog."
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in DATEX II source catalog (for example ndw-measurement-sites,ndw-roadworks). Leave empty to run every entry marked enabled in the catalog; use an asterisk (*) to include disabled templates too. Advanced: set DATEX2_ENDPOINTS for an inline JSON override, or DATEX2_SOURCES_FILE (baked into a derived image) for a fully custom catalog."
       }
     },
     "datex2Endpoints": {

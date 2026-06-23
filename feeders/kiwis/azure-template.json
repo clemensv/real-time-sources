@@ -32,7 +32,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in KISTERS KiWIS endpoint catalog (for example \"sepa-scotland\"). Leave empty to run the enabled entries; use \"*\" for all. Advanced: KIWIS_ENDPOINTS for an inline override, or KIWIS_SOURCES_FILE for a custom catalog."
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in KISTERS KiWIS endpoint catalog (for example sepa-scotland). Leave empty to run the enabled entries; use an asterisk (*) for all. Advanced: KIWIS_ENDPOINTS for an inline override, or KIWIS_SOURCES_FILE for a custom catalog."
       }
     },
     "kiwisEndpoints": {

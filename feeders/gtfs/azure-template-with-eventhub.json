@@ -35,7 +35,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Source selector against the built-in GTFS agency catalog: comma-separated catalog entry names, or \"*\" for all catalog entries. Takes effect only when the inline GTFS_RT_URLS/GTFS_URLS overrides are empty; the packaged catalog ships no entries enabled by default, so the inline URLs drive a single-agency deployment unless you enable catalog entries with \"*\". Advanced: GTFS_SOURCES_FILE for a custom catalog."
+        "description": "Source selector against the built-in GTFS agency catalog: comma-separated catalog entry names, or an asterisk (*) for all catalog entries. Takes effect only when the inline GTFS_RT_URLS/GTFS_URLS overrides are empty; the packaged catalog ships no entries enabled by default, so the inline URLs drive a single-agency deployment unless you enable catalog entries with an asterisk (*). Advanced: GTFS_SOURCES_FILE for a custom catalog."
       }
     },
     "gtfsRtUrls": {

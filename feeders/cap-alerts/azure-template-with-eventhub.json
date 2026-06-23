@@ -9,7 +9,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in CAP alert-source catalog (for example \"nws-us-active-alerts,meteoalarm-belgium\"). Leave empty to run every enabled source; use \"*\" for all. Advanced: CAP_SOURCES for an inline JSON override, or CAP_SOURCES_FILE for a custom catalog."
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in CAP alert-source catalog (for example nws-us-active-alerts,meteoalarm-belgium). Leave empty to run every enabled source; use an asterisk (*) for all. Advanced: CAP_SOURCES for an inline JSON override, or CAP_SOURCES_FILE for a custom catalog."
       }
     },
     "capFeeds": {

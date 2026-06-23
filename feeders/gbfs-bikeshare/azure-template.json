@@ -16,7 +16,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in GBFS system catalog (for example \"citibike-nyc,divvy-chicago\"). Leave empty to run every enabled system in the catalog; use \"*\" for all. Advanced: GBFS_FEEDS for an inline list of auto-discovery URLs, or GBFS_SOURCES_FILE for a custom catalog."
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in GBFS system catalog (for example citibike-nyc,divvy-chicago). Leave empty to run every enabled system in the catalog; use an asterisk (*) for all. Advanced: GBFS_FEEDS for an inline list of auto-discovery URLs, or GBFS_SOURCES_FILE for a custom catalog."
       }
     },
     "gbfsFeeds": {

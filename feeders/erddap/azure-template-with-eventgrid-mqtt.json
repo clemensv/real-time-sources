@@ -46,7 +46,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in ERDDAP dataset catalog (for example \"ioos-sensors-sun2\"). Leave empty to run every enabled dataset; use \"*\" for all. Advanced: ERDDAP_SOURCES for an inline pipe-delimited override, or ERDDAP_SOURCES_FILE for a custom catalog."
+        "description": "Primary source selector. Comma-separated catalog entry names to enable from the built-in ERDDAP dataset catalog (for example ioos-sensors-sun2). Leave empty to run every enabled dataset; use an asterisk (*) for all. Advanced: ERDDAP_SOURCES for an inline pipe-delimited override, or ERDDAP_SOURCES_FILE for a custom catalog."
       }
     },
     "erddapSources": {

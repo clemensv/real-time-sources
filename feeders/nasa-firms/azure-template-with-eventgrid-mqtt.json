@@ -18,7 +18,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Source selector. Comma-separated FIRMS dataset specifications to poll, each \"SENSOR\" or \"SENSOR:REGION\" (for example \"VIIRS_SNPP_NRT,MODIS_NRT\"). When set, replaces the built-in default dataset list. Requires FIRMS_MAP_KEY."
+        "description": "Source selector. Comma-separated FIRMS dataset specifications to poll, each SENSOR or SENSOR:REGION (for example VIIRS_SNPP_NRT,MODIS_NRT). When set, replaces the built-in default dataset list. Requires FIRMS_MAP_KEY."
       }
     },
     "firmsMapKey": {
