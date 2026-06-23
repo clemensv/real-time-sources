@@ -150,6 +150,24 @@ const SOURCES = [
 ];
 
 /* ── Derived data ──────────────────────────────────────────────────────── */
+/* === Configurable upstream-source catalogs (Fabric deploy "Sources" picker) ===
+   env   = notebook env var (deploy-feeder-notebook.ps1 -EnvVar KEY=VALUE) and bridge env var
+   param = ACI ARM template parameter (deploy-fabric-aci.ps1 -TemplateParameter param=VALUE)
+   opts  = selectable catalog entries; on:true = enabled by default.
+   Generated from feeders/<slug>/.../sources/*.json; keep in sync when catalogs change. */
+const DEPLOY_SOURCE_CFG = {
+  'datex2': { env: 'DATEX2_SOURCES', param: 'datex2Sources', opts: [{n:"ndw-measurement-sites",on:true},{n:"ndw-trafficspeed",on:true},{n:"ndw-traveltime",on:true},{n:"ndw-roadworks",on:true},{n:"cita-luxembourg-a6",on:false},{n:"cita-luxembourg-a1",on:false},{n:"cita-luxembourg-a4",on:false},{n:"trafikverket-sweden",on:false}] },
+  'openaq': { env: 'OPENAQ_SOURCES', param: 'openaqSources', opts: [{n:"us-all",on:true},{n:"eu-west",on:false},{n:"india",on:false},{n:"california-bay-area",on:false},{n:"africa",on:false},{n:"bahrain",on:false},{n:"kuwait",on:false},{n:"oman",on:false}] },
+  'kiwis': { env: 'KIWIS_SOURCES', param: 'kiwisSources', opts: [{n:"sepa-scotland",on:true},{n:"bom-australia-water",on:false},{n:"bom-australia-storage",on:false},{n:"key-protected-template",on:false}] },
+  'gtfs': { env: 'GTFS_SOURCES', param: 'gtfsSources', opts: [{n:"mbta-boston",on:false},{n:"tfnsw-sydney",on:false},{n:"keyed-operator-template",on:false}] },
+  'siri': { env: 'SIRI_SOURCES', param: 'siriSources', opts: [{n:"uk-bods-bulk-archive",on:true},{n:"trafiklab-sweden",on:false},{n:"key-protected-siri-template",on:false}] },
+  'gbfs-bikeshare': { env: 'GBFS_SOURCES', param: 'gbfsSources', opts: [{n:"citibike-nyc",on:true},{n:"divvy-chicago",on:true},{n:"bay-wheels-sf",on:true},{n:"capital-bikeshare-dc",on:true},{n:"bluebikes-boston",on:true},{n:"bike-share-toronto",on:true},{n:"barcelona-bicing",on:false},{n:"dublin-bikes",on:false},{n:"ecobici-cdmx",on:false},{n:"oslo-bysykkel",on:false},{n:"montreal-bixi",on:false},{n:"velib-paris",on:false},{n:"careem-dubai",on:false},{n:"dott-paris",on:false},{n:"lime-paris",on:false},{n:"bolt-brussels",on:false},{n:"voi-oslo-entur",on:false},{n:"nextbike-template",on:false},{n:"api-key-template-query-param",on:false},{n:"api-key-template-url-template",on:false}] },
+  'cap-alerts': { env: 'CAP_SELECT', param: 'capSelect', opts: [{n:"nws-us-active-alerts",on:true},{n:"meteoalarm-belgium",on:true},{n:"meteoalarm-ireland",on:false},{n:"meteoalarm-france",on:false},{n:"meteoalarm-spain",on:false},{n:"meteoalarm-germany",on:false},{n:"meteoalarm-austria",on:false},{n:"meteoalarm-italy",on:false},{n:"meteoalarm-netherlands",on:false},{n:"meteoalarm-portugal",on:false},{n:"meteoalarm-switzerland",on:false},{n:"meteoalarm-poland",on:false},{n:"national-cap-feed-template",on:false}] },
+  'erddap': { env: 'ERDDAP_SELECT', param: 'erddapSelect', opts: [{n:"ioos-sensors-sun2",on:true},{n:"token-protected-template",on:false},{n:"otn-tracking",on:false},{n:"nanoos-puget-sound-orca2",on:false},{n:"emodnet-physics-sea-level",on:false},{n:"uhslc-hourly-fast",on:false}] },
+  'nasa-firms': { env: 'FIRMS_SOURCES', param: 'firmsSources', opts: [{n:"VIIRS_SNPP_NRT",on:true},{n:"VIIRS_NOAA20_NRT",on:true},{n:"VIIRS_NOAA21_NRT",on:true},{n:"MODIS_NRT",on:true}] },
+  'fdsn-seismology': { env: 'FDSN_NODES', param: 'nodes', opts: [{n:"emsc",on:true},{n:"gfz",on:true},{n:"ingv",on:true},{n:"ethz",on:true},{n:"resif",on:true},{n:"ipgp",on:true},{n:"niep",on:true},{n:"usgs",on:true},{n:"isc",on:false},{n:"custom",on:false}] },
+};
+
 const CATEGORIES = [...new Set(SOURCES.map(s => s.cat))];
 
 /* ── DOM refs ──────────────────────────────────────────────────────────── */
@@ -412,6 +430,38 @@ async function openDeployForm(source, mode) {
     }
   }
 
+  // Upstream source picker (generic feeders with a built-in source catalog)
+  const srcCfg = DEPLOY_SOURCE_CFG[source.id];
+  if (srcCfg && (mode === "fabric-aci" || mode === "fabric-notebook")) {
+    const srcSection = el("div", { class: "form-section" });
+    srcSection.innerHTML = '<div class="form-section-title">Upstream sources</div>';
+    const group = el("div", { class: "form-group" });
+    const lbl = el("label");
+    lbl.setAttribute("for", "deploy-sourceSel");
+    lbl.textContent = "Sources to ingest";
+    group.appendChild(lbl);
+    const sel = el("select", {
+      id: "deploy-sourceSel",
+      multiple: "multiple",
+      size: String(Math.min(Math.max(srcCfg.opts.length, 3), 8)),
+      style: "width:100%;box-sizing:border-box;margin-top:4px;padding:8px;font-family:var(--font-mono,monospace);font-size:12px;color:var(--fg,#e6e6f0);background:var(--card,#12121c);border:1px solid var(--border,#33334d);border-radius:6px"
+    });
+    for (const o of srcCfg.opts) {
+      const opt = el("option", { value: o.n });
+      opt.textContent = o.n;
+      if (o.on) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    group.appendChild(sel);
+    const h = el("div", { class: "form-hint" });
+    h.textContent = "Hold Ctrl (Cmd on macOS) to select several. Highlighted entries are the catalog defaults; clear the selection to keep the built-in default set.";
+    group.appendChild(h);
+    group.appendChild(el("input", { type: "hidden", id: "deploy-sourceEnv", value: srcCfg.env }));
+    group.appendChild(el("input", { type: "hidden", id: "deploy-sourceParam", value: srcCfg.param }));
+    srcSection.appendChild(group);
+    $deployForm.appendChild(srcSection);
+  }
+
   // Submit button
   const submitBtn = el("button", { class: "deploy-submit", type: "button" });
   submitBtn.innerHTML = `${AZURE_LOGO_SVG} Copy deployment command to the clipboard and open Azure Cloud Shell`;
@@ -496,6 +546,19 @@ function launchCloudShell(source, mode) {
     cmd += ` -Workspace '${wsId}'`;
     if (ehId) cmd += ` -Eventhouse '${ehId}'`;
     cmd += ` -DatabaseName '${dbName}'`;
+    const srcSel = document.getElementById("deploy-sourceSel");
+    if (srcSel) {
+      const picked = Array.from(srcSel.selectedOptions).map(o => o.value).join(",");
+      if (picked) {
+        if (mode === "fabric-aci") {
+          const pn = getValue("sourceParam");
+          if (pn) cmd += ` -TemplateParameter '${pn}=${picked}'`;
+        } else if (mode === "fabric-notebook") {
+          const ev = getValue("sourceEnv");
+          if (ev) cmd += ` -EnvVar '${ev}=${picked}'`;
+        }
+      }
+    }
     if (mode === "fabric-notebook" || mode === "fabric-aci") {
       cmd += ` -Branch '${BRANCH}'`;
     }
