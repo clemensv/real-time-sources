@@ -8,10 +8,11 @@ import logging
 import os
 import sys
 import time
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Set, Dict, List, Any
 from urllib.parse import urlparse
 
-from syke_hydro.syke_hydro import SYKEHydroAPI, _load_state, _save_state
+from syke_hydro.syke_hydro import SYKEHydroAPI, _load_state, _save_state, _get_latest_per_station, _to_rfc3339_utc, _parse_dms
 from syke_hydro_amqp_producer_data import Station, WaterLevelObservation
 from syke_hydro_amqp_producer_amqp_producer.producer import FISYKEHydrologyAmqpProducer
 
@@ -63,22 +64,28 @@ def feed(host, port, address='syke-hydro', username=None, password=None, tls=Fal
     previous = _load_state(state_file)
 
     # Emit reference data (stations)
+    stations_by_id = {}
     try:
         stations_data = api.get_stations()
         logger.info("Publishing %d station reference events", len(stations_data))
-        for pid, info in stations_data.items():
+        for station_rec in stations_data:
+            pid = station_rec.get('Paikka_Id')
+            if pid is None:
+                continue
+            stations_by_id[pid] = station_rec
+            lat = _parse_dms(station_rec.get('KoordLat', ''))
+            lon = _parse_dms(station_rec.get('KoordLong', ''))
             station = Station(
                 station_id=str(pid),
-                name=info.get("name", ""),
-                latitude=info.get("lat"),
-                longitude=info.get("lon"),
-                river_name=info.get("river_name"),
-                water_area_name=info.get("water_area_name"),
-                municipality=info.get("municipality"),
-                basin=info.get("basin"),
+                name=station_rec.get('Nimi', ''),
+                latitude=lat,
+                longitude=lon,
+                river_name=station_rec.get('PaaVesalNimi', ''),
+                water_area_name=station_rec.get('VesalNimi', ''),
+                municipality=station_rec.get('KuntaNimi', ''),
+                basin=None,
             )
-            basin = str(station.basin or 'unknown')
-            producer.send_station(data=station, _station_id=str(pid), _basin=basin)
+            producer.send_station(data=station, _station_id=str(pid), _basin='unknown')
         logger.info("Finished publishing stations")
     except Exception as exc:
         logger.error("Failed to fetch stations: %s", exc)
@@ -87,26 +94,41 @@ def feed(host, port, address='syke-hydro', username=None, password=None, tls=Fal
     try:
         while True:
             try:
-                water_levels = api.get_water_levels()
+                since = (datetime.now(timezone.utc) - timedelta(days=2)).strftime('%Y-%m-%d')
+                water_levels = api.get_water_levels(since)
+                latest_wl = _get_latest_per_station(water_levels)
+                discharges = api.get_discharge(since)
+                latest_q = _get_latest_per_station(discharges)
+
+                all_pids = set(latest_wl.keys()) | set(latest_q.keys())
                 count = 0
-                for record in water_levels:
-                    station_id = str(record.get("place_id", "") or record.get("station_id", ""))
-                    ts = record.get("time", "") or record.get("timestamp", "")
-                    obs_key = f"{station_id}:{ts}"
+                for pid in all_pids:
+                    wl = latest_wl.get(pid)
+                    q = latest_q.get(pid)
+
+                    wl_val = float(wl['Arvo']) if wl and wl.get('Arvo') is not None else None
+                    wl_ts = _to_rfc3339_utc(wl.get('Aika', '')) if wl and wl.get('Arvo') is not None else None
+                    q_val = float(q['Arvo']) if q and q.get('Arvo') is not None else None
+                    q_ts = _to_rfc3339_utc(q.get('Aika', '')) if q and q.get('Arvo') is not None else None
+
+                    if not wl_ts and not q_ts:
+                        continue
+
+                    obs_key = f"{pid}:{wl_ts or ''}:{q_ts or ''}"
                     if obs_key in previous:
                         continue
+
                     obs = WaterLevelObservation(
-                        station_id=station_id,
-                        water_level=record.get("value") or record.get("water_level"),
-                        water_level_unit=record.get("unit") or record.get("water_level_unit"),
-                        water_level_timestamp=ts,
-                        discharge=record.get("discharge"),
-                        discharge_unit=record.get("discharge_unit"),
-                        discharge_timestamp=None,
-                        basin=record.get("basin"),
+                        station_id=str(pid),
+                        water_level=wl_val,
+                        water_level_unit='cm' if wl_val is not None else None,
+                        water_level_timestamp=wl_ts,
+                        discharge=q_val,
+                        discharge_unit='m3/s' if q_val is not None else None,
+                        discharge_timestamp=q_ts,
+                        basin=None,
                     )
-                    basin = str(obs.basin or 'unknown')
-                    producer.send_water_level_observation(data=obs, _station_id=station_id, _basin=basin)
+                    producer.send_water_level_observation(data=obs, _station_id=str(pid), _basin='unknown')
                     previous[obs_key] = "1"
                     count += 1
                 if len(previous) > 100000:
