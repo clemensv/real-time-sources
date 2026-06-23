@@ -1,0 +1,147 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "namePrefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Name prefix",
+            "defaultValue": "nasa-firms",
+            "toolTip": "Base name for all resources.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "firmsSources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Source selector. Comma-separated FIRMS dataset specifications to poll, each SENSOR or SENSOR:REGION (for example VIIRS_SNPP_NRT,MODIS_NRT). When set, replaces the built-in default dataset list. Requires FIRMS_MAP_KEY.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "VIIRS_SNPP_NRT",
+                  "value": "VIIRS_SNPP_NRT"
+                },
+                {
+                  "label": "VIIRS_NOAA20_NRT",
+                  "value": "VIIRS_NOAA20_NRT"
+                },
+                {
+                  "label": "VIIRS_NOAA21_NRT",
+                  "value": "VIIRS_NOAA21_NRT"
+                },
+                {
+                  "label": "MODIS_NRT",
+                  "value": "MODIS_NRT"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "VIIRS_SNPP_NRT",
+              "VIIRS_NOAA20_NRT",
+              "VIIRS_NOAA21_NRT",
+              "MODIS_NRT"
+            ]
+          },
+          {
+            "name": "firmsMapKey",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Firms map key",
+              "confirmPassword": "Confirm firms map key"
+            },
+            "toolTip": "NASA FIRMS MAP_KEY (free Earthdata key from https://firms.modaps.eosdis.nasa.gov/api/map_key/).",
+            "constraints": {
+              "required": true,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "eventGridSku",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Event grid sku",
+            "toolTip": "Event Grid namespace SKU.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Standard",
+                  "value": "Standard"
+                }
+              ],
+              "required": true
+            },
+            "visible": true,
+            "defaultValue": "Standard"
+          },
+          {
+            "name": "eventGridCapacity",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Event grid capacity",
+            "defaultValue": "1",
+            "toolTip": "Event Grid namespace throughput units.",
+            "constraints": {
+              "required": false,
+              "regex": "^-?[0-9]+$",
+              "validationMessage": "Enter a whole number."
+            },
+            "visible": true
+          },
+          {
+            "name": "topicRoot",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Topic root",
+            "defaultValue": "geo/#",
+            "toolTip": "Topic-space root for the MQTT/UNS publish surface. Defaults to geo/# which covers all nasa-firms output (geo/fire/firms/nasa-firms/...).",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "imageName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Image name",
+            "defaultValue": "ghcr.io/clemensv/real-time-sources-nasa-firms-mqtt:latest",
+            "toolTip": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "namePrefix": "[steps('config').namePrefix]",
+      "firmsSources": "[if(empty(steps('config').firmsSources), '', replace(replace(replace(string(steps('config').firmsSources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "firmsMapKey": "[steps('config').firmsMapKey]",
+      "eventGridSku": "[steps('config').eventGridSku]",
+      "eventGridCapacity": "[int(steps('config').eventGridCapacity)]",
+      "topicRoot": "[steps('config').topicRoot]",
+      "imageName": "[steps('config').imageName]",
+      "location": "[location()]"
+    }
+  }
+}

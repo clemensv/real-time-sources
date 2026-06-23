@@ -1,0 +1,218 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "siriApiKey",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Siri api key",
+              "confirmPassword": "Confirm siri api key"
+            },
+            "toolTip": "Optional API key used for provider profiles that require upstream authentication; leave empty for public BODS bulk archive or Entur.",
+            "constraints": {
+              "required": false,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Poll interval",
+            "defaultValue": "30",
+            "toolTip": "Polling interval in seconds for the SIRI bulk AVL archive.",
+            "constraints": {
+              "required": false,
+              "regex": "^-?[0-9]+$",
+              "validationMessage": "Enter a whole number."
+            },
+            "visible": true
+          },
+          {
+            "name": "siriOperators",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Siri operators",
+            "defaultValue": "",
+            "toolTip": "Optional comma-separated operator filter or Trafiklab URL-template expansion values.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "containerGroupName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Container group name",
+            "defaultValue": "siri",
+            "toolTip": "Name for the container group and base name for all resources.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "eventHubSku",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Event hub sku",
+            "toolTip": "Event Hubs namespace SKU. Standard is recommended for sustained SIRI VehicleMonitoring ingest and multi-consumer analytics.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Basic",
+                  "value": "Basic"
+                },
+                {
+                  "label": "Standard",
+                  "value": "Standard"
+                }
+              ],
+              "required": true
+            },
+            "visible": true,
+            "defaultValue": "Standard"
+          },
+          {
+            "name": "siriSources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Primary source selector. Comma-separated catalog entry names to enable from the built-in SIRI source catalog (for example uk-bods-bulk-archive). Leave empty to run the enabled entries; use an asterisk (*) for all. Advanced: set SIRI_PROVIDER/SIRI_URL for a single inline provider, or SIRI_SOURCES_FILE for a custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "uk-bods-bulk-archive",
+                  "value": "uk-bods-bulk-archive"
+                },
+                {
+                  "label": "trafiklab-sweden",
+                  "value": "trafiklab-sweden"
+                },
+                {
+                  "label": "key-protected-siri-template",
+                  "value": "key-protected-siri-template"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "uk-bods-bulk-archive"
+            ]
+          },
+          {
+            "name": "siriProvider",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Siri provider",
+            "toolTip": "SIRI provider profile to use.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "bods",
+                  "value": "bods"
+                },
+                {
+                  "label": "trafiklab",
+                  "value": "trafiklab"
+                },
+                {
+                  "label": "entur",
+                  "value": "entur"
+                },
+                {
+                  "label": "custom",
+                  "value": "custom"
+                }
+              ],
+              "required": true
+            },
+            "visible": true,
+            "defaultValue": "bods"
+          },
+          {
+            "name": "siriHeaders",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Siri headers",
+              "confirmPassword": "Confirm siri headers"
+            },
+            "toolTip": "Optional semicolon-separated Name=Value request headers sent on every SIRI request; use for provider-specific client identification or custom upstream headers.",
+            "constraints": {
+              "required": false,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "siriEtClientName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Siri et client name",
+            "defaultValue": "",
+            "toolTip": "Optional Entur ET-Client-Name request header value. Leave empty to use the feeder's Entur default when SIRI_PROVIDER is entur.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "siriDataTypes",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Siri data types",
+            "defaultValue": "vm",
+            "toolTip": "Comma-separated SIRI data types to fetch from provider URL templates, such as vm, et, or sx; VehicleMonitoring payloads emit the current contract.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "siriUrl",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Siri url",
+            "defaultValue": "",
+            "toolTip": "Optional SIRI URL override or URL template. Leave empty to use the provider default.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "siriApiKey": "[steps('config').siriApiKey]",
+      "pollInterval": "[int(steps('config').pollInterval)]",
+      "siriOperators": "[steps('config').siriOperators]",
+      "containerGroupName": "[steps('config').containerGroupName]",
+      "eventHubSku": "[steps('config').eventHubSku]",
+      "siriSources": "[if(empty(steps('config').siriSources), '', replace(replace(replace(string(steps('config').siriSources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "siriProvider": "[steps('config').siriProvider]",
+      "siriHeaders": "[steps('config').siriHeaders]",
+      "siriEtClientName": "[steps('config').siriEtClientName]",
+      "siriDataTypes": "[steps('config').siriDataTypes]",
+      "siriUrl": "[steps('config').siriUrl]",
+      "location": "[location()]"
+    }
+  }
+}

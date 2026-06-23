@@ -1,0 +1,180 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "namePrefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Name prefix",
+            "defaultValue": "kiwis",
+            "toolTip": "Base name for all resources.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "topicRoot",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Topic root",
+            "defaultValue": "hydro/kiwis/#",
+            "toolTip": "Topic-space root for the kiwis UNS publish surface.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "imageName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Image name",
+            "defaultValue": "ghcr.io/clemensv/real-time-sources-kiwis-mqtt:latest",
+            "toolTip": "Container image reference for the MQTT feeder.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "mqttClientId",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Mqtt client id",
+            "defaultValue": "",
+            "toolTip": "Optional MQTT client identifier override. Defaults to the managed identity principal id.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "kiwisSources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Primary source selector. Comma-separated catalog entry names to enable from the built-in KISTERS KiWIS endpoint catalog (for example sepa-scotland). Leave empty to run the enabled entries; use an asterisk (*) for all. Advanced: KIWIS_ENDPOINTS for an inline override, or KIWIS_SOURCES_FILE for a custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "sepa-scotland",
+                  "value": "sepa-scotland"
+                },
+                {
+                  "label": "bom-australia-water",
+                  "value": "bom-australia-water"
+                },
+                {
+                  "label": "bom-australia-storage",
+                  "value": "bom-australia-storage"
+                },
+                {
+                  "label": "key-protected-template",
+                  "value": "key-protected-template"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "sepa-scotland"
+            ]
+          },
+          {
+            "name": "kiwisEndpoints",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Kiwis endpoints",
+            "defaultValue": "",
+            "toolTip": "CSV/JSON endpoint list or @file: kiwis_id,base_url,datasource,station_filter,timeseries_filter,ts_ids,period,api_key.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "kiwisMock",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Kiwis mock",
+            "defaultValue": "false",
+            "toolTip": "true emits one offline station, timeseries, and value for E2E.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "kiwisMaxTimeseries",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Kiwis max timeseries",
+            "defaultValue": "10",
+            "toolTip": "Safety cap for discovered timeseries per endpoint.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollingInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Polling interval",
+            "defaultValue": "300",
+            "toolTip": "Seconds between polling cycles.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "kiwisStateFile",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Kiwis state file",
+            "defaultValue": "",
+            "toolTip": "JSON dedupe state path used by container and Azure templates.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "namePrefix": "[steps('config').namePrefix]",
+      "topicRoot": "[steps('config').topicRoot]",
+      "imageName": "[steps('config').imageName]",
+      "mqttClientId": "[steps('config').mqttClientId]",
+      "kiwisSources": "[if(empty(steps('config').kiwisSources), '', replace(replace(replace(string(steps('config').kiwisSources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "kiwisEndpoints": "[steps('config').kiwisEndpoints]",
+      "kiwisMock": "[steps('config').kiwisMock]",
+      "kiwisMaxTimeseries": "[steps('config').kiwisMaxTimeseries]",
+      "pollingInterval": "[steps('config').pollingInterval]",
+      "kiwisStateFile": "[steps('config').kiwisStateFile]",
+      "location": "[location()]"
+    }
+  }
+}

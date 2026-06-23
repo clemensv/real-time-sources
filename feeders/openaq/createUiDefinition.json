@@ -1,0 +1,264 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "connectionString",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Connection string",
+              "confirmPassword": "Confirm connection string"
+            },
+            "toolTip": "BootstrapServer=host:port;EntityPath=topic or Event Hubs-compatible connection string.",
+            "constraints": {
+              "required": true,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "containerGroupName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Container group name",
+            "defaultValue": "openaq",
+            "toolTip": "Name for the container group resource.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "openaqApiKey",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Openaq api key",
+              "confirmPassword": "Confirm openaq api key"
+            },
+            "toolTip": "OpenAQ API key sent as X-API-Key. Not required with OPENAQ_MOCK=true.",
+            "constraints": {
+              "required": false,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "openaqSources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Primary source selector. Comma-separated catalog entry names to enable from the built-in OpenAQ query-slice catalog (for example us-all). Leave empty to run the enabled entries; use an asterisk (*) for all. Requires OPENAQ_API_KEY. Advanced: OPENAQ_COUNTRIES/OPENAQ_LOCATIONS/OPENAQ_BBOX for an inline single query, or OPENAQ_SOURCES_FILE for a custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "us-all",
+                  "value": "us-all"
+                },
+                {
+                  "label": "eu-west",
+                  "value": "eu-west"
+                },
+                {
+                  "label": "india",
+                  "value": "india"
+                },
+                {
+                  "label": "california-bay-area",
+                  "value": "california-bay-area"
+                },
+                {
+                  "label": "africa",
+                  "value": "africa"
+                },
+                {
+                  "label": "bahrain",
+                  "value": "bahrain"
+                },
+                {
+                  "label": "kuwait",
+                  "value": "kuwait"
+                },
+                {
+                  "label": "oman",
+                  "value": "oman"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "us-all"
+            ]
+          },
+          {
+            "name": "openaqCountries",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Openaq countries",
+            "defaultValue": "",
+            "toolTip": "Comma-separated ISO alpha-2 country filters.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "openaqLocations",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Openaq locations",
+            "defaultValue": "",
+            "toolTip": "Comma-separated OpenAQ location ids; overrides country paging.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "openaqBbox",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Openaq bbox",
+            "defaultValue": "",
+            "toolTip": "WGS84 bbox minLon,minLat,maxLon,maxLat.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "openaqPageLimit",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Openaq page limit",
+            "defaultValue": "25",
+            "toolTip": "Maximum number of OpenAQ location records requested per API page during reference catalog discovery. Lower values reduce burst pressure on the upstream API.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "openaqMaxPages",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Openaq max pages",
+            "defaultValue": "1",
+            "toolTip": "Max pages per country/bbox per reference refresh.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Poll interval",
+            "defaultValue": "900",
+            "toolTip": "Seconds between latest-measurement polls.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "referenceRefreshInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Reference refresh interval",
+            "defaultValue": "21600",
+            "toolTip": "Seconds between Location/Sensor catalog refreshes.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "stateFile",
+            "type": "Microsoft.Common.TextBox",
+            "label": "State file",
+            "defaultValue": "/state/openaq-state.json",
+            "toolTip": "Path inside the container volume where the feeder stores measurement deduplication state between polling cycles and container restarts.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "logLevel",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Log level",
+            "defaultValue": "INFO",
+            "toolTip": "Python logging verbosity for the bridge process. Use INFO for normal operations and DEBUG only while diagnosing polling or transport behavior.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "openaqMock",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Openaq mock",
+            "toolTip": "Emit deterministic synthetic events and exit once.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "false",
+                  "value": "false"
+                },
+                {
+                  "label": "true",
+                  "value": "true"
+                }
+              ],
+              "required": true
+            },
+            "visible": true,
+            "defaultValue": "false"
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "connectionString": "[steps('config').connectionString]",
+      "containerGroupName": "[steps('config').containerGroupName]",
+      "openaqApiKey": "[steps('config').openaqApiKey]",
+      "openaqSources": "[if(empty(steps('config').openaqSources), '', replace(replace(replace(string(steps('config').openaqSources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "openaqCountries": "[steps('config').openaqCountries]",
+      "openaqLocations": "[steps('config').openaqLocations]",
+      "openaqBbox": "[steps('config').openaqBbox]",
+      "openaqPageLimit": "[steps('config').openaqPageLimit]",
+      "openaqMaxPages": "[steps('config').openaqMaxPages]",
+      "pollInterval": "[steps('config').pollInterval]",
+      "referenceRefreshInterval": "[steps('config').referenceRefreshInterval]",
+      "stateFile": "[steps('config').stateFile]",
+      "logLevel": "[steps('config').logLevel]",
+      "openaqMock": "[steps('config').openaqMock]",
+      "location": "[location()]"
+    }
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "namePrefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Name prefix",
+            "defaultValue": "cap-alerts",
+            "toolTip": "Base name for all resources.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "eventGridSku",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Event grid sku",
+            "toolTip": "Event Grid namespace SKU.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Standard",
+                  "value": "Standard"
+                }
+              ],
+              "required": true
+            },
+            "visible": true,
+            "defaultValue": "Standard"
+          },
+          {
+            "name": "eventGridCapacity",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Event grid capacity",
+            "defaultValue": "1",
+            "toolTip": "Event Grid namespace throughput units.",
+            "constraints": {
+              "required": false,
+              "regex": "^-?[0-9]+$",
+              "validationMessage": "Enter a whole number."
+            },
+            "visible": true
+          },
+          {
+            "name": "topicRoot",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Topic root",
+            "defaultValue": "mobility/cap/#",
+            "toolTip": "Topic-space root for the MQTT/UNS publish surface. Defaults to mobility/cap/# which covers all cap-alerts output (hydro/de/wsv/cap-alerts/...).",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "capSelect",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Primary source selector. Comma-separated catalog entry names to enable from the built-in CAP alert-source catalog (for example nws-us-active-alerts,meteoalarm-belgium). Leave empty to run every enabled source; use an asterisk (*) for all. Advanced: CAP_SOURCES for an inline JSON override, or CAP_SOURCES_FILE for a custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "nws-us-active-alerts",
+                  "value": "nws-us-active-alerts"
+                },
+                {
+                  "label": "meteoalarm-belgium",
+                  "value": "meteoalarm-belgium"
+                },
+                {
+                  "label": "meteoalarm-ireland",
+                  "value": "meteoalarm-ireland"
+                },
+                {
+                  "label": "meteoalarm-france",
+                  "value": "meteoalarm-france"
+                },
+                {
+                  "label": "meteoalarm-spain",
+                  "value": "meteoalarm-spain"
+                },
+                {
+                  "label": "meteoalarm-germany",
+                  "value": "meteoalarm-germany"
+                },
+                {
+                  "label": "meteoalarm-austria",
+                  "value": "meteoalarm-austria"
+                },
+                {
+                  "label": "meteoalarm-italy",
+                  "value": "meteoalarm-italy"
+                },
+                {
+                  "label": "meteoalarm-netherlands",
+                  "value": "meteoalarm-netherlands"
+                },
+                {
+                  "label": "meteoalarm-portugal",
+                  "value": "meteoalarm-portugal"
+                },
+                {
+                  "label": "meteoalarm-switzerland",
+                  "value": "meteoalarm-switzerland"
+                },
+                {
+                  "label": "meteoalarm-poland",
+                  "value": "meteoalarm-poland"
+                },
+                {
+                  "label": "national-cap-feed-template",
+                  "value": "national-cap-feed-template"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "nws-us-active-alerts",
+              "meteoalarm-belgium"
+            ]
+          },
+          {
+            "name": "capFeeds",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Cap feeds",
+            "defaultValue": "",
+            "toolTip": "JSON array of CAP source configs {cap_source_id,url,format,zone_url}.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Poll interval",
+            "defaultValue": "300",
+            "toolTip": "Seconds between CAP alert polling cycles. Defaults to five minutes to stay comfortably below public feed limits.",
+            "constraints": {
+              "required": false,
+              "regex": "^-?[0-9]+$",
+              "validationMessage": "Enter a whole number."
+            },
+            "visible": true
+          },
+          {
+            "name": "imageName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Image name",
+            "defaultValue": "ghcr.io/clemensv/real-time-sources-cap-alerts-mqtt:latest",
+            "toolTip": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "referenceRefreshInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Reference refresh interval",
+            "defaultValue": "21600",
+            "toolTip": "Seconds between refreshes of CAP reference metadata such as NWS zones. Defaults to six hours.",
+            "constraints": {
+              "required": false,
+              "regex": "^-?[0-9]+$",
+              "validationMessage": "Enter a whole number."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "namePrefix": "[steps('config').namePrefix]",
+      "eventGridSku": "[steps('config').eventGridSku]",
+      "eventGridCapacity": "[int(steps('config').eventGridCapacity)]",
+      "topicRoot": "[steps('config').topicRoot]",
+      "capSelect": "[if(empty(steps('config').capSelect), '', replace(replace(replace(string(steps('config').capSelect), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "capFeeds": "[steps('config').capFeeds]",
+      "pollInterval": "[int(steps('config').pollInterval)]",
+      "imageName": "[steps('config').imageName]",
+      "referenceRefreshInterval": "[int(steps('config').referenceRefreshInterval)]",
+      "location": "[location()]"
+    }
+  }
+}

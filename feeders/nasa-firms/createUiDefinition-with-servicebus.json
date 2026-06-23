@@ -1,0 +1,137 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "namePrefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Name prefix",
+            "defaultValue": "nasa-firms",
+            "toolTip": "Base name for all resources.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "firmsSources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Source selector. Comma-separated FIRMS dataset specifications to poll, each SENSOR or SENSOR:REGION (for example VIIRS_SNPP_NRT,MODIS_NRT). When set, replaces the built-in default dataset list. Requires FIRMS_MAP_KEY.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "VIIRS_SNPP_NRT",
+                  "value": "VIIRS_SNPP_NRT"
+                },
+                {
+                  "label": "VIIRS_NOAA20_NRT",
+                  "value": "VIIRS_NOAA20_NRT"
+                },
+                {
+                  "label": "VIIRS_NOAA21_NRT",
+                  "value": "VIIRS_NOAA21_NRT"
+                },
+                {
+                  "label": "MODIS_NRT",
+                  "value": "MODIS_NRT"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "VIIRS_SNPP_NRT",
+              "VIIRS_NOAA20_NRT",
+              "VIIRS_NOAA21_NRT",
+              "MODIS_NRT"
+            ]
+          },
+          {
+            "name": "firmsMapKey",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Firms map key",
+              "confirmPassword": "Confirm firms map key"
+            },
+            "toolTip": "NASA FIRMS MAP_KEY (free Earthdata key from https://firms.modaps.eosdis.nasa.gov/api/map_key/).",
+            "constraints": {
+              "required": true,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "serviceBusSku",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Service bus sku",
+            "toolTip": "Service Bus namespace SKU. Standard is sufficient for nasa-firms companion feeder throughput.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Standard",
+                  "value": "Standard"
+                },
+                {
+                  "label": "Premium",
+                  "value": "Premium"
+                }
+              ],
+              "required": true
+            },
+            "visible": true,
+            "defaultValue": "Standard"
+          },
+          {
+            "name": "queueName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Queue name",
+            "defaultValue": "nasa-firms",
+            "toolTip": "Target AMQP address (queue/topic).",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "imageName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Image name",
+            "defaultValue": "ghcr.io/clemensv/real-time-sources-nasa-firms-amqp:latest",
+            "toolTip": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "namePrefix": "[steps('config').namePrefix]",
+      "firmsSources": "[if(empty(steps('config').firmsSources), '', replace(replace(replace(string(steps('config').firmsSources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "firmsMapKey": "[steps('config').firmsMapKey]",
+      "serviceBusSku": "[steps('config').serviceBusSku]",
+      "queueName": "[steps('config').queueName]",
+      "imageName": "[steps('config').imageName]",
+      "location": "[location()]"
+    }
+  }
+}

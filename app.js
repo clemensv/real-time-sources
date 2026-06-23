@@ -168,6 +168,20 @@ const DEPLOY_SOURCE_CFG = {
   'fdsn-seismology': { env: 'FDSN_NODES', param: 'nodes', opts: [{n:"emsc",on:true},{n:"gfz",on:true},{n:"ingv",on:true},{n:"ethz",on:true},{n:"resif",on:true},{n:"ipgp",on:true},{n:"niep",on:true},{n:"usgs",on:true},{n:"isc",on:false},{n:"custom",on:false}] },
 };
 
+/* Build the Azure Portal "Custom deployment" URL for a source + template
+   variant. For feeders with a configurable upstream-source catalog
+   (DEPLOY_SOURCE_CFG), attach the matching createUiDefinition so the portal
+   renders a multi-select source picker instead of a free-text box. */
+function azureDeployUrl(s, variant) {
+  const tplUrl = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template${variant}.json`;
+  let url = `https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(tplUrl)}`;
+  if (DEPLOY_SOURCE_CFG[s.id]) {
+    const uiUrl = `${RAW}/${FEEDERS_PREFIX}/${s.id}/createUiDefinition${variant}.json`;
+    url += `/createUIDefinitionUri/${encodeURIComponent(uiUrl)}`;
+  }
+  return url;
+}
+
 const CATEGORIES = [...new Set(SOURCES.map(s => s.cat))];
 
 /* ── DOM refs ──────────────────────────────────────────────────────────── */
@@ -282,39 +296,34 @@ async function selectSource(s) {
   if ($btnContainer) {
     $btnContainer.style.display = hasKafka ? "" : "none";
     $btnContainer.onclick = () => {
-      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template.json`;
-      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+      window.open(azureDeployUrl(s, ''), "_blank", "noopener");
     };
   }
   if ($btnContainerEH) {
     $btnContainerEH.style.display = hasKafka ? "" : "none";
     $btnContainerEH.onclick = () => {
-      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventhub.json`;
-      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+      window.open(azureDeployUrl(s, '-with-eventhub'), "_blank", "noopener");
     };
   }
   if ($btnContainerMqtt) {
     // MQTT BYO-broker deploy is opt-in per source (requires azure-template-mqtt.json).
     $btnContainerMqtt.style.display = hasMqttBasic ? "" : "none";
     $btnContainerMqtt.onclick = () => {
-      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-mqtt.json`;
-      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+      window.open(azureDeployUrl(s, '-mqtt'), "_blank", "noopener");
     };
   }
   if ($btnContainerMqttEG) {
     // MQTT + Event Grid namespace deploy is opt-in per source (requires azure-template-with-eventgrid-mqtt.json).
     $btnContainerMqttEG.style.display = hasMqttEg ? "" : "none";
     $btnContainerMqttEG.onclick = () => {
-      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
-      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+      window.open(azureDeployUrl(s, '-with-eventgrid-mqtt'), "_blank", "noopener");
     };
   }
   if ($btnContainerAmqpSB) {
     // AMQP 1.0 + Service Bus namespace deploy is opt-in per source (requires azure-template-with-servicebus.json).
     $btnContainerAmqpSB.style.display = hasAmqpSb ? "" : "none";
     $btnContainerAmqpSB.onclick = () => {
-      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-servicebus.json`;
-      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+      window.open(azureDeployUrl(s, '-with-servicebus'), "_blank", "noopener");
     };
   }
   // Hide Fabric ACI deploy button if the source lacks a KQL schema; the
@@ -572,10 +581,8 @@ function launchCloudShell(source, mode) {
     });
   } else {
     // ARM template deploy — use the Azure Portal custom deployment blade
-    const templateFile = mode === "container" ? "azure-template.json" : "azure-template-with-eventhub.json";
-    const templateUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FEEDERS_PREFIX}/${source.id}/${templateFile}`;
-    const portalUrl = `https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(templateUrl)}`;
-    window.open(portalUrl, "_blank", "noopener");
+    const variant = mode === "container" ? "" : "-with-eventhub";
+    window.open(azureDeployUrl(source, variant), "_blank", "noopener");
   }
 }
 
@@ -950,20 +957,15 @@ async function selectFromHash() {
   } else if (action === "fabric-notebook") {
     openDeployForm(s, "fabric-notebook");
   } else if (action === "azure") {
-    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventhub.json`;
-    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    window.open(azureDeployUrl(s, '-with-eventhub'), "_blank", "noopener");
   } else if (action === "azure-byoeh") {
-    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template.json`;
-    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    window.open(azureDeployUrl(s, ''), "_blank", "noopener");
   } else if (action === "azure-mqtt") {
-    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-mqtt.json`;
-    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    window.open(azureDeployUrl(s, '-mqtt'), "_blank", "noopener");
   } else if (action === "azure-mqtt-eg") {
-    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
-    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    window.open(azureDeployUrl(s, '-with-eventgrid-mqtt'), "_blank", "noopener");
   } else if (action === "azure-amqp-sb") {
-    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-servicebus.json`;
-    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    window.open(azureDeployUrl(s, '-with-servicebus'), "_blank", "noopener");
   }
 }
 window.addEventListener("hashchange", selectFromHash);

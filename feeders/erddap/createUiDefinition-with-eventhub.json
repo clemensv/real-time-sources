@@ -1,0 +1,182 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "containerGroupName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Container group name",
+            "defaultValue": "erddap",
+            "toolTip": "Name for the container group and base name for all resources.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "eventHubSku",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Event hub sku",
+            "toolTip": "Event Hubs namespace SKU for the broker that receives erddap CloudEvents.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Basic",
+                  "value": "Basic"
+                },
+                {
+                  "label": "Standard",
+                  "value": "Standard"
+                }
+              ],
+              "required": true
+            },
+            "visible": true,
+            "defaultValue": "Standard"
+          },
+          {
+            "name": "erddapSelect",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Primary source selector. Comma-separated catalog entry names to enable from the built-in ERDDAP dataset catalog (for example ioos-sensors-sun2). Leave empty to run every enabled dataset; use an asterisk (*) for all. Advanced: ERDDAP_SOURCES for an inline pipe-delimited override, or ERDDAP_SOURCES_FILE for a custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "ioos-sensors-sun2",
+                  "value": "ioos-sensors-sun2"
+                },
+                {
+                  "label": "token-protected-template",
+                  "value": "token-protected-template"
+                },
+                {
+                  "label": "otn-tracking",
+                  "value": "otn-tracking"
+                },
+                {
+                  "label": "nanoos-puget-sound-orca2",
+                  "value": "nanoos-puget-sound-orca2"
+                },
+                {
+                  "label": "emodnet-physics-sea-level",
+                  "value": "emodnet-physics-sea-level"
+                },
+                {
+                  "label": "uhslc-hourly-fast",
+                  "value": "uhslc-hourly-fast"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "ioos-sensors-sun2"
+            ]
+          },
+          {
+            "name": "erddapSources",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Erddap sources",
+            "defaultValue": "",
+            "toolTip": "Semicolon list, JSON array, @file, or path describing configured ERDDAP datasets.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "erddapMock",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Erddap mock",
+            "defaultValue": "false",
+            "toolTip": "Use the checked-in offline tabledap fixture and exit after one cycle.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollingInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Polling interval",
+            "defaultValue": "300",
+            "toolTip": "Seconds between tabledap polling cycles.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "referenceRefreshInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Reference refresh interval",
+            "defaultValue": "21600",
+            "toolTip": "Seconds between dataset/station reference refreshes.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "stateFile",
+            "type": "Microsoft.Common.TextBox",
+            "label": "State file",
+            "defaultValue": "/state/erddap_state.json",
+            "toolTip": "Dedupe state file; mount a volume in containers.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "onceMode",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Once mode",
+            "defaultValue": "false",
+            "toolTip": "Exit after one poll cycle; used by tests and Fabric Notebook hosting.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "containerGroupName": "[steps('config').containerGroupName]",
+      "eventHubSku": "[steps('config').eventHubSku]",
+      "erddapSelect": "[if(empty(steps('config').erddapSelect), '', replace(replace(replace(string(steps('config').erddapSelect), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "erddapSources": "[steps('config').erddapSources]",
+      "erddapMock": "[steps('config').erddapMock]",
+      "pollingInterval": "[steps('config').pollingInterval]",
+      "referenceRefreshInterval": "[steps('config').referenceRefreshInterval]",
+      "stateFile": "[steps('config').stateFile]",
+      "onceMode": "[steps('config').onceMode]",
+      "location": "[location()]"
+    }
+  }
+}

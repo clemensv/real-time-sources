@@ -1,0 +1,195 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "connectionString",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Connection string",
+              "confirmPassword": "Confirm connection string"
+            },
+            "toolTip": "Azure Event Hubs / Fabric Event Stream–style connection string. Supersedes KAFKA_BOOTSTRAP_SERVERS, SASL_USERNAME, SASL_PASSWORD.",
+            "constraints": {
+              "required": true,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "gbfsSources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Primary source selector. Comma-separated catalog entry names to enable from the built-in GBFS system catalog (for example citibike-nyc,divvy-chicago). Leave empty to run every enabled system in the catalog; use an asterisk (*) for all. Advanced: GBFS_FEEDS for an inline list of auto-discovery URLs, or GBFS_SOURCES_FILE for a custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "citibike-nyc",
+                  "value": "citibike-nyc"
+                },
+                {
+                  "label": "divvy-chicago",
+                  "value": "divvy-chicago"
+                },
+                {
+                  "label": "bay-wheels-sf",
+                  "value": "bay-wheels-sf"
+                },
+                {
+                  "label": "capital-bikeshare-dc",
+                  "value": "capital-bikeshare-dc"
+                },
+                {
+                  "label": "bluebikes-boston",
+                  "value": "bluebikes-boston"
+                },
+                {
+                  "label": "bike-share-toronto",
+                  "value": "bike-share-toronto"
+                },
+                {
+                  "label": "barcelona-bicing",
+                  "value": "barcelona-bicing"
+                },
+                {
+                  "label": "dublin-bikes",
+                  "value": "dublin-bikes"
+                },
+                {
+                  "label": "ecobici-cdmx",
+                  "value": "ecobici-cdmx"
+                },
+                {
+                  "label": "oslo-bysykkel",
+                  "value": "oslo-bysykkel"
+                },
+                {
+                  "label": "montreal-bixi",
+                  "value": "montreal-bixi"
+                },
+                {
+                  "label": "velib-paris",
+                  "value": "velib-paris"
+                },
+                {
+                  "label": "careem-dubai",
+                  "value": "careem-dubai"
+                },
+                {
+                  "label": "dott-paris",
+                  "value": "dott-paris"
+                },
+                {
+                  "label": "lime-paris",
+                  "value": "lime-paris"
+                },
+                {
+                  "label": "bolt-brussels",
+                  "value": "bolt-brussels"
+                },
+                {
+                  "label": "voi-oslo-entur",
+                  "value": "voi-oslo-entur"
+                },
+                {
+                  "label": "nextbike-template",
+                  "value": "nextbike-template"
+                },
+                {
+                  "label": "api-key-template-query-param",
+                  "value": "api-key-template-query-param"
+                },
+                {
+                  "label": "api-key-template-url-template",
+                  "value": "api-key-template-url-template"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "citibike-nyc",
+              "divvy-chicago",
+              "bay-wheels-sf",
+              "capital-bikeshare-dc",
+              "bluebikes-boston",
+              "bike-share-toronto"
+            ]
+          },
+          {
+            "name": "gbfsFeeds",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Gbfs feeds",
+            "defaultValue": "",
+            "toolTip": "Comma-separated GBFS autodiscovery URLs or a file reference passed to GBFS_FEEDS. Defaults to the Citi Bike NYC system for out-of-the-box deployment.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "gbfsSystemIds",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Gbfs system ids",
+            "defaultValue": "",
+            "toolTip": "Optional comma-separated GBFS system-id overrides aligned with GBFS_FEEDS.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Poll interval",
+            "defaultValue": "60",
+            "toolTip": "Polling interval in seconds.",
+            "constraints": {
+              "required": false,
+              "regex": "^-?[0-9]+$",
+              "validationMessage": "Enter a whole number."
+            },
+            "visible": true
+          },
+          {
+            "name": "containerGroupName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Container group name",
+            "defaultValue": "gbfs-bikeshare",
+            "toolTip": "Name for the container group resource.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "connectionString": "[steps('config').connectionString]",
+      "gbfsSources": "[if(empty(steps('config').gbfsSources), '', replace(replace(replace(string(steps('config').gbfsSources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "gbfsFeeds": "[steps('config').gbfsFeeds]",
+      "gbfsSystemIds": "[steps('config').gbfsSystemIds]",
+      "pollInterval": "[int(steps('config').pollInterval)]",
+      "containerGroupName": "[steps('config').containerGroupName]",
+      "location": "[location()]"
+    }
+  }
+}

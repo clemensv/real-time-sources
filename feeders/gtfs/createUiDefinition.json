@@ -1,0 +1,161 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "connectionString",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Connection string",
+              "confirmPassword": "Confirm connection string"
+            },
+            "toolTip": "Event Hubs/Fabric-style connection string for Kafka-mode publishing.",
+            "constraints": {
+              "required": true,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "containerGroupName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Container group name",
+            "defaultValue": "gtfs",
+            "toolTip": "Name for the container group resource.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "gtfsSources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Source selector against the built-in GTFS agency catalog: comma-separated catalog entry names, or an asterisk (*) for all catalog entries. Takes effect only when the inline GTFS_RT_URLS/GTFS_URLS overrides are empty; the packaged catalog ships no entries enabled by default, so the inline URLs drive a single-agency deployment unless you enable catalog entries with an asterisk (*). Advanced: GTFS_SOURCES_FILE for a custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "mbta-boston",
+                  "value": "mbta-boston"
+                },
+                {
+                  "label": "tfnsw-sydney",
+                  "value": "tfnsw-sydney"
+                },
+                {
+                  "label": "keyed-operator-template",
+                  "value": "keyed-operator-template"
+                }
+              ],
+              "required": false
+            },
+            "visible": true
+          },
+          {
+            "name": "gtfsRtUrls",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Gtfs rt urls",
+            "defaultValue": "http://api.bart.gov/gtfsrt/tripupdate.aspx,http://api.bart.gov/gtfsrt/alerts.aspx",
+            "toolTip": "Comma-separated GTFS-Realtime feed URLs to poll for trip updates, alerts, and vehicle positions.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "gtfsUrls",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Gtfs urls",
+            "defaultValue": "http://www.bart.gov/dev/schedules/google_transit.zip",
+            "toolTip": "Comma-separated GTFS schedule feed URLs to download before publishing static entities.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "route",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Route",
+            "defaultValue": "",
+            "toolTip": "Optional route ID filter; leave unset or * to publish all routes from the configured realtime feeds.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "gtfsRtHeaders",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Gtfs rt headers",
+            "defaultValue": "",
+            "toolTip": "Optional headers used when fetching the GTFS-Realtime feed URLs.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "gtfsHeaders",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Gtfs headers",
+            "defaultValue": "",
+            "toolTip": "Optional headers used when fetching the GTFS schedule feed URLs.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "scheduleCacheDir",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Schedule cache dir",
+            "defaultValue": "",
+            "toolTip": "Directory used by the Azure companion templates to cache downloaded GTFS schedule archives between polling cycles.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "connectionString": "[steps('config').connectionString]",
+      "containerGroupName": "[steps('config').containerGroupName]",
+      "gtfsSources": "[if(empty(steps('config').gtfsSources), '', replace(replace(replace(string(steps('config').gtfsSources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "gtfsRtUrls": "[steps('config').gtfsRtUrls]",
+      "gtfsUrls": "[steps('config').gtfsUrls]",
+      "route": "[steps('config').route]",
+      "gtfsRtHeaders": "[steps('config').gtfsRtHeaders]",
+      "gtfsHeaders": "[steps('config').gtfsHeaders]",
+      "scheduleCacheDir": "[steps('config').scheduleCacheDir]",
+      "location": "[location()]"
+    }
+  }
+}

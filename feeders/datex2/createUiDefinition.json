@@ -1,0 +1,201 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "connectionString",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Connection string",
+              "confirmPassword": "Confirm connection string"
+            },
+            "toolTip": "Azure Event Hubs / Fabric Event Stream–style connection string. Supersedes KAFKA_BOOTSTRAP_SERVERS, SASL_USERNAME, SASL_PASSWORD.",
+            "constraints": {
+              "required": true,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "containerGroupName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Container group name",
+            "defaultValue": "datex2",
+            "toolTip": "Name for the container group resource.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "datex2Sources",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Primary source selector. Comma-separated catalog entry names to enable from the built-in DATEX II source catalog (for example ndw-measurement-sites,ndw-roadworks). Leave empty to run every entry marked enabled in the catalog; use an asterisk (*) to include disabled templates too. Advanced: set DATEX2_ENDPOINTS for an inline JSON override, or DATEX2_SOURCES_FILE (baked into a derived image) for a fully custom catalog.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "ndw-measurement-sites",
+                  "value": "ndw-measurement-sites"
+                },
+                {
+                  "label": "ndw-trafficspeed",
+                  "value": "ndw-trafficspeed"
+                },
+                {
+                  "label": "ndw-traveltime",
+                  "value": "ndw-traveltime"
+                },
+                {
+                  "label": "ndw-roadworks",
+                  "value": "ndw-roadworks"
+                },
+                {
+                  "label": "cita-luxembourg-a6",
+                  "value": "cita-luxembourg-a6"
+                },
+                {
+                  "label": "cita-luxembourg-a1",
+                  "value": "cita-luxembourg-a1"
+                },
+                {
+                  "label": "cita-luxembourg-a4",
+                  "value": "cita-luxembourg-a4"
+                },
+                {
+                  "label": "trafikverket-sweden",
+                  "value": "trafikverket-sweden"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "ndw-measurement-sites",
+              "ndw-trafficspeed",
+              "ndw-traveltime",
+              "ndw-roadworks"
+            ]
+          },
+          {
+            "name": "datex2Endpoints",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Datex2 endpoints",
+            "defaultValue": "",
+            "toolTip": "JSON list of endpoint registry entries: id, url, publication, optional country, operator, auth_header.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "datex2Mock",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Datex2 mock",
+            "defaultValue": "false",
+            "toolTip": "Emit deterministic sample DATEX II events for tests.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollingInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Polling interval",
+            "defaultValue": "300",
+            "toolTip": "Seconds between polling cycles for Kafka container.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "onceMode",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Once mode",
+            "defaultValue": "false",
+            "toolTip": "Run one polling cycle and exit; used by validation and scheduled notebook runs.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "logLevel",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Log level",
+            "defaultValue": "INFO",
+            "toolTip": "Python logging level for the DATEX II feeder container.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "stateFile",
+            "type": "Microsoft.Common.TextBox",
+            "label": "State file",
+            "defaultValue": "",
+            "toolTip": "Optional persistent dedupe state file path.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "datex2StateFile",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Datex2 state file",
+            "defaultValue": "",
+            "toolTip": "Optional DATEX II-specific dedupe state file path.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "connectionString": "[steps('config').connectionString]",
+      "containerGroupName": "[steps('config').containerGroupName]",
+      "datex2Sources": "[if(empty(steps('config').datex2Sources), '', replace(replace(replace(string(steps('config').datex2Sources), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "datex2Endpoints": "[steps('config').datex2Endpoints]",
+      "datex2Mock": "[steps('config').datex2Mock]",
+      "pollingInterval": "[steps('config').pollingInterval]",
+      "onceMode": "[steps('config').onceMode]",
+      "logLevel": "[steps('config').logLevel]",
+      "stateFile": "[steps('config').stateFile]",
+      "datex2StateFile": "[steps('config').datex2StateFile]",
+      "location": "[location()]"
+    }
+  }
+}

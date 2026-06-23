@@ -1,0 +1,213 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [],
+    "steps": [
+      {
+        "name": "config",
+        "label": "Feeder configuration",
+        "elements": [
+          {
+            "name": "brokerUrl",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Broker url",
+            "defaultValue": "",
+            "toolTip": "MQTT broker URL, e.g. mqtt://host:1883 or mqtts://host:8883.",
+            "constraints": {
+              "required": true,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "brokerUsername",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Broker username",
+            "defaultValue": "",
+            "toolTip": "Optional username for MQTT password authentication.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "brokerPassword",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Broker password",
+              "confirmPassword": "Confirm broker password"
+            },
+            "toolTip": "Optional password for MQTT password authentication.",
+            "constraints": {
+              "required": false,
+              "regex": "^.{8,}$",
+              "validationMessage": "Enter at least 8 characters."
+            },
+            "visible": true
+          },
+          {
+            "name": "containerGroupName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Container group name",
+            "defaultValue": "fdsn-seismology-mqtt",
+            "toolTip": "Name for the container group resource.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "imageName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Image name",
+            "defaultValue": "ghcr.io/clemensv/real-time-sources-fdsn-seismology-mqtt:latest",
+            "toolTip": "MQTT container image reference.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "pollInterval",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Poll interval",
+            "defaultValue": "60",
+            "toolTip": "Polling interval in seconds.",
+            "constraints": {
+              "required": false,
+              "regex": "^-?[0-9]+$",
+              "validationMessage": "Enter a whole number."
+            },
+            "visible": true
+          },
+          {
+            "name": "minMagnitude",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Min magnitude",
+            "defaultValue": "0",
+            "toolTip": "Minimum magnitude filter.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "nodes",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Upstream sources",
+            "multiselect": true,
+            "selectAll": true,
+            "filter": true,
+            "toolTip": "Optional comma-separated include list of node ids.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "emsc",
+                  "value": "emsc"
+                },
+                {
+                  "label": "gfz",
+                  "value": "gfz"
+                },
+                {
+                  "label": "ingv",
+                  "value": "ingv"
+                },
+                {
+                  "label": "ethz",
+                  "value": "ethz"
+                },
+                {
+                  "label": "resif",
+                  "value": "resif"
+                },
+                {
+                  "label": "ipgp",
+                  "value": "ipgp"
+                },
+                {
+                  "label": "niep",
+                  "value": "niep"
+                },
+                {
+                  "label": "usgs",
+                  "value": "usgs"
+                },
+                {
+                  "label": "isc",
+                  "value": "isc"
+                },
+                {
+                  "label": "custom",
+                  "value": "custom"
+                }
+              ],
+              "required": false
+            },
+            "visible": true,
+            "defaultValue": [
+              "emsc",
+              "gfz",
+              "ingv",
+              "ethz",
+              "resif",
+              "ipgp",
+              "niep",
+              "usgs"
+            ]
+          },
+          {
+            "name": "excludeNodes",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Exclude nodes",
+            "defaultValue": "",
+            "toolTip": "Optional comma-separated exclude list of node ids.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          },
+          {
+            "name": "stateFile",
+            "type": "Microsoft.Common.TextBox",
+            "label": "State file",
+            "defaultValue": "/mnt/bridge-state/state.json",
+            "toolTip": "State file path for persisted poll cursors and dedupe state.",
+            "constraints": {
+              "required": false,
+              "regex": "^[\\s\\S]*$",
+              "validationMessage": "Enter a valid value."
+            },
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "brokerUrl": "[steps('config').brokerUrl]",
+      "brokerUsername": "[steps('config').brokerUsername]",
+      "brokerPassword": "[steps('config').brokerPassword]",
+      "containerGroupName": "[steps('config').containerGroupName]",
+      "imageName": "[steps('config').imageName]",
+      "pollInterval": "[int(steps('config').pollInterval)]",
+      "minMagnitude": "[steps('config').minMagnitude]",
+      "nodes": "[if(empty(steps('config').nodes), '', replace(replace(replace(string(steps('config').nodes), '[\"', ''), '\"]', ''), '\",\"', ','))]",
+      "excludeNodes": "[steps('config').excludeNodes]",
+      "stateFile": "[steps('config').stateFile]",
+      "location": "[location()]"
+    }
+  }
+}
