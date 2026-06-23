@@ -13,7 +13,7 @@ from typing import Optional, Set, Dict
 from urllib.parse import urlparse
 
 from canada_eccc_wateroffice.canada_eccc_wateroffice import (
-    ECCCWaterOfficeAPI, _load_state, _save_state
+    ECCCWaterOfficeAPI, _load_seen_ids, _save_seen_ids
 )
 from canada_eccc_wateroffice_amqp_producer_data import Station, Observation
 from canada_eccc_wateroffice_amqp_producer_amqp_producer.producer import CAGovECCCHydroAmqpProducer
@@ -63,7 +63,7 @@ def feed(host, port, address='canada-eccc-wateroffice', username=None, password=
         entra_audience, entra_client_id, sas_key_name, sas_key))
 
     api = ECCCWaterOfficeAPI()
-    seen_ids: Set[str] = set(_load_state(state_file).get("seen_ids", []))
+    seen_ids: Set[str] = _load_seen_ids(state_file)
 
     # Emit reference data (stations)
     try:
@@ -102,7 +102,7 @@ def feed(host, port, address='canada-eccc-wateroffice', username=None, password=
                 seen_ids.update(pending_ids)
                 if len(seen_ids) > 100000:
                     seen_ids = set(list(seen_ids)[-50000:])
-                _save_state(state_file, {"seen_ids": list(seen_ids)[-50000:]})
+                _save_seen_ids(state_file, set(list(seen_ids)[-50000:]))
                 logger.info("Published %d observations", count)
             except KeyboardInterrupt:
                 break
