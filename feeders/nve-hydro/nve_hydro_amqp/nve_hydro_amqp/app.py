@@ -155,8 +155,8 @@ def _publish_observations(
                     _station_id=sid,
                     _river_name=river_slug,
                     data=WaterLevelObservation(
-                        _station_id=sid,
-                        _river_name=river_raw,
+                        station_id=sid,
+                        river_name=river_raw,
                         water_level=wl_val if wl_val is not None else 0.0,
                         water_level_unit="m",
                         water_level_timestamp=wl_ts,
