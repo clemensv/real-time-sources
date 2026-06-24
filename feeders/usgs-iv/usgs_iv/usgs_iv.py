@@ -258,7 +258,7 @@ class USGSDataPoller:
         Returns:
             Dict: The last polled times for each site and parameter.
         """
-        if os.path.exists(self.last_polled_file):
+        if self.last_polled_file and os.path.exists(self.last_polled_file):
             with open(self.last_polled_file, 'r', encoding='utf-8') as file:
                 try:
                     saved_times = json.load(file)
@@ -288,6 +288,8 @@ class USGSDataPoller:
                 if parameter not in saved_times:
                     saved_times[parameter] = {}
                 saved_times[parameter][site_no] = timestamp.isoformat()
+        if not self.last_polled_file:
+            return
         with open(self.last_polled_file, 'w', encoding='utf-8') as file:
             json.dump(saved_times, file)
 

@@ -213,6 +213,6 @@ def build_offline_client_and_feeds() -> Tuple[GbfsSourceClient, List[ConfiguredF
     tests publish a stable reference + telemetry set without touching the
     network.
     """
-    client = GbfsSourceClient(session=OfflineSession())
+    client = GbfsSourceClient(session=OfflineSession())  # type: ignore[arg-type]
     feeds = [ConfiguredFeed(MOCK_DISCOVERY_URL, MOCK_SYSTEM_ID)]
     return client, feeds

@@ -115,7 +115,7 @@ def load_endpoints(value: Optional[str] = None, *, mock: bool = False, sources_f
     """
     if mock:
         return MOCK_ENDPOINTS
-    raw = _read_config_text(value or os.getenv("KIWIS_ENDPOINTS", ""))
+    raw = _read_config_text(value or os.getenv("KIWIS_ENDPOINTS") or "")
     if raw.strip():
         raw = _expand_env(raw)
         if raw.lstrip().startswith("[") or raw.lstrip().startswith("{"):

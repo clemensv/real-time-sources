@@ -116,7 +116,7 @@ def fetch_events(page: int = 1, api_filters: Optional[Dict[str, str]] = None) ->
     """
     try:
         params: Dict[str, object] = {"page": page, **(api_filters or {})}
-        response = requests.get(FIENTA_API_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=60)
+        response = requests.get(FIENTA_API_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=60)  # type: ignore[arg-type]
         response.raise_for_status()
         data = response.json()
 

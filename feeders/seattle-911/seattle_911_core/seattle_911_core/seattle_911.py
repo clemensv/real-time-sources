@@ -151,7 +151,7 @@ class SeattleFire911Bridge:
                 params["$where"] = f"datetime >= '{since.strftime('%Y-%m-%dT%H:%M:%S')}'"
             response = self.session.get(
                 DATASET_URL,
-                params=params,
+                params=params,  # type: ignore[arg-type]
                 timeout=(DEFAULT_CONNECT_TIMEOUT_SECONDS, DEFAULT_READ_TIMEOUT_SECONDS),
             )
             response.raise_for_status()

@@ -183,6 +183,7 @@ class SiriClient:
                     continue
                 request_url = base_url
                 if needs_operator:
+                    assert operator is not None
                     request_url = request_url.replace("{operator}", operator)
                 if needs_data_type:
                     request_url = request_url.replace("{data_type}", data_type)
@@ -375,12 +376,12 @@ def _local_name(tag: str) -> str:
 
 
 def _to_float(value: Optional[str]) -> Optional[float]:
-    if value in (None, ""):
+    if value is None or value == "":
         return None
     return float(value)
 
 
 def _to_int(value: Optional[str]) -> Optional[int]:
-    if value in (None, ""):
+    if value is None or value == "":
         return None
     return int(float(value))

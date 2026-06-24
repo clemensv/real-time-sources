@@ -138,6 +138,7 @@ async def feed(
             token=token,
             authentication_method=ENTRA_MQTT_AUTH_METHOD,
         )
+        assert expires_at is not None
         refresh_task = asyncio.create_task(
             _entra_token_refresh_loop(paho_client, broker_host, broker_port, 60, entra_audience, entra_client_id, expires_at)
         )

@@ -56,7 +56,7 @@ class _WsdotEventProducer:
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self._map_key(x, data, key_mapper, key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)  # type: ignore[arg-type]
         if flush_producer:
             self.producer.flush()
 

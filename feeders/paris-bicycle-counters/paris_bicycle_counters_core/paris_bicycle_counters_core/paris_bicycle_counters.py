@@ -113,7 +113,7 @@ class ParisBicycleCounterPoller:
             if since:
                 params["where"] = f"date >= '{since.strftime('%Y-%m-%dT%H:%M:%S')}'"
             try:
-                response = requests.get(COUNTER_DATA_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)
+                response = requests.get(COUNTER_DATA_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)  # type: ignore[arg-type]
                 response.raise_for_status()
             except requests.HTTPError as error:
                 print(f"Stopping pagination at offset {offset}: {error}", file=sys.stderr)

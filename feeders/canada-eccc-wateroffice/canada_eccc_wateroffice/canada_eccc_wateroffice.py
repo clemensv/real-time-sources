@@ -66,7 +66,7 @@ class ECCCWaterOfficeAPI:
     def get_stations(self, offset: int = 0, limit: int = 500) -> typing.List[dict]:
         """Fetch a page of station features from the hydrometric-stations collection."""
         params = {"f": "json", "limit": limit, "offset": offset}
-        response = self.session.get(ECCC_STATIONS_URL, params=params, timeout=60)
+        response = self.session.get(ECCC_STATIONS_URL, params=params, timeout=60)  # type: ignore[arg-type]
         response.raise_for_status()
         return response.json().get("features", [])
 
@@ -87,7 +87,7 @@ class ECCCWaterOfficeAPI:
         """Fetch real-time observations starting from start_dt."""
         start_str = start_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
         params = {"f": "json", "limit": limit, "datetime": f"{start_str}/.."}
-        response = self.session.get(ECCC_REALTIME_URL, params=params, timeout=60)
+        response = self.session.get(ECCC_REALTIME_URL, params=params, timeout=60)  # type: ignore[arg-type]
         response.raise_for_status()
         return response.json().get("features", [])
 

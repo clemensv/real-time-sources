@@ -33,7 +33,7 @@ T = TypeVar("T")
 
 
 def _serializer_dict(data_cls: Type[T], payload: Dict[str, Any]) -> Dict[str, Any]:
-    allowed = {field.name for field in dataclasses.fields(data_cls)}
+    allowed = {field.name for field in dataclasses.fields(data_cls)}  # type: ignore[arg-type]
     return {key: value for key, value in payload.items() if key in allowed}
 
 
@@ -177,7 +177,7 @@ def main() -> None:
     subscribe_flags = parse_subscribe(args.subscribe)
     station_filter = parse_station_filter(args.station_filter)
     producer = create_amqp_producer(args, FiDigitrafficRoadAmqpProducer)
-    source = MQTTSource(station_filter=station_filter, **subscribe_flags)
+    source = MQTTSource(station_filter=station_filter, **subscribe_flags)  # type: ignore[arg-type]
     bridge = DigitrafficRoadAmqpBridge(source, producer)
     try:
         bridge.run()

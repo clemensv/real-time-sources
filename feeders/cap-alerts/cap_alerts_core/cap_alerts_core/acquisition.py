@@ -97,7 +97,7 @@ def _info(node: ET.Element) -> dict[str, Any]:
             n=g["value_name"].upper(); v=g["value"]
             if n == "SAME": same.append(v)
             if n in {"UGC", "FIPS6"}: ugc.append(v)
-        areas.append({"area_desc":_text(area,"areaDesc"),"polygon":_texts(area,"polygon"),"circle":_texts(area,"circle"),"geocode":geos,"altitude":float(_text(area,"altitude")) if _text(area,"altitude") else None,"ceiling":float(_text(area,"ceiling")) if _text(area,"ceiling") else None})
+        areas.append({"area_desc":_text(area,"areaDesc"),"polygon":_texts(area,"polygon"),"circle":_texts(area,"circle"),"geocode":geos,"altitude":float(_text(area,"altitude") or "0") if _text(area,"altitude") else None,"ceiling":float(_text(area,"ceiling") or "0") if _text(area,"ceiling") else None})
     params=_pairs(node,"parameter")
     resources=[]
     for res in node.findall(f"{{{CAP_NS}}}resource"):

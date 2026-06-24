@@ -221,7 +221,7 @@ def build_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument("--mock", action="store_true", default=parse_bool(os.getenv("GBFS_MOCK"), default=False), help="Emit a deterministic offline GBFS corpus once (no network); for CI flow tests")
     feed_parser.add_argument("--amqp-broker-url", default=os.getenv("AMQP_BROKER_URL"))
     feed_parser.add_argument("--amqp-host", default=os.getenv("AMQP_HOST"))
-    feed_parser.add_argument("--amqp-port", type=int, default=int(os.getenv("AMQP_PORT")) if os.getenv("AMQP_PORT") else None)
+    feed_parser.add_argument("--amqp-port", type=int, default=int(os.getenv("AMQP_PORT", "0")) if os.getenv("AMQP_PORT") else None)
     feed_parser.add_argument("--amqp-address", default=os.getenv("AMQP_ADDRESS", "gbfs-bikeshare"))
     feed_parser.add_argument("--amqp-username", default=os.getenv("AMQP_USERNAME"))
     feed_parser.add_argument("--amqp-password", default=os.getenv("AMQP_PASSWORD"))

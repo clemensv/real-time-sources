@@ -21,10 +21,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install mypy
+      - name: Install mypy and dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install mypy
+          python -m pip install mypy dataclasses-json
 
       - name: Run mypy on feeders
         run: python -m mypy feeders --config-file mypy.ini

@@ -223,7 +223,7 @@ class SeattleStreetClosuresBridge:
             }
             response = self.session.get(
                 DATASET_URL,
-                params=params,
+                params=params,  # type: ignore[arg-type]
                 timeout=(DEFAULT_CONNECT_TIMEOUT_SECONDS, DEFAULT_READ_TIMEOUT_SECONDS),
             )
             response.raise_for_status()

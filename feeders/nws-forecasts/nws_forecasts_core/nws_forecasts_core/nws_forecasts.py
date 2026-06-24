@@ -424,19 +424,19 @@ class NWSForecastFetcher:
                 continue
             try:
                 if zone.zone_type == "public":
-                    forecast = self.fetch_land_forecast(zone_id)
-                    updated_value = forecast.updated.isoformat()
+                    land_forecast = self.fetch_land_forecast(zone_id)
+                    updated_value = land_forecast.updated.isoformat()
                     if current_land.get(zone_id) == updated_value:
                         continue
-                    self.on_land_forecast(zone_id, forecast)
+                    self.on_land_forecast(zone_id, land_forecast)
                     pending.land_updates[zone_id] = updated_value
                     emitted += 1
                 else:
-                    forecast = self.fetch_marine_forecast(zone_id)
-                    digest = self._marine_digest(forecast)
+                    marine_forecast = self.fetch_marine_forecast(zone_id)
+                    digest = self._marine_digest(marine_forecast)
                     if current_marine.get(zone_id) == digest:
                         continue
-                    self.on_marine_forecast(zone_id, forecast)
+                    self.on_marine_forecast(zone_id, marine_forecast)
                     pending.marine_hashes[zone_id] = digest
                     emitted += 1
             except (requests.RequestException, ValueError, KeyError) as exc:

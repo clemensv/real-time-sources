@@ -188,11 +188,11 @@ def get_vehicle_positions(
         print(f"NextBus vehicleLocations returned no data for agency '{agency_tag}': {detail}")
         return [], last_time
 
-    feed_last_time = float(last_time_el.get("time"))
+    feed_last_time = float(last_time_el.get("time") or "0")
     positions = []
     for vehicle in root.findall("vehicle"):
         vehicle_key = f"{agency_tag}/{vehicle.get('id')}"
-        last_report_time = feed_last_time / 1000 - float(vehicle.get("secsSinceReport"))
+        last_report_time = feed_last_time / 1000 - float(vehicle.get("secsSinceReport") or "0")
         if vehicle_key in vehicle_last_report_times and last_report_time <= vehicle_last_report_times[vehicle_key]:
             continue
         vehicle_last_report_times[vehicle_key] = last_report_time

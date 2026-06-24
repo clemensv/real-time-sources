@@ -315,7 +315,7 @@ def main() -> None:
                              default=os.getenv('CONNECTION_STRING'))
     polling_interval_default = 60
     if os.getenv('POLLING_INTERVAL'):
-        polling_interval_default = int(os.getenv('POLLING_INTERVAL'))
+        polling_interval_default = int(os.getenv('POLLING_INTERVAL', '0'))
     feed_parser.add_argument('-i', '--polling-interval', type=int,
                              help='Polling interval in seconds',
                              default=polling_interval_default)

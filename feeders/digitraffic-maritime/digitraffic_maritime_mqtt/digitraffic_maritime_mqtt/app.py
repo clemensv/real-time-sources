@@ -169,7 +169,7 @@ def _run_stream(args: argparse.Namespace, ais_adapter: _AisAdapter):
             subscribe_metadata='metadata' in subs,
             mmsi_filter=mmsi_filter_set,
         ),
-        kafka_producer=_NoopFlush(),
+        kafka_producer=_NoopFlush(),  # type: ignore[arg-type]
         event_producer=ais_adapter,
         mmsi_filter=mmsi_filter_set,
         flush_interval=max(1, args.flush_interval),
@@ -198,7 +198,7 @@ def _run_stream(args: argparse.Namespace, ais_adapter: _AisAdapter):
 
 def _run_port_calls(args: argparse.Namespace, port_call_adapter: _PortCallAdapter):
     poller = DigitrafficPortCallPoller(
-        kafka_producer=_NoopFlush(),
+        kafka_producer=_NoopFlush(),  # type: ignore[arg-type]
         event_producer=port_call_adapter,
         vessel_details_event_producer=port_call_adapter,
         port_location_event_producer=port_call_adapter,

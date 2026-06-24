@@ -164,7 +164,7 @@ def extract_feed_urls_from_webpage(url: str) -> List[str]:
     for link in soup.find_all('link', type=['application/rss+xml', 'application/atom+xml']):
         feed_url = link.get('href')
         if feed_url:
-            parsedurl = urlparse(feed_url)
+            parsedurl = urlparse(str(feed_url))
             if parsedurl.scheme == '' or parsedurl.netloc == '':  # relative URL
                 feed_url = urljoin(url, feed_url)
             if feed_url:

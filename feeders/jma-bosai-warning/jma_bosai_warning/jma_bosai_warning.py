@@ -277,8 +277,8 @@ def parse_tsunami_detail_regions(detail: dict[str, Any] | None) -> list[dict[str
     regions: dict[str, dict[str, Any]] = {}
     for item in _walk_dicts(detail):
         area = item.get("Area") if isinstance(item.get("Area"), dict) else item
-        code = _find_first(area, {"Code", "code", "areaCode"})
-        name = _find_first(area, {"Name", "name", "areaName"})
+        code = _find_first(area, {"Code", "code", "areaCode"})  # type: ignore[arg-type]
+        name = _find_first(area, {"Name", "name", "areaName"})  # type: ignore[arg-type]
         if not code or not name:
             continue
         height = _find_first(item, {"MaxHeight", "maxHeight", "Height", "height", "condition"})
@@ -339,7 +339,7 @@ def parse_tsunami_alert(entry: dict[str, Any], detail: dict[str, Any] | None = N
     return {
         "event_id": event_id, "serial": _serial(entry.get("ser") or entry.get("serial") or (detail or {}).get("Head", {}).get("Serial")), "info_type": _info_type(entry.get("ift") or entry.get("infoType")),
         "report_datetime": jst_to_utc(local_report) or "1970-01-01T00:00:00Z", "report_datetime_local": local_report or "1970-01-01T00:00:00+09:00",
-        "title_jp": entry.get("ttl") or "津波情報", "title_en": entry.get("en_ttl") or TITLE_EN_MAP.get(entry.get("ttl"), "Tsunami alert"),
+        "title_jp": entry.get("ttl") or "津波情報", "title_en": entry.get("en_ttl") or TITLE_EN_MAP.get(entry.get("ttl") or "", "Tsunami alert"),
         "bulletin_type": bulletin_type, "detail_url": TSUNAMI_DETAIL_BASE + filename if filename and not filename.startswith("http") else filename,
         "prefecture": "japan", "severity": tsunami_severity(parse_tsunami_detail_regions(detail)), "affected_coastal_regions": parse_tsunami_detail_regions(detail), "observations": parse_tsunami_observations(detail, bulletin_type),
     }

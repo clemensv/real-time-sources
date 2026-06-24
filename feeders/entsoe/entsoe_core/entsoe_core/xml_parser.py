@@ -151,7 +151,7 @@ def parse_entsoe_xml(xml_text: str, document_type: str) -> List[TimeSeriesPoint]
 
             # Resolution
             res_el = period.find(_ns(ns, "resolution"))
-            resolution_str = res_el.text if res_el is not None else "PT60M"
+            resolution_str = (res_el.text or "PT60M") if res_el is not None else "PT60M"
             resolution_delta = _parse_duration(resolution_str)
 
             # Extract points
@@ -159,7 +159,7 @@ def parse_entsoe_xml(xml_text: str, document_type: str) -> List[TimeSeriesPoint]
                 pos_el = point.find(_ns(ns, "position"))
                 if pos_el is None:
                     continue
-                position = int(pos_el.text)
+                position = int(pos_el.text or "0")
 
                 # Compute timestamp: period_start + (position - 1) * resolution
                 point_timestamp = period_start + (position - 1) * resolution_delta
@@ -168,8 +168,8 @@ def parse_entsoe_xml(xml_text: str, document_type: str) -> List[TimeSeriesPoint]
                 qty_el = point.find(_ns(ns, "quantity"))
                 price_el = point.find(_ns(ns, "price.amount"))
 
-                quantity = float(qty_el.text) if qty_el is not None else None
-                price = float(price_el.text) if price_el is not None else None
+                quantity = float(qty_el.text or "0") if qty_el is not None else None
+                price = float(price_el.text or "0") if price_el is not None else None
 
                 points.append(TimeSeriesPoint(
                     timestamp=point_timestamp,

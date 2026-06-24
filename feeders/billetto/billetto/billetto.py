@@ -79,7 +79,7 @@ def _make_session(api_keypair: str) -> requests.Session:
 def _safe_header_int(headers: Mapping[str, str], name: str) -> Optional[int]:
     """Parse an integer rate-limit header, returning None when absent or invalid."""
     raw_value = headers.get(name)
-    if raw_value in (None, ""):
+    if raw_value is None or raw_value == "":
         return None
     try:
         return int(raw_value)

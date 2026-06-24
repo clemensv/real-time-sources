@@ -62,7 +62,7 @@ class ECWeatherAPI:
         offset = 0
         while True:
             response = self.session.get(
-                url, params={"f": "json", "limit": self.station_limit, "offset": offset},
+                url, params={"f": "json", "limit": self.station_limit, "offset": offset},  # type: ignore[arg-type]
                 timeout=60,
             )
             response.raise_for_status()
@@ -85,7 +85,7 @@ class ECWeatherAPI:
         offset = 0
         while True:
             response = self.session.get(
-                url, params={
+                url, params={  # type: ignore[arg-type]
                     "f": "json",
                     "limit": self.obs_limit,
                     "offset": offset,

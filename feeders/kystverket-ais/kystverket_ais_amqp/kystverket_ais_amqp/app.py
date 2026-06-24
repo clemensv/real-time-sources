@@ -164,7 +164,7 @@ def _build_static(fields: Dict[str, Any], decoded: DecodedAIS,
         return None
     eta_str = ""
     em = fields.get("eta_month")
-    if em not in (None, 0):
+    if em is not None and em != 0:
         try:
             eta_str = (
                 f"{int(em):02d}-"
@@ -261,7 +261,7 @@ class KystverketAisAmqpBridge:
             if decoded is None:
                 return
             fut = asyncio.run_coroutine_threadsafe(
-                self.dispatch(decoded), self._loop)
+                self.dispatch(decoded), self._loop)  # type: ignore[arg-type]
             try:
                 fut.result(timeout=5.0)
             except Exception as exc:

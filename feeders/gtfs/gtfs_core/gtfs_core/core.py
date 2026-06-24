@@ -357,7 +357,7 @@ def load_source_configs(
         entries = []
     return [_clean_source_config(entry) for entry in select_entries(entries, selector)]
 
-def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, gtfs_headers: List[List[str]], etag: str, cache_dir: str | None) -> Tuple[str, str]:
+def fetch_schedule_file(gtfs_url: str, mdb_source_id: str | None, gtfs_headers: list | dict | None, etag: str | None, cache_dir: str | None) -> Tuple[str, str]:
     """
     Fetches the latest schedule file from the schedule URL if the file does not exist in the cache.
     """
@@ -489,9 +489,9 @@ def map_attributions(rows: Iterable[Dict[str, Any]]) -> Generator[Attributions, 
             routeId=row.get("route_id"),
             tripId=row.get("trip_id"),
             organizationName=row.get("organization_name"),
-            isProducer=int(row.get("is_producer")) if row.get("is_producer") else 0,
-            isOperator=int(row.get("is_operator")) if row.get("is_operator") else 0,
-            isAuthority=int(row.get("is_authority")) if row.get("is_authority") else 0,
+            isProducer=int(row.get("is_producer") or 0),
+            isOperator=int(row.get("is_operator") or 0),
+            isAuthority=int(row.get("is_authority") or 0),
             attributionUrl=row.get("attribution_url"),
             attributionEmail=row.get("attribution_email"),
             attributionPhone=row.get("attribution_phone")
@@ -512,12 +512,12 @@ def map_fare_attributes(rows: Iterable[Dict[str, Any]]) -> Generator[FareAttribu
     for row in rows:
         yield FareAttributes(
             fareId=row.get("fare_id"),
-            price=float(row.get("price")) if row.get("price") else 0,
+            price=float(row.get("price") or 0),
             currencyType=row.get("currency_type"),
-            paymentMethod=int(row.get("payment_method")) if row.get("payment_method") else 0,
-            transfers=int(row.get("transfers")) if row.get("transfers") else 0,
+            paymentMethod=int(row.get("payment_method") or 0),
+            transfers=int(row.get("transfers") or 0),
             agencyId=row.get("agency_id"),
-            transferDuration=int(row.get("transfer_duration")) if row.get("transfer_duration") else 0
+            transferDuration=int(row.get("transfer_duration") or 0)
         )
 
 def map_fare_leg_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareLegRules, None, None]:
@@ -569,10 +569,10 @@ def map_fare_transfer_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareTra
         yield FareTransferRules(
             fareTransferRuleId=row.get("fare_transfer_rule_id"),
             fareProductId=row.get("fare_product_id"),
-            transferCount=int(row.get("transfer_count")) if row.get("transfer_count") else 0,
+            transferCount=int(row.get("transfer_count") or 0),
             fromLegGroupId=row.get("from_leg_group_id"),
             toLegGroupId=row.get("to_leg_group_id"),
-            duration=int(row.get("duration")) if row.get("duration") else 0,
+            duration=int(row.get("duration") or 0),
             durationType=row.get("duration_type")
         )
 
@@ -598,8 +598,8 @@ def map_frequencies(rows: Iterable[Dict[str, Any]]) -> Generator[Frequencies, No
             tripId=row.get("trip_id"),
             startTime=row.get("start_time"),
             endTime=row.get("end_time"),
-            headwaySecs=int(row.get("headway_secs")) if row.get("headway_secs") else 0,
-            exactTimes=int(row.get("exact_times")) if row.get("exact_times") else 0
+            headwaySecs=int(row.get("headway_secs") or 0),
+            exactTimes=int(row.get("exact_times") or 0)
         )
 
 def map_levels(rows: Iterable[Dict[str, Any]]) -> Generator[Levels, None, None]:
@@ -607,7 +607,7 @@ def map_levels(rows: Iterable[Dict[str, Any]]) -> Generator[Levels, None, None]:
     for row in rows:
         yield Levels(
             levelId=row.get("level_id"),
-            levelIndex=float(row.get("level_index")) if row.get("level_index") else 0,
+            levelIndex=float(row.get("level_index") or 0),
             levelName=row.get("level_name")
         )
 
@@ -647,13 +647,13 @@ def map_pathways(rows: Iterable[Dict[str, Any]]) -> Generator[Pathways, None, No
             pathwayId=row.get("pathway_id"),
             fromStopId=row.get("from_stop_id"),
             toStopId=row.get("to_stop_id"),
-            pathwayMode=int(row.get("pathway_mode")) if row.get("pathway_mode") else 0,
-            isBidirectional=int(row.get("is_bidirectional")) if row.get("is_bidirectional") else 0,
-            length=float(row.get("length")) if row.get("length") else 0,
-            traversalTime=int(row.get("traversal_time")) if row.get("traversal_time") else 0,
-            stairCount=int(row.get("stair_count")) if row.get("stair_count") else 0,
-            maxSlope=float(row.get("max_slope")) if row.get("max_slope") else 0,
-            minWidth=float(row.get("min_width")) if row.get("min_width") else 0,
+            pathwayMode=int(row.get("pathway_mode") or 0),
+            isBidirectional=int(row.get("is_bidirectional") or 0),
+            length=float(row.get("length") or 0),
+            traversalTime=int(row.get("traversal_time") or 0),
+            stairCount=int(row.get("stair_count") or 0),
+            maxSlope=float(row.get("max_slope") or 0),
+            minWidth=float(row.get("min_width") or 0),
             signpostedAs=row.get("signposted_as"),
             reversedSignpostedAs=row.get("reversed_signposted_as")
         )
@@ -677,11 +677,11 @@ def map_routes(rows: Iterable[Dict[str, Any]]) -> Generator[Routes, None, None]:
             routeLongName=row.get("route_long_name"),
             routeDesc=row.get("route_desc"),
             routeType=RouteType.from_ordinal(row.get("route_type")) if row.get(
-                "route_type") and (int(row.get("route_type")) < 12) else RouteType.OTHER,
+                "route_type") and (int(row.get("route_type") or 0) < 12) else RouteType.OTHER,
             routeUrl=row.get("route_url"),
             routeColor=row.get("route_color"),
             routeTextColor=row.get("route_text_color"),
-            routeSortOrder=int(row.get("route_sort_order")) if row.get("route_sort_order") else 0,
+            routeSortOrder=int(row.get("route_sort_order") or 0),
             continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get(
                 "continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
             continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get(
@@ -694,10 +694,10 @@ def map_shapes(rows: Iterable[Dict[str, Any]]) -> Generator[Shapes, None, None]:
     for row in rows:
         yield Shapes(
             shapeId=row.get("shape_id"),
-            shapePtLat=float(row.get("shape_pt_lat")) if row.get("shape_pt_lat") else 0,
-            shapePtLon=float(row.get("shape_pt_lon")) if row.get("shape_pt_lon") else 0,
-            shapePtSequence=int(row.get("shape_pt_sequence")) if row.get("shape_pt_sequence") else 0,
-            shapeDistTraveled=float(row.get("shape_dist_traveled")) if row.get("shape_dist_traveled") else 0
+            shapePtLat=float(row.get("shape_pt_lat") or 0),
+            shapePtLon=float(row.get("shape_pt_lon") or 0),
+            shapePtSequence=int(row.get("shape_pt_sequence") or 0),
+            shapeDistTraveled=float(row.get("shape_dist_traveled") or 0)
         )
 
 def map_stop_areas(rows: Iterable[Dict[str, Any]]) -> Generator[StopAreas, None, None]:
@@ -717,8 +717,8 @@ def map_stops(rows: Iterable[Dict[str, Any]]) -> Generator[Stops, None, None]:
             stopCode=row.get("stop_code"),
             stopName=row.get("stop_name"),
             stopDesc=row.get("stop_desc"),
-            stopLat=float(row.get("stop_lat")) if row.get("stop_lat") else 0,
-            stopLon=float(row.get("stop_lon")) if row.get("stop_lon") else 0,
+            stopLat=float(row.get("stop_lat") or 0),
+            stopLon=float(row.get("stop_lon") or 0),
             zoneId=row.get("zone_id"),
             stopUrl=row.get("stop_url"),
             locationType=LocationType.from_ordinal(row.get("location_type")) if row.get("location_type") else LocationType.STOP,
@@ -738,7 +738,7 @@ def map_stop_times(rows: Iterable[Dict[str, Any]]) -> Generator[StopTimes, None,
             arrivalTime=row.get("arrival_time"),
             departureTime=row.get("departure_time"),
             stopId=row.get("stop_id"),
-            stopSequence=int(row.get("stop_sequence")) if row.get("stop_sequence") else 0,
+            stopSequence=int(row.get("stop_sequence") or 0),
             stopHeadsign=row.get("stop_headsign"),
             pickupType=PickupType.from_ordinal(row.get("pickup_type")) if row.get("pickup_type") else PickupType.REGULAR,
             dropOffType=DropOffType.from_ordinal(row.get("drop_off_type")) if row.get("drop_off_type") else DropOffType.REGULAR,
@@ -791,8 +791,8 @@ def map_transfers(rows: Iterable[Dict[str, Any]]) -> Generator[Transfers, None, 
         yield Transfers(
             fromStopId=row.get("from_stop_id"),
             toStopId=row.get("to_stop_id"),
-            transferType=int(row.get("transfer_type")) if row.get("transfer_type") else 0,
-            minTransferTime=int(row.get("min_transfer_time")) if row.get("min_transfer_time") else 0
+            transferType=int(row.get("transfer_type") or 0),
+            minTransferTime=int(row.get("min_transfer_time") or 0)
         )
 
 def map_translations(rows: Iterable[Dict[str, Any]]) -> Generator[Translations, None, None]:
@@ -825,7 +825,7 @@ def map_trips(trip_rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str,
     for row in trip_rows:
         calendar_dates = []
         calendars = []
-        for calendar_row in calendar_rows_by_service.get(row.get("service_id"), []):
+        for calendar_row in calendar_rows_by_service.get(row.get("service_id") or "", []):
             calendars.append(
                 Calendar(
                     serviceId=calendar_row.get("service_id"),
@@ -841,12 +841,12 @@ def map_trips(trip_rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str,
                 )
             )
 
-        for calendar_dates_row in calendar_dates_rows_by_service.get(row.get("service_id"), []):
+        for calendar_dates_row in calendar_dates_rows_by_service.get(row.get("service_id") or "", []):
             calendar_dates.append(
                 CalendarDates(
                     serviceId=calendar_dates_row.get("service_id"),
                     date=calendar_dates_row.get("date"),
-                    exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type")) < 2 else ExceptionType.SERVICE_REMOVED
+                    exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type") or 0) < 2 else ExceptionType.SERVICE_REMOVED
                 )
             )
 
@@ -999,7 +999,7 @@ def map_alert(entity):
             )
     return alert
 
-def create_gtfs_sources_dir(cache_dir: str):
+def create_gtfs_sources_dir(cache_dir: str | None):
     # Check if Git is installed
     try:
         subprocess.run(["git", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -1027,11 +1027,11 @@ def create_gtfs_sources_dir(cache_dir: str):
     except subprocess.CalledProcessError as e:
         logger.info("Error pulling the mobility-database-catalogs repository: %s", e.stderr.decode().strip())
 
-def get_mobility_database_dir(cache_dir: str):
+def get_mobility_database_dir(cache_dir: str | None):
     mobility_database_catalogs_dir = os.path.join(get_gtfs_sources_dir(cache_dir), "mobility-database-catalogs")
     return mobility_database_catalogs_dir
 
-def get_gtfs_sources_dir(cache_dir: str):
+def get_gtfs_sources_dir(cache_dir: str | None):
     if cache_dir:
         profile_dir = cache_dir
     else:
@@ -1043,7 +1043,7 @@ def get_gtfs_sources_dir(cache_dir: str):
         os.mkdir(gtfs_sources_dir)
     return gtfs_sources_dir
 
-def get_gtfs_rt_url(mdb_source_id, cache_dir: str):
+def get_gtfs_rt_url(mdb_source_id, cache_dir: str | None = None):
     """
     Helper function to look up the GTFS-RT URL from the JSON files in the clone repository's catalogs/sources/gtfs/realtime directory.
     the mdb_source_id is appended to the filename of each JSON file, so filter the files by mdb_source_id.
@@ -1057,7 +1057,7 @@ def get_gtfs_rt_url(mdb_source_id, cache_dir: str):
 
     return None
 
-def get_gtfs_url(mdb_source_id, cache_dir: str):
+def get_gtfs_url(mdb_source_id, cache_dir: str | None = None):
     """
     Helper function to look up the GTFS schedule URL from the JSON files in the clone repository's catalogs/sources/gtfs/schedule directory.
     """

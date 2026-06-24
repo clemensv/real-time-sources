@@ -159,7 +159,7 @@ def main() -> None:
     parser.add_argument(
         "--min-magnitude",
         type=float,
-        default=float(os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE")) if os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE") else None,
+        default=float(os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE", "0")) if os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE") else None,
         help="Optional minimum magnitude filter applied before publishing events.",
     )
     parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))

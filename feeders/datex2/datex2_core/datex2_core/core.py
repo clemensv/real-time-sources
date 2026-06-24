@@ -213,14 +213,14 @@ def _first_text(elem: ET.Element, names: Iterable[str]) -> Optional[str]:
 
 def _float(value: Optional[str]) -> Optional[float]:
     try:
-        return float(value) if value not in (None, "") else None
+        return float(value) if value is not None and value != "" else None
     except Exception:
         return None
 
 
 def _int(value: Optional[str]) -> Optional[int]:
     try:
-        return int(float(value)) if value not in (None, "") else None
+        return int(float(value)) if value is not None and value != "" else None
     except Exception:
         return None
 

@@ -221,7 +221,7 @@ class SensorCommunityAPI:
         measurements = {field: None for field in READING_FIELDS}
         for entry in values or []:
             upstream_name = entry.get("value_type")
-            target_name = MEASUREMENT_FIELD_MAP.get(upstream_name)
+            target_name = MEASUREMENT_FIELD_MAP.get(upstream_name) if upstream_name else None
             if target_name:
                 measurements[target_name] = _safe_float(entry.get("value"))
         return measurements

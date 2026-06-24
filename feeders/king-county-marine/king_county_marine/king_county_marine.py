@@ -98,9 +98,9 @@ def _save_state(state_file: str, data: dict) -> None:
 
 def parse_float(value: object) -> Optional[float]:
     """Parse a numeric field while suppressing NA/sentinel values."""
-    if value in (None, "", "NA", "NaN"):
+    if value is None or value in ("", "NA", "NaN"):
         return None
-    number = float(value)
+    number = float(str(value))
     if number <= -99.99:
         return None
     return number
@@ -169,7 +169,7 @@ def is_current_buoy_dataset(item: dict) -> bool:
 def parse_observation_time(record: dict) -> str:
     """Normalize upstream timestamps to UTC ISO strings."""
     unix_ts = record.get("unixtimestamp")
-    if unix_ts not in (None, ""):
+    if unix_ts is not None and unix_ts != "":
         dt = datetime.fromtimestamp(int(unix_ts) / 1000, tz=timezone.utc)
         return dt.isoformat().replace("+00:00", "Z")
     dt_text = record.get("datetime")

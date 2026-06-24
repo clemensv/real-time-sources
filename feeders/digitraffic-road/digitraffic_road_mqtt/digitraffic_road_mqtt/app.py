@@ -74,7 +74,7 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
 
 
 def _serializer_dict(data_cls: Type[T], payload: Dict[str, Any]) -> Dict[str, Any]:
-    allowed = {field.name for field in dataclasses.fields(data_cls)}
+    allowed = {field.name for field in dataclasses.fields(data_cls)}  # type: ignore[arg-type]
     return {key: value for key, value in payload.items() if key in allowed}
 
 
@@ -101,8 +101,8 @@ class DigitrafficRoadMqttBridge:
             await self._client.publish_fi_digitraffic_road_mqtt_maintenance_task_type(task_id=flat["task_id"], data=data, qos=1, retain=True)
 
     def _on_message(self, data_type: str, metadata: Dict[str, Any], payload: Dict[str, Any]) -> None:
-        future = asyncio.run_coroutine_threadsafe(self._publish_message(data_type, metadata, payload), self._loop)
-        future.add_done_callback(self._log_publish_failure)
+        future = asyncio.run_coroutine_threadsafe(self._publish_message(data_type, metadata, payload), self._loop)  # type: ignore[arg-type]
+        future.add_done_callback(self._log_publish_failure)  # type: ignore[arg-type]
 
     @staticmethod
     def _log_publish_failure(future: "asyncio.Future[Any]") -> None:
@@ -179,7 +179,7 @@ async def _run(args: argparse.Namespace) -> None:
     else:
         await client.connect(broker_host, broker_port)
     try:
-        source = MQTTSource(station_filter=parse_station_filter(args.station_filter), **parse_subscribe(args.subscribe))
+        source = MQTTSource(station_filter=parse_station_filter(args.station_filter), **parse_subscribe(args.subscribe))  # type: ignore[arg-type]
         await DigitrafficRoadMqttBridge(source, client).run()
     finally:
         await client.disconnect()
