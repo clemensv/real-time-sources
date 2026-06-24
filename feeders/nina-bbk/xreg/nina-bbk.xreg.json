@@ -209,7 +209,10 @@
                     "description": "The version number of this warning, incremented with each update."
                   },
                   "sender": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "The identifier of the issuing authority (e.g., 'DE-HE-DA-W184')."
                   },
                   "sender_name": {
@@ -217,7 +220,10 @@
                     "description": "The human-readable long name of the issuing authority (e.g., 'Integrierte Leitstelle Stadt Darmstadt')."
                   },
                   "sent": {
-                    "type": "datetime",
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "The date and time when the warning was issued, in ISO-8601 format."
                   },
                   "status": {

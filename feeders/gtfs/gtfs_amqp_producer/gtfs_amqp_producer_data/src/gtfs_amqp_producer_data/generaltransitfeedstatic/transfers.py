@@ -20,15 +20,15 @@ class Transfers:
     Defines transfers.
     
     Attributes:
-        fromStopId (str)
-        toStopId (str)
+        fromStopId (typing.Optional[str])
+        toStopId (typing.Optional[str])
         transferType (int)
         minTransferTime (typing.Optional[int])
     """
     
     
-    fromStopId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromStopId"))
-    toStopId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toStopId"))
+    fromStopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromStopId"))
+    toStopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toStopId"))
     transferType: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferType"))
     minTransferTime: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="minTransferTime"))
 
@@ -159,8 +159,8 @@ class Transfers:
             An instance of the dataclass.
         """
         return cls(
-            fromStopId='jauarllmqdvnkmisyque',
-            toStopId='ovadawswtaeuxffrojqu',
-            transferType=int(60),
-            minTransferTime=int(94)
+            fromStopId='xcjrbirocfrnsggbxzuo',
+            toStopId='qfsvcimohzyvgyrggnlh',
+            transferType=int(79),
+            minTransferTime=int(77)
         )

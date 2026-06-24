@@ -21,7 +21,7 @@ class Calendar:
     Calendar
     
     Attributes:
-        serviceId (str)
+        serviceId (typing.Optional[str])
         monday (Any)
         tuesday (Any)
         wednesday (Any)
@@ -29,12 +29,12 @@ class Calendar:
         friday (Any)
         saturday (Any)
         sunday (Any)
-        startDate (str)
-        endDate (str)
+        startDate (typing.Optional[str])
+        endDate (typing.Optional[str])
     """
     
     
-    serviceId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
+    serviceId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
     monday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="monday"))
     tuesday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tuesday"))
     wednesday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wednesday"))
@@ -42,8 +42,8 @@ class Calendar:
     friday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="friday"))
     saturday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="saturday"))
     sunday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunday"))
-    startDate: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startDate"))
-    endDate: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endDate"))
+    startDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startDate"))
+    endDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endDate"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Calendar':
@@ -172,7 +172,7 @@ class Calendar:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='zjwztopjhhgqdhstlfnz',
+            serviceId='eezbowmwmjhefnaeehjf',
             monday=None,
             tuesday=None,
             wednesday=None,
@@ -180,6 +180,6 @@ class Calendar:
             friday=None,
             saturday=None,
             sunday=None,
-            startDate='qfhzisrgpcctjbdqpvpw',
-            endDate='iwzofdqydholqvknecxz'
+            startDate='biufackwmnemlimlxusw',
+            endDate='fvybcqbqxsnrtawawwuy'
         )

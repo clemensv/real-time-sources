@@ -21,7 +21,7 @@ class StopTimes:
     Represents times that a vehicle arrives at and departs from individual stops for each trip.
     
     Attributes:
-        tripId (str)
+        tripId (typing.Optional[str])
         arrivalTime (typing.Optional[str])
         departureTime (typing.Optional[str])
         stopId (typing.Optional[str])
@@ -36,7 +36,7 @@ class StopTimes:
     """
     
     
-    tripId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
+    tripId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
     arrivalTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arrivalTime"))
     departureTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departureTime"))
     stopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
@@ -176,16 +176,16 @@ class StopTimes:
             An instance of the dataclass.
         """
         return cls(
-            tripId='plducixcnjtebpesujwi',
-            arrivalTime='wlogmeppsyacgsymlcvz',
-            departureTime='hozgfghqjwgxayyspnxf',
-            stopId='bogdsalpouxkehjollyu',
-            stopSequence=int(77),
-            stopHeadsign='ibiweuwgvdimyhmpjwnu',
+            tripId='vpvmbncjezzmdbbdwxhm',
+            arrivalTime='lilhrymisffcimvvaklq',
+            departureTime='nljwxsoxlajyxqfhbuas',
+            stopId='bjwgxavzvlfgwvyqrcqj',
+            stopSequence=int(16),
+            stopHeadsign='ispseouobxjyghpkojbl',
             pickupType=None,
             dropOffType=None,
             continuousPickup=None,
             continuousDropOff=None,
-            shapeDistTraveled=float(86.00419740199774),
+            shapeDistTraveled=float(85.48729301023405),
             timepoint=None
         )

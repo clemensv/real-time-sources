@@ -20,7 +20,7 @@ class FareRules:
     Defines fare rules.
     
     Attributes:
-        fareId (str)
+        fareId (typing.Optional[str])
         routeId (typing.Optional[str])
         originId (typing.Optional[str])
         destinationId (typing.Optional[str])
@@ -28,7 +28,7 @@ class FareRules:
     """
     
     
-    fareId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareId"))
+    fareId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareId"))
     routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
     originId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="originId"))
     destinationId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destinationId"))
@@ -161,9 +161,9 @@ class FareRules:
             An instance of the dataclass.
         """
         return cls(
-            fareId='vtvurgypdavbxbzadvut',
-            routeId='yjaxlzzwgkiqjrttqtib',
-            originId='fpkdivobtsgdwcyzidcj',
-            destinationId='zjzrbdhhhohjzfpaksob',
-            containsId='xzqrwmpmqqduyxdkxfdu'
+            fareId='tfvxejqqkjtfqxqxcugb',
+            routeId='jwgsdgsgijeyccuathac',
+            originId='kkpayhssmjlkexzfmcqm',
+            destinationId='bnpqdcyzfbxjpublfoot',
+            containsId='hkcfihfnjtvseerjawmh'
         )

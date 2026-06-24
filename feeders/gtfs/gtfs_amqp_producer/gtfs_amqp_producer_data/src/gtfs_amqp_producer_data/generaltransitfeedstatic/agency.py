@@ -20,10 +20,10 @@ class Agency:
     Information about the transit agencies.
     
     Attributes:
-        agencyId (str)
-        agencyName (str)
-        agencyUrl (str)
-        agencyTimezone (str)
+        agencyId (typing.Optional[str])
+        agencyName (typing.Optional[str])
+        agencyUrl (typing.Optional[str])
+        agencyTimezone (typing.Optional[str])
         agencyLang (typing.Optional[str])
         agencyPhone (typing.Optional[str])
         agencyFareUrl (typing.Optional[str])
@@ -31,10 +31,10 @@ class Agency:
     """
     
     
-    agencyId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
-    agencyName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyName"))
-    agencyUrl: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyUrl"))
-    agencyTimezone: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyTimezone"))
+    agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
+    agencyName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyName"))
+    agencyUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyUrl"))
+    agencyTimezone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyTimezone"))
     agencyLang: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyLang"))
     agencyPhone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyPhone"))
     agencyFareUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyFareUrl"))
@@ -167,12 +167,12 @@ class Agency:
             An instance of the dataclass.
         """
         return cls(
-            agencyId='ygihtpikyufymgtfkatm',
-            agencyName='fbnzfftswfyusfqzmtyx',
-            agencyUrl='hkuhumgnglmxflvzpmey',
-            agencyTimezone='cjlnbhzfjgkfvofrukrk',
-            agencyLang='qdrvpbrpmvfknkvthuec',
-            agencyPhone='xntfiyhjxhmuogosyrcq',
-            agencyFareUrl='bxmavjzklkortaeedpho',
-            agencyEmail='xegdicctpirwtecodmaz'
+            agencyId='oytxvdmtznysgfdccznf',
+            agencyName='aoklddzrlzpqivjnjany',
+            agencyUrl='ptqyyogyzmljyzadnnlx',
+            agencyTimezone='chhldouicgtyytxdpbka',
+            agencyLang='olrofspscwjkwwrkfemb',
+            agencyPhone='httpmipdtayahllrhkxv',
+            agencyFareUrl='tmuhjqijxgfwabgbvtju',
+            agencyEmail='ralhbbyzfvwcpqoyweyk'
         )

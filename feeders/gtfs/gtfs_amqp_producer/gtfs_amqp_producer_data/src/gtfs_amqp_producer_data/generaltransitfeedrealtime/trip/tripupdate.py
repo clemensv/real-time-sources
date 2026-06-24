@@ -170,7 +170,7 @@ class TripUpdate:
         return cls(
             trip=None,
             vehicle=None,
-            stop_time_update=[None, None],
-            timestamp=int(62),
-            delay=int(0)
+            stop_time_update=[None, None, None, None, None],
+            timestamp=int(98),
+            delay=int(14)
         )

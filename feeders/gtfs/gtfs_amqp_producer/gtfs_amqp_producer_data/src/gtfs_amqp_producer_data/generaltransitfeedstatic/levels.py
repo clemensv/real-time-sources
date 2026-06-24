@@ -20,13 +20,13 @@ class Levels:
     Defines levels.
     
     Attributes:
-        levelId (str)
+        levelId (typing.Optional[str])
         levelIndex (float)
         levelName (typing.Optional[str])
     """
     
     
-    levelId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="levelId"))
+    levelId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="levelId"))
     levelIndex: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="levelIndex"))
     levelName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="levelName"))
 
@@ -157,7 +157,7 @@ class Levels:
             An instance of the dataclass.
         """
         return cls(
-            levelId='yjungsnqovywocxcgwyz',
-            levelIndex=float(42.486106993058655),
-            levelName='tafytcfvuryswjdqdppd'
+            levelId='sbylwkojioyumlbkfkxb',
+            levelIndex=float(51.32612181384447),
+            levelName='csfmfscpzvlrujzxbeqo'
         )

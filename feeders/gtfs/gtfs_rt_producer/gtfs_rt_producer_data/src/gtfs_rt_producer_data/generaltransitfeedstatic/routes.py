@@ -21,7 +21,7 @@ class Routes:
     Identifies a route.
     
     Attributes:
-        routeId (str)
+        routeId (typing.Optional[str])
         agencyId (typing.Optional[str])
         routeShortName (typing.Optional[str])
         routeLongName (typing.Optional[str])
@@ -37,7 +37,7 @@ class Routes:
     """
     
     
-    routeId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
+    routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
     routeShortName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeShortName"))
     routeLongName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeLongName"))
@@ -178,17 +178,17 @@ class Routes:
             An instance of the dataclass.
         """
         return cls(
-            routeId='qqhpmdrapfetipvbrwom',
-            agencyId='iooxcolftlqzjqqepbln',
-            routeShortName='mylunzxhpeawxzlupyun',
-            routeLongName='qwvilnzingesljkeftqj',
-            routeDesc='mpuwgkvsliwujrkuiegh',
+            routeId='asxuoocflgkpedlrgyjl',
+            agencyId='apcbuefmbrhxbogcqwxr',
+            routeShortName='jwshxhmqbdrbtfcydcle',
+            routeLongName='baoyqihjldopnznvongx',
+            routeDesc='kikxfbptilofjwxhaexk',
             routeType=None,
-            routeUrl='yfsaldluhtdpuorqtsuy',
-            routeColor='wdbcrzdepimhydbrdkmw',
-            routeTextColor='fnvkrqzmzidinxagbsld',
-            routeSortOrder=int(41),
+            routeUrl='nrzcypflcyrhlcsxefvb',
+            routeColor='pqsuzgdaperobxnafgmy',
+            routeTextColor='pblfveyixmmkihppczxm',
+            routeSortOrder=int(92),
             continuousPickup=None,
             continuousDropOff=None,
-            networkId='keicxjyvdbnzsqjgbhcm'
+            networkId='irbbxefiruysezguvmka'
         )

@@ -23,14 +23,14 @@ class Measurement:
         station_number (str)
         formula (str)
         value (float)
-        timestamp_measured (str)
+        timestamp_measured (typing.Optional[str])
     """
     
     
     station_number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_number"))
     formula: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="formula"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    timestamp_measured: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp_measured"))
+    timestamp_measured: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp_measured"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Measurement':
@@ -159,8 +159,8 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            station_number='xrrynwhtinwjmexrgtgg',
-            formula='wrrtwjcrjmciopdvkxoo',
-            value=float(53.76825496883166),
-            timestamp_measured='gzuhagltcpsyjrenvdmt'
+            station_number='poxfarsjzoiqvldpujob',
+            formula='qttcfpivrzzmpcqhwenp',
+            value=float(53.929272776481795),
+            timestamp_measured='mhftwrbevnidsviswzuv'
         )

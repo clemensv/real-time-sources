@@ -28,10 +28,10 @@ class Test_Networks(unittest.TestCase):
         Create instance of Networks for testing
         """
         instance = Networks(
-            networkId='nckcxxdtjynopuekkudf',
-            networkName='pyqqnjujnscbfdlutwtl',
-            networkDesc='yulhmabeywiaubvihvfa',
-            networkUrl='zebfvhoxlowtgpfjyrpm'
+            networkId='ttyvotsjlnvivughcilx',
+            networkName='girkiduvodunrtcdfbri',
+            networkDesc='enirhrdiohvrvghghvwt',
+            networkUrl='lopaaphtpsuhochzzfcs'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'nckcxxdtjynopuekkudf'
+        test_value = 'ttyvotsjlnvivughcilx'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     
@@ -48,7 +48,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkName property
         """
-        test_value = 'pyqqnjujnscbfdlutwtl'
+        test_value = 'girkiduvodunrtcdfbri'
         self.instance.networkName = test_value
         self.assertEqual(self.instance.networkName, test_value)
     
@@ -56,7 +56,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkDesc property
         """
-        test_value = 'yulhmabeywiaubvihvfa'
+        test_value = 'enirhrdiohvrvghghvwt'
         self.instance.networkDesc = test_value
         self.assertEqual(self.instance.networkDesc, test_value)
     
@@ -64,7 +64,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkUrl property
         """
-        test_value = 'zebfvhoxlowtgpfjyrpm'
+        test_value = 'lopaaphtpsuhochzzfcs'
         self.instance.networkUrl = test_value
         self.assertEqual(self.instance.networkUrl, test_value)
     

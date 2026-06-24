@@ -20,9 +20,9 @@ class FeedInfo:
     Provides information about the GTFS feed itself.
     
     Attributes:
-        feedPublisherName (str)
-        feedPublisherUrl (str)
-        feedLang (str)
+        feedPublisherName (typing.Optional[str])
+        feedPublisherUrl (typing.Optional[str])
+        feedLang (typing.Optional[str])
         defaultLang (typing.Optional[str])
         feedStartDate (typing.Optional[str])
         feedEndDate (typing.Optional[str])
@@ -32,9 +32,9 @@ class FeedInfo:
     """
     
     
-    feedPublisherName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedPublisherName"))
-    feedPublisherUrl: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedPublisherUrl"))
-    feedLang: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedLang"))
+    feedPublisherName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedPublisherName"))
+    feedPublisherUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedPublisherUrl"))
+    feedLang: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedLang"))
     defaultLang: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="defaultLang"))
     feedStartDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedStartDate"))
     feedEndDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedEndDate"))
@@ -169,13 +169,13 @@ class FeedInfo:
             An instance of the dataclass.
         """
         return cls(
-            feedPublisherName='frvkqxadatrlkbpqmuyz',
-            feedPublisherUrl='obwnbovnnpphdpokjknq',
-            feedLang='diqkpalddwnidilrcyta',
-            defaultLang='djejdukjnemrvfvpufqe',
-            feedStartDate='ohymtgkbjqdwqpdeoaui',
-            feedEndDate='ajrwmhcjwkbeugwduhvp',
-            feedVersion='rwzleyzkwyujbielbkbm',
-            feedContactEmail='vacoxmsboaibqkowsvyq',
-            feedContactUrl='fhbidkymjjpaiuvxurec'
+            feedPublisherName='xjcnxeswbdlpsjrtmlnx',
+            feedPublisherUrl='dlumjfbqlyozjoxbhrqz',
+            feedLang='jntyorkrhzckrcxnawqo',
+            defaultLang='meoovravpvanwprvvdma',
+            feedStartDate='oticitxvafvtohwgbguj',
+            feedEndDate='kgtuwfpzcrsfbquqrojh',
+            feedVersion='ntwtfraxawfhrkdszobc',
+            feedContactEmail='qxwlyhaowusmdfdphxwj',
+            feedContactUrl='ddzodvuokkpqepdpnlxs'
         )

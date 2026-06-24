@@ -21,14 +21,14 @@ class CalendarDates:
     CalendarDates
     
     Attributes:
-        serviceId (str)
-        date (str)
+        serviceId (typing.Optional[str])
+        date (typing.Optional[str])
         exceptionType (Any)
     """
     
     
-    serviceId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
-    date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
+    serviceId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
+    date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
     exceptionType: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="exceptionType"))
 
     @classmethod
@@ -158,7 +158,7 @@ class CalendarDates:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='lfeewzuobmlnlissokcn',
-            date='qsgwkjlhgeuwdgpriasw',
+            serviceId='kwqoduuerftagdafywhv',
+            date='ncdtsezyzcdtozxawdqj',
             exceptionType=None
         )

@@ -12,13 +12,13 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from meteoalarm_producer_data.severityenum import SeverityEnum
-from meteoalarm_producer_data.certaintyenum import CertaintyEnum
-from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
-from meteoalarm_producer_data.statusenum import StatusEnum
 from meteoalarm_producer_data.categoryenum import CategoryEnum
+from meteoalarm_producer_data.certaintyenum import CertaintyEnum
 from meteoalarm_producer_data.scopeenum import ScopeEnum
 from meteoalarm_producer_data.urgencyenum import UrgencyEnum
+from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
+from meteoalarm_producer_data.statusenum import StatusEnum
+from meteoalarm_producer_data.severityenum import SeverityEnum
 import datetime
 
 
@@ -30,8 +30,8 @@ class WeatherWarning:
     
     Attributes:
         identifier (str)
-        sender (str)
-        sent (datetime.datetime)
+        sender (typing.Optional[str])
+        sent (typing.Optional[datetime.datetime])
         status (StatusEnum)
         msg_type (MsgTypeenum)
         scope (ScopeEnum)
@@ -59,8 +59,8 @@ class WeatherWarning:
     
     
     identifier: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="identifier"))
-    sender: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sender"))
-    sent: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sent", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    sender: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sender"))
+    sent: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sent", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     status: StatusEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
     msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
     scope: ScopeEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="scope"))
@@ -212,30 +212,30 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            identifier='nxwmokdwxopowtvftqsx',
-            sender='bnsljdleeearxfefrfny',
+            identifier='uynshcjxyafhjoctohod',
+            sender='tnvbgsgqtmjglsbherpx',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            country='wygaccjtsarnswvzrntk',
-            event='szwbcmhozahavowzvcbk',
+            country='npqqlubunliiwztqkuza',
+            event='ooxpmrcurfwnlyywkmtj',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='masokoqhttofwolzczbg',
-            description='rrljatnjbqrsmwyfuzfv',
-            instruction='ebcigkxlrxjuxmiwkrlv',
+            headline='eymmzinalepuaqvvgtzr',
+            description='cjrkkegtutdljmyjtcky',
+            instruction='fepogwatjkyxhnhuxokh',
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            web='ftmtkhfjxyrbbbskgspf',
-            contact='qwwetrzjqeangxccqwxb',
-            awareness_level='dlacbrtroalrxaviuaex',
-            awareness_type='chhahmlpfsztuyydomxn',
-            area_desc='nzppqnyomikzfmisftii',
-            geocodes='xgfhakpirnzaviqdchfj',
-            language='samqgzyuxffwwonzmgrb',
-            awareness_type_raw='jivojmyahuytrflabqdj'
+            web='dmhlsdgxhehzyttrfggd',
+            contact='zhbbpwpsrhswkvoquboc',
+            awareness_level='hvgrjzaxkdguanrgktyw',
+            awareness_type='irkwumkgdsorcfolasjf',
+            area_desc='ciftdxftgwvwiygwmpmh',
+            geocodes='ngyxlwrpgjmnqzcofivt',
+            language='tiuixidqagunawewugqj',
+            awareness_type_raw='kmcfirtrgnrqjzpnxxel'
         )

@@ -474,7 +474,10 @@
                               "description": "Numeric measurement value published by the API for the station and formula at the given timestamp. Standard gaseous and particulate concentration formulas are expressed in micrograms per cubic meter; some specialised formulas such as particle counts or black-carbon indicators may use different domain-specific units, so consumers should interpret the formula-specific semantics together with the component catalog."
                             },
                             "timestamp_measured": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset."
                             }
                           },
@@ -524,7 +527,10 @@
                               "description": "Luchtkwaliteitsindex value on the Dutch 1 to 11 scale, where 1 to 3 is good, 4 to 6 is moderate, 7 to 9 is bad, and 10 to 11 is very bad."
                             },
                             "timestamp_measured": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset."
                             }
                           },

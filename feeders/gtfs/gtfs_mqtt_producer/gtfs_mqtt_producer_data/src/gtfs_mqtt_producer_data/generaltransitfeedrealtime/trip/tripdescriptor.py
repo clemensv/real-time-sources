@@ -164,10 +164,10 @@ class TripDescriptor:
             An instance of the dataclass.
         """
         return cls(
-            trip_id='gywgmngbnaaiisilhbum',
-            route_id='gjgpkpalinlvzxwwgafp',
-            direction_id=int(58),
-            start_time='arovstpluwnxwgjrunob',
-            start_date='odakogxmljljperpcltt',
+            trip_id='qtloqvfbkvhqyyxaqhod',
+            route_id='zalwvvgnvxocewcnwagp',
+            direction_id=int(15),
+            start_time='yrllgumpmhjjguugsodh',
+            start_date='fuglzcyrsiudwsrgmsqo',
             schedule_relationship=None
         )

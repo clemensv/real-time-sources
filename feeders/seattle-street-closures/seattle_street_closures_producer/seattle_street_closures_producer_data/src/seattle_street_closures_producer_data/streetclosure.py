@@ -25,8 +25,8 @@ class StreetClosure:
         permit_type (str)
         project_name (typing.Optional[str])
         project_description (typing.Optional[str])
-        start_date (str)
-        end_date (str)
+        start_date (typing.Optional[str])
+        end_date (typing.Optional[str])
         sunday (typing.Optional[str])
         monday (typing.Optional[str])
         tuesday (typing.Optional[str])
@@ -47,8 +47,8 @@ class StreetClosure:
     permit_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="permit_type"))
     project_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="project_name"))
     project_description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="project_description"))
-    start_date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_date"))
-    end_date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_date"))
+    start_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_date"))
+    end_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_date"))
     sunday: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunday"))
     monday: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="monday"))
     tuesday: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tuesday"))
@@ -189,23 +189,23 @@ class StreetClosure:
             An instance of the dataclass.
         """
         return cls(
-            closure_id='dzkwbgaichkzpjyfkuff',
-            permit_number='gmiuqzkyspwutazyvbid',
-            permit_type='uftchwxhmtmeztpqkngb',
-            project_name='mpahmekthedwbklurfkl',
-            project_description='vomkavrqhftzqxqbydnr',
-            start_date='zqsvhjlbitsqqjfenqiz',
-            end_date='txpzfujozuuvdiaywreo',
-            sunday='whmjraqmajlirbxlpkdn',
-            monday='bjqqavwdmzipwvkrlitn',
-            tuesday='khrcnzmqoiipsqxhixwu',
-            wednesday='vmgmkmeakpaonedgiibk',
-            thursday='keisuaxtfecvmhreyggu',
-            friday='ngthtzzkgikinmwlbjue',
-            saturday='iwuevyhbuwuuionovady',
-            street_on='qdvsduzckbvdgryuhzag',
-            street_from='wfptwdchsaltczdjstkf',
-            street_to='vjukzmnftwoqtcvioert',
-            segkey='ukeehhflahruhhciqhee',
-            geometry_json='puhgazeawvynjuxarmza'
+            closure_id='bsiadslkvwuhpkgxdpdx',
+            permit_number='grnxpefmwpdydkkkdqps',
+            permit_type='lsxxlhwfwruvpjfxarqt',
+            project_name='typwgukyrjeqtppofmjj',
+            project_description='ccxpjgvoympilmomylvb',
+            start_date='lheaugekcfotfhnzjbui',
+            end_date='szppjnclzuepthstlmul',
+            sunday='kaykhghwyayylbwmuacj',
+            monday='zghfxrkldjerdwgubqbg',
+            tuesday='apbpayfeqdyxycakuxrt',
+            wednesday='upeizzhyxtkofkgltdkr',
+            thursday='axavbzhwtamuljzlajtj',
+            friday='gvjyeqhplzuyvercupuq',
+            saturday='wwsbdbyxcywkmafykhwc',
+            street_on='regxttqnoqrbajuuqchp',
+            street_from='lfzfifximcmwolsnvkse',
+            street_to='uibuezpvpmimbvysmbag',
+            segkey='kbnadkoowwpyzrtybzxn',
+            geometry_json='aufetpqwfoztukczvpak'
         )

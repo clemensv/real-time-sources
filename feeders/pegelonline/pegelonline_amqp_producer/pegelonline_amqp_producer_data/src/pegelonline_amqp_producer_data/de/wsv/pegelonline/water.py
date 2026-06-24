@@ -20,13 +20,13 @@ class Water:
     Federal waterway / water body the gauge measures, as returned in the nested `water` object of `GET /stations.json` on the PegelOnline REST API v2. Acts as the routing hierarchy for the MQTT Unified Namespace topology.
     
     Attributes:
-        shortname (str)
-        longname (str)
+        shortname (typing.Optional[str])
+        longname (typing.Optional[str])
     """
     
     
-    shortname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
-    longname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
+    shortname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
+    longname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Water':
@@ -155,6 +155,6 @@ class Water:
             An instance of the dataclass.
         """
         return cls(
-            shortname='dlempvibhnfzrjorlsti',
-            longname='wkhniommwyunotxhwljl'
+            shortname='dtjozsaewaoxddyhdlce',
+            longname='uotzzjjamgczpmcbmmww'
         )

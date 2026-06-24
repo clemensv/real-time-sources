@@ -20,17 +20,17 @@ class Translations:
     Defines translations.
     
     Attributes:
-        tableName (str)
-        fieldName (str)
-        language (str)
-        translation (str)
+        tableName (typing.Optional[str])
+        fieldName (typing.Optional[str])
+        language (typing.Optional[str])
+        translation (typing.Optional[str])
     """
     
     
-    tableName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tableName"))
-    fieldName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fieldName"))
-    language: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="language"))
-    translation: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="translation"))
+    tableName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tableName"))
+    fieldName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fieldName"))
+    language: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="language"))
+    translation: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="translation"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Translations':
@@ -159,8 +159,8 @@ class Translations:
             An instance of the dataclass.
         """
         return cls(
-            tableName='vtkbdtqtcwayuetdcmbq',
-            fieldName='tyqafzfsiamcqtzwesrk',
-            language='qwpzctgesyixpktucatg',
-            translation='ivzawsbbryzyaurzdeid'
+            tableName='ajwtloujfhonphvhkqjp',
+            fieldName='ksddxkmzuwucsoijdmnu',
+            language='ceurqbjodtabflpqhsgg',
+            translation='whzlehydbgcybvstlkqz'
         )

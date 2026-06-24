@@ -157,7 +157,7 @@ class LandForecastPeriod:
             An instance of the dataclass.
         """
         return cls(
-            period_number=int(65),
-            period_name='sgfldjewhttvylalnyzz',
-            detailed_forecast='ifvzuszlgkosgellzitw'
+            period_number=int(34),
+            period_name='ciazfrbwngmfyadxkwqk',
+            detailed_forecast='hrlgwcysexaqzavnlcxg'
         )

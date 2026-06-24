@@ -22,14 +22,14 @@ class Timeframes:
     Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.
     
     Attributes:
-        timeframeGroupId (str)
+        timeframeGroupId (typing.Optional[str])
         startTime (typing.Optional[str])
         endTime (typing.Optional[str])
         serviceDates (typing.Union[Calendar, CalendarDates])
     """
     
     
-    timeframeGroupId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeframeGroupId"))
+    timeframeGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeframeGroupId"))
     startTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startTime"))
     endTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endTime"))
     serviceDates: typing.Union[Calendar, CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
@@ -161,8 +161,8 @@ class Timeframes:
             An instance of the dataclass.
         """
         return cls(
-            timeframeGroupId='rhqoriqsjzcdfyrgkyib',
-            startTime='hmnaaecnhygzipiyfyvh',
-            endTime='jsnelzmxrhndwqsgyvlp',
+            timeframeGroupId='sefqqgpnklztechnbtan',
+            startTime='uvspmcwhbvbpnnvfcgyx',
+            endTime='enbgvgcbanpwbrokdmwd',
             serviceDates=None
         )

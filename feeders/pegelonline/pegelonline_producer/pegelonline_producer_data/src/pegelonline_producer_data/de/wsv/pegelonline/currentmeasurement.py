@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 from pegelonline_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
 from pegelonline_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
-from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 import datetime
 
 
@@ -168,9 +168,9 @@ class CurrentMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='hacjmvmwxbefipmnfdda',
+            station_id='zybflscyisxzdanephij',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(49.74015286451168),
+            value=float(8.49554474299814),
             stateMnwMhw=StateMnwMhwEnum.low,
             stateNswHsw=StateNswHswEnum.normal,
             trend=TrendEnum.VALUE_NEG_1

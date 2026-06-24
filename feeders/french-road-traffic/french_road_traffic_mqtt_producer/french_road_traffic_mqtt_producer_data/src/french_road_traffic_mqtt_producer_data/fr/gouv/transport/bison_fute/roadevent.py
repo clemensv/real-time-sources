@@ -22,9 +22,9 @@ class RoadEvent:
     Attributes:
         situation_id (str)
         record_id (str)
-        version (str)
+        version (typing.Optional[str])
         severity (typing.Optional[str])
-        record_type (str)
+        record_type (typing.Optional[str])
         probability (typing.Optional[str])
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
@@ -44,9 +44,9 @@ class RoadEvent:
     
     situation_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="situation_id"))
     record_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="record_id"))
-    version: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="version"))
+    version: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="version"))
     severity: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
-    record_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="record_type"))
+    record_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="record_type"))
     probability: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="probability"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
@@ -189,23 +189,23 @@ class RoadEvent:
             An instance of the dataclass.
         """
         return cls(
-            situation_id='wpxtgegbuiqfelrvihmz',
-            record_id='usyqwrylwyawxdyhwoxl',
-            version='tlktxatiqrukhwipgtmd',
-            severity='pewqhibevssctukupxdr',
-            record_type='qmunegtkvksgzeahzuxa',
-            probability='jymepdnmlbcondxqtmin',
-            latitude=float(80.93573309069127),
-            longitude=float(57.087901900267724),
-            road_number='yjsdpwfruvqrffnlklfo',
-            town_name='vdrnoxftihpymnwaweai',
-            direction='azvoknhgvmikkbrcoxld',
-            description='enwsziiqudunfqzqhpjw',
-            location_description='zrkmzbkfytsoeywumaqs',
-            source_name='bgczosolgtrlhptjxuag',
-            validity_status='wrbjfpqnlcitvsxddjlg',
-            overall_start_time='fdtwblqvagmzuyucelet',
-            overall_end_time='rusiyveqlnwuhsmqmees',
-            creation_time='dekpoguwemtrqnzohqkn',
-            observation_time='htceednljykcctltcnnk'
+            situation_id='xtdttlyqletplaicpfim',
+            record_id='ggiyazrrlewrweuysxfp',
+            version='jxueaizuacmbvvjyhwjl',
+            severity='iyyvjbfrerckhymmtwtf',
+            record_type='ppbvwvpgeunrswbevtgi',
+            probability='rbfukjmqfukryruuxuen',
+            latitude=float(56.85300730557654),
+            longitude=float(0.5050270279112312),
+            road_number='okymwqylftkccjscvzwq',
+            town_name='ayoyuknfdecpvyewlbxe',
+            direction='ysmekoiizxkzrdrddinl',
+            description='zwgzfysulygreucwwjbq',
+            location_description='lbqqagvojugqbikviflx',
+            source_name='nydmmtjbxysusjxlbixa',
+            validity_status='endeevtezmepdzbdivst',
+            overall_start_time='ovihfcdhlfoguctfrzyd',
+            overall_end_time='wpjknyivqzrgqqbovjet',
+            creation_time='qvfhovevmbeffulypebo',
+            observation_time='mdmairzwwtnwukoovbpd'
         )

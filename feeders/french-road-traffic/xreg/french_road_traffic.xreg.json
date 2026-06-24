@@ -331,7 +331,10 @@
                                 "description": "Unique identifier of this specific situation record within the parent situation (e.g. '230814-001797-1'). Each situation may contain multiple records."
                               },
                               "version": {
-                                "type": "string",
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
                                 "description": "Version number of the parent situation, incremented each time the situation is updated by the publisher."
                               },
                               "severity": {
@@ -342,7 +345,10 @@
                                 "description": "Overall severity of the parent situation as published in the overallSeverity element. Possible values include 'low', 'medium', 'high', 'highest'. Null when severity is not provided."
                               },
                               "record_type": {
-                                "type": "string",
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
                                 "description": "DATEX II xsi:type of the situation record, indicating the category of road event. Known values: Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, RoadsideServiceDisruption."
                               },
                               "probability": {

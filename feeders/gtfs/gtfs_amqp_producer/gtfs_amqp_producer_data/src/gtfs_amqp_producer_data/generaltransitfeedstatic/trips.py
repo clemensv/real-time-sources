@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
 from gtfs_amqp_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
-from typing import Any
 from gtfs_amqp_producer_data.generaltransitfeedstatic.calendar import Calendar
+from typing import Any
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -23,10 +23,10 @@ class Trips:
     Identifies a trip.
     
     Attributes:
-        routeId (str)
+        routeId (typing.Optional[str])
         serviceDates (Calendar)
         serviceExceptions (typing.List[CalendarDates])
-        tripId (str)
+        tripId (typing.Optional[str])
         tripHeadsign (typing.Optional[str])
         tripShortName (typing.Optional[str])
         directionId (Any)
@@ -37,10 +37,10 @@ class Trips:
     """
     
     
-    routeId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
+    routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
     serviceDates: Calendar=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
     serviceExceptions: typing.List[CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceExceptions"))
-    tripId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
+    tripId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
     tripHeadsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripHeadsign"))
     tripShortName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripShortName"))
     directionId: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="directionId"))
@@ -176,15 +176,15 @@ class Trips:
             An instance of the dataclass.
         """
         return cls(
-            routeId='yugtkdlvfhlludavkvto',
+            routeId='mmdmypdnlinvfnkdihck',
             serviceDates=None,
-            serviceExceptions=[None, None, None, None, None],
-            tripId='ioyjdruyhsxxkyxyyapg',
-            tripHeadsign='qshkwidyeflflfuhdnjb',
-            tripShortName='pksatvyyjlpfpxhhvzsh',
+            serviceExceptions=[None, None, None],
+            tripId='qpswhhypwxjejfxrujix',
+            tripHeadsign='djskvafoomgoomivvqfg',
+            tripShortName='qcvdhevcfzsmewwnnvni',
             directionId=None,
-            blockId='omwvwjlvovqtaraepzmv',
-            shapeId='vthifhdjpncpcgedpyeq',
+            blockId='kpdfebmnkajkgcheqdgi',
+            shapeId='qsjemisqrzdtnvdearae',
             wheelchairAccessible=None,
             bikesAllowed=None
         )

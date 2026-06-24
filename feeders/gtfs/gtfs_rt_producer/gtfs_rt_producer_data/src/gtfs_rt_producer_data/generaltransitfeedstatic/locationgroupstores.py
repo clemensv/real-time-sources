@@ -20,15 +20,15 @@ class LocationGroupStores:
     Defines location group stores.
     
     Attributes:
-        locationGroupStoreId (str)
-        locationGroupId (str)
-        storeId (str)
+        locationGroupStoreId (typing.Optional[str])
+        locationGroupId (typing.Optional[str])
+        storeId (typing.Optional[str])
     """
     
     
-    locationGroupStoreId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupStoreId"))
-    locationGroupId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupId"))
-    storeId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="storeId"))
+    locationGroupStoreId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupStoreId"))
+    locationGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupId"))
+    storeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="storeId"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'LocationGroupStores':
@@ -157,7 +157,7 @@ class LocationGroupStores:
             An instance of the dataclass.
         """
         return cls(
-            locationGroupStoreId='jpvpqecanbnrfafgfsws',
-            locationGroupId='uccmgkdlufsxasitttau',
-            storeId='vltrsziuphaxglfkxfms'
+            locationGroupStoreId='urvwuvinvkpokkvucyvg',
+            locationGroupId='zabsexlwrwavknzhtvbl',
+            storeId='vnwrlwcvknobmozocosa'
         )

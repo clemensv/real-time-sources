@@ -20,15 +20,15 @@ class FareProducts:
     Defines fare products.
     
     Attributes:
-        fareProductId (str)
-        fareProductName (str)
+        fareProductId (typing.Optional[str])
+        fareProductName (typing.Optional[str])
         fareProductDesc (typing.Optional[str])
         fareProductUrl (typing.Optional[str])
     """
     
     
-    fareProductId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
-    fareProductName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductName"))
+    fareProductId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
+    fareProductName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductName"))
     fareProductDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductDesc"))
     fareProductUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductUrl"))
 
@@ -159,8 +159,8 @@ class FareProducts:
             An instance of the dataclass.
         """
         return cls(
-            fareProductId='uqlepmkdvcvlauhzxpbt',
-            fareProductName='pkjbbughpvyyokbstzwn',
-            fareProductDesc='evarrqajavnufyckapsw',
-            fareProductUrl='fexlxqdkdbjqpccqxegv'
+            fareProductId='jgbgsovpmqkuukvgrjxx',
+            fareProductName='jmbathpqychzzhozrluy',
+            fareProductDesc='hhrloxvvjhnmoilvkjmw',
+            fareProductUrl='zrzfbzegkbeixoslgqvu'
         )

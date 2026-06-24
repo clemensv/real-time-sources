@@ -20,15 +20,15 @@ class BookingRules:
     Defines booking rules.
     
     Attributes:
-        bookingRuleId (str)
-        bookingRuleName (str)
+        bookingRuleId (typing.Optional[str])
+        bookingRuleName (typing.Optional[str])
         bookingRuleDesc (typing.Optional[str])
         bookingRuleUrl (typing.Optional[str])
     """
     
     
-    bookingRuleId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bookingRuleId"))
-    bookingRuleName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bookingRuleName"))
+    bookingRuleId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bookingRuleId"))
+    bookingRuleName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bookingRuleName"))
     bookingRuleDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bookingRuleDesc"))
     bookingRuleUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bookingRuleUrl"))
 
@@ -159,8 +159,8 @@ class BookingRules:
             An instance of the dataclass.
         """
         return cls(
-            bookingRuleId='fcxjceleiodunuqjwfgy',
-            bookingRuleName='xfgeyerjmxlheyyktjrf',
-            bookingRuleDesc='jdiuizegcafgmjohxdeq',
-            bookingRuleUrl='rouqjwohumdfcqdafpjt'
+            bookingRuleId='inbzcugzvxfdaqftforg',
+            bookingRuleName='wfbrphagevphxtjjetxu',
+            bookingRuleDesc='swnmvzocbhshtexeilfc',
+            bookingRuleUrl='pntaczqjgrqcrgmtawrl'
         )

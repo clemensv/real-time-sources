@@ -20,7 +20,7 @@ class Shapes:
     Defines shapes.
     
     Attributes:
-        shapeId (str)
+        shapeId (typing.Optional[str])
         shapePtLat (float)
         shapePtLon (float)
         shapePtSequence (int)
@@ -28,7 +28,7 @@ class Shapes:
     """
     
     
-    shapeId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeId"))
+    shapeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeId"))
     shapePtLat: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapePtLat"))
     shapePtLon: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapePtLon"))
     shapePtSequence: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapePtSequence"))
@@ -161,9 +161,9 @@ class Shapes:
             An instance of the dataclass.
         """
         return cls(
-            shapeId='zugniklmoffatfghsbky',
-            shapePtLat=float(39.69765361385548),
-            shapePtLon=float(73.61459634086374),
-            shapePtSequence=int(14),
-            shapeDistTraveled=float(24.344248034647887)
+            shapeId='aqdtzdjsolvwaftjvoll',
+            shapePtLat=float(51.23413174162318),
+            shapePtLon=float(92.50276024219504),
+            shapePtSequence=int(38),
+            shapeDistTraveled=float(31.968283386181962)
         )

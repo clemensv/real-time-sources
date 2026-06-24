@@ -21,7 +21,7 @@ class Stops:
     Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.
     
     Attributes:
-        stopId (str)
+        stopId (typing.Optional[str])
         stopCode (typing.Optional[str])
         stopName (typing.Optional[str])
         ttsStopName (typing.Optional[str])
@@ -39,7 +39,7 @@ class Stops:
     """
     
     
-    stopId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
+    stopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
     stopCode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopCode"))
     stopName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopName"))
     ttsStopName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ttsStopName"))
@@ -182,19 +182,19 @@ class Stops:
             An instance of the dataclass.
         """
         return cls(
-            stopId='vhxsiusspyozsljpoxjg',
-            stopCode='qcrthzhpbxppwuwtloup',
-            stopName='nzomagyzpdjvwcmfxoow',
-            ttsStopName='jhnlpigezeplfbgidkmt',
-            stopDesc='kwiqhzsyhjzwmmvsgstj',
-            stopLat=float(90.33188987227516),
-            stopLon=float(22.700322104232818),
-            zoneId='ftmbvlasegeeusalajdg',
-            stopUrl='zoxhrlhonwzzmumolagc',
+            stopId='edyztierlftdmsihhdjl',
+            stopCode='ywrwlnxnwkrjdqputbln',
+            stopName='pbbsgvffuuikoqjvbxea',
+            ttsStopName='hlwmwckqrltyucalcxyz',
+            stopDesc='orhrutfvvxnlmjvpnuhu',
+            stopLat=float(53.31184794604741),
+            stopLon=float(79.34273151610763),
+            zoneId='axoxtwmhdzekzifnjokn',
+            stopUrl='qfkyurqpbovicihhlrwr',
             locationType=None,
-            parentStation='yijyujplsajleihwuoqa',
-            stopTimezone='vcypdfwyhlossjyduzcn',
+            parentStation='fpfkjwtamiuudmmqupjb',
+            stopTimezone='anarskplulgcmcbhndmt',
             wheelchairBoarding=None,
-            levelId='vgabqzcjzwozmhuxkklc',
-            platformCode='yvcsqmmlemprjucbdxvi'
+            levelId='kotjmvxlyicgdhvyzzsk',
+            platformCode='ykzwnxltxzulrbnpjsii'
         )

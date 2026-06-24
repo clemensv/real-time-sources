@@ -30,7 +30,7 @@ class Test_LandZoneForecast(unittest.TestCase):
         Create instance of LandZoneForecast for testing
         """
         instance = LandZoneForecast(
-            zone_id='nozsgdncogvmgycnvjbr',
+            zone_id='ustuwxjhahuzcwogahsi',
             updated=datetime.datetime.now(datetime.timezone.utc),
             periods=[None, None, None, None, None]
         )
@@ -41,7 +41,7 @@ class Test_LandZoneForecast(unittest.TestCase):
         """
         Test zone_id property
         """
-        test_value = 'nozsgdncogvmgycnvjbr'
+        test_value = 'ustuwxjhahuzcwogahsi'
         self.instance.zone_id = test_value
         self.assertEqual(self.instance.zone_id, test_value)
     

@@ -20,15 +20,15 @@ class RouteNetworks:
     Defines route networks.
     
     Attributes:
-        routeNetworkId (str)
-        routeId (str)
-        networkId (str)
+        routeNetworkId (typing.Optional[str])
+        routeId (typing.Optional[str])
+        networkId (typing.Optional[str])
     """
     
     
-    routeNetworkId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeNetworkId"))
-    routeId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
-    networkId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
+    routeNetworkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeNetworkId"))
+    routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
+    networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RouteNetworks':
@@ -157,7 +157,7 @@ class RouteNetworks:
             An instance of the dataclass.
         """
         return cls(
-            routeNetworkId='yvjlbkogaoithzwgckfc',
-            routeId='mqscezfkcxdttqmoihob',
-            networkId='dkfrrvuglqyeowxqazvv'
+            routeNetworkId='sglbcfhnibphbqqpnyna',
+            routeId='flugovlmvrericbiarwa',
+            networkId='oarjkqomztbhhnbjttbx'
         )

@@ -20,15 +20,15 @@ class Networks:
     Defines networks.
     
     Attributes:
-        networkId (str)
-        networkName (str)
+        networkId (typing.Optional[str])
+        networkName (typing.Optional[str])
         networkDesc (typing.Optional[str])
         networkUrl (typing.Optional[str])
     """
     
     
-    networkId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
-    networkName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkName"))
+    networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
+    networkName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkName"))
     networkDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkDesc"))
     networkUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkUrl"))
 
@@ -159,8 +159,8 @@ class Networks:
             An instance of the dataclass.
         """
         return cls(
-            networkId='vxthjupbuewhgmeqfukb',
-            networkName='eapuphhhzqkpwkpilwpy',
-            networkDesc='wfycifhisosgppoirkio',
-            networkUrl='ivzbbzadmaugppwdieua'
+            networkId='rfyazdtvwwpgiqadfnnr',
+            networkName='crkmhcukyshapodzigcr',
+            networkDesc='vyruydztyqqbtlxrkhvy',
+            networkUrl='gzzlfdpuladdwlrlcwrp'
         )

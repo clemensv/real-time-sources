@@ -157,11 +157,11 @@ def normalize_warning(alert_obj: dict, country: str) -> Optional[WeatherWarning]
 
     return WeatherWarning(
         identifier=identifier,
-        sender=str(sender) if sender is not None else None,  # type: ignore[arg-type]
-        sent=datetime.fromisoformat(sent) if sent else None,  # type: ignore[arg-type]
-        status=StatusEnum(status) if status else None,  # type: ignore[arg-type]
-        msg_type=MsgTypeenum(msg_type) if msg_type else None,  # type: ignore[arg-type]
-        scope=ScopeEnum(scope) if scope else None,  # type: ignore[arg-type]
+        sender=str(sender) if sender is not None else None,
+        sent=datetime.fromisoformat(sent) if sent else None,
+        status=StatusEnum(status) if status else None,
+        msg_type=MsgTypeenum(msg_type) if msg_type else None,
+        scope=ScopeEnum(scope) if scope else None,
         country=country,
         event=event,
         category=category,

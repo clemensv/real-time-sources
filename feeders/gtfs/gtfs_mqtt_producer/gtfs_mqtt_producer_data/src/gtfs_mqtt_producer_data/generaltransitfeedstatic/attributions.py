@@ -24,7 +24,7 @@ class Attributions:
         agencyId (typing.Optional[str])
         routeId (typing.Optional[str])
         tripId (typing.Optional[str])
-        organizationName (str)
+        organizationName (typing.Optional[str])
         isProducer (typing.Optional[int])
         isOperator (typing.Optional[int])
         isAuthority (typing.Optional[int])
@@ -38,7 +38,7 @@ class Attributions:
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
     routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
     tripId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
-    organizationName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizationName"))
+    organizationName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizationName"))
     isProducer: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="isProducer"))
     isOperator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="isOperator"))
     isAuthority: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="isAuthority"))
@@ -173,15 +173,15 @@ class Attributions:
             An instance of the dataclass.
         """
         return cls(
-            attributionId='fxfvrsupatgteqlqoiec',
-            agencyId='ikzankangasmopxpecus',
-            routeId='ygzzlktcczpygjiazvny',
-            tripId='qupzxcvmgnakuhijammt',
-            organizationName='ctqstmrfsnppqwfpszho',
-            isProducer=int(81),
-            isOperator=int(21),
-            isAuthority=int(7),
-            attributionUrl='saokizifvwbkuboppyow',
-            attributionEmail='kvuznzogpxuwcrqmipsn',
-            attributionPhone='vszrsqdyqawqmelmhixi'
+            attributionId='zipzpcromkrlwagsvdqw',
+            agencyId='rhwhgligmcpkiacvwpjf',
+            routeId='zowublfprehyqvtathmm',
+            tripId='hsslxyjgdknfiqnsmsyy',
+            organizationName='bqozrgpdylswkhyirpkd',
+            isProducer=int(43),
+            isOperator=int(61),
+            isAuthority=int(76),
+            attributionUrl='pqekglnbzttaynvswfpo',
+            attributionEmail='smasgxomqnntqeqzddxe',
+            attributionPhone='yjonfvtrrjidetjemusr'
         )

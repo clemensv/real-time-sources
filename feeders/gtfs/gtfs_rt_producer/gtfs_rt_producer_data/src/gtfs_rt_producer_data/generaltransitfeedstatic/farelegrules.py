@@ -20,8 +20,8 @@ class FareLegRules:
     Defines fare leg rules.
     
     Attributes:
-        fareLegRuleId (str)
-        fareProductId (str)
+        fareLegRuleId (typing.Optional[str])
+        fareProductId (typing.Optional[str])
         legGroupId (typing.Optional[str])
         networkId (typing.Optional[str])
         fromAreaId (typing.Optional[str])
@@ -29,8 +29,8 @@ class FareLegRules:
     """
     
     
-    fareLegRuleId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareLegRuleId"))
-    fareProductId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
+    fareLegRuleId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareLegRuleId"))
+    fareProductId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
     legGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="legGroupId"))
     networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
     fromAreaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromAreaId"))
@@ -163,10 +163,10 @@ class FareLegRules:
             An instance of the dataclass.
         """
         return cls(
-            fareLegRuleId='vkgqjwwctplffuzsevuf',
-            fareProductId='sovodkhppgedicddaihg',
-            legGroupId='jbikkqpkgmwwudsrdann',
-            networkId='cdsztsgjqlpdqvfqkqki',
-            fromAreaId='zshqzbtqljpxbvociyyt',
-            toAreaId='xdmnedhgbzzzywrosurj'
+            fareLegRuleId='fmkwdcvaxbazuynwlehe',
+            fareProductId='mdrejambpkhdnydttcjm',
+            legGroupId='ooiuxdnfqzvtxhepcbyh',
+            networkId='fzazswszeupxxgamkjve',
+            fromAreaId='ttflqhftriwqjctchevq',
+            toAreaId='wwxraosfletmfnyolcvh'
         )

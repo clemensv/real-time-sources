@@ -215,7 +215,7 @@ class LuchtmeetnetAPI:
                             station_number=row.get("station_number", station.station_number),
                             formula=row.get("formula", formula),
                             value=row.get("value", 0.0),
-                            timestamp_measured=str(timestamp) if timestamp is not None else None,  # type: ignore[arg-type]
+                            timestamp_measured=str(timestamp) if timestamp is not None else None,
                         ),
                         flush_producer=False,
                     )
@@ -244,7 +244,7 @@ class LuchtmeetnetAPI:
                     data=LKI(
                         station_number=row.get("station_number", station.station_number),
                         value=row.get("value", 0),
-                        timestamp_measured=str(timestamp) if timestamp is not None else None,  # type: ignore[arg-type]
+                        timestamp_measured=str(timestamp) if timestamp is not None else None,
                     ),
                     flush_producer=False,
                 )

@@ -26,7 +26,7 @@ class FireIncident:
         state (str)
         title (str)
         alert_level (str)
-        status (str)
+        status (typing.Optional[str])
         location (typing.Optional[str])
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
@@ -42,7 +42,7 @@ class FireIncident:
     state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
     alert_level: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alert_level"))
-    status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
+    status: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
     location: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
@@ -179,17 +179,17 @@ class FireIncident:
             An instance of the dataclass.
         """
         return cls(
-            incident_id='abvfgefbmztwxejpvzuj',
-            state='kynuldadyxjsyanqkzel',
-            title='gsgyvxegpwsumlyyrbdo',
-            alert_level='yxtwycjpmgxiqicadxyo',
-            status='lcxjarlbyochwaoszcne',
-            location='yfmuevxtrpkcziycqdav',
-            latitude=float(92.424044875087),
-            longitude=float(81.0131054910657),
-            size_hectares=float(98.86113634292185),
-            type='wgpqkcvvdpuwiaijpbvy',
-            responsible_agency='mqyfucgllkcthbauabtk',
+            incident_id='ilwqsbeqeeaiuerttrgm',
+            state='cnvrchvdxpdljkscssgk',
+            title='gagjhvybpagavrfuihph',
+            alert_level='ktuvmtbewgsezwmttkrb',
+            status='ifozldewqitdodumrjqg',
+            location='efggjyuwrkpyzjhshbbk',
+            latitude=float(77.31380349686448),
+            longitude=float(85.41329346336181),
+            size_hectares=float(96.6403438426712),
+            type='xkrglikpoijpjpvypdka',
+            responsible_agency='ubprjvejfrlndmkjftvd',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            source_url='fdtfvqhnodocacdhtvdv'
+            source_url='igihhxmkkpapgwtvrunx'
         )

@@ -3709,19 +3709,31 @@
                       "type": "object",
                       "properties": {
                         "agencyId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a transit brand which is often synonymous with a transit agency."
                         },
                         "agencyName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Full name of the transit agency."
                         },
                         "agencyUrl": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "URL of the transit agency."
                         },
                         "agencyTimezone": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Timezone where the transit agency is located."
                         },
                         "agencyLang": {
@@ -3778,11 +3790,17 @@
                       "type": "object",
                       "properties": {
                         "areaId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies an area."
                         },
                         "areaName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the area."
                         },
                         "areaDesc": {
@@ -3847,7 +3865,10 @@
                           "description": "Identifies the trip associated with the attribution."
                         },
                         "organizationName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the organization associated with the attribution."
                         },
                         "isProducer": {
@@ -3911,11 +3932,17 @@
                       "type": "object",
                       "properties": {
                         "bookingRuleId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a booking rule."
                         },
                         "bookingRuleName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the booking rule."
                         },
                         "bookingRuleDesc": {
@@ -3960,7 +3987,10 @@
                       "type": "object",
                       "properties": {
                         "fareId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare class."
                         },
                         "price": {
@@ -3968,7 +3998,10 @@
                           "description": "Fare price, in the unit specified by currency_type."
                         },
                         "currencyType": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Currency type used to pay the fare."
                         },
                         "paymentMethod": {
@@ -4024,11 +4057,17 @@
                       "type": "object",
                       "properties": {
                         "fareLegRuleId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare leg rule."
                         },
                         "fareProductId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare product."
                         },
                         "legGroupId": {
@@ -4083,11 +4122,17 @@
                       "type": "object",
                       "properties": {
                         "fareMediaId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare media."
                         },
                         "fareMediaName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the fare media."
                         },
                         "fareMediaDesc": {
@@ -4132,11 +4177,17 @@
                       "type": "object",
                       "properties": {
                         "fareProductId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare product."
                         },
                         "fareProductName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the fare product."
                         },
                         "fareProductDesc": {
@@ -4181,7 +4232,10 @@
                       "type": "object",
                       "properties": {
                         "fareId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare class."
                         },
                         "routeId": {
@@ -4235,11 +4289,17 @@
                       "type": "object",
                       "properties": {
                         "fareTransferRuleId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare transfer rule."
                         },
                         "fareProductId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a fare product."
                         },
                         "transferCount": {
@@ -4299,15 +4359,24 @@
                       "type": "object",
                       "properties": {
                         "feedPublisherName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Full name of the organization that publishes the feed."
                         },
                         "feedPublisherUrl": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "URL of the feed publishing organization's website."
                         },
                         "feedLang": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Default language for the text in this feed."
                         },
                         "defaultLang": {
@@ -4373,15 +4442,24 @@
                       "type": "object",
                       "properties": {
                         "tripId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a trip."
                         },
                         "startTime": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Time at which service begins with the specified frequency."
                         },
                         "endTime": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Time at which service ends with the specified frequency."
                         },
                         "headwaySecs": {
@@ -4427,7 +4505,10 @@
                       "type": "object",
                       "properties": {
                         "levelId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a level."
                         },
                         "levelIndex": {
@@ -4515,11 +4596,17 @@
                       "type": "object",
                       "properties": {
                         "locationGroupId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a location group."
                         },
                         "locationGroupName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the location group."
                         },
                         "locationGroupDesc": {
@@ -4564,15 +4651,24 @@
                       "type": "object",
                       "properties": {
                         "locationGroupStoreId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a location group store."
                         },
                         "locationGroupId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a location group."
                         },
                         "storeId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a store."
                         }
                       },
@@ -4608,11 +4704,17 @@
                       "type": "object",
                       "properties": {
                         "networkId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a network."
                         },
                         "networkName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the network."
                         },
                         "networkDesc": {
@@ -4657,15 +4759,24 @@
                       "type": "object",
                       "properties": {
                         "pathwayId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a pathway."
                         },
                         "fromStopId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a stop or station where the pathway begins."
                         },
                         "toStopId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a stop or station where the pathway ends."
                         },
                         "pathwayMode": {
@@ -4746,15 +4857,24 @@
                       "type": "object",
                       "properties": {
                         "routeNetworkId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a route network."
                         },
                         "routeId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a route."
                         },
                         "networkId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a network."
                         }
                       },
@@ -4833,7 +4953,10 @@
                       "type": "object",
                       "properties": {
                         "routeId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a route."
                         },
                         "agencyId": {
@@ -4933,7 +5056,10 @@
                       "type": "object",
                       "properties": {
                         "shapeId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a shape."
                         },
                         "shapePtLat": {
@@ -4987,15 +5113,24 @@
                       "type": "object",
                       "properties": {
                         "stopAreaId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a stop area."
                         },
                         "stopId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a stop."
                         },
                         "areaId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies an area."
                         }
                       },
@@ -5053,7 +5188,10 @@
                       "type": "object",
                       "properties": {
                         "stopId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area."
                         },
                         "stopCode": {
@@ -5214,7 +5352,10 @@
                       "type": "object",
                       "properties": {
                         "tripId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a trip."
                         },
                         "arrivalTime": {
@@ -5322,7 +5463,10 @@
                       "type": "object",
                       "properties": {
                         "serviceId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a set of dates when service is available for one or more routes."
                         },
                         "monday": {
@@ -5368,11 +5512,17 @@
                           }
                         },
                         "startDate": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Start service day for the service interval."
                         },
                         "endDate": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "End service day for the service interval."
                         }
                       },
@@ -5403,11 +5553,17 @@
                       "type": "object",
                       "properties": {
                         "serviceId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a set of dates when a service exception occurs for one or more routes."
                         },
                         "date": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Date when service exception occurs."
                         },
                         "exceptionType": {
@@ -5428,7 +5584,10 @@
                       "type": "object",
                       "properties": {
                         "timeframeGroupId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a timeframe or set of timeframes."
                         },
                         "startTime": {
@@ -5489,11 +5648,17 @@
                       "type": "object",
                       "properties": {
                         "fromStopId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a stop or station where a connection between routes begins."
                         },
                         "toStopId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a stop or station where a connection between routes ends."
                         },
                         "transferType": {
@@ -5538,19 +5703,31 @@
                       "type": "object",
                       "properties": {
                         "tableName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the table containing the field to be translated."
                         },
                         "fieldName": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Name of the field to be translated."
                         },
                         "language": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Language of the translation."
                         },
                         "translation": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Translated value."
                         }
                       },
@@ -5596,7 +5773,10 @@
                       "type": "object",
                       "properties": {
                         "serviceId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a set of dates when service is available for one or more routes."
                         },
                         "monday": {
@@ -5642,11 +5822,17 @@
                           }
                         },
                         "startDate": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Start service day for the service interval."
                         },
                         "endDate": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "End service day for the service interval."
                         }
                       },
@@ -5677,11 +5863,17 @@
                       "type": "object",
                       "properties": {
                         "serviceId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a set of dates when a service exception occurs for one or more routes."
                         },
                         "date": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Date when service exception occurs."
                         },
                         "exceptionType": {
@@ -5731,7 +5923,10 @@
                       "type": "object",
                       "properties": {
                         "routeId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a route."
                         },
                         "serviceDates": {
@@ -5748,7 +5943,10 @@
                           }
                         },
                         "tripId": {
-                          "type": "string",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
                           "description": "Identifies a trip."
                         },
                         "tripHeadsign": {

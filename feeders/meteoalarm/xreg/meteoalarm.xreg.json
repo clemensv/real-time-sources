@@ -180,11 +180,17 @@
                     "description": "The unique CAP alert identifier assigned by the issuing national meteorological service."
                   },
                   "sender": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de')."
                   },
                   "sent": {
-                    "type": "datetime",
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "The date and time when the warning was issued, in ISO-8601 format."
                   },
                   "status": {

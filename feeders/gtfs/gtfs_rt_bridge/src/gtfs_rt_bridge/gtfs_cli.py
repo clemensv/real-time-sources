@@ -72,8 +72,8 @@ def iter_schedule_file_contents(schedule_file_path: str, file_name: str):
 class KafkaMqttLikePublisher:
     def __init__(self, producer: Producer, topic: str, cloudevents_mode: str) -> None:
         self._producer = producer
-        self._realtime = GeneralTransitFeedRealTimeEventProducer(producer, topic, cloudevents_mode)  # type: ignore[arg-type]
-        self._static = GeneralTransitFeedStaticEventProducer(producer, topic, cloudevents_mode)  # type: ignore[arg-type]
+        self._realtime = GeneralTransitFeedRealTimeEventProducer(producer, topic, cloudevents_mode)
+        self._static = GeneralTransitFeedStaticEventProducer(producer, topic, cloudevents_mode)
 
     async def flush(self) -> None:
         self._producer.flush()
@@ -255,7 +255,7 @@ def feed_realtime_messages(
     def _run_schedule(force_refresh: bool):
         nonlocal last_schedule_completed
         try:
-            bg_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)  # type: ignore[arg-type]
+            bg_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)
             fetch_and_process_schedule(
                 agency_id,
                 bg_static_producer,

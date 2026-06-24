@@ -20,15 +20,15 @@ class Areas:
     Defines areas.
     
     Attributes:
-        areaId (str)
-        areaName (str)
+        areaId (typing.Optional[str])
+        areaName (typing.Optional[str])
         areaDesc (typing.Optional[str])
         areaUrl (typing.Optional[str])
     """
     
     
-    areaId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaId"))
-    areaName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaName"))
+    areaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaId"))
+    areaName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaName"))
     areaDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaDesc"))
     areaUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaUrl"))
 
@@ -159,8 +159,8 @@ class Areas:
             An instance of the dataclass.
         """
         return cls(
-            areaId='fbpqzmqadbjyppnfkttk',
-            areaName='nledoqqpoiuwpdqumvpk',
-            areaDesc='asyyhpqjxzzhjqwmonhg',
-            areaUrl='jrgysvxwikbqsrgcvuwx'
+            areaId='gkycolzpnyhjdxsfngmh',
+            areaName='wpeyccvhsbbcrsmtzdrg',
+            areaDesc='naskgbxbyitxfnikywtd',
+            areaUrl='ckmggrqlowdxzyhtbicx'
         )

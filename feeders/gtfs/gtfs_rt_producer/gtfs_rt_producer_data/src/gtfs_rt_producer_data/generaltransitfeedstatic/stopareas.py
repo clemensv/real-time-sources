@@ -20,15 +20,15 @@ class StopAreas:
     Defines stop areas.
     
     Attributes:
-        stopAreaId (str)
-        stopId (str)
-        areaId (str)
+        stopAreaId (typing.Optional[str])
+        stopId (typing.Optional[str])
+        areaId (typing.Optional[str])
     """
     
     
-    stopAreaId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopAreaId"))
-    stopId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
-    areaId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaId"))
+    stopAreaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopAreaId"))
+    stopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
+    areaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaId"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'StopAreas':
@@ -157,7 +157,7 @@ class StopAreas:
             An instance of the dataclass.
         """
         return cls(
-            stopAreaId='wvwzcwmxlhlpozxalktz',
-            stopId='cxoxxtwuyjogokqebckh',
-            areaId='jbwgcavjzzxvfynrugtt'
+            stopAreaId='aaoamifmskqsqvncfnag',
+            stopId='gnvaoihahzywhmaqfnpw',
+            areaId='vhtngtohqgcpvtbzyevh'
         )

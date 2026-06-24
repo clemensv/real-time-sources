@@ -22,13 +22,13 @@ class LKI:
     Attributes:
         station_number (str)
         value (int)
-        timestamp_measured (str)
+        timestamp_measured (typing.Optional[str])
     """
     
     
     station_number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_number"))
     value: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    timestamp_measured: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp_measured"))
+    timestamp_measured: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp_measured"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'LKI':
@@ -157,7 +157,7 @@ class LKI:
             An instance of the dataclass.
         """
         return cls(
-            station_number='joctbhkrhscxgcygskrt',
-            value=int(38),
-            timestamp_measured='wohseytveugvxxjmvemr'
+            station_number='bprtijhijwikgcheyweg',
+            value=int(17),
+            timestamp_measured='zhhgkkeatjzjealghkmk'
         )

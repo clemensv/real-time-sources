@@ -205,7 +205,10 @@
                     ]
                   },
                   "start_date": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Date on which the closure event begins, normalized to YYYY-MM-DD.",
                     "alternates": [
                       {
@@ -215,7 +218,10 @@
                     ]
                   },
                   "end_date": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Date on which the closure event ends, normalized to YYYY-MM-DD.",
                     "alternates": [
                       {

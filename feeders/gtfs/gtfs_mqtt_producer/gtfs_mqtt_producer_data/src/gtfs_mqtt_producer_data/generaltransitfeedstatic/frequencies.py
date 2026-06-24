@@ -20,17 +20,17 @@ class Frequencies:
     Defines frequencies.
     
     Attributes:
-        tripId (str)
-        startTime (str)
-        endTime (str)
+        tripId (typing.Optional[str])
+        startTime (typing.Optional[str])
+        endTime (typing.Optional[str])
         headwaySecs (int)
         exactTimes (typing.Optional[int])
     """
     
     
-    tripId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
-    startTime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startTime"))
-    endTime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endTime"))
+    tripId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
+    startTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startTime"))
+    endTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endTime"))
     headwaySecs: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="headwaySecs"))
     exactTimes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="exactTimes"))
 
@@ -161,9 +161,9 @@ class Frequencies:
             An instance of the dataclass.
         """
         return cls(
-            tripId='pjtxwdkqnjibztlaaosi',
-            startTime='jmjtiqmkwqveyuvvkuur',
-            endTime='gksjqrpacbumxjncpqht',
-            headwaySecs=int(8),
-            exactTimes=int(93)
+            tripId='jzyjgjatfmyuziwldeyr',
+            startTime='koebfiymlrikjggjeoxm',
+            endTime='fnrhxanmndheqwnhqzfg',
+            headwaySecs=int(97),
+            exactTimes=int(19)
         )

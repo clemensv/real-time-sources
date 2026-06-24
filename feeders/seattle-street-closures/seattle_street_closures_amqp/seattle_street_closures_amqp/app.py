@@ -216,7 +216,7 @@ def feed(
                     current_digests[closure.closure_id] = digest
                     if bridge.previous_digests.get(closure.closure_id) == digest:
                         continue
-                    producer.send_amqp(data=closure, _closure_id=closure.closure_id)  # type: ignore[arg-type]
+                    producer.send_amqp(data=closure, _closure_id=closure.closure_id)
                     sent += 1
                 bridge.previous_digests = current_digests
                 bridge.save_state()

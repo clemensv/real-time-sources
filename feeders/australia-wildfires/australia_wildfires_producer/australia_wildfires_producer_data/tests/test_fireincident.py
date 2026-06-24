@@ -29,19 +29,19 @@ class Test_FireIncident(unittest.TestCase):
         Create instance of FireIncident for testing
         """
         instance = FireIncident(
-            incident_id='abvfgefbmztwxejpvzuj',
-            state='kynuldadyxjsyanqkzel',
-            title='gsgyvxegpwsumlyyrbdo',
-            alert_level='yxtwycjpmgxiqicadxyo',
-            status='lcxjarlbyochwaoszcne',
-            location='yfmuevxtrpkcziycqdav',
-            latitude=float(92.424044875087),
-            longitude=float(81.0131054910657),
-            size_hectares=float(98.86113634292185),
-            type='wgpqkcvvdpuwiaijpbvy',
-            responsible_agency='mqyfucgllkcthbauabtk',
+            incident_id='ilwqsbeqeeaiuerttrgm',
+            state='cnvrchvdxpdljkscssgk',
+            title='gagjhvybpagavrfuihph',
+            alert_level='ktuvmtbewgsezwmttkrb',
+            status='ifozldewqitdodumrjqg',
+            location='efggjyuwrkpyzjhshbbk',
+            latitude=float(77.31380349686448),
+            longitude=float(85.41329346336181),
+            size_hectares=float(96.6403438426712),
+            type='xkrglikpoijpjpvypdka',
+            responsible_agency='ubprjvejfrlndmkjftvd',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            source_url='fdtfvqhnodocacdhtvdv'
+            source_url='igihhxmkkpapgwtvrunx'
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test incident_id property
         """
-        test_value = 'abvfgefbmztwxejpvzuj'
+        test_value = 'ilwqsbeqeeaiuerttrgm'
         self.instance.incident_id = test_value
         self.assertEqual(self.instance.incident_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'kynuldadyxjsyanqkzel'
+        test_value = 'cnvrchvdxpdljkscssgk'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -66,7 +66,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'gsgyvxegpwsumlyyrbdo'
+        test_value = 'gagjhvybpagavrfuihph'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -74,7 +74,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test alert_level property
         """
-        test_value = 'yxtwycjpmgxiqicadxyo'
+        test_value = 'ktuvmtbewgsezwmttkrb'
         self.instance.alert_level = test_value
         self.assertEqual(self.instance.alert_level, test_value)
     
@@ -82,7 +82,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'lcxjarlbyochwaoszcne'
+        test_value = 'ifozldewqitdodumrjqg'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -90,7 +90,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test location property
         """
-        test_value = 'yfmuevxtrpkcziycqdav'
+        test_value = 'efggjyuwrkpyzjhshbbk'
         self.instance.location = test_value
         self.assertEqual(self.instance.location, test_value)
     
@@ -98,7 +98,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(92.424044875087)
+        test_value = float(77.31380349686448)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -106,7 +106,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(81.0131054910657)
+        test_value = float(85.41329346336181)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -114,7 +114,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test size_hectares property
         """
-        test_value = float(98.86113634292185)
+        test_value = float(96.6403438426712)
         self.instance.size_hectares = test_value
         self.assertEqual(self.instance.size_hectares, test_value)
     
@@ -122,7 +122,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'wgpqkcvvdpuwiaijpbvy'
+        test_value = 'xkrglikpoijpjpvypdka'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -130,7 +130,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test responsible_agency property
         """
-        test_value = 'mqyfucgllkcthbauabtk'
+        test_value = 'ubprjvejfrlndmkjftvd'
         self.instance.responsible_agency = test_value
         self.assertEqual(self.instance.responsible_agency, test_value)
     
@@ -146,7 +146,7 @@ class Test_FireIncident(unittest.TestCase):
         """
         Test source_url property
         """
-        test_value = 'fdtfvqhnodocacdhtvdv'
+        test_value = 'igihhxmkkpapgwtvrunx'
         self.instance.source_url = test_value
         self.assertEqual(self.instance.source_url, test_value)
     

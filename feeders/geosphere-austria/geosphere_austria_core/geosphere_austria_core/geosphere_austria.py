@@ -138,14 +138,14 @@ def parse_observation(feature: typing.Dict, timestamp: str) -> typing.Optional[W
     obs = WeatherObservation(
         station_id=station_id,
         observation_time=timestamp,
-        temperature=float(values.get("temperature")) if values.get("temperature") is not None else None,  # type: ignore[arg-type]
-        humidity=float(values.get("humidity")) if values.get("humidity") is not None else None,  # type: ignore[arg-type]
-        precipitation=float(values.get("precipitation")) if values.get("precipitation") is not None else None,  # type: ignore[arg-type]
-        wind_direction=float(values.get("wind_direction")) if values.get("wind_direction") is not None else None,  # type: ignore[arg-type]
-        wind_speed=float(values.get("wind_speed")) if values.get("wind_speed") is not None else None,  # type: ignore[arg-type]
-        pressure=float(values.get("pressure")) if values.get("pressure") is not None else None,  # type: ignore[arg-type]
-        sunshine_duration=float(values.get("sunshine_duration")) if values.get("sunshine_duration") is not None else None,  # type: ignore[arg-type]
-        global_radiation=float(values.get("global_radiation")) if values.get("global_radiation") is not None else None,  # type: ignore[arg-type]
+        temperature=values.get("temperature"),
+        humidity=values.get("humidity"),
+        precipitation=values.get("precipitation"),
+        wind_direction=values.get("wind_direction"),
+        wind_speed=values.get("wind_speed"),
+        pressure=values.get("pressure"),
+        sunshine_duration=values.get("sunshine_duration"),
+        global_radiation=values.get("global_radiation"),
     )
     for field_name in PARAM_MAP.values():
         original = values.get(field_name)

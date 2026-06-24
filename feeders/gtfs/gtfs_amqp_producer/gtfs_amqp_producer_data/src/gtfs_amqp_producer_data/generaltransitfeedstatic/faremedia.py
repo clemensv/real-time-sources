@@ -20,15 +20,15 @@ class FareMedia:
     Defines fare media.
     
     Attributes:
-        fareMediaId (str)
-        fareMediaName (str)
+        fareMediaId (typing.Optional[str])
+        fareMediaName (typing.Optional[str])
         fareMediaDesc (typing.Optional[str])
         fareMediaUrl (typing.Optional[str])
     """
     
     
-    fareMediaId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaId"))
-    fareMediaName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaName"))
+    fareMediaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaId"))
+    fareMediaName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaName"))
     fareMediaDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaDesc"))
     fareMediaUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaUrl"))
 
@@ -159,8 +159,8 @@ class FareMedia:
             An instance of the dataclass.
         """
         return cls(
-            fareMediaId='foshaxtlypdzmdwzshvg',
-            fareMediaName='jsowwoerlgelroaibmlw',
-            fareMediaDesc='jhmdnfbwqncrftzafwxz',
-            fareMediaUrl='pbkjhylizmofpjaxfuqq'
+            fareMediaId='lrnatabpledzzodvdfpc',
+            fareMediaName='goeexpdfoyxdbrllyawk',
+            fareMediaDesc='qgotxjxnkzutfrkhkjon',
+            fareMediaUrl='bnajurltnvixlirvbtvs'
         )

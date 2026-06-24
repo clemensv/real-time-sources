@@ -241,7 +241,7 @@ class AustraliaWildfiresAPI:
             state="NSW",
             title=title,
             alert_level=alert_level,
-            status=str(status) if status is not None else None,  # type: ignore[arg-type]
+            status=str(status) if status is not None else None,
             location=location,
             latitude=lat,
             longitude=lon,
@@ -348,7 +348,7 @@ class AustraliaWildfiresAPI:
             state="QLD",
             title=title,
             alert_level=alert_level,
-            status=str(None) if None is not None else None,  # type: ignore[arg-type]
+            status=str(None) if None is not None else None,
             location=location,
             latitude=lat,
             longitude=lon,

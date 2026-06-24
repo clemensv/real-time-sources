@@ -20,9 +20,9 @@ class Pathways:
     Defines pathways.
     
     Attributes:
-        pathwayId (str)
-        fromStopId (str)
-        toStopId (str)
+        pathwayId (typing.Optional[str])
+        fromStopId (typing.Optional[str])
+        toStopId (typing.Optional[str])
         pathwayMode (int)
         isBidirectional (int)
         length (typing.Optional[float])
@@ -35,9 +35,9 @@ class Pathways:
     """
     
     
-    pathwayId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pathwayId"))
-    fromStopId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromStopId"))
-    toStopId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toStopId"))
+    pathwayId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pathwayId"))
+    fromStopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromStopId"))
+    toStopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toStopId"))
     pathwayMode: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pathwayMode"))
     isBidirectional: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="isBidirectional"))
     length: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="length"))
@@ -175,16 +175,16 @@ class Pathways:
             An instance of the dataclass.
         """
         return cls(
-            pathwayId='frlvfcsvajdudigcvjyk',
-            fromStopId='zwajsgwiwuvxdeuovlox',
-            toStopId='fjrdsbmpmiibulycwjjm',
-            pathwayMode=int(22),
-            isBidirectional=int(45),
-            length=float(47.457805533643146),
-            traversalTime=int(55),
-            stairCount=int(63),
-            maxSlope=float(67.72836700479294),
-            minWidth=float(72.94974119657121),
-            signpostedAs='ywjezooxkuokfhedgngj',
-            reversedSignpostedAs='kgbzmzrrzhowxditozaz'
+            pathwayId='upzmiwdeegxlpqvgpfmq',
+            fromStopId='dtfqzisvvqvyoskhgbil',
+            toStopId='hfibpzhedmytndtrgmwz',
+            pathwayMode=int(7),
+            isBidirectional=int(84),
+            length=float(98.43233200670751),
+            traversalTime=int(2),
+            stairCount=int(41),
+            maxSlope=float(86.67238022845048),
+            minWidth=float(30.449041347423222),
+            signpostedAs='qzuvtuoulmwpsgibjrqf',
+            reversedSignpostedAs='lcgiyitiatwooswgpvur'
         )

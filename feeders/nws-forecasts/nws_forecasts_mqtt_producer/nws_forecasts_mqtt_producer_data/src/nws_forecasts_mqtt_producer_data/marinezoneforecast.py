@@ -22,30 +22,30 @@ class MarineZoneForecast:
     
     Attributes:
         zone_id (str)
-        zone_name (str)
+        zone_name (typing.Optional[str])
         product_title (typing.Optional[str])
         office_name (typing.Optional[str])
-        issued_at_text (str)
+        issued_at_text (typing.Optional[str])
         expires_text (typing.Optional[str])
         wmo_header (typing.Optional[str])
         bulletin_awips_id (typing.Optional[str])
         synopsis (typing.Optional[str])
         periods (typing.List[MarineForecastPeriod])
-        bulletin_text (str)
+        bulletin_text (typing.Optional[str])
     """
     
     
     zone_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_id"))
-    zone_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_name"))
+    zone_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_name"))
     product_title: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product_title"))
     office_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="office_name"))
-    issued_at_text: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="issued_at_text"))
+    issued_at_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="issued_at_text"))
     expires_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expires_text"))
     wmo_header: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wmo_header"))
     bulletin_awips_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bulletin_awips_id"))
     synopsis: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="synopsis"))
     periods: typing.List[MarineForecastPeriod]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="periods"))
-    bulletin_text: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bulletin_text"))
+    bulletin_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bulletin_text"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'MarineZoneForecast':
@@ -174,15 +174,15 @@ class MarineZoneForecast:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='ywzoutwizbxaxubowylm',
-            zone_name='akhhpyzliotbsrtvqxya',
-            product_title='hvjmjzssgrnttorthjgr',
-            office_name='crfcacssfefzejvvasax',
-            issued_at_text='unceqjjbsxamlnmecmxt',
-            expires_text='ywnnsazqqlpkwkzviizu',
-            wmo_header='jgjbalnvrmskrssmkjsh',
-            bulletin_awips_id='dfyljrsegenbvzitfxcs',
-            synopsis='hvyumvjywfwjxyamkihs',
-            periods=[None],
-            bulletin_text='uikdhwjpanroydcesjxy'
+            zone_id='tgezglupbhajrvelqfkj',
+            zone_name='yajvwwkyknzwomwiufoo',
+            product_title='fywfmsuhpibzbmmqnvxe',
+            office_name='jkokzcvzszxohxebjyzh',
+            issued_at_text='gpsfndvdvgmsieolnhan',
+            expires_text='ciwxxyjlroigabilqsgq',
+            wmo_header='liuqqtmgvuvuzqhaupal',
+            bulletin_awips_id='etttleyelmvwbvknddqm',
+            synopsis='twvhyzsyyngblnhyohos',
+            periods=[None, None],
+            bulletin_text='hqelueiofxwbokyizcgw'
         )

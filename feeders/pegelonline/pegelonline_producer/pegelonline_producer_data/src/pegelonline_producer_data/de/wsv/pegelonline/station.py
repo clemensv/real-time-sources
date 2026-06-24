@@ -21,24 +21,24 @@ class Station:
     WSV PegelOnline gauge installation. Each instance represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from `GET /stations.json` on the PegelOnline REST API v2 (https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Emitted as reference data at bridge startup and re-emitted periodically.
     
     Attributes:
-        station_id (str)
-        number (str)
-        shortname (str)
-        longname (str)
+        station_id (typing.Optional[str])
+        number (typing.Optional[str])
+        shortname (typing.Optional[str])
+        longname (typing.Optional[str])
         km (typing.Optional[float])
-        agency (str)
+        agency (typing.Optional[str])
         longitude (float)
         latitude (float)
         water (Water)
     """
     
     
-    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="number"))
-    shortname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
-    longname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
+    station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    number: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="number"))
+    shortname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
+    longname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
     km: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="km"))
-    agency: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency"))
+    agency: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     water: Water=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water"))
@@ -170,13 +170,13 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='nbodgeepmpveccpmyyil',
-            number='extxrjkrnsshuydkdsbx',
-            shortname='xaysapljrsmozwbvwfap',
-            longname='oglgiyldyjyszbrogles',
-            km=float(37.3297448336012),
-            agency='tdmzljgeknlewyaiycwr',
-            longitude=float(18.615923544061495),
-            latitude=float(44.06685582201432),
+            station_id='hcbqzhyjoqrtbipejcfl',
+            number='gxzluokmgvnivsrpbdnh',
+            shortname='oxldlrymzfbdibwvjcrj',
+            longname='atezrgqiuacavnjzxfbu',
+            km=float(63.97807994124721),
+            agency='gkuckbxexkxhqkpqlamm',
+            longitude=float(13.15002946739867),
+            latitude=float(11.675478570325525),
             water=None
         )

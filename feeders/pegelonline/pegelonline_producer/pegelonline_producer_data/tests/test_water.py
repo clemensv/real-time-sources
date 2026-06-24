@@ -28,8 +28,8 @@ class Test_Water(unittest.TestCase):
         Create instance of Water for testing
         """
         instance = Water(
-            shortname='yqasndykufevmmcvguth',
-            longname='hfpbhecklvfzorgxitsc'
+            shortname='ppyttwhfvwefyzsdzssk',
+            longname='cospltqhkjmqfidcvsnb'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_Water(unittest.TestCase):
         """
         Test shortname property
         """
-        test_value = 'yqasndykufevmmcvguth'
+        test_value = 'ppyttwhfvwefyzsdzssk'
         self.instance.shortname = test_value
         self.assertEqual(self.instance.shortname, test_value)
     
@@ -46,7 +46,7 @@ class Test_Water(unittest.TestCase):
         """
         Test longname property
         """
-        test_value = 'hfpbhecklvfzorgxitsc'
+        test_value = 'cospltqhkjmqfidcvsnb'
         self.instance.longname = test_value
         self.assertEqual(self.instance.longname, test_value)
     

@@ -157,7 +157,7 @@ class Component:
             An instance of the dataclass.
         """
         return cls(
-            formula='teiffiipdgxfogxeygaq',
-            name_nl='daxldpxlugzyuntmvoqg',
-            name_en='ipjupkdfdojekzupnftc'
+            formula='nzpuywxgktxxtbhvrjza',
+            name_nl='tterwfqepevnheqvewkr',
+            name_en='hywbagmrcfxtwlonmkhu'
         )

@@ -9,10 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 from typing import Any
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
 
 
 class Test_VehiclePosition(unittest.TestCase):
@@ -35,10 +35,10 @@ class Test_VehiclePosition(unittest.TestCase):
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(34),
-            stop_id='naxpdyumpymtsnoxfoxd',
+            current_stop_sequence=int(67),
+            stop_id='nlkisuxahotyjrdureyw',
             current_status=None,
-            timestamp=int(84),
+            timestamp=int(87),
             congestion_level=None,
             occupancy_status=None
         )
@@ -73,7 +73,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test current_stop_sequence property
         """
-        test_value = int(34)
+        test_value = int(67)
         self.instance.current_stop_sequence = test_value
         self.assertEqual(self.instance.current_stop_sequence, test_value)
     
@@ -81,7 +81,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'naxpdyumpymtsnoxfoxd'
+        test_value = 'nlkisuxahotyjrdureyw'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     
@@ -97,7 +97,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(84)
+        test_value = int(87)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     

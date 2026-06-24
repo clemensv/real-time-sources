@@ -465,7 +465,10 @@
                     "pattern": "^[A-Z]{3}[0-9]{3}$"
                   },
                   "zone_name": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin."
                   },
                   "product_title": {
@@ -483,7 +486,10 @@
                     "description": "Issuing office line from the bulletin header, for example 'National Weather Service Seattle WA'."
                   },
                   "issued_at_text": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT."
                   },
                   "expires_text": {
@@ -538,7 +544,10 @@
                     }
                   },
                   "bulletin_text": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording."
                   }
                 }

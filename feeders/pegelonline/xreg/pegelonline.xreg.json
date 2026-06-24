@@ -237,11 +237,17 @@
                           "description": "Federal waterway / water body the gauge measures, as returned in the nested `water` object of `GET /stations.json` on the PegelOnline REST API v2. Acts as the routing hierarchy for the MQTT Unified Namespace topology.",
                           "properties": {
                             "shortname": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Lowercase routing token for the waterway as published by WSV — e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII-normalization for non-ASCII characters such as 'ß' → 'ss' or umlauts) as the `{water_shortname}` template variable on the MQTT topic and the AMQP application property. Sourced from the upstream `water.shortname` key. Maximum 40 characters."
                             },
                             "longname": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream `water.longname` key. Maximum 255 characters."
                             }
                           },
@@ -256,23 +262,35 @@
                           "description": "WSV PegelOnline gauge installation. Each instance represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from `GET /stations.json` on the PegelOnline REST API v2 (https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Emitted as reference data at bridge startup and re-emitted periodically.",
                           "properties": {
                             "station_id": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "altnames": {
                                 "json": "uuid"
                               },
                               "description": "Stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. Sourced from the upstream `uuid` field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic `{station_id}` segment, and the AMQP message subject for every event emitted by this source."
                             },
                             "number": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "pattern": "^[0-9]+$",
                               "description": "Official PegelOnline station number. Carries multiple agency-scoped numbering schemes within the same field: WSV Pegelmessstellennummer (6–8 digits) for German federal gauges; partner-agency identifiers such as Austrian via-donau station numbers (4–5 digits), small Regierungspräsidium-IDs for Bodensee gauges (3-digit numbers e.g. '906' KONSTANZ), and German state-agency IDs (e.g. Ruhrverband 13-digit Messstellennummer). Numeric-only across all observed providers; length is provider-specific. National / agency-scoped identifier — not globally unique across data providers; prefer `station_id` (UUID) for cross-system joins."
                             },
                             "shortname": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operator-assigned display label for the gauge (≤40 characters). May differ from the town name when multiple gauges share a town. Mutable — do not use as a routing key or stable identifier."
                             },
                             "longname": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Canonical gauge name as used in WSV publications (≤255 characters). Mutable — do not use as a routing key."
                             },
                             "km": {
@@ -283,7 +301,10 @@
                               "description": "Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Ohře gauge LOUNY at km -61.4 of the Elbe/Ohře system). **Optional**: absent or null for tidal / coastal gauges (Küstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km."
                             },
                             "agency": {
-                              "type": "string",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Free-form name of the Wasserstraßen- und Schifffahrtsamt (WSA) operating the gauge — e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream `agency` field. Provided so downstream consumers can attribute observations to the operating authority; not a stable identifier and not suitable as a routing key."
                             },
                             "longitude": {

@@ -20,9 +20,9 @@ class FareAttributes:
     Defines fare attributes.
     
     Attributes:
-        fareId (str)
+        fareId (typing.Optional[str])
         price (float)
-        currencyType (str)
+        currencyType (typing.Optional[str])
         paymentMethod (int)
         transfers (typing.Optional[int])
         agencyId (typing.Optional[str])
@@ -30,9 +30,9 @@ class FareAttributes:
     """
     
     
-    fareId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareId"))
+    fareId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareId"))
     price: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="price"))
-    currencyType: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="currencyType"))
+    currencyType: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="currencyType"))
     paymentMethod: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="paymentMethod"))
     transfers: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transfers"))
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
@@ -169,11 +169,11 @@ class FareAttributes:
             An instance of the dataclass.
         """
         return cls(
-            fareId='vqyryxghervtshvwjegh',
-            price=float(28.89594241037361),
-            currencyType='ovruiytpsrrnbdftxaei',
-            paymentMethod=int(22),
-            transfers=int(32),
-            agencyId='kjtscvthotgisvzzmdcn',
-            transferDuration=int(11)
+            fareId='liohsrsspqzesbpsjvig',
+            price=float(97.5111832591424),
+            currencyType='ortcryrbrrvbhjfbfwan',
+            paymentMethod=int(84),
+            transfers=int(71),
+            agencyId='glzqqvbdxabjuptmqkyq',
+            transferDuration=int(30)
         )

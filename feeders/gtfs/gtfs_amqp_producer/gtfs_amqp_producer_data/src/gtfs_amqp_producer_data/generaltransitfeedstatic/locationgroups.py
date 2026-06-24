@@ -20,15 +20,15 @@ class LocationGroups:
     Defines location groups.
     
     Attributes:
-        locationGroupId (str)
-        locationGroupName (str)
+        locationGroupId (typing.Optional[str])
+        locationGroupName (typing.Optional[str])
         locationGroupDesc (typing.Optional[str])
         locationGroupUrl (typing.Optional[str])
     """
     
     
-    locationGroupId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupId"))
-    locationGroupName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupName"))
+    locationGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupId"))
+    locationGroupName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupName"))
     locationGroupDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupDesc"))
     locationGroupUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupUrl"))
 
@@ -159,8 +159,8 @@ class LocationGroups:
             An instance of the dataclass.
         """
         return cls(
-            locationGroupId='axocxrgphfkrkmrrgbvd',
-            locationGroupName='sgoktkpqrrjknekjibks',
-            locationGroupDesc='bgkugiherqdsxomfqaun',
-            locationGroupUrl='qeyodfkehbvqcolonxth'
+            locationGroupId='pflnocxljkvcioftdfzt',
+            locationGroupName='zazvqjezbongkbsxetyf',
+            locationGroupDesc='joxtdwklcpmdugztdueo',
+            locationGroupUrl='lnnoxnmdqvornxsbnoyn'
         )

@@ -20,8 +20,8 @@ class FareTransferRules:
     Defines fare transfer rules.
     
     Attributes:
-        fareTransferRuleId (str)
-        fareProductId (str)
+        fareTransferRuleId (typing.Optional[str])
+        fareProductId (typing.Optional[str])
         transferCount (typing.Optional[int])
         fromLegGroupId (typing.Optional[str])
         toLegGroupId (typing.Optional[str])
@@ -30,8 +30,8 @@ class FareTransferRules:
     """
     
     
-    fareTransferRuleId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareTransferRuleId"))
-    fareProductId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
+    fareTransferRuleId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareTransferRuleId"))
+    fareProductId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
     transferCount: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferCount"))
     fromLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromLegGroupId"))
     toLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toLegGroupId"))
@@ -169,11 +169,11 @@ class FareTransferRules:
             An instance of the dataclass.
         """
         return cls(
-            fareTransferRuleId='mpenzlyuxgwndegldavu',
-            fareProductId='shssybvtjgzyysogxkpa',
-            transferCount=int(7),
-            fromLegGroupId='bpsrmfuaxqkfdahfcbqm',
-            toLegGroupId='roxaleneuaeebolvqnxh',
-            duration=int(14),
-            durationType='hytabahdbsypgwxvhcnv'
+            fareTransferRuleId='ghznthfycrsupiuyheqo',
+            fareProductId='whwuyqjsrbssqtvsaufz',
+            transferCount=int(8),
+            fromLegGroupId='bfqhqjpplgckmmdbqgdt',
+            toLegGroupId='llzmhriksgwfclytshuw',
+            duration=int(19),
+            durationType='qfsbfzvdevaxqdxrbwpy'
         )

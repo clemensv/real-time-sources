@@ -28,25 +28,25 @@ class Test_StreetClosure(unittest.TestCase):
         Create instance of StreetClosure for testing
         """
         instance = StreetClosure(
-            closure_id='igadsgeauzzqwsipnrks',
-            permit_number='oitklhpawyfkuckogjvy',
-            permit_type='cnfmparfcjdruidmruuq',
-            project_name='kpdfckontrsezyshzpdo',
-            project_description='uawwtoazuhpyhvqzbmez',
-            start_date='xwlgubwuqzbzhyrkctnl',
-            end_date='hzorqtdjllbthsxtugqy',
-            sunday='zdciquwckovrzacphxym',
-            monday='vaxrmwooeigcpdntpbyj',
-            tuesday='mtcmdlzzdkjkimpqzzed',
-            wednesday='ghxklpmqcfsgppljjdip',
-            thursday='jgosoueqzzuvvtwigosc',
-            friday='kdmdyzsqwuchmnokaqpb',
-            saturday='iixkjletekiospmbwzyg',
-            street_on='yctgeboyzbyhkknkjgpk',
-            street_from='etdrprfayoryqseqmpnw',
-            street_to='gjtddnjlqjzexmkdmtja',
-            segkey='mpuahtcfwbduakqftjac',
-            geometry_json='nwetzfabhhbumgcefzzl'
+            closure_id='gidmsctvqbcpxrcbzcck',
+            permit_number='jhezcqvvvwsmmscpnstx',
+            permit_type='cdruaqdcdxbsizgvvego',
+            project_name='uvbzgykzzpmaisqkeoah',
+            project_description='jntphpwdvfamyttuijid',
+            start_date='ibnqftujvpysqzlnnwxm',
+            end_date='eyjprbovjbdfsddyhbak',
+            sunday='nastuujmcgbzmjyisngv',
+            monday='sbqhyaydqjcerzpiqowl',
+            tuesday='afqajfhwoldtsncrnskk',
+            wednesday='floxlvfnxmfdkfrngwpo',
+            thursday='jvbblbemoptzaezweuqy',
+            friday='zyxpbztsqcuwtgqvduje',
+            saturday='fcdmtibepsmoixumdkdi',
+            street_on='lfmoympiliedlgejfvjy',
+            street_from='dtbbufepcmczqkwxwipq',
+            street_to='zmantmvqyxxqdzolejbw',
+            segkey='ubsiboakctrgfdpqzomy',
+            geometry_json='dyfnguudworsuflghrum'
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test closure_id property
         """
-        test_value = 'igadsgeauzzqwsipnrks'
+        test_value = 'gidmsctvqbcpxrcbzcck'
         self.instance.closure_id = test_value
         self.assertEqual(self.instance.closure_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test permit_number property
         """
-        test_value = 'oitklhpawyfkuckogjvy'
+        test_value = 'jhezcqvvvwsmmscpnstx'
         self.instance.permit_number = test_value
         self.assertEqual(self.instance.permit_number, test_value)
     
@@ -71,7 +71,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test permit_type property
         """
-        test_value = 'cnfmparfcjdruidmruuq'
+        test_value = 'cdruaqdcdxbsizgvvego'
         self.instance.permit_type = test_value
         self.assertEqual(self.instance.permit_type, test_value)
     
@@ -79,7 +79,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test project_name property
         """
-        test_value = 'kpdfckontrsezyshzpdo'
+        test_value = 'uvbzgykzzpmaisqkeoah'
         self.instance.project_name = test_value
         self.assertEqual(self.instance.project_name, test_value)
     
@@ -87,7 +87,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test project_description property
         """
-        test_value = 'uawwtoazuhpyhvqzbmez'
+        test_value = 'jntphpwdvfamyttuijid'
         self.instance.project_description = test_value
         self.assertEqual(self.instance.project_description, test_value)
     
@@ -95,7 +95,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test start_date property
         """
-        test_value = 'xwlgubwuqzbzhyrkctnl'
+        test_value = 'ibnqftujvpysqzlnnwxm'
         self.instance.start_date = test_value
         self.assertEqual(self.instance.start_date, test_value)
     
@@ -103,7 +103,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test end_date property
         """
-        test_value = 'hzorqtdjllbthsxtugqy'
+        test_value = 'eyjprbovjbdfsddyhbak'
         self.instance.end_date = test_value
         self.assertEqual(self.instance.end_date, test_value)
     
@@ -111,7 +111,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test sunday property
         """
-        test_value = 'zdciquwckovrzacphxym'
+        test_value = 'nastuujmcgbzmjyisngv'
         self.instance.sunday = test_value
         self.assertEqual(self.instance.sunday, test_value)
     
@@ -119,7 +119,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test monday property
         """
-        test_value = 'vaxrmwooeigcpdntpbyj'
+        test_value = 'sbqhyaydqjcerzpiqowl'
         self.instance.monday = test_value
         self.assertEqual(self.instance.monday, test_value)
     
@@ -127,7 +127,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test tuesday property
         """
-        test_value = 'mtcmdlzzdkjkimpqzzed'
+        test_value = 'afqajfhwoldtsncrnskk'
         self.instance.tuesday = test_value
         self.assertEqual(self.instance.tuesday, test_value)
     
@@ -135,7 +135,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test wednesday property
         """
-        test_value = 'ghxklpmqcfsgppljjdip'
+        test_value = 'floxlvfnxmfdkfrngwpo'
         self.instance.wednesday = test_value
         self.assertEqual(self.instance.wednesday, test_value)
     
@@ -143,7 +143,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test thursday property
         """
-        test_value = 'jgosoueqzzuvvtwigosc'
+        test_value = 'jvbblbemoptzaezweuqy'
         self.instance.thursday = test_value
         self.assertEqual(self.instance.thursday, test_value)
     
@@ -151,7 +151,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test friday property
         """
-        test_value = 'kdmdyzsqwuchmnokaqpb'
+        test_value = 'zyxpbztsqcuwtgqvduje'
         self.instance.friday = test_value
         self.assertEqual(self.instance.friday, test_value)
     
@@ -159,7 +159,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test saturday property
         """
-        test_value = 'iixkjletekiospmbwzyg'
+        test_value = 'fcdmtibepsmoixumdkdi'
         self.instance.saturday = test_value
         self.assertEqual(self.instance.saturday, test_value)
     
@@ -167,7 +167,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test street_on property
         """
-        test_value = 'yctgeboyzbyhkknkjgpk'
+        test_value = 'lfmoympiliedlgejfvjy'
         self.instance.street_on = test_value
         self.assertEqual(self.instance.street_on, test_value)
     
@@ -175,7 +175,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test street_from property
         """
-        test_value = 'etdrprfayoryqseqmpnw'
+        test_value = 'dtbbufepcmczqkwxwipq'
         self.instance.street_from = test_value
         self.assertEqual(self.instance.street_from, test_value)
     
@@ -183,7 +183,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test street_to property
         """
-        test_value = 'gjtddnjlqjzexmkdmtja'
+        test_value = 'zmantmvqyxxqdzolejbw'
         self.instance.street_to = test_value
         self.assertEqual(self.instance.street_to, test_value)
     
@@ -191,7 +191,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test segkey property
         """
-        test_value = 'mpuahtcfwbduakqftjac'
+        test_value = 'ubsiboakctrgfdpqzomy'
         self.instance.segkey = test_value
         self.assertEqual(self.instance.segkey, test_value)
     
@@ -199,7 +199,7 @@ class Test_StreetClosure(unittest.TestCase):
         """
         Test geometry_json property
         """
-        test_value = 'nwetzfabhhbumgcefzzl'
+        test_value = 'dyfnguudworsuflghrum'
         self.instance.geometry_json = test_value
         self.assertEqual(self.instance.geometry_json, test_value)
     

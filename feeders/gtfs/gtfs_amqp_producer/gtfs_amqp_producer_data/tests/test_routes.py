@@ -29,19 +29,19 @@ class Test_Routes(unittest.TestCase):
         Create instance of Routes for testing
         """
         instance = Routes(
-            routeId='eqcvdmykryjlbatlmurv',
-            agencyId='ijcertbfwlmngiuueovb',
-            routeShortName='dbludvkbshgehgtedkph',
-            routeLongName='lnmbugbhsuihsyivsfwr',
-            routeDesc='yskorzoemljhsgivyvjy',
+            routeId='qalrwssgtmtfdhcesfqi',
+            agencyId='fdduaowewddyvdzqeikc',
+            routeShortName='yjajhktzpxedlnsjzodp',
+            routeLongName='mvtusevxqrlnciwvjenj',
+            routeDesc='hzqowrehpjujpjovmzju',
             routeType=None,
-            routeUrl='fyhswdyjqbjyabaofpek',
-            routeColor='fjrktodvgwexobucxian',
-            routeTextColor='ztrpeeyfqycpxrlzxidh',
-            routeSortOrder=int(86),
+            routeUrl='mvwhouzygqwuhupdmrdx',
+            routeColor='jpkvjatyjcwrlnckehiu',
+            routeTextColor='bpwwyffqerwopghrshbp',
+            routeSortOrder=int(98),
             continuousPickup=None,
             continuousDropOff=None,
-            networkId='dbzomjecszucuapxvqjf'
+            networkId='pvuabdflzhbqsttjmwpv'
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'eqcvdmykryjlbatlmurv'
+        test_value = 'qalrwssgtmtfdhcesfqi'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -58,7 +58,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test agencyId property
         """
-        test_value = 'ijcertbfwlmngiuueovb'
+        test_value = 'fdduaowewddyvdzqeikc'
         self.instance.agencyId = test_value
         self.assertEqual(self.instance.agencyId, test_value)
     
@@ -66,7 +66,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeShortName property
         """
-        test_value = 'dbludvkbshgehgtedkph'
+        test_value = 'yjajhktzpxedlnsjzodp'
         self.instance.routeShortName = test_value
         self.assertEqual(self.instance.routeShortName, test_value)
     
@@ -74,7 +74,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeLongName property
         """
-        test_value = 'lnmbugbhsuihsyivsfwr'
+        test_value = 'mvtusevxqrlnciwvjenj'
         self.instance.routeLongName = test_value
         self.assertEqual(self.instance.routeLongName, test_value)
     
@@ -82,7 +82,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeDesc property
         """
-        test_value = 'yskorzoemljhsgivyvjy'
+        test_value = 'hzqowrehpjujpjovmzju'
         self.instance.routeDesc = test_value
         self.assertEqual(self.instance.routeDesc, test_value)
     
@@ -98,7 +98,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeUrl property
         """
-        test_value = 'fyhswdyjqbjyabaofpek'
+        test_value = 'mvwhouzygqwuhupdmrdx'
         self.instance.routeUrl = test_value
         self.assertEqual(self.instance.routeUrl, test_value)
     
@@ -106,7 +106,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeColor property
         """
-        test_value = 'fjrktodvgwexobucxian'
+        test_value = 'jpkvjatyjcwrlnckehiu'
         self.instance.routeColor = test_value
         self.assertEqual(self.instance.routeColor, test_value)
     
@@ -114,7 +114,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeTextColor property
         """
-        test_value = 'ztrpeeyfqycpxrlzxidh'
+        test_value = 'bpwwyffqerwopghrshbp'
         self.instance.routeTextColor = test_value
         self.assertEqual(self.instance.routeTextColor, test_value)
     
@@ -122,7 +122,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeSortOrder property
         """
-        test_value = int(86)
+        test_value = int(98)
         self.instance.routeSortOrder = test_value
         self.assertEqual(self.instance.routeSortOrder, test_value)
     
@@ -146,7 +146,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'dbzomjecszucuapxvqjf'
+        test_value = 'pvuabdflzhbqsttjmwpv'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     
