@@ -39,15 +39,15 @@ logger = logging.getLogger(__name__)
 def _build_station(raw: Dict[str, Any]) -> Station:
     water = raw.get("water") or {}
     return Station(
-        station_id=raw.get("uuid"),  # type: ignore[arg-type]
-        number=raw.get("number"),  # type: ignore[arg-type]
-        shortname=raw.get("shortname"),  # type: ignore[arg-type]
-        longname=raw.get("longname"),  # type: ignore[arg-type]
+        station_id=str(raw.get("uuid")) if raw.get("uuid") is not None else None,  # type: ignore[arg-type]
+        number=str(raw.get("number")) if raw.get("number") is not None else None,  # type: ignore[arg-type]
+        shortname=str(raw.get("shortname")) if raw.get("shortname") is not None else None,  # type: ignore[arg-type]
+        longname=str(raw.get("longname")) if raw.get("longname") is not None else None,  # type: ignore[arg-type]
         km=raw.get("km"),
-        agency=raw.get("agency"),  # type: ignore[arg-type]
-        longitude=raw.get("longitude") if raw.get("longitude") is not None else -1,  # type: ignore[arg-type]
-        latitude=raw.get("latitude") if raw.get("latitude") is not None else -1,  # type: ignore[arg-type]
-        water=Water(shortname=water.get("shortname"), longname=water.get("longname")),  # type: ignore[arg-type]
+        agency=str(raw.get("agency")) if raw.get("agency") is not None else None,  # type: ignore[arg-type]
+        longitude=float(raw.get("longitude") if raw.get("longitude") is not None else -1),  # type: ignore[arg-type]
+        latitude=float(raw.get("latitude") if raw.get("latitude") is not None else -1),  # type: ignore[arg-type]
+        water=Water(shortname=str(water.get("shortname")) if water.get("shortname") is not None else None, longname=str(water.get("longname")) if water.get("longname") is not None else None),  # type: ignore[arg-type]
     )
 
 

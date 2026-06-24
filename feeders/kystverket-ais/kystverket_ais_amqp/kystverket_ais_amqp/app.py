@@ -141,7 +141,7 @@ def _build_position(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type=ship_type,
         geohash5=geohash5(lat, lon),
-        msg_type="position-report",  # type: ignore[arg-type]
+        msg_type=MsgTypeenum("position-report"),
         latitude=_f(lat),
         longitude=_f(lon),
         speed_over_ground=_f(fields.get("speed_over_ground")),
@@ -179,7 +179,7 @@ def _build_static(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type=ship_type,
         geohash5=gh,
-        msg_type="static",  # type: ignore[arg-type]
+        msg_type=MsgTypeenum("static"),
         ship_name=_s(fields.get("ship_name")),
         callsign=_s(fields.get("callsign")),
         imo_number=_i(fields.get("imo_number")),
@@ -211,7 +211,7 @@ def _build_aton(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type="aton",
         geohash5=geohash5(lat, lon),
-        msg_type="aid-to-navigation",  # type: ignore[arg-type]
+        msg_type=MsgTypeenum("aid-to-navigation"),
         name=_s(fields.get("name")),
         aid_type=_i(fields.get("aid_type")),
         latitude=_f(lat),
@@ -323,6 +323,7 @@ import logging
 import os
 from typing import Optional
 from urllib.parse import urlparse
+from kystverket_ais_amqp_producer_data.msgtypeenum import MsgTypeenum
 
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 DEFAULT_ENTRA_AUDIENCE_EVENTHUBS = "https://eventhubs.azure.net/.default"

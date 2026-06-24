@@ -193,13 +193,13 @@ def feed_observations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer,
             water_body_name=station_details.get('water-body-name', '') or '',
             water_level=wl_val,
             water_level_unit='m',
-            water_level_timestamp=wl_ts_str,  # type: ignore[arg-type]
+            water_level_timestamp=datetime.fromisoformat(wl_ts_str) if wl_ts_str else None,
             discharge=q_val,
             discharge_unit='m3/s',
-            discharge_timestamp=q_ts_str,  # type: ignore[arg-type]
+            discharge_timestamp=datetime.fromisoformat(q_ts_str) if q_ts_str else None,
             water_temperature=temp_val,
             water_temperature_unit='C',
-            water_temperature_timestamp=temp_ts_str,  # type: ignore[arg-type]
+            water_temperature_timestamp=datetime.fromisoformat(temp_ts_str) if temp_ts_str else None,
         )
         producer.send_ch_bafu_hydrology_water_level_observation(_station_id=station_id, data=obs_data, flush_producer=False)
         sent_count += 1

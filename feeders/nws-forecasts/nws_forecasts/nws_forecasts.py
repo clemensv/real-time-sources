@@ -158,10 +158,10 @@ def _to_producer_marine(forecast: NWSMarineZoneForecast) -> MarineZoneForecast:
     """Convert a transport-neutral NWSMarineZoneForecast to a generated MarineZoneForecast."""
     return MarineZoneForecast(
         zone_id=forecast.zone_id,
-        zone_name=forecast.zone_name,  # type: ignore[arg-type]
+        zone_name=str(forecast.zone_name) if forecast.zone_name is not None else None,  # type: ignore[arg-type]
         product_title=forecast.product_title,
         office_name=forecast.office_name,
-        issued_at_text=forecast.issued_at_text,  # type: ignore[arg-type]
+        issued_at_text=str(forecast.issued_at_text) if forecast.issued_at_text is not None else None,  # type: ignore[arg-type]
         expires_text=forecast.expires_text,
         wmo_header=forecast.wmo_header,
         bulletin_awips_id=forecast.bulletin_awips_id,
@@ -173,7 +173,7 @@ def _to_producer_marine(forecast: NWSMarineZoneForecast) -> MarineZoneForecast:
             )
             for p in forecast.periods
         ],
-        bulletin_text=forecast.bulletin_text,  # type: ignore[arg-type]
+        bulletin_text=str(forecast.bulletin_text) if forecast.bulletin_text is not None else None,  # type: ignore[arg-type]
     )
 
 

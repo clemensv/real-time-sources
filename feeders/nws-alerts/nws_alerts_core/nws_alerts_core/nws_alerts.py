@@ -4,6 +4,12 @@ import json, logging, os, unicodedata
 from typing import Any, Dict, List, Optional
 import aiohttp
 from nws_alerts_producer_data.weatheralert import WeatherAlert
+from datetime import datetime
+from nws_alerts_producer_data.certaintyenum import CertaintyEnum
+from nws_alerts_producer_data.messagetypeenum import MessageTypeenum
+from nws_alerts_producer_data.severityenum import SeverityEnum
+from nws_alerts_producer_data.statusenum import StatusEnum
+from nws_alerts_producer_data.urgencyenum import UrgencyEnum
 logger = logging.getLogger(__name__)
 NWS_API_URL = "https://api.weather.gov/alerts/active"
 USER_AGENT = os.environ.get("USER_AGENT") or ("real-time-sources-nws-alerts/0.1.0 " "(+https://github.com/clemensv/real-time-sources; " + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")")
@@ -60,7 +66,7 @@ def normalize_alert(props: dict) -> Optional[WeatherAlert]:
     urgency = _safe_str(props.get("urgency")); certainty = _safe_str(props.get("certainty")); sent = _safe_str(props.get("sent")); status = _safe_str(props.get("status")); message_type = _safe_str(props.get("messageType"))
     if not alert_id or not event or not sent or not status: return None
     geocode = props.get("geocode", {}); params = props.get("parameters", {})
-    return WeatherAlert(alert_id=alert_id,state=derive_state(props),event_type=uns_slug(event),area_desc=_safe_str(props.get("areaDesc")),same_codes=_join_codes(geocode,"SAME"),ugc_codes=_join_codes(geocode,"UGC"),sent=sent,effective=_safe_str(props.get("effective")),onset=_safe_str(props.get("onset")),expires=_safe_str(props.get("expires")),ends=_safe_str(props.get("ends")),status=status,message_type=message_type,category=_safe_str(props.get("category")),severity=severity,certainty=certainty,urgency=urgency,event=event,sender=_safe_str(props.get("sender")),sender_name=_safe_str(props.get("senderName")),headline=_safe_str(props.get("headline")),description=_safe_str(props.get("description")),instruction=_safe_str(props.get("instruction")),response=_safe_str(props.get("response")),scope=_safe_str(props.get("scope")),code=_safe_str(props.get("code")),nws_headline=_find_nws_headline(params),vtec=_find_vtec(params),web=_safe_str(props.get("web")))  # type: ignore[arg-type]
+    return WeatherAlert(alert_id=alert_id,state=derive_state(props),event_type=uns_slug(event),area_desc=_safe_str(props.get("areaDesc")),same_codes=_join_codes(geocode,"SAME"),ugc_codes=_join_codes(geocode,"UGC"),sent=datetime.fromisoformat(sent),effective=datetime.fromisoformat(_safe_str(props.get("effective"))) if _safe_str(props.get("effective")) else None,onset=datetime.fromisoformat(_safe_str(props.get("onset"))) if _safe_str(props.get("onset")) else None,expires=datetime.fromisoformat(_safe_str(props.get("expires"))) if _safe_str(props.get("expires")) else None,ends=datetime.fromisoformat(_safe_str(props.get("ends"))) if _safe_str(props.get("ends")) else None,status=StatusEnum(status),message_type=MessageTypeenum(message_type) if message_type else None,category=_safe_str(props.get("category")),severity=SeverityEnum(severity),certainty=CertaintyEnum(certainty) if certainty else None,urgency=UrgencyEnum(urgency) if urgency else None,event=event,sender=_safe_str(props.get("sender")),sender_name=_safe_str(props.get("senderName")),headline=_safe_str(props.get("headline")),description=_safe_str(props.get("description")),instruction=_safe_str(props.get("instruction")),response=_safe_str(props.get("response")),scope=_safe_str(props.get("scope")),code=_safe_str(props.get("code")),nws_headline=_find_nws_headline(params),vtec=_find_vtec(params),web=_safe_str(props.get("web")))  # type: ignore[arg-type]
 class NWSAlertsPoller:
     def __init__(self, state_file: str = DEFAULT_STATE_FILE, poll_interval: int = DEFAULT_POLL_INTERVAL):
         self.state_file = state_file; self.poll_interval = poll_interval

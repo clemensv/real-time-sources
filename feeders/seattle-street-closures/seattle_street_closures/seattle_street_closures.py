@@ -154,8 +154,8 @@ def parse_closure(record: dict) -> StreetClosure:
         permit_type=record.get("permit_type", ""),
         project_name=record.get("project_name"),
         project_description=record.get("project_description"),
-        start_date=normalize_date(record.get("start_date")),  # type: ignore[arg-type]
-        end_date=normalize_date(record.get("end_date")),  # type: ignore[arg-type]
+        start_date=str(normalize_date(record.get("start_date"))) if normalize_date(record.get("start_date")) is not None else None,  # type: ignore[arg-type]
+        end_date=str(normalize_date(record.get("end_date"))) if normalize_date(record.get("end_date")) is not None else None,  # type: ignore[arg-type]
         sunday=record.get("sunday"),
         monday=record.get("monday"),
         tuesday=record.get("tuesday"),

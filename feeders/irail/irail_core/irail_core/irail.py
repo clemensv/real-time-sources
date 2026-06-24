@@ -17,6 +17,7 @@ from irail_producer_data.be.irail.arrival import Arrival
 from irail_producer_data.be.irail.arrivalboard import ArrivalBoard
 from irail_producer_data.be.irail.departure import Departure
 from irail_producer_data.be.irail.stationboard import StationBoard
+from irail_producer_data.be.irail.occupancyenum import OccupancyEnum
 
 API_BASE = "https://api.irail.be"
 FEED_URL = "https://api.irail.be"
@@ -195,7 +196,7 @@ class IRailAPI:
             vehicle_number=vehicle_number,
             platform=platform,
             is_normal_platform=is_normal,
-            occupancy=occupancy,  # type: ignore[arg-type]
+            occupancy=OccupancyEnum(occupancy),
             departure_connection_uri=IRailAPI._parse_connection_uri(raw, "departureConnection", "connection"),
         )
 
@@ -225,7 +226,7 @@ class IRailAPI:
             vehicle_number=vehicle_number,
             platform=platform,
             is_normal_platform=is_normal,
-            occupancy=occupancy,  # type: ignore[arg-type]
+            occupancy=OccupancyEnum(occupancy),
             connection_uri=IRailAPI._parse_connection_uri(raw, "arrivalConnection", "departureConnection", "connection"),
         )
 

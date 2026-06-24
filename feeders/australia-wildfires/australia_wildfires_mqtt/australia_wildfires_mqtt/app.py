@@ -11,6 +11,7 @@ import os
 import re
 import unicodedata
 from typing import Optional
+from datetime import datetime
 from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
@@ -166,7 +167,7 @@ async def feed(
                     size_hectares=10.5,
                     type="Bush Fire",
                     responsible_agency="Rural Fire Service",
-                    updated="2026-01-01T00:00:00+00:00",  # type: ignore[arg-type]
+                    updated=datetime.fromisoformat("2026-01-01T00:00:00+00:00"),
                     source_url="https://www.rfs.nsw.gov.au/feeds/majorIncidents.json",
                 )]
             else:

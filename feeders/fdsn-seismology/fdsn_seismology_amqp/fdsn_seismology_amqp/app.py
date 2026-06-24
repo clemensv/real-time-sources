@@ -5,6 +5,7 @@ import logging
 import os
 import time
 from urllib.parse import urlparse
+from datetime import datetime
 
 import requests
 
@@ -50,7 +51,7 @@ def _build_node_data(node: dict[str, str | None]) -> Node:
 def _build_earthquake_data(event: EarthquakeRecord) -> Earthquake:
     return Earthquake(
         event_id=event.event_id,
-        time=event.time,  # type: ignore[arg-type]
+        time=datetime.fromisoformat(event.time),
         latitude=event.latitude,
         longitude=event.longitude,
         depth_km=event.depth_km,

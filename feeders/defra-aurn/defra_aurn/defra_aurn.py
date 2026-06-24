@@ -260,7 +260,7 @@ class DefraAURNAPI:
         """Normalize a value entry into the generated Observation data class."""
         observation = Observation(
             timeseries_id=str(timeseries_id),
-            timestamp=convert_timestamp_ms_to_iso(timestamp_ms),  # type: ignore[arg-type]
+            timestamp=datetime.fromisoformat(convert_timestamp_ms_to_iso(timestamp_ms)),
             value=float(value) if value is not None else None,
             uom=str(uom),
         )

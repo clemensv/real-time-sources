@@ -138,14 +138,14 @@ def parse_observation(feature: typing.Dict, timestamp: str) -> typing.Optional[W
     obs = WeatherObservation(
         station_id=station_id,
         observation_time=timestamp,
-        temperature=values.get("temperature"),  # type: ignore[arg-type]
-        humidity=values.get("humidity"),  # type: ignore[arg-type]
-        precipitation=values.get("precipitation"),  # type: ignore[arg-type]
-        wind_direction=values.get("wind_direction"),  # type: ignore[arg-type]
-        wind_speed=values.get("wind_speed"),  # type: ignore[arg-type]
-        pressure=values.get("pressure"),  # type: ignore[arg-type]
-        sunshine_duration=values.get("sunshine_duration"),  # type: ignore[arg-type]
-        global_radiation=values.get("global_radiation"),  # type: ignore[arg-type]
+        temperature=float(values.get("temperature")) if values.get("temperature") is not None else None,  # type: ignore[arg-type]
+        humidity=float(values.get("humidity")) if values.get("humidity") is not None else None,  # type: ignore[arg-type]
+        precipitation=float(values.get("precipitation")) if values.get("precipitation") is not None else None,  # type: ignore[arg-type]
+        wind_direction=float(values.get("wind_direction")) if values.get("wind_direction") is not None else None,  # type: ignore[arg-type]
+        wind_speed=float(values.get("wind_speed")) if values.get("wind_speed") is not None else None,  # type: ignore[arg-type]
+        pressure=float(values.get("pressure")) if values.get("pressure") is not None else None,  # type: ignore[arg-type]
+        sunshine_duration=float(values.get("sunshine_duration")) if values.get("sunshine_duration") is not None else None,  # type: ignore[arg-type]
+        global_radiation=float(values.get("global_radiation")) if values.get("global_radiation") is not None else None,  # type: ignore[arg-type]
     )
     for field_name in PARAM_MAP.values():
         original = values.get(field_name)

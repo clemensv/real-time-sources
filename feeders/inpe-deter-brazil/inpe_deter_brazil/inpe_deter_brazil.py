@@ -21,6 +21,8 @@ from confluent_kafka import Producer
 
 # pylint: disable=import-error, line-too-long
 from inpe_deter_brazil_producer_data.br.inpe.deter.deforestationalert import DeforestationAlert
+from inpe_deter_brazil_producer_data.br.inpe.deter.biomeenum import BiomeEnum
+from inpe_deter_brazil_producer_data.br.inpe.deter.classslugenum import ClassSlugenum
 try:
     from inpe_deter_brazil_producer_kafka_producer.producer import BRINPEDETEREventProducer
 except ModuleNotFoundError:
@@ -268,7 +270,7 @@ class INPEDeterPoller:
 
         return DeforestationAlert(
             alert_id=str(gid),
-            biome=biome,  # type: ignore[arg-type]
+            biome=BiomeEnum(biome),
             classname=classname,
             view_date=view_date,
             satellite=satellite,
@@ -277,7 +279,7 @@ class INPEDeterPoller:
             municipality=municipality,
             state_code=state_code,
             state_slug=(topic_slug(state_code) if topic_slug(state_code) in VALID_STATE_SLUGS else "unknown"),
-            class_slug=(topic_slug(classname) if topic_slug(classname) in VALID_CLASS_SLUGS else "unknown"),  # type: ignore[arg-type]
+            class_slug=ClassSlugenum((topic_slug(classname) if topic_slug(classname) in VALID_CLASS_SLUGS else "unknown")) if (topic_slug(classname) if topic_slug(classname) in VALID_CLASS_SLUGS else "unknown") else None,
             path_row=path_row,
             publish_month=publish_month,
             centroid_latitude=centroid_lat,

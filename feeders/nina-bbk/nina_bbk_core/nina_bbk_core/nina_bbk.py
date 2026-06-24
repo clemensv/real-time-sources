@@ -4,6 +4,14 @@ import json, logging, os
 from typing import Any, Dict, List, Optional
 import aiohttp
 from nina_bbk_producer_data.civilwarning import CivilWarning
+from datetime import datetime
+from nina_bbk_producer_data.certaintyenum import CertaintyEnum
+from nina_bbk_producer_data.msgtypeenum import MsgTypeenum
+from nina_bbk_producer_data.providerenum import ProviderEnum
+from nina_bbk_producer_data.scopeenum import ScopeEnum
+from nina_bbk_producer_data.severityenum import SeverityEnum
+from nina_bbk_producer_data.statusenum import StatusEnum
+from nina_bbk_producer_data.urgencyenum import UrgencyEnum
 logger = logging.getLogger(__name__)
 USER_AGENT = os.environ.get("USER_AGENT") or ("real-time-sources-nina-bbk/0.1.0 " "(+https://github.com/clemensv/real-time-sources; " + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")")
 MAP_DATA_URL = "https://warnung.bund.de/api31/{provider}/mapData.json"
@@ -58,7 +66,7 @@ def normalize_warning(detail: dict, provider: str, map_version: Optional[int] = 
     if not info: return None
     sender = _safe_str(detail.get('sender')); sent = _safe_str(detail.get('sent')); status = _safe_str(detail.get('status')); msg_type = _safe_str(detail.get('msgType')); scope = _safe_str(detail.get('scope')); references = _safe_str(detail.get('references')); event = _safe_str(info.get('event')); event_code = _find_event_code(info); categories = info.get('category', []); category = categories[0] if categories else None; severity = _safe_str(info.get('severity')); urgency = _safe_str(info.get('urgency')); certainty = _safe_str(info.get('certainty')); headline = _safe_str(info.get('headline')); description = _safe_str(info.get('description')); instruction = _safe_str(info.get('instruction')); web = _safe_str(info.get('web')); contact = _safe_str(info.get('contact')); language = _safe_str(info.get('language')); sender_name = _find_param(info, 'sender_langname'); verwaltungsbereiche = _find_param(info, 'warnVerwaltungsbereiche'); state = _state_from_areas(info, sender); area_desc = _collect_areas(info)
     if not event or not severity or not urgency or not certainty: return None
-    return CivilWarning(warning_id=warning_id, provider=provider, state=state, version=map_version, sender=sender, sender_name=sender_name, sent=sent, status=status, msg_type=msg_type, scope=scope, references=references, event=event, event_code=event_code, category=category, severity=severity, urgency=urgency, certainty=certainty, headline=headline, description=description, instruction=instruction, web=web, contact=contact, area_desc=area_desc if area_desc else None, verwaltungsbereiche=verwaltungsbereiche, language=language)  # type: ignore[arg-type]
+    return CivilWarning(warning_id=warning_id, provider=ProviderEnum(provider), state=state, version=map_version, sender=str(sender) if sender is not None else None, sender_name=sender_name, sent=datetime.fromisoformat(sent) if sent else None, status=StatusEnum(status) if status else None, msg_type=MsgTypeenum(msg_type) if msg_type else None, scope=ScopeEnum(scope) if scope else None, references=references, event=event, event_code=event_code, category=category, severity=SeverityEnum(severity), urgency=UrgencyEnum(urgency), certainty=CertaintyEnum(certainty), headline=headline, description=description, instruction=instruction, web=web, contact=contact, area_desc=area_desc if area_desc else None, verwaltungsbereiche=verwaltungsbereiche, language=language)  # type: ignore[arg-type]
 class NINABBKPoller:
     def __init__(self, state_file: str = DEFAULT_STATE_FILE, poll_interval: int = DEFAULT_POLL_INTERVAL, providers: Optional[List[str]] = None):
         self.state_file = state_file; self.poll_interval = poll_interval; self.providers = providers or PROVIDERS

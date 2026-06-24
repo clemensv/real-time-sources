@@ -4,6 +4,11 @@ import json, logging, os, re, xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Optional
 import aiohttp
 from ptwc_tsunami_producer_data.tsunamibulletin import TsunamiBulletin
+from datetime import datetime
+from ptwc_tsunami_producer_data.basinenum import BasinEnum
+from ptwc_tsunami_producer_data.categoryenum import CategoryEnum
+from ptwc_tsunami_producer_data.feedenum import FeedEnum
+from ptwc_tsunami_producer_data.ptwclevelenum import PtwcLevelenum
 logger = logging.getLogger(__name__)
 FEEDS = {"PAAQ":"https://www.tsunami.gov/events/xml/PAAQAtom.xml","PHEB":"https://www.tsunami.gov/events/xml/PHEBAtom.xml"}
 NS = {"atom":"http://www.w3.org/2005/Atom","geo":"http://www.w3.org/2003/01/geo/wgs84_pos#","xhtml":"http://www.w3.org/1999/xhtml"}
@@ -47,7 +52,7 @@ def parse_entry(entry: ET.Element, feed_name: str, center: Optional[str] = None)
         rel = link.get("rel", ""); link_type = link.get("type", ""); href = link.get("href", "").strip()
         if rel == "alternate" and href: bulletin_url = href
         elif rel == "related" and "cap" in link_type and href: cap_url = href
-    return TsunamiBulletin(bulletin_id=bulletin_id,feed=feed_name,basin=_basin_for_feed(feed_name),ptwc_level=_ptwc_level(category),center=center,title=title,updated=updated,latitude=latitude,longitude=longitude,category=category,magnitude=magnitude,affected_region=affected_region,note=note,bulletin_url=bulletin_url,cap_url=cap_url)  # type: ignore[arg-type]
+    return TsunamiBulletin(bulletin_id=bulletin_id,feed=FeedEnum(feed_name),basin=BasinEnum(_basin_for_feed(feed_name)),ptwc_level=PtwcLevelenum(_ptwc_level(category)),center=center,title=title,updated=datetime.fromisoformat(updated),latitude=latitude,longitude=longitude,category=CategoryEnum(category) if category else None,magnitude=magnitude,affected_region=affected_region,note=note,bulletin_url=bulletin_url,cap_url=cap_url)
 class PTWCTsunamiPoller:
     def __init__(self, state_file: str = DEFAULT_STATE_FILE, poll_interval: int = DEFAULT_POLL_INTERVAL, feeds: Optional[List[str]] = None):
         self.state_file = state_file; self.poll_interval = poll_interval; self.feeds = feeds or list(FEEDS.keys())

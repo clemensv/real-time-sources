@@ -23,7 +23,7 @@ import hashlib
 import asyncio
 import logging
 import argparse
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 from io import StringIO
 from typing import Any, Dict, List, Optional
 
@@ -223,12 +223,12 @@ class FirmsPoller:
                 source=data_id,
                 record_id="coverage",
                 data_id=data_id,
-                min_date=(row.get("min_date") or "").strip() or None,  # type: ignore[arg-type]
-                max_date=(row.get("max_date") or "").strip() or None,  # type: ignore[arg-type]
+                min_date=date.fromisoformat((row.get("min_date") or "").strip() or None) if (row.get("min_date") or "").strip() or None else None,  # type: ignore[arg-type]
+                max_date=date.fromisoformat((row.get("max_date") or "").strip() or None) if (row.get("max_date") or "").strip() or None else None,  # type: ignore[arg-type]
                 instrument=InstrumentEnum(instrument) if instrument in ("VIIRS", "MODIS") else None,
                 satellite=satellite,
                 resolution_m=resolution,
-                retrieved_at=now_iso,  # type: ignore[arg-type]
+                retrieved_at=datetime.fromisoformat(now_iso),
             ))
         return records
 
@@ -271,9 +271,9 @@ class FirmsPoller:
             bright_ti5=_to_float(row.get("bright_ti5")),
             scan=_to_float(row.get("scan")),
             track=_to_float(row.get("track")),
-            acq_date=acq_date,  # type: ignore[arg-type]
+            acq_date=date.fromisoformat(acq_date),
             acq_time=acq_time,
-            acq_datetime=acq_datetime,  # type: ignore[arg-type]
+            acq_datetime=datetime.fromisoformat(acq_datetime),
             satellite=satellite,
             instrument=instrument,
             confidence=raw_conf,

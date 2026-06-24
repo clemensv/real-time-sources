@@ -10,6 +10,7 @@ import requests
 
 from jma_japan_producer_data import WeatherBulletin
 from jma_japan_producer_data.feedtypeenum import FeedTypeenum
+from datetime import datetime
 
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
 
@@ -75,7 +76,7 @@ def parse_entries(root: ElementTree.Element, feed_type: str) -> List[WeatherBull
             bulletin_id=bulletin_id,
             title=title,
             author=author,
-            updated=updated,  # type: ignore[arg-type]
+            updated=datetime.fromisoformat(updated),
             link=link,
             content=content,
             feed_type=FeedTypeenum(feed_type),

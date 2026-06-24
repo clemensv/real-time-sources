@@ -35,6 +35,7 @@ from wsdot_producer_data.us.wa.wsdot.ferryterminals.spaceforarrivalterminal impo
 from cloudevents.http import CloudEvent
 from cloudevents.kafka import to_binary, to_structured
 from wsdot_producer_kafka_producer.producer import UsWaWsdotTrafficEventProducer
+from wsdot_producer_data.us.wa.wsdot.traffic.flowreadingenum import FlowReadingenum
 
 
 class _WsdotEventProducer:
@@ -324,7 +325,7 @@ class WSDOTApi:
             flow_data_id=str(raw.get("FlowDataID", "")),
             station_name=raw.get("StationName", ""),
             region=raw.get("Region", ""),
-            flow_reading=flow_reading,  # type: ignore[arg-type]
+            flow_reading=FlowReadingenum(flow_reading),
             reading_time=reading_time,
         )
 

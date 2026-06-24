@@ -14,6 +14,12 @@ import aiohttp
 from confluent_kafka import Producer
 
 from meteoalarm_producer_data.weatherwarning import WeatherWarning  # pylint: disable=import-error
+from meteoalarm_producer_data.certaintyenum import CertaintyEnum
+from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
+from meteoalarm_producer_data.scopeenum import ScopeEnum
+from meteoalarm_producer_data.severityenum import SeverityEnum
+from meteoalarm_producer_data.statusenum import StatusEnum
+from meteoalarm_producer_data.urgencyenum import UrgencyEnum
 try:
     from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsEventProducer  # pylint: disable=import-error
 except ModuleNotFoundError:
@@ -151,29 +157,29 @@ def normalize_warning(alert_obj: dict, country: str) -> Optional[WeatherWarning]
 
     return WeatherWarning(
         identifier=identifier,
-        sender=sender,  # type: ignore[arg-type]
-        sent=sent,  # type: ignore[arg-type]
-        status=status,  # type: ignore[arg-type]
-        msg_type=msg_type,  # type: ignore[arg-type]
-        scope=scope,  # type: ignore[arg-type]
+        sender=str(sender) if sender is not None else None,  # type: ignore[arg-type]
+        sent=datetime.fromisoformat(sent) if sent else None,  # type: ignore[arg-type]
+        status=StatusEnum(status) if status else None,  # type: ignore[arg-type]
+        msg_type=MsgTypeenum(msg_type) if msg_type else None,  # type: ignore[arg-type]
+        scope=ScopeEnum(scope) if scope else None,  # type: ignore[arg-type]
         country=country,
         event=event,
         category=category,
-        severity=severity,  # type: ignore[arg-type]
-        urgency=urgency,  # type: ignore[arg-type]
-        certainty=certainty,  # type: ignore[arg-type]
+        severity=SeverityEnum(severity),
+        urgency=UrgencyEnum(urgency),
+        certainty=CertaintyEnum(certainty),
         headline=headline,
         description=description,
         instruction=instruction,
-        effective=effective,  # type: ignore[arg-type]
-        onset=onset,  # type: ignore[arg-type]
-        expires=expires,  # type: ignore[arg-type]
+        effective=datetime.fromisoformat(effective) if effective else None,
+        onset=datetime.fromisoformat(onset) if onset else None,
+        expires=datetime.fromisoformat(expires) if expires else None,
         web=web,
         contact=contact,
         awareness_level=awareness_level,
         awareness_type=awareness_type,
         awareness_type_raw=awareness_type_raw,
-        area_desc=area_desc if area_desc else None,  # type: ignore[arg-type]
+        area_desc=str(area_desc if area_desc else None),
         geocodes=geocodes if geocodes else None,
         language=language,
     )

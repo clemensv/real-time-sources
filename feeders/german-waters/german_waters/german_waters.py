@@ -157,10 +157,10 @@ def _obs_to_event(o: ObservationData, water_body: Optional[str] = None) -> Water
         water_body=resolved_water_body,
         water_level=o.water_level,
         water_level_unit=o.water_level_unit,
-        water_level_timestamp=o.water_level_timestamp,  # type: ignore[arg-type]
+        water_level_timestamp=datetime.fromisoformat(o.water_level_timestamp) if o.water_level_timestamp else None,
         discharge=o.discharge,
         discharge_unit=o.discharge_unit,
-        discharge_timestamp=o.discharge_timestamp,  # type: ignore[arg-type]
+        discharge_timestamp=datetime.fromisoformat(o.discharge_timestamp) if o.discharge_timestamp else None,
         trend=o.trend,
         situation=o.situation,
     )

@@ -60,6 +60,7 @@ from kystverket_ais_mqtt.enrichment import (
     ship_type_bucket,
 )
 import json
+from kystverket_ais_amqp_producer_data.msgtypeenum import MsgTypeenum
 
 def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
     params = {
@@ -181,7 +182,7 @@ def _build_position(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type=ship_type,
         geohash5=geohash5(lat, lon),
-        msg_type="position-report",  # type: ignore[arg-type]
+        msg_type=MsgTypeenum("position-report"),  # type: ignore[arg-type]
         latitude=_f(lat),
         longitude=_f(lon),
         speed_over_ground=_f(fields.get("speed_over_ground")),
@@ -218,7 +219,7 @@ def _build_static(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type=ship_type,
         geohash5=gh,
-        msg_type="static",  # type: ignore[arg-type]
+        msg_type=MsgTypeenum("static"),  # type: ignore[arg-type]
         ship_name=_s(fields.get("ship_name")),
         callsign=_s(fields.get("callsign")),
         imo_number=_i(fields.get("imo_number")),
@@ -249,7 +250,7 @@ def _build_aton(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type="aton",
         geohash5=geohash5(lat, lon),
-        msg_type="aid-to-navigation",  # type: ignore[arg-type]
+        msg_type=MsgTypeenum("aid-to-navigation"),  # type: ignore[arg-type]
         name=_s(fields.get("name")),
         aid_type=_i(fields.get("aid_type")),
         latitude=_f(lat),

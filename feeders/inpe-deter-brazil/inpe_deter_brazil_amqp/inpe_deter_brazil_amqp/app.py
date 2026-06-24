@@ -13,6 +13,8 @@ from urllib.parse import urlparse
 from inpe_deter_brazil.inpe_deter_brazil import DEFAULT_PAGE_SIZE, INPEDeterPoller, SOURCE_URI, WFS_ENDPOINTS
 from inpe_deter_brazil_amqp_producer_data import DeforestationAlert
 from inpe_deter_brazil_amqp_producer_amqp_producer.producer import BRINPEDETERAmqpProducer
+from inpe_deter_brazil_amqp_producer_data.br.inpe.deter.biomeenum import BiomeEnum
+from inpe_deter_brazil_amqp_producer_data.br.inpe.deter.classslugenum import ClassSlugenum
 
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 class _AmqpPublishFacade:
@@ -111,7 +113,7 @@ async def feed(
         if os.getenv("INPE_DETER_MOCK", "").lower() in ("1", "true", "yes"):
             alert = DeforestationAlert(
                 alert_id="mock-cerrado-1",
-                biome="cerrado",  # type: ignore[arg-type]
+                biome=BiomeEnum("cerrado"),
                 classname="DESMATAMENTO_CR",
                 view_date="2026-01-01",
                 satellite="AMAZONIA-1",
@@ -120,7 +122,7 @@ async def feed(
                 municipality="Brasília",
                 state_code="DF",
                 state_slug="df",
-                class_slug="desmatamento-cr",  # type: ignore[arg-type]
+                class_slug=ClassSlugenum("desmatamento-cr") if "desmatamento-cr" else None,
                 path_row="000/000",
                 publish_month="2026-01-01",
                 centroid_latitude=-15.78,

@@ -20,6 +20,9 @@ from laqn_london_producer_kafka_producer.producer import (
     UkKclLaqnEventProducer,
     UkKclLaqnSpeciesEventProducer,
 )
+from laqn_london_producer_data.uk.kcl.laqn.airqualitybandenum import AirQualityBandenum
+from laqn_london_producer_data.uk.kcl.laqn.indexsourceenum import IndexSourceenum
+from laqn_london_producer_data.uk.kcl.laqn.sitetypeenum import SiteTypeenum
 
 BASE_URL = "http://api.erg.ic.ac.uk/AirQuality/"
 SITES_PATH = "Information/MonitoringSites/GroupName=All/Json"
@@ -169,7 +172,7 @@ class LAQNLondonAPI:
         return Site(
             site_code=str(site.get("@SiteCode", "")).strip(),
             site_name=str(site.get("@SiteName", "")).strip(),
-            site_type=str(site.get("@SiteType", "")).strip(),  # type: ignore[arg-type]
+            site_type=SiteTypeenum(str(site.get("@SiteType", "")).strip()),
             local_authority_code=str(site.get("@LocalAuthorityCode", "")).strip(),
             local_authority_name=str(site.get("@LocalAuthorityName", "")).strip(),
             latitude=_parse_float_or_none(site.get("@Latitude")),
@@ -245,8 +248,8 @@ class LAQNLondonAPI:
                                 bulletin_date=bulletin_date,
                                 species_code=species_code,
                                 air_quality_index=int(air_quality_index),
-                                air_quality_band=air_quality_band,  # type: ignore[arg-type]
-                                index_source=index_source,  # type: ignore[arg-type]
+                                air_quality_band=AirQualityBandenum(air_quality_band),
+                                index_source=IndexSourceenum(index_source),
                             )
                         )
                     except ValueError:

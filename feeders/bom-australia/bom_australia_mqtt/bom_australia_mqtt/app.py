@@ -147,7 +147,7 @@ async def _run_live(args: argparse.Namespace) -> None:
             mqtt_obs = MqttWeatherObservation(
                 station_wmo=core_obs.station_wmo,
                 station_name=core_obs.station_name,
-                observation_time_utc=core_obs.observation_time_utc,  # type: ignore[arg-type]
+                observation_time_utc=datetime.fromisoformat(core_obs.observation_time_utc),
                 local_time=core_obs.local_time,
                 air_temp=core_obs.air_temp,
                 apparent_temp=core_obs.apparent_temp,
@@ -193,7 +193,7 @@ async def _run_live(args: argparse.Namespace) -> None:
                 feed_url=bulletin.feed_url,
                 feed_title=bulletin.feed_title,
                 title=bulletin.title,
-                published_at=bulletin.published_at,  # type: ignore[arg-type]
+                published_at=datetime.fromisoformat(bulletin.published_at),
                 issued_local_time_text=bulletin.issued_local_time_text,
                 warning_type=bulletin.warning_type,
                 affected_area_text=bulletin.affected_area_text,

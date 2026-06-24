@@ -207,10 +207,10 @@ class HKEPDAQHIAPI:
             stations[station_id] = Station(
                 station_id=station_id,
                 station_name=station_name,
-                station_type=station_info["station_type"],  # type: ignore[arg-type]
-                district=station_info["district"],  # type: ignore[arg-type]
-                latitude=station_info["latitude"],  # type: ignore[arg-type]
-                longitude=station_info["longitude"],  # type: ignore[arg-type]
+                station_type=str(station_info["station_type"]),
+                district=str(station_info["district"]),
+                latitude=float(station_info["latitude"]) if station_info["latitude"] is not None else None,  # type: ignore[arg-type]
+                longitude=float(station_info["longitude"]) if station_info["longitude"] is not None else None,  # type: ignore[arg-type]
             )
         return stations
 
@@ -247,8 +247,8 @@ class HKEPDAQHIAPI:
             latest_by_station[station_id] = AQHIReading(
                 station_id=station_id,
                 station_name=station_name,
-                station_type=station_type,  # type: ignore[arg-type]
-                district=station_info["district"],  # type: ignore[arg-type]
+                station_type=str(station_type),
+                district=str(station_info["district"]),
                 reading_time=reading_time,
                 aqhi=aqhi_value,
                 health_risk_category=aqhi_to_health_risk(aqhi_value),

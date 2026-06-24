@@ -241,14 +241,14 @@ class AustraliaWildfiresAPI:
             state="NSW",
             title=title,
             alert_level=alert_level,
-            status=status,  # type: ignore[arg-type]
+            status=str(status) if status is not None else None,  # type: ignore[arg-type]
             location=location,
             latitude=lat,
             longitude=lon,
             size_hectares=size_hectares,
             type=fire_type,
             responsible_agency=responsible_agency,
-            updated=updated,  # type: ignore[arg-type]
+            updated=datetime.fromisoformat(updated),
             source_url=source_url,
         )
 
@@ -300,7 +300,7 @@ class AustraliaWildfiresAPI:
             size_hectares=size_hectares,
             type=fire_type,
             responsible_agency=responsible_agency,
-            updated=updated,  # type: ignore[arg-type]
+            updated=datetime.fromisoformat(updated),
             source_url=source_url,
         )
 
@@ -348,14 +348,14 @@ class AustraliaWildfiresAPI:
             state="QLD",
             title=title,
             alert_level=alert_level,
-            status=None,  # type: ignore[arg-type]
+            status=str(None) if None is not None else None,  # type: ignore[arg-type]
             location=location,
             latitude=lat,
             longitude=lon,
             size_hectares=None,
             type=fire_type,
             responsible_agency="Queensland Fire Department",
-            updated=updated,  # type: ignore[arg-type]
+            updated=datetime.fromisoformat(updated),
             source_url=QLD_FIRE_URL,
         )
 

@@ -252,10 +252,10 @@ def feed_observations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer,
             station_id=str(pid),
             water_level=wl_val,
             water_level_unit='cm' if wl_val is not None else None,
-            water_level_timestamp=wl_ts,  # type: ignore[arg-type]
+            water_level_timestamp=datetime.fromisoformat(wl_ts) if wl_ts else None,
             discharge=q_val,
             discharge_unit='m3/s' if q_val is not None else None,
-            discharge_timestamp=q_ts,  # type: ignore[arg-type]
+            discharge_timestamp=datetime.fromisoformat(q_ts) if q_ts else None,
             basin=None,
         )
         producer.send_fi_syke_hydrology_water_level_observation(_station_id=str(pid), data=obs_data, flush_producer=False)
