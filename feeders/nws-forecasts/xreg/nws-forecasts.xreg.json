@@ -413,13 +413,15 @@
                       "name": "LandForecastPeriod",
                       "description": "One ordered narrative period from the NWS land zone forecast payload.",
                       "required": [
-                        "period_number",
                         "period_name",
                         "detailed_forecast"
                       ],
                       "properties": {
                         "period_number": {
-                          "type": "int32",
+                          "type": [
+                            "int32",
+                            "null"
+                          ],
                           "description": "Ordinal period number from properties.periods[].number. NWS numbers the periods in forecast order starting at 1."
                         },
                         "period_name": {

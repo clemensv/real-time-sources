@@ -10,9 +10,9 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.alert import Alert
 from typing import Any
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 
 
 class Test_Alert(unittest.TestCase):
@@ -32,7 +32,7 @@ class Test_Alert(unittest.TestCase):
         Create instance of Alert for testing
         """
         instance = Alert(
-            active_period=[None, None, None],
+            active_period=[None, None, None, None, None],
             informed_entity=[None, None, None, None, None],
             cause=None,
             effect=None,
@@ -47,7 +47,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test active_period property
         """
-        test_value = [None, None, None]
+        test_value = [None, None, None, None, None]
         self.instance.active_period = test_value
         self.assertEqual(self.instance.active_period, test_value)
     

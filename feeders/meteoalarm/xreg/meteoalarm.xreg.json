@@ -163,9 +163,6 @@
                   "identifier",
                   "sender",
                   "sent",
-                  "status",
-                  "msg_type",
-                  "scope",
                   "event",
                   "severity",
                   "urgency",
@@ -194,7 +191,10 @@
                     "description": "The date and time when the warning was issued, in ISO-8601 format."
                   },
                   "status": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.",
                     "enum": [
                       "Actual",
@@ -212,7 +212,10 @@
                     }
                   },
                   "msg_type": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "The CAP message type indicating the nature of the alert.",
                     "enum": [
                       "Alert",
@@ -233,7 +236,10 @@
                     }
                   },
                   "scope": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "The CAP scope of the alert. Typically 'Public' for weather warnings.",
                     "enum": [
                       "Public",

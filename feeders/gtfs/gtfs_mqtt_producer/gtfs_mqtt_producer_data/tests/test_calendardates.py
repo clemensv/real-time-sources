@@ -29,8 +29,8 @@ class Test_CalendarDates(unittest.TestCase):
         Create instance of CalendarDates for testing
         """
         instance = CalendarDates(
-            serviceId='kwqoduuerftagdafywhv',
-            date='ncdtsezyzcdtozxawdqj',
+            serviceId='zhxoijyzuoplvvcnyqaw',
+            date='slxblkuhvdmwaxaovvuw',
             exceptionType=None
         )
         return instance
@@ -40,7 +40,7 @@ class Test_CalendarDates(unittest.TestCase):
         """
         Test serviceId property
         """
-        test_value = 'kwqoduuerftagdafywhv'
+        test_value = 'zhxoijyzuoplvvcnyqaw'
         self.instance.serviceId = test_value
         self.assertEqual(self.instance.serviceId, test_value)
     
@@ -48,7 +48,7 @@ class Test_CalendarDates(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'ncdtsezyzcdtozxawdqj'
+        test_value = 'slxblkuhvdmwaxaovvuw'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     

@@ -11,10 +11,10 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.position import Position
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 from typing import Any
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.position import Position
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -180,10 +180,10 @@ class VehiclePosition:
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(41),
-            stop_id='zpegabmaktycshuqxyvq',
+            current_stop_sequence=int(30),
+            stop_id='pmqsordqsroykhfvxzvh',
             current_status=None,
-            timestamp=int(20),
+            timestamp=int(1),
             congestion_level=None,
             occupancy_status=None
         )

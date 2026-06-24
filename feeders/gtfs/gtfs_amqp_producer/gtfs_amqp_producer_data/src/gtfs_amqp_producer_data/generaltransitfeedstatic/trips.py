@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_amqp_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from gtfs_amqp_producer_data.generaltransitfeedstatic.calendar import Calendar
 from typing import Any
+from gtfs_amqp_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -24,30 +24,30 @@ class Trips:
     
     Attributes:
         routeId (typing.Optional[str])
-        serviceDates (Calendar)
+        serviceDates (typing.Optional[Calendar])
         serviceExceptions (typing.List[CalendarDates])
         tripId (typing.Optional[str])
         tripHeadsign (typing.Optional[str])
         tripShortName (typing.Optional[str])
-        directionId (Any)
+        directionId (typing.Optional[Any])
         blockId (typing.Optional[str])
         shapeId (typing.Optional[str])
-        wheelchairAccessible (Any)
-        bikesAllowed (Any)
+        wheelchairAccessible (typing.Optional[Any])
+        bikesAllowed (typing.Optional[Any])
     """
     
     
     routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
-    serviceDates: Calendar=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
+    serviceDates: typing.Optional[Calendar]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
     serviceExceptions: typing.List[CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceExceptions"))
     tripId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
     tripHeadsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripHeadsign"))
     tripShortName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripShortName"))
-    directionId: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="directionId"))
+    directionId: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="directionId"))
     blockId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="blockId"))
     shapeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeId"))
-    wheelchairAccessible: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairAccessible"))
-    bikesAllowed: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bikesAllowed"))
+    wheelchairAccessible: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairAccessible"))
+    bikesAllowed: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bikesAllowed"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Trips':
@@ -176,15 +176,15 @@ class Trips:
             An instance of the dataclass.
         """
         return cls(
-            routeId='mmdmypdnlinvfnkdihck',
+            routeId='jajtewvjlywtvdpgodwy',
             serviceDates=None,
-            serviceExceptions=[None, None, None],
-            tripId='qpswhhypwxjejfxrujix',
-            tripHeadsign='djskvafoomgoomivvqfg',
-            tripShortName='qcvdhevcfzsmewwnnvni',
+            serviceExceptions=[None, None, None, None],
+            tripId='gukzmmroeaedgpybnpco',
+            tripHeadsign='kfaiingwftuluoluphgk',
+            tripShortName='wfqhfxvsumbkmshwwcct',
             directionId=None,
-            blockId='kpdfebmnkajkgcheqdgi',
-            shapeId='qsjemisqrzdtnvdearae',
+            blockId='zzmgmszhwkgirjdgjbwn',
+            shapeId='bwljgjfzsqjjdwcltyhc',
             wheelchairAccessible=None,
             bikesAllowed=None
         )

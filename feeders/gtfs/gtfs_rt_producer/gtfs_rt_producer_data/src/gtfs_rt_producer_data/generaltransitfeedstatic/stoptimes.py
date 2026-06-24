@@ -27,12 +27,12 @@ class StopTimes:
         stopId (typing.Optional[str])
         stopSequence (int)
         stopHeadsign (typing.Optional[str])
-        pickupType (Any)
-        dropOffType (Any)
+        pickupType (typing.Optional[Any])
+        dropOffType (typing.Optional[Any])
         continuousPickup (typing.Optional[Any])
         continuousDropOff (typing.Optional[Any])
         shapeDistTraveled (typing.Optional[float])
-        timepoint (Any)
+        timepoint (typing.Optional[Any])
     """
     
     
@@ -42,12 +42,12 @@ class StopTimes:
     stopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
     stopSequence: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopSequence"))
     stopHeadsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopHeadsign"))
-    pickupType: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pickupType"))
-    dropOffType: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dropOffType"))
+    pickupType: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pickupType"))
+    dropOffType: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dropOffType"))
     continuousPickup: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousPickup"))
     continuousDropOff: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousDropOff"))
     shapeDistTraveled: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeDistTraveled"))
-    timepoint: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timepoint"))
+    timepoint: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timepoint"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'StopTimes':
@@ -176,16 +176,16 @@ class StopTimes:
             An instance of the dataclass.
         """
         return cls(
-            tripId='vpvmbncjezzmdbbdwxhm',
-            arrivalTime='lilhrymisffcimvvaklq',
-            departureTime='nljwxsoxlajyxqfhbuas',
-            stopId='bjwgxavzvlfgwvyqrcqj',
-            stopSequence=int(16),
-            stopHeadsign='ispseouobxjyghpkojbl',
+            tripId='fqldsceeazxkqfwhdbbk',
+            arrivalTime='dldkzjlcsupzcizqkfpd',
+            departureTime='vqfwnsbrckzqrtsatebv',
+            stopId='eyjudafcargdwuenqjej',
+            stopSequence=int(89),
+            stopHeadsign='ytwcariqhqxdmzcoiclw',
             pickupType=None,
             dropOffType=None,
             continuousPickup=None,
             continuousDropOff=None,
-            shapeDistTraveled=float(85.48729301023405),
+            shapeDistTraveled=float(43.77357492170641),
             timepoint=None
         )

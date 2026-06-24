@@ -12,14 +12,14 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nina_bbk_amqp_producer_data.statusenum import StatusEnum
-from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
 from nina_bbk_amqp_producer_data.providerenum import ProviderEnum
-from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
-from nina_bbk_amqp_producer_data.severityenum import SeverityEnum
-from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
-from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
 from nina_bbk_amqp_producer_data.urgencyenum import UrgencyEnum
+from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
+from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
+from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
+from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
+from nina_bbk_amqp_producer_data.statusenum import StatusEnum
+from nina_bbk_amqp_producer_data.severityenum import SeverityEnum
 import datetime
 
 
@@ -36,9 +36,9 @@ class CivilWarning:
         sender (typing.Optional[str])
         sender_name (typing.Optional[str])
         sent (typing.Optional[datetime.datetime])
-        status (StatusEnum)
-        msg_type (MsgTypeenum)
-        scope (ScopeEnum)
+        status (typing.Optional[StatusEnum])
+        msg_type (typing.Optional[MsgTypeenum])
+        scope (typing.Optional[ScopeEnum])
         references (typing.Optional[str])
         event (str)
         event_code (typing.Optional[str])
@@ -64,9 +64,9 @@ class CivilWarning:
     sender: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sender"))
     sender_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sender_name"))
     sent: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sent", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    status: StatusEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
-    msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
-    scope: ScopeEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="scope"))
+    status: typing.Optional[StatusEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
+    msg_type: typing.Optional[MsgTypeenum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
+    scope: typing.Optional[ScopeEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="scope"))
     references: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="references"))
     event: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
     event_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_code"))
@@ -211,29 +211,29 @@ class CivilWarning:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='usfcbucakaoeljqdzqug',
+            warning_id='govewjniybfiklvmqblx',
             provider=ProviderEnum.mowas,
-            version=int(97),
-            sender='ilvfhstkzgmshqwqvvgl',
-            sender_name='nnzowlzmnvcttofvkgxz',
+            version=int(90),
+            sender='rzbxofiovlzkovkupqxr',
+            sender_name='etnimzblarrzsrapqyty',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            references='jjwhfpjcxcxtetryxhfi',
-            event='eewgjmcrhjzhcfryakhm',
-            event_code='pyzxnekuupsoiamwruor',
+            references='ypczjnnqkfqvufidplxz',
+            event='dmuaototxuqstitwyofr',
+            event_code='ydbuwezdznjqollcaeip',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='kirsdynriliailkgirks',
-            description='hlmyuruaspglwlpnhtog',
-            instruction='dzqzclmzdgtyvwpaounz',
-            web='esqyegrzlfaccerekbou',
-            contact='hspsuynepvekzjtwhzta',
-            area_desc='djphfbdfclaypzgtujgk',
-            verwaltungsbereiche='hbmnurnjonfifpnwdtaf',
-            language='unzgyilkycoodqrbgdti',
-            state='uuefblzeeqjidmgdqgxb'
+            headline='iqxjclufrdrwpzvmiiyu',
+            description='gkyhtqpzkwyorushzbnm',
+            instruction='vozuintapsslwvdskvzc',
+            web='vdpabqdwqqshufulnodb',
+            contact='spjduuczickcxzcvlpem',
+            area_desc='yyqsthpeufkedfxsxoos',
+            verwaltungsbereiche='eydndijdymlqkynjippf',
+            language='asucfuwkroheuiquqtjb',
+            state='yuuriyyvaeqpbpbcrnto'
         )

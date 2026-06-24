@@ -22,26 +22,26 @@ class Calendar:
     
     Attributes:
         serviceId (typing.Optional[str])
-        monday (Any)
-        tuesday (Any)
-        wednesday (Any)
-        thursday (Any)
-        friday (Any)
-        saturday (Any)
-        sunday (Any)
+        monday (typing.Optional[Any])
+        tuesday (typing.Optional[Any])
+        wednesday (typing.Optional[Any])
+        thursday (typing.Optional[Any])
+        friday (typing.Optional[Any])
+        saturday (typing.Optional[Any])
+        sunday (typing.Optional[Any])
         startDate (typing.Optional[str])
         endDate (typing.Optional[str])
     """
     
     
     serviceId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
-    monday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="monday"))
-    tuesday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tuesday"))
-    wednesday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wednesday"))
-    thursday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="thursday"))
-    friday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="friday"))
-    saturday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="saturday"))
-    sunday: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunday"))
+    monday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="monday"))
+    tuesday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tuesday"))
+    wednesday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wednesday"))
+    thursday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="thursday"))
+    friday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="friday"))
+    saturday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="saturday"))
+    sunday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunday"))
     startDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startDate"))
     endDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endDate"))
 
@@ -172,7 +172,7 @@ class Calendar:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='kyfgjwlcpebpmqtbzbgw',
+            serviceId='lqaunwadtsqalltocbnf',
             monday=None,
             tuesday=None,
             wednesday=None,
@@ -180,6 +180,6 @@ class Calendar:
             friday=None,
             saturday=None,
             sunday=None,
-            startDate='bmzdfusmvumkdjwrcjwf',
-            endDate='cxfcmtvzoyisjzxyzvsh'
+            startDate='tepunfxhsngnxgywsutv',
+            endDate='uipwiwxionpxbeliuljp'
         )

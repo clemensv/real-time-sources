@@ -4981,9 +4981,12 @@
                         },
                         "routeType": {
                           "description": "Indicates the type of transportation used on a route.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/RouteType"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/RouteType"
+                            },
+                            "null"
+                          ]
                         },
                         "routeUrl": {
                           "type": "string",
@@ -5007,15 +5010,21 @@
                         },
                         "continuousPickup": {
                           "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup"
+                            },
+                            "null"
+                          ]
                         },
                         "continuousDropOff": {
                           "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff"
+                            },
+                            "null"
+                          ]
                         },
                         "networkId": {
                           "type": "string",
@@ -5236,9 +5245,12 @@
                         },
                         "locationType": {
                           "description": "Location type.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/LocationType"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/LocationType"
+                            },
+                            "null"
+                          ]
                         },
                         "parentStation": {
                           "type": "string",
@@ -5252,9 +5264,12 @@
                         },
                         "wheelchairBoarding": {
                           "description": "Indicates whether wheelchair boardings are possible from the location.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairBoarding"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairBoarding"
+                            },
+                            "null"
+                          ]
                         },
                         "levelId": {
                           "type": "string",
@@ -5384,29 +5399,41 @@
                         },
                         "pickupType": {
                           "description": "Indicates pickup method.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/PickupType"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/PickupType"
+                            },
+                            "null"
+                          ]
                         },
                         "dropOffType": {
                           "description": "Indicates drop off method.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/DropOffType"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/DropOffType"
+                            },
+                            "null"
+                          ]
                         },
                         "continuousPickup": {
                           "default": null,
                           "description": "Indicates continuous stopping pickup.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup"
+                            },
+                            "null"
+                          ]
                         },
                         "continuousDropOff": {
                           "default": null,
                           "description": "Indicates continuous stopping drop off.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff"
+                            },
+                            "null"
+                          ]
                         },
                         "shapeDistTraveled": {
                           "type": "double",
@@ -5415,9 +5442,12 @@
                         },
                         "timepoint": {
                           "description": "Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/Timepoint"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/Timepoint"
+                            },
+                            "null"
+                          ]
                         }
                       },
                       "required": [
@@ -5471,45 +5501,66 @@
                         },
                         "monday": {
                           "description": "Indicates whether the service operates on all Mondays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "tuesday": {
                           "description": "Indicates whether the service operates on all Tuesdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "wednesday": {
                           "description": "Indicates whether the service operates on all Wednesdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "thursday": {
                           "description": "Indicates whether the service operates on all Thursdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "friday": {
                           "description": "Indicates whether the service operates on all Fridays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "saturday": {
                           "description": "Indicates whether the service operates on all Saturdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "sunday": {
                           "description": "Indicates whether the service operates on all Sundays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "startDate": {
                           "type": [
@@ -5568,9 +5619,12 @@
                         },
                         "exceptionType": {
                           "description": "Indicates whether service is available on the date specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType"
+                            },
+                            "null"
+                          ]
                         }
                       },
                       "required": [
@@ -5781,45 +5835,66 @@
                         },
                         "monday": {
                           "description": "Indicates whether the service operates on all Mondays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "tuesday": {
                           "description": "Indicates whether the service operates on all Tuesdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "wednesday": {
                           "description": "Indicates whether the service operates on all Wednesdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "thursday": {
                           "description": "Indicates whether the service operates on all Thursdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "friday": {
                           "description": "Indicates whether the service operates on all Fridays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "saturday": {
                           "description": "Indicates whether the service operates on all Saturdays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "sunday": {
                           "description": "Indicates whether the service operates on all Sundays in the date range specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                            },
+                            "null"
+                          ]
                         },
                         "startDate": {
                           "type": [
@@ -5878,9 +5953,12 @@
                         },
                         "exceptionType": {
                           "description": "Indicates whether service is available on the date specified.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType"
+                            },
+                            "null"
+                          ]
                         }
                       },
                       "required": [
@@ -5930,9 +6008,12 @@
                           "description": "Identifies a route."
                         },
                         "serviceDates": {
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/Calendar"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/Calendar"
+                            },
+                            "null"
+                          ]
                         },
                         "serviceExceptions": {
                           "type": "array",
@@ -5961,9 +6042,12 @@
                         },
                         "directionId": {
                           "description": "Indicates the direction of travel for a trip.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/DirectionId"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/DirectionId"
+                            },
+                            "null"
+                          ]
                         },
                         "blockId": {
                           "type": "string",
@@ -5977,15 +6061,21 @@
                         },
                         "wheelchairAccessible": {
                           "description": "Indicates wheelchair accessibility.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairAccessible"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairAccessible"
+                            },
+                            "null"
+                          ]
                         },
                         "bikesAllowed": {
                           "description": "Indicates whether bikes are allowed.",
-                          "type": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/BikesAllowed"
-                          }
+                          "type": [
+                            {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/BikesAllowed"
+                            },
+                            "null"
+                          ]
                         }
                       },
                       "required": [

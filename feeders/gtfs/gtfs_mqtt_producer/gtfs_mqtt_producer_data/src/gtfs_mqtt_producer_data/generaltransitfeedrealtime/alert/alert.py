@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
 from typing import Any
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -169,7 +169,7 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            active_period=[None, None, None],
+            active_period=[None, None, None, None, None],
             informed_entity=[None, None, None, None, None],
             cause=None,
             effect=None,

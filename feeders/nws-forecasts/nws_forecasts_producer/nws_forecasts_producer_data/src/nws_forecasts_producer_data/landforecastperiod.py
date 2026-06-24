@@ -20,13 +20,13 @@ class LandForecastPeriod:
     One ordered narrative period from the NWS land zone forecast payload.
     
     Attributes:
-        period_number (int)
+        period_number (typing.Optional[int])
         period_name (str)
         detailed_forecast (str)
     """
     
     
-    period_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="period_number"))
+    period_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="period_number"))
     period_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="period_name"))
     detailed_forecast: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="detailed_forecast"))
 
@@ -157,7 +157,7 @@ class LandForecastPeriod:
             An instance of the dataclass.
         """
         return cls(
-            period_number=int(29),
-            period_name='xetuktlmmyvfoxkmebpq',
-            detailed_forecast='oxxmfsxewrghgoksnuxx'
+            period_number=int(19),
+            period_name='lcyerdobgpjzonmoisof',
+            detailed_forecast='mlhbhldpzxeibuptexie'
         )

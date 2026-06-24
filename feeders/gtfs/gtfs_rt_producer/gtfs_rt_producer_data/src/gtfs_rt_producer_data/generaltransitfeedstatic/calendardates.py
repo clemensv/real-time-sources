@@ -23,13 +23,13 @@ class CalendarDates:
     Attributes:
         serviceId (typing.Optional[str])
         date (typing.Optional[str])
-        exceptionType (Any)
+        exceptionType (typing.Optional[Any])
     """
     
     
     serviceId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
     date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
-    exceptionType: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="exceptionType"))
+    exceptionType: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="exceptionType"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'CalendarDates':
@@ -158,7 +158,7 @@ class CalendarDates:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='uxfxphokkkkcjcabdhvm',
-            date='roxbnyaepmeiugfqceeb',
+            serviceId='sibsxvsmtnxgsydcqwwz',
+            date='upoonyfseqhgwiudgukk',
             exceptionType=None
         )

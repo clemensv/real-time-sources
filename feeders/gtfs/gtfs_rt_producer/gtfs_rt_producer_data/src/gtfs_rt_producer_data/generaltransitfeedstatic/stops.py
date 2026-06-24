@@ -30,10 +30,10 @@ class Stops:
         stopLon (typing.Optional[float])
         zoneId (typing.Optional[str])
         stopUrl (typing.Optional[str])
-        locationType (Any)
+        locationType (typing.Optional[Any])
         parentStation (typing.Optional[str])
         stopTimezone (typing.Optional[str])
-        wheelchairBoarding (Any)
+        wheelchairBoarding (typing.Optional[Any])
         levelId (typing.Optional[str])
         platformCode (typing.Optional[str])
     """
@@ -48,10 +48,10 @@ class Stops:
     stopLon: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopLon"))
     zoneId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zoneId"))
     stopUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopUrl"))
-    locationType: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationType"))
+    locationType: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationType"))
     parentStation: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parentStation"))
     stopTimezone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopTimezone"))
-    wheelchairBoarding: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairBoarding"))
+    wheelchairBoarding: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairBoarding"))
     levelId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="levelId"))
     platformCode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="platformCode"))
 
@@ -182,19 +182,19 @@ class Stops:
             An instance of the dataclass.
         """
         return cls(
-            stopId='edyztierlftdmsihhdjl',
-            stopCode='ywrwlnxnwkrjdqputbln',
-            stopName='pbbsgvffuuikoqjvbxea',
-            ttsStopName='hlwmwckqrltyucalcxyz',
-            stopDesc='orhrutfvvxnlmjvpnuhu',
-            stopLat=float(53.31184794604741),
-            stopLon=float(79.34273151610763),
-            zoneId='axoxtwmhdzekzifnjokn',
-            stopUrl='qfkyurqpbovicihhlrwr',
+            stopId='cjdzupnqpakkhgckuggk',
+            stopCode='fkwtxfbbhycihhdapcmx',
+            stopName='gprvgeuwvvpecixobbtj',
+            ttsStopName='rcvlknfoemzjkfhndqdl',
+            stopDesc='dhbzzufnxdskirrqejwl',
+            stopLat=float(42.698012155806786),
+            stopLon=float(22.721850442180312),
+            zoneId='eztmkjrpiwvvgopfipty',
+            stopUrl='yyjhxbvnqcdxwljqdpwh',
             locationType=None,
-            parentStation='fpfkjwtamiuudmmqupjb',
-            stopTimezone='anarskplulgcmcbhndmt',
+            parentStation='pqpndxhuuzsttvajtlki',
+            stopTimezone='yiupcwgjoqjibtxetemb',
             wheelchairBoarding=None,
-            levelId='kotjmvxlyicgdhvyzzsk',
-            platformCode='ykzwnxltxzulrbnpjsii'
+            levelId='kpififrqsujpftwxuinw',
+            platformCode='slvytgtzssyiibmsmrzc'
         )

@@ -29,17 +29,17 @@ class Test_MarineZoneForecast(unittest.TestCase):
         Create instance of MarineZoneForecast for testing
         """
         instance = MarineZoneForecast(
-            zone_id='tgezglupbhajrvelqfkj',
-            zone_name='yajvwwkyknzwomwiufoo',
-            product_title='fywfmsuhpibzbmmqnvxe',
-            office_name='jkokzcvzszxohxebjyzh',
-            issued_at_text='gpsfndvdvgmsieolnhan',
-            expires_text='ciwxxyjlroigabilqsgq',
-            wmo_header='liuqqtmgvuvuzqhaupal',
-            bulletin_awips_id='etttleyelmvwbvknddqm',
-            synopsis='twvhyzsyyngblnhyohos',
-            periods=[None, None],
-            bulletin_text='hqelueiofxwbokyizcgw'
+            zone_id='juxrsgdspvvhpczemkdj',
+            zone_name='wczklmuxjbppkrmveaem',
+            product_title='uuuynxohnzriasvfqkwy',
+            office_name='yqqntghjplwequikkxpz',
+            issued_at_text='shveufrgsrnsfkmrvqqm',
+            expires_text='fwrudtndadoqeazwkjqv',
+            wmo_header='ndgmygyzvqmgxygjrzfi',
+            bulletin_awips_id='bpcglrduiiktttrswmzf',
+            synopsis='mvbaqwsnctbekxcietwx',
+            periods=[None],
+            bulletin_text='wozyeocdbkkkvnxqlass'
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test zone_id property
         """
-        test_value = 'tgezglupbhajrvelqfkj'
+        test_value = 'juxrsgdspvvhpczemkdj'
         self.instance.zone_id = test_value
         self.assertEqual(self.instance.zone_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test zone_name property
         """
-        test_value = 'yajvwwkyknzwomwiufoo'
+        test_value = 'wczklmuxjbppkrmveaem'
         self.instance.zone_name = test_value
         self.assertEqual(self.instance.zone_name, test_value)
     
@@ -64,7 +64,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test product_title property
         """
-        test_value = 'fywfmsuhpibzbmmqnvxe'
+        test_value = 'uuuynxohnzriasvfqkwy'
         self.instance.product_title = test_value
         self.assertEqual(self.instance.product_title, test_value)
     
@@ -72,7 +72,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test office_name property
         """
-        test_value = 'jkokzcvzszxohxebjyzh'
+        test_value = 'yqqntghjplwequikkxpz'
         self.instance.office_name = test_value
         self.assertEqual(self.instance.office_name, test_value)
     
@@ -80,7 +80,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test issued_at_text property
         """
-        test_value = 'gpsfndvdvgmsieolnhan'
+        test_value = 'shveufrgsrnsfkmrvqqm'
         self.instance.issued_at_text = test_value
         self.assertEqual(self.instance.issued_at_text, test_value)
     
@@ -88,7 +88,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test expires_text property
         """
-        test_value = 'ciwxxyjlroigabilqsgq'
+        test_value = 'fwrudtndadoqeazwkjqv'
         self.instance.expires_text = test_value
         self.assertEqual(self.instance.expires_text, test_value)
     
@@ -96,7 +96,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test wmo_header property
         """
-        test_value = 'liuqqtmgvuvuzqhaupal'
+        test_value = 'ndgmygyzvqmgxygjrzfi'
         self.instance.wmo_header = test_value
         self.assertEqual(self.instance.wmo_header, test_value)
     
@@ -104,7 +104,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test bulletin_awips_id property
         """
-        test_value = 'etttleyelmvwbvknddqm'
+        test_value = 'bpcglrduiiktttrswmzf'
         self.instance.bulletin_awips_id = test_value
         self.assertEqual(self.instance.bulletin_awips_id, test_value)
     
@@ -112,7 +112,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test synopsis property
         """
-        test_value = 'twvhyzsyyngblnhyohos'
+        test_value = 'mvbaqwsnctbekxcietwx'
         self.instance.synopsis = test_value
         self.assertEqual(self.instance.synopsis, test_value)
     
@@ -120,7 +120,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test periods property
         """
-        test_value = [None, None]
+        test_value = [None]
         self.instance.periods = test_value
         self.assertEqual(self.instance.periods, test_value)
     
@@ -128,7 +128,7 @@ class Test_MarineZoneForecast(unittest.TestCase):
         """
         Test bulletin_text property
         """
-        test_value = 'hqelueiofxwbokyizcgw'
+        test_value = 'wozyeocdbkkkvnxqlass'
         self.instance.bulletin_text = test_value
         self.assertEqual(self.instance.bulletin_text, test_value)
     

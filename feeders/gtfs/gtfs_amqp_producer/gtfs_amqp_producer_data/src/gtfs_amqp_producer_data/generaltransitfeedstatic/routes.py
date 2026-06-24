@@ -26,13 +26,13 @@ class Routes:
         routeShortName (typing.Optional[str])
         routeLongName (typing.Optional[str])
         routeDesc (typing.Optional[str])
-        routeType (Any)
+        routeType (typing.Optional[Any])
         routeUrl (typing.Optional[str])
         routeColor (typing.Optional[str])
         routeTextColor (typing.Optional[str])
         routeSortOrder (typing.Optional[int])
-        continuousPickup (Any)
-        continuousDropOff (Any)
+        continuousPickup (typing.Optional[Any])
+        continuousDropOff (typing.Optional[Any])
         networkId (typing.Optional[str])
     """
     
@@ -42,13 +42,13 @@ class Routes:
     routeShortName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeShortName"))
     routeLongName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeLongName"))
     routeDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeDesc"))
-    routeType: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeType"))
+    routeType: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeType"))
     routeUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeUrl"))
     routeColor: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeColor"))
     routeTextColor: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeTextColor"))
     routeSortOrder: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeSortOrder"))
-    continuousPickup: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousPickup"))
-    continuousDropOff: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousDropOff"))
+    continuousPickup: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousPickup"))
+    continuousDropOff: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousDropOff"))
     networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
 
     @classmethod
@@ -178,17 +178,17 @@ class Routes:
             An instance of the dataclass.
         """
         return cls(
-            routeId='qalrwssgtmtfdhcesfqi',
-            agencyId='fdduaowewddyvdzqeikc',
-            routeShortName='yjajhktzpxedlnsjzodp',
-            routeLongName='mvtusevxqrlnciwvjenj',
-            routeDesc='hzqowrehpjujpjovmzju',
+            routeId='ancjssqgtjhgqaeqntdn',
+            agencyId='tqfrwngekxawkjcggpsl',
+            routeShortName='cvucnsyoxeihggmbopgw',
+            routeLongName='zfbpkubhhcbgwdmmgvxj',
+            routeDesc='ptqimpsvvlpsmcaxarmq',
             routeType=None,
-            routeUrl='mvwhouzygqwuhupdmrdx',
-            routeColor='jpkvjatyjcwrlnckehiu',
-            routeTextColor='bpwwyffqerwopghrshbp',
-            routeSortOrder=int(98),
+            routeUrl='bgdahxjztzisvywrsgze',
+            routeColor='wnbonaeuywdzprgibuvu',
+            routeTextColor='yckslpwfhocdqdibmqbc',
+            routeSortOrder=int(68),
             continuousPickup=None,
             continuousDropOff=None,
-            networkId='pvuabdflzhbqsttjmwpv'
+            networkId='uvlpxqswsadqlqlymjeq'
         )

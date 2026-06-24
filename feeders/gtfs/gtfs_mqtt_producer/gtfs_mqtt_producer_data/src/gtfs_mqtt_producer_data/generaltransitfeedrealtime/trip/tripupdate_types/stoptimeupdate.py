@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeevent import StopTimeEvent
+from typing import Any
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -163,8 +163,8 @@ class StopTimeUpdate:
             An instance of the dataclass.
         """
         return cls(
-            stop_sequence=int(97),
-            stop_id='uaqxtkxjznxovhdgqpwt',
+            stop_sequence=int(14),
+            stop_id='tychnhkkxvfjjmhdkxny',
             arrival=None,
             departure=None,
             schedule_relationship=None
