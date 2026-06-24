@@ -121,7 +121,7 @@ class BlitzortungBridge:
         normalized = normalize_stroke(stroke)
         data = LightningStroke.from_serializer_dict(normalized)
         self._event_producer.send_blitzortung_lightning_lightning_stroke(
-            _source_id=data.source_id,
+            _source_id=data.source_id,  # type: ignore[arg-type]
             _stroke_id=data.stroke_id,
             _time=data.event_time,
             data=data,

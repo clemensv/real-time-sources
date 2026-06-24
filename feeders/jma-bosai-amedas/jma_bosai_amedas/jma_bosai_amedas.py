@@ -182,7 +182,7 @@ def _measurement_kwargs() -> dict[str, Any]:
 def parse_station(station_code: str, payload: dict[str, Any]) -> Station:
     return Station(
         prefecture=prefecture_for_station(station_code),
-        event="info",
+        event="info",  # type: ignore[arg-type]
         station_code=station_code,
         kj_name=payload.get("kjName", ""),
         kana=payload.get("kana") or payload.get("knName", ""),
@@ -242,10 +242,10 @@ def parse_observation(station_code: str, payload: dict[str, Any], observed_at_lo
     utc = observed_at_local.astimezone(timezone.utc)
     return Observation(
         prefecture=prefecture_for_station(station_code),
-        event="observation",
+        event="observation",  # type: ignore[arg-type]
         station_code=station_code,
-        observed_at=utc.isoformat().replace("+00:00", "Z"),
-        observed_at_local=observed_at_local.isoformat(),
+        observed_at=utc.isoformat().replace("+00:00", "Z"),  # type: ignore[arg-type]
+        observed_at_local=observed_at_local.isoformat(),  # type: ignore[arg-type]
         **values,
     )
 

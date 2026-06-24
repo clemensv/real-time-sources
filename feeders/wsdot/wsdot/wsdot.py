@@ -324,7 +324,7 @@ class WSDOTApi:
             flow_data_id=str(raw.get("FlowDataID", "")),
             station_name=raw.get("StationName", ""),
             region=raw.get("Region", ""),
-            flow_reading=flow_reading,
+            flow_reading=flow_reading,  # type: ignore[arg-type]
             reading_time=reading_time,
         )
 
@@ -581,9 +581,9 @@ class WSDOTApi:
             alert_id=str(raw.get("AlertID", "")),
             county=raw.get("County") or None,
             region=raw.get("Region") or None,
-            priority=raw.get("Priority") or None,
+            priority=raw.get("Priority") or None,  # type: ignore[arg-type]
             event_category=raw.get("EventCategory") or None,
-            event_status=raw.get("EventStatus") or None,
+            event_status=raw.get("EventStatus") or None,  # type: ignore[arg-type]
             headline_description=raw.get("HeadlineDescription") or None,
             extended_description=raw.get("ExtendedDescription") or None,
             start_time=_normalize_dt(raw.get("StartTime")),

@@ -96,14 +96,22 @@ async def feed(args: argparse.Namespace) -> None:
     port = parsed_url.port or (8883 if parsed_url.scheme in ("mqtts", "ssl") else 1883)
     use_tls = parsed_url.scheme in ("mqtts", "ssl") or args.tls or args.auth_mode == "entra"
 
-    mqtt_client = GovNoaaAviationweatherMqttMqttClient(
-        host=host, port=port, client_id=resolved_client_id or None,
-        use_tls=use_tls, content_mode=args.content_mode,
+    import paho.mqtt.client as paho_mqtt
+    paho_client = paho_mqtt.Client(
+        client_id=resolved_client_id or "",
+        protocol=paho_mqtt.MQTTv5,
     )
+    if use_tls:
+        import ssl
+        paho_client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
     if resolved_username or resolved_password:
-        mqtt_client._client.username_pw_set(resolved_username, resolved_password)
+        paho_client.username_pw_set(resolved_username, resolved_password)
 
-    await mqtt_client.connect(properties=connect_props)
+    mqtt_client = GovNoaaAviationweatherMqttMqttClient(
+        client=paho_client, content_mode=args.content_mode,
+    )
+
+    await mqtt_client.connect(broker=host, port=port, properties=connect_props)
 
     def utcnow_iso() -> str:
         return datetime.now(timezone.utc).isoformat()

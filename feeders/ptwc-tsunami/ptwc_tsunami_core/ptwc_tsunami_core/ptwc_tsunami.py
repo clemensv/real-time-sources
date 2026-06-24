@@ -47,7 +47,7 @@ def parse_entry(entry: ET.Element, feed_name: str, center: Optional[str] = None)
         rel = link.get("rel", ""); link_type = link.get("type", ""); href = link.get("href", "").strip()
         if rel == "alternate" and href: bulletin_url = href
         elif rel == "related" and "cap" in link_type and href: cap_url = href
-    return TsunamiBulletin(bulletin_id=bulletin_id,feed=feed_name,basin=_basin_for_feed(feed_name),ptwc_level=_ptwc_level(category),center=center,title=title,updated=updated,latitude=latitude,longitude=longitude,category=category,magnitude=magnitude,affected_region=affected_region,note=note,bulletin_url=bulletin_url,cap_url=cap_url)
+    return TsunamiBulletin(bulletin_id=bulletin_id,feed=feed_name,basin=_basin_for_feed(feed_name),ptwc_level=_ptwc_level(category),center=center,title=title,updated=updated,latitude=latitude,longitude=longitude,category=category,magnitude=magnitude,affected_region=affected_region,note=note,bulletin_url=bulletin_url,cap_url=cap_url)  # type: ignore[arg-type]
 class PTWCTsunamiPoller:
     def __init__(self, state_file: str = DEFAULT_STATE_FILE, poll_interval: int = DEFAULT_POLL_INTERVAL, feeds: Optional[List[str]] = None):
         self.state_file = state_file; self.poll_interval = poll_interval; self.feeds = feeds or list(FEEDS.keys())

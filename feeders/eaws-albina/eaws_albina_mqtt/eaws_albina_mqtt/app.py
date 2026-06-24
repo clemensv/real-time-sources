@@ -80,7 +80,7 @@ async def _publish_date(poller: AlbinaPoller, mqtt_client: OrgEAWSALBINAMqttMqtt
                 region_id=event.region_id,
                 country=event.country,
                 danger_level=event.danger_level,
-                data=event,
+                data=event,  # type: ignore[arg-type]
             )
             seen_keys.add(dedup_key)
             count += 1
@@ -112,7 +112,7 @@ async def feed(
         paho_client.username_pw_set(resolved_username, resolved_password)
     if tls or _entra_props is not None:
         paho_client.tls_set()
-    mqtt_client = OrgEAWSALBINAMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
+    mqtt_client = OrgEAWSALBINAMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
         paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_entra_props)

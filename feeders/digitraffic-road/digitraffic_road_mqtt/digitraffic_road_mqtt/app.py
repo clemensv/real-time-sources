@@ -95,10 +95,10 @@ class DigitrafficRoadMqttBridge:
             await self._client.publish_fi_digitraffic_road_mqtt_tms_station(station_id=str(flat["station_id"]), data=data, qos=1, retain=True)
         for flat in fetch_weather_station_payloads():
             data = WeatherStation.from_serializer_dict(_serializer_dict(WeatherStation, flat))
-            await self._client.publish_fi_digitraffic_road_mqtt_weather_station(station_id=str(flat["station_id"]), data=data, qos=1, retain=True)
+            await self._client.publish_fi_digitraffic_road_mqtt_weather_station(station_id=str(flat["station_id"]), data=data, qos=1, retain=True)  # type: ignore[arg-type]
         for flat in fetch_maintenance_task_payloads():
             data = MaintenanceTaskType.from_serializer_dict(flat)
-            await self._client.publish_fi_digitraffic_road_mqtt_maintenance_task_type(task_id=flat["task_id"], data=data, qos=1, retain=True)
+            await self._client.publish_fi_digitraffic_road_mqtt_maintenance_task_type(task_id=flat["task_id"], data=data, qos=1, retain=True)  # type: ignore[arg-type]
 
     def _on_message(self, data_type: str, metadata: Dict[str, Any], payload: Dict[str, Any]) -> None:
         future = asyncio.run_coroutine_threadsafe(self._publish_message(data_type, metadata, payload), self._loop)  # type: ignore[arg-type]
@@ -129,18 +129,18 @@ class DigitrafficRoadMqttBridge:
             enriched["station_id"] = station_id
             enriched["sensor_id"] = sensor_id
             data = WeatherSensorData.from_serializer_dict(_serializer_dict(WeatherSensorData, enriched))
-            await self._client.publish_fi_digitraffic_road_mqtt_weather_sensor_data(station_id=str(station_id), sensor_id=str(sensor_id), data=data)
+            await self._client.publish_fi_digitraffic_road_mqtt_weather_sensor_data(station_id=str(station_id), sensor_id=str(sensor_id), data=data)  # type: ignore[arg-type]
         elif data_type in {"traffic-announcement", "road-work", "weight-restriction", "exempted-transport"}:
             flat = flatten_traffic_message(str(metadata["situation_type"]), payload)
             data = TrafficMessage.from_serializer_dict(flat)
             if data_type == "traffic-announcement":
-                await self._client.publish_fi_digitraffic_road_mqtt_traffic_announcement(situation_id=flat["situation_id"], data=data)
+                await self._client.publish_fi_digitraffic_road_mqtt_traffic_announcement(situation_id=flat["situation_id"], data=data)  # type: ignore[arg-type]
             elif data_type == "road-work":
-                await self._client.publish_fi_digitraffic_road_mqtt_road_work(situation_id=flat["situation_id"], data=data)
+                await self._client.publish_fi_digitraffic_road_mqtt_road_work(situation_id=flat["situation_id"], data=data)  # type: ignore[arg-type]
             elif data_type == "weight-restriction":
-                await self._client.publish_fi_digitraffic_road_mqtt_weight_restriction(situation_id=flat["situation_id"], data=data)
+                await self._client.publish_fi_digitraffic_road_mqtt_weight_restriction(situation_id=flat["situation_id"], data=data)  # type: ignore[arg-type]
             else:
-                await self._client.publish_fi_digitraffic_road_mqtt_exempted_transport(situation_id=flat["situation_id"], data=data)
+                await self._client.publish_fi_digitraffic_road_mqtt_exempted_transport(situation_id=flat["situation_id"], data=data)  # type: ignore[arg-type]
         elif data_type == "maintenance":
             domain = str(metadata["domain"])
             enriched = dict(payload)
@@ -148,7 +148,7 @@ class DigitrafficRoadMqttBridge:
             enriched.setdefault("direction", None)
             enriched.setdefault("source", None)
             data = MaintenanceTracking.from_serializer_dict(_serializer_dict(MaintenanceTracking, enriched))
-            await self._client.publish_fi_digitraffic_road_mqtt_maintenance_tracking(domain=domain, data=data)
+            await self._client.publish_fi_digitraffic_road_mqtt_maintenance_tracking(domain=domain, data=data)  # type: ignore[arg-type]
 
 
 def _parse_broker(url: str) -> tuple[str, int, bool]:

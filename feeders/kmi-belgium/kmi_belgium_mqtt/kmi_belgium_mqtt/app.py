@@ -64,7 +64,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: BEGovKMIWeatherMqttMq
     previous_readings = _load_state(args.state_file)
     stations = extract_stations(api.get_latest_observations())
     for station in stations:
-        await mqtt_client.publish_be_gov_kmi_weather_mqtt_station(station_code=station.station_code, region=_segment(station.region or "unknown"), data=station)
+        await mqtt_client.publish_be_gov_kmi_weather_mqtt_station(station_code=station.station_code, region=_segment(station.region or "unknown"), data=station)  # type: ignore[arg-type]
     while True:
         last_timestamp = previous_readings.get("__last_timestamp__")
         features = api.get_observations(last_timestamp=last_timestamp) if last_timestamp else api.get_latest_observations()
@@ -78,7 +78,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: BEGovKMIWeatherMqttMq
             reading_key = f"{obs.station_code}:{reading_timestamp}"
             if reading_key in previous_readings:
                 continue
-            await mqtt_client.publish_be_gov_kmi_weather_mqtt_weather_observation(station_code=obs.station_code, region=_segment(obs.region or "unknown"), data=obs, _time=obs.observation_time.isoformat())
+            await mqtt_client.publish_be_gov_kmi_weather_mqtt_weather_observation(station_code=obs.station_code, region=_segment(obs.region or "unknown"), data=obs, _time=obs.observation_time.isoformat())  # type: ignore[arg-type]
             previous_readings[reading_key] = reading_timestamp
             sent += 1
         if latest_observation_time is not None:

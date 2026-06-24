@@ -96,7 +96,7 @@ async def _run_live(args: argparse.Namespace, producer: FRParisOpenDataVeloAmqpP
         counters = poller.fetch_counter_locations()
         for counter in counters:
             producer.send_counter(
-                data=counter,
+                data=counter,  # type: ignore[arg-type]
                 _counter_id=counter.counter_id,
                 _ce_id=counter.ce_id,
             )
@@ -109,7 +109,7 @@ async def _run_live(args: argparse.Namespace, producer: FRParisOpenDataVeloAmqpP
         new_counts, seen_keys = poller.dedup_counts(counts, seen_keys)
         for count in new_counts:
             producer.send_bicycle_count(
-                data=count,
+                data=count,  # type: ignore[arg-type]
                 _counter_id=count.counter_id,
                 _ce_id=count.ce_id,
                 _time=ce_datetime(count.date) if hasattr(count.date, "isoformat") else str(count.date),

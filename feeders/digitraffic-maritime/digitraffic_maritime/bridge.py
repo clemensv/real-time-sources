@@ -745,7 +745,7 @@ def main() -> None:
         bridge = DigitraficBridge(
             mqtt_source=mqtt_source,
             kafka_producer=kafka_producer,
-            event_producer=event_producer,
+            event_producer=event_producer,  # type: ignore[arg-type]
             mmsi_filter=mmsi_filter_set,
             flush_interval=args.flush_interval,
         )

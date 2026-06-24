@@ -85,7 +85,7 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
                     host=host,
                     address=address,
                     port=port,
-                    content_mode=content_mode,
+                    content_mode=content_mode,  # type: ignore[arg-type]
                     credential=credential,
                     entra_audience=entra_audience,
                     use_tls=use_tls,
@@ -99,7 +99,7 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
                     host=host,
                     address=address,
                     port=port,
-                    content_mode=content_mode,
+                    content_mode=content_mode,  # type: ignore[arg-type]
                     sas_key_name=sas_key_name,
                     sas_key=sas_key,
                     use_tls=use_tls,
@@ -113,7 +113,7 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
                     port=port,
                     username=username,
                     password=password,
-                    content_mode=content_mode,
+                    content_mode=content_mode,  # type: ignore[arg-type]
                     use_tls=use_tls,
                 )
             )

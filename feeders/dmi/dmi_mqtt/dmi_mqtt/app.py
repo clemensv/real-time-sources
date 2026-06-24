@@ -72,7 +72,7 @@ def _build_met_station(raw: Dict[str, Any]) -> MetObsStation:
         wmo_station_id=_opt_str(raw.get("wmoStationId")),
         wmo_country_code=_opt_str(raw.get("wmoCountryCode")),
         name=str(raw.get("name") or ""),
-        country=str(raw.get("country") or ""),
+        country=str(raw.get("country") or ""),  # type: ignore[arg-type]
         owner=_opt_str(raw.get("owner")),
         region_id=_opt_str(raw.get("regionId")),
         type=_opt_str(raw.get("type")),
@@ -83,12 +83,12 @@ def _build_met_station(raw: Dict[str, Any]) -> MetObsStation:
         station_height=_opt_float(raw.get("stationHeight")),
         barometer_height=_opt_float(raw.get("barometerHeight")),
         anemometer_height=_opt_float(raw.get("anemometerHeight")),
-        valid_from=_opt_str(raw.get("validFrom")),
-        valid_to=_opt_str(raw.get("validTo")),
-        operation_from=_opt_str(raw.get("operationFrom")),
-        operation_to=_opt_str(raw.get("operationTo")),
-        created=_opt_str(raw.get("created")),
-        updated=_opt_str(raw.get("updated")),
+        valid_from=_opt_str(raw.get("validFrom")),  # type: ignore[arg-type]
+        valid_to=_opt_str(raw.get("validTo")),  # type: ignore[arg-type]
+        operation_from=_opt_str(raw.get("operationFrom")),  # type: ignore[arg-type]
+        operation_to=_opt_str(raw.get("operationTo")),  # type: ignore[arg-type]
+        created=_opt_str(raw.get("created")),  # type: ignore[arg-type]
+        updated=_opt_str(raw.get("updated")),  # type: ignore[arg-type]
     )
 
 
@@ -96,8 +96,8 @@ def _build_met_observation(raw: Dict[str, Any]) -> MetObsObservation:
     return MetObsObservation(
         observation_id=_opt_str(raw.get("id") or raw.get("observationId")),
         station_id=str(raw.get("stationId") or ""),
-        parameter_id=str(raw.get("parameterId") or ""),
-        observed=str(raw.get("observed") or ""),
+        parameter_id=str(raw.get("parameterId") or ""),  # type: ignore[arg-type]
+        observed=str(raw.get("observed") or ""),  # type: ignore[arg-type]
         value=float(raw.get("value") or 0.0),
         latitude=_opt_float(raw.get("latitude")),
         longitude=_opt_float(raw.get("longitude")),
@@ -108,19 +108,19 @@ def _build_ocean_station(raw: Dict[str, Any]) -> OceanStation:
     return OceanStation(
         station_id=str(raw.get("stationId") or raw.get("id") or ""),
         name=str(raw.get("name") or ""),
-        country=str(raw.get("country") or ""),
+        country=str(raw.get("country") or ""),  # type: ignore[arg-type]
         owner=_opt_str(raw.get("owner")),
         type=_opt_str(raw.get("type")),
         status=_opt_str(raw.get("status")),
         parameter_id=list(raw.get("parameterId") or []) or None,
         latitude=float(raw.get("latitude") or 0.0),
         longitude=float(raw.get("longitude") or 0.0),
-        valid_from=_opt_str(raw.get("validFrom")),
-        valid_to=_opt_str(raw.get("validTo")),
-        operation_from=_opt_str(raw.get("operationFrom")),
-        operation_to=_opt_str(raw.get("operationTo")),
-        created=_opt_str(raw.get("created")),
-        updated=_opt_str(raw.get("updated")),
+        valid_from=_opt_str(raw.get("validFrom")),  # type: ignore[arg-type]
+        valid_to=_opt_str(raw.get("validTo")),  # type: ignore[arg-type]
+        operation_from=_opt_str(raw.get("operationFrom")),  # type: ignore[arg-type]
+        operation_to=_opt_str(raw.get("operationTo")),  # type: ignore[arg-type]
+        created=_opt_str(raw.get("created")),  # type: ignore[arg-type]
+        updated=_opt_str(raw.get("updated")),  # type: ignore[arg-type]
     )
 
 
@@ -128,12 +128,12 @@ def _build_tidewater_station(raw: Dict[str, Any]) -> TidewaterStation:
     return TidewaterStation(
         station_id=str(raw.get("stationId") or raw.get("id") or ""),
         name=str(raw.get("name") or ""),
-        country=str(raw.get("country") or ""),
+        country=str(raw.get("country") or ""),  # type: ignore[arg-type]
         owner=_opt_str(raw.get("owner")),
         latitude=float(raw.get("latitude") or 0.0),
         longitude=float(raw.get("longitude") or 0.0),
-        valid_from=_opt_str(raw.get("validFrom")),
-        valid_to=_opt_str(raw.get("validTo")),
+        valid_from=_opt_str(raw.get("validFrom")),  # type: ignore[arg-type]
+        valid_to=_opt_str(raw.get("validTo")),  # type: ignore[arg-type]
     )
 
 
@@ -141,8 +141,8 @@ def _build_ocean_observation(raw: Dict[str, Any]) -> OceanObservation:
     return OceanObservation(
         observation_id=_opt_str(raw.get("id") or raw.get("observationId")),
         station_id=str(raw.get("stationId") or ""),
-        parameter_id=str(raw.get("parameterId") or ""),
-        observed=str(raw.get("observed") or ""),
+        parameter_id=str(raw.get("parameterId") or ""),  # type: ignore[arg-type]
+        observed=str(raw.get("observed") or ""),  # type: ignore[arg-type]
         value=float(raw.get("value") or 0.0),
         latitude=_opt_float(raw.get("latitude")),
         longitude=_opt_float(raw.get("longitude")),
@@ -154,7 +154,7 @@ def _build_tidewater_prediction(raw: Dict[str, Any]) -> TidewaterPrediction:
         prediction_id=_opt_str(raw.get("id") or raw.get("predictionId")),
         station_id=str(raw.get("stationId") or ""),
         prediction_type=_opt_str(raw.get("predictionType")),
-        prediction_time=str(raw.get("predictionTime") or raw.get("observed") or ""),
+        prediction_time=str(raw.get("predictionTime") or raw.get("observed") or ""),  # type: ignore[arg-type]
         value=float(raw.get("value") or 0.0),
         latitude=_opt_float(raw.get("latitude")),
         longitude=_opt_float(raw.get("longitude")),

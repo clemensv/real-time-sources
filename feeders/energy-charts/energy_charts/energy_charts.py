@@ -189,7 +189,7 @@ class EnergyChartsPoller:
                 if fn not in kwargs:
                     kwargs[fn] = None
 
-            results.append(PublicPower(**kwargs))
+            results.append(PublicPower(**kwargs))  # type: ignore[arg-type]
         return results
 
     @staticmethod

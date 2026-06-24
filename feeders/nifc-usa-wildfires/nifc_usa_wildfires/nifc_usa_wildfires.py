@@ -100,7 +100,7 @@ class NIFCWildfirePoller:
         self.event_producer: Optional[GovNIFCWildfiresEventProducer] = None
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.event_producer = GovNIFCWildfiresEventProducer(producer, kafka_topic)
+            self.event_producer = GovNIFCWildfiresEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
 
     async def fetch_incidents(self, where_clause: str = "1=1") -> List[Dict[str, Any]]:
         """Fetch wildfire incidents from the ArcGIS Feature Service, paging through all results."""

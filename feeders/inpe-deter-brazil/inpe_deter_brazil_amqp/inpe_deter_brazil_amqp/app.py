@@ -111,7 +111,7 @@ async def feed(
         if os.getenv("INPE_DETER_MOCK", "").lower() in ("1", "true", "yes"):
             alert = DeforestationAlert(
                 alert_id="mock-cerrado-1",
-                biome="cerrado",
+                biome="cerrado",  # type: ignore[arg-type]
                 classname="DESMATAMENTO_CR",
                 view_date="2026-01-01",
                 satellite="AMAZONIA-1",
@@ -120,7 +120,7 @@ async def feed(
                 municipality="Brasília",
                 state_code="DF",
                 state_slug="df",
-                class_slug="desmatamento-cr",
+                class_slug="desmatamento-cr",  # type: ignore[arg-type]
                 path_row="000/000",
                 publish_month="2026-01-01",
                 centroid_latitude=-15.78,

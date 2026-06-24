@@ -117,7 +117,7 @@ async def _run_live(args: argparse.Namespace, producer: AtGeosphereTawesAmqpProd
         if station_refresh_due:
             for station in stations:
                 producer.send_weather_station(
-                    data=station,
+                    data=station,  # type: ignore[arg-type]
                     _station_id=station.station_id,
                     _bundesland=station_bundesland_segment(station),
                 )
@@ -137,7 +137,7 @@ async def _run_live(args: argparse.Namespace, producer: AtGeosphereTawesAmqpProd
             st = station_map.get(obs.station_id)
             bl = station_bundesland_segment(st) if st is not None else "unknown"
             producer.send_weather_observation(
-                data=obs,
+                data=obs,  # type: ignore[arg-type]
                 _station_id=obs.station_id,
                 _bundesland=bl,
             )

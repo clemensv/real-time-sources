@@ -106,7 +106,7 @@ async def feed(
         paho_client.username_pw_set(resolved_username, resolved_password)
     if tls or _entra_props is not None:
         paho_client.tls_set()
-    mqtt_client = USWASeattleFire911MqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
+    mqtt_client = USWASeattleFire911MqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
@@ -132,7 +132,7 @@ async def feed(
                     incident_number=incident.incident_number,
                     incident_datetime_utc=incident.incident_datetime_utc.isoformat(),
                     incident_type_slug=incident.incident_type_slug,
-                    data=incident,
+                    data=incident,  # type: ignore[arg-type]
                 )
                 sent_ids.append(incident.incident_number)
                 newest = max(newest or "", incident.incident_datetime)

@@ -145,8 +145,8 @@ async def feed(
     if tls or _entra_props is not None:
         site_paho.tls_set()
         values_paho.tls_set()
-    site_client = USGSSitesMqttMqttClient(client=site_paho, content_mode=content_mode, loop=asyncio.get_running_loop())
-    values_client = USGSInstantaneousValuesMqttMqttClient(client=values_paho, content_mode=content_mode, loop=asyncio.get_running_loop())
+    site_client = USGSSitesMqttMqttClient(client=site_paho, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
+    values_client = USGSInstantaneousValuesMqttMqttClient(client=values_paho, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
         import paho.mqtt.properties as _mqtt_props_mod

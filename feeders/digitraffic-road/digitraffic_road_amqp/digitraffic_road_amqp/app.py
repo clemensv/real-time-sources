@@ -140,18 +140,18 @@ class DigitrafficRoadAmqpBridge:
             enriched["station_id"] = station_id
             enriched["sensor_id"] = sensor_id
             data = WeatherSensorData.from_serializer_dict(_serializer_dict(WeatherSensorData, enriched))
-            self._producer.send_weather_sensor_data(data=data, _station_id=str(station_id), _sensor_id=str(sensor_id))
+            self._producer.send_weather_sensor_data(data=data, _station_id=str(station_id), _sensor_id=str(sensor_id))  # type: ignore[arg-type]
         elif data_type in {"traffic-announcement", "road-work", "weight-restriction", "exempted-transport"}:
             flat = flatten_traffic_message(str(metadata["situation_type"]), payload)
             data = TrafficMessage.from_serializer_dict(flat)
             if data_type == "traffic-announcement":
-                self._producer.send_traffic_announcement(data=data, _situation_id=flat["situation_id"])
+                self._producer.send_traffic_announcement(data=data, _situation_id=flat["situation_id"])  # type: ignore[arg-type]
             elif data_type == "road-work":
-                self._producer.send_road_work(data=data, _situation_id=flat["situation_id"])
+                self._producer.send_road_work(data=data, _situation_id=flat["situation_id"])  # type: ignore[arg-type]
             elif data_type == "weight-restriction":
-                self._producer.send_weight_restriction(data=data, _situation_id=flat["situation_id"])
+                self._producer.send_weight_restriction(data=data, _situation_id=flat["situation_id"])  # type: ignore[arg-type]
             else:
-                self._producer.send_exempted_transport(data=data, _situation_id=flat["situation_id"])
+                self._producer.send_exempted_transport(data=data, _situation_id=flat["situation_id"])  # type: ignore[arg-type]
         elif data_type == "maintenance":
             domain = str(metadata["domain"])
             enriched = dict(payload)
@@ -159,7 +159,7 @@ class DigitrafficRoadAmqpBridge:
             enriched.setdefault("direction", None)
             enriched.setdefault("source", None)
             data = MaintenanceTracking.from_serializer_dict(_serializer_dict(MaintenanceTracking, enriched))
-            self._producer.send_maintenance_tracking(data=data, _domain=domain)
+            self._producer.send_maintenance_tracking(data=data, _domain=domain)  # type: ignore[arg-type]
 
 
 def main() -> None:

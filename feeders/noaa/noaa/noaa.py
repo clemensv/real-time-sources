@@ -124,7 +124,7 @@ class NOAADataPoller:
                             item.setdefault('region', '')
                             item.setdefault('station_id', '')
 # pylint: disable=no-member
-            stations = Station.schema().load(raw_stations, many=True)
+            stations = Station.schema().load(raw_stations, many=True)  # type: ignore[attr-defined]
 # pylint: enable=no-member
             return stations
         except requests.RequestException as err:

@@ -117,13 +117,13 @@ def feed(args: argparse.Namespace) -> None:
                         event_id = f"{hourly.location_id}|{hourly.forecast_datetime}"
                         if event_id in bridge.seen_hourly_ids:
                             continue
-                        hourly_events.append(hourly)
+                        hourly_events.append(hourly)  # type: ignore[arg-type]
                         bridge._remember(bridge.hourly_order, bridge.seen_hourly_ids, event_id)
                     for daily in bridge.fetch_daily(city, state):
                         event_id = f"{daily.location_id}|{daily.forecast_date}"
                         if event_id in bridge.seen_daily_ids:
                             continue
-                        daily_events.append(daily)
+                        daily_events.append(daily)  # type: ignore[arg-type]
                         bridge._remember(bridge.daily_order, bridge.seen_daily_ids, event_id)
                 bridge.save_state()
             hourly_count, daily_count = _publish(producer, hourly_events, daily_events)

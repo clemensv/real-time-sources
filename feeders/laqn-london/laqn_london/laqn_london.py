@@ -169,7 +169,7 @@ class LAQNLondonAPI:
         return Site(
             site_code=str(site.get("@SiteCode", "")).strip(),
             site_name=str(site.get("@SiteName", "")).strip(),
-            site_type=str(site.get("@SiteType", "")).strip(),
+            site_type=str(site.get("@SiteType", "")).strip(),  # type: ignore[arg-type]
             local_authority_code=str(site.get("@LocalAuthorityCode", "")).strip(),
             local_authority_name=str(site.get("@LocalAuthorityName", "")).strip(),
             latitude=_parse_float_or_none(site.get("@Latitude")),
@@ -245,8 +245,8 @@ class LAQNLondonAPI:
                                 bulletin_date=bulletin_date,
                                 species_code=species_code,
                                 air_quality_index=int(air_quality_index),
-                                air_quality_band=air_quality_band,
-                                index_source=index_source,
+                                air_quality_band=air_quality_band,  # type: ignore[arg-type]
+                                index_source=index_source,  # type: ignore[arg-type]
                             )
                         )
                     except ValueError:

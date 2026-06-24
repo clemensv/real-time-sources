@@ -193,7 +193,8 @@ class HubEauHydrometrieAPI:
                         resultat_obs=float(resultat),
                         grandeur_hydro=grandeur_hydro,
                         libelle_methode_obs=obs.get("libelle_methode_obs", "") or "",
-                        libelle_qualification_obs=obs.get("libelle_qualification_obs", "") or ""
+                        libelle_qualification_obs=obs.get("libelle_qualification_obs", "") or "",
+                        basin=None,
                     )
 
                     try:

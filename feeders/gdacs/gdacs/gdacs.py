@@ -55,7 +55,7 @@ class GDACSPoller(_CoreGDACSPoller):
         self.event_producer: Optional[GDACSAlertsEventProducer] = None
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.event_producer = GDACSAlertsEventProducer(producer, kafka_topic)
+            self.event_producer = GDACSAlertsEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
 
     async def poll_and_send(self, once: bool = False):
         """Main poll loop. Downloads the feed, detects new/updated episodes, and emits events."""

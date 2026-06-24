@@ -180,7 +180,7 @@ class JMABosaiVolcanoAPI(_CoreSource):
             producer.send_jp_jma_volcano_volcanic_eruption(
                 _feedurl=ERUPTION_URL,
                 _volcano_code=event.volcano_code,
-                data=event,
+                data=event,  # type: ignore[arg-type]
                 flush_producer=False,
             )
         remainder = producer.producer.flush(timeout=30)

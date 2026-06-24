@@ -48,7 +48,7 @@ class BlueskyFirehose:
         self.use_compression = use_compression
         self.producer = Producer(kafka_config)
         self.cursor = load_cursor(cursor_file)
-        self.avrotize_producer = BlueskyFirehoseEventProducer(self.producer, self.kafka_topic, content_mode=content_mode)
+        self.avrotize_producer = BlueskyFirehoseEventProducer(self.producer, self.kafka_topic, content_mode=content_mode)  # type: ignore[arg-type]
 
     def load_cursor(self) -> Optional[int]:
         self.cursor = load_cursor(self.cursor_file)

@@ -76,7 +76,7 @@ class ParisBicycleCounterMqttPoller(ParisBicycleCounterPoller):
                 await self.producer.publish_fr_paris_open_data_velo_mqtt_counter(
                     counter_id=counter.counter_id,
                     ce_id=counter.ce_id,
-                    data=counter,
+                    data=counter,  # type: ignore[arg-type]
                 )
             logger.info("Published %d retained counter info records", len(counters))
 
@@ -90,7 +90,7 @@ class ParisBicycleCounterMqttPoller(ParisBicycleCounterPoller):
                     counter_id=count.counter_id,
                     ce_id=count.ce_id,
                     date=count.date.isoformat().replace("+00:00", "Z") if hasattr(count.date, "isoformat") else str(count.date),
-                    data=count,
+                    data=count,  # type: ignore[arg-type]
                 )
 
             cutoff = datetime.now(timezone.utc) - timedelta(days=14)

@@ -75,12 +75,12 @@ def parse_entries(root: ElementTree.Element, feed_type: str) -> List[WeatherBull
             bulletin_id=bulletin_id,
             title=title,
             author=author,
-            updated=updated,
+            updated=updated,  # type: ignore[arg-type]
             link=link,
             content=content,
             feed_type=FeedTypeenum(feed_type),
+            office=author,
         )
-        bulletin.office = author
         bulletins.append(bulletin)
     return bulletins
 

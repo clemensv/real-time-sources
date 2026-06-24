@@ -195,8 +195,8 @@ class AviationWeatherPoller:
         visib = raw.get("visib")
         return Metar(
             icao_id=icao_id,
-            obs_time=obs_time,
-            report_time=report_time,
+            obs_time=obs_time,  # type: ignore[arg-type]
+            report_time=report_time,  # type: ignore[arg-type]
             temp=cls.safe_float(raw.get("temp")),
             dewp=cls.safe_float(raw.get("dewp")),
             wdir=cls.safe_int(raw.get("wdir")),
@@ -234,8 +234,8 @@ class AviationWeatherPoller:
         return Sigmet(
             icao_id=icao_id,
             series_id=series_id,
-            valid_time_from=valid_from,
-            valid_time_to=valid_to,
+            valid_time_from=valid_from,  # type: ignore[arg-type]
+            valid_time_to=valid_to,  # type: ignore[arg-type]
             hazard=raw.get("hazard"),
             qualifier=None,
             sigmet_type=raw.get("airSigmetType", "SIGMET"),
@@ -243,7 +243,7 @@ class AviationWeatherPoller:
             altitude_low=cls.safe_int(raw.get("altitudeLow1")),
             movement_dir=str(movement_dir) if movement_dir is not None else None,
             movement_spd=str(movement_spd) if movement_spd is not None else None,
-            severity=cls.safe_int(raw.get("severity")),
+            severity=cls.safe_int(raw.get("severity")),  # type: ignore[arg-type]
             raw_sigmet=raw.get("rawAirSigmet"),
             coords=json.dumps(coords_raw) if coords_raw is not None else None,
             sigmet_id=series_id.lower(),
@@ -265,8 +265,8 @@ class AviationWeatherPoller:
         return Sigmet(
             icao_id=icao_id,
             series_id=series_id,
-            valid_time_from=valid_from,
-            valid_time_to=valid_to,
+            valid_time_from=valid_from,  # type: ignore[arg-type]
+            valid_time_to=valid_to,  # type: ignore[arg-type]
             hazard=raw.get("hazard"),
             qualifier=raw.get("qualifier"),
             sigmet_type="ISIGMET",

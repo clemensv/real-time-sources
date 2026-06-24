@@ -224,7 +224,7 @@ async def _emit_reference(
             await avg_client.publish_nl_ndw_avg_route_measurement_site_mqtt(
                 measurement_site_id=rec["measurement_site_id"],
                 road=road,
-                data=data,
+                data=data,  # type: ignore[arg-type]
             )
         except Exception:
             logger.exception("MQTT publish failed for RouteMeasurementSite %s", rec["measurement_site_id"])
@@ -255,7 +255,7 @@ async def _emit_reference(
                 vms_controller_id=rec["vms_controller_id"],
                 vms_index=rec["vms_index"],
                 road=road,
-                data=data,
+                data=data,  # type: ignore[arg-type]
             )
         except Exception:
             logger.exception("MQTT publish failed for DripSign %s", rec["vms_controller_id"])
@@ -284,7 +284,7 @@ async def _emit_reference(
             await msi_client.publish_nl_ndw_msi_msi_sign_mqtt(
                 sign_id=rec["sign_id"],
                 road=road,
-                data=data,
+                data=data,  # type: ignore[arg-type]
             )
         except Exception:
             logger.exception("MQTT publish failed for MsiSign %s", rec["sign_id"])
@@ -490,7 +490,7 @@ async def _emit_situations(
                         description=rec.get("description"),
                     )
                     await sit_client.publish_nl_ndw_situations_bridge_opening_mqtt(
-                        situation_record_id=rid, road=road, data=data)
+                        situation_record_id=rid, road=road, data=data)  # type: ignore[arg-type]
                 elif feed_type == "temporary_closure":
                     data = TemporaryClosure(
                         situation_record_id=rid, version_time=vtime,
@@ -501,7 +501,7 @@ async def _emit_situations(
                         severity=rec.get("severity"),
                     )
                     await sit_client.publish_nl_ndw_situations_temporary_closure_mqtt(
-                        situation_record_id=rid, road=road, data=data)
+                        situation_record_id=rid, road=road, data=data)  # type: ignore[arg-type]
                 elif feed_type == "temporary_speed_limit":
                     data = TemporarySpeedLimit(
                         situation_record_id=rid, version_time=vtime,
@@ -513,7 +513,7 @@ async def _emit_situations(
                         location_description=rec.get("location_description"),
                     )
                     await sit_client.publish_nl_ndw_situations_temporary_speed_limit_mqtt(
-                        situation_record_id=rid, road=road, data=data)
+                        situation_record_id=rid, road=road, data=data)  # type: ignore[arg-type]
                 elif feed_type == "safety_related_message":
                     data = SafetyRelatedMessage(
                         situation_record_id=rid, version_time=vtime,
@@ -525,7 +525,7 @@ async def _emit_situations(
                         urgency=rec.get("urgency"),
                     )
                     await sit_client.publish_nl_ndw_situations_safety_related_message_mqtt(
-                        situation_record_id=rid, road=road, data=data)
+                        situation_record_id=rid, road=road, data=data)  # type: ignore[arg-type]
                 else:
                     continue
                 state.state.setdefault("situation", {})[rid] = vtime

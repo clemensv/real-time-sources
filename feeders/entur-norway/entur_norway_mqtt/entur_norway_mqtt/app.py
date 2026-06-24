@@ -89,7 +89,7 @@ async def _publish_poll_cycle(
                 service_journey_id=evj.service_journey_id,
                 operator_ref=evj.operator_ref,
                 line_ref=evj.line_ref,
-                data=evj,
+                data=evj,  # type: ignore[arg-type]
             )))
         if tasks:
             await asyncio.gather(*tasks)
@@ -111,7 +111,7 @@ async def _publish_poll_cycle(
                 service_journey_id=mvj.service_journey_id,
                 operator_ref=mvj.operator_ref,
                 line_ref=mvj.line_ref,
-                data=mvj,
+                data=mvj,  # type: ignore[arg-type]
             )))
         if tasks:
             await asyncio.gather(*tasks)
@@ -131,7 +131,7 @@ async def _publish_poll_cycle(
             tasks.append(asyncio.create_task(mqtt_client.publish_no_entur_mqtt_pt_situation_element(
                 situation_number=sit.situation_number,
                 severity=sit.severity,
-                data=sit,
+                data=sit,  # type: ignore[arg-type]
             )))
         if tasks:
             await asyncio.gather(*tasks)
@@ -165,7 +165,7 @@ async def feed(
         paho_client.username_pw_set(resolved_username, resolved_password)
     if tls or _entra_props is not None:
         paho_client.tls_set()
-    mqtt_client = NoEnturMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
+    mqtt_client = NoEnturMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
         paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_entra_props)

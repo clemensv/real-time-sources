@@ -101,7 +101,7 @@ async def _run_live(args: argparse.Namespace, producer: JpGoJmaWeatherBulletinsA
             if b.bulletin_id in seen_ids:
                 continue
             producer.send_weather_bulletin(
-                data=b,
+                data=b,  # type: ignore[arg-type]
                 _office=bulletin_office_segment(b),
                 _bulletin_id=b.bulletin_id,
             )

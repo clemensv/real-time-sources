@@ -166,7 +166,7 @@ async def feed(
                     size_hectares=10.5,
                     type="Bush Fire",
                     responsible_agency="Rural Fire Service",
-                    updated="2026-01-01T00:00:00+00:00",
+                    updated="2026-01-01T00:00:00+00:00",  # type: ignore[arg-type]
                     source_url="https://www.rfs.nsw.gov.au/feeds/majorIncidents.json",
                 )]
             else:

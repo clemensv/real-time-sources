@@ -115,7 +115,10 @@ class NWSAlertPoller:
                         event=props.get("event", ""),
                         sender_name=props.get("senderName", ""),
                         headline=props.get("headline", ""),
-                        description=props.get("description", "")
+                        description=props.get("description", ""),
+                        zone_id=None,
+                        state=None,
+                        event_type=props.get("event", "") or None,
                     )
 
                     self.alerts_producer.send_microsoft_open_data_us_noaa_nws_weather_alert(

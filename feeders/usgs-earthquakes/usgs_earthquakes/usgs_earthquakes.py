@@ -105,7 +105,7 @@ class USGSEarthquakePoller:
         self.last_polled_file = last_polled_file
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.event_producer = USGSEarthquakesEventProducer(producer, kafka_topic)
+            self.event_producer = USGSEarthquakesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
         self.feed = feed
         self.min_magnitude = min_magnitude
 

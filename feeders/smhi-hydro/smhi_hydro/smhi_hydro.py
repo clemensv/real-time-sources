@@ -79,7 +79,7 @@ class SMHIHydroAPI:
             station_id=str(station_data["key"]),
             station_name=station_data["name"],
             catchment_name=station_data.get("catchmentName", ""),
-            timestamp=ts,
+            timestamp=ts,  # type: ignore[arg-type]
             discharge=float(value),
             quality=latest.get("quality", ""),
         )

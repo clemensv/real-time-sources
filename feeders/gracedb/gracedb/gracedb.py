@@ -131,7 +131,7 @@ class GraceDBPoller:
         self.event_producer: Optional[OrgLigoGracedbEventProducer] = None
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.event_producer = OrgLigoGracedbEventProducer(producer, kafka_topic)
+            self.event_producer = OrgLigoGracedbEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
 
     async def fetch_superevents(self, count: Optional[int] = None) -> List[Dict[str, Any]]:
         """Fetch superevents from the GraceDB public API."""

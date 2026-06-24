@@ -57,7 +57,7 @@ def _build_node_data(node: dict[str, str | None]) -> Node:
 def _build_earthquake_data(event: EarthquakeRecord) -> Earthquake:
     return Earthquake(
         event_id=event.event_id,
-        time=event.time,
+        time=event.time,  # type: ignore[arg-type]
         latitude=event.latitude,
         longitude=event.longitude,
         depth_km=event.depth_km,

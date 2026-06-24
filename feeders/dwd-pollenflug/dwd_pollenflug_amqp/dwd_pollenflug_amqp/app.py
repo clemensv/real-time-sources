@@ -98,14 +98,14 @@ async def _run_live(args: argparse.Namespace, producer: DEDWDPollenflugAmqpProdu
         if data is not None:
             regions = parse_regions(data)
             for region in regions:
-                producer.send_region(data=region, _region_id=region.region_id)
+                producer.send_region(data=region, _region_id=region.region_id)  # type: ignore[arg-type]
             logger.info("Published %d region reference events via AMQP", len(regions))
             last_update = data.get("last_update", "")
             if previous_state.get("last_update") != last_update:
                 forecasts = parse_forecasts(data)
                 for forecast in forecasts:
                     producer.send_pollen_forecast(
-                        data=forecast,
+                        data=forecast,  # type: ignore[arg-type]
                         _region_id=forecast.region_id,
                         _pollen_type=forecast.pollen_type or "all",
                     )

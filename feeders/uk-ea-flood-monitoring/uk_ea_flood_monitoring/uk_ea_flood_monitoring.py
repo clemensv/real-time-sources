@@ -218,7 +218,8 @@ class EAFloodMonitoringAPI:
                         station_reference=station_ref,
                         date_time=date_time,
                         measure=measure_uri,
-                        value=float(value)
+                        value=float(value),
+                        river=None,
                     )
 
                     try:

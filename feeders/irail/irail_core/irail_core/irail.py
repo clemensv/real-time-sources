@@ -195,7 +195,7 @@ class IRailAPI:
             vehicle_number=vehicle_number,
             platform=platform,
             is_normal_platform=is_normal,
-            occupancy=occupancy,
+            occupancy=occupancy,  # type: ignore[arg-type]
             departure_connection_uri=IRailAPI._parse_connection_uri(raw, "departureConnection", "connection"),
         )
 
@@ -225,7 +225,7 @@ class IRailAPI:
             vehicle_number=vehicle_number,
             platform=platform,
             is_normal_platform=is_normal,
-            occupancy=occupancy,
+            occupancy=occupancy,  # type: ignore[arg-type]
             connection_uri=IRailAPI._parse_connection_uri(raw, "arrivalConnection", "departureConnection", "connection"),
         )
 

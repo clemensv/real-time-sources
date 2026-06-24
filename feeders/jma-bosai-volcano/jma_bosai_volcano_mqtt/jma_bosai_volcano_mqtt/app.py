@@ -83,15 +83,15 @@ async def run(source: JMABosaiVolcanoSource, state: dict[str, object], state_fil
     if source.should_refresh_reference(state, refresh_hours):
         for record in source.build_reference_records():
             data = _to_volcano(record)
-            await client.publish_jp_jma_volcano_mqtt_volcano(feedurl=VOLCANO_LIST_URL, prefecture=data.prefecture, volcano_code=data.volcano_code, event=data.event, data=data)
+            await client.publish_jp_jma_volcano_mqtt_volcano(feedurl=VOLCANO_LIST_URL, prefecture=data.prefecture, volcano_code=data.volcano_code, event=data.event, data=data)  # type: ignore[arg-type]
         source.commit_reference_refresh(state, state_file)
     pending = source.collect_pending_telemetry(state)
     for record in pending.warnings:
         data = _to_warning(record)
-        await client.publish_jp_jma_volcano_mqtt_volcanic_warning(feedurl=WARNING_URL, prefecture=data.prefecture, volcano_code=data.volcano_code, event=data.event, data=data)
+        await client.publish_jp_jma_volcano_mqtt_volcanic_warning(feedurl=WARNING_URL, prefecture=data.prefecture, volcano_code=data.volcano_code, event=data.event, data=data)  # type: ignore[arg-type]
     for record in pending.eruptions:
         data = _to_eruption(record)
-        await client.publish_jp_jma_volcano_mqtt_volcanic_eruption(feedurl=ERUPTION_URL, prefecture=data.prefecture, volcano_code=data.volcano_code, event=data.event, data=data)
+        await client.publish_jp_jma_volcano_mqtt_volcanic_eruption(feedurl=ERUPTION_URL, prefecture=data.prefecture, volcano_code=data.volcano_code, event=data.event, data=data)  # type: ignore[arg-type]
     if pending.warning_keys or pending.eruption_keys:
         source.commit_telemetry_state(state, state_file, pending.warning_keys, pending.eruption_keys)
 

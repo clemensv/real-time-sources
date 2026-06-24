@@ -46,7 +46,7 @@ def _build_vehicle_position(position) -> VehiclePosition:
         longitude=position.longitude,
         latitude=position.latitude,
         bearing=position.bearing,
-        recorded_at_time=_parse_dt(position.recorded_at_time),
+        recorded_at_time=_parse_dt(position.recorded_at_time),  # type: ignore[arg-type]
         valid_until_time=_parse_dt(position.valid_until_time),
         block_ref=position.block_ref,
         vehicle_journey_ref=position.vehicle_journey_ref,

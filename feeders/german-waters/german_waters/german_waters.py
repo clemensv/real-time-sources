@@ -157,10 +157,10 @@ def _obs_to_event(o: ObservationData, water_body: Optional[str] = None) -> Water
         water_body=resolved_water_body,
         water_level=o.water_level,
         water_level_unit=o.water_level_unit,
-        water_level_timestamp=o.water_level_timestamp,
+        water_level_timestamp=o.water_level_timestamp,  # type: ignore[arg-type]
         discharge=o.discharge,
         discharge_unit=o.discharge_unit,
-        discharge_timestamp=o.discharge_timestamp,
+        discharge_timestamp=o.discharge_timestamp,  # type: ignore[arg-type]
         trend=o.trend,
         situation=o.situation,
     )
@@ -173,7 +173,7 @@ def send_stations(producer_client: DEWatersHydrologyEventProducer,
     for s in stations:
         producer_client.send_de_waters_hydrology_station(
             _station_id=s.station_id,
-            data=_station_to_event(s),
+            data=_station_to_event(s),  # type: ignore[arg-type]
             flush_producer=False)
         count += 1
     return count
@@ -194,7 +194,7 @@ def _refresh_station_metadata(producer_client: DEWatersHydrologyEventProducer,
         if station.station_id not in published_station_ids:
             producer_client.send_de_waters_hydrology_station(
                 _station_id=station.station_id,
-                data=_station_to_event(station),
+                data=_station_to_event(station),  # type: ignore[arg-type]
                 flush_producer=False)
             published_station_ids.add(station.station_id)
 
@@ -231,7 +231,7 @@ def feed_observations(producer_client: DEWatersHydrologyEventProducer,
                 continue
             producer_client.send_de_waters_hydrology_water_level_observation(
                 _station_id=o.station_id,
-                data=_obs_to_event(o, water_body=water_body),
+                data=_obs_to_event(o, water_body=water_body),  # type: ignore[arg-type]
                 flush_producer=False)
             previous_readings[o.station_id] = ts_key
             count += 1

@@ -70,13 +70,13 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
         if auth_mode == "entra":
             from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
             credential = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
-            producer = _retry_producer_init(lambda: cls(host=host, address=address, port=port, content_mode=content_mode, credential=credential, entra_audience=entra_audience, use_tls=use_tls))
+            producer = _retry_producer_init(lambda: cls(host=host, address=address, port=port, content_mode=content_mode, credential=credential, entra_audience=entra_audience, use_tls=use_tls))  # type: ignore[arg-type]
         elif auth_mode == "sas":
             if not sas_key_name or not sas_key:
                 raise RuntimeError("AMQP_AUTH_MODE=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY")
-            producer = cls(host=host, address=address, port=port, content_mode=content_mode, sas_key_name=sas_key_name, sas_key=sas_key, use_tls=use_tls)
+            producer = cls(host=host, address=address, port=port, content_mode=content_mode, sas_key_name=sas_key_name, sas_key=sas_key, use_tls=use_tls)  # type: ignore[arg-type]
         else:
-            producer = cls(host=host, address=address, port=port, username=username, password=password, content_mode=content_mode, use_tls=use_tls)
+            producer = cls(host=host, address=address, port=port, username=username, password=password, content_mode=content_mode, use_tls=use_tls)  # type: ignore[arg-type]
         producers.append(producer)
     return _AmqpPublishFacade(producers)
 

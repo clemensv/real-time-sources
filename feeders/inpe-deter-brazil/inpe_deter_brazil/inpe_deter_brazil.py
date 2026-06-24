@@ -184,7 +184,7 @@ class INPEDeterPoller:
         self.event_producer: Optional[BRINPEDETEREventProducer] = None
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.event_producer = BRINPEDETEREventProducer(producer, kafka_topic)
+            self.event_producer = BRINPEDETEREventProducer(producer, kafka_topic)  # type: ignore[arg-type]
 
     async def fetch_biome(self, biome: str, since_date: Optional[str] = None) -> List[Dict[str, Any]]:
         """
@@ -268,7 +268,7 @@ class INPEDeterPoller:
 
         return DeforestationAlert(
             alert_id=str(gid),
-            biome=biome,
+            biome=biome,  # type: ignore[arg-type]
             classname=classname,
             view_date=view_date,
             satellite=satellite,
@@ -277,7 +277,7 @@ class INPEDeterPoller:
             municipality=municipality,
             state_code=state_code,
             state_slug=(topic_slug(state_code) if topic_slug(state_code) in VALID_STATE_SLUGS else "unknown"),
-            class_slug=(topic_slug(classname) if topic_slug(classname) in VALID_CLASS_SLUGS else "unknown"),
+            class_slug=(topic_slug(classname) if topic_slug(classname) in VALID_CLASS_SLUGS else "unknown"),  # type: ignore[arg-type]
             path_row=path_row,
             publish_month=publish_month,
             centroid_latitude=centroid_lat,
@@ -348,7 +348,7 @@ class INPEDeterPoller:
                     if self.event_producer:
                         self.event_producer.send_br_inpe_deter_deforestation_alert(
                             _source_uri=SOURCE_URI,
-                            _biome=alert.biome,
+                            _biome=alert.biome,  # type: ignore[arg-type]
                             _alert_id=alert.alert_id,
                             _time=to_rfc3339_timestamp(alert.view_date),
                             data=alert,
@@ -401,7 +401,7 @@ async def run_recent_alerts(biome: Optional[str] = None, days: int = 7):
         for feature in features:
             alert = poller.parse_alert(feature, b)
             if alert:
-                print(f"[{alert.biome.upper()}] {alert.classname} - {alert.municipality or 'Unknown'}, "
+                print(f"[{alert.biome.value.upper()}] {alert.classname} - {alert.municipality or 'Unknown'}, "
                       f"{alert.state_code or '??'} ({alert.view_date}) "
                       f"[{alert.area_km2:.4f} km²] [{alert.alert_id}]")
 

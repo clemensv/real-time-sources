@@ -154,10 +154,10 @@ class EnturNorwayBridge:
             stop_point_ref=stop_ref,
             order=order,
             stop_point_name=_find_multilingual_text(call_el, 'StopPointName'),
-            aimed_arrival_time=(call_el.findtext(_siri('AimedArrivalTime')) or None),
-            expected_arrival_time=(call_el.findtext(_siri('ExpectedArrivalTime')) or None),
-            aimed_departure_time=(call_el.findtext(_siri('AimedDepartureTime')) or None),
-            expected_departure_time=(call_el.findtext(_siri('ExpectedDepartureTime')) or None),
+            aimed_arrival_time=(call_el.findtext(_siri('AimedArrivalTime')) or None),  # type: ignore[arg-type]
+            expected_arrival_time=(call_el.findtext(_siri('ExpectedArrivalTime')) or None),  # type: ignore[arg-type]
+            aimed_departure_time=(call_el.findtext(_siri('AimedDepartureTime')) or None),  # type: ignore[arg-type]
+            expected_departure_time=(call_el.findtext(_siri('ExpectedDepartureTime')) or None),  # type: ignore[arg-type]
             arrival_status=(call_el.findtext(_siri('ArrivalStatus')) or None),
             departure_status=(call_el.findtext(_siri('DepartureStatus')) or None),
             departure_platform_name=_find_multilingual_text(call_el, 'DeparturePlatformName'),
@@ -213,7 +213,7 @@ class EnturNorwayBridge:
                             is_complete_stop_sequence=_bool_text(jel.findtext(_siri('IsCompleteStopSequence'))),
                             monitored=_bool_text(jel.findtext(_siri('Monitored'))),
                             data_source=(jel.findtext(_siri('DataSource')) or None),
-                            recorded_at_time=(jel.findtext(_siri('RecordedAtTime')) or None),
+                            recorded_at_time=(jel.findtext(_siri('RecordedAtTime')) or None),  # type: ignore[arg-type]
                             estimated_calls=estimated_calls,
                         )
                         results.append((operating_day, service_journey_id, evj))
@@ -282,7 +282,7 @@ class EnturNorwayBridge:
                     mvj = MonitoredVehicleJourney(
                         service_journey_id=service_journey_id,
                         operating_day=operating_day,
-                        recorded_at_time=recorded_at_time,
+                        recorded_at_time=recorded_at_time,  # type: ignore[arg-type]
                         line_ref=line_ref,
                         operator_ref=operator_ref,
                         direction_ref=(mvj_el.findtext(_siri('DirectionRef')) or None),
@@ -335,8 +335,8 @@ class EnturNorwayBridge:
                         start = vp_el.findtext(_siri('StartTime')) or ''
                         end = vp_el.findtext(_siri('EndTime'))
                         validity_periods.append(ValidityPeriod(
-                            start_time=start,
-                            end_time=end.strip() if end else None,
+                            start_time=start,  # type: ignore[arg-type]
+                            end_time=end.strip() if end else None,  # type: ignore[arg-type]
                         ))
 
                     affects_line_refs: List[str] = []
@@ -360,7 +360,7 @@ class EnturNorwayBridge:
                     sit = PtSituationElement(
                         situation_number=situation_number,
                         version=(sit_el.findtext(_siri('Version')) or None),
-                        creation_time=creation_time,
+                        creation_time=creation_time,  # type: ignore[arg-type]
                         source_type=source_type,
                         source_name=source_name,
                         progress=(sit_el.findtext(_siri('Progress')) or None),

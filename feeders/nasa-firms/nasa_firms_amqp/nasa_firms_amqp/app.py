@@ -35,15 +35,15 @@ def _build_producer(*, host: str, port: int, address: str, use_tls: bool, conten
     if auth_mode == "entra":
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
         credential = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
-        return NASAFIRMSAmqpProducer(host=host, address=address, port=port, content_mode=content_mode,
+        return NASAFIRMSAmqpProducer(host=host, address=address, port=port, content_mode=content_mode,  # type: ignore[arg-type]
                                      credential=credential, entra_audience=entra_audience, use_tls=use_tls)
     if auth_mode == "sas":
         if not sas_key_name or not sas_key:
             raise RuntimeError("AMQP_AUTH_MODE=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY")
-        return NASAFIRMSAmqpProducer(host=host, address=address, port=port, content_mode=content_mode,
+        return NASAFIRMSAmqpProducer(host=host, address=address, port=port, content_mode=content_mode,  # type: ignore[arg-type]
                                      sas_key_name=sas_key_name, sas_key=sas_key, use_tls=use_tls)
     return NASAFIRMSAmqpProducer(host=host, address=address, port=port, username=username,
-                                 password=password, content_mode=content_mode, use_tls=use_tls)
+                                 password=password, content_mode=content_mode, use_tls=use_tls)  # type: ignore[arg-type]
 
 
 class _AmqpProducerAdapter:

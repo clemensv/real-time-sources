@@ -70,9 +70,9 @@ def _event_data(record: dict[str, Any]) -> RoadEvent:
     return RoadEvent(
         situation_id=record["situation_id"],
         record_id=record["record_id"],
-        version=record.get("version"),
+        version=record.get("version"),  # type: ignore[arg-type]
         severity=record.get("severity"),
-        record_type=record.get("record_type"),
+        record_type=record.get("record_type"),  # type: ignore[arg-type]
         probability=record.get("probability"),
         latitude=record.get("latitude"),
         longitude=record.get("longitude"),

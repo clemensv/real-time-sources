@@ -84,7 +84,7 @@ async def _run_live(args: argparse.Namespace, producer: BEGovKMIWeatherAmqpProdu
     previous_readings = _load_state(args.state_file)
     stations = extract_stations(api.get_latest_observations())
     for station in stations:
-        producer.send_station(data=station, _station_code=station.station_code, _region=_segment(station.region or "unknown"))
+        producer.send_station(data=station, _station_code=station.station_code, _region=_segment(station.region or "unknown"))  # type: ignore[arg-type]
     while True:
         last_timestamp = previous_readings.get("__last_timestamp__")
         features = api.get_observations(last_timestamp=last_timestamp) if last_timestamp else api.get_latest_observations()
@@ -98,7 +98,7 @@ async def _run_live(args: argparse.Namespace, producer: BEGovKMIWeatherAmqpProdu
             reading_key = f"{obs.station_code}:{reading_timestamp}"
             if reading_key in previous_readings:
                 continue
-            producer.send_weather_observation(data=obs, _station_code=obs.station_code, _region=_segment(obs.region or "unknown"), _time=obs.observation_time.isoformat())
+            producer.send_weather_observation(data=obs, _station_code=obs.station_code, _region=_segment(obs.region or "unknown"), _time=obs.observation_time.isoformat())  # type: ignore[arg-type]
             previous_readings[reading_key] = reading_timestamp
             sent += 1
         if latest_observation_time is not None:

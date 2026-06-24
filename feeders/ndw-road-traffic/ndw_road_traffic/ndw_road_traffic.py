@@ -974,7 +974,7 @@ class NdwPoller:
 
 
 
-                rec["measurement_site_id"], data, flush_producer=False
+                rec["measurement_site_id"], data, flush_producer=False  # type: ignore[arg-type]
 
 
 
@@ -2073,7 +2073,7 @@ class NdwPoller:
 
 
 
-                            rid, data, flush_producer=False
+                            rid, data, flush_producer=False  # type: ignore[arg-type]
 
 
 
@@ -2133,7 +2133,7 @@ class NdwPoller:
 
 
 
-                            rid, data, flush_producer=False
+                            rid, data, flush_producer=False  # type: ignore[arg-type]
 
 
 
@@ -2193,7 +2193,7 @@ class NdwPoller:
 
 
 
-                            rid, data, flush_producer=False
+                            rid, data, flush_producer=False  # type: ignore[arg-type]
 
 
 
@@ -2253,7 +2253,7 @@ class NdwPoller:
 
 
 
-                            rid, data, flush_producer=False
+                            rid, data, flush_producer=False  # type: ignore[arg-type]
 
 
 
@@ -2641,19 +2641,19 @@ def main() -> None:
 
 
 
-    avg_prod = NLNDWAVGEventProducer(producer, topic)
+    avg_prod = NLNDWAVGEventProducer(producer, topic)  # type: ignore[arg-type]
 
 
 
-    drip_prod = NLNDWDRIPEventProducer(producer, topic)
+    drip_prod = NLNDWDRIPEventProducer(producer, topic)  # type: ignore[arg-type]
 
 
 
-    msi_prod = NLNDWMSIEventProducer(producer, topic)
+    msi_prod = NLNDWMSIEventProducer(producer, topic)  # type: ignore[arg-type]
 
 
 
-    situations_prod = NLNDWSituationsEventProducer(producer, topic)
+    situations_prod = NLNDWSituationsEventProducer(producer, topic)  # type: ignore[arg-type]
 
 
 

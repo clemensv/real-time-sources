@@ -78,7 +78,7 @@ async def feed(host:str, port:int, *, username:Optional[str]=None, password:Opti
     if _entra_props is None and (resolved_username or resolved_password):
         paho.username_pw_set(resolved_username, resolved_password)
     if tls: paho.tls_set()
-    client=EuJrcEurdepMqttMqttClient(client=paho, content_mode=content_mode, loop=asyncio.get_running_loop())
+    client=EuJrcEurdepMqttMqttClient(client=paho, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
         paho.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)

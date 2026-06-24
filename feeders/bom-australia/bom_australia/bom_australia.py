@@ -143,7 +143,7 @@ def feed_observations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProduc
             kafka_obs = WeatherObservation(
                 station_wmo=obs.station_wmo,
                 station_name=obs.station_name,
-                observation_time_utc=obs.observation_time_utc,
+                observation_time_utc=obs.observation_time_utc,  # type: ignore[arg-type]
                 local_time=obs.local_time,
                 air_temp=obs.air_temp,
                 apparent_temp=obs.apparent_temp,
@@ -208,7 +208,7 @@ def feed_warnings(api: BOMAustraliaAPI, producer: AUGovBOMWarningEventProducer,
                     feed_url=bulletin.feed_url,
                     feed_title=bulletin.feed_title,
                     title=bulletin.title,
-                    published_at=bulletin.published_at,
+                    published_at=bulletin.published_at,  # type: ignore[arg-type]
                     issued_local_time_text=bulletin.issued_local_time_text,
                     warning_type=bulletin.warning_type,
                     affected_area_text=bulletin.affected_area_text,

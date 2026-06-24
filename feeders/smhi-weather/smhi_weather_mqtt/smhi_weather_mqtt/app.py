@@ -72,7 +72,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: SEGovSMHIWeatherMqttM
         await mqtt_client.publish_se_gov_smhi_weather_mqtt_station(
             station_id=station.station_id,
             lan=station.lan or "unknown",
-            data=station,
+            data=station,  # type: ignore[arg-type]
         )
     logger.info("Published %d station reference events via MQTT", len(station_list))
     station_lan_by_id = {str(s.get("key", "")): api.extract_lan(s) for s in station_list}
@@ -93,7 +93,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: SEGovSMHIWeatherMqttM
             await mqtt_client.publish_se_gov_smhi_weather_mqtt_weather_observation(
                 station_id=obs.station_id,
                 lan=observation_lan_segment(obs),
-                data=obs,
+                data=obs,  # type: ignore[arg-type]
             )
             previous_readings[reading_key] = obs.observation_time.isoformat()
             sent += 1

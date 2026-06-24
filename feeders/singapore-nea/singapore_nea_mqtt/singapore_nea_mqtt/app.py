@@ -173,7 +173,7 @@ async def _live(w: SGGovNEAWeatherMqttMqttClient, aq: SGGovNEAAirQualityMqttMqtt
                     sd = all_stations.get(obs.station_id)
                     region = _station_region(sd.latitude, sd.longitude) if sd else "central"
                     await w.publish_sg_gov_nea_weather_weather_observation_mqtt(
-                        station_id=obs.station_id, region=region, event="weather", data=observation
+                        station_id=obs.station_id, region=region, event="weather", data=observation  # type: ignore[arg-type]
                     )
                     weather_state[key] = obs.observation_time.isoformat()
                 state_changed = True

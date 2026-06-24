@@ -90,7 +90,7 @@ async def _publish_observatories(client: GovUsgsGeomagMqttMqttClient, observator
             continue
         await client.publish_gov_usgs_geomag_mqtt_observatory(
             iaga_code=obs.iaga_code.lower(),
-            data=obs,
+            data=obs,  # type: ignore[arg-type]
         )
 
 async def _publish_readings(
@@ -116,7 +116,7 @@ async def _publish_readings(
                 continue
             await client.publish_gov_usgs_geomag_mqtt_magnetic_field_reading(
                 iaga_code=reading.iaga_code.lower(),
-                data=reading,
+                data=reading,  # type: ignore[arg-type]
             )
             latest_ts = reading_ts
             sent += 1
@@ -149,7 +149,7 @@ async def feed(
         paho_client.username_pw_set(resolved_username, resolved_password)
     if tls or _entra_props is not None:
         paho_client.tls_set()
-    mqtt_client = GovUsgsGeomagMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
+    mqtt_client = GovUsgsGeomagMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:

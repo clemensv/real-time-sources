@@ -333,6 +333,8 @@ def feeditem_from_feedparser_entry(feed, entry) -> FeedItem:
         return None
 
     feed_item = FeedItem(
+        feed_slug="",
+        item="",
         author=parse_author_detail(entry.get('author_detail')),
         publisher=parse_publisher_detail(entry.get('publisher_detail')),
         summary=parse_summary_detail(entry.get('summary_detail')),
@@ -340,10 +342,10 @@ def feeditem_from_feedparser_entry(feed, entry) -> FeedItem:
         source=None,
         content=parse_content_detail(entry.get('content')),
         enclosures=parse_enclosure_detail(entry.get('enclosures')),
-        published=parse_date(entry.get('published_parsed')),
-        updated=parse_date(entry.get('updated_parsed')),
-        created=parse_date(entry.get('created_parsed')),
-        expired=parse_date(entry.get('expired_parsed')),
+        published=parse_date(entry.get('published_parsed')),  # type: ignore[arg-type]
+        updated=parse_date(entry.get('updated_parsed')),  # type: ignore[arg-type]
+        created=parse_date(entry.get('created_parsed')),  # type: ignore[arg-type]
+        expired=parse_date(entry.get('expired_parsed')),  # type: ignore[arg-type]
         id=entry.get('id'),
         license=entry.get('license'),
         comments=entry.get('comments'),
@@ -363,7 +365,7 @@ def feeditem_from_feedparser_entry(feed, entry) -> FeedItem:
             rights=feed.feed.get('rights'),
             subtitle=feed.feed.get('subtitle'),
             title=feed.feed.get('title'),
-            updated=parse_date(feed.feed.get('updated_parsed'))
+            updated=parse_date(feed.feed.get('updated_parsed'))  # type: ignore[arg-type]
         )
     for link in feed.feed.get('links'):
         feed_item.source.links.append(Link(title=link.get('title'), href=link.get('href'), rel=link.get('rel'), type=link.get('type'))) 

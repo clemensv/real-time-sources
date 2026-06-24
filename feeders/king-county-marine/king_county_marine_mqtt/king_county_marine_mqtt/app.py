@@ -184,9 +184,9 @@ async def feed(
                         bridge._remember(reading_id)
                 bridge.save_state()
             for station in stations:
-                await mqtt_client.publish_us_wa_king_county_marine_mqtt_station(station.station_id, station)
+                await mqtt_client.publish_us_wa_king_county_marine_mqtt_station(station.station_id, station)  # type: ignore[arg-type]
             for reading in readings:
-                await mqtt_client.publish_us_wa_king_county_marine_mqtt_water_quality_reading(reading.station_id, reading)
+                await mqtt_client.publish_us_wa_king_county_marine_mqtt_water_quality_reading(reading.station_id, reading)  # type: ignore[arg-type]
             logger.info("Published %d stations and %d readings to MQTT", len(stations), len(readings))
             if once:
                 break

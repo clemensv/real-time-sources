@@ -83,7 +83,7 @@ class CarbonIntensityMqttPoller(CarbonIntensityPoller):
         raise NotImplementedError("use emit_regional_async")
 
     async def emit_intensity_async(self, intensity) -> None:
-        await self.producer.publish_uk_org_carbonintensity_mqtt_intensity(
+        await self.producer.publish_uk_org_carbonintensity_mqtt_intensity(  # type: ignore[attr-defined]
             period_from=_ce_timestamp(intensity.period_from),
             ce_id=intensity.ce_id,
             region=intensity.region,
@@ -91,7 +91,7 @@ class CarbonIntensityMqttPoller(CarbonIntensityPoller):
         )
 
     async def emit_generation_mix_async(self, gen_mix) -> None:
-        await self.producer.publish_uk_org_carbonintensity_mqtt_generation_mix(
+        await self.producer.publish_uk_org_carbonintensity_mqtt_generation_mix(  # type: ignore[attr-defined]
             period_from=_ce_timestamp(gen_mix.period_from),
             ce_id=gen_mix.ce_id,
             region=gen_mix.region,
@@ -99,7 +99,7 @@ class CarbonIntensityMqttPoller(CarbonIntensityPoller):
         )
 
     async def emit_regional_async(self, regional) -> None:
-        await self.producer.publish_uk_org_carbonintensity_mqtt_regional_intensity(
+        await self.producer.publish_uk_org_carbonintensity_mqtt_regional_intensity(  # type: ignore[attr-defined]
             region_id=str(regional.region_id),
             ce_id=regional.ce_id,
             region=regional.region,

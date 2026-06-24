@@ -164,6 +164,7 @@ def emit_stations(
             region_id=info["region_id"],
             longitude=info["longitude"],
             latitude=info["latitude"],
+            basin=None,
         )
         producer_client.send_ie_gov_opw_waterlevel_station(
             _feedurl=FEED_URL,

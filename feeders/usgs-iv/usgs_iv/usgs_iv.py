@@ -155,8 +155,8 @@ class USGSDataPoller:
         self.last_polled_file = last_polled_file
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.site_producer = USGSSitesEventProducer(producer, kafka_topic)
-            self.values_producer = USGSInstantaneousValuesEventProducer(producer, kafka_topic)
+            self.site_producer = USGSSitesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
+            self.values_producer = USGSInstantaneousValuesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
 
         self.state = state
         self.force_site_refresh = force_site_refresh
@@ -617,7 +617,7 @@ class USGSDataPoller:
                     drain_area_va=parse_float(site_data.get('drain_area_va', '')),
                     contrib_drain_area_va=parse_float(site_data.get('contrib_drain_area_va', '')),
                     tz_cd=site_data.get('tz_cd', ''),
-                    local_time_fg=site_data.get('local_time_fg', False),
+                    local_time_fg=site_data.get('local_time_fg', False),  # type: ignore[arg-type]
                     reliability_cd=site_data.get('reliability_cd', ''),
                     gw_file_cd=site_data.get('gw_file_cd', ''),
                     nat_aqfr_cd=site_data.get('nat_aqfr_cd', ''),

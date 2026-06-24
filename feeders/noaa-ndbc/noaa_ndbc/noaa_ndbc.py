@@ -369,10 +369,11 @@ class NDBCBuoyPoller:
 
             return BuoySolarRadiationObservation(
                 station_id=station_id,
-                timestamp=timestamp,
+                timestamp=timestamp,  # type: ignore[arg-type]
                 shortwave_radiation_licor=parse_float(parts[5]),
                 shortwave_radiation_eppley=parse_float(parts[6]),
                 longwave_radiation=parse_float(parts[7]),
+                region=None,
             )
 
         return None
@@ -401,7 +402,7 @@ class NDBCBuoyPoller:
 
             return BuoyOceanographicObservation(
                 station_id=station_id,
-                timestamp=timestamp,
+                timestamp=timestamp,  # type: ignore[arg-type]
                 depth=depth,
                 ocean_temperature=parse_float(parts[6]),
                 conductivity=parse_float(parts[7]),
@@ -412,6 +413,7 @@ class NDBCBuoyPoller:
                 turbidity=parse_float(parts[12]),
                 ph=parse_float(parts[13]),
                 redox_potential=parse_float(parts[14]),
+                region=None,
             )
 
         return None
@@ -445,9 +447,10 @@ class NDBCBuoyPoller:
 
             return BuoyDartMeasurement(
                 station_id=station_id,
-                timestamp=timestamp,
+                timestamp=timestamp,  # type: ignore[arg-type]
                 measurement_type_code=measurement_type_code,
                 water_column_height=water_column_height,
+                region=None,
             )
 
         return None
@@ -473,12 +476,13 @@ class NDBCBuoyPoller:
 
             return BuoyContinuousWindObservation(
                 station_id=station_id,
-                timestamp=timestamp,
-                wind_direction=self.parse_realtime2_numeric_token(parts[5]),
-                wind_speed=self.parse_realtime2_numeric_token(parts[6]),
-                gust_direction=self.parse_realtime2_numeric_token(parts[7]),
-                gust=self.parse_realtime2_numeric_token(parts[8]),
+                timestamp=timestamp,  # type: ignore[arg-type]
+                wind_direction=self.parse_realtime2_numeric_token(parts[5]),  # type: ignore[arg-type]
+                wind_speed=self.parse_realtime2_numeric_token(parts[6]),  # type: ignore[arg-type]
+                gust_direction=self.parse_realtime2_numeric_token(parts[7]),  # type: ignore[arg-type]
+                gust=self.parse_realtime2_numeric_token(parts[8]),  # type: ignore[arg-type]
                 gust_time_code=self.parse_time_code(parts[9]),
+                region=None,
             )
 
         return None
@@ -504,12 +508,13 @@ class NDBCBuoyPoller:
 
             return BuoySupplementalMeasurement(
                 station_id=station_id,
-                timestamp=timestamp,
-                lowest_pressure=self.parse_realtime2_numeric_token(parts[5]),
+                timestamp=timestamp,  # type: ignore[arg-type]
+                lowest_pressure=self.parse_realtime2_numeric_token(parts[5]),  # type: ignore[arg-type]
                 lowest_pressure_time_code=self.parse_time_code(parts[6]),
-                highest_wind_speed=self.parse_realtime2_numeric_token(parts[7]),
-                highest_wind_direction=self.parse_realtime2_numeric_token(parts[8]),
+                highest_wind_speed=self.parse_realtime2_numeric_token(parts[7]),  # type: ignore[arg-type]
+                highest_wind_direction=self.parse_realtime2_numeric_token(parts[8]),  # type: ignore[arg-type]
                 highest_wind_time_code=self.parse_time_code(parts[9]),
+                region=None,
             )
 
         return None
@@ -535,17 +540,18 @@ class NDBCBuoyPoller:
 
             return BuoyDetailedWaveSummary(
                 station_id=station_id,
-                timestamp=timestamp,
-                significant_wave_height=self.parse_realtime2_numeric_token(parts[5]),
-                swell_height=self.parse_realtime2_numeric_token(parts[6]),
-                swell_period=self.parse_realtime2_numeric_token(parts[7]),
-                wind_wave_height=self.parse_realtime2_numeric_token(parts[8]),
-                wind_wave_period=self.parse_realtime2_numeric_token(parts[9]),
+                timestamp=timestamp,  # type: ignore[arg-type]
+                significant_wave_height=self.parse_realtime2_numeric_token(parts[5]),  # type: ignore[arg-type]
+                swell_height=self.parse_realtime2_numeric_token(parts[6]),  # type: ignore[arg-type]
+                swell_period=self.parse_realtime2_numeric_token(parts[7]),  # type: ignore[arg-type]
+                wind_wave_height=self.parse_realtime2_numeric_token(parts[8]),  # type: ignore[arg-type]
+                wind_wave_period=self.parse_realtime2_numeric_token(parts[9]),  # type: ignore[arg-type]
                 swell_direction=self.parse_realtime2_text(parts[10]),
                 wind_wave_direction=self.parse_realtime2_text(parts[11]),
                 steepness=self.parse_realtime2_text(parts[12]),
-                average_wave_period=self.parse_realtime2_numeric_token(parts[13]),
-                mean_wave_direction=self.parse_realtime2_numeric_token(parts[14]),
+                average_wave_period=self.parse_realtime2_numeric_token(parts[13]),  # type: ignore[arg-type]
+                mean_wave_direction=self.parse_realtime2_numeric_token(parts[14]),  # type: ignore[arg-type]
+                region=None,
             )
 
         return None
@@ -571,8 +577,9 @@ class NDBCBuoyPoller:
 
             return BuoyHourlyRainMeasurement(
                 station_id=station_id,
-                timestamp=timestamp,
-                accumulation=self.parse_realtime2_numeric_token(parts[5]),
+                timestamp=timestamp,  # type: ignore[arg-type]
+                accumulation=self.parse_realtime2_numeric_token(parts[5]),  # type: ignore[arg-type]
+                region=None,
             )
 
         return None
@@ -832,7 +839,7 @@ class NDBCBuoyPoller:
                     station_id=station_id,
                     latitude=lat,
                     longitude=lon,
-                    timestamp=timestamp,
+                    timestamp=timestamp,  # type: ignore[arg-type]
                     wind_direction=wind_direction,
                     wind_speed=wind_speed,
                     gust=gust,
@@ -847,6 +854,7 @@ class NDBCBuoyPoller:
                     pressure_tendency=pressure_tendency,
                     visibility=visibility,
                     tide=tide,
+                    region=None,
                 )
                 observations.append(obs)
             except (IndexError, ValueError):
@@ -958,7 +966,7 @@ class NDBCBuoyPoller:
                         if family_state.get(record.station_id) == record.timestamp:
                             continue
 
-                        send_method(record.station_id, record, flush_producer=False)
+                        send_method(record.station_id, record, flush_producer=False)  # type: ignore[arg-type]
                         family_state[record.station_id] = record.timestamp
                         new_count += 1
 

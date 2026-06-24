@@ -129,13 +129,13 @@ def _build_observation(
         water_body_name=water_body_name,
         water_level=wl_val,
         water_level_unit="m",
-        water_level_timestamp=wl_ts_str,
+        water_level_timestamp=wl_ts_str,  # type: ignore[arg-type]
         discharge=q_val,
         discharge_unit="m3/s",
-        discharge_timestamp=q_ts_str,
+        discharge_timestamp=q_ts_str,  # type: ignore[arg-type]
         water_temperature=temp_val,
         water_temperature_unit="C",
-        water_temperature_timestamp=temp_ts_str,
+        water_temperature_timestamp=temp_ts_str,  # type: ignore[arg-type]
     )
 
 async def _publish_stations(

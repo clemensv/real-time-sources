@@ -338,7 +338,7 @@ class BillettoPoller:
 
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.event_producer = BillettoEventsEventProducer(producer, kafka_topic)
+            self.event_producer = BillettoEventsEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
         else:
             self.event_producer = None
 

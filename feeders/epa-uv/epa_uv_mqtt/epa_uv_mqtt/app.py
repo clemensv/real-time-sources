@@ -115,7 +115,7 @@ async def feed(
                         state=hourly.state,
                         city_slug=hourly.city_slug,
                         forecast_hour=hourly.forecast_hour,
-                        data=hourly,
+                        data=hourly,  # type: ignore[arg-type]
                     )
                     bridge._remember(bridge.hourly_order, bridge.seen_hourly_ids, event_id)
                     hourly_sent += 1
@@ -128,7 +128,7 @@ async def feed(
                         state=daily.state,
                         city_slug=daily.city_slug,
                         forecast_date=daily.forecast_date,
-                        data=daily,
+                        data=daily,  # type: ignore[arg-type]
                     )
                     bridge._remember(bridge.daily_order, bridge.seen_daily_ids, event_id)
                     daily_sent += 1

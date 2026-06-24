@@ -223,10 +223,10 @@ def feed_observations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer,
                 river_name=station_river.get(sid, '') or '',
                 water_level=wl_val if wl_val is not None else 0.0,
                 water_level_unit='m',
-                water_level_timestamp=wl_ts,
+                water_level_timestamp=wl_ts,  # type: ignore[arg-type]
                 discharge=q_val if q_val is not None else 0.0,
                 discharge_unit='m3/s',
-                discharge_timestamp=q_ts,
+                discharge_timestamp=q_ts,  # type: ignore[arg-type]
             )
             producer.send_no_nve_hydrology_water_level_observation(_station_id=sid, data=obs_data, flush_producer=False)
             sent_count += 1

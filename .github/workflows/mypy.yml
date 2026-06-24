@@ -26,5 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install mypy dataclasses-json
 
+      - name: Set MYPYPATH for full producer type resolution
+        run: |
+          MYPYPATH=$(find feeders -type d \( -path '*_producer_data/src' -o -path '*_kafka_producer/src' -o -path '*_amqp_producer_amqp_producer/src' -o -path '*_mqtt_producer_mqtt_client/src' \) | paste -sd ':')
+          echo "MYPYPATH=$MYPYPATH" >> "$GITHUB_ENV"
+
       - name: Run mypy on feeders
         run: python -m mypy feeders --config-file mypy.ini

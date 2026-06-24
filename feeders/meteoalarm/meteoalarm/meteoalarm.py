@@ -151,29 +151,29 @@ def normalize_warning(alert_obj: dict, country: str) -> Optional[WeatherWarning]
 
     return WeatherWarning(
         identifier=identifier,
-        sender=sender,
-        sent=sent,
-        status=status,
-        msg_type=msg_type,
-        scope=scope,
+        sender=sender,  # type: ignore[arg-type]
+        sent=sent,  # type: ignore[arg-type]
+        status=status,  # type: ignore[arg-type]
+        msg_type=msg_type,  # type: ignore[arg-type]
+        scope=scope,  # type: ignore[arg-type]
         country=country,
         event=event,
         category=category,
-        severity=severity,
-        urgency=urgency,
-        certainty=certainty,
+        severity=severity,  # type: ignore[arg-type]
+        urgency=urgency,  # type: ignore[arg-type]
+        certainty=certainty,  # type: ignore[arg-type]
         headline=headline,
         description=description,
         instruction=instruction,
-        effective=effective,
-        onset=onset,
-        expires=expires,
+        effective=effective,  # type: ignore[arg-type]
+        onset=onset,  # type: ignore[arg-type]
+        expires=expires,  # type: ignore[arg-type]
         web=web,
         contact=contact,
         awareness_level=awareness_level,
         awareness_type=awareness_type,
         awareness_type_raw=awareness_type_raw,
-        area_desc=area_desc if area_desc else None,
+        area_desc=area_desc if area_desc else None,  # type: ignore[arg-type]
         geocodes=geocodes if geocodes else None,
         language=language,
     )

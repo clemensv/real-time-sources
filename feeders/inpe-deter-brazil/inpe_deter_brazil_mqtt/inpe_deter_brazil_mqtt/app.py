@@ -134,12 +134,12 @@ async def feed(
                         continue
                     await mqtt_client.publish_br_inpe_deter_mqtt_deforestation_alert(
                         source_uri=SOURCE_URI,
-                        biome=alert.biome,
+                        biome=alert.biome,  # type: ignore[arg-type]
                         alert_id=alert.alert_id,
                         view_date=alert.view_date,
-                        state_slug=alert.state_slug,
-                        class_slug=alert.class_slug,
-                        data=alert,
+                        state_slug=alert.state_slug,  # type: ignore[arg-type]
+                        class_slug=alert.class_slug,  # type: ignore[arg-type]
+                        data=alert,  # type: ignore[arg-type]
                     )
                     published += 1
             logger.info("Published %d INPE DETER alerts to MQTT", published)

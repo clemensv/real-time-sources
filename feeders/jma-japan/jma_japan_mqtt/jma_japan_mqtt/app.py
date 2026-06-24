@@ -74,7 +74,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: JpGoJmaWeatherBulleti
             await mqtt_client.publish_jp_go_jma_weather_bulletins_mqtt_weather_bulletin(
                 office=bulletin_office_segment(b),
                 bulletin_id=b.bulletin_id,
-                data=b,
+                data=b,  # type: ignore[arg-type]
             )
             seen_ids.add(b.bulletin_id)
             sent += 1

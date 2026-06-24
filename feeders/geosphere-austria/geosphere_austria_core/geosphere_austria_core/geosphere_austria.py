@@ -138,14 +138,14 @@ def parse_observation(feature: typing.Dict, timestamp: str) -> typing.Optional[W
     obs = WeatherObservation(
         station_id=station_id,
         observation_time=timestamp,
-        temperature=values.get("temperature"),
-        humidity=values.get("humidity"),
-        precipitation=values.get("precipitation"),
-        wind_direction=values.get("wind_direction"),
-        wind_speed=values.get("wind_speed"),
-        pressure=values.get("pressure"),
-        sunshine_duration=values.get("sunshine_duration"),
-        global_radiation=values.get("global_radiation"),
+        temperature=values.get("temperature"),  # type: ignore[arg-type]
+        humidity=values.get("humidity"),  # type: ignore[arg-type]
+        precipitation=values.get("precipitation"),  # type: ignore[arg-type]
+        wind_direction=values.get("wind_direction"),  # type: ignore[arg-type]
+        wind_speed=values.get("wind_speed"),  # type: ignore[arg-type]
+        pressure=values.get("pressure"),  # type: ignore[arg-type]
+        sunshine_duration=values.get("sunshine_duration"),  # type: ignore[arg-type]
+        global_radiation=values.get("global_radiation"),  # type: ignore[arg-type]
     )
     for field_name in PARAM_MAP.values():
         original = values.get(field_name)

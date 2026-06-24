@@ -312,14 +312,14 @@ class JmaBosaiQuakeAPI:
         for pref in entry.get("int") or []:
             pref_code = str(pref.get("code", ""))
             if pref_code and pref.get("maxi"):
-                affected_prefectures.append(AffectedPrefecture(code=pref_code, max_intensity=map_max_intensity(pref.get("maxi"))))
+                affected_prefectures.append(AffectedPrefecture(code=pref_code, max_intensity=map_max_intensity(pref.get("maxi"))))  # type: ignore[arg-type]
             for city in pref.get("city") or []:
                 if city.get("code") and city.get("maxi"):
                     affected_cities.append(
                         AffectedCity(
                             prefecture_code=pref_code,
                             city_code=str(city.get("code")),
-                            max_intensity=map_max_intensity(city.get("maxi")),
+                            max_intensity=map_max_intensity(city.get("maxi")),  # type: ignore[arg-type]
                         )
                     )
 
@@ -332,12 +332,12 @@ class JmaBosaiQuakeAPI:
             report_id=f"{event_id}_{serial}",
             serial=serial,
             info_type=InfoTypeenum(map_info_type(str(entry.get("ift", "")))),
-            report_datetime=to_utc_rfc3339(str(entry["rdt"])),
-            report_datetime_local=str(entry["rdt"]),
-            control_datetime=control_datetime,
-            control_datetime_local=control_datetime_local,
-            origin_datetime=to_utc_rfc3339(str(entry["at"])),
-            origin_datetime_local=str(entry["at"]),
+            report_datetime=to_utc_rfc3339(str(entry["rdt"])),  # type: ignore[arg-type]
+            report_datetime_local=str(entry["rdt"]),  # type: ignore[arg-type]
+            control_datetime=control_datetime,  # type: ignore[arg-type]
+            control_datetime_local=control_datetime_local,  # type: ignore[arg-type]
+            origin_datetime=to_utc_rfc3339(str(entry["at"])),  # type: ignore[arg-type]
+            origin_datetime_local=str(entry["at"]),  # type: ignore[arg-type]
             title_jp=str(entry.get("ttl", "")),
             title_en=parse_optional_string(entry.get("en_ttl")),
             epicenter_area_code=parse_optional_string(entry.get("acd")),

@@ -58,7 +58,7 @@ def _build_node_data(node: dict[str, str | None]) -> Node:
 def _build_earthquake_data(event: EarthquakeRecord) -> Earthquake:
     return Earthquake(
         event_id=event.event_id,
-        time=event.time,
+        time=event.time,  # type: ignore[arg-type]
         latitude=event.latitude,
         longitude=event.longitude,
         depth_km=event.depth_km,
@@ -116,7 +116,7 @@ def _build_kafka_event_producer(content_mode: str) -> OrgFdsnEventKafkaEventProd
     if connection_string:
         config, topic = _parse_connection_string(connection_string)
         override_topic = _null_if_empty(os.getenv("KAFKA_TOPIC"))
-        return OrgFdsnEventKafkaEventProducer(Producer(config), override_topic or topic or "fdsn-seismology", content_mode)
+        return OrgFdsnEventKafkaEventProducer(Producer(config), override_topic or topic or "fdsn-seismology", content_mode)  # type: ignore[arg-type]
 
     bootstrap = _null_if_empty(os.getenv("KAFKA_BOOTSTRAP_SERVERS"))
     topic = _null_if_empty(os.getenv("KAFKA_TOPIC")) or "fdsn-seismology"
@@ -138,7 +138,7 @@ def _build_kafka_event_producer(content_mode: str) -> OrgFdsnEventKafkaEventProd
         )
     else:
         config["security.protocol"] = "SSL" if tls_enabled else "PLAINTEXT"
-    return OrgFdsnEventKafkaEventProducer(Producer(config), topic, content_mode)
+    return OrgFdsnEventKafkaEventProducer(Producer(config), topic, content_mode)  # type: ignore[arg-type]
 
 
 

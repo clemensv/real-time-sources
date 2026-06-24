@@ -156,7 +156,7 @@ class FirmsPoller:
         self.event_producer = event_producer
         if self.event_producer is None and kafka_config is not None:
             producer = Producer(kafka_config)
-            self.event_producer = NASAFIRMSEventProducer(producer, kafka_topic)
+            self.event_producer = NASAFIRMSEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
 
     # ----------------------------------------------------------------- fetching
     async def _fetch_text(self, session: aiohttp.ClientSession, url: str) -> Optional[str]:
@@ -223,12 +223,12 @@ class FirmsPoller:
                 source=data_id,
                 record_id="coverage",
                 data_id=data_id,
-                min_date=(row.get("min_date") or "").strip() or None,
-                max_date=(row.get("max_date") or "").strip() or None,
+                min_date=(row.get("min_date") or "").strip() or None,  # type: ignore[arg-type]
+                max_date=(row.get("max_date") or "").strip() or None,  # type: ignore[arg-type]
                 instrument=InstrumentEnum(instrument) if instrument in ("VIIRS", "MODIS") else None,
                 satellite=satellite,
                 resolution_m=resolution,
-                retrieved_at=now_iso,
+                retrieved_at=now_iso,  # type: ignore[arg-type]
             ))
         return records
 
@@ -271,9 +271,9 @@ class FirmsPoller:
             bright_ti5=_to_float(row.get("bright_ti5")),
             scan=_to_float(row.get("scan")),
             track=_to_float(row.get("track")),
-            acq_date=acq_date,
+            acq_date=acq_date,  # type: ignore[arg-type]
             acq_time=acq_time,
-            acq_datetime=acq_datetime,
+            acq_datetime=acq_datetime,  # type: ignore[arg-type]
             satellite=satellite,
             instrument=instrument,
             confidence=raw_conf,

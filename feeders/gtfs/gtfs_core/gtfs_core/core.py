@@ -460,10 +460,10 @@ def map_agency(rows: Iterable[Dict[str, Any]]) -> Generator[Agency, None, None]:
     """Maps the rows from the agency.txt file to Agency objects"""
     for row in rows:
         yield Agency(
-            agencyId=row.get("agency_id"),
-            agencyName=row.get("agency_name"),
-            agencyUrl=row.get("agency_url"),
-            agencyTimezone=row.get("agency_timezone"),
+            agencyId=row.get("agency_id"),  # type: ignore[arg-type]
+            agencyName=row.get("agency_name"),  # type: ignore[arg-type]
+            agencyUrl=row.get("agency_url"),  # type: ignore[arg-type]
+            agencyTimezone=row.get("agency_timezone"),  # type: ignore[arg-type]
             agencyLang=row.get("agency_lang"),
             agencyPhone=row.get("agency_phone"),
             agencyFareUrl=row.get("agency_fare_url"),
@@ -474,8 +474,8 @@ def map_areas(rows: Iterable[Dict[str, Any]]) -> Generator[Areas, None, None]:
     """Maps the rows from the areas.txt file to Areas objects"""
     for row in rows:
         yield Areas(
-            areaId=row.get("area_id"),
-            areaName=row.get("area_name"),
+            areaId=row.get("area_id"),  # type: ignore[arg-type]
+            areaName=row.get("area_name"),  # type: ignore[arg-type]
             areaDesc=row.get("area_desc"),
             areaUrl=row.get("area_url"),
         )
@@ -488,7 +488,7 @@ def map_attributions(rows: Iterable[Dict[str, Any]]) -> Generator[Attributions, 
             agencyId=row.get("agency_id"),
             routeId=row.get("route_id"),
             tripId=row.get("trip_id"),
-            organizationName=row.get("organization_name"),
+            organizationName=row.get("organization_name"),  # type: ignore[arg-type]
             isProducer=int(row.get("is_producer") or 0),
             isOperator=int(row.get("is_operator") or 0),
             isAuthority=int(row.get("is_authority") or 0),
@@ -501,8 +501,8 @@ def map_booking_rules(rows: Iterable[Dict[str, Any]]) -> Generator[BookingRules,
     """Maps the rows from the booking_rules.txt file to BookingRules objects"""
     for row in rows:
         yield BookingRules(
-            bookingRuleId=row.get("booking_rule_id"),
-            bookingRuleName=row.get("booking_rule_name"),
+            bookingRuleId=row.get("booking_rule_id"),  # type: ignore[arg-type]
+            bookingRuleName=row.get("booking_rule_name"),  # type: ignore[arg-type]
             bookingRuleDesc=row.get("booking_rule_desc"),
             bookingRuleUrl=row.get("booking_rule_url")
         )
@@ -511,9 +511,9 @@ def map_fare_attributes(rows: Iterable[Dict[str, Any]]) -> Generator[FareAttribu
     """Maps the rows from the fare_attributes.txt file to FareAttributes objects"""
     for row in rows:
         yield FareAttributes(
-            fareId=row.get("fare_id"),
+            fareId=row.get("fare_id"),  # type: ignore[arg-type]
             price=float(row.get("price") or 0),
-            currencyType=row.get("currency_type"),
+            currencyType=row.get("currency_type"),  # type: ignore[arg-type]
             paymentMethod=int(row.get("payment_method") or 0),
             transfers=int(row.get("transfers") or 0),
             agencyId=row.get("agency_id"),
@@ -524,8 +524,8 @@ def map_fare_leg_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareLegRules
     """Maps the rows from the fare_leg_rules.txt file to FareLegRules objects"""
     for row in rows:
         yield FareLegRules(
-            fareLegRuleId=row.get("fare_leg_rule_id"),
-            fareProductId=row.get("fare_product_id"),
+            fareLegRuleId=row.get("fare_leg_rule_id"),  # type: ignore[arg-type]
+            fareProductId=row.get("fare_product_id"),  # type: ignore[arg-type]
             legGroupId=row.get("leg_group_id"),
             networkId=row.get("network_id"),
             fromAreaId=row.get("from_area_id"),
@@ -536,8 +536,8 @@ def map_fare_media(rows: Iterable[Dict[str, Any]]) -> Generator[FareMedia, None,
     """Maps the rows from the fare_media.txt file to FareMedia objects"""
     for row in rows:
         yield FareMedia(
-            fareMediaId=row.get("fare_media_id"),
-            fareMediaName=row.get("fare_media_name"),
+            fareMediaId=row.get("fare_media_id"),  # type: ignore[arg-type]
+            fareMediaName=row.get("fare_media_name"),  # type: ignore[arg-type]
             fareMediaDesc=row.get("fare_media_desc"),
             fareMediaUrl=row.get("fare_media_url")
         )
@@ -546,8 +546,8 @@ def map_fare_products(rows: Iterable[Dict[str, Any]]) -> Generator[FareProducts,
     """Maps the rows from the fare_products.txt file to FareProducts objects"""
     for row in rows:
         yield FareProducts(
-            fareProductId=row.get("fare_product_id"),
-            fareProductName=row.get("fare_product_name"),
+            fareProductId=row.get("fare_product_id"),  # type: ignore[arg-type]
+            fareProductName=row.get("fare_product_name"),  # type: ignore[arg-type]
             fareProductDesc=row.get("fare_product_desc"),
             fareProductUrl=row.get("fare_product_url")
         )
@@ -556,7 +556,7 @@ def map_fare_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareRules, None,
     """Maps the rows from the fare_rules.txt file to FareRules objects"""
     for row in rows:
         yield FareRules(
-            fareId=row.get("fare_id"),
+            fareId=row.get("fare_id"),  # type: ignore[arg-type]
             routeId=row.get("route_id"),
             originId=row.get("origin_id"),
             destinationId=row.get("destination_id"),
@@ -567,8 +567,8 @@ def map_fare_transfer_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareTra
     """Maps the rows from the fare_transfer_rules.txt file to FareTransferRules objects"""
     for row in rows:
         yield FareTransferRules(
-            fareTransferRuleId=row.get("fare_transfer_rule_id"),
-            fareProductId=row.get("fare_product_id"),
+            fareTransferRuleId=row.get("fare_transfer_rule_id"),  # type: ignore[arg-type]
+            fareProductId=row.get("fare_product_id"),  # type: ignore[arg-type]
             transferCount=int(row.get("transfer_count") or 0),
             fromLegGroupId=row.get("from_leg_group_id"),
             toLegGroupId=row.get("to_leg_group_id"),
@@ -580,9 +580,9 @@ def map_feed_info(rows: Iterable[Dict[str, Any]]) -> Generator[FeedInfo, None, N
     """Maps the rows from the feed_info.txt file to FeedInfo objects"""
     for row in rows:
         yield FeedInfo(
-            feedPublisherName=row.get("feed_publisher_name"),
-            feedPublisherUrl=row.get("feed_publisher_url"),
-            feedLang=row.get("feed_lang"),
+            feedPublisherName=row.get("feed_publisher_name"),  # type: ignore[arg-type]
+            feedPublisherUrl=row.get("feed_publisher_url"),  # type: ignore[arg-type]
+            feedLang=row.get("feed_lang"),  # type: ignore[arg-type]
             defaultLang=row.get("default_lang"),
             feedStartDate=row.get("feed_start_date"),
             feedEndDate=row.get("feed_end_date"),
@@ -595,9 +595,9 @@ def map_frequencies(rows: Iterable[Dict[str, Any]]) -> Generator[Frequencies, No
     """Maps the rows from the frequencies.txt file to Frequencies objects"""
     for row in rows:
         yield Frequencies(
-            tripId=row.get("trip_id"),
-            startTime=row.get("start_time"),
-            endTime=row.get("end_time"),
+            tripId=row.get("trip_id"),  # type: ignore[arg-type]
+            startTime=row.get("start_time"),  # type: ignore[arg-type]
+            endTime=row.get("end_time"),  # type: ignore[arg-type]
             headwaySecs=int(row.get("headway_secs") or 0),
             exactTimes=int(row.get("exact_times") or 0)
         )
@@ -606,7 +606,7 @@ def map_levels(rows: Iterable[Dict[str, Any]]) -> Generator[Levels, None, None]:
     """Maps the rows from the levels.txt file to Levels objects"""
     for row in rows:
         yield Levels(
-            levelId=row.get("level_id"),
+            levelId=row.get("level_id"),  # type: ignore[arg-type]
             levelIndex=float(row.get("level_index") or 0),
             levelName=row.get("level_name")
         )
@@ -615,8 +615,8 @@ def map_location_groups(rows: Iterable[Dict[str, Any]]) -> Generator[LocationGro
     """Maps the rows from the location_groups.txt file to LocationGroups objects"""
     for row in rows:
         yield LocationGroups(
-            locationGroupId=row.get("location_group_id"),
-            locationGroupName=row.get("location_group_name"),
+            locationGroupId=row.get("location_group_id"),  # type: ignore[arg-type]
+            locationGroupName=row.get("location_group_name"),  # type: ignore[arg-type]
             locationGroupDesc=row.get("location_group_desc"),
             locationGroupUrl=row.get("location_group_url")
         )
@@ -625,17 +625,17 @@ def map_location_group_stores(rows: Iterable[Dict[str, Any]]) -> Generator[Locat
     """Maps the rows from the location_group_stores.txt file to LocationGroupStores objects"""
     for row in rows:
         yield LocationGroupStores(
-            locationGroupStoreId=row.get("location_group_store_id"),
-            locationGroupId=row.get("location_group_id"),
-            storeId=row.get("store_id")
+            locationGroupStoreId=row.get("location_group_store_id"),  # type: ignore[arg-type]
+            locationGroupId=row.get("location_group_id"),  # type: ignore[arg-type]
+            storeId=row.get("store_id")  # type: ignore[arg-type]
         )
 
 def map_networks(rows: Iterable[Dict[str, Any]]) -> Generator[Networks, None, None]:
     """Maps the rows from the networks.txt file to Networks objects"""
     for row in rows:
         yield Networks(
-            networkId=row.get("network_id"),
-            networkName=row.get("network_name"),
+            networkId=row.get("network_id"),  # type: ignore[arg-type]
+            networkName=row.get("network_name"),  # type: ignore[arg-type]
             networkDesc=row.get("network_desc"),
             networkUrl=row.get("network_url")
         )
@@ -644,9 +644,9 @@ def map_pathways(rows: Iterable[Dict[str, Any]]) -> Generator[Pathways, None, No
     """Maps the rows from the pathways.txt file to Pathways objects"""
     for row in rows:
         yield Pathways(
-            pathwayId=row.get("pathway_id"),
-            fromStopId=row.get("from_stop_id"),
-            toStopId=row.get("to_stop_id"),
+            pathwayId=row.get("pathway_id"),  # type: ignore[arg-type]
+            fromStopId=row.get("from_stop_id"),  # type: ignore[arg-type]
+            toStopId=row.get("to_stop_id"),  # type: ignore[arg-type]
             pathwayMode=int(row.get("pathway_mode") or 0),
             isBidirectional=int(row.get("is_bidirectional") or 0),
             length=float(row.get("length") or 0),
@@ -662,29 +662,29 @@ def map_route_networks(rows: Iterable[Dict[str, Any]]) -> Generator[RouteNetwork
     """Maps the rows from the route_networks.txt file to RouteNetworks objects"""
     for row in rows:
         yield RouteNetworks(
-            routeNetworkId=row.get("route_network_id"),
-            routeId=row.get("route_id"),
-            networkId=row.get("network_id")
+            routeNetworkId=row.get("route_network_id"),  # type: ignore[arg-type]
+            routeId=row.get("route_id"),  # type: ignore[arg-type]
+            networkId=row.get("network_id")  # type: ignore[arg-type]
         )
 
 def map_routes(rows: Iterable[Dict[str, Any]]) -> Generator[Routes, None, None]:
     """Maps the rows from the routes.txt file to Routes objects"""
     for row in rows:
         yield Routes(
-            routeId=row.get("route_id"),
+            routeId=row.get("route_id"),  # type: ignore[arg-type]
             agencyId=row.get("agency_id"),
             routeShortName=row.get("route_short_name"),
             routeLongName=row.get("route_long_name"),
             routeDesc=row.get("route_desc"),
-            routeType=RouteType.from_ordinal(row.get("route_type")) if row.get(
+            routeType=RouteType.from_ordinal(row.get("route_type")) if row.get(  # type: ignore[arg-type]
                 "route_type") and (int(row.get("route_type") or 0) < 12) else RouteType.OTHER,
             routeUrl=row.get("route_url"),
             routeColor=row.get("route_color"),
             routeTextColor=row.get("route_text_color"),
             routeSortOrder=int(row.get("route_sort_order") or 0),
-            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get(
+            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get(  # type: ignore[arg-type]
                 "continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
-            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get(
+            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get(  # type: ignore[arg-type]
                 "continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
             networkId=row.get("network_id")
         )
@@ -693,7 +693,7 @@ def map_shapes(rows: Iterable[Dict[str, Any]]) -> Generator[Shapes, None, None]:
     """Maps the rows from the shapes.txt file to Shapes objects"""
     for row in rows:
         yield Shapes(
-            shapeId=row.get("shape_id"),
+            shapeId=row.get("shape_id"),  # type: ignore[arg-type]
             shapePtLat=float(row.get("shape_pt_lat") or 0),
             shapePtLon=float(row.get("shape_pt_lon") or 0),
             shapePtSequence=int(row.get("shape_pt_sequence") or 0),
@@ -704,16 +704,16 @@ def map_stop_areas(rows: Iterable[Dict[str, Any]]) -> Generator[StopAreas, None,
     """Maps the rows from the stop_areas.txt file to StopAreas objects"""
     for row in rows:
         yield StopAreas(
-            stopAreaId=row.get("stop_area_id"),
-            areaId=row.get("area_id"),
-            stopId=row.get("stop_id"),
+            stopAreaId=row.get("stop_area_id"),  # type: ignore[arg-type]
+            areaId=row.get("area_id"),  # type: ignore[arg-type]
+            stopId=row.get("stop_id"),  # type: ignore[arg-type]
         )
 
 def map_stops(rows: Iterable[Dict[str, Any]]) -> Generator[Stops, None, None]:
     """Maps the rows from the stops.txt file to Stops objects"""
     for row in rows:
         yield Stops(
-            stopId=row.get("stop_id"),
+            stopId=row.get("stop_id"),  # type: ignore[arg-type]
             stopCode=row.get("stop_code"),
             stopName=row.get("stop_name"),
             stopDesc=row.get("stop_desc"),
@@ -721,10 +721,10 @@ def map_stops(rows: Iterable[Dict[str, Any]]) -> Generator[Stops, None, None]:
             stopLon=float(row.get("stop_lon") or 0),
             zoneId=row.get("zone_id"),
             stopUrl=row.get("stop_url"),
-            locationType=LocationType.from_ordinal(row.get("location_type")) if row.get("location_type") else LocationType.STOP,
+            locationType=LocationType.from_ordinal(row.get("location_type")) if row.get("location_type") else LocationType.STOP,  # type: ignore[arg-type]
             parentStation=row.get("parent_station"),
             stopTimezone=row.get("stop_timezone"),
-            wheelchairBoarding=WheelchairBoarding.from_ordinal(row.get("wheelchair_boarding")) if row.get("wheelchair_boarding") else WheelchairBoarding.NO_INFO,
+            wheelchairBoarding=WheelchairBoarding.from_ordinal(row.get("wheelchair_boarding")) if row.get("wheelchair_boarding") else WheelchairBoarding.NO_INFO,  # type: ignore[arg-type]
             levelId=row.get("level_id"),
             platformCode=row.get("platform_code"),
             ttsStopName=row.get("tts_stop_name"),
@@ -734,18 +734,18 @@ def map_stop_times(rows: Iterable[Dict[str, Any]]) -> Generator[StopTimes, None,
     """Maps the rows from the stop_times.txt file to StopTimes objects"""
     for row in rows:
         yield StopTimes(
-            tripId=row.get("trip_id"),
+            tripId=row.get("trip_id"),  # type: ignore[arg-type]
             arrivalTime=row.get("arrival_time"),
             departureTime=row.get("departure_time"),
             stopId=row.get("stop_id"),
             stopSequence=int(row.get("stop_sequence") or 0),
             stopHeadsign=row.get("stop_headsign"),
-            pickupType=PickupType.from_ordinal(row.get("pickup_type")) if row.get("pickup_type") else PickupType.REGULAR,
-            dropOffType=DropOffType.from_ordinal(row.get("drop_off_type")) if row.get("drop_off_type") else DropOffType.REGULAR,
-            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get("continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
-            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get("continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
+            pickupType=PickupType.from_ordinal(row.get("pickup_type")) if row.get("pickup_type") else PickupType.REGULAR,  # type: ignore[arg-type]
+            dropOffType=DropOffType.from_ordinal(row.get("drop_off_type")) if row.get("drop_off_type") else DropOffType.REGULAR,  # type: ignore[arg-type]
+            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get("continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,  # type: ignore[arg-type]
+            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get("continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,  # type: ignore[arg-type]
             shapeDistTraveled=row.get("shape_dist_traveled"),
-            timepoint=Timepoint.from_ordinal(row.get("timepoint")) if row.get("timepoint") else Timepoint.EXACT
+            timepoint=Timepoint.from_ordinal(row.get("timepoint")) if row.get("timepoint") else Timepoint.EXACT  # type: ignore[arg-type]
         )
 
 def map_timeframes(rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> Generator[Timeframes, None, None]:
@@ -753,33 +753,33 @@ def map_timeframes(rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str,
     for row in rows:
         service_dates = [
             Calendar(
-                serviceId=calendarRow.get("service_id"),
-                startDate=calendarRow.get("start_date"),
-                endDate=calendarRow.get("end_date"),
-                monday=ServiceAvailability.from_ordinal(calendarRow.get("monday")) if calendarRow.get(
+                serviceId=calendarRow.get("service_id"),  # type: ignore[arg-type]
+                startDate=calendarRow.get("start_date"),  # type: ignore[arg-type]
+                endDate=calendarRow.get("end_date"),  # type: ignore[arg-type]
+                monday=ServiceAvailability.from_ordinal(calendarRow.get("monday")) if calendarRow.get(  # type: ignore[arg-type]
                     "monday") else ServiceAvailability.NO_SERVICE,
-                tuesday=ServiceAvailability.from_ordinal(calendarRow.get("tuesday")) if calendarRow.get(
+                tuesday=ServiceAvailability.from_ordinal(calendarRow.get("tuesday")) if calendarRow.get(  # type: ignore[arg-type]
                     "tuesday") else ServiceAvailability.NO_SERVICE,
-                wednesday=ServiceAvailability.from_ordinal(calendarRow.get("wednesday")) if calendarRow.get(
+                wednesday=ServiceAvailability.from_ordinal(calendarRow.get("wednesday")) if calendarRow.get(  # type: ignore[arg-type]
                     "wednesday") else ServiceAvailability.NO_SERVICE,
-                thursday=ServiceAvailability.from_ordinal(calendarRow.get("thursday")) if calendarRow.get(
+                thursday=ServiceAvailability.from_ordinal(calendarRow.get("thursday")) if calendarRow.get(  # type: ignore[arg-type]
                     "thursday") else ServiceAvailability.NO_SERVICE,
-                friday=ServiceAvailability.from_ordinal(calendarRow.get("friday")) if calendarRow.get(
+                friday=ServiceAvailability.from_ordinal(calendarRow.get("friday")) if calendarRow.get(  # type: ignore[arg-type]
                     "friday") else ServiceAvailability.NO_SERVICE,
-                saturday=ServiceAvailability.from_ordinal(calendarRow.get("saturday")) if calendarRow.get(
+                saturday=ServiceAvailability.from_ordinal(calendarRow.get("saturday")) if calendarRow.get(  # type: ignore[arg-type]
                     "saturday") else ServiceAvailability.NO_SERVICE,
-                sunday=ServiceAvailability.from_ordinal(calendarRow.get("sunday")) if calendarRow.get("sunday") else ServiceAvailability.NO_SERVICE)
+                sunday=ServiceAvailability.from_ordinal(calendarRow.get("sunday")) if calendarRow.get("sunday") else ServiceAvailability.NO_SERVICE)  # type: ignore[arg-type]
             for calendarRow in calendar_rows if calendarRow.get("service_id") == row.get("service_id")
         ] + [
             CalendarDates(
-                serviceId=calendarDatesRow.get("service_id"),
-                date=calendarDatesRow.get("date"),
-                exceptionType=ExceptionType.from_ordinal(calendarDatesRow.get("exception_type")) if calendarDatesRow.get("exception_type") else ExceptionType.SERVICE_REMOVED)
+                serviceId=calendarDatesRow.get("service_id"),  # type: ignore[arg-type]
+                date=calendarDatesRow.get("date"),  # type: ignore[arg-type]
+                exceptionType=ExceptionType.from_ordinal(calendarDatesRow.get("exception_type")) if calendarDatesRow.get("exception_type") else ExceptionType.SERVICE_REMOVED)  # type: ignore[arg-type]
             for calendarDatesRow in calendar_dates_rows if calendarDatesRow.get("service_id") == row.get("service_id")
         ]
 
         yield Timeframes(
-            timeframeGroupId=row.get("timeframe_group_id"),
+            timeframeGroupId=row.get("timeframe_group_id"),  # type: ignore[arg-type]
             startTime=row.get("start_time"),
             endTime=row.get("end_time"),
             serviceDates=next(iter(service_dates))
@@ -789,8 +789,8 @@ def map_transfers(rows: Iterable[Dict[str, Any]]) -> Generator[Transfers, None, 
     """Maps the rows from the transfers.txt"""
     for row in rows:
         yield Transfers(
-            fromStopId=row.get("from_stop_id"),
-            toStopId=row.get("to_stop_id"),
+            fromStopId=row.get("from_stop_id"),  # type: ignore[arg-type]
+            toStopId=row.get("to_stop_id"),  # type: ignore[arg-type]
             transferType=int(row.get("transfer_type") or 0),
             minTransferTime=int(row.get("min_transfer_time") or 0)
         )
@@ -799,10 +799,10 @@ def map_translations(rows: Iterable[Dict[str, Any]]) -> Generator[Translations, 
     """Maps the rows from the translations.txt file to Translations objects"""
     for row in rows:
         yield Translations(
-            tableName=row.get("table_name"),
-            fieldName=row.get("field_name"),
-            language=row.get("language"),
-            translation=row.get("translation")
+            tableName=row.get("table_name"),  # type: ignore[arg-type]
+            fieldName=row.get("field_name"),  # type: ignore[arg-type]
+            language=row.get("language"),  # type: ignore[arg-type]
+            translation=row.get("translation")  # type: ignore[arg-type]
         )
 
 def map_trips(trip_rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> Generator[Trips, None, None]:
@@ -828,40 +828,40 @@ def map_trips(trip_rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str,
         for calendar_row in calendar_rows_by_service.get(row.get("service_id") or "", []):
             calendars.append(
                 Calendar(
-                    serviceId=calendar_row.get("service_id"),
-                    monday=ServiceAvailability.from_ordinal(calendar_row.get("monday")) if calendar_row.get("monday") else ServiceAvailability.NO_SERVICE,
-                    tuesday=ServiceAvailability.from_ordinal(calendar_row.get("tuesday")) if calendar_row.get("tuesday") else ServiceAvailability.NO_SERVICE,
-                    wednesday=ServiceAvailability.from_ordinal(calendar_row.get("wednesday")) if calendar_row.get("wednesday") else ServiceAvailability.NO_SERVICE,
-                    thursday=ServiceAvailability.from_ordinal(calendar_row.get("thursday")) if calendar_row.get("thursday") else ServiceAvailability.NO_SERVICE,
-                    friday=ServiceAvailability.from_ordinal(calendar_row.get("friday")) if calendar_row.get("friday") else ServiceAvailability.NO_SERVICE,
-                    saturday=ServiceAvailability.from_ordinal(calendar_row.get("saturday")) if calendar_row.get("saturday") else ServiceAvailability.NO_SERVICE,
-                    sunday=ServiceAvailability.from_ordinal(calendar_row.get("sunday")) if calendar_row.get("sunday") else ServiceAvailability.NO_SERVICE,
-                    startDate=calendar_row.get("start_date"),
-                    endDate=calendar_row.get("end_date")
+                    serviceId=calendar_row.get("service_id"),  # type: ignore[arg-type]
+                    monday=ServiceAvailability.from_ordinal(calendar_row.get("monday")) if calendar_row.get("monday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    tuesday=ServiceAvailability.from_ordinal(calendar_row.get("tuesday")) if calendar_row.get("tuesday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    wednesday=ServiceAvailability.from_ordinal(calendar_row.get("wednesday")) if calendar_row.get("wednesday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    thursday=ServiceAvailability.from_ordinal(calendar_row.get("thursday")) if calendar_row.get("thursday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    friday=ServiceAvailability.from_ordinal(calendar_row.get("friday")) if calendar_row.get("friday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    saturday=ServiceAvailability.from_ordinal(calendar_row.get("saturday")) if calendar_row.get("saturday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    sunday=ServiceAvailability.from_ordinal(calendar_row.get("sunday")) if calendar_row.get("sunday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    startDate=calendar_row.get("start_date"),  # type: ignore[arg-type]
+                    endDate=calendar_row.get("end_date")  # type: ignore[arg-type]
                 )
             )
 
         for calendar_dates_row in calendar_dates_rows_by_service.get(row.get("service_id") or "", []):
             calendar_dates.append(
                 CalendarDates(
-                    serviceId=calendar_dates_row.get("service_id"),
-                    date=calendar_dates_row.get("date"),
-                    exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type") or 0) < 2 else ExceptionType.SERVICE_REMOVED
+                    serviceId=calendar_dates_row.get("service_id"),  # type: ignore[arg-type]
+                    date=calendar_dates_row.get("date"),  # type: ignore[arg-type]
+                    exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type") or 0) < 2 else ExceptionType.SERVICE_REMOVED  # type: ignore[arg-type]
                 )
             )
 
         yield Trips(
-            routeId=row.get("route_id"),
-            serviceDates=calendars[0] if len(calendars) > 0 else None,
+            routeId=row.get("route_id"),  # type: ignore[arg-type]
+            serviceDates=calendars[0] if len(calendars) > 0 else None,  # type: ignore[arg-type]
             serviceExceptions=calendar_dates,
-            tripId=row.get("trip_id"),
+            tripId=row.get("trip_id"),  # type: ignore[arg-type]
             tripHeadsign=row.get("trip_headsign"),
             tripShortName=row.get("trip_short_name"),
-            directionId=DirectionId.from_ordinal(row.get("direction_id")) if row.get("direction_id") else DirectionId.OUTBOUND,
+            directionId=DirectionId.from_ordinal(row.get("direction_id")) if row.get("direction_id") else DirectionId.OUTBOUND,  # type: ignore[arg-type]
             blockId=row.get("block_id"),
             shapeId=row.get("shape_id"),
-            wheelchairAccessible=WheelchairAccessible.from_ordinal(row.get("wheelchair_accessible")) if row.get("wheelchair_accessible") else WheelchairAccessible.NO_INFO,
-            bikesAllowed=BikesAllowed.from_ordinal(row.get("bikes_allowed")) if row.get("bikes_allowed") else BikesAllowed.NO_INFO
+            wheelchairAccessible=WheelchairAccessible.from_ordinal(row.get("wheelchair_accessible")) if row.get("wheelchair_accessible") else WheelchairAccessible.NO_INFO,  # type: ignore[arg-type]
+            bikesAllowed=BikesAllowed.from_ordinal(row.get("bikes_allowed")) if row.get("bikes_allowed") else BikesAllowed.NO_INFO  # type: ignore[arg-type]
         )
 
 etags = {}

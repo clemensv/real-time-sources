@@ -141,7 +141,7 @@ def _build_position(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type=ship_type,
         geohash5=geohash5(lat, lon),
-        msg_type="position-report",
+        msg_type="position-report",  # type: ignore[arg-type]
         latitude=_f(lat),
         longitude=_f(lon),
         speed_over_ground=_f(fields.get("speed_over_ground")),
@@ -179,7 +179,7 @@ def _build_static(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type=ship_type,
         geohash5=gh,
-        msg_type="static",
+        msg_type="static",  # type: ignore[arg-type]
         ship_name=_s(fields.get("ship_name")),
         callsign=_s(fields.get("callsign")),
         imo_number=_i(fields.get("imo_number")),
@@ -211,7 +211,7 @@ def _build_aton(fields: Dict[str, Any], decoded: DecodedAIS,
         flag=flag,
         ship_type="aton",
         geohash5=geohash5(lat, lon),
-        msg_type="aid-to-navigation",
+        msg_type="aid-to-navigation",  # type: ignore[arg-type]
         name=_s(fields.get("name")),
         aid_type=_i(fields.get("aid_type")),
         latitude=_f(lat),
@@ -303,7 +303,7 @@ class KystverketAisAmqpBridge:
             bucket = self.ship_type_cache.get(mmsi9)
             data = _build_position(fields, decoded, flag, bucket)
             if data is not None:
-                self.position_cache.set(mmsi9, data.latitude, data.longitude)
+                self.position_cache.set(mmsi9, data.latitude, data.longitude)  # type: ignore[attr-defined]
                 await self.client.publish_position_report(
                     mmsi=data.mmsi, flag=data.flag, ship_type=data.ship_type,
                     geohash5=data.geohash5, data=data, qos=0, retain=False,

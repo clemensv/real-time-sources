@@ -145,7 +145,7 @@ def _to_producer_land(forecast: NWSLandZoneForecast) -> LandZoneForecast:
         updated=forecast.updated,
         periods=[
             LandForecastPeriod(
-                period_number=p.period_number,
+                period_number=p.period_number,  # type: ignore[arg-type]
                 period_name=p.period_name,
                 detailed_forecast=p.detailed_forecast,
             )
@@ -158,10 +158,10 @@ def _to_producer_marine(forecast: NWSMarineZoneForecast) -> MarineZoneForecast:
     """Convert a transport-neutral NWSMarineZoneForecast to a generated MarineZoneForecast."""
     return MarineZoneForecast(
         zone_id=forecast.zone_id,
-        zone_name=forecast.zone_name,
+        zone_name=forecast.zone_name,  # type: ignore[arg-type]
         product_title=forecast.product_title,
         office_name=forecast.office_name,
-        issued_at_text=forecast.issued_at_text,
+        issued_at_text=forecast.issued_at_text,  # type: ignore[arg-type]
         expires_text=forecast.expires_text,
         wmo_header=forecast.wmo_header,
         bulletin_awips_id=forecast.bulletin_awips_id,
@@ -173,7 +173,7 @@ def _to_producer_marine(forecast: NWSMarineZoneForecast) -> MarineZoneForecast:
             )
             for p in forecast.periods
         ],
-        bulletin_text=forecast.bulletin_text,
+        bulletin_text=forecast.bulletin_text,  # type: ignore[arg-type]
     )
 
 

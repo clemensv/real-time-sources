@@ -99,7 +99,7 @@ async def _run_live(args: argparse.Namespace, producer: SEGovSMHIWeatherAmqpProd
     for sdata in station_list:
         station = api.parse_station(sdata)
         producer.send_station(
-            data=station,
+            data=station,  # type: ignore[arg-type]
             _station_id=station.station_id,
             _lan=station.lan or "unknown",
         )
@@ -120,7 +120,7 @@ async def _run_live(args: argparse.Namespace, producer: SEGovSMHIWeatherAmqpProd
             if reading_key in previous_readings:
                 continue
             producer.send_weather_observation(
-                data=obs,
+                data=obs,  # type: ignore[arg-type]
                 _station_id=obs.station_id,
                 _lan=observation_lan_segment(obs),
             )

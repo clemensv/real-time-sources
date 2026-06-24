@@ -78,7 +78,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: DEDWDPollenflugMqttMq
             for region in regions:
                 await mqtt_client.publish_de_dwd_pollenflug_mqtt_region(
                     region_id=region.region_id,
-                    data=region,
+                    data=region,  # type: ignore[arg-type]
                 )
             logger.info("Published %d region reference events via MQTT", len(regions))
             last_update = data.get("last_update", "")
@@ -88,7 +88,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: DEDWDPollenflugMqttMq
                     await mqtt_client.publish_de_dwd_pollenflug_mqtt_pollen_forecast(
                         region_id=forecast.region_id,
                         pollen_type=forecast.pollen_type or "all",
-                        data=forecast,
+                        data=forecast,  # type: ignore[arg-type]
                     )
                 logger.info("Published %d pollen forecast events via MQTT", len(forecasts))
                 previous_state["last_update"] = last_update

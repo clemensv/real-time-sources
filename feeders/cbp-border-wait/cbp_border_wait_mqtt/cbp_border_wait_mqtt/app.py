@@ -121,16 +121,16 @@ async def feed(
                     port = api.parse_port(raw)
                     await mqtt_client.publish_gov_cbp_borderwait_mqtt_port(
                         port_number=port.port_number,
-                        border_slug=port.border_slug,
-                        data=port,
+                        border_slug=port.border_slug,  # type: ignore[arg-type]
+                        data=port,  # type: ignore[arg-type]
                     )
                     port_num = raw.get("port_number", "")
                     dedup_key = f"{raw.get('date', '')}T{raw.get('time', '')}"
                     wait_time = api.parse_wait_time(raw)
                     await mqtt_client.publish_gov_cbp_borderwait_mqtt_wait_time(
                         port_number=wait_time.port_number,
-                        border_slug=wait_time.border_slug,
-                        data=wait_time,
+                        border_slug=wait_time.border_slug,  # type: ignore[arg-type]
+                        data=wait_time,  # type: ignore[arg-type]
                     )
                     if previous_timestamps.get(port_num) != dedup_key:
                         previous_timestamps[port_num] = dedup_key

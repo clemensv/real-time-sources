@@ -238,7 +238,7 @@ def _emit_sensor_event(
             event_producer.send_fi_digitraffic_road_sensors_weather_sensor_data(
                 _station_id=str(station_id),
                 _sensor_id=str(sensor_id),
-                data=data,
+                data=data,  # type: ignore[arg-type]
                 flush_producer=False,
             )
             return True

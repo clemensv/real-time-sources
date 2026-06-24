@@ -96,7 +96,7 @@ async def _run_live(args: argparse.Namespace, producer: HKGovHKOWeatherAmqpProdu
     stations = api.extract_places(data)
     for station in stations.values():
         producer.send_station(
-            data=station,
+            data=station,  # type: ignore[arg-type]
             _place_id=station.place_id,
             _district=_segment(station.district or "unknown"),
         )
@@ -110,7 +110,7 @@ async def _run_live(args: argparse.Namespace, producer: HKGovHKOWeatherAmqpProdu
             if reading_key in previous_readings:
                 continue
             producer.send_weather_observation(
-                data=obs,
+                data=obs,  # type: ignore[arg-type]
                 _place_id=obs.place_id,
                 _district=_segment(obs.district or "unknown"),
                 _time=obs.observation_time.isoformat(),

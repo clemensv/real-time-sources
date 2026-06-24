@@ -108,8 +108,8 @@ class USGSWaterQualityPoller:
 
         if kafka_config is not None:
             producer = Producer(kafka_config)
-            self.site_producer = USGSWaterQualitySitesEventProducer(producer, kafka_topic)
-            self.readings_producer = USGSWaterQualityReadingsEventProducer(producer, kafka_topic)
+            self.site_producer = USGSWaterQualitySitesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
+            self.readings_producer = USGSWaterQualityReadingsEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
         else:
             self.site_producer = None
             self.readings_producer = None

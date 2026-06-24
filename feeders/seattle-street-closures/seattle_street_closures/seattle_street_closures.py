@@ -154,8 +154,8 @@ def parse_closure(record: dict) -> StreetClosure:
         permit_type=record.get("permit_type", ""),
         project_name=record.get("project_name"),
         project_description=record.get("project_description"),
-        start_date=normalize_date(record.get("start_date")),
-        end_date=normalize_date(record.get("end_date")),
+        start_date=normalize_date(record.get("start_date")),  # type: ignore[arg-type]
+        end_date=normalize_date(record.get("end_date")),  # type: ignore[arg-type]
         sunday=record.get("sunday"),
         monday=record.get("monday"),
         tuesday=record.get("tuesday"),
@@ -173,7 +173,7 @@ def parse_closure(record: dict) -> StreetClosure:
 
 def closure_digest(closure: StreetClosure) -> str:
     """Hash the normalized closure payload for change detection."""
-    return hashlib.sha256(closure.to_json().encode("utf-8")).hexdigest()
+    return hashlib.sha256(json.dumps(closure.to_serializer_dict(), sort_keys=True).encode("utf-8")).hexdigest()
 
 
 class SeattleStreetClosuresBridge:

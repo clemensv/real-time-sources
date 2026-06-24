@@ -76,7 +76,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: HKGovHKOWeatherMqttMq
         await mqtt_client.publish_hk_gov_hko_weather_mqtt_station(
             place_id=station.place_id,
             district=_segment(station.district or "unknown"),
-            data=station,
+            data=station,  # type: ignore[arg-type]
         )
     logger.info("Published %d station reference events via MQTT", len(stations))
     while True:
@@ -90,7 +90,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: HKGovHKOWeatherMqttMq
             await mqtt_client.publish_hk_gov_hko_weather_mqtt_weather_observation(
                 place_id=obs.place_id,
                 district=_segment(obs.district or "unknown"),
-                data=obs,
+                data=obs,  # type: ignore[arg-type]
                 _time=obs.observation_time.isoformat(),
             )
             previous_readings[reading_key] = obs.observation_time.isoformat()

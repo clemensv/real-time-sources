@@ -95,7 +95,7 @@ def map_power_system_record(record: dict) -> PowerSystemSnapshot:
         if key not in ("minutes1_utc", "minutes1_dk"):
             mapped[key] = safe_float(mapped.get(key))
 
-    return PowerSystemSnapshot(**mapped)
+    return PowerSystemSnapshot(**mapped)  # type: ignore[arg-type]
 
 
 def map_spot_price_record(record: dict) -> SpotPrice:
@@ -110,7 +110,7 @@ def map_spot_price_record(record: dict) -> SpotPrice:
     mapped["spot_price_dkk"] = safe_float(mapped.get("spot_price_dkk"))
     mapped["spot_price_eur"] = safe_float(mapped.get("spot_price_eur"))
 
-    return SpotPrice(**mapped)
+    return SpotPrice(**mapped)  # type: ignore[arg-type]
 
 
 def build_power_system_url(limit: int = 5) -> str:

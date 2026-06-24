@@ -175,7 +175,7 @@ class EntsoePoller:
                     businessType=point.business_type, documentType=dt,
                     unitName=point.unit_name or "MAW")
                 self.domain_psr_producer.send_eu_entsoe_transparency_wind_solar_forecast(
-                    point.in_domain, point.psr_type, data, flush_producer=False)
+                    point.in_domain, point.psr_type, data, flush_producer=False)  # type: ignore[arg-type]
             elif dt == "A74":
                 data = WindSolarGeneration(
                     inDomain=point.in_domain, psrType=point.psr_type,
@@ -183,7 +183,7 @@ class EntsoePoller:
                     businessType=point.business_type, documentType=dt,
                     unitName=point.unit_name or "MAW")
                 self.domain_psr_producer.send_eu_entsoe_transparency_wind_solar_generation(
-                    point.in_domain, point.psr_type, data, flush_producer=False)
+                    point.in_domain, point.psr_type, data, flush_producer=False)  # type: ignore[arg-type]
             elif dt == "A68":
                 data = InstalledGenerationCapacityPerType(
                     inDomain=point.in_domain, psrType=point.psr_type,
@@ -191,7 +191,7 @@ class EntsoePoller:
                     businessType=point.business_type, documentType=dt,
                     unitName=point.unit_name or "MAW")
                 self.domain_psr_producer.send_eu_entsoe_transparency_installed_generation_capacity_per_type(
-                    point.in_domain, point.psr_type, data, flush_producer=False)
+                    point.in_domain, point.psr_type, data, flush_producer=False)  # type: ignore[arg-type]
 
         elif dt == "A44":
             data = DayAheadPrices(
@@ -200,7 +200,7 @@ class EntsoePoller:
                 unitName=point.unit_name or "MWH",
                 resolution=point.resolution, documentType=dt)
             self.domain_producer.send_eu_entsoe_transparency_day_ahead_prices(
-                point.in_domain, data, flush_producer=False)
+                point.in_domain, data, flush_producer=False)  # type: ignore[arg-type]
 
         elif dt == DOC_TYPE_CROSS_BORDER:
             data = CrossBorderPhysicalFlows(
@@ -210,7 +210,7 @@ class EntsoePoller:
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
             self.cross_border_producer.send_eu_entsoe_transparency_cross_border_physical_flows(
-                point.in_domain, point.out_domain or "", data, flush_producer=False)
+                point.in_domain, point.out_domain or "", data, flush_producer=False)  # type: ignore[arg-type]
 
         elif dt == "A65":
             data = ActualTotalLoad(
@@ -218,7 +218,7 @@ class EntsoePoller:
                 resolution=point.resolution, outDomain=point.out_domain,
                 documentType=dt)
             self.domain_producer.send_eu_entsoe_transparency_actual_total_load(
-                point.in_domain, data, flush_producer=False)
+                point.in_domain, data, flush_producer=False)  # type: ignore[arg-type]
 
         elif dt == "A70":
             data = LoadForecastMargin(
@@ -226,7 +226,7 @@ class EntsoePoller:
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
             self.domain_producer.send_eu_entsoe_transparency_load_forecast_margin(
-                point.in_domain, data, flush_producer=False)
+                point.in_domain, data, flush_producer=False)  # type: ignore[arg-type]
 
         elif dt == "A71":
             data = GenerationForecast(
@@ -234,7 +234,7 @@ class EntsoePoller:
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
             self.domain_producer.send_eu_entsoe_transparency_generation_forecast(
-                point.in_domain, data, flush_producer=False)
+                point.in_domain, data, flush_producer=False)  # type: ignore[arg-type]
 
         elif dt == "A72":
             data = ReservoirFillingInformation(
@@ -242,7 +242,7 @@ class EntsoePoller:
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
             self.domain_producer.send_eu_entsoe_transparency_reservoir_filling_information(
-                point.in_domain, data, flush_producer=False)
+                point.in_domain, data, flush_producer=False)  # type: ignore[arg-type]
 
         elif dt == "A73":
             data = ActualGeneration(
@@ -250,7 +250,7 @@ class EntsoePoller:
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
             self.domain_producer.send_eu_entsoe_transparency_actual_generation(
-                point.in_domain, data, flush_producer=False)
+                point.in_domain, data, flush_producer=False)  # type: ignore[arg-type]
 
     def _poll_domain(self, doc_type: str, domain: str, now: datetime,
                      out_domain: Optional[str] = None) -> int:

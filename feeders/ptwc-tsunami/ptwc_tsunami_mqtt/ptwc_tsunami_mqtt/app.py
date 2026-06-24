@@ -100,10 +100,10 @@ async def _poll_once(poller: PTWCTsunamiPoller, mqtt_client: PTWCBulletinsMqttMq
                 else:
                     count_updated += 1
                 await mqtt_client.publish_ptwc_bulletins_mqtt_tsunami_bulletin(
-                    basin=_topic_segment(bulletin.basin),
-                    ptwc_level=_topic_segment(bulletin.ptwc_level),
+                    basin=_topic_segment(bulletin.basin),  # type: ignore[arg-type]
+                    ptwc_level=_topic_segment(bulletin.ptwc_level),  # type: ignore[arg-type]
                     bulletin_id=_topic_segment(bulletin.bulletin_id),
-                    data=bulletin,
+                    data=bulletin,  # type: ignore[arg-type]
                 )
                 state[bulletin.bulletin_id] = updated_str
     poller.save_state(state)
@@ -133,7 +133,7 @@ async def feed(
         paho_client.username_pw_set(resolved_username, resolved_password)
     if tls or _entra_props is not None:
         paho_client.tls_set()
-    mqtt_client = PTWCBulletinsMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
+    mqtt_client = PTWCBulletinsMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
         paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_entra_props)
