@@ -1343,3 +1343,61 @@ fleet total over all cells. A healthy full-fleet end state is **green/yellow**:
 upstream seasonally idle). Never report a run "green" while any cell is FAIL or
 while result files are unreconciled — a FAIL is a deploy/crash/auth/schema
 defect that must be fixed or explicitly escalated to the user with its reason.
+
+## Static Analysis as a Validation Gate
+
+A full E2E deployment validates runtime behavior — containers start, connect,
+and emit events. But it does NOT catch type-safety issues that cause subtle
+data corruption (e.g., passing a raw string where a datetime is expected, so
+downstream `.year` access crashes). These bugs survive live validation because
+the Avro encoder accepts strings via its fallback path.
+
+**Mandatory pre-deployment static validation:**
+
+Before declaring any fleet-wide validation run complete, verify that `mypy`
+CI is green. The mypy workflow with MYPYPATH catches:
+
+- Wrong constructor arguments to generated data classes
+- Missing nullable handling (passing `None` to non-Optional fields)
+- Method/attribute errors on producer classes
+- Incorrect enum conversions
+
+A passing E2E test with a failing mypy CI means the bridge "works" but has
+latent type bugs that will crash on downstream access patterns.
+
+### Schema-runtime nullability alignment
+
+If E2E validation reveals a feeder that crashes or silently drops records
+because an upstream field is unexpectedly `null`, the fix is almost always
+in the xreg schema (add null to the type union), NOT in the bridge
+(adding a `try/except` or `or ""`). The schema must match upstream reality:
+
+1. Check whether the upstream API actually guarantees the field (API docs
+   + live payload inspection)
+2. If the field CAN be null upstream, add `"null"` to the type union in
+   the jstruct schema
+3. Remove the field from `required` if it has an `enum` constraint
+   (xrcg won't generate `Optional[EnumType]` otherwise)
+4. Regenerate the producer (`generate_producer.ps1`)
+5. Remove the `# type: ignore[arg-type]` from the bridge code
+6. Verify mypy passes clean
+
+### CI test workflow packaging pattern
+
+When validating that feeder tests pass in CI, the most common failure mode
+is `ERROR: No matching distribution found for <local-package>`. Every
+feeder's test workflow must install generated producer packages and local
+sub-packages (e.g., `*_core`) explicitly via `pip install -e ./<path>`
+BEFORE `pip install -e '.[dev]'`. Reference: `test-pegelonline.yml`,
+`test-gtfs.yml`. Common local packages to install first:
+
+```
+pip install -e ./<src>_producer/<src>_producer_data
+pip install -e ./<src>_producer/<src>_producer_kafka_producer
+pip install -e ./<src>_mqtt_producer/<src>_mqtt_producer_data        # if mqtt
+pip install -e ./<src>_mqtt_producer/<src>_mqtt_producer_mqtt_client # if mqtt
+pip install -e ./<src>_amqp_producer/<src>_amqp_producer_data       # if amqp
+pip install -e ./<src>_amqp_producer/<src>_amqp_producer_amqp_producer # if amqp
+pip install -e ./<src>_core                                          # if exists
+pip install -e '.[dev]'
+```

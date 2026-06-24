@@ -419,6 +419,58 @@ with `python -m mypy feeders --config-file mypy.ini --exclude /build/` (the
 `/build/` exclude avoids spurious "Duplicate module" errors from `build/lib`
 artifacts; `mypy.ini` already excludes `tests/` and `*_producer/`).
 
+### mypy strict mode with MYPYPATH for full producer type resolution
+
+The CI workflow (`.github/workflows/mypy.yml`) sets `MYPYPATH` to all
+`*_producer*/*/src` directories, which gives mypy visibility into the
+generated data-class signatures. Without MYPYPATH, producer types resolve
+to `Any` and arg-type errors are invisible. Key rules:
+
+- **`mypy.ini` enables `arg-type`** — mismatched constructor arguments
+  (wrong type passed to a generated data class field) are hard errors.
+  This catches real bugs: wrong method calls, missing kwargs, incorrect
+  attributes, passing `str` to `datetime` fields, etc.
+- **Bridges must parse values to their schema type.** Pass
+  `datetime.datetime.fromisoformat(x)` to datetime fields,
+  `float(x)` to float fields, `EnumType.from_ordinal(x)` to enum
+  fields. Never pass raw strings to typed fields.
+- **Schema nullability must match upstream API reality.** If an
+  upstream API returns `null` for a field, the xreg schema must
+  declare it nullable (`"type": ["string", "null"]`). Otherwise the
+  generated data class requires non-Optional and the bridge needs
+  `# type: ignore` — which masks potential runtime issues.
+- **xrcg requires non-nullable enum fields to NOT be in `required`
+  for Optional generation.** If a string enum field's type is
+  `["string", "null"]` but it remains in the schema's `required`
+  array, xrcg still generates a non-Optional enum type. Remove it
+  from `required` to get `Optional[EnumType]`.
+- **`from_ordinal` ternary narrowing is a known mypy limitation.**
+  The pattern `EnumType.from_ordinal(row.get("x")) if row.get("x")
+  else DEFAULT` is correct at runtime but mypy can't narrow type
+  across two separate `.get()` calls. Suppress with
+  `# type: ignore[arg-type]`.
+
+### Known safe `type: ignore[arg-type]` categories
+
+These suppressions are permanent and correct:
+
+| Category | Cause | Count |
+|----------|-------|-------|
+| Cross-package identity | AMQP/MQTT bridges pass Kafka `_producer_data` classes to AMQP/MQTT producers that expect their own structurally-identical types | ~6 |
+| `content_mode` Literal | xrcg generates `str` parameter, bridges pass string literals that mypy types as `str` not `Literal['structured','binary']` | ~8 |
+| `from_ordinal` ternary | mypy can't narrow `Any\|None` from `.get()` across ternary branches | ~29 |
+| `float(x)` with fallback | `float(raw.get("x") if raw.get("x") is not None else -1)` — mypy sees `Any\|int\|None` | ~6 |
+
+### Feeder test workflows must install local packages explicitly
+
+Every `.github/workflows/test-<source>.yml` must use the pip pattern
+(not `poetry install`). Local sub-packages (`*_core`, `*_producer_data`,
+`*_producer_kafka_producer`, etc.) are NOT on PyPI — they must be
+installed with `pip install -e ./<path>` before `pip install -e '.[dev]'`.
+See `test-pegelonline.yml` and `test-gtfs.yml` for reference. Failing
+to install producer packages first produces
+`ERROR: No matching distribution found for <package>` at install time.
+
 ### Branch protection is OFF → the dependabot auto-merge workflow can't work
 
 `gh api repos/:owner/:repo/branches/main/protection` returns **404** — there is
