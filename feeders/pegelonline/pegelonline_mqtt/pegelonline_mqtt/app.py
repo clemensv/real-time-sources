@@ -224,7 +224,7 @@ async def feed(
     loop = asyncio.get_running_loop()
     mqtt_client = DeWsvPegelonlineMqttMqttClient(
         client=paho_client,
-        content_mode=content_mode,
+        content_mode=content_mode,  # type: ignore[arg-type]
         loop=loop,
     )
 

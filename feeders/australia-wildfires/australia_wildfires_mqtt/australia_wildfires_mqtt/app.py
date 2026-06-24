@@ -140,7 +140,7 @@ async def feed(
 
     mqtt_client = AUGovEmergencyWildfiresMqttMqttClient(
         client=paho_client,
-        content_mode=content_mode,
+        content_mode=content_mode,  # type: ignore[arg-type]
         loop=asyncio.get_running_loop(),
     )
     api = AustraliaWildfiresAPI(polling_interval=polling_interval)

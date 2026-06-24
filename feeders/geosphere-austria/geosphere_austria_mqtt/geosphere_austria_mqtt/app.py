@@ -90,7 +90,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: AtGeosphereTawesMqttM
                 await mqtt_client.publish_at_geosphere_tawes_mqtt_weather_station(
                     station_id=station.station_id,
                     bundesland=station_bundesland_segment(station),
-                    data=station,
+                    data=station,  # type: ignore[arg-type]
                 )
             logger.info("Published %d station reference events via MQTT", len(stations))
             last_station_refresh = now
@@ -110,7 +110,7 @@ async def _run_live(args: argparse.Namespace, mqtt_client: AtGeosphereTawesMqttM
             await mqtt_client.publish_at_geosphere_tawes_mqtt_weather_observation(
                 station_id=obs.station_id,
                 bundesland=bl,
-                data=obs,
+                data=obs,  # type: ignore[arg-type]
             )
             fingerprints[obs.station_id] = fp
             sent += 1

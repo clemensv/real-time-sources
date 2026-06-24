@@ -676,15 +676,15 @@ def map_routes(rows: Iterable[Dict[str, Any]]) -> Generator[Routes, None, None]:
             routeShortName=row.get("route_short_name"),
             routeLongName=row.get("route_long_name"),
             routeDesc=row.get("route_desc"),
-            routeType=RouteType.from_ordinal(row.get("route_type")) if row.get(
+            routeType=RouteType.from_ordinal(row.get("route_type")) if row.get(  # type: ignore[arg-type]
                 "route_type") and (int(row.get("route_type") or 0) < 12) else RouteType.OTHER,
             routeUrl=row.get("route_url"),
             routeColor=row.get("route_color"),
             routeTextColor=row.get("route_text_color"),
             routeSortOrder=int(row.get("route_sort_order") or 0),
-            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get(
+            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get(  # type: ignore[arg-type]
                 "continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
-            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get(
+            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get(  # type: ignore[arg-type]
                 "continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
             networkId=row.get("network_id")
         )
@@ -721,10 +721,10 @@ def map_stops(rows: Iterable[Dict[str, Any]]) -> Generator[Stops, None, None]:
             stopLon=float(row.get("stop_lon") or 0),
             zoneId=row.get("zone_id"),
             stopUrl=row.get("stop_url"),
-            locationType=LocationType.from_ordinal(row.get("location_type")) if row.get("location_type") else LocationType.STOP,
+            locationType=LocationType.from_ordinal(row.get("location_type")) if row.get("location_type") else LocationType.STOP,  # type: ignore[arg-type]
             parentStation=row.get("parent_station"),
             stopTimezone=row.get("stop_timezone"),
-            wheelchairBoarding=WheelchairBoarding.from_ordinal(row.get("wheelchair_boarding")) if row.get("wheelchair_boarding") else WheelchairBoarding.NO_INFO,
+            wheelchairBoarding=WheelchairBoarding.from_ordinal(row.get("wheelchair_boarding")) if row.get("wheelchair_boarding") else WheelchairBoarding.NO_INFO,  # type: ignore[arg-type]
             levelId=row.get("level_id"),
             platformCode=row.get("platform_code"),
             ttsStopName=row.get("tts_stop_name"),
@@ -740,12 +740,12 @@ def map_stop_times(rows: Iterable[Dict[str, Any]]) -> Generator[StopTimes, None,
             stopId=row.get("stop_id"),
             stopSequence=int(row.get("stop_sequence") or 0),
             stopHeadsign=row.get("stop_headsign"),
-            pickupType=PickupType.from_ordinal(row.get("pickup_type")) if row.get("pickup_type") else PickupType.REGULAR,
-            dropOffType=DropOffType.from_ordinal(row.get("drop_off_type")) if row.get("drop_off_type") else DropOffType.REGULAR,
-            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get("continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
-            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get("continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
+            pickupType=PickupType.from_ordinal(row.get("pickup_type")) if row.get("pickup_type") else PickupType.REGULAR,  # type: ignore[arg-type]
+            dropOffType=DropOffType.from_ordinal(row.get("drop_off_type")) if row.get("drop_off_type") else DropOffType.REGULAR,  # type: ignore[arg-type]
+            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get("continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,  # type: ignore[arg-type]
+            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get("continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,  # type: ignore[arg-type]
             shapeDistTraveled=row.get("shape_dist_traveled"),
-            timepoint=Timepoint.from_ordinal(row.get("timepoint")) if row.get("timepoint") else Timepoint.EXACT
+            timepoint=Timepoint.from_ordinal(row.get("timepoint")) if row.get("timepoint") else Timepoint.EXACT  # type: ignore[arg-type]
         )
 
 def map_timeframes(rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> Generator[Timeframes, None, None]:
@@ -756,25 +756,25 @@ def map_timeframes(rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str,
                 serviceId=str(calendarRow.get("service_id")) if calendarRow.get("service_id") is not None else None,
                 startDate=str(calendarRow.get("start_date")) if calendarRow.get("start_date") is not None else None,
                 endDate=str(calendarRow.get("end_date")) if calendarRow.get("end_date") is not None else None,
-                monday=ServiceAvailability.from_ordinal(calendarRow.get("monday")) if calendarRow.get(
+                monday=ServiceAvailability.from_ordinal(calendarRow.get("monday")) if calendarRow.get(  # type: ignore[arg-type]
                     "monday") else ServiceAvailability.NO_SERVICE,
-                tuesday=ServiceAvailability.from_ordinal(calendarRow.get("tuesday")) if calendarRow.get(
+                tuesday=ServiceAvailability.from_ordinal(calendarRow.get("tuesday")) if calendarRow.get(  # type: ignore[arg-type]
                     "tuesday") else ServiceAvailability.NO_SERVICE,
-                wednesday=ServiceAvailability.from_ordinal(calendarRow.get("wednesday")) if calendarRow.get(
+                wednesday=ServiceAvailability.from_ordinal(calendarRow.get("wednesday")) if calendarRow.get(  # type: ignore[arg-type]
                     "wednesday") else ServiceAvailability.NO_SERVICE,
-                thursday=ServiceAvailability.from_ordinal(calendarRow.get("thursday")) if calendarRow.get(
+                thursday=ServiceAvailability.from_ordinal(calendarRow.get("thursday")) if calendarRow.get(  # type: ignore[arg-type]
                     "thursday") else ServiceAvailability.NO_SERVICE,
-                friday=ServiceAvailability.from_ordinal(calendarRow.get("friday")) if calendarRow.get(
+                friday=ServiceAvailability.from_ordinal(calendarRow.get("friday")) if calendarRow.get(  # type: ignore[arg-type]
                     "friday") else ServiceAvailability.NO_SERVICE,
-                saturday=ServiceAvailability.from_ordinal(calendarRow.get("saturday")) if calendarRow.get(
+                saturday=ServiceAvailability.from_ordinal(calendarRow.get("saturday")) if calendarRow.get(  # type: ignore[arg-type]
                     "saturday") else ServiceAvailability.NO_SERVICE,
-                sunday=ServiceAvailability.from_ordinal(calendarRow.get("sunday")) if calendarRow.get("sunday") else ServiceAvailability.NO_SERVICE)
+                sunday=ServiceAvailability.from_ordinal(calendarRow.get("sunday")) if calendarRow.get("sunday") else ServiceAvailability.NO_SERVICE)  # type: ignore[arg-type]
             for calendarRow in calendar_rows if calendarRow.get("service_id") == row.get("service_id")
         ] + [
             CalendarDates(
                 serviceId=str(calendarDatesRow.get("service_id")) if calendarDatesRow.get("service_id") is not None else None,
                 date=str(calendarDatesRow.get("date")) if calendarDatesRow.get("date") is not None else None,
-                exceptionType=ExceptionType.from_ordinal(calendarDatesRow.get("exception_type")) if calendarDatesRow.get("exception_type") else ExceptionType.SERVICE_REMOVED)
+                exceptionType=ExceptionType.from_ordinal(calendarDatesRow.get("exception_type")) if calendarDatesRow.get("exception_type") else ExceptionType.SERVICE_REMOVED)  # type: ignore[arg-type]
             for calendarDatesRow in calendar_dates_rows if calendarDatesRow.get("service_id") == row.get("service_id")
         ]
 
@@ -829,13 +829,13 @@ def map_trips(trip_rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str,
             calendars.append(
                 Calendar(
                     serviceId=str(calendar_row.get("service_id")) if calendar_row.get("service_id") is not None else None,
-                    monday=ServiceAvailability.from_ordinal(calendar_row.get("monday")) if calendar_row.get("monday") else ServiceAvailability.NO_SERVICE,
-                    tuesday=ServiceAvailability.from_ordinal(calendar_row.get("tuesday")) if calendar_row.get("tuesday") else ServiceAvailability.NO_SERVICE,
-                    wednesday=ServiceAvailability.from_ordinal(calendar_row.get("wednesday")) if calendar_row.get("wednesday") else ServiceAvailability.NO_SERVICE,
-                    thursday=ServiceAvailability.from_ordinal(calendar_row.get("thursday")) if calendar_row.get("thursday") else ServiceAvailability.NO_SERVICE,
-                    friday=ServiceAvailability.from_ordinal(calendar_row.get("friday")) if calendar_row.get("friday") else ServiceAvailability.NO_SERVICE,
-                    saturday=ServiceAvailability.from_ordinal(calendar_row.get("saturday")) if calendar_row.get("saturday") else ServiceAvailability.NO_SERVICE,
-                    sunday=ServiceAvailability.from_ordinal(calendar_row.get("sunday")) if calendar_row.get("sunday") else ServiceAvailability.NO_SERVICE,
+                    monday=ServiceAvailability.from_ordinal(calendar_row.get("monday")) if calendar_row.get("monday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    tuesday=ServiceAvailability.from_ordinal(calendar_row.get("tuesday")) if calendar_row.get("tuesday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    wednesday=ServiceAvailability.from_ordinal(calendar_row.get("wednesday")) if calendar_row.get("wednesday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    thursday=ServiceAvailability.from_ordinal(calendar_row.get("thursday")) if calendar_row.get("thursday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    friday=ServiceAvailability.from_ordinal(calendar_row.get("friday")) if calendar_row.get("friday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    saturday=ServiceAvailability.from_ordinal(calendar_row.get("saturday")) if calendar_row.get("saturday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
+                    sunday=ServiceAvailability.from_ordinal(calendar_row.get("sunday")) if calendar_row.get("sunday") else ServiceAvailability.NO_SERVICE,  # type: ignore[arg-type]
                     startDate=str(calendar_row.get("start_date")) if calendar_row.get("start_date") is not None else None,
                     endDate=str(calendar_row.get("end_date")) if calendar_row.get("end_date") is not None else None
                 )
@@ -846,22 +846,22 @@ def map_trips(trip_rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str,
                 CalendarDates(
                     serviceId=str(calendar_dates_row.get("service_id")) if calendar_dates_row.get("service_id") is not None else None,
                     date=str(calendar_dates_row.get("date")) if calendar_dates_row.get("date") is not None else None,
-                    exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type") or 0) < 2 else ExceptionType.SERVICE_REMOVED
+                    exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type") or 0) < 2 else ExceptionType.SERVICE_REMOVED  # type: ignore[arg-type]
                 )
             )
 
         yield Trips(
             routeId=str(row.get("route_id")) if row.get("route_id") is not None else None,
-            serviceDates=calendars[0] if len(calendars) > 0 else None,
+            serviceDates=calendars[0] if len(calendars) > 0 else None,  # type: ignore[arg-type]
             serviceExceptions=calendar_dates,
             tripId=str(row.get("trip_id")) if row.get("trip_id") is not None else None,
             tripHeadsign=row.get("trip_headsign"),
             tripShortName=row.get("trip_short_name"),
-            directionId=DirectionId.from_ordinal(row.get("direction_id")) if row.get("direction_id") else DirectionId.OUTBOUND,
+            directionId=DirectionId.from_ordinal(row.get("direction_id")) if row.get("direction_id") else DirectionId.OUTBOUND,  # type: ignore[arg-type]
             blockId=row.get("block_id"),
             shapeId=row.get("shape_id"),
-            wheelchairAccessible=WheelchairAccessible.from_ordinal(row.get("wheelchair_accessible")) if row.get("wheelchair_accessible") else WheelchairAccessible.NO_INFO,
-            bikesAllowed=BikesAllowed.from_ordinal(row.get("bikes_allowed")) if row.get("bikes_allowed") else BikesAllowed.NO_INFO
+            wheelchairAccessible=WheelchairAccessible.from_ordinal(row.get("wheelchair_accessible")) if row.get("wheelchair_accessible") else WheelchairAccessible.NO_INFO,  # type: ignore[arg-type]
+            bikesAllowed=BikesAllowed.from_ordinal(row.get("bikes_allowed")) if row.get("bikes_allowed") else BikesAllowed.NO_INFO  # type: ignore[arg-type]
         )
 
 etags = {}

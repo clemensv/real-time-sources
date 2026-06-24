@@ -279,7 +279,7 @@ def _to_amqp_land(forecast: NWSLandZoneForecast) -> LandZoneForecast:
         updated=forecast.updated,
         periods=[
             LandForecastPeriod(
-                period_number=p.period_number,
+                period_number=p.period_number,  # type: ignore[arg-type]
                 period_name=p.period_name,
                 detailed_forecast=p.detailed_forecast,
             )
