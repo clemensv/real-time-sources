@@ -89,7 +89,7 @@ async def _poll_once(poller: MeteoalarmPoller, mqtt_client: MeteoalarmWarningsMq
                 warning = normalize_warning(alert_obj, country)
                 if warning is None:
                     continue
-                sent_str = warning.sent or ""
+                sent_str = warning.sent.isoformat() if warning.sent else ""
                 prev_sent = state.get(warning.identifier)
                 if prev_sent is not None and prev_sent >= sent_str:
                     continue

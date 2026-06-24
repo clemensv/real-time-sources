@@ -120,7 +120,7 @@ async def _poll_once(poller: MeteoalarmPoller, producer: MeteoalarmWarningsAmqpP
                 warning = normalize_warning(alert_obj, country)
                 if warning is None:
                     continue
-                sent_str = warning.sent or ""
+                sent_str = warning.sent.isoformat() if warning.sent else ""
                 if state.get(warning.identifier) is not None and state[warning.identifier] >= sent_str:
                     continue
                 _send(producer, warning)
