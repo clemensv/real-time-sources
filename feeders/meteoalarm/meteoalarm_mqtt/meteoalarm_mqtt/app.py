@@ -69,7 +69,7 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
 )
 
 def _topic_segment(value) -> str:
-    text = (str(value) if value else "unknown").strip() or "unknown"
+    text = (value.value if hasattr(value, 'value') else str(value) if value else "unknown").strip() or "unknown"
     for forbidden in ("/", "+", "#", "\x00"):
         text = text.replace(forbidden, "-")
     return "-".join(text.split()) or "unknown"
