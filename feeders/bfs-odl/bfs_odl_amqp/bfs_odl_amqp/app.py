@@ -171,7 +171,7 @@ def _build_measurement(feature: Dict[str, Any], state: str) -> DoseRateMeasureme
 
 
 async def _publish_stations(
-    mqtt_client: DeBfsOdlMqttMqttClient,
+    mqtt_client: Any,
     stations: list,
 ) -> None:
     for feature in stations:
@@ -190,7 +190,7 @@ async def _publish_stations(
 
 
 async def _publish_measurements(
-    mqtt_client: DeBfsOdlMqttMqttClient,
+    mqtt_client: Any,
     measurements: list,
     previous_readings: Dict[str, str],
 ) -> int:

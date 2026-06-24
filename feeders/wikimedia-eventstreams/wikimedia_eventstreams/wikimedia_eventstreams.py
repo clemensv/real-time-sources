@@ -191,7 +191,7 @@ def build_kafka_config(args: argparse.Namespace) -> tuple[dict[str, str], str]:
     if not bootstrap:
         raise ValueError("Kafka bootstrap servers required (--kafka-bootstrap-servers or -c).")
 
-    resolved_topic = topic or DEFAULT_TOPIC
+    resolved_topic = topic or "wikimedia-eventstreams"
     tls_enabled = os.getenv("KAFKA_ENABLE_TLS", "true").lower() not in ("false", "0", "no")
     kafka_config: dict[str, str] = {"bootstrap.servers": bootstrap}
     if sasl_user and sasl_password:

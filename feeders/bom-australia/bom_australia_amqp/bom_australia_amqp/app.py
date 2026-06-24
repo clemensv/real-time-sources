@@ -135,7 +135,7 @@ def _build_warning_producer(args):
 
 async def _run_live(args: argparse.Namespace, weather_producer, warning_producer) -> None:
     """Acquire live BOM data and emit via AMQP."""
-    from bom_australia_core import (
+    from bom_australia_core import (  # type: ignore[attr-defined]
         BOMAustraliaAPI,
         WARNING_FEEDS,
         _load_state,

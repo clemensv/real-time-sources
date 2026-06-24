@@ -57,6 +57,19 @@ class TimeSeriesPoint:
                  "in_domain", "out_domain", "psr_type", "business_type",
                  "currency", "unit_name", "resolution", "document_type")
 
+    timestamp: str
+    position: int | None
+    quantity: float | None
+    price: float | None
+    in_domain: str | None
+    out_domain: str | None
+    psr_type: str | None
+    business_type: str | None
+    currency: str | None
+    unit_name: str | None
+    resolution: str | None
+    document_type: str | None
+
     def __init__(self, **kwargs):
         for slot in self.__slots__:
             setattr(self, slot, kwargs.get(slot))

@@ -296,7 +296,7 @@ def _emit_reference(
     return count
 
 
-def _close_producers(*producers: object) -> None:
+def _close_producers(*producers: Any) -> None:
     for producer in producers:
         try:
             producer.close()

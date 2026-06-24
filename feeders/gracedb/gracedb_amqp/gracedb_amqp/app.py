@@ -17,7 +17,7 @@ from gracedb_amqp_producer_amqp_producer.producer import OrgLigoGracedbAmqpProdu
 
 logger = logging.getLogger(__name__)
 class _MqttProducerAdapter:
-    def __init__(self, client: OrgLigoGracedbMqttMqttClient):
+    def __init__(self, client: Any):
         self.producer = self
         self._client = client
         self._tasks: set[asyncio.Task[None]] = set()

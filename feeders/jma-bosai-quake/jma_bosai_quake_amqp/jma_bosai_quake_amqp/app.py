@@ -7,7 +7,7 @@ import asyncio
 import logging
 import os
 import time
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 import requests
@@ -103,7 +103,7 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
     return _AmqpPublishFacade(producers)
 
 
-async def _publish_once(api: JmaBosaiQuakeAPI, mqtt_client: JPJMAQuakeMqttMqttClient) -> int:
+async def _publish_once(api: JmaBosaiQuakeAPI, mqtt_client: Any) -> int:
     reports = api.list_reports()
     pending_keys: list[tuple[str, int]] = []
     emitted = 0

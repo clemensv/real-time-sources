@@ -26,7 +26,7 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
 from hongkong_epd.hongkong_epd import (
     HKEPDAQHIAPI,
-    STATION_COORDS,
+    STATION_INFO,
     _load_state,
     _save_state,
 )

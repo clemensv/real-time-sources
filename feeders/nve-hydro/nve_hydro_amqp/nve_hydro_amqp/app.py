@@ -13,6 +13,7 @@ kebab-case by :func:`_uns_slug`.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import time
 import logging
 import os

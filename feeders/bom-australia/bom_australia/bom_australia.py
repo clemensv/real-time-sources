@@ -15,7 +15,7 @@ from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningEventP
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherEventProducer
 from bom_australia_producer_data import Station, WarningBulletin, WeatherObservation
 
-from bom_australia_core import (
+from bom_australia_core import (  # type: ignore[attr-defined]
     BOMAustraliaAPI,
     BOM_BASE_URL,
     BOM_STATIONS_URL,

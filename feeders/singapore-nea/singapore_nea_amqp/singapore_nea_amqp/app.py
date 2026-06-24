@@ -187,7 +187,7 @@ def _build_and_send_amqp_message(
 
     if amqp_msg.properties is None:
         amqp_msg.properties = {}
-    amqp_msg.properties.update(app_properties)
+    amqp_msg.properties.update(app_properties)  # type: ignore[attr-defined]
 
     if getattr(producer, "_handler", None) is not None:
         producer._send_via_reactor(amqp_msg)

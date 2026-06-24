@@ -8,7 +8,7 @@ import json
 import logging
 import os
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 
@@ -116,7 +116,7 @@ def _save_state(path: str, state: Dict) -> None:
         json.dump(state, f)
 
 
-async def _publish_observatories(client: GovUsgsGeomagMqttMqttClient, observatories: List[str]) -> None:
+async def _publish_observatories(client: Any, observatories: List[str]) -> None:
     features = USGSGeomagPoller.fetch_observatories()
     wanted = {code.upper() for code in observatories}
     for feature in features:
@@ -130,7 +130,7 @@ async def _publish_observatories(client: GovUsgsGeomagMqttMqttClient, observator
 
 
 async def _publish_readings(
-    client: GovUsgsGeomagMqttMqttClient,
+    client: Any,
     observatories: List[str],
     state: Dict,
 ) -> int:

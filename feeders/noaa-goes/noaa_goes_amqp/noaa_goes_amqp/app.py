@@ -177,7 +177,7 @@ class AmqpSendShim:
         if extra_app_props:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
-            amqp_msg.properties.update(extra_app_props)
+            amqp_msg.properties.update(extra_app_props)  # type: ignore[attr-defined]
         if getattr(p, "_handler", None) is not None:
             p._send_via_reactor(amqp_msg)
         else:

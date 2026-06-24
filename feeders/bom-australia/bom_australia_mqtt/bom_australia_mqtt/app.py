@@ -13,7 +13,7 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from bom_australia_core import (
+from bom_australia_core import (  # type: ignore[attr-defined]
     BOMAustraliaAPI,
     WARNING_FEEDS,
     _load_state,

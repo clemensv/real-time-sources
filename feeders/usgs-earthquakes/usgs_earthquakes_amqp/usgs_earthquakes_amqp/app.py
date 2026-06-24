@@ -82,7 +82,7 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
 
 
 class _MqttProducerAdapter:
-    def __init__(self, client: USGSEarthquakesMqttMqttClient):
+    def __init__(self, client: Any):
         self.producer = self
         self._client = client
         self._tasks: set[asyncio.Task[None]] = set()

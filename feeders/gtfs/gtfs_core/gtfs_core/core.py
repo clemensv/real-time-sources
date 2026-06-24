@@ -1417,7 +1417,8 @@ async def main():
         parser.print_help()
 
 if __name__ == "__main__":
-    cli()
+    import asyncio as _asyncio
+    _asyncio.run(main())
 
 
 DEFAULT_POLL_INTERVAL_SECONDS = 90

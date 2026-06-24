@@ -8,7 +8,7 @@ import logging
 import os
 import time
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 
@@ -106,7 +106,7 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
     return _AmqpPublishFacade(producers)
 
 
-async def _publish_offices(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient) -> int:
+async def _publish_offices(api: JmaBosaiWarningAPI, mqtt_client: Any) -> int:
     count = 0
     for record in api.office_records():
         await mqtt_client.publish_jp_jma_warning_mqtt_office(
@@ -122,7 +122,7 @@ async def _publish_offices(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqt
     return count
 
 
-async def _publish_warning_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient, state: BridgeState, office_codes: list[str]) -> int:
+async def _publish_warning_cycle(api: JmaBosaiWarningAPI, mqtt_client: Any, state: BridgeState, office_codes: list[str]) -> int:
     pending: list[str] = []
     emitted = 0
     seen = set(state.seen_weather)
