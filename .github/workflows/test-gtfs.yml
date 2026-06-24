@@ -32,7 +32,15 @@ jobs:
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e '.[dev]'
+          pip install pytest pytest-cov requests-mock
+          pip install -e ./gtfs_rt_producer/gtfs_rt_producer_data
+          pip install -e ./gtfs_rt_producer/gtfs_rt_producer_kafka_producer
+          pip install -e ./gtfs_mqtt_producer/gtfs_mqtt_producer_data
+          pip install -e ./gtfs_mqtt_producer/gtfs_mqtt_producer_mqtt_client
+          pip install -e ./gtfs_amqp_producer/gtfs_amqp_producer_data
+          pip install -e ./gtfs_amqp_producer/gtfs_amqp_producer_amqp_producer
+          pip install -e ./gtfs_core
+          pip install -e '.[dev]'
 
       - name: Run unit tests
         run: pytest tests/test_gtfs_bridge_unit.py -v --tb=short
