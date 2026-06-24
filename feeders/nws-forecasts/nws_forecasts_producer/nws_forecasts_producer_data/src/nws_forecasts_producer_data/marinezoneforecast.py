@@ -174,15 +174,15 @@ class MarineZoneForecast:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='cunnqlrnjgcxeppoaokr',
-            zone_name='yfisywkwssshtcivnqlk',
-            product_title='kljkcnhmybepbeyiture',
-            office_name='xxiipslbfklwlflqvygu',
-            issued_at_text='qymrkwidxzwxyrlegsca',
-            expires_text='umgkjmwyrexyfjdbvpcr',
-            wmo_header='psexgppktdrnwvdxtyjn',
-            bulletin_awips_id='rlsyvewysskpthdlohvl',
-            synopsis='pkosdkxjwgbgqzlhyucp',
-            periods=[None],
-            bulletin_text='mmddjaxvaqzbemojcwow'
+            zone_id='aesiuujbtmzlqhmfbhev',
+            zone_name='bfrmsonlmixjvjhjhknz',
+            product_title='dxkjljanwzxlkrcmmnga',
+            office_name='ussvdildpjjwwodhnvzi',
+            issued_at_text='pinwwxwqmwjycdbbefaa',
+            expires_text='hkzjkdaeribawppfxkdg',
+            wmo_header='jrjeswggyizcgcjpkqrl',
+            bulletin_awips_id='gyrbnjcuotvpnashhsbn',
+            synopsis='nnurmkscdkhsbdaksssj',
+            periods=[None, None, None, None],
+            bulletin_text='ntsyaxnkilgkrcgyvqwb'
         )

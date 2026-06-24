@@ -160,7 +160,7 @@ class LandZoneForecast:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='lyjuaaxqmxtdwfcmpfli',
+            zone_id='uxcmuxhmtouzlnobrtru',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            periods=[None, None, None, None]
+            periods=[None, None, None, None, None]
         )

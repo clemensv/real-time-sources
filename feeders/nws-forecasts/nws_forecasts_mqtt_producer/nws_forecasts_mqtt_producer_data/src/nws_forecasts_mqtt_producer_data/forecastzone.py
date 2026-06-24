@@ -26,7 +26,7 @@ class ForecastZone:
         zone_id (str)
         zone_type (ZoneTypeenum)
         name (str)
-        state (str)
+        state (typing.Optional[str])
         forecast_office_url (str)
         grid_identifier (typing.Optional[str])
         awips_location_identifier (typing.Optional[str])
@@ -43,7 +43,7 @@ class ForecastZone:
     zone_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_id"))
     zone_type: ZoneTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_type"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     forecast_office_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_office_url"))
     grid_identifier: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="grid_identifier"))
     awips_location_identifier: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="awips_location_identifier"))
@@ -182,18 +182,18 @@ class ForecastZone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='csepoxiyqbccrvzqifis',
+            zone_id='aedvdkxyufutbticsnjk',
             zone_type=ZoneTypeenum.public,
-            name='lyqvzobayzbtobjcbpbr',
-            state='zmqirrcplqnlkogzocmt',
-            forecast_office_url='gvpowwkivpeqahcsrspd',
-            grid_identifier='ivtbjitnesfkhfekuazm',
-            awips_location_identifier='nudrthynuquwlpqkhnxc',
-            cwa_ids=['pigwfxsdtparnmrqueow', 'vrttnzwhlrdliixuzvws', 'gyopaqbutwkzyzyzjhcf', 'sscyhfxnrfrdovmjhmor', 'xmusltbbuafgdevjnvpf'],
-            forecast_office_urls=['dhqssrqfhjukebknxxlh', 'kffbkmuiwvkubwsnnatb'],
-            time_zones=['hpsuespdqwcqmhicvtkf', 'dzhcunzzjdunlbsbpgpn', 'inozhwymulugbsxuguip', 'omngldzqsvfoumhlfdbz'],
-            observation_station_ids=['ichpdmapycesuxdqwalc', 'puddmhtqbgyypdzofbrz'],
-            radar_station='ztvnnlhbgrkxejuhjcok',
+            name='xjvbgdakskutxgldmfgj',
+            state='orpqkgizlrtwdqmvrayn',
+            forecast_office_url='nedakhozytgvpaisdvub',
+            grid_identifier='gwlezgmwpuouwfyijhtg',
+            awips_location_identifier='jerhnrpfjbmgrjmtgycn',
+            cwa_ids=['binklyfnjulpbwigyhbf', 'zkjdzbwkihrlddgpethp', 'yrfuvjlhhvtxlewpzwzo'],
+            forecast_office_urls=['ggkjmkpcsbxsiwfdjovc', 'kallcuilxcpxuvinezty', 'hpazpsymfdpgzwhzxvpl', 'gxvtlsnoblvrenigdcaf'],
+            time_zones=['uuimqpmhhxcidbasxhrt', 'ksleccaxqmgrbarcevgd', 'loyoubgssocisttdovre', 'mgbbnhysqmenytalpmqg'],
+            observation_station_ids=['yctvvysjuaevdzmalcad', 'nacswnvgbqbzonrbnkxj', 'tittlwwqyfebjdppegpo'],
+            radar_station='dhvhmwemvpvbydljagfx',
             effective_date=datetime.datetime.now(datetime.timezone.utc),
             expiration_date=datetime.datetime.now(datetime.timezone.utc)
         )

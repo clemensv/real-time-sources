@@ -279,7 +279,6 @@
                   "zone_id",
                   "zone_type",
                   "name",
-                  "state",
                   "forecast_office_url",
                   "effective_date",
                   "expiration_date"
@@ -305,7 +304,7 @@
                     "description": "Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'."
                   },
                   "state": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones.",
                     "pattern": "^[A-Z]{2}$"
                   },
