@@ -340,6 +340,105 @@ The expected behavior:
   matrix but its test is broken, fix the test — do not remove the
   source from the matrix.
 
+## Mandatory Pre-Commit Validation
+
+**No code is committed without passing these gates.** Every agent, every
+contributor, every time — no exceptions. A commit that introduces a
+regression detectable by these checks is a process failure.
+
+### Gate 1: Import smoke-test (every touched feeder)
+
+For every feeder package modified in the changeset, verify the package
+imports cleanly:
+
+```powershell
+# For each modified source (Kafka, MQTT, AMQP variants):
+python -c "import <package_name>"
+python -c "import <package_name_mqtt>.<package_name_mqtt>.app" 2>$null
+python -c "import <package_name_amqp>.<package_name_amqp>.app" 2>$null
+```
+
+If any import raises (`ModuleNotFoundError`, `SyntaxError`,
+`TypeError`, `ImportError`), **stop and fix before committing**. This
+catches the entire "shipped but never ran" bug class: missing
+`__main__.py`, wrong import paths, missing Dockerfile deps that would
+crash on first start.
+
+### Gate 2: py_compile on generated + hand-written code
+
+```powershell
+python -m py_compile <every .py file in the changed source tree>
+```
+
+A `SyntaxError` in any file blocks the commit.
+
+### Gate 3: Dockerfile builds (every touched Dockerfile variant)
+
+```powershell
+docker build -f feeders/<source>/Dockerfile feeders/<source> --no-cache -q
+docker build -f feeders/<source>/Dockerfile.mqtt feeders/<source> --no-cache -q
+docker build -f feeders/<source>/Dockerfile.amqp feeders/<source> --no-cache -q
+```
+
+If a Dockerfile exists for a transport and the source was modified,
+it must build. A build failure blocks the commit.
+
+### Gate 4: Unit tests pass
+
+```powershell
+cd feeders/<source>
+python -m pytest tests/ -x --no-header -q
+```
+
+Red tests block the commit.
+
+### Gate 5: Docker E2E (when modifying bridge logic or schemas)
+
+If the change touches bridge runtime code, xreg schemas, or generated
+producers, run the source's Docker E2E test locally before pushing:
+
+```powershell
+python -m pytest tests/docker_e2e/test_docker_kafka_flow.py::<TestClass> -x -v
+```
+
+A key, subject, or schema validation failure blocks the commit.
+
+### Gate 6: mypy (if touching Python code)
+
+```powershell
+python -m mypy feeders --config-file mypy.ini --exclude /build/
+```
+
+Must not introduce new errors. Existing suppressed errors (`type: ignore`)
+are acceptable; new un-suppressed errors are not.
+
+### When to run which gates
+
+| Change type | Gates required |
+|---|---|
+| Any `.py` file | 1, 2, 4, 6 |
+| Dockerfile / Dockerfile.mqtt / Dockerfile.amqp | 3 |
+| xreg schema or generated producer | 1, 2, 4, 5, 6 |
+| Bridge runtime logic | 1, 2, 3, 4, 5, 6 |
+| New transport variant (MQTT/AMQP app) | 1, 2, 3, 4, 5, 6 |
+| Documentation only | None |
+
+### Enforcement
+
+- **Agents must run the applicable gates before every `git commit`.**
+  Do not batch fixes and commit without validation. Do not assume a
+  mechanical change is safe — verify it.
+- **A commit that breaks CI in a way detectable by these gates is
+  always the committer's fault**, not a "pre-existing issue" or a
+  "CI flake." The agent must fix it immediately, not defer it.
+- **Fleet-wide mechanical changes** (bulk renames, bulk schema fixes,
+  bulk Dockerfile edits) are especially dangerous. After a bulk edit,
+  run gates 1–3 on a representative sample (≥5 sources) before
+  committing, and run the full Docker E2E suite immediately after push.
+- **"It worked on my machine" is not acceptable.** The Docker build
+  gate (Gate 3) catches dependency mismatches between the dev
+  environment and the container. Always run it for Dockerfile changes.
+
 ## Things That Are Not Allowed
 
 - Hand-editing generated producer code.
