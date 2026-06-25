@@ -715,6 +715,7 @@ class TestNwsAlertsAmqpDockerFlow(AmqpDockerFlowBase):
 class TestNoaaGoesAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "noaa-goes"
     image = "noaa-goes-amqp"
+    env = {"ONCE_MODE": "true"}
     expected_types = {"Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux", "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert", "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare"}
     expected_count = 6
 
@@ -728,6 +729,7 @@ class TestNwsForecastsAmqpDockerFlow(AmqpDockerFlowBase):
 class TestSingaporeNeaAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "singapore-nea"
     image = "singapore-nea-amqp"
+    env = {"ONCE_MODE": "true"}
     expected_types = {"SG.Gov.NEA.Weather.Station", "SG.Gov.NEA.Weather.WeatherObservation", "SG.Gov.NEA.AirQuality.PSIReading", "SG.Gov.NEA.AirQuality.PM25Reading"}
     expected_count = 5
 
