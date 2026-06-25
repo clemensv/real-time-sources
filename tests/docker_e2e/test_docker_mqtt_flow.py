@@ -4889,6 +4889,7 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         context.setdefault('item_id', props['ce_subject'])
         context.setdefault('sourceurl', props['ce_source'])
         _merge_template_values(contract.get('subject_template'), props['ce_subject'], context)
+        _merge_template_values(contract['topic'], sample['topic'], context)
         assert sample['topic'] == _render_mqtt_template(contract['topic'], context)
         if contract.get('subject_template'):
             assert props['ce_subject'] == _render_mqtt_template(contract['subject_template'], context)

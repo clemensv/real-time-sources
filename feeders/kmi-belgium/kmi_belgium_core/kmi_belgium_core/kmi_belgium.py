@@ -108,8 +108,8 @@ class KMIBelgiumAPI:
         }
         for field_name in OBSERVATION_FIELDS:
             observation[field_name] = _to_float(properties.get(field_name))
+        observation["region"] = properties.get("region")
         obs = WeatherObservation(**observation)  # type: ignore[arg-type]
-        obs.region = None
         return obs
 
     @staticmethod

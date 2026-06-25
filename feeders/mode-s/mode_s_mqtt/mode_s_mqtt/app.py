@@ -84,6 +84,32 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
     return parsed.hostname or "localhost", parsed.port or (8883 if scheme == "mqtts" else 1883), scheme == "mqtts"
 
 
+async def _emit_mock_corpus(bridge: ModeSBridge) -> None:
+    """Emit one synthetic record per DF family for Docker E2E testing."""
+    import time as _time
+    from mode_s_core import ModeSRecord
+    ts = int(_time.time() * 1000)
+    families = [
+        (17, "df17-adsb", 11),
+        (4, "df4-altitude", None),
+        (5, "df5-identity", None),
+        (11, "df11-acquisition", None),
+        (20, "df20-comm-b", None),
+        (21, "df21-comm-b", None),
+    ]
+    for df, msg_type, tc in families:
+        rec = ModeSRecord(
+            icao24="abc123", receiver_id="mock-station", msg_type=msg_type,
+            ts=ts, df=df, tc=tc, bcode=None, alt=35000 if df in (4, 20) else None,
+            cs="MOCK01" if df == 17 else None, sq="1200" if df == 5 else None,
+            lat=59.9 if df == 17 else None, lon=10.7 if df == 17 else None,
+            spd=450.0 if df == 17 else None, ang=90.0 if df == 17 else None,
+            vr=0.0, rssi=-3.5,
+        )
+        await bridge.publish_record(rec)
+    logger.info("Mock corpus emitted: %d records", len(families))
+
+
 async def _run(args: argparse.Namespace) -> None:
     broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
     tls = tls or args.mqtt_enable_tls
@@ -103,9 +129,12 @@ async def _run(args: argparse.Namespace) -> None:
     feedurl = args.feedurl or f"dump1090://{args.host}:{args.port}"
     bridge = ModeSBridge(ModeSMqttClientAdapter(client), feedurl=feedurl, receiver_id=args.receiver_id, ref_lat=args.ref_lat or 0.0, ref_lon=args.ref_lon or 0.0)
     try:
-        if not args.host or not args.port:
+        if os.getenv("MODE_S_MOCK", "false").lower() in ("true", "1", "yes"):
+            await _emit_mock_corpus(bridge)
+        elif not args.host or not args.port:
             raise SystemExit("--host and --port are required")
-        await bridge.run_from_dump1090(args.host, int(args.port), max_events=args.max_events)
+        else:
+            await bridge.run_from_dump1090(args.host, int(args.port), max_events=args.max_events)
     finally:
         await client.disconnect()
 

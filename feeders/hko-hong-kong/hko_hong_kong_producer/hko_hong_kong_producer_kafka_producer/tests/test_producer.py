@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from hko_hong_kong_producer_kafka_producer.producer import HKGovHKOWeatherEventProducer
 from hko_hong_kong_producer_data import Station
-from test_station import Test_Station
+from test_hko_hong_kong_producer_data_station import Test_Station
 from hko_hong_kong_producer_data import WeatherObservation
-from test_weatherobservation import Test_WeatherObservation
+from test_hko_hong_kong_producer_data_weatherobservation import Test_WeatherObservation
 from hko_hong_kong_producer_kafka_producer.producer import HKGovHKOWeatherMqttEventProducer
 from hko_hong_kong_producer_kafka_producer.producer import HKGovHKOWeatherAmqpEventProducer
 
@@ -107,8 +107,7 @@ def test_hk_gov_hko_weather_hkgovhkoweatherstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_hk_gov_hko_weather_station(_place_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            data = event_data)
+        producer_instance.send_hk_gov_hko_weather_station(_place_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -171,8 +170,7 @@ def test_hk_gov_hko_weather_hkgovhkoweatherweatherobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_hk_gov_hko_weather_weather_observation(_place_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            data = event_data)
+        producer_instance.send_hk_gov_hko_weather_weather_observation(_place_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -225,7 +223,7 @@ def test_hk_gov_hko_weather_mqtt_hkgovhkoweathermqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.HKO.Weather.Station":
+            if cloudevent['type'] == "HK.Gov.HKO.Weather.mqtt.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -235,8 +233,7 @@ def test_hk_gov_hko_weather_mqtt_hkgovhkoweathermqttstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_hk_gov_hko_weather_mqtt_station(_place_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            data = event_data)
+        producer_instance.send_hk_gov_hko_weather_mqtt_station(_place_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -287,7 +284,7 @@ def test_hk_gov_hko_weather_mqtt_hkgovhkoweathermqttweatherobservation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.HKO.Weather.WeatherObservation":
+            if cloudevent['type'] == "HK.Gov.HKO.Weather.mqtt.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -297,8 +294,7 @@ def test_hk_gov_hko_weather_mqtt_hkgovhkoweathermqttweatherobservation(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_hk_gov_hko_weather_mqtt_weather_observation(_place_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            data = event_data)
+        producer_instance.send_hk_gov_hko_weather_mqtt_weather_observation(_place_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -349,7 +345,7 @@ def test_hk_gov_hko_weather_amqp_hkgovhkoweatheramqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.HKO.Weather.Station":
+            if cloudevent['type'] == "HK.Gov.HKO.Weather.amqp.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -359,8 +355,7 @@ def test_hk_gov_hko_weather_amqp_hkgovhkoweatheramqpstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_hk_gov_hko_weather_amqp_station(_place_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            data = event_data)
+        producer_instance.send_hk_gov_hko_weather_amqp_station(_place_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -411,7 +406,7 @@ def test_hk_gov_hko_weather_amqp_hkgovhkoweatheramqpweatherobservation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.HKO.Weather.WeatherObservation":
+            if cloudevent['type'] == "HK.Gov.HKO.Weather.amqp.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -421,8 +416,7 @@ def test_hk_gov_hko_weather_amqp_hkgovhkoweatheramqpweatherobservation(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_hk_gov_hko_weather_amqp_weather_observation(_place_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            data = event_data)
+        producer_instance.send_hk_gov_hko_weather_amqp_weather_observation(_place_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

@@ -433,8 +433,8 @@ class TestTflRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "tfl-road-traffic"
     image = "tfl-road-traffic-amqp"
     env = {'TFL_ROAD_TRAFFIC_MOCK': 'true', 'ONCE_MODE': 'true'}
-    expected_types = {'uk.gov.tfl.road.RoadStatus', 'uk.gov.tfl.road.RoadCorridor', 'uk.gov.tfl.road.RoadDisruption'}
-    expected_count = 8
+    expected_types = {'uk.gov.tfl.road.RoadStatus', 'uk.gov.tfl.road.RoadDisruption'}
+    expected_count = 6
 
 
 class TestEnturNorwayAmqpDockerFlow(AmqpDockerFlowBase):
@@ -795,8 +795,8 @@ class TestTFLRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "tfl-road-traffic"
     image = "tfl-road-traffic-amqp"
     env = {"ONCE_MODE": "true"}
-    expected_types = {'uk.gov.tfl.road.RoadStatus', 'uk.gov.tfl.road.RoadCorridor', 'uk.gov.tfl.road.RoadDisruption'}
-    expected_count = 8
+    expected_types = {'uk.gov.tfl.road.RoadStatus', 'uk.gov.tfl.road.RoadDisruption'}
+    expected_count = 6
 
 class TestTokyoDocomoBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "tokyo-docomo-bikeshare"

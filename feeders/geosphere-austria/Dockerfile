@@ -23,4 +23,4 @@ ENV CONNECTION_STRING=""
 ENV POLLING_INTERVAL=600
 ENV STATION_REFRESH_INTERVAL=86400
 
-ENTRYPOINT ["python", "-m", "geosphere_austria", "feed"]
+CMD ["python", "-m", "geosphere_austria", "feed"]

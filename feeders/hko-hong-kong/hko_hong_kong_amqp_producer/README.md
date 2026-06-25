@@ -22,11 +22,11 @@ Use cases: Enterprise integration, IoT messaging, financial services, cloud-nati
 - Apache ActiveMQ Artemis (native AMQP 1.0)
 - Apache Qpid (native AMQP 1.0)
 - Azure Service Bus (native AMQP 1.0)
-- RabbitMQ (with AMQP 1.0 plugin - [setup
-guide](https://github.com/xregistry/codegen/blob/main/docs/rabbitmq_amqp_setup.md))
+- RabbitMQ (with AMQP 1.0 plugin - [setup guide](https://github.com/clemensv/xregistry-
+cli/blob/main/docs/rabbitmq_amqp_setup.md))
 
 **Note for RabbitMQ users:** RabbitMQ requires the AMQP 1.0 plugin to be enabled. See the [RabbitMQ AMQP 1.0 Setup
-Guide](https://github.com/xregistry/codegen/blob/main/docs/rabbitmq_amqp_setup.md) for detailed instructions.
+Guide](https://github.com/clemensv/xregistry-cli/blob/main/docs/rabbitmq_amqp_setup.md) for detailed instructions.
 
 
 ## Azure Entra ID (CBS) Authentication — enabled

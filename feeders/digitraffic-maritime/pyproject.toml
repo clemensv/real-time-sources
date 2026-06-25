@@ -41,5 +41,4 @@ local_scheme = "no-local-version"
 [tool.setuptools]
 packages = [
     "digitraffic_maritime",
-    "digitraffic_maritime_producer_data",
 ]

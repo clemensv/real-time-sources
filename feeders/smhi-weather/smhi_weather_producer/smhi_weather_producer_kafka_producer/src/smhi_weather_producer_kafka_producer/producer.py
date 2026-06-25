@@ -1,6 +1,5 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
-import time
 import json
 import re
 import uuid
@@ -42,18 +41,6 @@ def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.isoformat().replace('+00:00', 'Z')
-
-
-def _resolve_cloudevents_time(
-    override: typing.Any = None,
-    fallback: typing.Any = None,
-) -> str:
-    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
-    if override is not None:
-        return _normalize_cloudevents_time(override)
-    if fallback is not None:
-        return _normalize_cloudevents_time(fallback)
-    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from smhi_weather_producer_data import Station
 from smhi_weather_producer_data import WeatherObservation
 
@@ -88,15 +75,7 @@ class SEGovSMHIWeatherEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    @staticmethod
-    def __binary_data_marshaller(data: typing.Any) -> bytes:
-        """Serialize dataclass payloads to bytes for Kafka binary mode."""
-        payload = data.to_byte_array("application/json")
-        if isinstance(payload, str):
-            payload = payload.encode('utf-8')
-        return payload
-
-    def send_se_gov_smhi_weather_station(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_se_gov_smhi_weather_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'SE.Gov.SMHI.Weather.Station' event to the Kafka topic
 
@@ -104,7 +83,6 @@ class SEGovSMHIWeatherEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -116,7 +94,12 @@ class SEGovSMHIWeatherEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -124,13 +107,13 @@ class SEGovSMHIWeatherEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_se_gov_smhi_weather_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
+    def send_se_gov_smhi_weather_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
         """
         Sends the 'SE.Gov.SMHI.Weather.WeatherObservation' event to the Kafka topic
 
@@ -138,7 +121,6 @@ class SEGovSMHIWeatherEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WeatherObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WeatherObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -150,7 +132,12 @@ class SEGovSMHIWeatherEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -158,40 +145,11 @@ class SEGovSMHIWeatherEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
-
-    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
-        """Flush pending messages with retry and exponential backoff.
-
-        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
-        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
-        bare ``flush(timeout)`` is not resilient on its own. This retries the
-        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
-        and raises ``RuntimeError`` if any messages remain unsent after all
-        attempts.
-
-        Args:
-            timeout (float): Seconds to wait for each underlying flush attempt.
-            retries (int): Maximum number of flush attempts.
-            backoff_factor (float): Base of the exponential backoff between attempts.
-
-        Raises:
-            RuntimeError: If messages remain unsent after all retries.
-        """
-        for attempt in range(1, retries + 1):
-            remaining = self.producer.flush(timeout)
-            if remaining == 0:
-                return
-            if attempt < retries:
-                time.sleep(backoff_factor ** attempt)
-            else:
-                raise RuntimeError(
-                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
-                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -275,15 +233,7 @@ class SEGovSMHIWeatherMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    @staticmethod
-    def __binary_data_marshaller(data: typing.Any) -> bytes:
-        """Serialize dataclass payloads to bytes for Kafka binary mode."""
-        payload = data.to_byte_array("application/json")
-        if isinstance(payload, str):
-            payload = payload.encode('utf-8')
-        return payload
-
-    def send_se_gov_smhi_weather_mqtt_station(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_se_gov_smhi_weather_mqtt_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'SE.Gov.SMHI.Weather.mqtt.Station' event to the Kafka topic
 
@@ -291,7 +241,6 @@ class SEGovSMHIWeatherMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -302,7 +251,12 @@ class SEGovSMHIWeatherMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -310,13 +264,13 @@ class SEGovSMHIWeatherMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_se_gov_smhi_weather_mqtt_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
+    def send_se_gov_smhi_weather_mqtt_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
         """
         Sends the 'SE.Gov.SMHI.Weather.mqtt.WeatherObservation' event to the Kafka topic
 
@@ -324,7 +278,6 @@ class SEGovSMHIWeatherMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WeatherObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WeatherObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -335,7 +288,12 @@ class SEGovSMHIWeatherMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -343,40 +301,11 @@ class SEGovSMHIWeatherMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
-
-    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
-        """Flush pending messages with retry and exponential backoff.
-
-        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
-        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
-        bare ``flush(timeout)`` is not resilient on its own. This retries the
-        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
-        and raises ``RuntimeError`` if any messages remain unsent after all
-        attempts.
-
-        Args:
-            timeout (float): Seconds to wait for each underlying flush attempt.
-            retries (int): Maximum number of flush attempts.
-            backoff_factor (float): Base of the exponential backoff between attempts.
-
-        Raises:
-            RuntimeError: If messages remain unsent after all retries.
-        """
-        for attempt in range(1, retries + 1):
-            remaining = self.producer.flush(timeout)
-            if remaining == 0:
-                return
-            if attempt < retries:
-                time.sleep(backoff_factor ** attempt)
-            else:
-                raise RuntimeError(
-                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
-                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -460,15 +389,7 @@ class SEGovSMHIWeatherAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    @staticmethod
-    def __binary_data_marshaller(data: typing.Any) -> bytes:
-        """Serialize dataclass payloads to bytes for Kafka binary mode."""
-        payload = data.to_byte_array("application/json")
-        if isinstance(payload, str):
-            payload = payload.encode('utf-8')
-        return payload
-
-    def send_se_gov_smhi_weather_amqp_station(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_se_gov_smhi_weather_amqp_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'SE.Gov.SMHI.Weather.amqp.Station' event to the Kafka topic
 
@@ -476,7 +397,6 @@ class SEGovSMHIWeatherAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -487,7 +407,12 @@ class SEGovSMHIWeatherAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -495,13 +420,13 @@ class SEGovSMHIWeatherAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_se_gov_smhi_weather_amqp_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
+    def send_se_gov_smhi_weather_amqp_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
         """
         Sends the 'SE.Gov.SMHI.Weather.amqp.WeatherObservation' event to the Kafka topic
 
@@ -509,7 +434,6 @@ class SEGovSMHIWeatherAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WeatherObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WeatherObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -520,7 +444,12 @@ class SEGovSMHIWeatherAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -528,40 +457,11 @@ class SEGovSMHIWeatherAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
-
-    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
-        """Flush pending messages with retry and exponential backoff.
-
-        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
-        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
-        bare ``flush(timeout)`` is not resilient on its own. This retries the
-        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
-        and raises ``RuntimeError`` if any messages remain unsent after all
-        attempts.
-
-        Args:
-            timeout (float): Seconds to wait for each underlying flush attempt.
-            retries (int): Maximum number of flush attempts.
-            backoff_factor (float): Base of the exponential backoff between attempts.
-
-        Raises:
-            RuntimeError: If messages remain unsent after all retries.
-        """
-        for attempt in range(1, retries + 1):
-            remaining = self.producer.flush(timeout)
-            if remaining == 0:
-                return
-            if attempt < retries:
-                time.sleep(backoff_factor ** attempt)
-            else:
-                raise RuntimeError(
-                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
-                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:

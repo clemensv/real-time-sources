@@ -59,18 +59,6 @@ def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.isoformat().replace('+00:00', 'Z')
 
-
-def _resolve_cloudevents_time(
-    override: typing.Any = None,
-    fallback: typing.Any = None,
-) -> str:
-    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
-    if override is not None:
-        return _normalize_cloudevents_time(override)
-    if fallback is not None:
-        return _normalize_cloudevents_time(fallback)
-    return _normalize_cloudevents_time(datetime.now(timezone.utc))
-
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
 #   1. Entra ID (Azure AD) JWT bearer via an azure-identity TokenCredential
@@ -610,11 +598,9 @@ class HKGovHKOWeatherAmqpProducer:
         self._sender.send(amqp_msg, timeout=timeout)
         if self._blocking_sender_is_presettled:
             # BlockingSender.send() returns immediately for pre-settled
-            # deliveries, so wait until Proton has drained the link queue
-            # and flushed all pending bytes.
+            # deliveries, so wait until Proton has flushed all pending bytes.
             self._connection.wait(
                 lambda: (
-                    self._sender.link.queued == 0 and
                     self._connection.conn.transport is not None and
                     self._connection.conn.transport.pending() == 0
                 ),
@@ -691,7 +677,6 @@ class HKGovHKOWeatherAmqpProducer:
         data: Station,
         _place_id: str,
         _district: str,
-        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `HK.Gov.HKO.Weather.amqp.Station` message
@@ -700,7 +685,6 @@ class HKGovHKOWeatherAmqpProducer:
         Args:
             _place_id (str): Value for placeholder place_id in attribute subject
             _district (str): Value for AMQP protocol option placeholder district
-            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Station): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -713,7 +697,12 @@ class HKGovHKOWeatherAmqpProducer:
             "subject":
             "{place_id}".format(place_id=_place_id),
         }
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -772,7 +761,6 @@ class HKGovHKOWeatherAmqpProducer:
         data_array: typing.List[Station],
         _place_id: str,
         _district: str,
-        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `HK.Gov.HKO.Weather.amqp.Station` messages
@@ -780,7 +768,6 @@ class HKGovHKOWeatherAmqpProducer:
         Args:
             data_array (typing.List[Station]): Array of message data objects
             _place_id (str): Value for placeholder place_id in attribute subject
-            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _district (str): Value for AMQP protocol option placeholder district
             content_type (str): The content type of the message data
         """
@@ -788,7 +775,6 @@ class HKGovHKOWeatherAmqpProducer:
             self.send_station(
                 data=data,
                 _place_id=_place_id,
-                _time=_time,
                 _district=_district,
                 content_type=content_type)
     
@@ -797,7 +783,6 @@ class HKGovHKOWeatherAmqpProducer:
         data: WeatherObservation,
         _place_id: str,
         _district: str,
-        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `HK.Gov.HKO.Weather.amqp.WeatherObservation` message
@@ -806,7 +791,6 @@ class HKGovHKOWeatherAmqpProducer:
         Args:
             _place_id (str): Value for placeholder place_id in attribute subject
             _district (str): Value for AMQP protocol option placeholder district
-            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WeatherObservation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -819,7 +803,12 @@ class HKGovHKOWeatherAmqpProducer:
             "subject":
             "{place_id}".format(place_id=_place_id),
         }
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -878,7 +867,6 @@ class HKGovHKOWeatherAmqpProducer:
         data_array: typing.List[WeatherObservation],
         _place_id: str,
         _district: str,
-        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `HK.Gov.HKO.Weather.amqp.WeatherObservation` messages
@@ -886,7 +874,6 @@ class HKGovHKOWeatherAmqpProducer:
         Args:
             data_array (typing.List[WeatherObservation]): Array of message data objects
             _place_id (str): Value for placeholder place_id in attribute subject
-            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _district (str): Value for AMQP protocol option placeholder district
             content_type (str): The content type of the message data
         """
@@ -894,7 +881,6 @@ class HKGovHKOWeatherAmqpProducer:
             self.send_weather_observation(
                 data=data,
                 _place_id=_place_id,
-                _time=_time,
                 _district=_district,
                 content_type=content_type)
     

@@ -32,3 +32,6 @@ local_scheme = "no-local-version"
 packages = [
     "kystverket_ais_mqtt",
 ]
+
+[tool.setuptools.package-data]
+kystverket_ais_mqtt = ["*.csv"]

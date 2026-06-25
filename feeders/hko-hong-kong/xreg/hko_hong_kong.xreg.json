@@ -271,7 +271,7 @@
                     "description": "Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'."
                   },
                   "district": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering."
                   }
                 }
@@ -353,7 +353,7 @@
                     "description": "HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'."
                   },
                   "district": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering."
                   }
                 },

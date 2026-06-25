@@ -124,8 +124,6 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
-            if isinstance(result, str):
-                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,24 +191,24 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='wxtkkrxwqjvrwytyzmwy',
-            station_name='lznghewwzupeasiwwhgf',
+            station_id='sswsyafzjahqjtqcbqvr',
+            station_name='mjlyihwhgmcqfqfngvbd',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(39.84117836781559),
-            wind_gust=float(68.82513844355366),
-            dew_point=float(31.65484313162522),
-            air_pressure=float(89.02463750128268),
-            relative_humidity=int(48),
-            precipitation_last_hour=float(19.315366259554565),
-            wind_direction=float(23.74246788056422),
-            wind_speed=float(32.566781891265684),
-            max_wind_speed=float(70.64762135124589),
-            visibility=float(54.12367902023848),
-            total_cloud_cover=int(32),
-            present_weather=int(82),
-            sunshine_duration=float(77.34579046309581),
-            global_irradiance=float(70.43524250136186),
-            precipitation_intensity=float(89.8742448783187),
-            quality='lqjpabwbqkkjgkjduput',
-            lan='jtzumdkzsfxmidgwrndp'
+            air_temperature=float(23.19346818370317),
+            wind_gust=float(28.295730503387762),
+            dew_point=float(14.11561961416783),
+            air_pressure=float(52.73908727174851),
+            relative_humidity=int(25),
+            precipitation_last_hour=float(76.98698798676718),
+            wind_direction=float(20.915380776090164),
+            wind_speed=float(70.93679147659662),
+            max_wind_speed=float(44.02919323854566),
+            visibility=float(39.50793417258196),
+            total_cloud_cover=int(7),
+            present_weather=int(44),
+            sunshine_duration=float(55.30055222058916),
+            global_irradiance=float(62.42518493965511),
+            precipitation_intensity=float(78.91197509204947),
+            quality='axljgosaaewjgicfajor',
+            lan='vgdxyfpgdqdaimfyofpt'
         )
