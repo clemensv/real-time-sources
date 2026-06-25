@@ -29,26 +29,26 @@ class Test_WeatherObservation(unittest.TestCase):
         Create instance of WeatherObservation for testing
         """
         instance = WeatherObservation(
-            station_code='bvsiyltgrbzgyotoodcd',
+            station_code='wlxxkntwyoeifwxptbil',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            precip_quantity=float(95.2747071717818),
-            temp_dry_shelter_avg=float(3.1354292118808025),
-            temp_grass_pt100_avg=float(95.51524613275004),
-            temp_soil_avg=float(90.97698194895466),
-            temp_soil_avg_5cm=float(36.09754496242401),
-            temp_soil_avg_10cm=float(43.07599576822368),
-            temp_soil_avg_20cm=float(27.597403510647233),
-            temp_soil_avg_50cm=float(7.659182683485444),
-            wind_speed_10m=float(96.76662968869898),
-            wind_speed_avg_30m=float(52.00093571482489),
-            wind_direction=float(42.48976266619871),
-            wind_gusts_speed=float(17.069675241459393),
-            humidity_rel_shelter_avg=float(50.606468920991624),
-            pressure=float(72.4458350638936),
-            sun_duration=float(55.82694250701239),
-            short_wave_from_sky_avg=float(29.295946759090953),
-            sun_int_avg=float(92.69428571276025),
-            region='kjbobvscqfvamfppxbed'
+            precip_quantity=float(42.65901638580135),
+            temp_dry_shelter_avg=float(45.85857448793662),
+            temp_grass_pt100_avg=float(45.241490464845654),
+            temp_soil_avg=float(73.17249846825743),
+            temp_soil_avg_5cm=float(57.122224792277365),
+            temp_soil_avg_10cm=float(85.99251194140083),
+            temp_soil_avg_20cm=float(26.688015136978148),
+            temp_soil_avg_50cm=float(32.345919896599895),
+            wind_speed_10m=float(70.19673167822963),
+            wind_speed_avg_30m=float(64.95790445402024),
+            wind_direction=float(48.87527485081933),
+            wind_gusts_speed=float(29.742434582190658),
+            humidity_rel_shelter_avg=float(16.21200599726238),
+            pressure=float(47.8461216659048),
+            sun_duration=float(19.44218753325646),
+            short_wave_from_sky_avg=float(5.769724591343994),
+            sun_int_avg=float(9.413477139418935),
+            region='porzvbzayisdnmzwjzkz'
         )
         return instance
 
@@ -57,7 +57,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'bvsiyltgrbzgyotoodcd'
+        test_value = 'wlxxkntwyoeifwxptbil'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -73,7 +73,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test precip_quantity property
         """
-        test_value = float(95.2747071717818)
+        test_value = float(42.65901638580135)
         self.instance.precip_quantity = test_value
         self.assertEqual(self.instance.precip_quantity, test_value)
     
@@ -81,7 +81,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temp_dry_shelter_avg property
         """
-        test_value = float(3.1354292118808025)
+        test_value = float(45.85857448793662)
         self.instance.temp_dry_shelter_avg = test_value
         self.assertEqual(self.instance.temp_dry_shelter_avg, test_value)
     
@@ -89,7 +89,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temp_grass_pt100_avg property
         """
-        test_value = float(95.51524613275004)
+        test_value = float(45.241490464845654)
         self.instance.temp_grass_pt100_avg = test_value
         self.assertEqual(self.instance.temp_grass_pt100_avg, test_value)
     
@@ -97,7 +97,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temp_soil_avg property
         """
-        test_value = float(90.97698194895466)
+        test_value = float(73.17249846825743)
         self.instance.temp_soil_avg = test_value
         self.assertEqual(self.instance.temp_soil_avg, test_value)
     
@@ -105,7 +105,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temp_soil_avg_5cm property
         """
-        test_value = float(36.09754496242401)
+        test_value = float(57.122224792277365)
         self.instance.temp_soil_avg_5cm = test_value
         self.assertEqual(self.instance.temp_soil_avg_5cm, test_value)
     
@@ -113,7 +113,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temp_soil_avg_10cm property
         """
-        test_value = float(43.07599576822368)
+        test_value = float(85.99251194140083)
         self.instance.temp_soil_avg_10cm = test_value
         self.assertEqual(self.instance.temp_soil_avg_10cm, test_value)
     
@@ -121,7 +121,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temp_soil_avg_20cm property
         """
-        test_value = float(27.597403510647233)
+        test_value = float(26.688015136978148)
         self.instance.temp_soil_avg_20cm = test_value
         self.assertEqual(self.instance.temp_soil_avg_20cm, test_value)
     
@@ -129,7 +129,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temp_soil_avg_50cm property
         """
-        test_value = float(7.659182683485444)
+        test_value = float(32.345919896599895)
         self.instance.temp_soil_avg_50cm = test_value
         self.assertEqual(self.instance.temp_soil_avg_50cm, test_value)
     
@@ -137,7 +137,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test wind_speed_10m property
         """
-        test_value = float(96.76662968869898)
+        test_value = float(70.19673167822963)
         self.instance.wind_speed_10m = test_value
         self.assertEqual(self.instance.wind_speed_10m, test_value)
     
@@ -145,7 +145,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test wind_speed_avg_30m property
         """
-        test_value = float(52.00093571482489)
+        test_value = float(64.95790445402024)
         self.instance.wind_speed_avg_30m = test_value
         self.assertEqual(self.instance.wind_speed_avg_30m, test_value)
     
@@ -153,7 +153,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test wind_direction property
         """
-        test_value = float(42.48976266619871)
+        test_value = float(48.87527485081933)
         self.instance.wind_direction = test_value
         self.assertEqual(self.instance.wind_direction, test_value)
     
@@ -161,7 +161,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test wind_gusts_speed property
         """
-        test_value = float(17.069675241459393)
+        test_value = float(29.742434582190658)
         self.instance.wind_gusts_speed = test_value
         self.assertEqual(self.instance.wind_gusts_speed, test_value)
     
@@ -169,7 +169,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test humidity_rel_shelter_avg property
         """
-        test_value = float(50.606468920991624)
+        test_value = float(16.21200599726238)
         self.instance.humidity_rel_shelter_avg = test_value
         self.assertEqual(self.instance.humidity_rel_shelter_avg, test_value)
     
@@ -177,7 +177,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test pressure property
         """
-        test_value = float(72.4458350638936)
+        test_value = float(47.8461216659048)
         self.instance.pressure = test_value
         self.assertEqual(self.instance.pressure, test_value)
     
@@ -185,7 +185,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test sun_duration property
         """
-        test_value = float(55.82694250701239)
+        test_value = float(19.44218753325646)
         self.instance.sun_duration = test_value
         self.assertEqual(self.instance.sun_duration, test_value)
     
@@ -193,7 +193,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test short_wave_from_sky_avg property
         """
-        test_value = float(29.295946759090953)
+        test_value = float(5.769724591343994)
         self.instance.short_wave_from_sky_avg = test_value
         self.assertEqual(self.instance.short_wave_from_sky_avg, test_value)
     
@@ -201,7 +201,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test sun_int_avg property
         """
-        test_value = float(92.69428571276025)
+        test_value = float(9.413477139418935)
         self.instance.sun_int_avg = test_value
         self.assertEqual(self.instance.sun_int_avg, test_value)
     
@@ -209,7 +209,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'kjbobvscqfvamfppxbed'
+        test_value = 'porzvbzayisdnmzwjzkz'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

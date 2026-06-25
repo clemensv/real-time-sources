@@ -9,14 +9,13 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from nina_bbk_amqp_producer_data.civilwarning import CivilWarning
-from nina_bbk_amqp_producer_data.providerenum import ProviderEnum
+from nina_bbk_amqp_producer_data.statusenum import StatusEnum
+from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
+from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
 from nina_bbk_amqp_producer_data.urgencyenum import UrgencyEnum
 from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
-from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
-from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
-from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
-from nina_bbk_amqp_producer_data.statusenum import StatusEnum
 from nina_bbk_amqp_producer_data.severityenum import SeverityEnum
+from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
 import datetime
 
 
@@ -37,31 +36,31 @@ class Test_CivilWarning(unittest.TestCase):
         Create instance of CivilWarning for testing
         """
         instance = CivilWarning(
-            warning_id='govewjniybfiklvmqblx',
-            provider=ProviderEnum.mowas,
-            version=int(90),
-            sender='rzbxofiovlzkovkupqxr',
-            sender_name='etnimzblarrzsrapqyty',
+            warning_id='caehskpgptulpxhdeumu',
+            provider='vtenvwzflimdrckgypnp',
+            version=int(59),
+            sender='lpcvipqogcbywbpdyvfq',
+            sender_name='kjmgdvrsjdeexwaagzvq',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            references='ypczjnnqkfqvufidplxz',
-            event='dmuaototxuqstitwyofr',
-            event_code='ydbuwezdznjqollcaeip',
+            references='wmzpqnrllskbsyodworj',
+            event='hchdehikxeekdhfvgxgw',
+            event_code='nlccqxyjdsfrliinoqfn',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='iqxjclufrdrwpzvmiiyu',
-            description='gkyhtqpzkwyorushzbnm',
-            instruction='vozuintapsslwvdskvzc',
-            web='vdpabqdwqqshufulnodb',
-            contact='spjduuczickcxzcvlpem',
-            area_desc='yyqsthpeufkedfxsxoos',
-            verwaltungsbereiche='eydndijdymlqkynjippf',
-            language='asucfuwkroheuiquqtjb',
-            state='yuuriyyvaeqpbpbcrnto'
+            headline='pqvcqmrxkhlpigyoywyu',
+            description='hgyvbxaamkwthtmdgdgo',
+            instruction='ubwrgxwkbgeecpuhowhp',
+            web='ksyladvomnvqfskxwqtr',
+            contact='xyrxbutrfxdlirmzgpod',
+            area_desc='ycntffwuqoroleyxwegx',
+            verwaltungsbereiche='ztunrwuphfkvhzwblouv',
+            language='mqvcmkysfenzcirhtwvl',
+            state='udbkjnbmkootlrfritit'
         )
         return instance
 
@@ -70,7 +69,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test warning_id property
         """
-        test_value = 'govewjniybfiklvmqblx'
+        test_value = 'caehskpgptulpxhdeumu'
         self.instance.warning_id = test_value
         self.assertEqual(self.instance.warning_id, test_value)
     
@@ -78,7 +77,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test provider property
         """
-        test_value = ProviderEnum.mowas
+        test_value = 'vtenvwzflimdrckgypnp'
         self.instance.provider = test_value
         self.assertEqual(self.instance.provider, test_value)
     
@@ -86,7 +85,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test version property
         """
-        test_value = int(90)
+        test_value = int(59)
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -94,7 +93,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test sender property
         """
-        test_value = 'rzbxofiovlzkovkupqxr'
+        test_value = 'lpcvipqogcbywbpdyvfq'
         self.instance.sender = test_value
         self.assertEqual(self.instance.sender, test_value)
     
@@ -102,7 +101,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test sender_name property
         """
-        test_value = 'etnimzblarrzsrapqyty'
+        test_value = 'kjmgdvrsjdeexwaagzvq'
         self.instance.sender_name = test_value
         self.assertEqual(self.instance.sender_name, test_value)
     
@@ -142,7 +141,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test references property
         """
-        test_value = 'ypczjnnqkfqvufidplxz'
+        test_value = 'wmzpqnrllskbsyodworj'
         self.instance.references = test_value
         self.assertEqual(self.instance.references, test_value)
     
@@ -150,7 +149,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test event property
         """
-        test_value = 'dmuaototxuqstitwyofr'
+        test_value = 'hchdehikxeekdhfvgxgw'
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     
@@ -158,7 +157,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test event_code property
         """
-        test_value = 'ydbuwezdznjqollcaeip'
+        test_value = 'nlccqxyjdsfrliinoqfn'
         self.instance.event_code = test_value
         self.assertEqual(self.instance.event_code, test_value)
     
@@ -198,7 +197,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test headline property
         """
-        test_value = 'iqxjclufrdrwpzvmiiyu'
+        test_value = 'pqvcqmrxkhlpigyoywyu'
         self.instance.headline = test_value
         self.assertEqual(self.instance.headline, test_value)
     
@@ -206,7 +205,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'gkyhtqpzkwyorushzbnm'
+        test_value = 'hgyvbxaamkwthtmdgdgo'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -214,7 +213,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test instruction property
         """
-        test_value = 'vozuintapsslwvdskvzc'
+        test_value = 'ubwrgxwkbgeecpuhowhp'
         self.instance.instruction = test_value
         self.assertEqual(self.instance.instruction, test_value)
     
@@ -222,7 +221,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test web property
         """
-        test_value = 'vdpabqdwqqshufulnodb'
+        test_value = 'ksyladvomnvqfskxwqtr'
         self.instance.web = test_value
         self.assertEqual(self.instance.web, test_value)
     
@@ -230,7 +229,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test contact property
         """
-        test_value = 'spjduuczickcxzcvlpem'
+        test_value = 'xyrxbutrfxdlirmzgpod'
         self.instance.contact = test_value
         self.assertEqual(self.instance.contact, test_value)
     
@@ -238,7 +237,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test area_desc property
         """
-        test_value = 'yyqsthpeufkedfxsxoos'
+        test_value = 'ycntffwuqoroleyxwegx'
         self.instance.area_desc = test_value
         self.assertEqual(self.instance.area_desc, test_value)
     
@@ -246,7 +245,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test verwaltungsbereiche property
         """
-        test_value = 'eydndijdymlqkynjippf'
+        test_value = 'ztunrwuphfkvhzwblouv'
         self.instance.verwaltungsbereiche = test_value
         self.assertEqual(self.instance.verwaltungsbereiche, test_value)
     
@@ -254,7 +253,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'asucfuwkroheuiquqtjb'
+        test_value = 'mqvcmkysfenzcirhtwvl'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -262,7 +261,7 @@ class Test_CivilWarning(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'yuuriyyvaeqpbpbcrnto'
+        test_value = 'udbkjnbmkootlrfritit'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

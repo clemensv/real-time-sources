@@ -167,11 +167,11 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            code_station='ftlwvfegxstbegixlerz',
+            code_station='zmsvjoqyhrolgppgyvsf',
             date_obs=datetime.datetime.now(datetime.timezone.utc),
-            resultat_obs=float(62.74504985106021),
-            grandeur_hydro='oybkalkygwizsupsqrwf',
-            libelle_methode_obs='cdfzloasbxdheyflpuch',
-            libelle_qualification_obs='omljxsypknfmeizmiiet',
-            basin='lfsajnydyjyulpiljpwp'
+            resultat_obs=float(19.581091456701316),
+            grandeur_hydro='rtajfupwguuxtzowcxfd',
+            libelle_methode_obs='qacexjtvjsmdtgtargdb',
+            libelle_qualification_obs='kgqhciwbkdtvehxunmql',
+            basin='oabyioalvfmeebkpwfty'
         )

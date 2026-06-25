@@ -173,15 +173,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            code_station='kmqlmdztsjitpdvdpetz',
-            libelle_station='yurqfjqwjigyhjtgxsiy',
-            code_site='hlycedxqjiuocutprezv',
-            longitude_station=float(45.84027921084521),
-            latitude_station=float(49.42431581303931),
-            libelle_cours_eau='ccczbcvpxhmrhonhayur',
-            libelle_commune='dqwskrsnibwnjxbgevny',
-            code_departement='uuahwptpkbpzrghtvszn',
-            en_service=True,
-            date_ouverture_station='yczbztxndrtdtnwjluzz',
-            basin='lysftoksddxtzemgvmts'
+            code_station='bnqctwdjjgehnfniukum',
+            libelle_station='vcktphevrgcnclbchijw',
+            code_site='ibalgumovcsajrevitas',
+            longitude_station=float(5.742335053902991),
+            latitude_station=float(18.74859076165416),
+            libelle_cours_eau='vtgstnuhpqorbfcokydc',
+            libelle_commune='gphuberwvefiizsgmvaq',
+            code_departement='wzboyyzpnvmujebhspfg',
+            en_service=False,
+            date_ouverture_station='lnaazijnhufqgjumeslg',
+            basin='vwiqmeskqhcccjsehkfb'
         )

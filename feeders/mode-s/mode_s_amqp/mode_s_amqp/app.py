@@ -108,11 +108,40 @@ class ModeSAmqpClient:
         self._producer.send_comm_bidentity(data=payload, _feedurl=feedurl, _icao24=icao24, _receiver_id=receiver_id, _msg_type=payload.msg_type)
 
 
+async def _emit_mock_corpus(bridge: ModeSBridge) -> None:
+    """Emit one synthetic record per DF family for Docker E2E testing."""
+    import time as _time
+    from mode_s_core import ModeSRecord
+    ts = int(_time.time() * 1000)
+    families = [
+        (17, "df17-adsb", 11),
+        (4, "df4-altitude", None),
+        (5, "df5-identity", None),
+        (11, "df11-acquisition", None),
+        (20, "df20-comm-b", None),
+        (21, "df21-comm-b", None),
+    ]
+    for df, msg_type, tc in families:
+        rec = ModeSRecord(
+            icao24="abc123", receiver_id="mock-station", msg_type=msg_type,
+            ts=ts, df=df, tc=tc, bcode=None, alt=35000 if df in (4, 20) else None,
+            cs="MOCK01" if df == 17 else None, sq="1200" if df == 5 else None,
+            lat=59.9 if df == 17 else None, lon=10.7 if df == 17 else None,
+            spd=450.0 if df == 17 else None, ang=90.0 if df == 17 else None,
+            vr=0.0, rssi=-3.5,
+        )
+        await bridge.publish_record(rec)
+    logger.info("Mock corpus emitted: %d records", len(families))
+
+
 async def _run(args: argparse.Namespace) -> None:
     producer = create_amqp_producer(args, ModeSAmqpProducer)
     feedurl = args.feedurl or f"dump1090://{args.dump1090_host}:{args.dump1090_port}"
     bridge = ModeSBridge(ModeSAmqpClient(producer), feedurl=feedurl, receiver_id=args.receiver_id, ref_lat=args.ref_lat or 0.0, ref_lon=args.ref_lon or 0.0)
     try:
+        if os.getenv("MODE_S_MOCK", "false").lower() in ("true", "1", "yes"):
+            await _emit_mock_corpus(bridge)
+            return
         if not args.dump1090_host or not args.dump1090_port:
             raise SystemExit("--dump1090-host and --dump1090-port are required")
         await bridge.run_from_dump1090(args.dump1090_host, int(args.dump1090_port), max_events=args.max_events)

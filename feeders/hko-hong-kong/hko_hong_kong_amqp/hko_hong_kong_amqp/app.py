@@ -113,7 +113,6 @@ async def _run_live(args: argparse.Namespace, producer: HKGovHKOWeatherAmqpProdu
                 data=obs,  # type: ignore[arg-type]
                 _place_id=obs.place_id,
                 _district=_segment(obs.district or "unknown"),
-                _time=obs.observation_time.isoformat(),
             )
             previous_readings[reading_key] = obs.observation_time.isoformat()
             sent += 1

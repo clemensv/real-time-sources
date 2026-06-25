@@ -169,12 +169,12 @@ class BuoyContinuousWindObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='fpxhvxgsfgtrhqshjvbn',
+            station_id='xgthituxupzutnvtetfq',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            wind_direction=float(49.34428827343707),
-            wind_speed=float(30.7885860845462),
-            gust_direction=float(31.32773787737959),
-            gust=float(16.160846645506723),
-            gust_time_code='mvkzfumziqnjuemzlxuk',
-            region='nlspxvuajzjddvlkozbu'
+            wind_direction=float(88.94286756766013),
+            wind_speed=float(60.3903428371507),
+            gust_direction=float(9.779270720298117),
+            gust=float(58.41136710629294),
+            gust_time_code='obibrsnewyusosetlzsy',
+            region='uzaheehpyhbdkoswiiyf'
         )

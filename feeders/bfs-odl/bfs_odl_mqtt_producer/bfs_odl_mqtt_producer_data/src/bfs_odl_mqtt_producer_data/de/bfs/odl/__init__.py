@@ -1,4 +1,4 @@
-from .station import Station
 from .doseratemeasurement import DoseRateMeasurement
+from .station import Station
 
-__all__ = ["Station", "DoseRateMeasurement"]
+__all__ = ["DoseRateMeasurement", "Station"]
