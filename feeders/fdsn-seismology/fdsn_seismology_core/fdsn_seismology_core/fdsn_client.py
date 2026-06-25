@@ -118,6 +118,11 @@ def format_datetime(value: datetime) -> str:
     return value.astimezone(timezone.utc).replace(tzinfo=None, microsecond=0).isoformat()
 
 
+def format_datetime_rfc3339(value: datetime) -> str:
+    """Format a datetime as RFC3339 with Z suffix for CloudEvents payloads."""
+    return value.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
 
 def build_query_url(
     base_url: str,
@@ -175,7 +180,7 @@ def parse_fdsn_text(text: str, node_id: str, node_url: str) -> list[EarthquakeRe
             if not event_id or event_time is None or latitude is None or longitude is None:
                 logger.debug("Skipping incomplete row from %s: %s", node_id, row)
                 continue
-            normalized_time = format_datetime(parse_datetime(event_time))
+            normalized_time = format_datetime_rfc3339(parse_datetime(event_time))
             contributor = parse_optional_str(values.get("Contributor")) or node_id.upper()
             records.append(
                 EarthquakeRecord(

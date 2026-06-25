@@ -276,7 +276,7 @@
                     "description": "Provider-supplied date opened value for this record."
                   },
                   "river": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring."
                   }
                 },
@@ -321,7 +321,7 @@
                     "description": "Measured value reported by the upstream provider."
                   },
                   "river": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring."
                   }
                 },

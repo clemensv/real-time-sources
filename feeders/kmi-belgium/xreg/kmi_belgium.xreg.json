@@ -275,7 +275,7 @@
                     "symbol": "°"
                   },
                   "region": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -466,7 +466,7 @@
                     "symbol": "W/m²"
                   },
                   "region": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
                 },

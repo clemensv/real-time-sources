@@ -183,23 +183,7 @@
                   },
                   "provider": {
                     "type": "string",
-                    "description": "The NINA provider that issued the warning.",
-                    "enum": [
-                      "mowas",
-                      "katwarn",
-                      "biwapp",
-                      "dwd",
-                      "lhp",
-                      "police"
-                    ],
-                    "descriptions": {
-                      "mowas": "Provider value `mowas` for this coded alert field.",
-                      "katwarn": "Provider value `katwarn` for this coded alert field.",
-                      "biwapp": "Provider value `biwapp` for this coded alert field.",
-                      "dwd": "Provider value `dwd` for this coded alert field.",
-                      "lhp": "Provider value `lhp` for this coded alert field.",
-                      "police": "Provider value `police` for this coded alert field."
-                    }
+                    "description": "The NINA provider that issued the warning (e.g. mowas, katwarn, biwapp, dwd, lhp, police). New providers may be added by BBK at any time."
                   },
                   "version": {
                     "type": "integer",
@@ -286,7 +270,7 @@
                     }
                   },
                   "references": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "CAP references to prior related warnings, in the format 'sender,identifier,sent'."
                   },
                   "event": {

@@ -12,14 +12,13 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nina_bbk_producer_data.severityenum import SeverityEnum
-from nina_bbk_producer_data.scopeenum import ScopeEnum
-from nina_bbk_producer_data.categoryenum import CategoryEnum
-from nina_bbk_producer_data.providerenum import ProviderEnum
-from nina_bbk_producer_data.urgencyenum import UrgencyEnum
-from nina_bbk_producer_data.statusenum import StatusEnum
 from nina_bbk_producer_data.msgtypeenum import MsgTypeenum
+from nina_bbk_producer_data.statusenum import StatusEnum
+from nina_bbk_producer_data.categoryenum import CategoryEnum
+from nina_bbk_producer_data.urgencyenum import UrgencyEnum
+from nina_bbk_producer_data.severityenum import SeverityEnum
 from nina_bbk_producer_data.certaintyenum import CertaintyEnum
+from nina_bbk_producer_data.scopeenum import ScopeEnum
 import datetime
 
 
@@ -31,7 +30,7 @@ class CivilWarning:
     
     Attributes:
         warning_id (str)
-        provider (ProviderEnum)
+        provider (str)
         version (typing.Optional[int])
         sender (typing.Optional[str])
         sender_name (typing.Optional[str])
@@ -59,7 +58,7 @@ class CivilWarning:
     
     
     warning_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warning_id"))
-    provider: ProviderEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="provider"))
+    provider: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="provider"))
     version: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="version"))
     sender: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sender"))
     sender_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sender_name"))
@@ -211,29 +210,29 @@ class CivilWarning:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='ojvypsfyourwvkcxnjbt',
-            provider=ProviderEnum.mowas,
-            version=int(41),
-            sender='abibbvxiwxnontftjolz',
-            sender_name='gqhcnuvuglrfgybuyulz',
+            warning_id='bosegmxcvrlwlmuierms',
+            provider='bwawzngrnnjinstlkeya',
+            version=int(54),
+            sender='ropedmoozseusuarvwuh',
+            sender_name='mkzqftcnqkrcgetuithq',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            references='lrmwxlxvwutrjjnkhyuz',
-            event='pvcyfkbbcaktrapnnfpk',
-            event_code='fytkasbpoqxlksnirptb',
+            references='uyqydrwswfwjchfjfdac',
+            event='jsxevtzpsyewqsztltcs',
+            event_code='dpuoikaqkfcixoymuruq',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='iatksuilzurypvccqpzn',
-            description='jqbhzjryowreffamxnwm',
-            instruction='yytrbsnntavfsszggdpz',
-            web='unnmeuhqzzenhxboueyp',
-            contact='ifpmvbnxytttvhnfertj',
-            area_desc='yrttswluvxkieefvzymd',
-            verwaltungsbereiche='dalxremgjhkbicdodzxp',
-            language='oztyzgafyrijmlixovpv',
-            state='vtiimkzrnpdjblijvcgh'
+            headline='oxysadeixywdthvgnwyp',
+            description='tkqofscykxzwacincrme',
+            instruction='bkvhowvzlsbjqulpifik',
+            web='dsgzlbreyewampkvjssb',
+            contact='eiwviobxkgkrkkuieudh',
+            area_desc='ndoymoegxaymgszwsjnx',
+            verwaltungsbereiche='tifdamyntpcaqjkopuyd',
+            language='wodlcbxstgiupngoudcy',
+            state='uzmiomgtsiyxhhcqjqij'
         )

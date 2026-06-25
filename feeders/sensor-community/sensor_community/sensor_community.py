@@ -255,7 +255,7 @@ class SensorCommunityAPI:
             "location_id": int(location.get("id")),
             "latitude": _safe_float(location.get("latitude")),
             "longitude": _safe_float(location.get("longitude")),
-            "altitude": _generated_optional_number(_safe_float(location.get("altitude"))),
+            "altitude": _safe_float(location.get("altitude")),
             "country": str(location.get("country", "")),
             "indoor": _parse_bool(location.get("indoor")),
         }

@@ -750,7 +750,7 @@
                     "symbol": "ft"
                   },
                   "region": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -834,7 +834,7 @@
                     "description": "Single-letter time-zone code carried in the NDBC station table for display and forecast products."
                   },
                   "region": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },

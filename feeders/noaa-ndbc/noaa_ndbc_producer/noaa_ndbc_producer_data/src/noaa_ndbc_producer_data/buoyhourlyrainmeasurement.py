@@ -161,8 +161,8 @@ class BuoyHourlyRainMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rwggluubmlsltpcqirmu',
+            station_id='gabytteeltyfcdyevdil',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            accumulation=float(50.79015338458929),
-            region='wcxjowructsrvhjdblsc'
+            accumulation=float(42.72781788873119),
+            region='dqfrjtoraaplcgqtqnzm'
         )

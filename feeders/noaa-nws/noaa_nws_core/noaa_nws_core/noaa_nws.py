@@ -122,7 +122,7 @@ class NWSFetcher:
                             "type": props.get("type", ""),
                             "state": props.get("state", ""),
                             "forecast_office": props.get("forecastOffice", ""),
-                            "timezone": props.get("timeZone", ""),
+                            "timezone": ",".join(props["timeZone"]) if isinstance(props.get("timeZone"), list) else props.get("timeZone", ""),
                             "radar_station": props.get("radarStation", ""),
                         }
                     )
