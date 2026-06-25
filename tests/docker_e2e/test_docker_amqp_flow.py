@@ -721,6 +721,7 @@ class TestNoaaGoesAmqpDockerFlow(AmqpDockerFlowBase):
 class TestNwsForecastsAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "nws-forecasts"
     image = "nws-forecasts-amqp"
+    env = {"ONCE_MODE": "true"}
     expected_types = {"Microsoft.OpenData.US.NOAA.NWS.ForecastZone", "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast", "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"}
     expected_count = 3
 
@@ -756,7 +757,7 @@ class TestFrenchRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
 class TestGTFSAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "gtfs"
     image = "gtfs-amqp"
-    env = {"ONCE_MODE": "true"}
+    env = {"ONCE_MODE": "true", "AGENCY": "trimet"}
     expected_types = {'GeneralTransitFeedStatic.Transfers', 'GeneralTransitFeedStatic.FeedInfo', 'GeneralTransitFeedStatic.FareAttributes', 'GeneralTransitFeedStatic.StopAreas', 'GeneralTransitFeedStatic.LocationGroups', 'GeneralTransitFeedStatic.Pathways', 'GeneralTransitFeedStatic.Trips', 'GeneralTransitFeedRealTime.Trip.TripUpdate', 'GeneralTransitFeedStatic.Areas', 'GeneralTransitFeedStatic.LocationGeoJson', 'GeneralTransitFeedStatic.Networks', 'GeneralTransitFeedStatic.Routes', 'GeneralTransitFeedStatic.FareProducts', 'GeneralTransitFeedStatic.StopTimes', 'GeneralTransitFeedStatic.FareTransferRules', 'GeneralTransitFeedStatic.Frequencies', 'GeneralTransitFeedStatic.RouteNetworks', 'GeneralTransitFeedRealTime.Alert.Alert', 'GeneralTransitFeed.BookingRules', 'GeneralTransitFeedStatic.Levels', 'GeneralTransitFeedStatic.Stops', 'GeneralTransitFeedStatic.Timeframes', 'GeneralTransitFeedStatic.Shapes', 'GeneralTransitFeedStatic.LocationGroupStores', 'GeneralTransitFeedStatic.Attributions', 'GeneralTransitFeedStatic.FareRules', 'GeneralTransitFeedStatic.FareMedia', 'GeneralTransitFeedStatic.Agency', 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition', 'GeneralTransitFeedStatic.Translations', 'GeneralTransitFeedStatic.FareLegRules'}
     expected_count = 31
 

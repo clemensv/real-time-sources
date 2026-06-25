@@ -154,6 +154,10 @@ def meteoalarm_image():
     return build_image('meteoalarm')
 
 @pytest.fixture(scope='module')
+def nina_bbk_image():
+    return build_image('nina-bbk')
+
+@pytest.fixture(scope='module')
 def mode_s_image():
     return build_image('mode-s')
 
@@ -1311,6 +1315,34 @@ class TestMeteoalarmDockerFlow:
             kafka, meteoalarm_image, self.TOPIC,
             telemetry_types=['Meteoalarm.WeatherWarning'],
             required_exact_types=['Meteoalarm.WeatherWarning'],
+            command=command,
+            min_messages=1,
+            timeout=120,
+        )
+
+
+class TestNinaBbkDockerFlow:
+    TOPIC = 'test-nina-bbk'
+
+    def test_emits_civil_warnings(self, kafka: KafkaFixture, nina_bbk_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event={'specversion':'1.0','type':'NINA.CivilWarning','source':'https://warnung.bund.de','subject':'mow.DE-SL-SLS-W038-20260113-000','id':'mow.DE-SL-SLS-W038-20260113-000','datacontenttype':'application/json','data':{'warning_id':'mow.DE-SL-SLS-W038-20260113-000','provider':'MOWAS','version':1,'sender':'opendata@bbk.bund.de','sender_name':'BBK','sent':'2026-01-13T10:00:00+01:00','status':'Actual','msg_type':'Alert','scope':'Public','references':None,'event':'Hochwasserinformation','event_code':'BBK-EVC-054','category':'Met','severity':'Minor','urgency':'Immediate','certainty':'Observed','headline':'Hochwasserinformation für Saarland','description':'Aufgrund anhaltender Regenfälle steigen die Wasserstände.','instruction':'Meiden Sie Uferbereiche.','web':'https://www.bbk.bund.de','contact':'BBK Lagezentrum','area_desc':'Saarland','verwaltungsbereiche':'100400000000','language':'de-DE','state':'saarland'}};"
+                "producer.produce(topic, key='mow.DE-SL-SLS-W038-20260113-000', value=json.dumps(event).encode('utf-8'));"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, nina_bbk_image, self.TOPIC,
+            telemetry_types=['NINA.CivilWarning'],
+            required_exact_types=['NINA.CivilWarning'],
             command=command,
             min_messages=1,
             timeout=120,

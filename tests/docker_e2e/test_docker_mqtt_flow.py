@@ -5744,7 +5744,7 @@ def mosquitto_gtfs():
 
 class TestGTFSMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_gtfs, gtfs_mqtt_image):
-        _run_mqtt_contract_flow('gtfs', gtfs_mqtt_image, mosquitto_gtfs, timeout=240)
+        _run_mqtt_contract_flow('gtfs', gtfs_mqtt_image, mosquitto_gtfs, extra_env={'AGENCY': 'trimet'}, timeout=240)
 
 @pytest.fixture(scope='module')
 def madrid_traffic_mqtt_image():

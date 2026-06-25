@@ -318,6 +318,28 @@ If the agent genuinely cannot complete or correct a review item, it
 must surface that explicitly as an open item with the reason it could
 not be fixed autonomously — never silently mark the task done.
 
+## All Issues Are Issues — "Pre-existing" Is Not a Pass
+
+When a validation run, CI test, or E2E check surfaces a failure, it
+must be fixed regardless of whether the current commit introduced it.
+The distinction between "caused by this change" and "pre-existing" is
+useful for triage ordering but **never** an excuse to skip the fix.
+A broken Docker E2E test that has been failing silently for weeks is
+still a broken test. A misconfigured CI workflow that never collected
+its target test class is still a bug.
+
+The expected behavior:
+
+- **Fix it.** If the issue is within your capability to fix (wrong
+  env var, missing test class, serialization bug, timeout from missing
+  `ONCE_MODE`), fix it in the same PR or commit stream.
+- **Do not label and defer.** "Pre-existing, not caused by our
+  changes" is not a valid final status. It is an intermediate triage
+  note while you plan the fix.
+- **Do not exclude from the matrix.** If a source is in the test
+  matrix but its test is broken, fix the test — do not remove the
+  source from the matrix.
+
 ## Things That Are Not Allowed
 
 - Hand-editing generated producer code.
