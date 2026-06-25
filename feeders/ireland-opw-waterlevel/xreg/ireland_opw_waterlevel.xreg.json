@@ -245,7 +245,7 @@
                                 "description": "Latitude of the station location in WGS84 decimal degrees."
                               },
                               "basin": {
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel."
                               }
                             },
@@ -317,7 +317,7 @@
                                 "description": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."
                               },
                               "basin": {
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel."
                               }
                             },

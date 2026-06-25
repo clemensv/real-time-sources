@@ -29,16 +29,16 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            station_number='fqltreixdghqjolursbz',
-            identifier='jsbfifbjdoyoylgaentv',
-            station_name='hesoyrlcbqqhciczxrhx',
-            prov_terr_state_loc='lbrwexyjajreaqyprvmo',
+            station_number='cnydvzjbetunliseksxe',
+            identifier='idqgbuadkqiugbsalnpx',
+            station_name='docrxghadfovdkmbzhoy',
+            prov_terr_state_loc='dwxgwiqpghytphagrkel',
             observation_datetime=datetime.datetime.now(datetime.timezone.utc),
-            level=float(10.850205644680821),
-            discharge=float(84.53660509175293),
-            latitude=float(73.65105283011634),
-            longitude=float(4.956724766350762),
-            basin='syfmtgiojxgrgiygbfei'
+            level=float(4.198123935814491),
+            discharge=float(29.737977519287984),
+            latitude=float(87.06223448474397),
+            longitude=float(80.39407204209984),
+            basin='ccwtwpqosnuaikceszgd'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'fqltreixdghqjolursbz'
+        test_value = 'cnydvzjbetunliseksxe'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -55,7 +55,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'jsbfifbjdoyoylgaentv'
+        test_value = 'idqgbuadkqiugbsalnpx'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -63,7 +63,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'hesoyrlcbqqhciczxrhx'
+        test_value = 'docrxghadfovdkmbzhoy'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test prov_terr_state_loc property
         """
-        test_value = 'lbrwexyjajreaqyprvmo'
+        test_value = 'dwxgwiqpghytphagrkel'
         self.instance.prov_terr_state_loc = test_value
         self.assertEqual(self.instance.prov_terr_state_loc, test_value)
     
@@ -87,7 +87,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test level property
         """
-        test_value = float(10.850205644680821)
+        test_value = float(4.198123935814491)
         self.instance.level = test_value
         self.assertEqual(self.instance.level, test_value)
     
@@ -95,7 +95,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(84.53660509175293)
+        test_value = float(29.737977519287984)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -103,7 +103,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(73.65105283011634)
+        test_value = float(87.06223448474397)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -111,7 +111,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(4.956724766350762)
+        test_value = float(80.39407204209984)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -119,7 +119,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'syfmtgiojxgrgiygbfei'
+        test_value = 'ccwtwpqosnuaikceszgd'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     

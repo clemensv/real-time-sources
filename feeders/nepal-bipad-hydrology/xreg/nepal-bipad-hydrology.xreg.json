@@ -385,7 +385,7 @@
                                 "description": "Current alert status of the station relative to configured thresholds. Known values: 'BELOW WARNING LEVEL', 'WARNING', 'DANGER'."
                               },
                               "trend": {
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "description": "Direction of water level change. Known values: 'STEADY', 'RISING', 'FALLING'."
                               },
                               "water_level_on": {
@@ -397,10 +397,9 @@
                               "station_id",
                               "title",
                               "basin",
-                              "status",
-                              "trend",
-                              "water_level_on"
-                            ]
+                                                            "status",
+                                                            "water_level_on"
+                                                          ]
                           }
                         }
                       }

@@ -92,18 +92,31 @@ class IMGWHydroAPI:
             river=record.get("rzeka") or None,
             voivodeship=record.get("wojewodztwo") or None,
             water_level=water_level,
-            water_level_timestamp=datetime.datetime.fromisoformat(record.get("stan_wody_data_pomiaru", "")) if record.get("stan_wody_data_pomiaru") else datetime.datetime.now(datetime.timezone.utc),
+            water_level_timestamp=_parse_imgw_timestamp(record.get("stan_wody_data_pomiaru")) or datetime.datetime.now(datetime.timezone.utc),
             water_temperature=water_temp,
-            water_temperature_timestamp=datetime.datetime.fromisoformat(record["temperatura_wody_data_pomiaru"]) if record.get("temperatura_wody_data_pomiaru") else None,
+            water_temperature_timestamp=_parse_imgw_timestamp(record.get("temperatura_wody_data_pomiaru")),
             discharge=discharge,
-            discharge_timestamp=datetime.datetime.fromisoformat(record["przeplyw_data"]) if record.get("przeplyw_data") else None,
+            discharge_timestamp=_parse_imgw_timestamp(record.get("przeplyw_data")),
             ice_phenomenon_code=record.get("zjawisko_lodowe"),
             overgrowth_code=record.get("zjawisko_zarastania"),
             basin=record.get("dorzecze") or record.get("basin") or None,
         )
 
 
-def parse_connection_string(connection_string: str) -> dict:
+def _parse_imgw_timestamp(value: str | None) -> datetime.datetime | None:
+    """Parse IMGW timestamp string to timezone-aware datetime."""
+    if not value:
+        return None
+    ts = value.strip()
+    if ts.endswith("Z"):
+        ts = ts[:-1] + "+00:00"
+    dt = datetime.datetime.fromisoformat(ts)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.timezone.utc)
+    return dt
+
+
+
     """Parse a Kafka connection string into a config dict."""
     config = {}
     for part in connection_string.split(';'):

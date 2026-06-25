@@ -112,7 +112,7 @@ def _install_partition_key_wrapper(producer: GovNoaaSwpcL1AmqpProducer) -> None:
     We wrap both so the bridge does not need to care which mode is active.
     """
     # Reactor path
-    if hasattr(producer, "_send_via_reactor"):
+    if getattr(producer, "_send_queue", None) is not None:
         original_reactor = producer._send_via_reactor  # type: ignore[attr-defined]
 
         def wrapped_reactor(amqp_msg: ProtonMessage, timeout: float = 30.0) -> Any:

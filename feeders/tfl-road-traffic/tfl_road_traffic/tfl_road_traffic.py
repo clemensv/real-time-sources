@@ -23,9 +23,10 @@ from tfl_road_traffic_core.tfl_road_traffic import (
 from tfl_road_traffic_producer_data import RoadCorridor, RoadDisruption, RoadStatus
 
 try:
-    from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
+    from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer, UkGovTflRoadDisruptionsEventProducer
 except ModuleNotFoundError:  # pragma: no cover
     UkGovTflRoadCorridorsEventProducer = None
+    UkGovTflRoadDisruptionsEventProducer = None
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -70,17 +71,6 @@ def build_road_status(raw: dict) -> RoadStatus | None:
 def build_road_disruption(raw: dict) -> RoadDisruption | None:
     record = build_road_disruption_record(raw)
     return RoadDisruption(**record) if record else None
-
-
-class UkGovTflRoadDisruptionsEventProducer:
-    def __init__(self, producer, topic: str):
-        self.producer = producer
-        self.topic = topic
-
-    def send_uk_gov_tfl_road_road_disruption(self, _road_id: str, _severity: str, _disruption_id: str, data: RoadDisruption, flush_producer: bool = True) -> None:
-        self.producer.produce(self.topic, key=f"disruptions/{_road_id}/{_severity}/{_disruption_id}", value=data.to_byte_array("application/json"))
-        if flush_producer:
-            self.producer.flush()
 
 
 class TflRoadTrafficPoller(_CoreSource):

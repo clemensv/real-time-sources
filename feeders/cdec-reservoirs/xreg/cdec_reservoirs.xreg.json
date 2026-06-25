@@ -208,7 +208,7 @@
                                 "description": "Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data."
                               },
                               "basin": {
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "description": "Stable routing axis used by MQTT and AMQP transport templates for cdec-reservoirs."
                               }
                             },

@@ -12,12 +12,12 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from noaa_nws_amqp_producer_data.statusenum import StatusEnum
-from noaa_nws_amqp_producer_data.messagetypeenum import MessageTypeenum
-from noaa_nws_amqp_producer_data.categoryenum import CategoryEnum
-from noaa_nws_amqp_producer_data.certaintyenum import CertaintyEnum
 from noaa_nws_amqp_producer_data.severityenum import SeverityEnum
 from noaa_nws_amqp_producer_data.urgencyenum import UrgencyEnum
+from noaa_nws_amqp_producer_data.statusenum import StatusEnum
+from noaa_nws_amqp_producer_data.certaintyenum import CertaintyEnum
+from noaa_nws_amqp_producer_data.categoryenum import CategoryEnum
+from noaa_nws_amqp_producer_data.messagetypeenum import MessageTypeenum
 import datetime
 
 
@@ -195,8 +195,8 @@ class WeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='kulwrjsktjnhlhohqxtj',
-            area_desc='jomzysjiquoeazbjjpdw',
+            alert_id='ituyexzcrkgoetiwrqxl',
+            area_desc='pnswcobmeljrctcxzakj',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
@@ -206,11 +206,11 @@ class WeatherAlert:
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='dgnwhsgwrjpuassgzogo',
-            sender_name='loghribqaxeczavtvnrx',
-            headline='eaumckmvimgocpwdleom',
-            description='vjydpzltrykwdvztpabz',
-            zone_id='pudwgndijctulalamdye',
-            state='zwsvxwyhowqtuotegetc',
-            event_type='fusmoqsbzwhzmjnyuzbq'
+            event='fkdgidujhievkqtwtywv',
+            sender_name='xocegwmvynbjnerwxktz',
+            headline='fuzbzkudpcndwxfuhumw',
+            description='eytsarpcrbdpujwfvkny',
+            zone_id='zpnrpeqxtckefaacjmwx',
+            state='nwcvzutjlxqymafwipkp',
+            event_type='bcfzrljtveztzffhuypm'
         )

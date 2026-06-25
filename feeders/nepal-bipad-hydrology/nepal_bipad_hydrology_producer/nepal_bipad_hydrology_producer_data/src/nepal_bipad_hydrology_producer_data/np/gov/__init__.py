@@ -1,3 +1,3 @@
-from .bipad import WaterLevelReading, RiverStation
+from .bipad import RiverStation, WaterLevelReading
 
-__all__ = ["WaterLevelReading", "RiverStation"]
+__all__ = ["RiverStation", "WaterLevelReading"]

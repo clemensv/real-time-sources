@@ -20,7 +20,7 @@ from fdsn_seismology_core import (
     save_state,
     should_publish_event,
 )
-from fdsn_seismology_core.fdsn_client import EarthquakeRecord, prune_seen_events
+from fdsn_seismology_core.fdsn_client import EarthquakeRecord, parse_datetime, prune_seen_events
 from fdsn_seismology_producer_data import Earthquake, Node
 from fdsn_seismology_producer_kafka_producer.producer import OrgFdsnEventKafkaEventProducer
 from datetime import datetime
@@ -59,7 +59,7 @@ def _build_node_data(node: dict[str, str | None]) -> Node:
 def _build_earthquake_data(event: EarthquakeRecord) -> Earthquake:
     return Earthquake(
         event_id=event.event_id,
-        time=datetime.fromisoformat(event.time),
+        time=parse_datetime(event.time),
         latitude=event.latitude,
         longitude=event.longitude,
         depth_km=event.depth_km,

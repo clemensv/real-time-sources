@@ -56,9 +56,9 @@ def _apply_partition_key_workaround(producer):
     if getattr(producer, "_sender", None) is not None:
         original_send = producer._sender.send
         producer._sender.send = lambda msg, *a, **kw: original_send(stamp(msg), *a, **kw)
-    if hasattr(producer, "_send_via_reactor"):
-        original = producer._send_via_reactor
-        producer._send_via_reactor = lambda msg: original(stamp(msg))
+    if getattr(producer, "_send_queue", None) is not None:
+        original_reactor = producer._send_via_reactor
+        producer._send_via_reactor = lambda msg: original_reactor(stamp(msg))
     return producer
 
 

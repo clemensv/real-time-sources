@@ -12,7 +12,7 @@ import json
 import sys
 import time
 from typing import Dict, List, Optional, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 import argparse
 import requests
 from gios_poland_producer_data import Station
@@ -125,12 +125,19 @@ def parse_gios_timestamp(value) -> Optional[datetime]:
     if value is None:
         return None
     if isinstance(value, datetime):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
         return value
     try:
         ts = str(value).strip()
         if not ts:
             return None
-        return datetime.fromisoformat(ts.replace(' ', 'T'))
+        if ts.endswith("Z"):
+            ts = ts[:-1] + "+00:00"
+        dt = datetime.fromisoformat(ts.replace(' ', 'T'))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
     except (ValueError, TypeError):
         return None
 

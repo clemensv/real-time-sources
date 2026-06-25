@@ -299,7 +299,6 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "required": [
-                  "code_station",
                   "date_obs",
                   "resultat_obs",
                   "grandeur_hydro"
@@ -307,7 +306,7 @@
                 "name": "Observation",
                 "properties": {
                   "code_station": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations."
                   },
                   "date_obs": {

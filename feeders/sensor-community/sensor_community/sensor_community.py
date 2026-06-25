@@ -116,11 +116,11 @@ def _parse_bool(value: Any) -> bool:
     return str(value).strip().lower() in {"1", "true", "yes", "on"}
 
 
-def _generated_optional_number(value: float | None) -> str | None:
-    """Pass nullable numerics as strings so generated dataclasses preserve zero values."""
+def _generated_optional_number(value: float | None) -> float | None:
+    """Pass nullable numerics preserving zero values."""
     if value is None:
         return None
-    return str(value)
+    return float(value)
 
 
 @dataclass

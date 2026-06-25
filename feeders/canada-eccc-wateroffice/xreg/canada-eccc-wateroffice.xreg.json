@@ -324,7 +324,7 @@
                     "symbol": "°"
                   },
                   "basin": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
                 },
@@ -435,7 +435,7 @@
                     "symbol": "°"
                   },
                   "basin": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
                 },

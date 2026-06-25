@@ -519,7 +519,7 @@
                     "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   },
                   "state": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "event_type": {
@@ -563,7 +563,7 @@
                     "description": "Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'."
                   },
                   "state": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Two-letter US state or territory abbreviation."
                   },
                   "forecast_office": {
@@ -650,7 +650,7 @@
                     "description": "NWS fire weather zone identifier for the station's location."
                   },
                   "state": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "zone_id": {
@@ -798,7 +798,7 @@
                     "symbol": "°C"
                   },
                   "state": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "zone_id": {

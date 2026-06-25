@@ -23,7 +23,7 @@ class Zone:
         zone_id (str)
         name (str)
         type (typing.Optional[str])
-        state (str)
+        state (typing.Optional[str])
         forecast_office (typing.Optional[str])
         timezone (typing.Optional[str])
         radar_station (typing.Optional[str])
@@ -33,7 +33,7 @@ class Zone:
     zone_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
-    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     forecast_office: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_office"))
     timezone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timezone"))
     radar_station: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="radar_station"))
@@ -165,11 +165,11 @@ class Zone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='sieozdssejnfwvvxgefu',
-            name='chcutmpjftrlxmdyiuqk',
-            type='drsbbxkpjduengpsstar',
-            state='bcizkjhhxrnpxpxmgiuf',
-            forecast_office='ctipymjclfugmzrfxdqa',
-            timezone='kegclhdagiyawsxdmgbt',
-            radar_station='yyzwgkihptqxilaqgzhb'
+            zone_id='pfcngskkzkvlsuzsxdxn',
+            name='flbmeexcdomjlcvlenlx',
+            type='spvctjyahcyqmcvpnxif',
+            state='dxazljwafxtupkqnutiw',
+            forecast_office='mlrceswaszcovqulkkuv',
+            timezone='tzcwuvxtguztehohhwbv',
+            radar_station='ahdsyaeckfkpaieihtmj'
         )

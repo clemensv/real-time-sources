@@ -27,7 +27,7 @@ class WaterLevelReading:
         danger_level (typing.Optional[float])
         warning_level (typing.Optional[float])
         status (str)
-        trend (str)
+        trend (typing.Optional[str])
         water_level_on (str)
     """
     
@@ -39,7 +39,7 @@ class WaterLevelReading:
     danger_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="danger_level"))
     warning_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warning_level"))
     status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
-    trend: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
+    trend: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
     water_level_on: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_on"))
 
     @classmethod
@@ -169,13 +169,13 @@ class WaterLevelReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='dlgigemimkjsqxsrfqxc',
-            title='aibgxivkuprqzadlngot',
-            basin='ebdkrpchmwfuxtrgzbgc',
-            water_level=float(35.30836382135386),
-            danger_level=float(99.35035709887508),
-            warning_level=float(81.09107673082167),
-            status='aspkmeqkhozczyxgwfyc',
-            trend='nxbudgflrlqlrkkoprum',
-            water_level_on='nqmbbqrovfntjpumanrt'
+            station_id='qikfmvisqbqfscilceiz',
+            title='bazfpqqddejeimfmuafp',
+            basin='usahugeqrezzcxzdpipx',
+            water_level=float(38.7162041249381),
+            danger_level=float(84.99577476384755),
+            warning_level=float(7.360155447917027),
+            status='qpuzfpmtuvhlrtlmvfpa',
+            trend='dnqvmvvzjqnuyxmntywg',
+            water_level_on='euzmqfadvkztiosaytbq'
         )

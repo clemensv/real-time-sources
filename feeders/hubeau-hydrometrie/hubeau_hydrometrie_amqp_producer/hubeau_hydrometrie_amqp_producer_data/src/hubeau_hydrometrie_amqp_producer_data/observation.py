@@ -22,7 +22,7 @@ class Observation:
     Measurement payload for water height and discharge observations in the Hub'Eau Hydrométrie source.
     
     Attributes:
-        code_station (str)
+        code_station (typing.Optional[str])
         date_obs (datetime.datetime)
         resultat_obs (typing.Union[float, str])
         grandeur_hydro (str)
@@ -32,7 +32,7 @@ class Observation:
     """
     
     
-    code_station: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_station"))
+    code_station: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_station"))
     date_obs: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_obs", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     resultat_obs: typing.Union[float, str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="resultat_obs"))
     grandeur_hydro: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="grandeur_hydro"))
@@ -167,11 +167,11 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            code_station='sqcockkdmktepcrsvxfp',
+            code_station='jsjyidbfmdbbikfejalw',
             date_obs=datetime.datetime.now(datetime.timezone.utc),
-            resultat_obs=float(50.85665531515205),
-            grandeur_hydro='njqzphivbnlwalantdse',
-            libelle_methode_obs='qbvgpnksxckyntugwaev',
-            libelle_qualification_obs='dnkweotdbrhlseesmiqv',
-            basin='usseytrqxlnyngpjdukj'
+            resultat_obs=float(15.107213668556629),
+            grandeur_hydro='cidlxzzsldcrgohptzfx',
+            libelle_methode_obs='balcsjljhrqcqjutasde',
+            libelle_qualification_obs='lyqztrrzsnenayygnvbj',
+            basin='anhwcllwdvoepwicyoco'
         )
