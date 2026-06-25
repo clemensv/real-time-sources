@@ -278,7 +278,7 @@
                     "description": "Date when the station began operating, when the upstream catalog provides it."
                   },
                   "basin": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie."
                   }
                 },
@@ -340,7 +340,7 @@
                     "description": "Provider quality label describing how Hub'Eau qualifies the observation."
                   },
                   "basin": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie."
                   }
                 },

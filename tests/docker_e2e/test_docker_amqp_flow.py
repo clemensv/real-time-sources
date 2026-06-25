@@ -802,7 +802,7 @@ class TestTokyoDocomoBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "tokyo-docomo-bikeshare"
     image = "tokyo-docomo-bikeshare-amqp"
     env = {"ONCE_MODE": "true"}
-    expected_types = {'JP.ODPT.DocomoBikeshare.BikeshareSystem', 'JP.ODPT.DocomoBikeshare.BikeshareStation', 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus'}
+    expected_types = {'org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'}
     expected_count = 3
 
 class TestGbfsBikeshareAmqpDockerFlow(AmqpDockerFlowBase):

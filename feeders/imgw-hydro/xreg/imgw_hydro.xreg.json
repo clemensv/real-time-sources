@@ -266,7 +266,7 @@
                     "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "basin": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro."
                   }
                 },
@@ -406,7 +406,7 @@
                     "description": "Provider code identifying the overgrowth."
                   },
                   "basin": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro."
                   }
                 },

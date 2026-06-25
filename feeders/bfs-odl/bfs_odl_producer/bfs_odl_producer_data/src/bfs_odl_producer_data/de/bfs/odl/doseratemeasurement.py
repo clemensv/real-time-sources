@@ -22,24 +22,24 @@ class DoseRateMeasurement:
     Attributes:
         station_id (str)
         state (str)
-        start_measure (str)
-        end_measure (str)
+        start_measure (typing.Optional[str])
+        end_measure (typing.Optional[str])
         value (typing.Optional[float])
         value_cosmic (typing.Optional[float])
         value_terrestrial (typing.Optional[float])
-        validated (int)
+        validated (typing.Optional[int])
         nuclide (str)
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
-    start_measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_measure"))
-    end_measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_measure"))
+    start_measure: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_measure"))
+    end_measure: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_measure"))
     value: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     value_cosmic: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value_cosmic"))
     value_terrestrial: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value_terrestrial"))
-    validated: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="validated"))
+    validated: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="validated"))
     nuclide: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="nuclide"))
 
     @classmethod
@@ -169,13 +169,13 @@ class DoseRateMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='clqrqtazghqbhtrlsowv',
-            state='owfxhwpeifkussodnqxf',
-            start_measure='iwdmuflbjsezcnxypoyx',
-            end_measure='gfrtbzifbqbaqqmsmlsy',
-            value=float(87.25496526329114),
-            value_cosmic=float(41.47067448252149),
-            value_terrestrial=float(72.89282793054845),
-            validated=int(57),
-            nuclide='wttfvkhsiwotgvecwvdd'
+            station_id='gqjmbvqyozglhaeslyqa',
+            state='pgpfjrbfffazlwntqlqk',
+            start_measure='fhddvvqkezvhcfsxrqdv',
+            end_measure='sldvqxqadznbcvvzeocj',
+            value=float(16.05196156826876),
+            value_cosmic=float(77.1903173058846),
+            value_terrestrial=float(53.880310036317894),
+            validated=int(60),
+            nuclide='fnhiwxryaevyqjumtpax'
         )

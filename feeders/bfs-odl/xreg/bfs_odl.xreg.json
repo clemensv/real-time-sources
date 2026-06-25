@@ -322,11 +322,11 @@
                               "description": "German federal state (Bundesland) derived from the station Kennziffer. Propagated from station catalog so subscribers can route by state without a catalog join. Used as the {state} segment of the MQTT/UNS topic."
                             },
                             "start_measure": {
-                              "type": "string",
+                              "type": ["string", "null"],
                               "description": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'."
                             },
                             "end_measure": {
-                              "type": "string",
+                              "type": ["string", "null"],
                               "description": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'."
                             },
                             "value": {
@@ -357,7 +357,7 @@
                               "symbol": "µSv/h"
                             },
                             "validated": {
-                              "type": "int32",
+                              "type": ["int32", "null"],
                               "description": "Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated."
                             },
                             "nuclide": {
@@ -368,12 +368,6 @@
                           "required": [
                             "station_id",
                             "state",
-                            "start_measure",
-                            "end_measure",
-                            "value",
-                            "value_cosmic",
-                            "value_terrestrial",
-                            "validated",
                             "nuclide"
                           ]
                         }

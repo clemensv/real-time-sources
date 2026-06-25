@@ -28,15 +28,15 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         Create instance of DoseRateMeasurement for testing
         """
         instance = DoseRateMeasurement(
-            station_id='clqrqtazghqbhtrlsowv',
-            state='owfxhwpeifkussodnqxf',
-            start_measure='iwdmuflbjsezcnxypoyx',
-            end_measure='gfrtbzifbqbaqqmsmlsy',
-            value=float(87.25496526329114),
-            value_cosmic=float(41.47067448252149),
-            value_terrestrial=float(72.89282793054845),
-            validated=int(57),
-            nuclide='wttfvkhsiwotgvecwvdd'
+            station_id='gqjmbvqyozglhaeslyqa',
+            state='pgpfjrbfffazlwntqlqk',
+            start_measure='fhddvvqkezvhcfsxrqdv',
+            end_measure='sldvqxqadznbcvvzeocj',
+            value=float(16.05196156826876),
+            value_cosmic=float(77.1903173058846),
+            value_terrestrial=float(53.880310036317894),
+            validated=int(60),
+            nuclide='fnhiwxryaevyqjumtpax'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'clqrqtazghqbhtrlsowv'
+        test_value = 'gqjmbvqyozglhaeslyqa'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'owfxhwpeifkussodnqxf'
+        test_value = 'pgpfjrbfffazlwntqlqk'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -61,7 +61,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test start_measure property
         """
-        test_value = 'iwdmuflbjsezcnxypoyx'
+        test_value = 'fhddvvqkezvhcfsxrqdv'
         self.instance.start_measure = test_value
         self.assertEqual(self.instance.start_measure, test_value)
     
@@ -69,7 +69,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test end_measure property
         """
-        test_value = 'gfrtbzifbqbaqqmsmlsy'
+        test_value = 'sldvqxqadznbcvvzeocj'
         self.instance.end_measure = test_value
         self.assertEqual(self.instance.end_measure, test_value)
     
@@ -77,7 +77,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(87.25496526329114)
+        test_value = float(16.05196156826876)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -85,7 +85,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test value_cosmic property
         """
-        test_value = float(41.47067448252149)
+        test_value = float(77.1903173058846)
         self.instance.value_cosmic = test_value
         self.assertEqual(self.instance.value_cosmic, test_value)
     
@@ -93,7 +93,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test value_terrestrial property
         """
-        test_value = float(72.89282793054845)
+        test_value = float(53.880310036317894)
         self.instance.value_terrestrial = test_value
         self.assertEqual(self.instance.value_terrestrial, test_value)
     
@@ -101,7 +101,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test validated property
         """
-        test_value = int(57)
+        test_value = int(60)
         self.instance.validated = test_value
         self.assertEqual(self.instance.validated, test_value)
     
@@ -109,7 +109,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test nuclide property
         """
-        test_value = 'wttfvkhsiwotgvecwvdd'
+        test_value = 'fnhiwxryaevyqjumtpax'
         self.instance.nuclide = test_value
         self.assertEqual(self.instance.nuclide, test_value)
     
