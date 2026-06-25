@@ -380,7 +380,10 @@
                     "type": "string",
                     "description": "Lowercase kebab-case slug derived from the CAP event field for topic partitioning."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

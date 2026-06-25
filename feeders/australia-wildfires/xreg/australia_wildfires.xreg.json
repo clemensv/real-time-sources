@@ -234,7 +234,10 @@
                     "type": "string",
                     "description": "URL pointing to the original incident details or the source feed. NSW: GUID permalink from the RFS feed (e.g. 'https://incidents.rfs.nsw.gov.au/api/v1/incidents/653509'). VIC: constructed URL to the VicEmergency warning page. QLD: static URL of the QFD bushfire alert feed."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

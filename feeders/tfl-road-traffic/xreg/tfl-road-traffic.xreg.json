@@ -639,7 +639,10 @@
                       "upstream": "statusAggregationEndDate"
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -737,7 +740,10 @@
                       "upstream": "statusAggregationEndDate"
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1030,7 +1036,10 @@
                       "upstream": "isActive"
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

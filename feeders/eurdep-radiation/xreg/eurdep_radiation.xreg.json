@@ -264,7 +264,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -352,7 +355,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -485,6 +491,9 @@
                     "type": "int",
                     "doc": "Validation status flag. 0 = not validated, 1 = nationally validated, 2 = EURDEP validated."
                   }
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }

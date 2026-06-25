@@ -606,7 +606,11 @@
                       "max_intensity"
                     ]
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

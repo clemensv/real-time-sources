@@ -278,7 +278,10 @@
                     "type": "string",
                     "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -466,7 +469,10 @@
                     "type": "string",
                     "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

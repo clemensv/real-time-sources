@@ -458,7 +458,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -522,7 +525,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

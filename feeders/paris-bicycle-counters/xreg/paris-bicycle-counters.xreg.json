@@ -283,7 +283,10 @@
                     "type": "string",
                     "description": "Deterministic CloudEvents id for the retained counter reference record."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -369,7 +372,10 @@
                     "type": "string",
                     "description": "Deterministic CloudEvents id composed from counter_id and hourly count date for subscriber deduplication."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

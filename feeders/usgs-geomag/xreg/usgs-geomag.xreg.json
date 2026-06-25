@@ -259,7 +259,10 @@
                   }
                 },
                 "$id": "https://geomag.usgs.gov/schemas/gov/usgs/geomag/Observatory",
-                "description": "Reference data for a USGS Geomagnetism Program observatory, sourced from the INTERMAGNET-compatible observatories GeoJSON endpoint at https://geomag.usgs.gov/ws/observatories/. Each feature represents a ground-based magnetometer station that continuously records geomagnetic field variations."
+                "description": "Reference data for a USGS Geomagnetism Program observatory, sourced from the INTERMAGNET-compatible observatories GeoJSON endpoint at https://geomag.usgs.gov/ws/observatories/. Each feature represents a ground-based magnetometer station that continuously records geomagnetic field variations.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -326,7 +329,10 @@
                   }
                 },
                 "$id": "https://geomag.usgs.gov/schemas/gov/usgs/geomag/MagneticFieldReading",
-                "description": "One-minute resolution geomagnetic field variation reading from a USGS Geomagnetism Program observatory, sourced from the timeseries web-service at https://geomag.usgs.gov/ws/data/. The H, D, Z, and F elements correspond to the four standard INTERMAGNET variation data components. The timeseries API returns parallel arrays (times + per-element value arrays) which the bridge transforms into individual timestamped events."
+                "description": "One-minute resolution geomagnetic field variation reading from a USGS Geomagnetism Program observatory, sourced from the timeseries web-service at https://geomag.usgs.gov/ws/data/. The H, D, Z, and F elements correspond to the four standard INTERMAGNET variation data components. The timeseries API returns parallel arrays (times + per-element value arrays) which the bridge transforms into individual timestamped events.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

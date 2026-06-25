@@ -724,7 +724,10 @@
                     "description": "Original ITU-R M.1371 message ID (21)."
                   }
                 },
-                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/AidToNavigation"
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/AidToNavigation",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -830,7 +833,10 @@
                     "description": "Original ITU-R M.1371 message ID (1, 2, 3, 18, or 19)."
                   }
                 },
-                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/PositionReport"
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/PositionReport",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -947,7 +953,10 @@
                     "description": "Original ITU-R M.1371 message ID (5 or 24)."
                   }
                 },
-                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/ShipStatic"
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/ShipStatic",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

@@ -512,7 +512,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -603,7 +606,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -745,7 +751,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -853,7 +862,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

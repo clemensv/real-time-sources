@@ -323,7 +323,11 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

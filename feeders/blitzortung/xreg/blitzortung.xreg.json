@@ -281,6 +281,10 @@
                   "detector_participations",
                   "geohash5",
                   "geohash7"
+                ],
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
                 ]
               }
             }

@@ -504,7 +504,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -880,7 +883,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1115,7 +1121,11 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1319,7 +1329,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

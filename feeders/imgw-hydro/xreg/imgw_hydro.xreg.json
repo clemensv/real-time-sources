@@ -271,7 +271,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/Station",
-                "description": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source."
+                "description": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -408,7 +411,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/WaterLevelObservation",
-                "description": "Measurement payload for water level and discharge observations in the IMGW-PIB Hydrological Data source."
+                "description": "Measurement payload for water level and discharge observations in the IMGW-PIB Hydrological Data source.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

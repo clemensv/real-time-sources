@@ -402,7 +402,10 @@
                     "type": "string",
                     "description": "Raw Meteoalarm awareness_type parameter value as provided by CAP, for example \"2; Snow/Ice\"."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

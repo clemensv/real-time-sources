@@ -933,6 +933,9 @@
                 },
                 "required": [
                   "measurement_site_id"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1028,6 +1031,9 @@
                 },
                 "required": [
                   "measurement_site_id"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1080,6 +1086,9 @@
                   "measurement_site_id",
                   "measurement_time",
                   "number_of_lanes_with_data"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1150,6 +1159,9 @@
                 "required": [
                   "measurement_site_id",
                   "measurement_time"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1218,6 +1230,9 @@
                 "required": [
                   "vms_controller_id",
                   "vms_index"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1352,6 +1367,9 @@
                 },
                 "required": [
                   "sign_id"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1405,6 +1423,9 @@
                 "required": [
                   "sign_id",
                   "publication_time"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1733,6 +1754,9 @@
                 "required": [
                   "situation_record_id",
                   "version_time"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }

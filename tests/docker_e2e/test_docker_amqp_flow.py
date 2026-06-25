@@ -757,7 +757,7 @@ class TestFrenchRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
 class TestGTFSAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "gtfs"
     image = "gtfs-amqp"
-    env = {"ONCE_MODE": "true", "AGENCY": "trimet"}
+    env = {"ONCE_MODE": "true", "AGENCY": "trimet", "GTFS_URLS": "https://developer.trimet.org/schedule/gtfs.zip", "MDB_SOURCE_ID": "868"}
     expected_types = {'GeneralTransitFeedStatic.Transfers', 'GeneralTransitFeedStatic.FeedInfo', 'GeneralTransitFeedStatic.FareAttributes', 'GeneralTransitFeedStatic.StopAreas', 'GeneralTransitFeedStatic.LocationGroups', 'GeneralTransitFeedStatic.Pathways', 'GeneralTransitFeedStatic.Trips', 'GeneralTransitFeedRealTime.Trip.TripUpdate', 'GeneralTransitFeedStatic.Areas', 'GeneralTransitFeedStatic.LocationGeoJson', 'GeneralTransitFeedStatic.Networks', 'GeneralTransitFeedStatic.Routes', 'GeneralTransitFeedStatic.FareProducts', 'GeneralTransitFeedStatic.StopTimes', 'GeneralTransitFeedStatic.FareTransferRules', 'GeneralTransitFeedStatic.Frequencies', 'GeneralTransitFeedStatic.RouteNetworks', 'GeneralTransitFeedRealTime.Alert.Alert', 'GeneralTransitFeed.BookingRules', 'GeneralTransitFeedStatic.Levels', 'GeneralTransitFeedStatic.Stops', 'GeneralTransitFeedStatic.Timeframes', 'GeneralTransitFeedStatic.Shapes', 'GeneralTransitFeedStatic.LocationGroupStores', 'GeneralTransitFeedStatic.Attributions', 'GeneralTransitFeedStatic.FareRules', 'GeneralTransitFeedStatic.FareMedia', 'GeneralTransitFeedStatic.Agency', 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition', 'GeneralTransitFeedStatic.Translations', 'GeneralTransitFeedStatic.FareLegRules'}
     expected_count = 31
 

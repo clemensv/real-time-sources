@@ -2039,7 +2039,11 @@
                 ],
                 "altnames": {
                   "kql": "ActualGenerationPerType"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2090,7 +2094,11 @@
                 ],
                 "altnames": {
                   "kql": "DayAheadPrices"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2140,7 +2148,11 @@
                 ],
                 "altnames": {
                   "kql": "ActualTotalLoad"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2196,7 +2208,11 @@
                 ],
                 "altnames": {
                   "kql": "WindSolarForecast"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2242,7 +2258,11 @@
                 ],
                 "altnames": {
                   "kql": "LoadForecastMargin"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2288,7 +2308,11 @@
                 ],
                 "altnames": {
                   "kql": "GenerationForecast"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2334,7 +2358,11 @@
                 ],
                 "altnames": {
                   "kql": "ReservoirFillingInformation"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2380,7 +2408,11 @@
                 ],
                 "altnames": {
                   "kql": "ActualGeneration"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2436,7 +2468,11 @@
                 ],
                 "altnames": {
                   "kql": "WindSolarGeneration"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2492,7 +2528,11 @@
                 ],
                 "altnames": {
                   "kql": "InstalledGenerationCapacityPerType"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2543,7 +2583,11 @@
                 ],
                 "altnames": {
                   "kql": "CrossBorderPhysicalFlows"
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

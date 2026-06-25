@@ -4204,7 +4204,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for precipitation events in the USGS Instantaneous Values source."
+                "description": "Payload record for precipitation events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4270,7 +4273,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4336,7 +4342,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4401,7 +4410,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4466,7 +4478,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for dissolved oxygen events in the USGS Instantaneous Values source."
+                "description": "Payload record for dissolved oxygen events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4531,7 +4546,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for p h events in the USGS Instantaneous Values source."
+                "description": "Payload record for p h events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4597,7 +4615,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for specific conductance events in the USGS Instantaneous Values source."
+                "description": "Payload record for specific conductance events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4662,7 +4683,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for turbidity events in the USGS Instantaneous Values source."
+                "description": "Payload record for turbidity events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4727,7 +4751,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for wind speed events in the USGS Instantaneous Values source."
+                "description": "Payload record for wind speed events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4792,7 +4819,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for wind direction events in the USGS Instantaneous Values source."
+                "description": "Payload record for wind direction events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4857,7 +4887,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for relative humidity events in the USGS Instantaneous Values source."
+                "description": "Payload record for relative humidity events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4922,7 +4955,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for barometric pressure events in the USGS Instantaneous Values source."
+                "description": "Payload record for barometric pressure events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -4987,7 +5023,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5052,7 +5091,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for turbidity f n u events in the USGS Instantaneous Values source."
+                "description": "Payload record for turbidity f n u events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5117,7 +5159,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for f d o m events in the USGS Instantaneous Values source."
+                "description": "Payload record for f d o m events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5182,7 +5227,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Reservoir status record from the USGS Instantaneous Values source."
+                "description": "Reservoir status record from the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5247,7 +5295,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for lake elevation n g v d29 events in the USGS Instantaneous Values source."
+                "description": "Payload record for lake elevation n g v d29 events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5312,7 +5363,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for water depth events in the USGS Instantaneous Values source."
+                "description": "Payload record for water depth events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5425,7 +5479,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5490,7 +5547,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for water velocity events in the USGS Instantaneous Values source."
+                "description": "Payload record for water velocity events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5555,7 +5615,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for estuary elevation n g v d29 events in the USGS Instantaneous Values source."
+                "description": "Payload record for estuary elevation n g v d29 events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5620,7 +5683,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for lake elevation n a v d88 events in the USGS Instantaneous Values source."
+                "description": "Payload record for lake elevation n a v d88 events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5685,7 +5751,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for salinity events in the USGS Instantaneous Values source."
+                "description": "Payload record for salinity events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -5750,7 +5819,10 @@
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
                 ],
-                "description": "Payload record for gate opening events in the USGS Instantaneous Values source."
+                "description": "Payload record for gate opening events in the USGS Instantaneous Values source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

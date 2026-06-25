@@ -286,7 +286,10 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -466,7 +469,11 @@
                       }
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

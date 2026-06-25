@@ -278,7 +278,10 @@
                       "unknown": "Provider value `unknown` for this coded alert field."
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

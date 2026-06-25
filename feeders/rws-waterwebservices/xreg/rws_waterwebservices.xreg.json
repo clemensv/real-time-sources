@@ -220,7 +220,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/Station",
-                "description": "Reference details for one monitoring station or site in the RWS Waterwebservices source."
+                "description": "Reference details for one monitoring station or site in the RWS Waterwebservices source.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -295,7 +298,11 @@
                   }
                 },
                 "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/WaterLevelObservation",
-                "description": "Measurement payload for water level observations in the RWS Waterwebservices source."
+                "description": "Measurement payload for water level observations in the RWS Waterwebservices source.",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -421,7 +428,10 @@
                   }
                 ],
                 "namespace": "NL.RWS.Waterwebservices",
-                "description": "Measurement payload for observations in the RWS Waterwebservices source."
+                "description": "Measurement payload for observations in the RWS Waterwebservices source.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

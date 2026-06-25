@@ -297,7 +297,10 @@
                     "description": "Topic-safe EAWS danger level derived from the highest danger rating, or 'unknown' when no rating is present."
                   }
                 },
-                "description": "An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source."
+                "description": "An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

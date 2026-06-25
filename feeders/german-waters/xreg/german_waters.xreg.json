@@ -273,7 +273,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/Waters/Hydrology/Station",
-                "description": "Reference details for one monitoring station or site in the German Waters source."
+                "description": "Reference details for one monitoring station or site in the German Waters source.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -332,11 +335,17 @@
                     "description": "Time associated with the discharge measurement."
                   },
                   "trend": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Provider-supplied trend value for this record."
                   },
                   "situation": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Provider-supplied situation value for this record."
                   }
                 },

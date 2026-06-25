@@ -896,6 +896,9 @@
                     },
                     "doc": "Variables advertised by the ERDDAP info table, including units and CF/IOOS metadata used to normalize observations."
                   }
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -1142,6 +1145,9 @@
                     },
                     "doc": "Map of selected ERDDAP variable name to normalized value and variable metadata. This preserves heterogeneous dataset-specific measurements without inventing fixed units in the contract."
                   }
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }

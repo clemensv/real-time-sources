@@ -1218,7 +1218,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/StationMetadata",
-                "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events."
+                "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1325,7 +1328,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/AirTemperature10Min",
-                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1399,7 +1405,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Precipitation10Min",
-                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1473,7 +1482,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Wind10Min",
-                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1569,7 +1581,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Solar10Min",
-                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1634,7 +1649,11 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/HourlyObservation",
-                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1817,7 +1836,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeWind10Min",
-                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -1891,7 +1913,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeTemperature10Min",
-                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

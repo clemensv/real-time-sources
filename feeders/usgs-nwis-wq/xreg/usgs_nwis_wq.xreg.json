@@ -375,7 +375,10 @@
                   "unit",
                   "date_time"
                 ],
-                "$schema": "https://json-structure.org/meta/extended/v0/#"
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

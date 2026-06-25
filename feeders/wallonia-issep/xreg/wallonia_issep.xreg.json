@@ -219,7 +219,10 @@
                     "type": "string",
                     "description": "Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or \"unknown\" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -680,7 +683,11 @@
                       "issep": "pm10_rf"
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

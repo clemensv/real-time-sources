@@ -449,7 +449,10 @@
                     "type": "string",
                     "description": "Comma-separated list of observation types this station reports. Values: 'air_temperature', 'rainfall', 'relative_humidity', 'wind_speed', 'wind_direction'."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -530,7 +533,10 @@
                     "unit": "degree",
                     "symbol": "°"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -581,7 +587,11 @@
                     "unit": "degree",
                     "symbol": "°"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -733,7 +743,11 @@
                     "symbol": "µg/m³",
                     "minimum": 0
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -787,7 +801,11 @@
                     "symbol": "µg/m³",
                     "minimum": 0
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

@@ -395,7 +395,10 @@
                       "red": "Provider value `red` for this coded alert field."
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

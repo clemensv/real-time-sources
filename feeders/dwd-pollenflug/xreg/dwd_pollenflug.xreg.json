@@ -563,7 +563,10 @@
                     "default": null,
                     "description": "Normalized routing field 'pollen_type' added for MQTT/AMQP subscriber filtering."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

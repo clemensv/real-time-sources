@@ -335,6 +335,10 @@
                   "latitude",
                   "longitude",
                   "level_operation"
+                ],
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -474,6 +478,9 @@
                   "condition",
                   "info_type_jp",
                   "area_codes"
+                ],
+                "$uses": [
+                  "JSONStructureAlternateNames"
                 ]
               }
             }
@@ -666,6 +673,10 @@
                   "report_datetime_local",
                   "description",
                   "area_codes"
+                ],
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
                 ]
               }
             }

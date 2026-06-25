@@ -724,7 +724,11 @@
                     ],
                     "description": "Timestamp when this metadata row was last updated by DMI."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },
@@ -838,7 +842,11 @@
                     "minimum": -180,
                     "maximum": 180
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },
@@ -988,7 +996,11 @@
                       "null"
                     ]
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },
@@ -1084,7 +1096,11 @@
                       "json": "validTo"
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },
@@ -1171,7 +1187,11 @@
                     "minimum": -180,
                     "maximum": 180
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },
@@ -1252,7 +1272,11 @@
                     "minimum": -180,
                     "maximum": 180
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },
@@ -1346,7 +1370,11 @@
                       "json": "activeTo"
                     }
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },
@@ -1438,7 +1466,11 @@
                     "minimum": -180,
                     "maximum": 180
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           },

@@ -624,7 +624,11 @@
                     "type": "integer",
                     "description": "Number of ground magnetometer stations contributing data to this Kp determination. Typical station count is 8-13; fewer stations may reduce measurement confidence."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -675,7 +679,11 @@
                     "unit": "nT",
                     "symbol": "nT"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -731,7 +739,11 @@
                     "unit": "K",
                     "symbol": "K"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -814,7 +826,11 @@
                     "unit": "nT",
                     "symbol": "nT"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -857,7 +873,10 @@
                     "type": "string",
                     "description": "X-ray energy band identifier: '0.05-0.4nm' (short wavelength, harder X-rays) or '0.1-0.8nm' (long wavelength, softer X-rays used for flare classification)."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -900,7 +919,10 @@
                     "type": "string",
                     "description": "Proton energy threshold identifier: '>=10 MeV' (NOAA S-scale metric), '>=50 MeV', '>=100 MeV', or '>=500 MeV'. Higher thresholds indicate more energetic and penetrating radiation."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -943,7 +965,10 @@
                     "type": "string",
                     "description": "Electron energy threshold identifier, currently '>=2 MeV'. This channel is monitored for spacecraft internal charging hazard assessment."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1026,7 +1051,11 @@
                     ],
                     "description": "When true, the satellite's electric propulsion (arcjet) thrusters are firing, which causes magnetic field contamination. Magnetometer readings during arcjet events should be treated with caution as they may not reflect the ambient geomagnetic field."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1129,7 +1158,10 @@
                     "type": "integer",
                     "description": "GOES satellite number that detected this flare event (e.g., 18 for GOES-18, 19 for GOES-19)."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

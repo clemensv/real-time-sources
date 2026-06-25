@@ -393,7 +393,10 @@
                     "unit": "degree",
                     "symbol": "°"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -654,7 +657,10 @@
                     "type": "string",
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

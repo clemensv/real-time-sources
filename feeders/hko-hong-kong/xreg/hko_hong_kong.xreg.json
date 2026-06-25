@@ -356,7 +356,10 @@
                     "type": "string",
                     "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

@@ -444,7 +444,10 @@
                   }
                 },
                 "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Station",
-                "description": "Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship."
+                "description": "Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -549,7 +552,10 @@
                   }
                 },
                 "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Measurement",
-                "description": "Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³."
+                "description": "Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

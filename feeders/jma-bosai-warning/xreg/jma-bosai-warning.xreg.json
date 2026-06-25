@@ -343,6 +343,9 @@
                   "prefecture",
                   "severity",
                   "event"
+                ],
+                "$uses": [
+                  "JSONStructureAlternateNames"
                 ]
               }
             }
@@ -618,6 +621,9 @@
                   "time_defines",
                   "severity",
                   "event"
+                ],
+                "$uses": [
+                  "JSONStructureAlternateNames"
                 ]
               }
             }
@@ -903,6 +909,10 @@
                   "detail_url",
                   "affected_coastal_regions",
                   "observations"
+                ],
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
                 ]
               }
             }

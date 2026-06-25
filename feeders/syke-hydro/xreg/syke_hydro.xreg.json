@@ -268,7 +268,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/Station",
-                "description": "Reference details for one monitoring station or site in the SYKE Hydrology source."
+                "description": "Reference details for one monitoring station or site in the SYKE Hydrology source.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -355,7 +358,10 @@
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation",
-                "description": "Measurement payload for water level and discharge observations in the SYKE Hydrology source."
+                "description": "Measurement payload for water level and discharge observations in the SYKE Hydrology source.",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

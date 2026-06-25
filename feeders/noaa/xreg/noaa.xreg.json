@@ -2207,7 +2207,10 @@
                 "altnames": {
                   "kql": "WaterLevel"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -2243,7 +2246,10 @@
                 "altnames": {
                   "kql": "Predictions"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -2295,7 +2301,11 @@
                 "altnames": {
                   "kql": "AirPressure"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2347,7 +2357,11 @@
                 "altnames": {
                   "kql": "AirTemperature"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2398,7 +2412,10 @@
                 "altnames": {
                   "kql": "WaterTemperature"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -2462,7 +2479,11 @@
                 "altnames": {
                   "kql": "Wind"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2514,7 +2535,11 @@
                 "altnames": {
                   "kql": "Humidity"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2566,7 +2591,11 @@
                 "altnames": {
                   "kql": "Conductivity"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2609,7 +2638,11 @@
                 "altnames": {
                   "kql": "Salinity"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -2916,7 +2949,10 @@
                 "altnames": {
                   "kql": "Station"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -2968,7 +3004,11 @@
                 "altnames": {
                   "kql": "noaa_events"
                 },
-                "ce_type": "Microsoft.OpenData.US.NOAA.Visibility"
+                "ce_type": "Microsoft.OpenData.US.NOAA.Visibility",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -3016,7 +3056,11 @@
                 "altnames": {
                   "kql": "Currents"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -3076,7 +3120,11 @@
                 "altnames": {
                   "kql": "CurrentPredictions"
                 },
-                "namespace": "Microsoft.OpenData.US.NOAA"
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

@@ -755,7 +755,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation",
-                "description": "Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide."
+                "description": "Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -836,7 +839,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation",
-                "description": "Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform."
+                "description": "Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -898,7 +904,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySolarRadiationObservation",
-                "description": "Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station."
+                "description": "Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1019,7 +1028,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyOceanographicObservation",
-                "description": "Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp."
+                "description": "Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1066,7 +1078,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDartMeasurement",
-                "description": "Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station."
+                "description": "Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1145,7 +1160,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyContinuousWindObservation",
-                "description": "Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred."
+                "description": "Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1223,7 +1241,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySupplementalMeasurement",
-                "description": "Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times."
+                "description": "Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1342,7 +1363,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDetailedWaveSummary",
-                "description": "Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp."
+                "description": "Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -1386,7 +1410,10 @@
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyHourlyRainMeasurement",
-                "description": "Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp."
+                "description": "Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

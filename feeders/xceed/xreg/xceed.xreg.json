@@ -371,7 +371,10 @@
                     ],
                     "description": "ISO 3166-1 alpha-2 country code indicating the country where the venue is located. Extracted from 'venue.countryCode' or the venue location object in the /events response. Examples: 'DE', 'GB', 'ES', 'FR'. Null if country information is unavailable."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }
@@ -462,7 +465,11 @@
                     ],
                     "description": "Remaining quantity for this offer at the time the API was polled. Derived from the upstream 'quantity' field when present, with fallback to a top-level 'remaining' field if Xceed exposes one in future. Null when remaining quantity is not tracked or not exposed through the public API. A value of 0 typically accompanies is_sold_out=true."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

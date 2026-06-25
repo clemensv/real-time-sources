@@ -265,7 +265,11 @@
                   }
                 },
                 "$id": "https://informo.madrid.es/schemas/es/madrid/informo/MeasurementPoint",
-                "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value."
+                "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -352,7 +356,11 @@
                   }
                 },
                 "$id": "https://informo.madrid.es/schemas/es/madrid/informo/TrafficReading",
-                "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value."
+                "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

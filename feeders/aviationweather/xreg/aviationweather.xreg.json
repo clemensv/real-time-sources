@@ -383,7 +383,10 @@
                   }
                 },
                 "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Station",
-                "description": "Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products."
+                "description": "Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -565,7 +568,10 @@
                   }
                 },
                 "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Metar",
-                "description": "METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station."
+                "description": "METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -688,7 +694,10 @@
                   }
                 },
                 "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Sigmet",
-                "description": "SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash."
+                "description": "SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

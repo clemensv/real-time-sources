@@ -245,7 +245,11 @@
                     "unit": "degree",
                     "symbol": "°"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -315,7 +319,10 @@
                       "Serious"
                     ]
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames"
+                ]
               }
             }
           }

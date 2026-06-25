@@ -304,6 +304,9 @@
                   "period_from",
                   "period_to",
                   "region"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -425,6 +428,9 @@
                   "period_from",
                   "period_to",
                   "region"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }
@@ -576,6 +582,9 @@
                   "region",
                   "period_from",
                   "period_to"
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }

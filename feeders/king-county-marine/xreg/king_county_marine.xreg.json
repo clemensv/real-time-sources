@@ -468,7 +468,10 @@
                     "unit": "V",
                     "symbol": "V"
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

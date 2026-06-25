@@ -327,7 +327,11 @@
                     "type": "string",
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -434,7 +438,11 @@
                     "type": "string",
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureUnits"
+                ]
               }
             }
           }

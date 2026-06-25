@@ -511,7 +511,10 @@
                     ],
                     "description": "Percentage of the total grid load that is covered by renewable generation (0–100). Calculated by dividing renewable generation by total load. Corresponds to the 'Renewable share of load' production type."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -568,7 +571,10 @@
                     ],
                     "description": "Unit label as returned by the Energy-Charts API (e.g. 'EUR / MWh'). Included for traceability with the upstream response."
                   }
-                }
+                },
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -997,6 +1003,9 @@
                     ],
                     "default": null
                   }
+                ],
+                "$uses": [
+                  "JSONStructureUnits"
                 ]
               }
             }

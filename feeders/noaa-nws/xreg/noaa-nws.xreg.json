@@ -659,7 +659,10 @@
                   }
                 },
                 "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/ObservationStation",
-                "description": "NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US."
+                "description": "NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US.",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
@@ -804,7 +807,10 @@
                   }
                 },
                 "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherObservation",
-                "description": "Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl)."
+                "description": "Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl).",
+                "$uses": [
+                  "JSONStructureUnits"
+                ]
               }
             }
           }
