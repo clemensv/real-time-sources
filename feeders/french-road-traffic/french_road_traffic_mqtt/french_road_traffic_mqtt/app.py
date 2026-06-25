@@ -92,7 +92,7 @@ async def _publish_cycle(
     for record in source.fetch_traffic_flow():
         await flow_client.publish_fr_gouv_transport_bison_fute_traffic_flow_measurement_mqtt(
             feedurl=FEED_SOURCE_FLOW,
-            site_id=record["site_id"],
+            site_id=normalize_road_segment(record["site_id"]),
             road="unknown",
             data=_flow_data(record),
         )
@@ -100,7 +100,7 @@ async def _publish_cycle(
     for record in source.fetch_road_events():
         await event_client.publish_fr_gouv_transport_bison_fute_road_event_mqtt(
             feedurl=FEED_SOURCE_EVENTS,
-            situation_id=record["situation_id"],
+            situation_id=normalize_road_segment(record["situation_id"]),
             road=normalize_road_segment(record.get("road_number")),
             data=_event_data(record),
         )

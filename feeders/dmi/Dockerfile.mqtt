@@ -17,6 +17,7 @@ COPY . /app
 RUN pip install --no-cache-dir confluent-kafka \
  && pip install --no-cache-dir ./dmi_mqtt_producer/dmi_mqtt_producer_data \
  && pip install --no-cache-dir ./dmi_mqtt_producer/dmi_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./dmi_amqp_producer/dmi_amqp_producer_data \
  && pip install --no-cache-dir ./dmi_core \
  && pip install --no-cache-dir ./dmi_producer/dmi_producer_kafka_producer \
  && pip install --no-cache-dir ./dmi_mqtt

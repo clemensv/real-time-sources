@@ -5623,7 +5623,7 @@ class _B3SimpleMqttFlow:
                 detach=True,
                 remove=False,
                 network=network.name,
-                environment={'MQTT_BROKER_URL': f'mqtt://{self.image}-e2e-broker:1883', 'PYTHONUNBUFFERED': '1'},
+                environment={'MQTT_BROKER_URL': f'mqtt://{self.image}-e2e-broker:1883', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'},
             )
             result = feeder.wait(timeout=240)
             logs = feeder.logs().decode('utf-8', errors='replace')
