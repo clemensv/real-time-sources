@@ -15,7 +15,9 @@ COPY . /app
 RUN pip install --no-cache-dir confluent-kafka \
  && pip install --no-cache-dir ./jma_bosai_amedas_producer/jma_bosai_amedas_producer_data \
  && pip install --no-cache-dir ./jma_bosai_amedas_producer/jma_bosai_amedas_producer_kafka_producer \
- && pip install --no-cache-dir ./jma_bosai_amedas_mqtt_producer/jma_bosai_amedas_mqtt_producer_data
+ && pip install --no-cache-dir ./jma_bosai_amedas_mqtt_producer/jma_bosai_amedas_mqtt_producer_data \
+ && pip install --no-cache-dir ./jma_bosai_amedas_mqtt_producer/jma_bosai_amedas_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./jma_bosai_amedas_mqtt
 
 ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "jma_bosai_amedas_mqtt", "feed"]

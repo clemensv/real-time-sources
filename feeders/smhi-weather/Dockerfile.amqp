@@ -21,7 +21,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-RUN pip install --no-cache-dir ./smhi_weather_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./smhi_weather_core \
  && pip install --no-cache-dir ./smhi_weather_producer/smhi_weather_producer_data \
  && pip install --no-cache-dir ./smhi_weather_amqp_producer/smhi_weather_amqp_producer_data \
  && pip install --no-cache-dir ./smhi_weather_amqp_producer/smhi_weather_amqp_producer_amqp_producer \

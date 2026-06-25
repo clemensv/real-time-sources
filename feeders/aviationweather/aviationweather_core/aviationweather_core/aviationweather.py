@@ -186,13 +186,16 @@ class AviationWeatherPoller:
             return None
         report_time = raw.get("reportTime")
         if isinstance(report_time, str):
+            report_time = report_time.replace("Z", "+00:00")
             try:
-                datetime.fromisoformat(report_time.replace("Z", "+00:00"))
+                datetime.fromisoformat(report_time)
             except ValueError:
                 report_time = None
         clouds_raw = raw.get("clouds")
         clouds_str = json.dumps(clouds_raw) if clouds_raw is not None else None
         visib = raw.get("visib")
+        if isinstance(obs_time, str):
+            obs_time = obs_time.replace("Z", "+00:00")
         return Metar(
             icao_id=icao_id,
             obs_time=datetime.fromisoformat(obs_time),

@@ -13,6 +13,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 RUN pip install --no-cache-dir confluent-kafka \
  && pip install --no-cache-dir ./luchtmeetnet_nl_producer/luchtmeetnet_nl_producer_kafka_producer \
- && pip install --no-cache-dir ./luchtmeetnet_nl_mqtt_producer/luchtmeetnet_nl_mqtt_producer_data
+ && pip install --no-cache-dir ./luchtmeetnet_nl_mqtt_producer/luchtmeetnet_nl_mqtt_producer_data \
+ && pip install --no-cache-dir ./luchtmeetnet_nl_mqtt_producer/luchtmeetnet_nl_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./luchtmeetnet_nl_mqtt
 ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "luchtmeetnet_nl_mqtt", "feed"]

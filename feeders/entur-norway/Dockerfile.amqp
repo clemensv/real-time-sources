@@ -21,7 +21,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./entur_norway_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./entur_norway_core \
  && pip install --no-cache-dir ./entur_norway_producer/entur_norway_producer_data \
  && pip install --no-cache-dir ./entur_norway_amqp_producer/entur_norway_amqp_producer_data \
  && pip install --no-cache-dir ./entur_norway_amqp_producer/entur_norway_amqp_producer_amqp_producer \

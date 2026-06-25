@@ -19,7 +19,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./imgw_hydro_producer/imgw_hydro_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./imgw_hydro_producer/imgw_hydro_producer_data \
  && pip install --no-cache-dir ./imgw_hydro_producer/imgw_hydro_producer_kafka_producer \
  && pip install --no-cache-dir ./imgw_hydro_amqp_producer/imgw_hydro_amqp_producer_data \
  && pip install --no-cache-dir ./imgw_hydro_amqp_producer/imgw_hydro_amqp_producer_amqp_producer \

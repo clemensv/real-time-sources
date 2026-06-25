@@ -19,5 +19,6 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./billetto_amqp_producer/billetto_amqp_producer_data && pip install --no-cache-dir ./billetto_amqp_producer/billetto_amqp_producer_amqp_producer && pip install --no-cache-dir ./billetto_amqp
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./billetto_amqp_producer/billetto_amqp_producer_data && pip install --no-cache-dir ./billetto_amqp_producer/billetto_amqp_producer_amqp_producer && pip install --no-cache-dir ./billetto_amqp
 CMD ["python", "-m", "billetto_amqp", "feed"]

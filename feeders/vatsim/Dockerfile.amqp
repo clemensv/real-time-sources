@@ -27,7 +27,8 @@ RUN set -eux; \
 
 COPY . /app
 
-RUN pip install --no-cache-dir ./vatsim_producer/vatsim_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./vatsim_producer/vatsim_producer_data \
  && pip install --no-cache-dir ./vatsim_producer/vatsim_producer_kafka_producer \
  && pip install --no-cache-dir ./vatsim_amqp_producer/vatsim_amqp_producer_data \
  && pip install --no-cache-dir ./vatsim_amqp_producer/vatsim_amqp_producer_amqp_producer \

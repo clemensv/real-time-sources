@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import inspect
 import logging
 import os
 from typing import Any, Awaitable, Callable, Optional
@@ -74,6 +75,11 @@ class _MqttProducerAdapter:
         data = kwargs["data"]
         normalized = {key[1:] if key.startswith("_") else key: value for key, value in kwargs.items()}
         normalized["magnitude_bucket"] = data.magnitude_bucket
+        # Filter to only params the MQTT publish method accepts
+        sig = inspect.signature(self._client.publish_usgs_earthquakes_mqtt_event)
+        valid_params = set(sig.parameters.keys())
+        if not any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()):
+            normalized = {k: v for k, v in normalized.items() if k in valid_params}
         task = asyncio.create_task(self._publish(**normalized))
         self._tasks.add(task)
         task.add_done_callback(self._finish_task)

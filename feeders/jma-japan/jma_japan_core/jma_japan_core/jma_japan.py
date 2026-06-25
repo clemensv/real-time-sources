@@ -76,7 +76,7 @@ def parse_entries(root: ElementTree.Element, feed_type: str) -> List[WeatherBull
             bulletin_id=bulletin_id,
             title=title,
             author=author,
-            updated=datetime.fromisoformat(updated),
+            updated=datetime.fromisoformat(updated.replace("Z", "+00:00")),
             link=link,
             content=content,
             feed_type=FeedTypeenum(feed_type),

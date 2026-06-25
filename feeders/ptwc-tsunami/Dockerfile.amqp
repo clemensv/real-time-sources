@@ -21,7 +21,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./ptwc_tsunami_producer/ptwc_tsunami_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./ptwc_tsunami_producer/ptwc_tsunami_producer_data \
  && pip install --no-cache-dir --no-deps . \
  && pip install --no-cache-dir ./ptwc_tsunami_core \
  && pip install --no-cache-dir ./ptwc_tsunami_amqp_producer/ptwc_tsunami_amqp_producer_data \

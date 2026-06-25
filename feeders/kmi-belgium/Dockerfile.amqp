@@ -21,7 +21,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-RUN pip install --no-cache-dir ./kmi_belgium_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./kmi_belgium_core \
  && pip install --no-cache-dir ./kmi_belgium_producer/kmi_belgium_producer_data \
  && pip install --no-cache-dir ./kmi_belgium_amqp_producer/kmi_belgium_amqp_producer_data \
  && pip install --no-cache-dir ./kmi_belgium_amqp_producer/kmi_belgium_amqp_producer_amqp_producer \

@@ -29,7 +29,8 @@ RUN set -eux; \
 
 COPY . /app
 
-RUN pip install --no-cache-dir ./noaa_swpc_l1_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./noaa_swpc_l1_core \
 
  && pip install --no-cache-dir ./noaa_swpc_l1_amqp_producer/noaa_swpc_l1_amqp_producer_data \
  && pip install --no-cache-dir ./noaa_swpc_l1_amqp_producer/noaa_swpc_l1_amqp_producer_amqp_producer \

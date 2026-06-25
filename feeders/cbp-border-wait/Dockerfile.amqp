@@ -21,7 +21,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./cbp_border_wait_producer/cbp_border_wait_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./cbp_border_wait_producer/cbp_border_wait_producer_data \
  && pip install --no-cache-dir --no-deps . \
  && pip install --no-cache-dir ./cbp_border_wait_core \
  && pip install --no-cache-dir ./cbp_border_wait_amqp_producer/cbp_border_wait_amqp_producer_data \

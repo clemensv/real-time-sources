@@ -30,7 +30,8 @@ RUN set -eux; \
 COPY . /app
 
 # Sequential installs to avoid Poetry path-dep resolution races.
-RUN pip install --no-cache-dir ./pegelonline_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./pegelonline_core \
  && pip install --no-cache-dir ./pegelonline_amqp_producer/pegelonline_amqp_producer_data \
  && pip install --no-cache-dir ./pegelonline_amqp_producer/pegelonline_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./pegelonline_amqp \

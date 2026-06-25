@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import inspect
 import logging
 import os
 from typing import Any, Awaitable, Optional
@@ -80,6 +81,11 @@ class _MqttProducerAdapter:
             normalized["created"] = normalized.pop("time")
         normalized["category"] = data.category
         normalized["group"] = data.group
+        # Filter to only params the MQTT publish method accepts
+        sig = inspect.signature(self._client.publish_org_ligo_gracedb_mqtt_superevent)
+        valid_params = set(sig.parameters.keys())
+        if not any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()):
+            normalized = {k: v for k, v in normalized.items() if k in valid_params}
         task = asyncio.create_task(self._publish(**normalized))
         self._tasks.add(task)
         task.add_done_callback(self._finish_task)

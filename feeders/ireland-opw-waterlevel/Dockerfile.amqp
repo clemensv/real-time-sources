@@ -19,7 +19,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./ireland_opw_waterlevel_producer/ireland_opw_waterlevel_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./ireland_opw_waterlevel_producer/ireland_opw_waterlevel_producer_data \
  && pip install --no-cache-dir ./ireland_opw_waterlevel_producer/ireland_opw_waterlevel_producer_kafka_producer \
  && pip install --no-cache-dir ./ireland_opw_waterlevel_amqp_producer/ireland_opw_waterlevel_amqp_producer_data \
  && pip install --no-cache-dir ./ireland_opw_waterlevel_amqp_producer/ireland_opw_waterlevel_amqp_producer_amqp_producer \

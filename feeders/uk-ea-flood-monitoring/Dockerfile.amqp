@@ -19,7 +19,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./uk_ea_flood_monitoring_producer/uk_ea_flood_monitoring_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./uk_ea_flood_monitoring_producer/uk_ea_flood_monitoring_producer_data \
  && pip install --no-cache-dir ./uk_ea_flood_monitoring_producer/uk_ea_flood_monitoring_producer_kafka_producer \
  && pip install --no-cache-dir ./uk_ea_flood_monitoring_amqp_producer/uk_ea_flood_monitoring_amqp_producer_data \
  && pip install --no-cache-dir ./uk_ea_flood_monitoring_amqp_producer/uk_ea_flood_monitoring_amqp_producer_amqp_producer \

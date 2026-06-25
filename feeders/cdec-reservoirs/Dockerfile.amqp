@@ -19,7 +19,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./cdec_reservoirs_producer/cdec_reservoirs_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./cdec_reservoirs_producer/cdec_reservoirs_producer_data \
  && pip install --no-cache-dir ./cdec_reservoirs_producer/cdec_reservoirs_producer_kafka_producer \
  && pip install --no-cache-dir ./cdec_reservoirs_amqp_producer/cdec_reservoirs_amqp_producer_data \
  && pip install --no-cache-dir ./cdec_reservoirs_amqp_producer/cdec_reservoirs_amqp_producer_amqp_producer \

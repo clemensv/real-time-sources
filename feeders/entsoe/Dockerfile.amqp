@@ -18,7 +18,8 @@ RUN set -eux; \
         { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
     done; \
     rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir ./entsoe_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./entsoe_core \
  && pip install --no-cache-dir ./entsoe_amqp_producer/entsoe_amqp_producer_data \
  && pip install --no-cache-dir ./entsoe_amqp_producer/entsoe_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./entsoe_amqp

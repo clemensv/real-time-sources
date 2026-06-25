@@ -19,5 +19,6 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./tepco_denkiyoho_amqp_producer/tepco_denkiyoho_amqp_producer_data && pip install --no-cache-dir ./tepco_denkiyoho_amqp_producer/tepco_denkiyoho_amqp_producer_amqp_producer && pip install --no-cache-dir ./tepco_denkiyoho_amqp
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./tepco_denkiyoho_amqp_producer/tepco_denkiyoho_amqp_producer_data && pip install --no-cache-dir ./tepco_denkiyoho_amqp_producer/tepco_denkiyoho_amqp_producer_amqp_producer && pip install --no-cache-dir ./tepco_denkiyoho_amqp
 CMD ["python", "-m", "tepco_denkiyoho_amqp", "feed"]

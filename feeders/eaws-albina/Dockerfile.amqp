@@ -21,7 +21,8 @@ RUN set -eux; \
     done; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./eaws_albina_producer/eaws_albina_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./eaws_albina_producer/eaws_albina_producer_data \
  && pip install --no-cache-dir --no-deps . \
  && pip install --no-cache-dir ./eaws_albina_core \
  && pip install --no-cache-dir ./eaws_albina_amqp_producer/eaws_albina_amqp_producer_data \

@@ -21,7 +21,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-        RUN pip install --no-cache-dir ./dwd_producer/dwd_producer_data \
+        RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./dwd_producer/dwd_producer_data \
  && pip install --no-cache-dir --no-deps . \
  && pip install --no-cache-dir ./dwd_core \
          && pip install --no-cache-dir ./dwd_amqp_producer/dwd_amqp_producer_data \

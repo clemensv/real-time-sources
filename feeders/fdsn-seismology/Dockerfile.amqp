@@ -26,7 +26,8 @@ RUN set -eux; \
 
 COPY . /app
 
-RUN pip install --no-cache-dir ./fdsn_seismology_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./fdsn_seismology_core \
 
  && pip install --no-cache-dir ./fdsn_seismology_amqp_producer/fdsn_seismology_amqp_producer_data \
  && pip install --no-cache-dir ./fdsn_seismology_amqp_producer/fdsn_seismology_amqp_producer_amqp_producer \

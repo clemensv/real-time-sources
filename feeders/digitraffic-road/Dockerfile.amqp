@@ -26,7 +26,8 @@ RUN set -eux; \
 
 COPY . /app
 
-RUN pip install --no-cache-dir ./digitraffic_road_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./digitraffic_road_core \
  && pip install --no-cache-dir ./digitraffic_road_amqp_producer/digitraffic_road_amqp_producer_data \
  && pip install --no-cache-dir ./digitraffic_road_amqp_producer/digitraffic_road_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./digitraffic_road_amqp \

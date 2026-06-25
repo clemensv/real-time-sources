@@ -15,7 +15,8 @@ RUN set -eux; \
         libsasl2-2 libsasl2-modules; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
-RUN pip install --no-cache-dir ./erddap_core \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./erddap_core \
  && pip install --no-cache-dir ./erddap_amqp_producer/erddap_amqp_producer_data \
  && pip install --no-cache-dir ./erddap_amqp_producer/erddap_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./erddap_amqp \

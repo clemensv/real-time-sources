@@ -13,6 +13,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 RUN pip install --no-cache-dir confluent-kafka \
  && pip install --no-cache-dir ./defra_aurn_producer/defra_aurn_producer_kafka_producer \
- && pip install --no-cache-dir ./defra_aurn_mqtt_producer/defra_aurn_mqtt_producer_data
+ && pip install --no-cache-dir ./defra_aurn_mqtt_producer/defra_aurn_mqtt_producer_data \
+ && pip install --no-cache-dir ./defra_aurn_mqtt_producer/defra_aurn_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./defra_aurn_mqtt
 ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "defra_aurn_mqtt", "feed"]
