@@ -8,7 +8,7 @@ import os
 import time
 from urllib.parse import urlparse
 
-from tfl_road_traffic_amqp_producer.tfl_road_traffic_amqp_producer_amqp_producer.producer import UkGovTflRoadAmqpProducer
+from tfl_road_traffic_amqp_producer_amqp_producer.producer import UkGovTflRoadAmqpProducer
 from tfl_road_traffic_amqp_producer_data import RoadCorridor, RoadDisruption, RoadStatus
 from tfl_road_traffic_core.tfl_road_traffic import TflRoadTrafficSource, build_road_corridor_record, build_road_disruption_record, build_road_status_record
 

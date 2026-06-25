@@ -20,9 +20,9 @@ from french_road_traffic_core.french_road_traffic import (
     FrenchRoadTrafficSource,
     normalize_road_segment,
 )
-from french_road_traffic_mqtt_producer.french_road_traffic_mqtt_producer_data.fr.gouv.transport.bison_fute.roadevent import RoadEvent
-from french_road_traffic_mqtt_producer.french_road_traffic_mqtt_producer_data.fr.gouv.transport.bison_fute.trafficflowmeasurement import TrafficFlowMeasurement
-from french_road_traffic_mqtt_producer.french_road_traffic_mqtt_producer_mqtt_client.client import (
+from french_road_traffic_mqtt_producer_data.fr.gouv.transport.bison_fute.roadevent import RoadEvent
+from french_road_traffic_mqtt_producer_data.fr.gouv.transport.bison_fute.trafficflowmeasurement import TrafficFlowMeasurement
+from french_road_traffic_mqtt_producer_mqtt_client.client import (
     FrGouvTransportBisonFuteRoadEventMqttMqttClient,
     FrGouvTransportBisonFuteTrafficFlowMqttMqttClient,
 )

@@ -7,12 +7,12 @@ import time
 from typing import Any
 from urllib.parse import urlparse
 
-from french_road_traffic_amqp_producer.french_road_traffic_amqp_producer_amqp_producer.producer import (
+from french_road_traffic_amqp_producer_amqp_producer.producer import (
     FrGouvTransportBisonFuteRoadEventAmqpProducer,
     FrGouvTransportBisonFuteTrafficFlowAmqpProducer,
 )
-from french_road_traffic_amqp_producer.french_road_traffic_amqp_producer_data.fr.gouv.transport.bison_fute.roadevent import RoadEvent
-from french_road_traffic_amqp_producer.french_road_traffic_amqp_producer_data.fr.gouv.transport.bison_fute.trafficflowmeasurement import TrafficFlowMeasurement
+from french_road_traffic_amqp_producer_data.fr.gouv.transport.bison_fute.roadevent import RoadEvent
+from french_road_traffic_amqp_producer_data.fr.gouv.transport.bison_fute.trafficflowmeasurement import TrafficFlowMeasurement
 from french_road_traffic_core.french_road_traffic import (
     DEFAULT_POLL_INTERVAL_SECONDS,
     FEED_SOURCE_EVENTS,

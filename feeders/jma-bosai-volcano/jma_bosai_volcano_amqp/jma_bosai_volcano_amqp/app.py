@@ -6,7 +6,7 @@ import os
 import time
 from urllib.parse import urlparse
 
-from jma_bosai_volcano_amqp_producer.jma_bosai_volcano_amqp_producer_amqp_producer.producer import JPJMAVolcanoAmqpProducer
+from jma_bosai_volcano_amqp_producer_amqp_producer.producer import JPJMAVolcanoAmqpProducer
 from jma_bosai_volcano_amqp_producer_data import VolcanicEruption, VolcanicWarning, Volcano
 from jma_bosai_volcano_amqp_producer_data.conditionenum import ConditionEnum
 from jma_bosai_volcano_amqp_producer_data.eruptiontypeenum import EruptionTypeenum
