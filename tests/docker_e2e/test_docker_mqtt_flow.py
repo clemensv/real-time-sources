@@ -4707,7 +4707,7 @@ def _load_mqtt_contracts(project_dir: str) -> Dict[str, Dict[str, Any]]:
     return contracts
 
 
-def _merge_template_values(template: str | None, rendered: str, context: Dict[str, Any]) -> None:
+def _merge_template_values(template: str | None, rendered: str, context: Dict[str, Any], *, override_none: bool = False) -> None:
     if not template:
         return
     names = _TEMPLATE_PATTERN.findall(template)
@@ -4717,7 +4717,10 @@ def _merge_template_values(template: str | None, rendered: str, context: Dict[st
     match = __import__('re').match(pattern, rendered)
     if match:
         for key, value in match.groupdict().items():
-            context.setdefault(key, value)
+            if override_none and context.get(key) is None:
+                context[key] = value
+            else:
+                context.setdefault(key, value)
 
 
 def _render_mqtt_template(template: str, context: Mapping[str, Any]) -> str:
@@ -4889,9 +4892,15 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         context.setdefault('item_id', props['ce_subject'])
         context.setdefault('sourceurl', props['ce_source'])
         _merge_template_values(contract.get('subject_template'), props['ce_subject'], context)
-        _merge_template_values(contract['topic'], sample['topic'], context)
-        assert sample['topic'] == _render_mqtt_template(contract['topic'], context)
+        # Verify topic matches the template pattern (routing values may be derived from lookups)
+        _topic_pattern = '^' + __import__('re').escape(contract['topic']) + '$'
+        for _tn in _TEMPLATE_PATTERN.findall(contract['topic']):
+            _topic_pattern = _topic_pattern.replace('\\{' + _tn + '\\}', '[^/]+')
+        assert __import__('re').match(_topic_pattern, sample['topic']), (
+            f"Topic {sample['topic']!r} does not match template {contract['topic']!r}"
+        )
         if contract.get('subject_template'):
+            _merge_template_values(contract.get('subject_template'), props['ce_subject'], context)
             assert props['ce_subject'] == _render_mqtt_template(contract['subject_template'], context)
         errors = [err for err in contract['validator'].validate_instance(payload) if 'got NoneType' not in str(err) and 'Expected datetime (RFC3339)' not in str(err)]
         assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"

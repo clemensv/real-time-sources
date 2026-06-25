@@ -13,7 +13,7 @@ RUN set -eux; \
     for i in 1 2 3 4 5; do \
         apt-get update && \
         apt-get install -y --no-install-recommends --fix-missing \
-            build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules \
+            build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules git \
         && break || \
         { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
     done; \
