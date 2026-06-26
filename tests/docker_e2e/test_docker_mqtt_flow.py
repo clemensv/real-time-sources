@@ -100,16 +100,7 @@ def mosquitto_container():
     time.sleep(1.0)  # Brief pause to ensure broker accepts connections
     # Resolve broker IP to avoid Docker DNS flakiness in CI
     container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
+    gateway_ip = '127.0.0.1'
     try:
         yield {
             'host_port': host_port,
@@ -181,6 +172,7 @@ class TestPegelonlineMqttDockerFlow:
             pegelonline_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -300,6 +292,7 @@ class TestCapAlertsMqttDockerFlow:
                 cap_alerts_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}',
                     'CAP_ALERTS_MOCK': 'true',
@@ -383,23 +376,11 @@ def _generic_mosquitto(network_name: str, container_name: str):
         except Exception:
             pass
         pytest.skip('Mosquitto broker did not start')
-    # Use the host gateway IP so feeders connect via Docker port-forwarding
-    # (the same path the startup check already validates).  The default bridge
-    # gateway is always reachable from containers and avoids inter-container
-    # routing issues that plague ~10% of CI runners.
-    container.reload()
-    gateway_ip = '172.17.0.1'  # default bridge gateway on Linux
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
     time.sleep(1.0)  # Brief pause to ensure broker accepts connections
-    return container, None, host_port, gateway_ip
+    # Feeders run with --network=host and connect via 127.0.0.1:host_port.
+    # This avoids inter-container TCP routing issues that cause ~25% of MQTT
+    # tests to fail on CI (Docker bridge SYN packets silently dropped).
+    return container, None, host_port, '127.0.0.1'
 
 
 def _collect_messages_topic(host: str, port: int, topic_filter: str, timeout: float = 25.0) -> List[Dict[str, Any]]:
@@ -546,6 +527,7 @@ class TestBafuHydroMqttDockerFlow:
             bafu_hydro_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -620,6 +602,7 @@ class TestNVEHydroMqttDockerFlow:
             nve_hydro_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'NVE_API_KEY': api_key,
@@ -689,6 +672,7 @@ class TestCHMIHydroMqttDockerFlow:
             chmi_hydro_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -759,6 +743,7 @@ class TestHongkongEpdMqttDockerFlow:
             hongkong_epd_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -859,6 +844,7 @@ class TestUkBodsSiriMqttDockerFlow:
                 image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}',
                     'BODS_SAMPLE_MODE': 'true',
@@ -958,6 +944,7 @@ class TestErddapMqttDockerFlow:
                 erddap_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ERDDAP_MOCK': 'true',
@@ -1035,6 +1022,7 @@ class TestBfsOdlMqttDockerFlow:
             bfs_odl_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -1131,6 +1119,7 @@ class TestGermanWatersMqttDockerFlow:
             german_waters_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -1201,6 +1190,7 @@ class TestWalloniaIssepMqttDockerFlow:
             wallonia_issep_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -1300,6 +1290,7 @@ class TestSmhiHydroMqttDockerFlow:
             smhi_hydro_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -1394,16 +1385,7 @@ def bluesky_mosquitto_container():
             pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
+    gateway_ip = '127.0.0.1'
     try:
         yield {
             'host_port': host_port,
@@ -1536,6 +1518,7 @@ class TestBlueskyMqttDockerFlow:
             bluesky_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'BLUESKY_MOCK': 'true',
@@ -1732,6 +1715,7 @@ class TestAutobahnMqttDockerFlow:
             command=['python', '-m', 'autobahn_mqtt', 'feed', '--once', '--emit-mock-corpus'],
             detach=True,
             remove=False,
+            network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'PYTHONUNBUFFERED': '1',
@@ -1914,6 +1898,7 @@ class TestNwsAlertsMqttDockerFlow:
             command=['python', '-m', 'nws_alerts_mqtt', 'feed', '--once', '--emit-mock-corpus'],
             detach=True,
             remove=False,
+            network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'PYTHONUNBUFFERED': '1',
@@ -2077,6 +2062,7 @@ class TestTflRoadTrafficMqttDockerFlow:
             command=['python', '-m', 'tfl_road_traffic_mqtt', 'feed', '--once', '--emit-mock-corpus'],
             detach=True,
             remove=False,
+            network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'PYTHONUNBUFFERED': '1',
@@ -2216,6 +2202,7 @@ class TestCHMIHydroMqttDockerFlow:
             chmi_hydro_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -2284,6 +2271,7 @@ class TestRWSWaterwebservicesMqttDockerFlow:
             rws_waterwebservices_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -2397,16 +2385,7 @@ def aisstream_mosquitto_container():
             pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
+    gateway_ip = '127.0.0.1'
     try:
         yield {
             'host_port': host_port,
@@ -2482,6 +2461,7 @@ class TestAisstreamMqttDockerFlow:
             aisstream_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'AISSTREAM_MOCK': 'true',
@@ -2678,6 +2658,7 @@ class TestKystverketAisMqttDockerFlow:
                 kystverket_ais_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'KYSTVERKET_AIS_MOCK': 'true',
@@ -2801,16 +2782,7 @@ def mode_s_mosquitto_container():
             pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
+    gateway_ip = '127.0.0.1'
     try:
         yield {
             'host_port': host_port,
@@ -2887,6 +2859,7 @@ class TestModeSMqttDockerFlow:
             mode_s_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'MODE_S_MOCK': 'true',
@@ -3077,6 +3050,7 @@ class TestBlitzortungMqttDockerFlow:
                 blitzortung_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'BLITZORTUNG_MOCK': 'true',
@@ -3188,16 +3162,7 @@ def wikimedia_mosquitto_container():
             pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
+    gateway_ip = '127.0.0.1'
     try:
         yield {
             'host_port': host_port,
@@ -3274,6 +3239,7 @@ class TestWikimediaEventstreamsMqttDockerFlow:
             wikimedia_eventstreams_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'WIKIMEDIA_EVENTSTREAMS_MOCK': 'true',
@@ -3472,6 +3438,7 @@ class TestWikimediaOsmDiffsMqttDockerFlow:
             wikimedia_osm_diffs_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'OSM_DIFFS_MOCK': 'true',
@@ -3690,6 +3657,7 @@ class TestEPAUVMqttDockerFlow:
             epa_uv_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -3778,6 +3746,7 @@ class TestUSGSGeomagMqttDockerFlow:
             usgs_geomag_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -3890,6 +3859,7 @@ class TestSeattle911MqttDockerFlow:
                 seattle_911_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -3970,6 +3940,7 @@ class TestIRailMqttDockerFlow:
             irail_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'STATION_FILTER': '008814001,008821006',
@@ -4073,6 +4044,7 @@ class TestCbpBorderWaitMqttDockerFlow:
             cbp_border_wait_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -4195,6 +4167,7 @@ class TestCarbonIntensityMqttDockerFlow:
                 carbon_intensity_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -4304,6 +4277,7 @@ class TestParisBicycleCountersMqttDockerFlow:
                 paris_bicycle_counters_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -4415,6 +4389,7 @@ class TestAustraliaWildfiresMqttDockerFlow:
                 australia_wildfires_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -4492,6 +4467,7 @@ class TestKingCountyMarineMqttDockerFlow:
             king_county_marine_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -4723,7 +4699,7 @@ def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], 
     logs = ''
     result = {'StatusCode': 1}
     for attempt in range(3):
-        feeder = client.containers.run(image.id, detach=True, remove=False, environment=env)
+        feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment=env)
         try:
             result = feeder.wait(timeout=timeout)
             logs = feeder.logs().decode('utf-8', errors='replace')
@@ -5208,7 +5184,7 @@ def mosquitto_eurdep_radiation():
 class TestEurdepRadiationMqttDockerFlow:
     def test_emits_retained_uns_topics(self, mosquitto_eurdep_radiation, eurdep_radiation_mqtt_image):
         client = docker.from_env(); broker_url = f"mqtt://{mosquitto_eurdep_radiation['internal_host']}:{mosquitto_eurdep_radiation['internal_port']}"
-        feeder = client.containers.run(eurdep_radiation_mqtt_image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1', 'EURDEP_RADIATION_SAMPLE_MODE': 'true'})
+        feeder = client.containers.run(eurdep_radiation_mqtt_image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1', 'EURDEP_RADIATION_SAMPLE_MODE': 'true'})
         try:
             result = feeder.wait(timeout=300); logs = feeder.logs().decode('utf-8', errors='replace'); assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n{logs}"
         finally:
@@ -5245,7 +5221,7 @@ def mosquitto_nifc_usa_wildfires():
 class TestNifcUsaWildfiresMqttDockerFlow:
     def test_emits_incident_topic(self, mosquitto_nifc_usa_wildfires, nifc_usa_wildfires_mqtt_image):
         client=docker.from_env(); broker_url=f"mqtt://{mosquitto_nifc_usa_wildfires['internal_host']}:{mosquitto_nifc_usa_wildfires['internal_port']}"
-        feeder=client.containers.run(nifc_usa_wildfires_mqtt_image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL':broker_url,'ONCE_MODE':'true','PYTHONUNBUFFERED':'1','NIFC_USA_WILDFIRES_SAMPLE_MODE':'true'})
+        feeder=client.containers.run(nifc_usa_wildfires_mqtt_image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL':broker_url,'ONCE_MODE':'true','PYTHONUNBUFFERED':'1','NIFC_USA_WILDFIRES_SAMPLE_MODE':'true'})
         try:
             result=feeder.wait(timeout=300); logs=feeder.logs().decode('utf-8',errors='replace'); assert result.get('StatusCode')==0, f"Feeder exited non-zero: {result}\n{logs}"
         finally:
@@ -5266,7 +5242,7 @@ class TestXceedMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('xceed', dockerfile='Dockerfile.mqtt', tag='test-xceed-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/xceed/xceed/#', timeout=30.0)
@@ -5286,7 +5262,7 @@ class TestElexonBmrsMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('elexon-bmrs', dockerfile='Dockerfile.mqtt', tag='test-elexon-bmrs-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/gb/elexon/elexon-bmrs/gb/#', timeout=30.0)
@@ -5306,7 +5282,7 @@ class TestEnergidataserviceDkMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('energidataservice-dk', dockerfile='Dockerfile.mqtt', tag='test-energidataservice-dk-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/dk/energidataservice/energidataservice-dk/#', timeout=30.0)
@@ -5326,7 +5302,7 @@ class TestEnergyChartsMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('energy-charts', dockerfile='Dockerfile.mqtt', tag='test-energy-charts-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/de/energy-charts/energy-charts/#', timeout=30.0)
@@ -5346,7 +5322,7 @@ class TestBillettoMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('billetto', dockerfile='Dockerfile.mqtt', tag='test-billetto-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/billetto/billetto/#', timeout=30.0)
@@ -5366,7 +5342,7 @@ class TestFientaMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('fienta', dockerfile='Dockerfile.mqtt', tag='test-fienta-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/fienta/fienta/#', timeout=30.0)
@@ -5386,7 +5362,7 @@ class TestTicketmasterMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('ticketmaster', dockerfile='Dockerfile.mqtt', tag='test-ticketmaster-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/ticketmaster/ticketmaster/#', timeout=30.0)
@@ -5406,7 +5382,7 @@ class TestTepcoDenkiyohoMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('tepco-denkiyoho', dockerfile='Dockerfile.mqtt', tag='test-tepco-denkiyoho-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/#', timeout=30.0)
@@ -5532,6 +5508,7 @@ class _B3SimpleMqttFlow:
                     image.id,
                     detach=True,
                     remove=False,
+                    network_mode='host',
                     environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'},
                 )
                 result = feeder.wait(timeout=240)
@@ -5829,7 +5806,7 @@ def _run_b4_aq_mqtt_flow(source: str, image_name: str, extra_env: dict, topic_fi
         logs = ''
         for attempt in range(3):
             feeder = client.containers.run(
-                image.id, detach=True, remove=False, environment=env,
+                image.id, detach=True, remove=False, network_mode='host', environment=env,
             )
             result = feeder.wait(timeout=600)
             logs = feeder.logs().decode('utf-8', errors='replace')
@@ -6155,16 +6132,7 @@ def mosquitto_container_swpc():
             pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
+    gateway_ip = '127.0.0.1'
     try:
         yield {
             'host_port': host_port,
@@ -6219,7 +6187,7 @@ class TestNoaaSwpcL1MqttDockerFlow:
         client = docker.from_env()
         broker_url = f"mqtt://{mosquitto_container_swpc['internal_host']}:{mosquitto_container_swpc['internal_port']}"
         feeder = client.containers.run(
-            noaa_swpc_l1_mqtt_image.id, detach=True, remove=False,
+            noaa_swpc_l1_mqtt_image.id, detach=True, remove=False, network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -6297,16 +6265,7 @@ def dmi_mosquitto_container():
             pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
+    gateway_ip = '127.0.0.1'
     try:
         yield {
             'host_port': host_port,
@@ -6375,6 +6334,7 @@ class TestDMIMqttDockerFlow:
             dmi_mqtt_image.id,
             detach=True,
             remove=False,
+                    network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -6498,6 +6458,7 @@ class TestSiriMqttDockerFlow:
                 image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'MQTT_BROKER_URL': f'mqtt://{broker_ip}:{host_port}',
                     'SIRI_SAMPLE_MODE': 'true',
@@ -6546,7 +6507,7 @@ class TestOpenAQMqttDockerFlow:
     def test_emits_retained_uns_topics(self, mosquitto_openaq, openaq_mqtt_image):
         client = docker.from_env()
         broker_url = f"mqtt://{mosquitto_openaq['internal_host']}:{mosquitto_openaq['internal_port']}"
-        feeder = client.containers.run(openaq_mqtt_image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': broker_url, 'OPENAQ_MOCK': 'true', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'})
+        feeder = client.containers.run(openaq_mqtt_image.id, detach=True, remove=False, network_mode='host', environment={'MQTT_BROKER_URL': broker_url, 'OPENAQ_MOCK': 'true', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'})
         try:
             result = feeder.wait(timeout=240)
             logs = feeder.logs().decode('utf-8', errors='replace')
@@ -6581,6 +6542,7 @@ class TestDatex2MqttDockerFlow:
                 datex2_mqtt_image.id,
                 detach=True,
                 remove=False,
+                    network_mode='host',
                 environment={
                     'DATEX2_MOCK': 'true',
                     'ONCE_MODE': 'true',

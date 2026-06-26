@@ -85,7 +85,6 @@ def _generate_certs(tmpdir: str) -> Dict[str, str]:
                 x509.DNSName('localhost'),
                 x509.DNSName('mqtt-tls-broker'),
                 x509.IPAddress(ipaddress.IPv4Address('127.0.0.1')),
-                x509.IPAddress(ipaddress.IPv4Network('172.17.0.0/16')[1]),  # 172.17.0.1 gateway
             ]),
             critical=False,
         )
@@ -180,24 +179,10 @@ def mosquitto_tls_container(tmp_path_factory):
             pass
         pytest.skip(f'Mosquitto TLS broker did not start.\nLogs: {logs}')
 
-    # Resolve the host gateway IP so feeders can reach the broker
-    # via Docker port-forwarding instead of inter-container routing.
-    container.reload()
-    gateway_ip = '172.17.0.1'
-    try:
-        nets = container.attrs.get('NetworkSettings', {}).get('Networks', {})
-        for net_info in nets.values():
-            gw = net_info.get('Gateway')
-            if gw:
-                gateway_ip = gw
-                break
-    except Exception:
-        pass
-
     try:
         yield {
             'host_port': host_port,
-            'internal_host': gateway_ip,
+            'internal_host': '127.0.0.1',
             'internal_port': host_port,
             'ca_crt': certs['ca_crt'],
         }
@@ -282,6 +267,7 @@ class TestMqttTlsFlow:
             pegelonline_mqtt_image.id,
             detach=True,
             remove=False,
+            network_mode='host',
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'MQTT_TLS': 'true',
