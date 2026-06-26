@@ -263,8 +263,8 @@
                     "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "basin": {
-                    "type": "string",
-                    "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro."
+                    "type": ["string", "null"],
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin."
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/Station",
@@ -353,8 +353,8 @@
                     }
                   },
                   "basin": {
-                    "type": "string",
-                    "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro."
+                    "type": ["string", "null"],
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin."
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation",

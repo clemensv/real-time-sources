@@ -97,7 +97,9 @@ class _AmqpPublishFacade:
         if not name.startswith("publish_"):
             raise AttributeError(name)
         suffix = name.split("_mqtt_", 1)[1] if "_mqtt_" in name else name[len("publish_"):]
-        if suffix == "p_h":
+        if suffix.endswith("_p_h"):
+            suffix = suffix[:-4] + "_ph"
+        elif suffix == "p_h":
             suffix = "ph"
         parts = suffix.split("_")
         target = None
