@@ -89,16 +89,16 @@ def _eruption(record: dict) -> VolcanicEruption:
 def _publish_cycle(source: JMABosaiVolcanoSource, state: dict[str, object], state_file: str, refresh_hours: int, producer: JPJMAVolcanoAmqpProducer) -> None:
     if source.should_refresh_reference(state, refresh_hours):
         for record in source.build_reference_records():
-            data = _volcano(record)
-            producer.send_volcano(data=data, _feedurl=VOLCANO_LIST_URL, _volcano_code=data.volcano_code, _prefecture=data.prefecture, _event=data.event)
+            volcano_data = _volcano(record)
+            producer.send_volcano(data=volcano_data, _feedurl=VOLCANO_LIST_URL, _volcano_code=volcano_data.volcano_code, _prefecture=volcano_data.prefecture, _event=str(volcano_data.event))
         source.commit_reference_refresh(state, state_file)
     pending = source.collect_pending_telemetry(state)
     for record in pending.warnings:
-        data = _warning(record)
-        producer.send_volcanic_warning(data=data, _feedurl=WARNING_URL, _volcano_code=data.volcano_code, _prefecture=data.prefecture, _event=data.event)
+        warning_data = _warning(record)
+        producer.send_volcanic_warning(data=warning_data, _feedurl=WARNING_URL, _volcano_code=warning_data.volcano_code, _prefecture=warning_data.prefecture, _event=str(warning_data.event))
     for record in pending.eruptions:
-        data = _eruption(record)
-        producer.send_volcanic_eruption(data=data, _feedurl=ERUPTION_URL, _volcano_code=data.volcano_code, _prefecture=data.prefecture, _event=data.event)
+        eruption_data = _eruption(record)
+        producer.send_volcanic_eruption(data=eruption_data, _feedurl=ERUPTION_URL, _volcano_code=eruption_data.volcano_code, _prefecture=eruption_data.prefecture, _event=str(eruption_data.event))
     if pending.warning_keys or pending.eruption_keys:
         source.commit_telemetry_state(state, state_file, pending.warning_keys, pending.eruption_keys)
 

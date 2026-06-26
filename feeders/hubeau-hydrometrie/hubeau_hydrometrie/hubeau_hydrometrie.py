@@ -199,7 +199,7 @@ class HubEauHydrometrieAPI:
 
                     try:
                         hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(
-                            obs_data.code_station, obs_data, flush_producer=False)
+                            obs_data.code_station or "", obs_data, flush_producer=False)
                         count += 1
                     # pylint: disable=broad-except
                     except Exception as e:

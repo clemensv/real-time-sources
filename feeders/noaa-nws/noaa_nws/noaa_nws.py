@@ -69,7 +69,7 @@ class NWSAlertPoller:
         for d in zone_dicts:
             zone = Zone(**d)
             self.zones_producer.send_microsoft_open_data_us_noaa_nws_zone(
-                zone.zone_id, zone, flush_producer=False)
+                zone.zone_id or "", zone, flush_producer=False)
         self.kafka_producer.flush()
         print(f"Sent {len(zone_dicts)} zones as reference data")
 
