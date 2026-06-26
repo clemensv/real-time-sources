@@ -98,6 +98,29 @@ class AisStreamAmqpClientAdapter:
 
 async def _run(args: argparse.Namespace) -> None:
     producer = create_amqp_producer(args, IOAISstreamAmqpProducer)
+    if args.mock:
+        logger.info("Running AISstream AMQP bridge in mock mode")
+        adapter = AisStreamAmqpClientAdapter(producer)
+        # Emit canned mock data matching the Kafka bridge's mock corpus
+        await adapter.publish_ship_static(
+            mmsi="219000001", flag="DK", ship_type="cargo", geohash5="u4pru",
+            payload={"imo_number": 1234567, "call_sign": "OXAI1", "name": "AISSTREAM MOCK STATIC",
+                     "ship_type_code": 70, "dimension_a": 10, "dimension_b": 90,
+                     "dimension_c": 8, "dimension_d": 8, "eta_month": 3, "eta_day": 15,
+                     "eta_hour": 12, "eta_minute": 0, "draught": 8.5, "destination": "AARHUS"})
+        await adapter.publish_position_report(
+            mmsi="219000001", flag="DK", ship_type="cargo", geohash5="u4pru",
+            payload={"status": 0, "turn": 0, "speed": 12.3, "accuracy": True,
+                     "longitude": 10.21, "latitude": 56.15, "course": 90.5,
+                     "heading": 91, "second": 10, "maneuver": 0, "raim": True})
+        await adapter.publish_aid_to_navigation(
+            mmsi="992190001", flag="DK", ship_type="unknown", geohash5="u4pru",
+            payload={"type_code": 5, "name": "MOCK BUOY",
+                     "position_accuracy": True, "longitude": 10.25, "latitude": 56.17,
+                     "dimension_a": 2, "dimension_b": 2, "dimension_c": 1, "dimension_d": 1,
+                     "type_of_epfd": 1, "raim": True, "virtual_aid": False})
+        producer.close()
+        return
     bridge = AisStreamBridge(AisStreamAmqpClientAdapter(producer), api_key=args.api_key, ws_url=args.ws_url)
     try:
         await bridge.run(max_events=args.max_events)
@@ -112,6 +135,7 @@ def main() -> None:
     feed = sub.add_parser("feed")
     add_amqp_arguments(feed, "aisstream")
     feed.add_argument("--api-key", default=os.getenv("AISSTREAM_API_KEY"))
+    feed.add_argument("--mock", action="store_true", default=os.getenv("AISSTREAM_MOCK", "").lower() in ("1", "true", "yes"))
     feed.add_argument("--ws-url", default=os.getenv("AISSTREAM_WS_URL", "wss://stream.aisstream.io/v0/stream"))
     feed.add_argument("--max-events", type=int, default=int(os.getenv("AISSTREAM_MAX_EVENTS", "0")) or None)
     args = parser.parse_args()
