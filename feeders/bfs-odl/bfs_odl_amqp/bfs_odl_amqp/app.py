@@ -76,7 +76,7 @@ class _AmqpPublishFacade:
             call={}
             for k,v in kwargs.items():
                 if k in ("data","content_type"): call[k]=v
-                elif k in ("flush_producer","qos","retain"): continue
+                elif k in ("flush_producer","qos","retain","time","_time"): continue
                 else:
                     candidate="_"+k.lstrip("_")
                     if candidate in accepted: call[candidate]=v

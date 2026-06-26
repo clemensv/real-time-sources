@@ -119,7 +119,7 @@ class _AmqpPublishFacade:
             for key, value in kwargs.items():
                 if key in ("data", "content_type"):
                     call[key] = value
-                elif key == "flush_producer":
+                elif key in ("flush_producer", "time", "_time"):
                     continue
                 else:
                     call["_" + key.lstrip("_")] = value
