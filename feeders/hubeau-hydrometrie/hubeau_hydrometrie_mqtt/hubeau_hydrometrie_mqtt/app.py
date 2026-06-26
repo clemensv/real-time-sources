@@ -53,6 +53,8 @@ def _sample_value(name, annotation):
     lname = name.lower().rstrip('_')
     if lname in ('station_id','station_number','code_station','station_ref','station_reference','site_number'):
         return 'mock-station'
+    if lname in ('code_site','code_departement','code_commune','code_region'):
+        return '01'
     if lname in ('sensor_num',): return 1
     if lname in ('parameter_code',): return '00010'
     if lname in ('state',): return 'CA'
@@ -63,7 +65,8 @@ def _sample_value(name, annotation):
     if 'lat' in lname: return 45.0
     if lname in ('longitude','long','lng') or 'lon' in lname: return -75.0
     if any(x in lname for x in ('level','value','temperature','speed','pressure','height','depth','salinity','conductivity','humidity','visibility','discharge','flow','elevation','latitude')): return 1.0
-    if any(x in lname for x in ('count','code','num','bin','direction','timezonecorr')): return 1
+    if any(x in lname for x in ('code',)): return '01'
+    if any(x in lname for x in ('count','num','bin','direction','timezonecorr')): return 1
     if lname.startswith('is_') or lname in ('tidal','greatlakes','observedst','stormsurge','forecast','outlook','nonNavigational'.lower(),'en_service','outside_sigma_band','flat_tolerance_limit','rate_of_change_limit','max_min_expected_height','max_pressure_exceeded','min_pressure_exceeded','rate_of_change_exceeded','max_temp_exceeded','min_temp_exceeded','max_humidity_exceeded','min_humidity_exceeded','max_conductivity_exceeded','min_conductivity_exceeded'):
         return False
     return 'mock'

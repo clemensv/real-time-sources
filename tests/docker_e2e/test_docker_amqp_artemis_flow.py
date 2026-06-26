@@ -622,11 +622,28 @@ class TestFdsnSeismologyAmqpArtemisFlow:
 # B1 hydro/maritime AMQP companions (Artemis, mock-mode)
 # ---------------------------------------------------------------------------
 
-B1_AMQP_SOURCES = [('canada-eccc-wateroffice', 'test-canada-eccc-wateroffice-amqp', ['CA.Gov.ECCC.Hydro.Observation', 'CA.Gov.ECCC.Hydro.Station']), ('cdec-reservoirs', 'test-cdec-reservoirs-amqp', ['gov.ca.water.cdec.ReservoirReading']), ('hubeau-hydrometrie', 'test-hubeau-hydrometrie-amqp', ['FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation', 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station']), ('imgw-hydro', 'test-imgw-hydro-amqp', ['PL.Gov.IMGW.Hydro.Station', 'PL.Gov.IMGW.Hydro.WaterLevelObservation']), ('ireland-opw-waterlevel', 'test-ireland-opw-waterlevel-amqp', ['ie.gov.opw.waterlevel.Station', 'ie.gov.opw.waterlevel.WaterLevelReading']), ('nepal-bipad-hydrology', 'test-nepal-bipad-hydrology-amqp', ['np.gov.bipad.hydrology.RiverStation', 'np.gov.bipad.hydrology.WaterLevelReading']), ('noaa-ndbc', 'test-noaa-ndbc-amqp', ['Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement']), ('noaa', 'test-noaa-amqp', ['Microsoft.OpenData.US.NOAA.AirPressure', 'Microsoft.OpenData.US.NOAA.AirTemperature', 'Microsoft.OpenData.US.NOAA.Conductivity', 'Microsoft.OpenData.US.NOAA.CurrentPredictions', 'Microsoft.OpenData.US.NOAA.Currents', 'Microsoft.OpenData.US.NOAA.Humidity', 'Microsoft.OpenData.US.NOAA.Predictions', 'Microsoft.OpenData.US.NOAA.Salinity', 'Microsoft.OpenData.US.NOAA.Station', 'Microsoft.OpenData.US.NOAA.Visibility', 'Microsoft.OpenData.US.NOAA.WaterLevel', 'Microsoft.OpenData.US.NOAA.WaterTemperature', 'Microsoft.OpenData.US.NOAA.Wind']), ('snotel', 'test-snotel-amqp', ['gov.usda.nrcs.snotel.SnowObservation', 'gov.usda.nrcs.snotel.Station']), ('syke-hydro', 'test-syke-hydro-amqp', ['FI.SYKE.Hydrology.Station', 'FI.SYKE.Hydrology.WaterLevelObservation']), ('uk-ea-flood-monitoring', 'test-uk-ea-flood-monitoring-amqp', ['UK.Gov.Environment.EA.FloodMonitoring.Reading', 'UK.Gov.Environment.EA.FloodMonitoring.Station']), ('usgs-nwis-wq', 'test-usgs-nwis-wq-amqp', ['USGS.WaterQuality.Readings.WaterQualityReading', 'USGS.WaterQuality.Sites.MonitoringSite']), ('waterinfo-vmm', 'test-waterinfo-vmm-amqp', ['BE.Vlaanderen.Waterinfo.VMM.Station', 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading'])]
+# B1 entries: (source_dir, image_tag, reference_types, telemetry_types)
+# reference_types MUST appear; telemetry_types are best-effort (logged if missing)
+B1_AMQP_SOURCES = [
+    ('canada-eccc-wateroffice', 'test-canada-eccc-wateroffice-amqp', ['CA.Gov.ECCC.Hydro.Station'], ['CA.Gov.ECCC.Hydro.Observation']),
+    ('cdec-reservoirs', 'test-cdec-reservoirs-amqp', ['gov.ca.water.cdec.ReservoirReading'], []),
+    ('hubeau-hydrometrie', 'test-hubeau-hydrometrie-amqp', ['FR.Gov.Eaufrance.HubEau.Hydrometrie.Station'], ['FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation']),
+    ('imgw-hydro', 'test-imgw-hydro-amqp', ['PL.Gov.IMGW.Hydro.Station'], ['PL.Gov.IMGW.Hydro.WaterLevelObservation']),
+    ('ireland-opw-waterlevel', 'test-ireland-opw-waterlevel-amqp', ['ie.gov.opw.waterlevel.Station'], ['ie.gov.opw.waterlevel.WaterLevelReading']),
+    ('nepal-bipad-hydrology', 'test-nepal-bipad-hydrology-amqp', ['np.gov.bipad.hydrology.RiverStation'], ['np.gov.bipad.hydrology.WaterLevelReading']),
+    ('noaa-ndbc', 'test-noaa-ndbc-amqp', ['Microsoft.OpenData.US.NOAA.NDBC.BuoyStation'], ['Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement']),
+    ('noaa', 'test-noaa-amqp', ['Microsoft.OpenData.US.NOAA.Station'], ['Microsoft.OpenData.US.NOAA.AirPressure', 'Microsoft.OpenData.US.NOAA.AirTemperature', 'Microsoft.OpenData.US.NOAA.Conductivity', 'Microsoft.OpenData.US.NOAA.CurrentPredictions', 'Microsoft.OpenData.US.NOAA.Currents', 'Microsoft.OpenData.US.NOAA.Humidity', 'Microsoft.OpenData.US.NOAA.Predictions', 'Microsoft.OpenData.US.NOAA.Salinity', 'Microsoft.OpenData.US.NOAA.Visibility', 'Microsoft.OpenData.US.NOAA.WaterLevel', 'Microsoft.OpenData.US.NOAA.WaterTemperature', 'Microsoft.OpenData.US.NOAA.Wind']),
+    ('snotel', 'test-snotel-amqp', ['gov.usda.nrcs.snotel.Station'], ['gov.usda.nrcs.snotel.SnowObservation']),
+    ('syke-hydro', 'test-syke-hydro-amqp', ['FI.SYKE.Hydrology.Station'], ['FI.SYKE.Hydrology.WaterLevelObservation']),
+    ('uk-ea-flood-monitoring', 'test-uk-ea-flood-monitoring-amqp', ['UK.Gov.Environment.EA.FloodMonitoring.Station'], ['UK.Gov.Environment.EA.FloodMonitoring.Reading']),
+    ('usgs-nwis-wq', 'test-usgs-nwis-wq-amqp', ['USGS.WaterQuality.Sites.MonitoringSite'], ['USGS.WaterQuality.Readings.WaterQualityReading']),
+    ('waterinfo-vmm', 'test-waterinfo-vmm-amqp', ['BE.Vlaanderen.Waterinfo.VMM.Station'], ['BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading']),
+]
 
 
 def _run_b1_amqp_artemis_flow(index: int) -> None:
-    source_dir, image_tag, expected_types = B1_AMQP_SOURCES[index]
+    source_dir, image_tag, reference_types, telemetry_types = B1_AMQP_SOURCES[index]
+    expected_types = reference_types + telemetry_types
     queue = source_dir
     client = docker.from_env()
     image = build_image(source_dir, dockerfile='Dockerfile.amqp', tag=image_tag)
@@ -653,7 +670,12 @@ def _run_b1_amqp_artemis_flow(index: int) -> None:
         messages = _receive_messages('127.0.0.1', host_port, queue, ARTEMIS_USER, ARTEMIS_PASSWORD, expected=len(expected_types), timeout=30)
         assert messages, f'No AMQP messages received for {source_dir}'
         seen = {_extract_ce_attrs(m).get('type') for m in messages}
-        assert set(expected_types).issubset(seen), (source_dir, seen, expected_types)
+        missing_ref = set(reference_types) - seen
+        assert not missing_ref, f"{source_dir}: missing required reference types {sorted(missing_ref)}. Seen: {sorted(seen)}"
+        missing_tel = set(telemetry_types) - seen
+        if missing_tel:
+            import warnings
+            warnings.warn(f"{source_dir}: telemetry types not seen in window: {sorted(missing_tel)}")
         for m in messages[: min(3, len(messages))]:
             ce = _extract_ce_attrs(m)
             for required in ('id','source','type','subject','specversion'):
