@@ -5635,16 +5635,25 @@ class _B3SimpleMqttFlow:
         broker, network, host_port = _generic_mosquitto(f'{self.image}-e2e', f'{self.image}-e2e-broker')
         try:
             image = build_image(self.source_dir, dockerfile='Dockerfile.mqtt', tag=f'test-{self.image}')
-            feeder = client.containers.run(
-                image.id,
-                detach=True,
-                remove=False,
-                network=network.name,
-                environment={'MQTT_BROKER_URL': f'mqtt://{self.image}-e2e-broker:1883', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'},
-            )
-            result = feeder.wait(timeout=240)
-            logs = feeder.logs().decode('utf-8', errors='replace')
-            feeder.remove(force=True)
+            # Retry feeder start to handle Docker DNS propagation delays
+            logs = ''
+            for attempt in range(3):
+                feeder = client.containers.run(
+                    image.id,
+                    detach=True,
+                    remove=False,
+                    network=network.name,
+                    environment={'MQTT_BROKER_URL': f'mqtt://{self.image}-e2e-broker:1883', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'},
+                )
+                result = feeder.wait(timeout=240)
+                logs = feeder.logs().decode('utf-8', errors='replace')
+                feeder.remove(force=True)
+                if result.get('StatusCode') == 0:
+                    break
+                if 'TimeoutError' not in logs and 'CONNACK' not in logs and 'Connection refused' not in logs:
+                    break  # Not a connect issue — don't retry
+                if attempt < 2:
+                    time.sleep(5.0)
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, self.topic_filter, timeout=15)
             assert len(messages) >= self.expected_count, messages
@@ -5939,11 +5948,22 @@ def _run_b4_aq_mqtt_flow(source: str, image_name: str, extra_env: dict, topic_fi
             'PYTHONUNBUFFERED': '1',
         }
         env.update(extra_env or {})
-        feeder = client.containers.run(
-            image.id, detach=True, remove=False, network=network.name, environment=env,
-        )
-        result = feeder.wait(timeout=600)
-        logs = feeder.logs().decode('utf-8', errors='replace')
+        # Retry feeder start to handle Docker DNS propagation delays
+        logs = ''
+        for attempt in range(3):
+            feeder = client.containers.run(
+                image.id, detach=True, remove=False, network=network.name, environment=env,
+            )
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            if result.get('StatusCode') == 0:
+                break
+            feeder.remove(force=True)
+            feeder = None
+            if 'TimeoutError' not in logs and 'CONNACK' not in logs and 'Connection refused' not in logs:
+                break  # Not a connect issue — don't retry
+            if attempt < 2:
+                time.sleep(5.0)
         assert result.get('StatusCode') == 0, f"feeder exited non-zero: {result}\n{logs[-4000:]}"
         messages = _collect_messages_topic('127.0.0.1', host_port, topic_filter, timeout=30.0)
         assert messages, f"no messages received on {topic_filter}\n{logs[-2000:]}"
