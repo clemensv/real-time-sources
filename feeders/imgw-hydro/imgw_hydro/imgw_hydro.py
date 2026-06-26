@@ -116,7 +116,7 @@ def _parse_imgw_timestamp(value: str | None) -> datetime.datetime | None:
     return dt
 
 
-
+def parse_connection_string(connection_string: str) -> dict:
     """Parse a Kafka connection string into a config dict."""
     config = {}
     for part in connection_string.split(';'):

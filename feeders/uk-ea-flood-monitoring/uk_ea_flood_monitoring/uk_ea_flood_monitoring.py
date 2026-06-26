@@ -173,31 +173,31 @@ class EAFloodMonitoringAPI:
                 raw_lat = raw_lat[0] if raw_lat else 0.0
             if isinstance(raw_long, list):
                 raw_long = raw_long[0] if raw_long else 0.0
-                        raw_label = station.get("label", "")
-                        if isinstance(raw_label, list):
-                            raw_label = raw_label[0] if raw_label else ""
-                        raw_catchment = station.get("catchmentName")
-                        if isinstance(raw_catchment, list):
-                            raw_catchment = raw_catchment[0] if raw_catchment else None
-                        raw_status = station.get("status")
-                        if isinstance(raw_status, list):
-                            raw_status = raw_status[0] if raw_status else None
-                        raw_date_opened = station.get("dateOpened")
-                        if isinstance(raw_date_opened, list):
-                            raw_date_opened = raw_date_opened[0] if raw_date_opened else None
-                        station_data = Station(
-                            station_reference=station_ref,
-                            label=raw_label,
-                            river_name=station.get("riverName") or None,
-                            catchment_name=raw_catchment or None,
-                            town=station.get("town") or None,
-                            lat=raw_lat if raw_lat is not None else 0.0,
-                            long=raw_long if raw_long is not None else 0.0,
-                            notation=station.get("notation", ""),
-                            status=raw_status or None,
-                            date_opened=raw_date_opened or None,
-                            river=station.get("river") or None
-                        )
+            raw_label = station.get("label", "")
+            if isinstance(raw_label, list):
+                raw_label = raw_label[0] if raw_label else ""
+            raw_catchment = station.get("catchmentName")
+            if isinstance(raw_catchment, list):
+                raw_catchment = raw_catchment[0] if raw_catchment else None
+            raw_status = station.get("status")
+            if isinstance(raw_status, list):
+                raw_status = raw_status[0] if raw_status else None
+            raw_date_opened = station.get("dateOpened")
+            if isinstance(raw_date_opened, list):
+                raw_date_opened = raw_date_opened[0] if raw_date_opened else None
+            station_data = Station(
+                station_reference=station_ref,
+                label=raw_label,
+                river_name=station.get("riverName") or None,
+                catchment_name=raw_catchment or None,
+                town=station.get("town") or None,
+                lat=raw_lat if raw_lat is not None else 0.0,
+                long=raw_long if raw_long is not None else 0.0,
+                notation=station.get("notation", ""),
+                status=raw_status or None,
+                date_opened=raw_date_opened or None,
+                river=station.get("river") or None
+            )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_station(
                 station_ref, station_data, flush_producer=False)
         producer.flush()
