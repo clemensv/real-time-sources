@@ -9,7 +9,7 @@ def _parse_iso_dt(s):
     """Parse ISO datetime, handling Z suffix for Python 3.10."""
     if s is None:
         return None
-    return _parse_iso_dt(s.replace("Z", "+00:00"))
+    return datetime.datetime.fromisoformat(s.replace("Z", "+00:00"))
 
 
 import logging
