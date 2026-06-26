@@ -290,7 +290,8 @@ async def iter_mock_firehose_events(max_events: int = 12) -> AsyncIterator[Blues
                 payload.update({"text": f"Mock post {seq}", "reply_parent": None, "reply_root": None,
                                 "embed_type": None, "embed_uri": None, "embed_title": None,
                                 "embed_description": None, "embed_thumb": None, "images": None,
-                                "langs": ["en"], "facets": None, "labels": None})
+                                "langs": ["en"], "facets": None, "labels": None,
+                                "tags": [], "created_at": now})
             elif event_type == "Bluesky.Feed.Like":
                 payload.update({"subject_uri": f"at://did:plc:target/app.bsky.feed.post/abc{seq}",
                                 "subject_cid": f"bafyreitarget{seq:06d}"})

@@ -85,7 +85,8 @@ class PTWCTsunamiPoller:
                 for entry in root.findall("atom:entry", NS):
                     bulletin = parse_entry(entry, feed_name, center)
                     if bulletin is None: continue
-                    updated_str = bulletin.updated or ""; prev_updated = state.get(bulletin.bulletin_id)
-                    if prev_updated is not None and prev_updated >= updated_str: continue
-                    bulletins.append(bulletin); state[bulletin.bulletin_id] = updated_str
+                    updated_iso = bulletin.updated.isoformat() if bulletin.updated else ""
+                    prev_updated = state.get(bulletin.bulletin_id)
+                    if prev_updated is not None and prev_updated >= updated_iso: continue
+                    bulletins.append(bulletin); state[bulletin.bulletin_id] = updated_iso
         self.save_state(state); return bulletins
