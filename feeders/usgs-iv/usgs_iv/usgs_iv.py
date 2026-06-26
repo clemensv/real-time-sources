@@ -442,7 +442,8 @@ class USGSDataPoller:
                                 if timestamp <= last_polled_time:
                                     continue
 
-                                qualifiers = record.get(f"{k}_cd", None)
+                                qualifiers_raw = record.get(f"{k}_cd", None)
+                                qualifiers = [q.strip() for q in qualifiers_raw.split(",")] if qualifiers_raw else []
 
                                 # Assign exception and value_float based on whether the value can be converted to a float
                                 exception = value if not isfloat(value) else None

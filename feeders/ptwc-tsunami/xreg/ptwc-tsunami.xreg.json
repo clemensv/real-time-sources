@@ -211,7 +211,7 @@
                     "description": "The longitude of the seismic event epicenter in decimal degrees."
                   },
                   "category": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form.",
                     "enum": [
                       "Warning",
