@@ -69,7 +69,6 @@ def cap_alerts_mqtt_image():
 @pytest.fixture()
 def mosquitto_container():
     client = docker.from_env()
-    network = client.networks.create('pegelonline-mqtt-e2e', driver='bridge')
     host_port = _find_free_port()
     config = (
         'listener 1883\n'
@@ -81,7 +80,6 @@ def mosquitto_container():
         name='pegelonline-mqtt-e2e-broker',
         detach=True,
         remove=True,
-        network=network.name,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -96,8 +94,8 @@ def mosquitto_container():
     else:
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     time.sleep(3.0)  # Allow Docker DNS propagation for container-to-container resolution
     # Resolve broker IP to avoid Docker DNS flakiness in CI
@@ -117,17 +115,13 @@ def mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 def _collect_messages(host: str, port: int, timeout: float = 25.0) -> List[Dict[str, Any]]:
@@ -187,7 +181,6 @@ class TestPegelonlineMqttDockerFlow:
             pegelonline_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -307,7 +300,6 @@ class TestCapAlertsMqttDockerFlow:
                 cap_alerts_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=network.name,
                 environment={
                     'MQTT_BROKER_URL': 'cap-alerts-mqtt-e2e-broker:1883',
                     'CAP_ALERTS_MOCK': 'true',
@@ -333,10 +325,7 @@ class TestCapAlertsMqttDockerFlow:
                 container.kill()
             except docker.errors.APIError:
                 pass
-            try:
-                network.remove()
-            except docker.errors.APIError:
-                pass
+            pass
 
         assert messages, 'No MQTT messages received from broker'
         by_type: Dict[str, List[Dict[str, Any]]] = {}
@@ -365,9 +354,8 @@ class TestCapAlertsMqttDockerFlow:
 
 
 def _generic_mosquitto(network_name: str, container_name: str):
-    """Spin up a throwaway mosquitto 2.x broker on a dedicated bridge network."""
+    """Spin up a throwaway mosquitto 2.x broker on the default bridge network."""
     client = docker.from_env()
-    network = client.networks.create(network_name, driver='bridge')
     host_port = _find_free_port()
     config = (
         'listener 1883\n'
@@ -379,7 +367,6 @@ def _generic_mosquitto(network_name: str, container_name: str):
         name=container_name,
         detach=True,
         remove=True,
-        network=network.name,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -393,8 +380,8 @@ def _generic_mosquitto(network_name: str, container_name: str):
     else:
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     # Resolve broker's internal IP to avoid Docker DNS flakiness in CI
     container.reload()
@@ -408,8 +395,8 @@ def _generic_mosquitto(network_name: str, container_name: str):
                 break
     except Exception:
         pass
-    time.sleep(3.0)  # Allow Docker DNS propagation for container-to-container resolution
-    return container, network, host_port, broker_ip
+    time.sleep(1.0)  # Brief pause to ensure broker accepts connections
+    return container, None, host_port, broker_ip
 
 
 def _collect_messages_topic(host: str, port: int, topic_filter: str, timeout: float = 25.0) -> List[Dict[str, Any]]:
@@ -537,17 +524,13 @@ def mosquitto_bafu():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestBafuHydroMqttDockerFlow:
@@ -560,7 +543,6 @@ class TestBafuHydroMqttDockerFlow:
             bafu_hydro_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_bafu['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -609,17 +591,13 @@ def mosquitto_nve():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestNVEHydroMqttDockerFlow:
@@ -639,7 +617,6 @@ class TestNVEHydroMqttDockerFlow:
             nve_hydro_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_nve['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'NVE_API_KEY': api_key,
@@ -690,17 +667,13 @@ def mosquitto_chmi():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestCHMIHydroMqttDockerFlow:
@@ -713,7 +686,6 @@ class TestCHMIHydroMqttDockerFlow:
             chmi_hydro_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_chmi['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -765,17 +737,13 @@ def mosquitto_hongkong_epd():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestHongkongEpdMqttDockerFlow:
@@ -788,7 +756,6 @@ class TestHongkongEpdMqttDockerFlow:
             hongkong_epd_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_hongkong_epd['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -889,7 +856,6 @@ class TestUkBodsSiriMqttDockerFlow:
                 image.id,
                 detach=True,
                 remove=False,
-                network=network.name,
                 environment={
                     'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883',
                     'BODS_SAMPLE_MODE': 'true',
@@ -917,8 +883,7 @@ class TestUkBodsSiriMqttDockerFlow:
             subscriber.disconnect()
             try: broker.kill()
             except docker.errors.APIError: pass
-            try: network.remove()
-            except docker.errors.APIError: pass
+            pass
 
 
 @pytest.fixture(scope='module')
@@ -934,17 +899,13 @@ def erddap_mqtt_broker():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 def _erddap_payload_to_dict(payload):
@@ -994,7 +955,6 @@ class TestErddapMqttDockerFlow:
                 erddap_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=erddap_mqtt_broker['network'],
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ERDDAP_MOCK': 'true',
@@ -1053,17 +1013,13 @@ def mosquitto_bfs_odl():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestBfsOdlMqttDockerFlow:
@@ -1076,7 +1032,6 @@ class TestBfsOdlMqttDockerFlow:
             bfs_odl_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_bfs_odl['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -1154,17 +1109,13 @@ def mosquitto_german_waters():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestGermanWatersMqttDockerFlow:
@@ -1177,7 +1128,6 @@ class TestGermanWatersMqttDockerFlow:
             german_waters_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_german_waters['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -1229,17 +1179,13 @@ def mosquitto_wallonia_issep():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestWalloniaIssepMqttDockerFlow:
@@ -1252,7 +1198,6 @@ class TestWalloniaIssepMqttDockerFlow:
             wallonia_issep_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_wallonia_issep['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -1330,7 +1275,6 @@ def mosquitto_smhi():
     try:
         yield {
             'container': container,
-            'network': network.name,
             'host_port': host_port,
             'internal_host': container.name,
             'internal_port': 1883,
@@ -1340,10 +1284,7 @@ def mosquitto_smhi():
             container.stop(timeout=5)
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestSmhiHydroMqttDockerFlow:
@@ -1356,7 +1297,6 @@ class TestSmhiHydroMqttDockerFlow:
             smhi_hydro_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_smhi['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -1423,7 +1363,6 @@ def bluesky_mqtt_image():
 @pytest.fixture()
 def bluesky_mosquitto_container():
     client = docker.from_env()
-    network = client.networks.create('bluesky-mqtt-e2e', driver='bridge')
     host_port = _find_free_port()
     config = (
         'listener 1883\n'
@@ -1435,7 +1374,6 @@ def bluesky_mosquitto_container():
         name='bluesky-mqtt-e2e-broker',
         detach=True,
         remove=True,
-        network=network.name,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -1449,8 +1387,8 @@ def bluesky_mosquitto_container():
     else:
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
     broker_ip = 'bluesky-mqtt-e2e-broker'
@@ -1468,17 +1406,13 @@ def bluesky_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 def _collect_bluesky_messages(host: str, port: int, timeout: float = 25.0) -> List[Dict[str, Any]]:
@@ -1599,7 +1533,6 @@ class TestBlueskyMqttDockerFlow:
             bluesky_mqtt_image.id,
             detach=True,
             remove=False,
-            network=bluesky_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'BLUESKY_MOCK': 'true',
@@ -1730,17 +1663,13 @@ def autobahn_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestAutobahnMqttDockerFlow:
@@ -1800,7 +1729,6 @@ class TestAutobahnMqttDockerFlow:
             command=['python', '-m', 'autobahn_mqtt', 'feed', '--once', '--emit-mock-corpus'],
             detach=True,
             remove=False,
-            network=autobahn_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'PYTHONUNBUFFERED': '1',
@@ -1920,17 +1848,13 @@ def nws_alerts_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestNwsAlertsMqttDockerFlow:
@@ -1987,7 +1911,6 @@ class TestNwsAlertsMqttDockerFlow:
             command=['python', '-m', 'nws_alerts_mqtt', 'feed', '--once', '--emit-mock-corpus'],
             detach=True,
             remove=False,
-            network=nws_alerts_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'PYTHONUNBUFFERED': '1',
@@ -2086,17 +2009,13 @@ def tfl_road_traffic_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestTflRoadTrafficMqttDockerFlow:
@@ -2155,7 +2074,6 @@ class TestTflRoadTrafficMqttDockerFlow:
             command=['python', '-m', 'tfl_road_traffic_mqtt', 'feed', '--once', '--emit-mock-corpus'],
             detach=True,
             remove=False,
-            network=tfl_road_traffic_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'PYTHONUNBUFFERED': '1',
@@ -2276,17 +2194,13 @@ def mosquitto_chmi():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestCHMIHydroMqttDockerFlow:
@@ -2299,7 +2213,6 @@ class TestCHMIHydroMqttDockerFlow:
             chmi_hydro_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_chmi['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '120',
@@ -2349,17 +2262,13 @@ def mosquitto_rws():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestRWSWaterwebservicesMqttDockerFlow:
@@ -2372,7 +2281,6 @@ class TestRWSWaterwebservicesMqttDockerFlow:
             rws_waterwebservices_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_rws['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -2458,7 +2366,6 @@ def aisstream_mqtt_image():
 @pytest.fixture()
 def aisstream_mosquitto_container():
     client = docker.from_env()
-    network = client.networks.create('aisstream-mqtt-e2e', driver='bridge')
     host_port = _find_free_port()
     config = (
         'listener 1883\n'
@@ -2470,7 +2377,6 @@ def aisstream_mosquitto_container():
         name='aisstream-mqtt-e2e-broker',
         detach=True,
         remove=True,
-        network=network.name,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -2484,8 +2390,8 @@ def aisstream_mosquitto_container():
     else:
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
     broker_ip = 'aisstream-mqtt-e2e-broker'
@@ -2503,17 +2409,13 @@ def aisstream_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestAisstreamMqttDockerFlow:
@@ -2577,7 +2479,6 @@ class TestAisstreamMqttDockerFlow:
             aisstream_mqtt_image.id,
             detach=True,
             remove=False,
-            network=aisstream_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'AISSTREAM_MOCK': 'true',
@@ -2712,17 +2613,13 @@ def kystverket_ais_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestKystverketAisMqttDockerFlow:
@@ -2778,7 +2675,6 @@ class TestKystverketAisMqttDockerFlow:
                 kystverket_ais_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=kystverket_ais_mosquitto_container['network'],
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'KYSTVERKET_AIS_MOCK': 'true',
@@ -2874,7 +2770,6 @@ def mode_s_mqtt_image():
 @pytest.fixture()
 def mode_s_mosquitto_container():
     client = docker.from_env()
-    network = client.networks.create('mode-s-mqtt-e2e', driver='bridge')
     host_port = _find_free_port()
     config = (
         'listener 1883\n'
@@ -2886,7 +2781,6 @@ def mode_s_mosquitto_container():
         name='mode-s-mqtt-e2e-broker',
         detach=True,
         remove=True,
-        network=network.name,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -2900,8 +2794,8 @@ def mode_s_mosquitto_container():
     else:
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
     broker_ip = 'mode-s-mqtt-e2e-broker'
@@ -2919,17 +2813,13 @@ def mode_s_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestModeSMqttDockerFlow:
@@ -2994,7 +2884,6 @@ class TestModeSMqttDockerFlow:
             mode_s_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mode_s_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'MODE_S_MOCK': 'true',
@@ -3123,17 +3012,13 @@ def blitzortung_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestBlitzortungMqttDockerFlow:
@@ -3189,7 +3074,6 @@ class TestBlitzortungMqttDockerFlow:
                 blitzortung_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=blitzortung_mosquitto_container['network'],
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'BLITZORTUNG_MOCK': 'true',
@@ -3273,7 +3157,6 @@ def wikimedia_eventstreams_mqtt_image():
 @pytest.fixture()
 def wikimedia_mosquitto_container():
     client = docker.from_env()
-    network = client.networks.create('wikimedia-mqtt-e2e', driver='bridge')
     host_port = _find_free_port()
     config = (
         'listener 1883\n'
@@ -3285,7 +3168,6 @@ def wikimedia_mosquitto_container():
         name='wikimedia-mqtt-e2e-broker',
         detach=True,
         remove=True,
-        network=network.name,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -3299,8 +3181,8 @@ def wikimedia_mosquitto_container():
     else:
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
     broker_ip = 'wikimedia-mqtt-e2e-broker'
@@ -3318,17 +3200,13 @@ def wikimedia_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestWikimediaEventstreamsMqttDockerFlow:
@@ -3393,7 +3271,6 @@ class TestWikimediaEventstreamsMqttDockerFlow:
             wikimedia_eventstreams_mqtt_image.id,
             detach=True,
             remove=False,
-            network=wikimedia_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'WIKIMEDIA_EVENTSTREAMS_MOCK': 'true',
@@ -3512,17 +3389,13 @@ def wikimedia_osm_diffs_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestWikimediaOsmDiffsMqttDockerFlow:
@@ -3596,7 +3469,6 @@ class TestWikimediaOsmDiffsMqttDockerFlow:
             wikimedia_osm_diffs_mqtt_image.id,
             detach=True,
             remove=False,
-            network=wikimedia_osm_diffs_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'OSM_DIFFS_MOCK': 'true',
@@ -3796,17 +3668,13 @@ def mosquitto_epa_uv():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestEPAUVMqttDockerFlow:
@@ -3819,7 +3687,6 @@ class TestEPAUVMqttDockerFlow:
             epa_uv_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_epa_uv['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -3889,17 +3756,13 @@ def mosquitto_usgs_geomag():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestUSGSGeomagMqttDockerFlow:
@@ -3912,7 +3775,6 @@ class TestUSGSGeomagMqttDockerFlow:
             usgs_geomag_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_usgs_geomag['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -3978,17 +3840,13 @@ def mosquitto_seattle_911():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestSeattle911MqttDockerFlow:
@@ -4029,7 +3887,6 @@ class TestSeattle911MqttDockerFlow:
                 seattle_911_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=mosquitto_seattle_911['network'],
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -4091,17 +3948,13 @@ def mosquitto_irail():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestIRailMqttDockerFlow:
@@ -4114,7 +3967,6 @@ class TestIRailMqttDockerFlow:
             irail_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_irail['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'STATION_FILTER': '008814001,008821006',
@@ -4199,17 +4051,13 @@ def mosquitto_cbp_border_wait():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestCbpBorderWaitMqttDockerFlow:
@@ -4222,7 +4070,6 @@ class TestCbpBorderWaitMqttDockerFlow:
             cbp_border_wait_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_cbp_border_wait['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -4298,17 +4145,13 @@ def mosquitto_carbon_intensity():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestCarbonIntensityMqttDockerFlow:
@@ -4349,7 +4192,6 @@ class TestCarbonIntensityMqttDockerFlow:
                 carbon_intensity_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=mosquitto_carbon_intensity['network'],
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -4418,17 +4260,13 @@ def mosquitto_paris_bicycle_counters():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestParisBicycleCountersMqttDockerFlow:
@@ -4463,7 +4301,6 @@ class TestParisBicycleCountersMqttDockerFlow:
                 paris_bicycle_counters_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=mosquitto_paris_bicycle_counters['network'],
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -4534,17 +4371,13 @@ def mosquitto_australia_wildfires():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestAustraliaWildfiresMqttDockerFlow:
@@ -4579,7 +4412,6 @@ class TestAustraliaWildfiresMqttDockerFlow:
                 australia_wildfires_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=mosquitto_australia_wildfires['network'],
                 environment={
                     'MQTT_BROKER_URL': broker_url,
                     'ONCE_MODE': 'true',
@@ -4638,17 +4470,13 @@ def mosquitto_king_county_marine():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestKingCountyMarineMqttDockerFlow:
@@ -4661,7 +4489,6 @@ class TestKingCountyMarineMqttDockerFlow:
             king_county_marine_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_king_county_marine['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'ONCE_MODE': 'true',
@@ -4893,7 +4720,7 @@ def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], 
     logs = ''
     result = {'StatusCode': 1}
     for attempt in range(3):
-        feeder = client.containers.run(image.id, detach=True, remove=False, network=broker['network'], environment=env)
+        feeder = client.containers.run(image.id, detach=True, remove=False, environment=env)
         try:
             result = feeder.wait(timeout=timeout)
             logs = feeder.logs().decode('utf-8', errors='replace')
@@ -5026,12 +4853,11 @@ def inpe_deter_brazil_mqtt_image():
 def mosquitto_inpe_deter_brazil():
     container, network, host_port, broker_ip = _generic_mosquitto('inpe-deter-brazil-mqtt-e2e', 'inpe-deter-brazil-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestInpeDeterBrazilMqttDockerFlow:
@@ -5048,12 +4874,11 @@ def usgs_iv_mqtt_image():
 def mosquitto_usgs_iv():
     container, network, host_port, broker_ip = _generic_mosquitto('usgs-iv-mqtt-e2e', 'usgs-iv-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestUSGSIVMqttDockerFlow:
@@ -5070,12 +4895,11 @@ def rss_mqtt_image():
 def mosquitto_rss():
     container, network, host_port, broker_ip = _generic_mosquitto('rss-mqtt-e2e', 'rss-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestRssMqttDockerFlow:
@@ -5097,12 +4921,11 @@ def fdsn_seismology_mqtt_image():
 def mosquitto_usgs_earthquakes():
     container, network, host_port, broker_ip = _generic_mosquitto('usgs-earthquakes-mqtt-e2e', 'usgs-earthquakes-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestUSGSEarthquakesMqttDockerFlow:
@@ -5114,12 +4937,11 @@ class TestUSGSEarthquakesMqttDockerFlow:
 def mosquitto_fdsn_seismology():
     container, network, host_port, broker_ip = _generic_mosquitto('fdsn-seismology-mqtt-e2e', 'fdsn-seismology-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestFdsnSeismologyMqttDockerFlow:
@@ -5136,12 +4958,11 @@ def eaws_albina_mqtt_image():
 def mosquitto_eaws_albina():
     container, network, host_port, broker_ip = _generic_mosquitto('eaws-albina-mqtt-e2e', 'eaws-albina-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestEawsAlbinaMqttDockerFlow:
@@ -5158,12 +4979,11 @@ def gdacs_mqtt_image():
 def mosquitto_gdacs():
     container, network, host_port, broker_ip = _generic_mosquitto('gdacs-mqtt-e2e', 'gdacs-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestGdacsMqttDockerFlow:
@@ -5180,12 +5000,11 @@ def meteoalarm_mqtt_image():
 def mosquitto_meteoalarm():
     container, network, host_port, broker_ip = _generic_mosquitto('meteoalarm-mqtt-e2e', 'meteoalarm-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestMeteoalarmMqttDockerFlow:
@@ -5202,12 +5021,11 @@ def ptwc_tsunami_mqtt_image():
 def mosquitto_ptwc_tsunami():
     container, network, host_port, broker_ip = _generic_mosquitto('ptwc-tsunami-mqtt-e2e', 'ptwc-tsunami-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestPtwcTsunamiMqttDockerFlow:
@@ -5224,12 +5042,11 @@ def nina_bbk_mqtt_image():
 def mosquitto_nina_bbk():
     container, network, host_port, broker_ip = _generic_mosquitto('nina-bbk-mqtt-e2e', 'nina-bbk-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestNinaBbkMqttDockerFlow:
@@ -5246,12 +5063,11 @@ def jma_bosai_warning_mqtt_image():
 def mosquitto_jma_bosai_warning():
     container, network, host_port, broker_ip = _generic_mosquitto('jma-bosai-warning-mqtt-e2e', 'jma-bosai-warning-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestJmaBosaiWarningMqttDockerFlow:
@@ -5268,12 +5084,11 @@ def jma_bosai_quake_mqtt_image():
 def mosquitto_jma_bosai_quake():
     container, network, host_port, broker_ip = _generic_mosquitto('jma-bosai-quake-mqtt-e2e', 'jma-bosai-quake-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestJmaBosaiQuakeMqttDockerFlow:
@@ -5290,12 +5105,11 @@ def gracedb_mqtt_image():
 def mosquitto_gracedb():
     container, network, host_port, broker_ip = _generic_mosquitto('gracedb-mqtt-e2e', 'gracedb-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestGraceDbMqttDockerFlow:
@@ -5312,12 +5126,11 @@ def vatsim_mqtt_image():
 def mosquitto_vatsim():
     container, network, host_port, broker_ip = _generic_mosquitto('vatsim-mqtt-e2e', 'vatsim-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestVatsimMqttDockerFlow:
@@ -5334,12 +5147,11 @@ def entur_norway_mqtt_image():
 def mosquitto_entur_norway():
     container, network, host_port, broker_ip = _generic_mosquitto('entur-norway-mqtt-e2e', 'entur-norway-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestEnturNorwayMqttDockerFlow:
@@ -5356,12 +5168,11 @@ def entsoe_mqtt_image():
 def mosquitto_entsoe():
     container, network, host_port, broker_ip = _generic_mosquitto('entsoe-mqtt-e2e', 'entsoe-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestEntsoeMqttDockerFlow:
@@ -5385,17 +5196,16 @@ def eurdep_radiation_mqtt_image():
 def mosquitto_eurdep_radiation():
     container, network, host_port, broker_ip = _generic_mosquitto('eurdep-radiation-mqtt-e2e', 'eurdep-radiation-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestEurdepRadiationMqttDockerFlow:
     def test_emits_retained_uns_topics(self, mosquitto_eurdep_radiation, eurdep_radiation_mqtt_image):
         client = docker.from_env(); broker_url = f"mqtt://{mosquitto_eurdep_radiation['internal_host']}:{mosquitto_eurdep_radiation['internal_port']}"
-        feeder = client.containers.run(eurdep_radiation_mqtt_image.id, detach=True, remove=False, network=mosquitto_eurdep_radiation['network'], environment={'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1', 'EURDEP_RADIATION_SAMPLE_MODE': 'true'})
+        feeder = client.containers.run(eurdep_radiation_mqtt_image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1', 'EURDEP_RADIATION_SAMPLE_MODE': 'true'})
         try:
             result = feeder.wait(timeout=300); logs = feeder.logs().decode('utf-8', errors='replace'); assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n{logs}"
         finally:
@@ -5423,17 +5233,16 @@ def nifc_usa_wildfires_mqtt_image():
 def mosquitto_nifc_usa_wildfires():
     container, network, host_port, broker_ip = _generic_mosquitto('nifc-usa-wildfires-mqtt-e2e', 'nifc-usa-wildfires-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestNifcUsaWildfiresMqttDockerFlow:
     def test_emits_incident_topic(self, mosquitto_nifc_usa_wildfires, nifc_usa_wildfires_mqtt_image):
         client=docker.from_env(); broker_url=f"mqtt://{mosquitto_nifc_usa_wildfires['internal_host']}:{mosquitto_nifc_usa_wildfires['internal_port']}"
-        feeder=client.containers.run(nifc_usa_wildfires_mqtt_image.id, detach=True, remove=False, network=mosquitto_nifc_usa_wildfires['network'], environment={'MQTT_BROKER_URL':broker_url,'ONCE_MODE':'true','PYTHONUNBUFFERED':'1','NIFC_USA_WILDFIRES_SAMPLE_MODE':'true'})
+        feeder=client.containers.run(nifc_usa_wildfires_mqtt_image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL':broker_url,'ONCE_MODE':'true','PYTHONUNBUFFERED':'1','NIFC_USA_WILDFIRES_SAMPLE_MODE':'true'})
         try:
             result=feeder.wait(timeout=300); logs=feeder.logs().decode('utf-8',errors='replace'); assert result.get('StatusCode')==0, f"Feeder exited non-zero: {result}\n{logs}"
         finally:
@@ -5454,7 +5263,7 @@ class TestXceedMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('xceed', dockerfile='Dockerfile.mqtt', tag='test-xceed-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/xceed/xceed/#', timeout=30.0)
@@ -5466,7 +5275,7 @@ class TestXceedMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 class TestElexonBmrsMqttDockerFlow:
     def test_emits_mqtt_cloudevents(self):
@@ -5474,7 +5283,7 @@ class TestElexonBmrsMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('elexon-bmrs', dockerfile='Dockerfile.mqtt', tag='test-elexon-bmrs-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/gb/elexon/elexon-bmrs/gb/#', timeout=30.0)
@@ -5486,7 +5295,7 @@ class TestElexonBmrsMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 class TestEnergidataserviceDkMqttDockerFlow:
     def test_emits_mqtt_cloudevents(self):
@@ -5494,7 +5303,7 @@ class TestEnergidataserviceDkMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('energidataservice-dk', dockerfile='Dockerfile.mqtt', tag='test-energidataservice-dk-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/dk/energidataservice/energidataservice-dk/#', timeout=30.0)
@@ -5506,7 +5315,7 @@ class TestEnergidataserviceDkMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 class TestEnergyChartsMqttDockerFlow:
     def test_emits_mqtt_cloudevents(self):
@@ -5514,7 +5323,7 @@ class TestEnergyChartsMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('energy-charts', dockerfile='Dockerfile.mqtt', tag='test-energy-charts-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/de/energy-charts/energy-charts/#', timeout=30.0)
@@ -5526,7 +5335,7 @@ class TestEnergyChartsMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 class TestBillettoMqttDockerFlow:
     def test_emits_mqtt_cloudevents(self):
@@ -5534,7 +5343,7 @@ class TestBillettoMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('billetto', dockerfile='Dockerfile.mqtt', tag='test-billetto-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/billetto/billetto/#', timeout=30.0)
@@ -5546,7 +5355,7 @@ class TestBillettoMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 class TestFientaMqttDockerFlow:
     def test_emits_mqtt_cloudevents(self):
@@ -5554,7 +5363,7 @@ class TestFientaMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('fienta', dockerfile='Dockerfile.mqtt', tag='test-fienta-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/fienta/fienta/#', timeout=30.0)
@@ -5566,7 +5375,7 @@ class TestFientaMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 class TestTicketmasterMqttDockerFlow:
     def test_emits_mqtt_cloudevents(self):
@@ -5574,7 +5383,7 @@ class TestTicketmasterMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('ticketmaster', dockerfile='Dockerfile.mqtt', tag='test-ticketmaster-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/ticketmaster/ticketmaster/#', timeout=30.0)
@@ -5586,7 +5395,7 @@ class TestTicketmasterMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 class TestTepcoDenkiyohoMqttDockerFlow:
     def test_emits_mqtt_cloudevents(self):
@@ -5594,7 +5403,7 @@ class TestTepcoDenkiyohoMqttDockerFlow:
         client = docker.from_env(); feeder = None
         try:
             image = build_image('tepco-denkiyoho', dockerfile='Dockerfile.mqtt', tag='test-tepco-denkiyoho-mqtt')
-            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            feeder = client.containers.run(image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
             result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, logs[-4000:]
             messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/#', timeout=30.0)
@@ -5606,7 +5415,7 @@ class TestTepcoDenkiyohoMqttDockerFlow:
                 assert msg['qos'] == 1
         finally:
             if feeder is not None: feeder.remove(force=True)
-            broker.kill(); network.remove()
+            broker.kill();
 
 
 class TestCanadaEcccWaterofficeMqttDockerFlow:
@@ -5628,16 +5437,13 @@ def hubeau_hydrometrie_mqtt_image():
 def mosquitto_hubeau_hydrometrie():
     container, network, host_port, broker_ip = _generic_mosquitto('hubeau-hydrometrie-mqtt-e2e', 'hubeau-hydrometrie-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestHubeauHydrometrieMqttDockerFlow:
@@ -5654,16 +5460,13 @@ def imgw_hydro_mqtt_image():
 def mosquitto_imgw_hydro():
     container, network, host_port, broker_ip = _generic_mosquitto('imgw-hydro-mqtt-e2e', 'imgw-hydro-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestImgwHydroMqttDockerFlow:
@@ -5726,7 +5529,6 @@ class _B3SimpleMqttFlow:
                     image.id,
                     detach=True,
                     remove=False,
-                    network=network.name,
                     environment={'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'},
                 )
                 result = feeder.wait(timeout=240)
@@ -5750,8 +5552,7 @@ class _B3SimpleMqttFlow:
         finally:
             try: broker.kill()
             except docker.errors.APIError: pass
-            try: network.remove()
-            except docker.errors.APIError: pass
+            pass
 
 class TestNoaaGoesMqttDockerFlow(_B3SimpleMqttFlow):
     source_dir = 'noaa-goes'
@@ -5789,12 +5590,11 @@ def jma_bosai_amedas_mqtt_image():
 def mosquitto_jma_bosai_amedas():
     container, network, host_port, broker_ip = _generic_mosquitto('jma-bosai-amedas-mqtt-e2e', 'jma-bosai-amedas-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 @pytest.fixture(scope='module')
@@ -5805,12 +5605,11 @@ def jma_bosai_volcano_mqtt_image():
 def mosquitto_jma_bosai_volcano():
     container, network, host_port, broker_ip = _generic_mosquitto('jma-bosai-volcano-mqtt-e2e', 'jma-bosai-volcano-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestJmaBosaiVolcanoMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_volcano, jma_bosai_volcano_mqtt_image):
@@ -5830,12 +5629,11 @@ def french_road_traffic_mqtt_image():
 def mosquitto_french_road_traffic():
     container, network, host_port, broker_ip = _generic_mosquitto('french-road-traffic-mqtt-e2e', 'french-road-traffic-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 @pytest.fixture(scope='module')
 def gtfs_mqtt_image():
@@ -5845,12 +5643,11 @@ def gtfs_mqtt_image():
 def mosquitto_gtfs():
     container, network, host_port, broker_ip = _generic_mosquitto('gtfs-mqtt-e2e', 'gtfs-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestGTFSMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_gtfs, gtfs_mqtt_image):
@@ -5864,12 +5661,11 @@ def madrid_traffic_mqtt_image():
 def mosquitto_madrid_traffic():
     container, network, host_port, broker_ip = _generic_mosquitto('madrid-traffic-mqtt-e2e', 'madrid-traffic-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestMadridTrafficMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_madrid_traffic, madrid_traffic_mqtt_image):
@@ -5883,12 +5679,11 @@ def ndw_road_traffic_mqtt_image():
 def mosquitto_ndw_road_traffic():
     container, network, host_port, broker_ip = _generic_mosquitto('ndw-road-traffic-mqtt-e2e', 'ndw-road-traffic-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestNDWRoadTrafficMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_ndw_road_traffic, ndw_road_traffic_mqtt_image):
@@ -5902,12 +5697,11 @@ def nextbus_mqtt_image():
 def mosquitto_nextbus():
     container, network, host_port, broker_ip = _generic_mosquitto('nextbus-mqtt-e2e', 'nextbus-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestNextbusMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_nextbus, nextbus_mqtt_image):
@@ -5921,12 +5715,11 @@ def seattle_street_closures_mqtt_image():
 def mosquitto_seattle_street_closures():
     container, network, host_port, broker_ip = _generic_mosquitto('seattle-street-closures-mqtt-e2e', 'seattle-street-closures-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestSeattleStreetClosuresMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_seattle_street_closures, seattle_street_closures_mqtt_image):
@@ -5941,12 +5734,11 @@ def tokyo_docomo_bikeshare_mqtt_image():
 def mosquitto_tokyo_docomo_bikeshare():
     container, network, host_port, broker_ip = _generic_mosquitto('tokyo-docomo-bikeshare-mqtt-e2e', 'tokyo-docomo-bikeshare-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestTokyoDocomoBikeshareMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_tokyo_docomo_bikeshare, tokyo_docomo_bikeshare_mqtt_image):
@@ -5969,12 +5761,11 @@ def gbfs_bikeshare_mqtt_image():
 def mosquitto_gbfs_bikeshare():
     container, network, host_port, broker_ip = _generic_mosquitto('gbfs-bikeshare-mqtt-e2e', 'gbfs-bikeshare-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestGbfsBikeshareMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_gbfs_bikeshare, gbfs_bikeshare_mqtt_image):
@@ -5994,12 +5785,11 @@ def wsdot_mqtt_image():
 def mosquitto_wsdot():
     container, network, host_port, broker_ip = _generic_mosquitto('wsdot-mqtt-e2e', 'wsdot-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestWSDOTMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_wsdot, wsdot_mqtt_image):
@@ -6036,7 +5826,7 @@ def _run_b4_aq_mqtt_flow(source: str, image_name: str, extra_env: dict, topic_fi
         logs = ''
         for attempt in range(3):
             feeder = client.containers.run(
-                image.id, detach=True, remove=False, network=network.name, environment=env,
+                image.id, detach=True, remove=False, environment=env,
             )
             result = feeder.wait(timeout=600)
             logs = feeder.logs().decode('utf-8', errors='replace')
@@ -6070,10 +5860,7 @@ def _run_b4_aq_mqtt_flow(source: str, image_name: str, extra_env: dict, topic_fi
             broker.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestCanadaAqhiMqttDockerFlow:
@@ -6128,12 +5915,11 @@ def aviationweather_mqtt_image():
 def mosquitto_aviationweather():
     container, network, host_port, broker_ip = _generic_mosquitto('aviationweather-mqtt-e2e', 'aviationweather-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 @pytest.fixture(scope='module')
@@ -6144,12 +5930,11 @@ def bom_australia_mqtt_image():
 def mosquitto_bom_australia():
     container, network, host_port, broker_ip = _generic_mosquitto('bom-australia-mqtt-e2e', 'bom-australia-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestBomAustraliaMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_bom_australia, bom_australia_mqtt_image):
@@ -6164,12 +5949,11 @@ def dwd_mqtt_image():
 def mosquitto_dwd():
     container, network, host_port, broker_ip = _generic_mosquitto('dwd-mqtt-e2e', 'dwd-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestDwdMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_dwd, dwd_mqtt_image):
@@ -6184,12 +5968,11 @@ def dwd_pollenflug_mqtt_image():
 def mosquitto_dwd_pollenflug():
     container, network, host_port, broker_ip = _generic_mosquitto('dwd-pollenflug-mqtt-e2e', 'dwd-pollenflug-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestDwdPollenflugMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_dwd_pollenflug, dwd_pollenflug_mqtt_image):
@@ -6204,12 +5987,11 @@ def environment_canada_mqtt_image():
 def mosquitto_environment_canada():
     container, network, host_port, broker_ip = _generic_mosquitto('environment-canada-mqtt-e2e', 'environment-canada-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestEnvironmentCanadaMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_environment_canada, environment_canada_mqtt_image):
@@ -6224,12 +6006,11 @@ def geosphere_austria_mqtt_image():
 def mosquitto_geosphere_austria():
     container, network, host_port, broker_ip = _generic_mosquitto('geosphere-austria-mqtt-e2e', 'geosphere-austria-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestGeosphereAustriaMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_geosphere_austria, geosphere_austria_mqtt_image):
@@ -6244,12 +6025,11 @@ def hko_hong_kong_mqtt_image():
 def mosquitto_hko_hong_kong():
     container, network, host_port, broker_ip = _generic_mosquitto('hko-hong-kong-mqtt-e2e', 'hko-hong-kong-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestHkoHongKongMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_hko_hong_kong, hko_hong_kong_mqtt_image):
@@ -6264,12 +6044,11 @@ def jma_japan_mqtt_image():
 def mosquitto_jma_japan():
     container, network, host_port, broker_ip = _generic_mosquitto('jma-japan-mqtt-e2e', 'jma-japan-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestJmaJapanMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_jma_japan, jma_japan_mqtt_image):
@@ -6284,12 +6063,11 @@ def kmi_belgium_mqtt_image():
 def mosquitto_kmi_belgium():
     container, network, host_port, broker_ip = _generic_mosquitto('kmi-belgium-mqtt-e2e', 'kmi-belgium-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestKmiBelgiumMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_kmi_belgium, kmi_belgium_mqtt_image):
@@ -6304,12 +6082,11 @@ def noaa_nws_mqtt_image():
 def mosquitto_noaa_nws():
     container, network, host_port, broker_ip = _generic_mosquitto('noaa-nws-mqtt-e2e', 'noaa-nws-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestNoaaNwsMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_noaa_nws, noaa_nws_mqtt_image):
@@ -6324,12 +6101,11 @@ def smhi_weather_mqtt_image():
 def mosquitto_smhi_weather():
     container, network, host_port, broker_ip = _generic_mosquitto('smhi-weather-mqtt-e2e', 'smhi-weather-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestSmhiWeatherMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_smhi_weather, smhi_weather_mqtt_image):
@@ -6352,14 +6128,13 @@ def noaa_swpc_l1_mqtt_image():
 @pytest.fixture()
 def mosquitto_container_swpc():
     client = docker.from_env()
-    network = client.networks.create('noaa-swpc-l1-mqtt-e2e', driver='bridge')
     host_port = _find_free_port()
     config = 'listener 1883\nallow_anonymous true\n'
     container = client.containers.run(
         'eclipse-mosquitto:2',
         command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
         name='noaa-swpc-l1-mqtt-e2e-broker',
-        detach=True, remove=True, network=network.name,
+        detach=True, remove=True,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -6371,8 +6146,10 @@ def mosquitto_container_swpc():
         except OSError:
             time.sleep(0.5)
     else:
-        try: container.kill()
-        finally: network.remove()
+        try:
+            container.kill()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
     broker_ip = 'noaa-swpc-mqtt-e2e-broker'
@@ -6390,13 +6167,11 @@ def mosquitto_container_swpc():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 def _collect_swpc_messages(host: str, port: int, timeout: float = 25.0) -> List[Dict[str, Any]]:
@@ -6442,7 +6217,6 @@ class TestNoaaSwpcL1MqttDockerFlow:
         broker_url = f"mqtt://{mosquitto_container_swpc['internal_host']}:{mosquitto_container_swpc['internal_port']}"
         feeder = client.containers.run(
             noaa_swpc_l1_mqtt_image.id, detach=True, remove=False,
-            network=mosquitto_container_swpc['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -6492,7 +6266,6 @@ def dmi_mqtt_image():
 @pytest.fixture()
 def dmi_mosquitto_container():
     client = docker.from_env()
-    network = client.networks.create('dmi-mqtt-e2e', driver='bridge')
     host_port = _find_free_port()
     config = (
         'listener 1883\n'
@@ -6504,7 +6277,6 @@ def dmi_mosquitto_container():
         name='dmi-mqtt-e2e-broker',
         detach=True,
         remove=True,
-        network=network.name,
         ports={'1883/tcp': host_port},
     )
     container.reload()
@@ -6518,8 +6290,8 @@ def dmi_mosquitto_container():
     else:
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip('Mosquitto broker did not start')
     container.reload()
     broker_ip = 'dmi-mqtt-e2e-broker'
@@ -6537,17 +6309,13 @@ def dmi_mosquitto_container():
             'host_port': host_port,
             'internal_host': broker_ip,
             'internal_port': 1883,
-            'network': network.name,
         }
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 def _collect_dmi_messages(host: str, port: int, timeout: float = 60.0) -> List[Dict[str, Any]]:
@@ -6604,7 +6372,6 @@ class TestDMIMqttDockerFlow:
             dmi_mqtt_image.id,
             detach=True,
             remove=False,
-            network=dmi_mosquitto_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
@@ -6659,16 +6426,13 @@ def digitraffic_maritime_mqtt_image():
 def mosquitto_digitraffic_maritime():
     container, network, host_port, broker_ip = _generic_mosquitto('digitraffic-maritime-mqtt-e2e', 'digitraffic-maritime-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try:
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 class TestDigitrafficMaritimeMqttDockerFlow:
@@ -6692,12 +6456,11 @@ def digitraffic_road_mqtt_image():
 def mosquitto_digitraffic_road():
     container, network, host_port, broker_ip = _generic_mosquitto('digitraffic-road-mqtt-e2e', 'digitraffic-road-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 
 class TestDigitrafficRoadMqttDockerFlow:
@@ -6732,7 +6495,6 @@ class TestSiriMqttDockerFlow:
                 image.id,
                 detach=True,
                 remove=False,
-                network=network.name,
                 environment={
                     'MQTT_BROKER_URL': f'mqtt://{broker_ip}:1883',
                     'SIRI_SAMPLE_MODE': 'true',
@@ -6759,8 +6521,7 @@ class TestSiriMqttDockerFlow:
             subscriber.disconnect()
             try: broker.kill()
             except docker.errors.APIError: pass
-            try: network.remove()
-            except docker.errors.APIError: pass
+            pass
 
 # ---- openaq -------------------------------------------------------------
 
@@ -6772,18 +6533,17 @@ def openaq_mqtt_image():
 def mosquitto_openaq():
     container, network, host_port, broker_ip = _generic_mosquitto('openaq-mqtt-e2e', 'openaq-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
+        pass
 
 class TestOpenAQMqttDockerFlow:
     def test_emits_retained_uns_topics(self, mosquitto_openaq, openaq_mqtt_image):
         client = docker.from_env()
         broker_url = f"mqtt://{mosquitto_openaq['internal_host']}:{mosquitto_openaq['internal_port']}"
-        feeder = client.containers.run(openaq_mqtt_image.id, detach=True, remove=False, network=mosquitto_openaq['network'], environment={'MQTT_BROKER_URL': broker_url, 'OPENAQ_MOCK': 'true', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'})
+        feeder = client.containers.run(openaq_mqtt_image.id, detach=True, remove=False, environment={'MQTT_BROKER_URL': broker_url, 'OPENAQ_MOCK': 'true', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'})
         try:
             result = feeder.wait(timeout=240)
             logs = feeder.logs().decode('utf-8', errors='replace')
@@ -6818,7 +6578,6 @@ class TestDatex2MqttDockerFlow:
                 datex2_mqtt_image.id,
                 detach=True,
                 remove=False,
-                network=network.name,
                 environment={
                     'DATEX2_MOCK': 'true',
                     'ONCE_MODE': 'true',
@@ -6843,7 +6602,4 @@ class TestDatex2MqttDockerFlow:
                 broker.kill()
             except docker.errors.APIError:
                 pass
-            try:
-                network.remove()
-            except docker.errors.APIError:
-                pass
+            pass

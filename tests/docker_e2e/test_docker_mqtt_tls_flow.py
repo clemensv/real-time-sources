@@ -123,7 +123,7 @@ def pegelonline_mqtt_image():
 
 @pytest.fixture()
 def mosquitto_tls_container(tmp_path_factory):
-    """Start Mosquitto 2.x with TLS on a dedicated Docker network."""
+    """Start Mosquitto 2.x with TLS on the default bridge network."""
     tmpdir = str(tmp_path_factory.mktemp('mqtt_tls_certs'))
 
     try:
@@ -132,7 +132,6 @@ def mosquitto_tls_container(tmp_path_factory):
         pytest.skip(f'openssl not available or cert generation failed: {e}')
 
     client = docker.from_env()
-    network = client.networks.create('mqtt-tls-e2e', driver='bridge')
     host_port = _find_free_port()
 
     # Mosquitto TLS config
@@ -152,7 +151,6 @@ def mosquitto_tls_container(tmp_path_factory):
         detach=True,
         remove=True,
         name='mqtt-tls-broker',
-        network=network.name,
         ports={'8883/tcp': host_port},
         volumes={
             certs['ca_crt']: {'bind': '/certs/ca.crt', 'mode': 'ro'},
@@ -177,8 +175,8 @@ def mosquitto_tls_container(tmp_path_factory):
         logs = container.logs().decode('utf-8', errors='replace')
         try:
             container.kill()
-        finally:
-            network.remove()
+        except Exception:
+            pass
         pytest.skip(f'Mosquitto TLS broker did not start.\nLogs: {logs}')
 
     try:
@@ -186,7 +184,6 @@ def mosquitto_tls_container(tmp_path_factory):
             'host_port': host_port,
             'internal_host': 'mqtt-tls-broker',
             'internal_port': 8883,
-            'network': network.name,
             'ca_crt': certs['ca_crt'],
         }
     finally:
@@ -194,10 +191,7 @@ def mosquitto_tls_container(tmp_path_factory):
             container.kill()
         except docker.errors.APIError:
             pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+        pass
 
 
 def _collect_tls_messages(host: str, port: int, ca_crt: str, timeout: float = 25.0) -> List[Dict[str, Any]]:
@@ -273,7 +267,6 @@ class TestMqttTlsFlow:
             pegelonline_mqtt_image.id,
             detach=True,
             remove=False,
-            network=mosquitto_tls_container['network'],
             environment={
                 'MQTT_BROKER_URL': broker_url,
                 'MQTT_TLS': 'true',
