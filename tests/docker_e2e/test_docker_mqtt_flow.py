@@ -3005,7 +3005,7 @@ class TestModeSMqttDockerFlow:
                 assert parts[4] == payload['icao24'], (parts[4], payload['icao24'])
                 assert parts[5] == payload['receiver_id'], (parts[5], payload['receiver_id'])
                 assert parts[6] == payload['msg_type'], (parts[6], payload['msg_type'])
-                assert up['subject'] == icao_seg, (up['subject'], icao_seg)
+                assert up['subject'] == f"{icao_seg}/{receiver_seg}", (up['subject'], icao_seg, receiver_seg)
 
         missing_trailers = expected_trailers - observed_trailers
         assert not missing_trailers, f"Missing topic-trailer families: {missing_trailers}"
