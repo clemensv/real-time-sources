@@ -99,6 +99,7 @@ def mosquitto_container():
         finally:
             network.remove()
         pytest.skip('Mosquitto broker did not start')
+    time.sleep(3.0)  # Allow Docker DNS propagation for container-to-container resolution
     try:
         yield {
             'host_port': host_port,
@@ -383,7 +384,7 @@ def _generic_mosquitto(network_name: str, container_name: str):
         finally:
             network.remove()
         pytest.skip('Mosquitto broker did not start')
-    time.sleep(1.0)
+    time.sleep(3.0)  # Allow Docker DNS propagation for container-to-container resolution
     return container, network, host_port
 
 
