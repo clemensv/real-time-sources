@@ -106,7 +106,7 @@ async def feed(args: argparse.Namespace) -> None:
                 readings = []
                 refresh_references = True
                 if bridge.last_reference_refresh:
-                    last = datetime.fromisoformat(bridge.last_reference_refresh)
+                    last = datetime.fromisoformat(bridge.last_reference_refresh.replace("Z", "+00:00"))
                     refresh_references = (datetime.now(timezone.utc) - last).total_seconds() >= REFERENCE_REFRESH_SECONDS
                 if refresh_references or not bridge.station_metadata:
                     metadata = {}

@@ -29,7 +29,7 @@ def _build_operator(operator_ref: str) -> Operator:
 
 
 def _parse_dt(value: Optional[str]) -> Optional[datetime]:
-    return datetime.fromisoformat(value) if value else None
+    return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else None
 
 
 def _build_vehicle_position(position) -> VehiclePosition:

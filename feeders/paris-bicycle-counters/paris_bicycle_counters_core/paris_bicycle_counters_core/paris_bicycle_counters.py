@@ -128,7 +128,7 @@ class ParisBicycleCounterPoller:
                 if not date_str:
                     continue
                 try:
-                    date_val = datetime.fromisoformat(date_str)
+                    date_val = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
                 except (ValueError, TypeError):
                     continue
                 counter_id = record.get("id_compteur", "")

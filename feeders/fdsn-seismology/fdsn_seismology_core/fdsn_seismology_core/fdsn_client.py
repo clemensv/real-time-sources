@@ -99,7 +99,7 @@ def parse_datetime(value: str) -> datetime:
     normalized = value.strip()
     if normalized.endswith("Z"):
         normalized = normalized[:-1] + "+00:00"
-    parsed = datetime.fromisoformat(normalized)
+    parsed = datetime.fromisoformat(normalized.replace("Z", "+00:00"))
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc)

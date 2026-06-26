@@ -122,7 +122,7 @@ def decimal_degrees(value: Any) -> float | None:
 def parse_jma_datetime(value: str | None) -> datetime | None:
     if not value:
         return None
-    return datetime.fromisoformat(value)
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
 def to_utc(value: str | datetime | None) -> datetime | None:
@@ -179,7 +179,7 @@ class JMABosaiVolcanoSource:
         if not last or not self.volcano_catalog:
             return True
         try:
-            elapsed = datetime.now(timezone.utc) - datetime.fromisoformat(last)
+            elapsed = datetime.now(timezone.utc) - datetime.fromisoformat(last.replace("Z", "+00:00"))
         except ValueError:
             return True
         return elapsed.total_seconds() >= refresh_hours * 3600

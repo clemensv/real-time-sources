@@ -53,7 +53,7 @@ def _dt(value: str | None) -> datetime | None:
     if text.endswith("Z"):
         text = text[:-1] + "+00:00"
     try:
-        result = datetime.fromisoformat(text)
+        result = datetime.fromisoformat(text.replace("Z", "+00:00"))
     except ValueError:
         return None
     return result if result.tzinfo else result.replace(tzinfo=timezone.utc)

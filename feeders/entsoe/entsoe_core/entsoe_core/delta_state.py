@@ -45,7 +45,7 @@ def get_last_polled(state: Dict[str, Dict[str, str]],
     """
     ts_str = state.get(document_type, {}).get(area_code)
     if ts_str:
-        return datetime.fromisoformat(ts_str)
+        return datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
     return None
 
 

@@ -99,11 +99,11 @@ def feed(host, port, address='imgw-hydro', username=None, password=None, tls=Fal
                     if obs_key in previous:
                         continue
                     wl_ts_raw = item.get("stan_wody_data_pomiaru", "") or item.get("date", "")
-                    wl_ts = datetime.fromisoformat(wl_ts_raw) if wl_ts_raw else datetime.now(timezone.utc)
+                    wl_ts = datetime.fromisoformat(wl_ts_raw.replace("Z", "+00:00")) if wl_ts_raw else datetime.now(timezone.utc)
                     wt_raw = item.get("temperatura_wody_data_pomiaru") or item.get("water_temperature_timestamp")
-                    wt_ts = datetime.fromisoformat(wt_raw) if wt_raw else None
+                    wt_ts = datetime.fromisoformat(wt_raw.replace("Z", "+00:00")) if wt_raw else None
                     disch_raw = item.get("przeplyw_data_pomiaru") or item.get("discharge_timestamp")
-                    disch_ts = datetime.fromisoformat(disch_raw) if disch_raw else None
+                    disch_ts = datetime.fromisoformat(disch_raw.replace("Z", "+00:00")) if disch_raw else None
                     obs = WaterLevelObservation(
                         station_id=station_id,
                         station_name=item.get("stacja", "") or item.get("station_name", ""),

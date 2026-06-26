@@ -104,7 +104,7 @@ def feed(host, port, address='waterinfo-vmm', username=None, password=None, tls=
                     obs_key = f"{station_no}:{ts_raw}"
                     if obs_key in previous:
                         continue
-                    ts = datetime.fromisoformat(ts_raw) if ts_raw else datetime.now(timezone.utc)
+                    ts = datetime.fromisoformat(ts_raw.replace("Z", "+00:00")) if ts_raw else datetime.now(timezone.utc)
                     water_body = station_water_bodies.get(station_no, record.get("water_body", "unknown"))
                     raw_value = record.get("value") or record.get("Value") or 0
                     reading = WaterLevelReading(

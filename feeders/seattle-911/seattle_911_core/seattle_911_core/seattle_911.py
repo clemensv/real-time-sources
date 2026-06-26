@@ -92,7 +92,7 @@ def _incident_type_slug(value: str) -> str:
 
 def _incident_datetime_utc(value: str) -> datetime:
     """Convert the upstream Seattle local timestamp into UTC."""
-    parsed = datetime.fromisoformat(value)
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
     return parsed.astimezone(timezone.utc)

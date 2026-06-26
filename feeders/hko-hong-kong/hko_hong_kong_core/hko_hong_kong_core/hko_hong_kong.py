@@ -96,7 +96,7 @@ class HKOWeatherAPI:
         """Extract per-place observations from the rhrread response."""
         update_time_str = data.get("updateTime", "")
         try:
-            update_time = datetime.fromisoformat(update_time_str)
+            update_time = datetime.fromisoformat(update_time_str.replace("Z", "+00:00"))
         except (ValueError, TypeError):
             update_time = datetime.now(timezone.utc)
 

@@ -153,7 +153,7 @@ async def feed(
     last_seen: Optional[datetime]
     if last_seen_iso:
         try:
-            last_seen = datetime.fromisoformat(last_seen_iso)
+            last_seen = datetime.fromisoformat(last_seen_iso.replace("Z", "+00:00"))
         except ValueError:
             last_seen = None
     else:

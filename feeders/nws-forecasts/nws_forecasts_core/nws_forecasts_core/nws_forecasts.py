@@ -232,8 +232,8 @@ class NWSForecastFetcher:
             time_zones=props.get("timeZone", []),
             observation_station_ids=self._station_ids(props.get("observationStations", [])),
             radar_station=props.get("radarStation"),
-            effective_date=datetime.fromisoformat(props["effectiveDate"]),
-            expiration_date=datetime.fromisoformat(props["expirationDate"]),
+            effective_date=datetime.fromisoformat(props["effectiveDate"].replace("Z", "+00:00")),
+            expiration_date=datetime.fromisoformat(props["expirationDate"].replace("Z", "+00:00")),
         )
 
     def refresh_zone_cache(self) -> None:
@@ -282,7 +282,7 @@ class NWSForecastFetcher:
         ]
         return NWSLandZoneForecast(
             zone_id=zone_id,
-            updated=datetime.fromisoformat(props["updated"]),
+            updated=datetime.fromisoformat(props["updated"].replace("Z", "+00:00")),
             periods=periods,
         )
 

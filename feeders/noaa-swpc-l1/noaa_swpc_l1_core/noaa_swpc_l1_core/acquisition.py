@@ -91,7 +91,7 @@ def _parse_timestamp(raw: str) -> datetime:
         except ValueError:
             continue
     # Last-ditch: ISO 8601 with explicit offset.
-    return datetime.fromisoformat(raw).astimezone(timezone.utc)
+    return datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(timezone.utc)
 
 
 def _to_float(value: Any) -> Optional[float]:

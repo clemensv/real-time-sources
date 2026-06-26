@@ -42,7 +42,7 @@ def _parse_time(value: Any) -> Optional[dt.datetime]:
         return None
     text = str(value).replace("Z", "+00:00")
     try:
-        parsed = dt.datetime.fromisoformat(text)
+        parsed = dt.datetime.fromisoformat(text.replace("Z", "+00:00"))
     except ValueError:
         return None
     return parsed if parsed.tzinfo else parsed.replace(tzinfo=dt.timezone.utc)

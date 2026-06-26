@@ -106,7 +106,7 @@ def _dt(obj: Any) -> Optional[datetime]:
     if isinstance(obj, str):
         text = obj.replace("Z", "+00:00")
         try:
-            return datetime.fromisoformat(text)
+            return datetime.fromisoformat(text.replace("Z", "+00:00"))
         except ValueError:
             return None
     if isinstance(obj, dict):

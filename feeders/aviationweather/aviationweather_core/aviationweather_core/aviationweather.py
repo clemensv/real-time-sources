@@ -188,7 +188,7 @@ class AviationWeatherPoller:
         if isinstance(report_time, str):
             report_time = report_time.replace("Z", "+00:00")
             try:
-                datetime.fromisoformat(report_time)
+                datetime.fromisoformat(report_time.replace("Z", "+00:00"))
             except ValueError:
                 report_time = None
         clouds_raw = raw.get("clouds")
@@ -198,8 +198,8 @@ class AviationWeatherPoller:
             obs_time = obs_time.replace("Z", "+00:00")
         return Metar(
             icao_id=icao_id,
-            obs_time=datetime.fromisoformat(obs_time),
-            report_time=datetime.fromisoformat(report_time) if report_time else None,
+            obs_time=datetime.fromisoformat(obs_time.replace("Z", "+00:00")),
+            report_time=datetime.fromisoformat(report_time.replace("Z", "+00:00")) if report_time else None,
             temp=cls.safe_float(raw.get("temp")),
             dewp=cls.safe_float(raw.get("dewp")),
             wdir=cls.safe_int(raw.get("wdir")),
@@ -237,8 +237,8 @@ class AviationWeatherPoller:
         return Sigmet(
             icao_id=icao_id,
             series_id=series_id,
-            valid_time_from=datetime.fromisoformat(valid_from),
-            valid_time_to=datetime.fromisoformat(valid_to),
+            valid_time_from=datetime.fromisoformat(valid_from.replace("Z", "+00:00")),
+            valid_time_to=datetime.fromisoformat(valid_to.replace("Z", "+00:00")),
             hazard=raw.get("hazard"),
             qualifier=None,
             sigmet_type=raw.get("airSigmetType", "SIGMET"),
@@ -268,8 +268,8 @@ class AviationWeatherPoller:
         return Sigmet(
             icao_id=icao_id,
             series_id=series_id,
-            valid_time_from=datetime.fromisoformat(valid_from),
-            valid_time_to=datetime.fromisoformat(valid_to),
+            valid_time_from=datetime.fromisoformat(valid_from.replace("Z", "+00:00")),
+            valid_time_to=datetime.fromisoformat(valid_to.replace("Z", "+00:00")),
             hazard=raw.get("hazard"),
             qualifier=raw.get("qualifier"),
             sigmet_type="ISIGMET",

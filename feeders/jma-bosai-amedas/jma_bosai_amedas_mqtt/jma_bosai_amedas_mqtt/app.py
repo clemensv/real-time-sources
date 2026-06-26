@@ -62,7 +62,7 @@ class MockAPI(JmaBosaiAmedasAPI):
     def fetch_observation_map(self, observed_at_local): return {'44132': {'temp':[12.3,0], 'humidity':[55,0], 'precipitation10m':[0,0], 'wind':[2.1,8,0]}}
 async def cycle(api,client,state,state_file,refresh_hours):
     now=datetime.now(timezone.utc); last=state.get('last_station_metadata_refresh')
-    if not last or now-datetime.fromisoformat(last) >= timedelta(hours=refresh_hours):
+    if not last or now-datetime.fromisoformat(last.replace("Z", "+00:00")) >= timedelta(hours=refresh_hours):
         stations=api.fetch_station_table() or {}
         for code, st in stations.items():
             d=Station(**st.to_serializer_dict()); await client.publish_jp_jma_amedas_mqtt_station(feedurl=STATION_TABLE_URL,prefecture=d.prefecture,station_code=code,event=d.event,data=d)

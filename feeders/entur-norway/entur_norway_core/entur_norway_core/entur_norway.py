@@ -4,6 +4,14 @@
 
 import datetime
 
+
+def _parse_iso_dt(s):
+    """Parse ISO datetime, handling Z suffix for Python 3.10."""
+    if s is None:
+        return None
+    return _parse_iso_dt(s.replace("Z", "+00:00"))
+
+
 import logging
 
 import os
@@ -310,13 +318,13 @@ class EnturNorwayBridge:
 
             stop_point_name=_find_multilingual_text(call_el, 'StopPointName'),
 
-            aimed_arrival_time=datetime.fromisoformat((call_el.findtext(_siri('AimedArrivalTime')) or None)) if (call_el.findtext(_siri('AimedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
+            aimed_arrival_time=_parse_iso_dt((call_el.findtext(_siri('AimedArrivalTime')) or None)) if (call_el.findtext(_siri('AimedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
 
-            expected_arrival_time=datetime.fromisoformat((call_el.findtext(_siri('ExpectedArrivalTime')) or None)) if (call_el.findtext(_siri('ExpectedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
+            expected_arrival_time=_parse_iso_dt((call_el.findtext(_siri('ExpectedArrivalTime')) or None)) if (call_el.findtext(_siri('ExpectedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
 
-            aimed_departure_time=datetime.fromisoformat((call_el.findtext(_siri('AimedDepartureTime')) or None)) if (call_el.findtext(_siri('AimedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
+            aimed_departure_time=_parse_iso_dt((call_el.findtext(_siri('AimedDepartureTime')) or None)) if (call_el.findtext(_siri('AimedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
 
-            expected_departure_time=datetime.fromisoformat((call_el.findtext(_siri('ExpectedDepartureTime')) or None)) if (call_el.findtext(_siri('ExpectedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
+            expected_departure_time=_parse_iso_dt((call_el.findtext(_siri('ExpectedDepartureTime')) or None)) if (call_el.findtext(_siri('ExpectedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
 
             arrival_status=(call_el.findtext(_siri('ArrivalStatus')) or None),
 
@@ -428,7 +436,7 @@ class EnturNorwayBridge:
 
                             data_source=(jel.findtext(_siri('DataSource')) or None),
 
-                            recorded_at_time=datetime.fromisoformat((jel.findtext(_siri('RecordedAtTime')) or None)) if (jel.findtext(_siri('RecordedAtTime')) or None) else None,  # type: ignore[attr-defined]
+                            recorded_at_time=_parse_iso_dt((jel.findtext(_siri('RecordedAtTime')) or None)) if (jel.findtext(_siri('RecordedAtTime')) or None) else None,  # type: ignore[attr-defined]
 
                             estimated_calls=estimated_calls,
 
@@ -566,7 +574,7 @@ class EnturNorwayBridge:
 
                         operating_day=operating_day,
 
-                        recorded_at_time=datetime.fromisoformat(recorded_at_time),  # type: ignore[attr-defined]
+                        recorded_at_time=_parse_iso_dt(recorded_at_time),  # type: ignore[attr-defined]
 
                         line_ref=line_ref,
 
@@ -672,9 +680,9 @@ class EnturNorwayBridge:
 
                         validity_periods.append(ValidityPeriod(
 
-                            start_time=datetime.fromisoformat(start),  # type: ignore[attr-defined]
+                            start_time=_parse_iso_dt(start),  # type: ignore[attr-defined]
 
-                            end_time=datetime.fromisoformat(end.strip() if end else None),  # type: ignore[attr-defined]
+                            end_time=_parse_iso_dt(end.strip() if end else None),  # type: ignore[attr-defined]
 
                         ))
 
@@ -722,7 +730,7 @@ class EnturNorwayBridge:
 
                         version=(sit_el.findtext(_siri('Version')) or None),
 
-                        creation_time=datetime.fromisoformat(creation_time),  # type: ignore[attr-defined]
+                        creation_time=_parse_iso_dt(creation_time),  # type: ignore[attr-defined]
 
                         source_type=source_type,
 

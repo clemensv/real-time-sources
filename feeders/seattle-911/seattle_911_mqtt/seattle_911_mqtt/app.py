@@ -117,7 +117,7 @@ async def feed(
     try:
         while True:
             if bridge.last_seen_datetime:
-                since = datetime.fromisoformat(bridge.last_seen_datetime) - timedelta(minutes=DEFAULT_OVERLAP_MINUTES)
+                since = datetime.fromisoformat(bridge.last_seen_datetime.replace("Z", "+00:00")) - timedelta(minutes=DEFAULT_OVERLAP_MINUTES)
             else:
                 since = datetime.utcnow() - timedelta(hours=DEFAULT_LOOKBACK_HOURS)
             incidents = bridge.fetch_incidents(since=since)

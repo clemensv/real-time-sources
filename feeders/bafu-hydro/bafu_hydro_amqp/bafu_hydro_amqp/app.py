@@ -85,13 +85,13 @@ def _build_observation(
         water_body_name=water_body_name,
         water_level=wl_val,
         water_level_unit="m",
-        water_level_timestamp=datetime.fromisoformat(wl_ts_str) if wl_ts_str else None,
+        water_level_timestamp=datetime.fromisoformat(wl_ts_str.replace("Z", "+00:00")) if wl_ts_str else None,
         discharge=q_val,
         discharge_unit="m3/s",
-        discharge_timestamp=datetime.fromisoformat(q_ts_str) if q_ts_str else None,
+        discharge_timestamp=datetime.fromisoformat(q_ts_str.replace("Z", "+00:00")) if q_ts_str else None,
         water_temperature=temp_val,
         water_temperature_unit="C",
-        water_temperature_timestamp=datetime.fromisoformat(temp_ts_str) if temp_ts_str else None,
+        water_temperature_timestamp=datetime.fromisoformat(temp_ts_str.replace("Z", "+00:00")) if temp_ts_str else None,
     )
 
 

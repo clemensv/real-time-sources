@@ -188,7 +188,7 @@ def merge_observations(
             logger.warning("Failed to fetch %s: %s", endpoint, exc)
 
     try:
-        obs_time = datetime.fromisoformat(latest_ts)
+        obs_time = datetime.fromisoformat(latest_ts.replace("Z", "+00:00"))
     except (ValueError, TypeError):
         obs_time = datetime.now(timezone.utc)
 
@@ -268,7 +268,7 @@ class NEAAirQualityAPI:
 
 def _parse_iso_datetime(value: str) -> datetime:
     try:
-        return datetime.fromisoformat(value)
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
     except (TypeError, ValueError):
         return datetime.now(timezone.utc)
 

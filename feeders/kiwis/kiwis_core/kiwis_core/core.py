@@ -141,7 +141,7 @@ def parse_datetime(value: Any) -> Optional[datetime]:
     if isinstance(value, datetime):
         return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
     text = str(value).replace("Z", "+00:00")
-    return datetime.fromisoformat(text)
+    return datetime.fromisoformat(text.replace("Z", "+00:00"))
 
 def _to_float(value: Any) -> Optional[float]:
     if value in (None, ""):

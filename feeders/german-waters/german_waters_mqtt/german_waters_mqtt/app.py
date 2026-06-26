@@ -131,13 +131,13 @@ def _obs_to_mqtt_event(o: ObservationData, water_body: str) -> WaterLevelObserva
     wl_ts = None
     if o.water_level_timestamp:
         try:
-            wl_ts = datetime.fromisoformat(o.water_level_timestamp)
+            wl_ts = datetime.fromisoformat(o.water_level_timestamp.replace("Z", "+00:00"))
         except (ValueError, TypeError):
             pass
     dis_ts = None
     if o.discharge_timestamp:
         try:
-            dis_ts = datetime.fromisoformat(o.discharge_timestamp)
+            dis_ts = datetime.fromisoformat(o.discharge_timestamp.replace("Z", "+00:00"))
         except (ValueError, TypeError):
             pass
     return WaterLevelObservation(

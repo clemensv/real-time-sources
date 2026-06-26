@@ -160,10 +160,10 @@ def _publish_observations(
                         river_name=river_raw,
                         water_level=wl_val if wl_val is not None else 0.0,
                         water_level_unit="m",
-                        water_level_timestamp=datetime.fromisoformat(wl_ts) if wl_ts else None,
+                        water_level_timestamp=datetime.fromisoformat(wl_ts.replace("Z", "+00:00")) if wl_ts else None,
                         discharge=q_val if q_val is not None else 0.0,
                         discharge_unit="m3/s",
-                        discharge_timestamp=datetime.fromisoformat(q_ts) if q_ts else None,
+                        discharge_timestamp=datetime.fromisoformat(q_ts.replace("Z", "+00:00")) if q_ts else None,
                     ),
                 )
                 sent += 1

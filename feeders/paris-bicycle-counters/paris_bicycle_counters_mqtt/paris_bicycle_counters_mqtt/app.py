@@ -98,7 +98,7 @@ class ParisBicycleCounterMqttPoller(ParisBicycleCounterPoller):
             for key in seen_keys:
                 try:
                     date_part = key.split("|", 1)[1]
-                    dt = datetime.fromisoformat(date_part)
+                    dt = datetime.fromisoformat(date_part.replace("Z", "+00:00"))
                     if dt.tzinfo is None:
                         dt = dt.replace(tzinfo=timezone.utc)
                     if dt >= cutoff:

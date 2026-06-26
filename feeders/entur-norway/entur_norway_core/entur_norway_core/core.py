@@ -1,6 +1,14 @@
 """Transport-neutral SIRI acquisition and parsing for the Entur Norway bridge."""
 
 import datetime
+
+
+def _parse_iso_dt(s):
+    """Parse ISO datetime, handling Z suffix for Python 3.10."""
+    if s is None:
+        return None
+    return _parse_iso_dt(s.replace("Z", "+00:00"))
+
 import logging
 import os
 import re
@@ -154,10 +162,10 @@ class EnturNorwayBridge:
             stop_point_ref=stop_ref,
             order=order,
             stop_point_name=_find_multilingual_text(call_el, 'StopPointName'),
-            aimed_arrival_time=datetime.fromisoformat((call_el.findtext(_siri('AimedArrivalTime')) or None)) if (call_el.findtext(_siri('AimedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
-            expected_arrival_time=datetime.fromisoformat((call_el.findtext(_siri('ExpectedArrivalTime')) or None)) if (call_el.findtext(_siri('ExpectedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
-            aimed_departure_time=datetime.fromisoformat((call_el.findtext(_siri('AimedDepartureTime')) or None)) if (call_el.findtext(_siri('AimedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
-            expected_departure_time=datetime.fromisoformat((call_el.findtext(_siri('ExpectedDepartureTime')) or None)) if (call_el.findtext(_siri('ExpectedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
+            aimed_arrival_time=_parse_iso_dt((call_el.findtext(_siri('AimedArrivalTime')) or None)) if (call_el.findtext(_siri('AimedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
+            expected_arrival_time=_parse_iso_dt((call_el.findtext(_siri('ExpectedArrivalTime')) or None)) if (call_el.findtext(_siri('ExpectedArrivalTime')) or None) else None,  # type: ignore[attr-defined]
+            aimed_departure_time=_parse_iso_dt((call_el.findtext(_siri('AimedDepartureTime')) or None)) if (call_el.findtext(_siri('AimedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
+            expected_departure_time=_parse_iso_dt((call_el.findtext(_siri('ExpectedDepartureTime')) or None)) if (call_el.findtext(_siri('ExpectedDepartureTime')) or None) else None,  # type: ignore[attr-defined]
             arrival_status=(call_el.findtext(_siri('ArrivalStatus')) or None),
             departure_status=(call_el.findtext(_siri('DepartureStatus')) or None),
             departure_platform_name=_find_multilingual_text(call_el, 'DeparturePlatformName'),
@@ -213,7 +221,7 @@ class EnturNorwayBridge:
                             is_complete_stop_sequence=_bool_text(jel.findtext(_siri('IsCompleteStopSequence'))),
                             monitored=_bool_text(jel.findtext(_siri('Monitored'))),
                             data_source=(jel.findtext(_siri('DataSource')) or None),
-                            recorded_at_time=datetime.fromisoformat((jel.findtext(_siri('RecordedAtTime')) or None)) if (jel.findtext(_siri('RecordedAtTime')) or None) else None,  # type: ignore[attr-defined]
+                            recorded_at_time=_parse_iso_dt((jel.findtext(_siri('RecordedAtTime')) or None)) if (jel.findtext(_siri('RecordedAtTime')) or None) else None,  # type: ignore[attr-defined]
                             estimated_calls=estimated_calls,
                         )
                         results.append((operating_day, service_journey_id, evj))
@@ -282,7 +290,7 @@ class EnturNorwayBridge:
                     mvj = MonitoredVehicleJourney(
                         service_journey_id=service_journey_id,
                         operating_day=operating_day,
-                        recorded_at_time=datetime.fromisoformat(recorded_at_time),  # type: ignore[attr-defined]
+                        recorded_at_time=_parse_iso_dt(recorded_at_time),  # type: ignore[attr-defined]
                         line_ref=line_ref,
                         operator_ref=operator_ref,
                         direction_ref=(mvj_el.findtext(_siri('DirectionRef')) or None),
@@ -335,8 +343,8 @@ class EnturNorwayBridge:
                         start = vp_el.findtext(_siri('StartTime')) or ''
                         end = vp_el.findtext(_siri('EndTime'))
                         validity_periods.append(ValidityPeriod(
-                            start_time=datetime.fromisoformat(start),  # type: ignore[attr-defined]
-                            end_time=datetime.fromisoformat(end.strip() if end else None),  # type: ignore[attr-defined]
+                            start_time=_parse_iso_dt(start),  # type: ignore[attr-defined]
+                            end_time=_parse_iso_dt(end.strip() if end else None),  # type: ignore[attr-defined]
                         ))
 
                     affects_line_refs: List[str] = []
@@ -360,7 +368,7 @@ class EnturNorwayBridge:
                     sit = PtSituationElement(
                         situation_number=situation_number,
                         version=(sit_el.findtext(_siri('Version')) or None),
-                        creation_time=datetime.fromisoformat(creation_time),  # type: ignore[attr-defined]
+                        creation_time=_parse_iso_dt(creation_time),  # type: ignore[attr-defined]
                         source_type=source_type,
                         source_name=source_name,
                         progress=(sit_el.findtext(_siri('Progress')) or None),
