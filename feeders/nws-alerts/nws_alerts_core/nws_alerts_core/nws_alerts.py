@@ -31,7 +31,9 @@ def uns_slug(value: Any) -> str:
     while "--" in slug: slug = slug.replace("--", "-")
     return slug or "unknown"
 def normalize_cap_severity(value: Any) -> str:
-    severity = uns_slug(value)
+    from enum import Enum
+    raw = value.value if isinstance(value, Enum) else value
+    severity = uns_slug(raw)
     return severity if severity in {"minor","moderate","severe","extreme","unknown"} else "unknown"
 def derive_state(props: dict) -> str:
     explicit = _safe_str(props.get("state"))
