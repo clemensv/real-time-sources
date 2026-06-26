@@ -75,6 +75,20 @@ def _topic_value(value: Optional[str]) -> str:
     return value
 
 
+_DATE_RE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+
+
+def _sanitize_operating_day(raw: Optional[str]) -> str:
+    """Ensure operating_day is strictly YYYY-MM-DD; fallback to today."""
+    val = _topic_value(raw)
+    if val == 'unknown' or len(val) < 10:
+        return datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+    val = val[:10]
+    if not _DATE_RE.match(val):
+        return datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+    return val
+
+
 def parse_duration_to_seconds(duration: Optional[str]) -> Optional[int]:
     """Parse an ISO 8601 duration string like PT2M30S or -PT2M into total seconds."""
     if not duration:
@@ -188,12 +202,7 @@ class EnturNorwayBridge:
                 for jel in frame.findall('s:EstimatedVehicleJourney', NS):
                     try:
                         framed_ref = jel.find('s:FramedVehicleJourneyRef', NS)
-                        operating_day = _topic_value(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
-                        # Ensure operating_day is a valid YYYY-MM-DD; fallback to today
-                        if not operating_day or operating_day == 'unknown' or len(operating_day) < 10:
-                            operating_day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
-                        elif len(operating_day) > 10:
-                            operating_day = operating_day[:10]
+                        operating_day = _sanitize_operating_day(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
                         service_journey_id = _topic_value(framed_ref.findtext(_siri('DatedVehicleJourneyRef')) if framed_ref is not None else None)
 
                         line_ref = _topic_value(jel.findtext(_siri('LineRef')))
@@ -251,12 +260,7 @@ class EnturNorwayBridge:
                         continue
 
                     framed_ref = mvj_el.find('s:FramedVehicleJourneyRef', NS)
-                    operating_day = _topic_value(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
-                    # Ensure operating_day is a valid YYYY-MM-DD; fallback to today
-                    if not operating_day or operating_day == 'unknown' or len(operating_day) < 10:
-                        operating_day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
-                    elif len(operating_day) > 10:
-                        operating_day = operating_day[:10]
+                    operating_day = _sanitize_operating_day(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
                     service_journey_id = _topic_value(framed_ref.findtext(_siri('DatedVehicleJourneyRef')) if framed_ref is not None else None)
 
                     line_ref = _topic_value(mvj_el.findtext(_siri('LineRef')))
