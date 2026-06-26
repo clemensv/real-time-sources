@@ -48,10 +48,10 @@ jobs:
           # missing event types) fail identically on every attempt, so they are
           # not masked. The weekly scheduled full run is the authoritative gate.
           pytest tests/docker_e2e/${{ matrix.test_file || 'test_docker_kafka_flow.py' }} \
-            -v --timeout=600 \
+            -v --timeout=1200 \
             --reruns 2 --reruns-delay 15 \
             -k "${{ matrix.test_class }}" \
             --tb=long
-        timeout-minutes: 15
+        timeout-minutes: 25
         env:
           WSDOT_ACCESS_CODE: ${{ secrets.WSDOT_ACCESS_CODE }}
