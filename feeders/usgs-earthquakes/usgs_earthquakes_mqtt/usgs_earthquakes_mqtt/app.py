@@ -75,6 +75,7 @@ class _MqttProducerAdapter:
         data = kwargs["data"]
         normalized = {key[1:] if key.startswith("_") else key: value for key, value in kwargs.items()}
         normalized["magnitude_bucket"] = data.magnitude_bucket
+        normalized["event_time"] = normalized.pop("time", None) or getattr(data, "event_time", "") or ""
         # Filter to only params the MQTT publish method accepts
         sig = inspect.signature(self._client.publish_usgs_earthquakes_mqtt_event)
         valid_params = set(sig.parameters.keys())

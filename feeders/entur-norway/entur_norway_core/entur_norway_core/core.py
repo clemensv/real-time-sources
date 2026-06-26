@@ -189,6 +189,11 @@ class EnturNorwayBridge:
                     try:
                         framed_ref = jel.find('s:FramedVehicleJourneyRef', NS)
                         operating_day = _topic_value(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
+                        # Ensure operating_day is a valid YYYY-MM-DD; fallback to today
+                        if not operating_day or operating_day == 'unknown' or len(operating_day) < 10:
+                            operating_day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+                        elif len(operating_day) > 10:
+                            operating_day = operating_day[:10]
                         service_journey_id = _topic_value(framed_ref.findtext(_siri('DatedVehicleJourneyRef')) if framed_ref is not None else None)
 
                         line_ref = _topic_value(jel.findtext(_siri('LineRef')))
@@ -247,6 +252,11 @@ class EnturNorwayBridge:
 
                     framed_ref = mvj_el.find('s:FramedVehicleJourneyRef', NS)
                     operating_day = _topic_value(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
+                    # Ensure operating_day is a valid YYYY-MM-DD; fallback to today
+                    if not operating_day or operating_day == 'unknown' or len(operating_day) < 10:
+                        operating_day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+                    elif len(operating_day) > 10:
+                        operating_day = operating_day[:10]
                     service_journey_id = _topic_value(framed_ref.findtext(_siri('DatedVehicleJourneyRef')) if framed_ref is not None else None)
 
                     line_ref = _topic_value(mvj_el.findtext(_siri('LineRef')))
