@@ -166,6 +166,7 @@ def main():
     stream_parser.add_argument('--content-mode', choices=['structured', 'binary'], default=os.getenv('CLOUDEVENTS_MODE', 'structured'))
     stream_parser.add_argument('--content-type', choices=['application/json', 'application/vnd.apache.avro+avro'], default=os.getenv('CONTENT_TYPE', 'application/json'))
     stream_parser.add_argument('--compression', action='store_true', default=os.getenv('USE_COMPRESSION', '').lower() in ('true', '1', 'yes'))
+    stream_parser.add_argument('--mock', action='store_true', default=os.getenv('BLUESKY_MOCK', '').lower() in ('1', 'true', 'yes'))
     args = parser.parse_args()
     if args.command != 'stream':
         parser.print_help()
@@ -191,6 +192,8 @@ def main():
         return 1
     collections = [c.strip() for c in args.collections.split(',') if c.strip()] or None
     firehose = BlueskyFirehose(kafka_config=kafka_config, kafka_topic=kafka_topic, firehose_url=args.firehose_url, collections=collections, cursor_file=args.cursor_file, sample_rate=args.sample_rate, content_mode=args.content_mode, content_type=args.content_type, use_compression=args.compression)
+    if args.mock:
+        os.environ['BLUESKY_MOCK'] = 'true'
     try:
         asyncio.run(firehose.run())
     except KeyboardInterrupt:
