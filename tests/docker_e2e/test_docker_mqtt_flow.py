@@ -4821,11 +4821,27 @@ def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], 
     env = {'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'MQTT_CONTENT_MODE': 'binary', 'PYTHONUNBUFFERED': '1'}
     if extra_env:
         env.update(extra_env)
-    feeder = client.containers.run(image.id, detach=True, remove=False, network=broker['network'], environment=env)
+    # Retry feeder start to handle Docker DNS propagation delays
     logs = ''
+    result = {'StatusCode': 1}
+    for attempt in range(3):
+        feeder = client.containers.run(image.id, detach=True, remove=False, network=broker['network'], environment=env)
+        try:
+            result = feeder.wait(timeout=timeout)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            if result.get('StatusCode') == 0:
+                break
+            if 'TimeoutError' not in logs and 'CONNACK' not in logs and 'Connection refused' not in logs:
+                break  # Not a connect issue — don't retry
+        finally:
+            if result.get('StatusCode') != 0:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+        if attempt < 2:
+            time.sleep(5.0)
     try:
-        result = feeder.wait(timeout=timeout)
-        logs = feeder.logs().decode('utf-8', errors='replace')
         assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
         deadline = time.time() + 20
         last_count = -1
