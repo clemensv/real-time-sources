@@ -104,21 +104,22 @@ async def _run(args: argparse.Namespace) -> None:
         # Emit canned mock data matching the Kafka bridge's mock corpus
         await adapter.publish_ship_static(
             mmsi="219000001", flag="DK", ship_type="cargo", geohash5="u4pru",
-            payload={"imo_number": 1234567, "call_sign": "OXAI1", "name": "AISSTREAM MOCK STATIC",
-                     "ship_type_code": 70, "dimension_a": 10, "dimension_b": 90,
-                     "dimension_c": 8, "dimension_d": 8, "eta_month": 3, "eta_day": 15,
-                     "eta_hour": 12, "eta_minute": 0, "draught": 8.5, "destination": "AARHUS"})
+            payload={"user_id": 219000001, "name": "AISSTREAM MOCK STATIC",
+                     "call_sign": "OXAI1", "imo_number": 1234567,
+                     "ship_type_code": 70, "dim_to_bow": 10, "dim_to_stern": 90,
+                     "dim_to_port": 8, "dim_to_starboard": 8, "eta": "03-15 12:00",
+                     "draught": 8.5, "destination": "AARHUS", "message_id": 5})
         await adapter.publish_position_report(
             mmsi="219000001", flag="DK", ship_type="cargo", geohash5="u4pru",
-            payload={"status": 0, "turn": 0, "speed": 12.3, "accuracy": True,
-                     "longitude": 10.21, "latitude": 56.15, "course": 90.5,
-                     "heading": 91, "second": 10, "maneuver": 0, "raim": True})
+            payload={"user_id": 219000001, "navigational_status": 0, "rate_of_turn": 0,
+                     "sog": 12.3, "position_accuracy": True,
+                     "longitude": 10.21, "latitude": 56.15, "cog": 90.5,
+                     "true_heading": 91, "timestamp": 10, "raim": True, "message_id": 1})
         await adapter.publish_aid_to_navigation(
             mmsi="992190001", flag="DK", ship_type="unknown", geohash5="u4pru",
-            payload={"type_code": 5, "name": "MOCK BUOY",
-                     "position_accuracy": True, "longitude": 10.25, "latitude": 56.17,
-                     "dimension_a": 2, "dimension_b": 2, "dimension_c": 1, "dimension_d": 1,
-                     "type_of_epfd": 1, "raim": True, "virtual_aid": False})
+            payload={"user_id": 992190001, "name": "MOCK BUOY", "type": 5,
+                     "latitude": 56.17, "longitude": 10.25,
+                     "off_position": False, "virtual_atoN": False, "message_id": 21})
         producer.close()
         return
     bridge = AisStreamBridge(AisStreamAmqpClientAdapter(producer), api_key=args.api_key, ws_url=args.ws_url)
