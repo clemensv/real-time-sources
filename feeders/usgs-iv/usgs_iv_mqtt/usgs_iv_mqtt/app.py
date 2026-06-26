@@ -87,6 +87,9 @@ class _MqttProducerAdapter:
         def _send(**kwargs: Any) -> None:
             kwargs.pop("flush_producer", None)
             normalized = {key[1:] if key.startswith("_") else key: value for key, value in kwargs.items()}
+            # Map Kafka '_time' to MQTT topic parameter 'datetime'
+            if "time" in normalized and "datetime" not in normalized:
+                normalized["datetime"] = normalized.pop("time")
             # Filter to only params the MQTT publish method accepts
             sig = inspect.signature(publish)
             valid_params = set(sig.parameters.keys())
