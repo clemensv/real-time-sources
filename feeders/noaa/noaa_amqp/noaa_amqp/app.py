@@ -30,6 +30,22 @@ def _slug(value):
     return str(value or "unknown").replace("/", "-").replace(" ", "-").lower()
 
 
+_SEND_SUFFIX = {
+    "water_level": "water_level",
+    "predictions": "predictions",
+    "air_temperature": "air_temperature",
+    "wind": "wind",
+    "air_pressure": "air_pressure",
+    "water_temperature": "water_temperature",
+    "conductivity": "conductivity",
+    "visibility": "visibility",
+    "humidity": "humidity",
+    "salinity": "salinity",
+    "currents": "currents",
+    "currents_predictions": "current_predictions",
+}
+
+
 # ---------------------------------------------------------------------------
 # Deterministic mock harness (MOCK_MODE).
 #

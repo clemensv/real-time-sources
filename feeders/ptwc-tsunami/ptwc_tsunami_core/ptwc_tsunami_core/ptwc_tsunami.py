@@ -52,7 +52,7 @@ def parse_entry(entry: ET.Element, feed_name: str, center: Optional[str] = None)
         rel = link.get("rel", ""); link_type = link.get("type", ""); href = link.get("href", "").strip()
         if rel == "alternate" and href: bulletin_url = href
         elif rel == "related" and "cap" in link_type and href: cap_url = href
-    return TsunamiBulletin(bulletin_id=bulletin_id,feed=FeedEnum(feed_name),basin=BasinEnum(_basin_for_feed(feed_name)),ptwc_level=PtwcLevelenum(_ptwc_level(category)),center=center,title=title,updated=datetime.fromisoformat(updated),latitude=latitude,longitude=longitude,category=CategoryEnum(category) if category else None,magnitude=magnitude,affected_region=affected_region,note=note,bulletin_url=bulletin_url,cap_url=cap_url)
+    return TsunamiBulletin(bulletin_id=bulletin_id,feed=FeedEnum(feed_name),basin=BasinEnum(_basin_for_feed(feed_name)),ptwc_level=PtwcLevelenum(_ptwc_level(category)),center=center,title=title,updated=datetime.fromisoformat(updated.replace('Z', '+00:00')),latitude=latitude,longitude=longitude,category=CategoryEnum(category) if category else None,magnitude=magnitude,affected_region=affected_region,note=note,bulletin_url=bulletin_url,cap_url=cap_url)
 class PTWCTsunamiPoller:
     def __init__(self, state_file: str = DEFAULT_STATE_FILE, poll_interval: int = DEFAULT_POLL_INTERVAL, feeds: Optional[List[str]] = None):
         self.state_file = state_file; self.poll_interval = poll_interval; self.feeds = feeds or list(FEEDS.keys())
