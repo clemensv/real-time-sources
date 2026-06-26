@@ -254,3 +254,57 @@ async def iter_firehose_events(*, firehose_url: str = DEFAULT_FIREHOSE_URL, coll
             logger.error("Connection error: %s. Retrying in %d seconds...", exc, retry_delay)
             await asyncio.sleep(retry_delay)
             retry_delay = min(retry_delay * 2, max_retry_delay)
+
+
+async def iter_mock_firehose_events(max_events: int = 12) -> AsyncIterator[BlueskyEvent]:
+    """Generate synthetic events for all event types for testing."""
+    import datetime
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    seq = 1
+    mock_types = [
+        ("Bluesky.Feed.Post", "app.bsky.feed.post"),
+        ("Bluesky.Feed.Like", "app.bsky.feed.like"),
+        ("Bluesky.Feed.Repost", "app.bsky.feed.repost"),
+        ("Bluesky.Graph.Follow", "app.bsky.graph.follow"),
+        ("Bluesky.Graph.Block", "app.bsky.graph.block"),
+        ("Bluesky.Actor.Profile", "app.bsky.actor.profile"),
+    ]
+    count = 0
+    while count < max_events:
+        for event_type, collection in mock_types:
+            if count >= max_events:
+                return
+            did = f"did:plc:mock{seq:06d}"
+            uri = f"at://{did}/{collection}/mock{seq}"
+            payload: dict[str, Any] = {
+                "uri": uri,
+                "cid": f"bafyreimock{seq:06d}",
+                "did": did,
+                "handle": None,
+                "indexed_at": now,
+                "seq": seq,
+                "collection": collection,
+                "lang": "en",
+            }
+            if event_type == "Bluesky.Feed.Post":
+                payload.update({"text": f"Mock post {seq}", "reply_parent": None, "reply_root": None,
+                                "embed_type": None, "embed_uri": None, "embed_title": None,
+                                "embed_description": None, "embed_thumb": None, "images": None,
+                                "langs": ["en"], "facets": None, "labels": None})
+            elif event_type == "Bluesky.Feed.Like":
+                payload.update({"subject_uri": f"at://did:plc:target/app.bsky.feed.post/abc{seq}",
+                                "subject_cid": f"bafyreitarget{seq:06d}"})
+            elif event_type == "Bluesky.Feed.Repost":
+                payload.update({"subject_uri": f"at://did:plc:target/app.bsky.feed.post/abc{seq}",
+                                "subject_cid": f"bafyreitarget{seq:06d}"})
+            elif event_type == "Bluesky.Graph.Follow":
+                payload.update({"subject_did": f"did:plc:followed{seq:06d}"})
+            elif event_type == "Bluesky.Graph.Block":
+                payload.update({"subject_did": f"did:plc:blocked{seq:06d}"})
+            elif event_type == "Bluesky.Actor.Profile":
+                payload.update({"display_name": f"Mock User {seq}", "description": "Test profile",
+                                "avatar": None, "banner": None})
+            yield BlueskyEvent(event_type=event_type, did=did, collection=collection, lang="en", payload=payload, seq=seq)
+            seq += 1
+            count += 1
+        await asyncio.sleep(0.01)
