@@ -617,7 +617,7 @@ class USGSDataPoller:
                     drain_area_va=parse_float(site_data.get('drain_area_va', '')),
                     contrib_drain_area_va=parse_float(site_data.get('contrib_drain_area_va', '')),
                     tz_cd=site_data.get('tz_cd', ''),
-                    local_time_fg=site_data.get('local_time_fg', False),  # type: ignore[arg-type]
+                    local_time_fg=site_data.get('local_time_fg', '') in ('Y', 'y', True),
                     reliability_cd=site_data.get('reliability_cd', ''),
                     gw_file_cd=site_data.get('gw_file_cd', ''),
                     nat_aqfr_cd=site_data.get('nat_aqfr_cd', ''),

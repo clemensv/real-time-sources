@@ -105,7 +105,7 @@ async def _poll_once(poller: PTWCTsunamiPoller, mqtt_client: PTWCBulletinsMqttMq
                     bulletin_id=_topic_segment(bulletin.bulletin_id),
                     data=bulletin,  # type: ignore[arg-type]
                 )
-                state[bulletin.bulletin_id] = updated_str
+                state[bulletin.bulletin_id] = updated_str if isinstance(updated_str, str) else updated_str.isoformat()
     poller.save_state(state)
     return count_new, count_updated
 
