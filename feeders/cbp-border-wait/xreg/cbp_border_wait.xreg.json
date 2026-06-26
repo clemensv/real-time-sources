@@ -228,7 +228,7 @@
                             "port_number": {
                               "type": "string",
                               "description": "Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups.",
-                              "pattern": "^[0-9]{6}$"
+                              "pattern": "^[A-Za-z0-9]{6}$"
                             },
                             "port_name": {
                               "type": "string",
@@ -321,7 +321,7 @@
                             "port_number": {
                               "type": "string",
                               "description": "Six-digit CBP port number identifying this crossing. Matches the port_number in the Port schema.",
-                              "pattern": "^[0-9]{6}$"
+                              "pattern": "^[A-Za-z0-9]{6}$"
                             },
                             "port_name": {
                               "type": "string",

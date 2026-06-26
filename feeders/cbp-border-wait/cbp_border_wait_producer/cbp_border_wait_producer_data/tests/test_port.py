@@ -29,14 +29,14 @@ class Test_Port(unittest.TestCase):
         Create instance of Port for testing
         """
         instance = Port(
-            port_number='qcfgtkgigyyqzgfvjvvr',
-            port_name='bsiqqqszxslcdhrhvzwm',
-            border='sfopqccedkbyxipsfmwq',
-            crossing_name='hnikdnnvsrmmaquxwurz',
-            hours='bnhbnfftxwoxdumkpmtv',
-            passenger_vehicle_max_lanes=int(86),
-            commercial_vehicle_max_lanes=int(98),
-            pedestrian_max_lanes=int(55),
+            port_number='pftpsyncdrxzlkwcnxgf',
+            port_name='usttckettasnnuhfqjiq',
+            border='lwnhatpdthrqcfsdfbtl',
+            crossing_name='rllgtqltzgmqitgwzhhh',
+            hours='ywifmljaugmkasuitskx',
+            passenger_vehicle_max_lanes=int(19),
+            commercial_vehicle_max_lanes=int(37),
+            pedestrian_max_lanes=int(15),
             border_slug=BorderSlugenum.canadian_MINUSborder
         )
         return instance
@@ -46,7 +46,7 @@ class Test_Port(unittest.TestCase):
         """
         Test port_number property
         """
-        test_value = 'qcfgtkgigyyqzgfvjvvr'
+        test_value = 'pftpsyncdrxzlkwcnxgf'
         self.instance.port_number = test_value
         self.assertEqual(self.instance.port_number, test_value)
     
@@ -54,7 +54,7 @@ class Test_Port(unittest.TestCase):
         """
         Test port_name property
         """
-        test_value = 'bsiqqqszxslcdhrhvzwm'
+        test_value = 'usttckettasnnuhfqjiq'
         self.instance.port_name = test_value
         self.assertEqual(self.instance.port_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_Port(unittest.TestCase):
         """
         Test border property
         """
-        test_value = 'sfopqccedkbyxipsfmwq'
+        test_value = 'lwnhatpdthrqcfsdfbtl'
         self.instance.border = test_value
         self.assertEqual(self.instance.border, test_value)
     
@@ -70,7 +70,7 @@ class Test_Port(unittest.TestCase):
         """
         Test crossing_name property
         """
-        test_value = 'hnikdnnvsrmmaquxwurz'
+        test_value = 'rllgtqltzgmqitgwzhhh'
         self.instance.crossing_name = test_value
         self.assertEqual(self.instance.crossing_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_Port(unittest.TestCase):
         """
         Test hours property
         """
-        test_value = 'bnhbnfftxwoxdumkpmtv'
+        test_value = 'ywifmljaugmkasuitskx'
         self.instance.hours = test_value
         self.assertEqual(self.instance.hours, test_value)
     
@@ -86,7 +86,7 @@ class Test_Port(unittest.TestCase):
         """
         Test passenger_vehicle_max_lanes property
         """
-        test_value = int(86)
+        test_value = int(19)
         self.instance.passenger_vehicle_max_lanes = test_value
         self.assertEqual(self.instance.passenger_vehicle_max_lanes, test_value)
     
@@ -94,7 +94,7 @@ class Test_Port(unittest.TestCase):
         """
         Test commercial_vehicle_max_lanes property
         """
-        test_value = int(98)
+        test_value = int(37)
         self.instance.commercial_vehicle_max_lanes = test_value
         self.assertEqual(self.instance.commercial_vehicle_max_lanes, test_value)
     
@@ -102,7 +102,7 @@ class Test_Port(unittest.TestCase):
         """
         Test pedestrian_max_lanes property
         """
-        test_value = int(55)
+        test_value = int(15)
         self.instance.pedestrian_max_lanes = test_value
         self.assertEqual(self.instance.pedestrian_max_lanes, test_value)
     

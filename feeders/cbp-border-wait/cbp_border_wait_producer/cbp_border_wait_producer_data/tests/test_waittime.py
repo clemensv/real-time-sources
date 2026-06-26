@@ -29,35 +29,35 @@ class Test_WaitTime(unittest.TestCase):
         Create instance of WaitTime for testing
         """
         instance = WaitTime(
-            port_number='bdoolwyxcboxxqnwjpjg',
-            port_name='hirzsuluqdparenslyxv',
-            border='xjrdusbupenbipsfndyw',
-            crossing_name='zfaxwnrawroiltknijjp',
-            port_status='erniausrnwchvilqzpch',
-            date='dzqzgcwfvepilrgpirea',
-            time='stizgkimhaoatmnpanoa',
-            passenger_vehicle_standard_delay=int(92),
-            passenger_vehicle_standard_lanes_open=int(25),
-            passenger_vehicle_standard_operational_status='vctsjkuuqdtqnazshljv',
-            passenger_vehicle_nexus_sentri_delay=int(60),
-            passenger_vehicle_nexus_sentri_lanes_open=int(85),
-            passenger_vehicle_nexus_sentri_operational_status='ixyrwjqvjvgpccrrechi',
+            port_number='dqffrzgshkopmlmeiuiw',
+            port_name='hltmbykdwphldmefmpry',
+            border='sqmnlzjbvfaudpwxeqlz',
+            crossing_name='jrrxqvvgglzxabozxnpi',
+            port_status='brpoyzwmhqckonznihnp',
+            date='jpmcwrnifaxouxqlqagd',
+            time='lenmrunamgtqgnidretd',
+            passenger_vehicle_standard_delay=int(78),
+            passenger_vehicle_standard_lanes_open=int(27),
+            passenger_vehicle_standard_operational_status='qabqrxunrpsztmsljiwr',
+            passenger_vehicle_nexus_sentri_delay=int(11),
+            passenger_vehicle_nexus_sentri_lanes_open=int(53),
+            passenger_vehicle_nexus_sentri_operational_status='aqvpslaseaaxlbgfowyq',
             passenger_vehicle_ready_delay=int(19),
-            passenger_vehicle_ready_lanes_open=int(99),
-            passenger_vehicle_ready_operational_status='knoarjszcyvmwcgzdibj',
-            pedestrian_standard_delay=int(25),
-            pedestrian_standard_lanes_open=int(74),
-            pedestrian_standard_operational_status='rqywrcgdeiwsrenuectt',
-            pedestrian_ready_delay=int(42),
-            pedestrian_ready_lanes_open=int(52),
-            pedestrian_ready_operational_status='fhslpyexgrikcemxlvfu',
-            commercial_vehicle_standard_delay=int(81),
-            commercial_vehicle_standard_lanes_open=int(12),
-            commercial_vehicle_standard_operational_status='nbnedwjdxyswcwttyyyu',
+            passenger_vehicle_ready_lanes_open=int(65),
+            passenger_vehicle_ready_operational_status='atlqsbgzpvkmlkymiybb',
+            pedestrian_standard_delay=int(16),
+            pedestrian_standard_lanes_open=int(76),
+            pedestrian_standard_operational_status='hyahfmfguhdcyqvectjz',
+            pedestrian_ready_delay=int(98),
+            pedestrian_ready_lanes_open=int(14),
+            pedestrian_ready_operational_status='twkeogkxydppgbtpaddd',
+            commercial_vehicle_standard_delay=int(15),
+            commercial_vehicle_standard_lanes_open=int(9),
+            commercial_vehicle_standard_operational_status='dccyrssocqqycookucbi',
             commercial_vehicle_fast_delay=int(31),
-            commercial_vehicle_fast_lanes_open=int(35),
-            commercial_vehicle_fast_operational_status='riompfpqjaghlxhpovyr',
-            construction_notice='xlsarbfyugvxaknzgshz',
+            commercial_vehicle_fast_lanes_open=int(99),
+            commercial_vehicle_fast_operational_status='zcgyrolnhnqzlmdxvzqg',
+            construction_notice='kenngvsjqzjsmmzjzwak',
             border_slug=BorderSlugenum.canadian_MINUSborder
         )
         return instance
@@ -67,7 +67,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test port_number property
         """
-        test_value = 'bdoolwyxcboxxqnwjpjg'
+        test_value = 'dqffrzgshkopmlmeiuiw'
         self.instance.port_number = test_value
         self.assertEqual(self.instance.port_number, test_value)
     
@@ -75,7 +75,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test port_name property
         """
-        test_value = 'hirzsuluqdparenslyxv'
+        test_value = 'hltmbykdwphldmefmpry'
         self.instance.port_name = test_value
         self.assertEqual(self.instance.port_name, test_value)
     
@@ -83,7 +83,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test border property
         """
-        test_value = 'xjrdusbupenbipsfndyw'
+        test_value = 'sqmnlzjbvfaudpwxeqlz'
         self.instance.border = test_value
         self.assertEqual(self.instance.border, test_value)
     
@@ -91,7 +91,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test crossing_name property
         """
-        test_value = 'zfaxwnrawroiltknijjp'
+        test_value = 'jrrxqvvgglzxabozxnpi'
         self.instance.crossing_name = test_value
         self.assertEqual(self.instance.crossing_name, test_value)
     
@@ -99,7 +99,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test port_status property
         """
-        test_value = 'erniausrnwchvilqzpch'
+        test_value = 'brpoyzwmhqckonznihnp'
         self.instance.port_status = test_value
         self.assertEqual(self.instance.port_status, test_value)
     
@@ -107,7 +107,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'dzqzgcwfvepilrgpirea'
+        test_value = 'jpmcwrnifaxouxqlqagd'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     
@@ -115,7 +115,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test time property
         """
-        test_value = 'stizgkimhaoatmnpanoa'
+        test_value = 'lenmrunamgtqgnidretd'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -123,7 +123,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_standard_delay property
         """
-        test_value = int(92)
+        test_value = int(78)
         self.instance.passenger_vehicle_standard_delay = test_value
         self.assertEqual(self.instance.passenger_vehicle_standard_delay, test_value)
     
@@ -131,7 +131,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_standard_lanes_open property
         """
-        test_value = int(25)
+        test_value = int(27)
         self.instance.passenger_vehicle_standard_lanes_open = test_value
         self.assertEqual(self.instance.passenger_vehicle_standard_lanes_open, test_value)
     
@@ -139,7 +139,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_standard_operational_status property
         """
-        test_value = 'vctsjkuuqdtqnazshljv'
+        test_value = 'qabqrxunrpsztmsljiwr'
         self.instance.passenger_vehicle_standard_operational_status = test_value
         self.assertEqual(self.instance.passenger_vehicle_standard_operational_status, test_value)
     
@@ -147,7 +147,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_nexus_sentri_delay property
         """
-        test_value = int(60)
+        test_value = int(11)
         self.instance.passenger_vehicle_nexus_sentri_delay = test_value
         self.assertEqual(self.instance.passenger_vehicle_nexus_sentri_delay, test_value)
     
@@ -155,7 +155,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_nexus_sentri_lanes_open property
         """
-        test_value = int(85)
+        test_value = int(53)
         self.instance.passenger_vehicle_nexus_sentri_lanes_open = test_value
         self.assertEqual(self.instance.passenger_vehicle_nexus_sentri_lanes_open, test_value)
     
@@ -163,7 +163,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_nexus_sentri_operational_status property
         """
-        test_value = 'ixyrwjqvjvgpccrrechi'
+        test_value = 'aqvpslaseaaxlbgfowyq'
         self.instance.passenger_vehicle_nexus_sentri_operational_status = test_value
         self.assertEqual(self.instance.passenger_vehicle_nexus_sentri_operational_status, test_value)
     
@@ -179,7 +179,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_ready_lanes_open property
         """
-        test_value = int(99)
+        test_value = int(65)
         self.instance.passenger_vehicle_ready_lanes_open = test_value
         self.assertEqual(self.instance.passenger_vehicle_ready_lanes_open, test_value)
     
@@ -187,7 +187,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test passenger_vehicle_ready_operational_status property
         """
-        test_value = 'knoarjszcyvmwcgzdibj'
+        test_value = 'atlqsbgzpvkmlkymiybb'
         self.instance.passenger_vehicle_ready_operational_status = test_value
         self.assertEqual(self.instance.passenger_vehicle_ready_operational_status, test_value)
     
@@ -195,7 +195,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test pedestrian_standard_delay property
         """
-        test_value = int(25)
+        test_value = int(16)
         self.instance.pedestrian_standard_delay = test_value
         self.assertEqual(self.instance.pedestrian_standard_delay, test_value)
     
@@ -203,7 +203,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test pedestrian_standard_lanes_open property
         """
-        test_value = int(74)
+        test_value = int(76)
         self.instance.pedestrian_standard_lanes_open = test_value
         self.assertEqual(self.instance.pedestrian_standard_lanes_open, test_value)
     
@@ -211,7 +211,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test pedestrian_standard_operational_status property
         """
-        test_value = 'rqywrcgdeiwsrenuectt'
+        test_value = 'hyahfmfguhdcyqvectjz'
         self.instance.pedestrian_standard_operational_status = test_value
         self.assertEqual(self.instance.pedestrian_standard_operational_status, test_value)
     
@@ -219,7 +219,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test pedestrian_ready_delay property
         """
-        test_value = int(42)
+        test_value = int(98)
         self.instance.pedestrian_ready_delay = test_value
         self.assertEqual(self.instance.pedestrian_ready_delay, test_value)
     
@@ -227,7 +227,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test pedestrian_ready_lanes_open property
         """
-        test_value = int(52)
+        test_value = int(14)
         self.instance.pedestrian_ready_lanes_open = test_value
         self.assertEqual(self.instance.pedestrian_ready_lanes_open, test_value)
     
@@ -235,7 +235,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test pedestrian_ready_operational_status property
         """
-        test_value = 'fhslpyexgrikcemxlvfu'
+        test_value = 'twkeogkxydppgbtpaddd'
         self.instance.pedestrian_ready_operational_status = test_value
         self.assertEqual(self.instance.pedestrian_ready_operational_status, test_value)
     
@@ -243,7 +243,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test commercial_vehicle_standard_delay property
         """
-        test_value = int(81)
+        test_value = int(15)
         self.instance.commercial_vehicle_standard_delay = test_value
         self.assertEqual(self.instance.commercial_vehicle_standard_delay, test_value)
     
@@ -251,7 +251,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test commercial_vehicle_standard_lanes_open property
         """
-        test_value = int(12)
+        test_value = int(9)
         self.instance.commercial_vehicle_standard_lanes_open = test_value
         self.assertEqual(self.instance.commercial_vehicle_standard_lanes_open, test_value)
     
@@ -259,7 +259,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test commercial_vehicle_standard_operational_status property
         """
-        test_value = 'nbnedwjdxyswcwttyyyu'
+        test_value = 'dccyrssocqqycookucbi'
         self.instance.commercial_vehicle_standard_operational_status = test_value
         self.assertEqual(self.instance.commercial_vehicle_standard_operational_status, test_value)
     
@@ -275,7 +275,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test commercial_vehicle_fast_lanes_open property
         """
-        test_value = int(35)
+        test_value = int(99)
         self.instance.commercial_vehicle_fast_lanes_open = test_value
         self.assertEqual(self.instance.commercial_vehicle_fast_lanes_open, test_value)
     
@@ -283,7 +283,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test commercial_vehicle_fast_operational_status property
         """
-        test_value = 'riompfpqjaghlxhpovyr'
+        test_value = 'zcgyrolnhnqzlmdxvzqg'
         self.instance.commercial_vehicle_fast_operational_status = test_value
         self.assertEqual(self.instance.commercial_vehicle_fast_operational_status, test_value)
     
@@ -291,7 +291,7 @@ class Test_WaitTime(unittest.TestCase):
         """
         Test construction_notice property
         """
-        test_value = 'xlsarbfyugvxaknzgshz'
+        test_value = 'kenngvsjqzjsmmzjzwak'
         self.instance.construction_notice = test_value
         self.assertEqual(self.instance.construction_notice, test_value)
     
