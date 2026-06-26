@@ -52,6 +52,6 @@ jobs:
             --reruns 2 --reruns-delay 15 \
             -k "${{ matrix.test_class }}" \
             --tb=long
-        timeout-minutes: 25
+        timeout-minutes: 35
         env:
           WSDOT_ACCESS_CODE: ${{ secrets.WSDOT_ACCESS_CODE }}
