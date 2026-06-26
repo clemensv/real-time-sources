@@ -94,6 +94,7 @@ class _MqttProducerAdapter:
         data = kwargs["data"]
         normalized = {key[1:] if key.startswith("_") else key: value for key, value in kwargs.items()}
         normalized["magnitude_bucket"] = data.magnitude_bucket
+        normalized["event_time"] = normalized.get("time") or getattr(data, "event_time", None) or ""
         task = asyncio.create_task(self._publish(**normalized))
         self._tasks.add(task)
         task.add_done_callback(self._finish_task)

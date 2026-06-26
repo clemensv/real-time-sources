@@ -320,7 +320,7 @@
                     "symbol": "m"
                   },
                   "province": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'province' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -565,7 +565,7 @@
                     }
                   },
                   "province": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'province' added for MQTT/AMQP subscriber filtering."
                   }
                 },

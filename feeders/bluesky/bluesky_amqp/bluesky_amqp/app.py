@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 from bluesky_amqp_producer_amqp_producer.producer import BlueskyFirehoseAmqpProducer
 from bluesky_amqp_producer_data import Block, Follow, Like, Post, Profile, Repost
-from bluesky_core.bluesky import DEFAULT_FIREHOSE_URL, USER_AGENT, iter_firehose_events, normalize_segment
+from bluesky_core.bluesky import DEFAULT_FIREHOSE_URL, USER_AGENT, iter_firehose_events, iter_mock_firehose_events, normalize_segment
 
 logger = logging.getLogger(__name__)
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
@@ -59,10 +59,14 @@ class BlueskyAmqpBridge:
         self.collections = collections
         self._count = 0
 
-    async def run(self, max_events: Optional[int] = None) -> None:
-        async for event in iter_firehose_events(firehose_url=self.firehose_url, collections=self.collections, user_agent=USER_AGENT):
+    async def run(self, max_events: Optional[int] = None, mock: bool = False) -> None:
+        if mock:
+            source = iter_mock_firehose_events(max_events=max_events or 12)
+        else:
+            source = iter_firehose_events(firehose_url=self.firehose_url, collections=self.collections, user_agent=USER_AGENT)
+        async for event in source:
             data = _build_data(event)
-            method = getattr(self.client, 'publish_' + event.event_type.lower().replace('.', '_'))
+            method = getattr(self.client, 'publish_' + event.event_type.rsplit('.', 1)[-1].lower())
             await method(firehoseurl=self.firehose_url, did=normalize_segment(event.did), collection=normalize_segment(event.collection), lang=normalize_segment(event.lang), data=data, qos=0, retain=False)
             self._count += 1
             if max_events and self._count >= max_events:
@@ -126,8 +130,9 @@ async def _run(args: argparse.Namespace) -> None:
     producer = create_amqp_producer(args, BlueskyFirehoseAmqpProducer)
     client = _AmqpClient(producer)
     collections = [c.strip() for c in args.collections.split(',') if c.strip()] if args.collections else None
+    mock = os.environ.get('BLUESKY_MOCK', '').lower() in ('1', 'true', 'yes')
     try:
-        await BlueskyAmqpBridge(client, firehose_url=args.firehose_url, collections=collections).run(max_events=args.max_events)
+        await BlueskyAmqpBridge(client, firehose_url=args.firehose_url, collections=collections).run(max_events=args.max_events, mock=mock)
     finally:
         producer.close()
 

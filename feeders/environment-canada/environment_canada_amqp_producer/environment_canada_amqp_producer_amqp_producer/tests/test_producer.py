@@ -217,6 +217,474 @@ def _receive_single_message(config: dict, timeout: int = 30):
         receiver.close()
         connection.close()
 
+class TestCAGovECCCWeatherProducer:
+    """Test cases for CAGovECCCWeatherProducer"""
+    
+    def test_producer_initialization(self, artemis_container):
+        """Test that producer initializes correctly"""
+        producer = CAGovECCCWeatherProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"]
+        )
+        assert producer is not None
+        assert producer.host == artemis_container["host"]
+        assert producer.address == artemis_container["address"]
+        assert producer.port == artemis_container["port"]
+        assert producer.username == artemis_container["username"]
+        producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(CAGovECCCWeatherProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
+    
+    def test_send_station(self, artemis_container):
+        """Send and receive a Station message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_Station.create_instance()
+
+        producer = CAGovECCCWeatherProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_station(
+                    data=payload,
+                    _msc_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.Station"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    assert properties.get('subject') == 'CA.Gov.ECCC.Weather.Station'
+                    # Verify message body is not empty
+                    assert received.body is not None
+        finally:
+            producer.close()
+
+    def test_send_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one Station message on a fresh producer connection."""
+        payload = Test_Station.create_instance()
+
+        producer = CAGovECCCWeatherProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_station(
+                data=payload,
+                _msc_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.Station'
+        assert received.body is not None
+    
+    def test_send_weather_observation(self, artemis_container):
+        """Send and receive a WeatherObservation message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_WeatherObservation.create_instance()
+
+        producer = CAGovECCCWeatherProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_weather_observation(
+                    data=payload,
+                    _msc_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.WeatherObservation"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    assert properties.get('subject') == 'CA.Gov.ECCC.Weather.WeatherObservation'
+                    # Verify message body is not empty
+                    assert received.body is not None
+        finally:
+            producer.close()
+
+    def test_send_weather_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeatherObservation message on a fresh producer connection."""
+        payload = Test_WeatherObservation.create_instance()
+
+        producer = CAGovECCCWeatherProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_weather_observation(
+                data=payload,
+                _msc_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.WeatherObservation'
+        assert received.body is not None
+
+
+
+class TestCAGovECCCWeatherMqttProducer:
+    """Test cases for CAGovECCCWeatherMqttProducer"""
+    
+    def test_producer_initialization(self, artemis_container):
+        """Test that producer initializes correctly"""
+        producer = CAGovECCCWeatherMqttProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"]
+        )
+        assert producer is not None
+        assert producer.host == artemis_container["host"]
+        assert producer.address == artemis_container["address"]
+        assert producer.port == artemis_container["port"]
+        assert producer.username == artemis_container["username"]
+        producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(CAGovECCCWeatherMqttProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
+    
+    def test_send_station(self, artemis_container):
+        """Send and receive a Station message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_Station.create_instance()
+
+        producer = CAGovECCCWeatherMqttProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_station(
+                    data=payload,
+                    _msc_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.Station"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    assert properties.get('subject') == 'CA.Gov.ECCC.Weather.mqtt.Station'
+                    # Verify message body is not empty
+                    assert received.body is not None
+        finally:
+            producer.close()
+
+    def test_send_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one Station message on a fresh producer connection."""
+        payload = Test_Station.create_instance()
+
+        producer = CAGovECCCWeatherMqttProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_station(
+                data=payload,
+                _msc_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.Station'
+        assert received.body is not None
+    
+    def test_send_weather_observation(self, artemis_container):
+        """Send and receive a WeatherObservation message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_WeatherObservation.create_instance()
+
+        producer = CAGovECCCWeatherMqttProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_weather_observation(
+                    data=payload,
+                    _msc_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.WeatherObservation"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    assert properties.get('subject') == 'CA.Gov.ECCC.Weather.mqtt.WeatherObservation'
+                    # Verify message body is not empty
+                    assert received.body is not None
+        finally:
+            producer.close()
+
+    def test_send_weather_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeatherObservation message on a fresh producer connection."""
+        payload = Test_WeatherObservation.create_instance()
+
+        producer = CAGovECCCWeatherMqttProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_weather_observation(
+                data=payload,
+                _msc_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.WeatherObservation'
+        assert received.body is not None
+
+
+
 class TestCAGovECCCWeatherAmqpProducer:
     """Test cases for CAGovECCCWeatherAmqpProducer"""
     

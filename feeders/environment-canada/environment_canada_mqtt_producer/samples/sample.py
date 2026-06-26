@@ -1,6 +1,6 @@
 
 """
-This is sample code to use the MQTT client contained in this project.
+This is sample code to use the MQTT clients contained in this project.
 
 The sample demonstrates both publishing and subscribing to MQTT messages with
 the
@@ -10,9 +10,9 @@ There is a handler for each defined message type. The handler is an async
 function that takes the following parameters:
 - mqtt_message: The paho.mqtt.client.MQTTMessage object (message context).
 - cloud_event: The CloudEvent data (if using CloudEvents).
-- message_data: The deserialized message data.The main function creates a client
-that can both produce and consume messages.
-It starts a dispatcher to handle incoming messages and then publishes sample
+- message_data: The deserialized message data.The main function creates clients
+for each message group that can both produce and consume messages.
+It starts dispatchers to handle incoming messages and then publishes sample
 messages.
 
 The script either reads the configuration from the command line or uses the
@@ -37,6 +37,21 @@ import asyncio
 import os
 import signal
 from environment_canada_mqtt_producer_data import *
+from environment_canada_mqtt_producer_mqtt_client.client import CAGovECCCWeatherProducer, CAGovECCCWeatherDispatcher
+
+async def handle_ca_gov_eccc_weather_station(mqtt_msg,cloud_event, ca_gov_eccc_weather_station_data):
+    """ Handles the CA.Gov.ECCC.Weather.Station message """
+    print(f"Received CA.Gov.ECCC.Weather.Station on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {ca_gov_eccc_weather_station_data}")
+
+async def handle_ca_gov_eccc_weather_weather_observation(mqtt_msg,cloud_event, ca_gov_eccc_weather_weather_observation_data):
+    """ Handles the CA.Gov.ECCC.Weather.WeatherObservation message """
+    print(f"Received CA.Gov.ECCC.Weather.WeatherObservation on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {ca_gov_eccc_weather_weather_observation_data}")
 from environment_canada_mqtt_producer_mqtt_client.client import CAGovECCCWeatherMqttProducer, CAGovECCCWeatherMqttDispatcher
 
 async def handle_ca_gov_eccc_weather_mqtt_station(mqtt_msg,cloud_event, ca_gov_eccc_weather_mqtt_station_data):
@@ -52,6 +67,21 @@ async def handle_ca_gov_eccc_weather_mqtt_weather_observation(mqtt_msg,cloud_eve
     if cloud_event:
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
     print(f"  Data: {ca_gov_eccc_weather_mqtt_weather_observation_data}")
+from environment_canada_mqtt_producer_mqtt_client.client import CAGovECCCWeatherAmqpProducer, CAGovECCCWeatherAmqpDispatcher
+
+async def handle_ca_gov_eccc_weather_amqp_station(mqtt_msg,cloud_event, ca_gov_eccc_weather_amqp_station_data):
+    """ Handles the CA.Gov.ECCC.Weather.amqp.Station message """
+    print(f"Received CA.Gov.ECCC.Weather.amqp.Station on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {ca_gov_eccc_weather_amqp_station_data}")
+
+async def handle_ca_gov_eccc_weather_amqp_weather_observation(mqtt_msg,cloud_event, ca_gov_eccc_weather_amqp_weather_observation_data):
+    """ Handles the CA.Gov.ECCC.Weather.amqp.WeatherObservation message """
+    print(f"Received CA.Gov.ECCC.Weather.amqp.WeatherObservation on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {ca_gov_eccc_weather_amqp_weather_observation_data}")
 
 async def main(broker_host, broker_port, topic, username=None, password=None):
     """ Main function for MQTT client """

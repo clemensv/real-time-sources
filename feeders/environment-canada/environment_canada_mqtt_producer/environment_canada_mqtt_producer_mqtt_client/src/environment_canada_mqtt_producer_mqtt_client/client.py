@@ -225,6 +225,478 @@ class _ClientBase:
 
 
 
+def get_default_topic_mappings_ca_gov_eccc_weather() -> Dict[str, str]:
+    """
+    Get the default topic mappings for the CA.Gov.ECCC.Weather message group.
+    
+    Returns:
+        Dictionary mapping message identifiers to their default topic patterns.
+    """
+    return {
+        "CA.Gov.ECCC.Weather.Station": "CA.Gov.ECCC.Weather.Station",
+        "CA.Gov.ECCC.Weather.WeatherObservation": "CA.Gov.ECCC.Weather.WeatherObservation",
+    }
+
+
+def get_subscription_topics_ca_gov_eccc_weather(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
+    """
+    Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
+    
+    Args:
+        topic_mappings: Optional topic mappings. If None, uses default mappings.
+        
+    Returns:
+        List of topic patterns suitable for MQTT subscription.
+    """
+    mappings = topic_mappings or get_default_topic_mappings_ca_gov_eccc_weather()
+    topics = []
+    for topic in mappings.values():
+        wildcard_topic = _topic_to_mqtt_wildcard(topic)
+        if wildcard_topic not in topics:
+            topics.append(wildcard_topic)
+    return topics
+
+
+class CAGovECCCWeatherMqttClient(_ClientBase):
+    """MQTT Client for producing and consuming messages in the CA.Gov.ECCC.Weather message group."""
+    
+    def __init__(
+        self, 
+        client: mqtt.Client, 
+        topic_mappings: Optional[Dict[str, str]] = None,
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
+        loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        """
+        Initialize the MQTT client.
+
+        Args:
+            client: Paho MQTT client instance
+            topic_mappings: Optional dictionary mapping message identifiers to topic patterns.
+                Topic patterns may be URI templates with placeholders like {placeholder}.
+                For consumers, placeholders are converted to MQTT wildcards (+) for subscription.
+                If not provided, uses default 1:1 mapping.
+            content_mode: The content mode for CloudEvents ('structured' or 'binary')
+            loop: Optional event loop to use for async operations. If None, will try to get the running loop.
+        """
+        self.client = client
+        self.content_mode = content_mode
+        self.loop = loop
+        self._topic_mappings = topic_mappings or get_default_topic_mappings_ca_gov_eccc_weather()
+        self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
+        
+        # Message handler callbacks (Dispatcher pattern)
+        
+        self.ca_gov_eccc_weather_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, environment_canada_mqtt_producer_data.Station, Dict[str, str]], Awaitable[None]]] = None
+        
+        self.ca_gov_eccc_weather_weather_observation_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, environment_canada_mqtt_producer_data.WeatherObservation, Dict[str, str]], Awaitable[None]]] = None
+        
+        
+        # Attach message callback
+        self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    @property
+    def topic_mappings(self) -> Dict[str, str]:
+        """Get the current topic mappings."""
+        return self._topic_mappings.copy()
+    
+    def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
+        """Internal MQTT message callback that dispatches to async handlers."""
+        loop = self.loop
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
+    
+    async def _process_message(self, message: mqtt.MQTTMessage):
+        """Process incoming MQTT message and dispatch to appropriate handler."""
+        try:
+            if self._is_cloud_event(message):
+                cloud_event = self._cloud_event_from_message(message)
+                if cloud_event:
+                    await self._dispatch_cloud_event(message, cloud_event)
+            else:
+                # Handle plain MQTT messages (if needed)
+                pass
+        except Exception as e:
+            print(f"Error processing message: {e}")
+    
+    def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
+        """Extract URI template placeholder values from a topic."""
+        if message_id in self._topic_patterns:
+            return _extract_topic_parameters(topic, self._topic_patterns[message_id])
+        return {}
+    
+    async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
+        """Dispatch CloudEvent to the appropriate handler based on type."""
+        event_type = cloud_event['type']
+        
+        
+        if event_type == "CA.Gov.ECCC.Weather.Station":
+            if self.ca_gov_eccc_weather_station_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = environment_canada_mqtt_producer_data.Station.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "CA.Gov.ECCC.Weather.Station")
+                    await self.ca_gov_eccc_weather_station_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in ca_gov_eccc_weather_station handler: {e}")
+            return
+        
+        if event_type == "CA.Gov.ECCC.Weather.WeatherObservation":
+            if self.ca_gov_eccc_weather_weather_observation_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = environment_canada_mqtt_producer_data.WeatherObservation.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "CA.Gov.ECCC.Weather.WeatherObservation")
+                    await self.ca_gov_eccc_weather_weather_observation_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in ca_gov_eccc_weather_weather_observation handler: {e}")
+            return
+        
+    
+    async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
+        """
+        Subscribe to MQTT topics.
+
+        Args:
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
+                default topics with URI template placeholders replaced by MQTT wildcards.
+            qos: Quality of Service level (0, 1, or 2)
+        """
+        if topics is None:
+            topics = get_subscription_topics_ca_gov_eccc_weather(self._topic_mappings)
+        for topic in topics:
+            self.client.subscribe(topic, qos)
+    
+    async def unsubscribe(self, topics: typing.List[str]):
+        """
+        Unsubscribe from MQTT topics.
+
+        Args:
+            topics: List of topics to unsubscribe from
+        """
+        for topic in topics:
+            self.client.unsubscribe(topic)
+
+    @staticmethod
+    def _build_enhanced_auth_properties(token, authentication_method: str = "OAUTH2-JWT", base=None):
+        """Build MQTT v5 CONNECT properties carrying an OAuth2/Entra JWT via
+        MQTT v5 Enhanced Authentication.
+
+        Azure Event Grid Namespaces (and other Entra-secured MQTT v5 brokers)
+        require the bearer token to be presented through the CONNECT
+        ``Authentication Method`` / ``Authentication Data`` properties, NOT the
+        username/password fields. Username/password silently fails CONNACK and
+        ``publish()`` then queues messages locally without ever reaching the
+        broker. See
+        https://learn.microsoft.com/azure/event-grid/mqtt-client-microsoft-entra-token-and-rbac
+
+        The paho client passed to this class MUST be created with
+        ``protocol=mqtt.MQTTv5`` for these properties to be honored.
+        """
+        if not _MQTT5_AVAILABLE:
+            raise RuntimeError(
+                "MQTT v5 Enhanced Authentication (OAUTH2-JWT) requires "
+                "paho-mqtt >= 2.0; install a newer paho-mqtt to use "
+                "token-based auth."
+            )
+        connect_properties = base if base is not None else _MqttProperties(_MqttPacketTypes.CONNECT)
+        connect_properties.AuthenticationMethod = authentication_method
+        connect_properties.AuthenticationData = (
+            token.encode("utf-8") if isinstance(token, str) else token
+        )
+        return connect_properties
+
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60,
+                      token: Optional[str] = None,
+                      authentication_method: str = "OAUTH2-JWT",
+                      properties: Optional["_MqttProperties"] = None):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
+
+        Args:
+            broker: Broker hostname or IP
+            port: Broker port
+            keepalive: Keepalive interval in seconds
+            token: Optional OAuth2/Entra bearer token (JWT). When provided, it is
+                presented via MQTT v5 Enhanced Authentication
+                (Authentication Method ``OAUTH2-JWT`` + Authentication Data) as
+                required by Azure Event Grid Namespaces -- NOT as a password.
+                Requires a paho client created with ``protocol=mqtt.MQTTv5``.
+            authentication_method: MQTT v5 Authentication Method to advertise
+                when ``token`` is supplied (default ``OAUTH2-JWT``).
+            properties: Optional MQTT v5 CONNECT ``Properties`` to send. When
+                ``token`` is also supplied, the enhanced-auth fields are set on
+                these properties.
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
+        """
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            connect_properties = properties
+            if token is not None:
+                connect_properties = self._build_enhanced_auth_properties(
+                    token, authentication_method, base=properties
+                )
+            if connect_properties is not None:
+                self.client.connect(broker, port, keepalive, properties=connect_properties)
+            else:
+                self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
+    
+    async def disconnect(self):
+        """Disconnect from MQTT broker."""
+        self._connected = False
+        self.client.loop_stop()
+        self.client.disconnect()
+
+    # Producer methods
+    
+    async def publish_ca_gov_eccc_weather_station(self,
+        msc_id: str,
+        data: environment_canada_mqtt_producer_data.Station,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'CA.Gov.ECCC.Weather.Station' event to an MQTT topic.
+
+        Args:
+        
+            msc_id: URI template variable for 'msc_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'CA.Gov.ECCC.Weather.Station'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "CA.Gov.ECCC.Weather.Station"
+        _topic_template_values: Dict[str, str] = {
+            "msc_id": str(msc_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"CA.Gov.ECCC.Weather.Station",
+             "source":"https://api.weather.gc.ca",
+             "subject":"{msc_id}".format(msc_id = msc_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+    async def publish_ca_gov_eccc_weather_weather_observation(self,
+        msc_id: str,
+        data: environment_canada_mqtt_producer_data.WeatherObservation,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'CA.Gov.ECCC.Weather.WeatherObservation' event to an MQTT topic.
+
+        Args:
+        
+            msc_id: URI template variable for 'msc_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'CA.Gov.ECCC.Weather.WeatherObservation'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "CA.Gov.ECCC.Weather.WeatherObservation"
+        _topic_template_values: Dict[str, str] = {
+            "msc_id": str(msc_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"CA.Gov.ECCC.Weather.WeatherObservation",
+             "source":"https://api.weather.gc.ca",
+             "subject":"{msc_id}".format(msc_id = msc_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+
+
 def get_default_topic_mappings_ca_gov_eccc_weather_mqtt() -> Dict[str, str]:
     """
     Get the default topic mappings for the CA.Gov.ECCC.Weather.mqtt message group.
@@ -673,6 +1145,478 @@ class CAGovECCCWeatherMqttMqttClient(_ClientBase):
 
         _effective_qos = 1 if qos is None else qos
         _effective_retain = True if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+
+
+def get_default_topic_mappings_ca_gov_eccc_weather_amqp() -> Dict[str, str]:
+    """
+    Get the default topic mappings for the CA.Gov.ECCC.Weather.amqp message group.
+    
+    Returns:
+        Dictionary mapping message identifiers to their default topic patterns.
+    """
+    return {
+        "CA.Gov.ECCC.Weather.amqp.Station": "CA.Gov.ECCC.Weather.amqp.Station",
+        "CA.Gov.ECCC.Weather.amqp.WeatherObservation": "CA.Gov.ECCC.Weather.amqp.WeatherObservation",
+    }
+
+
+def get_subscription_topics_ca_gov_eccc_weather_amqp(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
+    """
+    Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
+    
+    Args:
+        topic_mappings: Optional topic mappings. If None, uses default mappings.
+        
+    Returns:
+        List of topic patterns suitable for MQTT subscription.
+    """
+    mappings = topic_mappings or get_default_topic_mappings_ca_gov_eccc_weather_amqp()
+    topics = []
+    for topic in mappings.values():
+        wildcard_topic = _topic_to_mqtt_wildcard(topic)
+        if wildcard_topic not in topics:
+            topics.append(wildcard_topic)
+    return topics
+
+
+class CAGovECCCWeatherAmqpMqttClient(_ClientBase):
+    """MQTT Client for producing and consuming messages in the CA.Gov.ECCC.Weather.amqp message group."""
+    
+    def __init__(
+        self, 
+        client: mqtt.Client, 
+        topic_mappings: Optional[Dict[str, str]] = None,
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
+        loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        """
+        Initialize the MQTT client.
+
+        Args:
+            client: Paho MQTT client instance
+            topic_mappings: Optional dictionary mapping message identifiers to topic patterns.
+                Topic patterns may be URI templates with placeholders like {placeholder}.
+                For consumers, placeholders are converted to MQTT wildcards (+) for subscription.
+                If not provided, uses default 1:1 mapping.
+            content_mode: The content mode for CloudEvents ('structured' or 'binary')
+            loop: Optional event loop to use for async operations. If None, will try to get the running loop.
+        """
+        self.client = client
+        self.content_mode = content_mode
+        self.loop = loop
+        self._topic_mappings = topic_mappings or get_default_topic_mappings_ca_gov_eccc_weather_amqp()
+        self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
+        
+        # Message handler callbacks (Dispatcher pattern)
+        
+        self.ca_gov_eccc_weather_amqp_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, environment_canada_mqtt_producer_data.Station, Dict[str, str]], Awaitable[None]]] = None
+        
+        self.ca_gov_eccc_weather_amqp_weather_observation_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, environment_canada_mqtt_producer_data.WeatherObservation, Dict[str, str]], Awaitable[None]]] = None
+        
+        
+        # Attach message callback
+        self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    @property
+    def topic_mappings(self) -> Dict[str, str]:
+        """Get the current topic mappings."""
+        return self._topic_mappings.copy()
+    
+    def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
+        """Internal MQTT message callback that dispatches to async handlers."""
+        loop = self.loop
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
+    
+    async def _process_message(self, message: mqtt.MQTTMessage):
+        """Process incoming MQTT message and dispatch to appropriate handler."""
+        try:
+            if self._is_cloud_event(message):
+                cloud_event = self._cloud_event_from_message(message)
+                if cloud_event:
+                    await self._dispatch_cloud_event(message, cloud_event)
+            else:
+                # Handle plain MQTT messages (if needed)
+                pass
+        except Exception as e:
+            print(f"Error processing message: {e}")
+    
+    def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
+        """Extract URI template placeholder values from a topic."""
+        if message_id in self._topic_patterns:
+            return _extract_topic_parameters(topic, self._topic_patterns[message_id])
+        return {}
+    
+    async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
+        """Dispatch CloudEvent to the appropriate handler based on type."""
+        event_type = cloud_event['type']
+        
+        
+        if event_type == "CA.Gov.ECCC.Weather.Station":
+            if self.ca_gov_eccc_weather_amqp_station_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = environment_canada_mqtt_producer_data.Station.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "CA.Gov.ECCC.Weather.amqp.Station")
+                    await self.ca_gov_eccc_weather_amqp_station_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in ca_gov_eccc_weather_amqp_station handler: {e}")
+            return
+        
+        if event_type == "CA.Gov.ECCC.Weather.WeatherObservation":
+            if self.ca_gov_eccc_weather_amqp_weather_observation_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = environment_canada_mqtt_producer_data.WeatherObservation.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "CA.Gov.ECCC.Weather.amqp.WeatherObservation")
+                    await self.ca_gov_eccc_weather_amqp_weather_observation_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in ca_gov_eccc_weather_amqp_weather_observation handler: {e}")
+            return
+        
+    
+    async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
+        """
+        Subscribe to MQTT topics.
+
+        Args:
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
+                default topics with URI template placeholders replaced by MQTT wildcards.
+            qos: Quality of Service level (0, 1, or 2)
+        """
+        if topics is None:
+            topics = get_subscription_topics_ca_gov_eccc_weather_amqp(self._topic_mappings)
+        for topic in topics:
+            self.client.subscribe(topic, qos)
+    
+    async def unsubscribe(self, topics: typing.List[str]):
+        """
+        Unsubscribe from MQTT topics.
+
+        Args:
+            topics: List of topics to unsubscribe from
+        """
+        for topic in topics:
+            self.client.unsubscribe(topic)
+
+    @staticmethod
+    def _build_enhanced_auth_properties(token, authentication_method: str = "OAUTH2-JWT", base=None):
+        """Build MQTT v5 CONNECT properties carrying an OAuth2/Entra JWT via
+        MQTT v5 Enhanced Authentication.
+
+        Azure Event Grid Namespaces (and other Entra-secured MQTT v5 brokers)
+        require the bearer token to be presented through the CONNECT
+        ``Authentication Method`` / ``Authentication Data`` properties, NOT the
+        username/password fields. Username/password silently fails CONNACK and
+        ``publish()`` then queues messages locally without ever reaching the
+        broker. See
+        https://learn.microsoft.com/azure/event-grid/mqtt-client-microsoft-entra-token-and-rbac
+
+        The paho client passed to this class MUST be created with
+        ``protocol=mqtt.MQTTv5`` for these properties to be honored.
+        """
+        if not _MQTT5_AVAILABLE:
+            raise RuntimeError(
+                "MQTT v5 Enhanced Authentication (OAUTH2-JWT) requires "
+                "paho-mqtt >= 2.0; install a newer paho-mqtt to use "
+                "token-based auth."
+            )
+        connect_properties = base if base is not None else _MqttProperties(_MqttPacketTypes.CONNECT)
+        connect_properties.AuthenticationMethod = authentication_method
+        connect_properties.AuthenticationData = (
+            token.encode("utf-8") if isinstance(token, str) else token
+        )
+        return connect_properties
+
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60,
+                      token: Optional[str] = None,
+                      authentication_method: str = "OAUTH2-JWT",
+                      properties: Optional["_MqttProperties"] = None):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
+
+        Args:
+            broker: Broker hostname or IP
+            port: Broker port
+            keepalive: Keepalive interval in seconds
+            token: Optional OAuth2/Entra bearer token (JWT). When provided, it is
+                presented via MQTT v5 Enhanced Authentication
+                (Authentication Method ``OAUTH2-JWT`` + Authentication Data) as
+                required by Azure Event Grid Namespaces -- NOT as a password.
+                Requires a paho client created with ``protocol=mqtt.MQTTv5``.
+            authentication_method: MQTT v5 Authentication Method to advertise
+                when ``token`` is supplied (default ``OAUTH2-JWT``).
+            properties: Optional MQTT v5 CONNECT ``Properties`` to send. When
+                ``token`` is also supplied, the enhanced-auth fields are set on
+                these properties.
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
+        """
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            connect_properties = properties
+            if token is not None:
+                connect_properties = self._build_enhanced_auth_properties(
+                    token, authentication_method, base=properties
+                )
+            if connect_properties is not None:
+                self.client.connect(broker, port, keepalive, properties=connect_properties)
+            else:
+                self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
+    
+    async def disconnect(self):
+        """Disconnect from MQTT broker."""
+        self._connected = False
+        self.client.loop_stop()
+        self.client.disconnect()
+
+    # Producer methods
+    
+    async def publish_ca_gov_eccc_weather_amqp_station(self,
+        msc_id: str,
+        data: environment_canada_mqtt_producer_data.Station,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'CA.Gov.ECCC.Weather.amqp.Station' event to an MQTT topic.
+
+        Args:
+        
+            msc_id: URI template variable for 'msc_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'CA.Gov.ECCC.Weather.amqp.Station'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "CA.Gov.ECCC.Weather.amqp.Station"
+        _topic_template_values: Dict[str, str] = {
+            "msc_id": str(msc_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"CA.Gov.ECCC.Weather.Station",
+             "source":"https://api.weather.gc.ca",
+             "subject":"{msc_id}".format(msc_id = msc_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+    async def publish_ca_gov_eccc_weather_amqp_weather_observation(self,
+        msc_id: str,
+        data: environment_canada_mqtt_producer_data.WeatherObservation,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'CA.Gov.ECCC.Weather.amqp.WeatherObservation' event to an MQTT topic.
+
+        Args:
+        
+            msc_id: URI template variable for 'msc_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'CA.Gov.ECCC.Weather.amqp.WeatherObservation'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "CA.Gov.ECCC.Weather.amqp.WeatherObservation"
+        _topic_template_values: Dict[str, str] = {
+            "msc_id": str(msc_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"CA.Gov.ECCC.Weather.WeatherObservation",
+             "source":"https://api.weather.gc.ca",
+             "subject":"{msc_id}".format(msc_id = msc_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
             "qos": _effective_qos,

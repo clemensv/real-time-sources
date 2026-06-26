@@ -23,6 +23,7 @@ from bluesky_core.bluesky import (
     build_repost_event,
     iter_commit_events,
     iter_firehose_events,
+    iter_mock_firehose_events,
     load_cursor,
     save_cursor,
 )
@@ -133,7 +134,12 @@ class BlueskyFirehose:
         self._send_event(build_profile_event(commit.repo, commit.seq, commit.time, str(uri), record, cid))
 
     async def run(self) -> None:
-        async for event in iter_firehose_events(firehose_url=self.firehose_url, collections=list(self.collections) if self.collections else None, cursor_provider=lambda: self.cursor, user_agent=USER_AGENT):
+        mock = os.environ.get('BLUESKY_MOCK', '').lower() in ('1', 'true', 'yes')
+        if mock:
+            source = iter_mock_firehose_events(max_events=12)
+        else:
+            source = iter_firehose_events(firehose_url=self.firehose_url, collections=list(self.collections) if self.collections else None, cursor_provider=lambda: self.cursor, user_agent=USER_AGENT)
+        async for event in source:
             self._send_event(event)
             if event.seq % 1000 == 0:
                 self.save_cursor()

@@ -7,7 +7,7 @@ packages = [{include = "environment_canada_mqtt_producer_mqtt_client", from = "s
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-environment-canada-mqtt-producer-data = "*"
+environment-canada-mqtt-producer-data = {path = "../environment_canada_mqtt_producer_data", develop = true}
 paho-mqtt = ">=2.1.0"
 cloudevents = ">=1.10.1,<2.0.0"
 

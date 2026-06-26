@@ -24,7 +24,7 @@ def _apply(producer):
         return msg
     if getattr(producer,'_sender',None) is not None:
         original=producer._sender.send; producer._sender.send=lambda msg,*a,**kw: original(stamp(msg),*a,**kw)
-    if hasattr(producer,'_send_via_reactor'):
+    if getattr(producer,'_send_queue',None) is not None:
         original=producer._send_via_reactor; producer._send_via_reactor=lambda msg: original(stamp(msg))
     return producer
 def _build(args):
