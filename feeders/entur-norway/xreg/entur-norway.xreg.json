@@ -384,7 +384,6 @@
                           "operating_day": {
                             "type": "string",
                             "description": "ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
-                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                             "altnames": {
                               "xml": "DataFrameRef"
                             }
@@ -714,7 +713,6 @@
                           "operating_day": {
                             "type": "string",
                             "description": "ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
-                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                             "altnames": {
                               "xml": "DataFrameRef"
                             }
@@ -921,7 +919,6 @@
                           "operating_day": {
                             "type": "string",
                             "description": "ISO 8601 calendar date string for the operating day of this journey, from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
-                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                             "altnames": {
                               "xml": "DataFrameRef"
                             }

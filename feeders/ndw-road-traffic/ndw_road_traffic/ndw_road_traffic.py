@@ -166,7 +166,7 @@ from ndw_road_traffic_producer_kafka_producer.producer import (
 
 
 
-import ndw_road_traffic_core.ndw_road_traffic_core.ndw_road_traffic as _ndw_core
+import ndw_road_traffic_core.ndw_road_traffic as _ndw_core
 
 from ndw_road_traffic_core.ndw_road_traffic import (
 
