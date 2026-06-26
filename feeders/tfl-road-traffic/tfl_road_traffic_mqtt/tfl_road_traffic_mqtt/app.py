@@ -87,6 +87,44 @@ class TflRoadTrafficMqttBridge(TflRoadTrafficSource):
         logger.info("TfL Road Traffic MQTT cycle complete: %s", counts)
         return counts
 
+    async def emit_mock_corpus(self) -> None:
+        """Emit a small synthetic corpus for E2E testing without calling TfL API."""
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc)
+        corridors = [
+            {"id": "A1", "displayName": "A1", "statusSeverity": "Good", "statusSeverityDescription": "No issues", "bounds": "[[-0.1,51.5],[0.1,51.6]]", "envelope": "", "url": "https://tfl.gov.uk"},
+            {"id": "M25", "displayName": "M25", "statusSeverity": "Serious", "statusSeverityDescription": "Severe delays", "bounds": "[[-0.5,51.3],[0.5,51.7]]", "envelope": "", "url": "https://tfl.gov.uk"},
+        ]
+        statuses = [
+            {"id": "A1", "displayName": "A1", "statusSeverity": "Good", "statusSeverityDescription": "No issues"},
+            {"id": "M25", "displayName": "M25", "statusSeverity": "Serious", "statusSeverityDescription": "Severe delays"},
+        ]
+        severities = ["serious", "severe", "moderate", "minor", "information", "closure"]
+        disruptions = []
+        for i, sev in enumerate(severities, start=1):
+            disruptions.append({
+                "id": f"TIMS-{i:05d}", "url": f"/Road/all/Disruption/TIMS-{i:05d}",
+                "point": "51.5,-0.1", "severity": sev, "ordinal": 0,
+                "category": "PlannedWork", "subCategory": "RoadWorks",
+                "comments": f"Mock {sev} disruption", "currentUpdate": "Works ongoing",
+                "currentUpdateDateTime": now.isoformat(),
+                "corridorIds": ["A1"],
+                "startDateTime": now.isoformat(), "location": "A1 Northbound",
+                "isActive": True,
+                "hasClosures": sev == "closure", "linkText": "", "linkUrl": "",
+                "roadProject": None, "publishStartDate": now.isoformat(),
+                "publishEndDate": None, "timeFrame": "Current", "geometry": None,
+                "endDateTime": None, "lastModifiedTime": now.isoformat(),
+                "levelOfInterest": "high", "recurringSchedules": [],
+            })
+        for raw in corridors:
+            await self.publish_corridor(raw)
+        for raw in statuses:
+            await self.publish_status(raw)
+        for raw in disruptions:
+            await self.publish_disruption(raw)
+        logger.info("Emitted mock corpus: %d corridors, %d statuses, %d disruptions", len(corridors), len(statuses), len(disruptions))
+
     async def poll_and_publish(self, once: bool = False) -> None:
         while True:
             await self.poll_once()
@@ -125,6 +163,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     feed.add_argument("--mqtt-client-id", default=os.getenv("MQTT_CLIENT_ID"))
     feed.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "60")))
     feed.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE", False))
+    feed.add_argument("--emit-mock-corpus", action="store_true", default=_env_bool("TFL_MQTT_EMIT_MOCK_CORPUS", False))
     feed.add_argument("--log-level", default=os.getenv("LOG_LEVEL", "INFO"))
     return parser
 
@@ -134,6 +173,10 @@ async def _run(args: argparse.Namespace) -> None:
     client = await _connect_client(args)
     try:
         bridge = TflRoadTrafficMqttBridge(client, polling_interval=args.polling_interval)
+        if args.emit_mock_corpus:
+            await bridge.emit_mock_corpus()
+            await asyncio.sleep(1.0)
+            return
         await bridge.poll_and_publish(once=args.once)
     finally:
         await client.disconnect()
