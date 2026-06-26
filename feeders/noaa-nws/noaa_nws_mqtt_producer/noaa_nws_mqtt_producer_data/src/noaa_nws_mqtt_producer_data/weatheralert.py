@@ -12,12 +12,12 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+from noaa_nws_mqtt_producer_data.severityenum import SeverityEnum
 from noaa_nws_mqtt_producer_data.statusenum import StatusEnum
-from noaa_nws_mqtt_producer_data.categoryenum import CategoryEnum
-from noaa_nws_mqtt_producer_data.messagetypeenum import MessageTypeenum
 from noaa_nws_mqtt_producer_data.certaintyenum import CertaintyEnum
 from noaa_nws_mqtt_producer_data.urgencyenum import UrgencyEnum
-from noaa_nws_mqtt_producer_data.severityenum import SeverityEnum
+from noaa_nws_mqtt_producer_data.messagetypeenum import MessageTypeenum
+from noaa_nws_mqtt_producer_data.categoryenum import CategoryEnum
 import datetime
 
 
@@ -195,8 +195,8 @@ class WeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='nrifhbvqiwmwdgczawye',
-            area_desc='xtwuapaszesisgjxebwk',
+            alert_id='dpnnoxbtctatdfjfqrcq',
+            area_desc='katkqsvcgagidxncwtks',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
@@ -206,11 +206,11 @@ class WeatherAlert:
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='tkuzfolokqmctjmiaxhz',
-            sender_name='gxjagcghrkygyaqjpoeh',
-            headline='hbuteceivcwfxevzvbuu',
-            description='rzzzroljejsyqrmofcrb',
-            zone_id='bnqbfiiswevetmjedwqb',
-            state='rwlwmhmyoifthxvldovs',
-            event_type='icpsgmvkdplujeedykob'
+            event='fpvhrjrdbcqcofrisjah',
+            sender_name='njuoeztjirluyajmqvca',
+            headline='erpooylcftjcyyrdzcef',
+            description='vkmaelqzrfmqpeezqqwh',
+            zone_id='svfblabsbcqdwwzcckkh',
+            state='iuesazvhlzewxswcgixx',
+            event_type='omqerochieqvttdvzxlv'
         )

@@ -515,7 +515,7 @@
                     "type": "string"
                   },
                   "zone_id": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   },
                   "state": {
@@ -544,9 +544,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "required": [
-                  "zone_id",
-                  "name",
-                  "state"
+                  "name"
                 ],
                 "name": "Zone",
                 "properties": {
@@ -654,7 +652,7 @@
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "zone_id": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -802,7 +800,7 @@
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "zone_id": {
-                    "type": "string",
+                    "type": ["string", "null"],
                     "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   }
                 },

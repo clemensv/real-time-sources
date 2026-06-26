@@ -28,15 +28,15 @@ class Test_ObservationStation(unittest.TestCase):
         Create instance of ObservationStation for testing
         """
         instance = ObservationStation(
-            station_id='sxriargnzvyulmcqjglo',
-            name='ovatlxloararcndnjfux',
-            elevation_m=float(55.81987325800689),
-            time_zone='ftokjlxspwqpduakunhf',
-            forecast_zone='euccsfmzayzaqsdazcbr',
-            county='xhptphiqaecyfskxmxtg',
-            fire_weather_zone='syrouczjdmvtmpkfwaqy',
-            state='zdsscglzhenmkmiigwkh',
-            zone_id='gifjwaiyimieukvabeli'
+            station_id='bjojwcjgkiiodkiqycxu',
+            name='toscbxuhqqrpufglebcv',
+            elevation_m=float(90.37216424401855),
+            time_zone='hmvyqfzktpdlrfwdlksc',
+            forecast_zone='wswotofzpoezjeaawfdz',
+            county='xqrpwogpblukumyfknjq',
+            fire_weather_zone='utfpooddsytlzrldqzrf',
+            state='wcpdpswgsgdiifillemh',
+            zone_id='qwumpfkfaxmxpgszdgwy'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'sxriargnzvyulmcqjglo'
+        test_value = 'bjojwcjgkiiodkiqycxu'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'ovatlxloararcndnjfux'
+        test_value = 'toscbxuhqqrpufglebcv'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -61,7 +61,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test elevation_m property
         """
-        test_value = float(55.81987325800689)
+        test_value = float(90.37216424401855)
         self.instance.elevation_m = test_value
         self.assertEqual(self.instance.elevation_m, test_value)
     
@@ -69,7 +69,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test time_zone property
         """
-        test_value = 'ftokjlxspwqpduakunhf'
+        test_value = 'hmvyqfzktpdlrfwdlksc'
         self.instance.time_zone = test_value
         self.assertEqual(self.instance.time_zone, test_value)
     
@@ -77,7 +77,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test forecast_zone property
         """
-        test_value = 'euccsfmzayzaqsdazcbr'
+        test_value = 'wswotofzpoezjeaawfdz'
         self.instance.forecast_zone = test_value
         self.assertEqual(self.instance.forecast_zone, test_value)
     
@@ -85,7 +85,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test county property
         """
-        test_value = 'xhptphiqaecyfskxmxtg'
+        test_value = 'xqrpwogpblukumyfknjq'
         self.instance.county = test_value
         self.assertEqual(self.instance.county, test_value)
     
@@ -93,7 +93,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test fire_weather_zone property
         """
-        test_value = 'syrouczjdmvtmpkfwaqy'
+        test_value = 'utfpooddsytlzrldqzrf'
         self.instance.fire_weather_zone = test_value
         self.assertEqual(self.instance.fire_weather_zone, test_value)
     
@@ -101,7 +101,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'zdsscglzhenmkmiigwkh'
+        test_value = 'wcpdpswgsgdiifillemh'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -109,7 +109,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test zone_id property
         """
-        test_value = 'gifjwaiyimieukvabeli'
+        test_value = 'qwumpfkfaxmxpgszdgwy'
         self.instance.zone_id = test_value
         self.assertEqual(self.instance.zone_id, test_value)
     

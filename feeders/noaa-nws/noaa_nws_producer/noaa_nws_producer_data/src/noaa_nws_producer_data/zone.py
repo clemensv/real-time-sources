@@ -20,7 +20,7 @@ class Zone:
     NWS forecast zone reference data. Zones partition the US into geographic areas for which forecasts and warnings are issued.
     
     Attributes:
-        zone_id (str)
+        zone_id (typing.Optional[str])
         name (str)
         type (typing.Optional[str])
         state (typing.Optional[str])
@@ -30,7 +30,7 @@ class Zone:
     """
     
     
-    zone_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_id"))
+    zone_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
     state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
@@ -165,11 +165,11 @@ class Zone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='pfcngskkzkvlsuzsxdxn',
-            name='flbmeexcdomjlcvlenlx',
-            type='spvctjyahcyqmcvpnxif',
-            state='dxazljwafxtupkqnutiw',
-            forecast_office='mlrceswaszcovqulkkuv',
-            timezone='tzcwuvxtguztehohhwbv',
-            radar_station='ahdsyaeckfkpaieihtmj'
+            zone_id='kxomrwmvgxbzqhrttazz',
+            name='oxgalgzfyxkplsckhjpq',
+            type='srqflfkjthadoxqqekvz',
+            state='kmmcinojlkqqfturtlte',
+            forecast_office='oycadrdjkzwlpuwvfnzs',
+            timezone='zdpxmuxjreacymorhqcf',
+            radar_station='ghmxqfrggcdjubywwcqe'
         )

@@ -28,13 +28,13 @@ class Test_Zone(unittest.TestCase):
         Create instance of Zone for testing
         """
         instance = Zone(
-            zone_id='pfcngskkzkvlsuzsxdxn',
-            name='flbmeexcdomjlcvlenlx',
-            type='spvctjyahcyqmcvpnxif',
-            state='dxazljwafxtupkqnutiw',
-            forecast_office='mlrceswaszcovqulkkuv',
-            timezone='tzcwuvxtguztehohhwbv',
-            radar_station='ahdsyaeckfkpaieihtmj'
+            zone_id='kxomrwmvgxbzqhrttazz',
+            name='oxgalgzfyxkplsckhjpq',
+            type='srqflfkjthadoxqqekvz',
+            state='kmmcinojlkqqfturtlte',
+            forecast_office='oycadrdjkzwlpuwvfnzs',
+            timezone='zdpxmuxjreacymorhqcf',
+            radar_station='ghmxqfrggcdjubywwcqe'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Zone(unittest.TestCase):
         """
         Test zone_id property
         """
-        test_value = 'pfcngskkzkvlsuzsxdxn'
+        test_value = 'kxomrwmvgxbzqhrttazz'
         self.instance.zone_id = test_value
         self.assertEqual(self.instance.zone_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Zone(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'flbmeexcdomjlcvlenlx'
+        test_value = 'oxgalgzfyxkplsckhjpq'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -59,7 +59,7 @@ class Test_Zone(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'spvctjyahcyqmcvpnxif'
+        test_value = 'srqflfkjthadoxqqekvz'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -67,7 +67,7 @@ class Test_Zone(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'dxazljwafxtupkqnutiw'
+        test_value = 'kmmcinojlkqqfturtlte'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -75,7 +75,7 @@ class Test_Zone(unittest.TestCase):
         """
         Test forecast_office property
         """
-        test_value = 'mlrceswaszcovqulkkuv'
+        test_value = 'oycadrdjkzwlpuwvfnzs'
         self.instance.forecast_office = test_value
         self.assertEqual(self.instance.forecast_office, test_value)
     
@@ -83,7 +83,7 @@ class Test_Zone(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'tzcwuvxtguztehohhwbv'
+        test_value = 'zdpxmuxjreacymorhqcf'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -91,7 +91,7 @@ class Test_Zone(unittest.TestCase):
         """
         Test radar_station property
         """
-        test_value = 'ahdsyaeckfkpaieihtmj'
+        test_value = 'ghmxqfrggcdjubywwcqe'
         self.instance.radar_station = test_value
         self.assertEqual(self.instance.radar_station, test_value)
     
