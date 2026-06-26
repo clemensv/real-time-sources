@@ -281,6 +281,7 @@ async def iter_mock_firehose_events(max_events: int = 12) -> AsyncIterator[Blues
                 "cid": f"bafyreimock{seq:06d}",
                 "did": did,
                 "handle": None,
+                "created_at": now,
                 "indexed_at": now,
                 "seq": seq,
                 "collection": collection,
@@ -291,7 +292,7 @@ async def iter_mock_firehose_events(max_events: int = 12) -> AsyncIterator[Blues
                                 "embed_type": None, "embed_uri": None, "embed_title": None,
                                 "embed_description": None, "embed_thumb": None, "images": None,
                                 "langs": ["en"], "facets": None, "labels": None,
-                                "tags": [], "created_at": now})
+                                "tags": []})
             elif event_type == "Bluesky.Feed.Like":
                 payload.update({"subject_uri": f"at://did:plc:target/app.bsky.feed.post/abc{seq}",
                                 "subject_cid": f"bafyreitarget{seq:06d}"})
@@ -299,9 +300,9 @@ async def iter_mock_firehose_events(max_events: int = 12) -> AsyncIterator[Blues
                 payload.update({"subject_uri": f"at://did:plc:target/app.bsky.feed.post/abc{seq}",
                                 "subject_cid": f"bafyreitarget{seq:06d}"})
             elif event_type == "Bluesky.Graph.Follow":
-                payload.update({"subject_did": f"did:plc:followed{seq:06d}"})
+                payload.update({"subject": f"did:plc:followed{seq:06d}"})
             elif event_type == "Bluesky.Graph.Block":
-                payload.update({"subject_did": f"did:plc:blocked{seq:06d}"})
+                payload.update({"subject": f"did:plc:blocked{seq:06d}"})
             elif event_type == "Bluesky.Actor.Profile":
                 payload.update({"display_name": f"Mock User {seq}", "description": "Test profile",
                                 "avatar": None, "banner": None})

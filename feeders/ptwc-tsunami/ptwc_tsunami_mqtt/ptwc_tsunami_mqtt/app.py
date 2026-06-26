@@ -71,8 +71,8 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
     + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
 
-def _topic_segment(value: Optional[str]) -> str:
-    text = (value or "unknown").strip() or "unknown"
+def _topic_segment(value: object) -> str:
+    text = (str(value) if value else "unknown").strip() or "unknown"
     for forbidden in ("/", "+", "#", "\x00"):
         text = text.replace(forbidden, "-")
     return "-".join(text.split()) or "unknown"
