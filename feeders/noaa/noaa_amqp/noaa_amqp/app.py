@@ -87,6 +87,21 @@ def _sample_value(name, annotation):
 
 
 
+_DATA_CLASSES = {
+    "predictions": ncd.Predictions,
+    "air_temperature": ncd.AirTemperature,
+    "wind": ncd.Wind,
+    "air_pressure": ncd.AirPressure,
+    "water_temperature": ncd.WaterTemperature,
+    "conductivity": ncd.Conductivity,
+    "visibility": ncd.Visibility,
+    "humidity": ncd.Humidity,
+    "salinity": ncd.Salinity,
+    "currents": ncd.Currents,
+    "currents_predictions": ncd.CurrentPredictions,
+}
+
+
 def _build_data(product, station_id, region, ts_iso, fields):
     """Build the generated data class for a product from normalised fields."""
     fields = dict(fields)
