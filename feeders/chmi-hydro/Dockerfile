@@ -12,4 +12,9 @@ RUN pip install --no-cache-dir ./chmi_hydro_producer/chmi_hydro_producer_data \
  && pip install --no-cache-dir ./chmi_hydro_producer/chmi_hydro_producer_kafka_producer \
  && pip install --no-cache-dir -e .
 
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'chmi_hydro'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
 CMD ["python", "-m", "chmi_hydro", "feed"]

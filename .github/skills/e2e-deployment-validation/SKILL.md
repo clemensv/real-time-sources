@@ -945,7 +945,8 @@ a malformed event).
 
 ### 24. `test-noaa` CI workflow used Poetry against a setuptools `pyproject.toml`
 
-The `test-noaa.yml` workflow installed Poetry and ran `poetry install`, but
+The `test-noaa.yml` workflow (since retired and consolidated into
+`feeder-tests.yml`) installed Poetry and ran `poetry install`, but
 `feeders/noaa/pyproject.toml` uses `setuptools` as the build backend (no
 `[tool.poetry]` table). `poetry install` failed with:
 `"Either [project.version] or [tool.poetry.version] is required in package mode."`
@@ -1004,6 +1005,21 @@ modify source code** based solely on a Docker build failure.
    Docker build checks unless the overall run status is `completed/success`
    (which means GitHub Actions considers the run green despite stale job
    entries in the PR checks UI).
+
+### MQTT/Kafka E2E container networking is settled — do not re-litigate
+
+The compose topology for the Docker E2E flow tests was stabilized over a long
+trial-and-error campaign (8+ commits and one revert, `f945d2d78`). **The
+accepted baseline is a custom bridge network with container-IP / container-name
+resolution between the feeder and the broker.** Under GitHub-runner load this
+baseline shows a ~25% transient TCP-connect failure on the Docker-bridge path
+— that flake is a **known runner infrastructure issue, not a code or topology
+bug**. Do **not** "fix" it by switching network mode, swapping
+`host.docker.internal` for service names, adding or removing `--network`, or
+otherwise re-deriving the topology: that path was already explored and
+reverted. Reuse `test_docker_mqtt_flow.py` / `test_docker_kafka_flow.py`
+networking **verbatim**; on a transient connect failure, rerun the job (per
+§ 26), don't change the wiring.
 
 ### 11. MQTT user properties use bare names (no `ce-` prefix)
 
@@ -1388,8 +1404,8 @@ When validating that feeder tests pass in CI, the most common failure mode
 is `ERROR: No matching distribution found for <local-package>`. Every
 feeder's test workflow must install generated producer packages and local
 sub-packages (e.g., `*_core`) explicitly via `pip install -e ./<path>`
-BEFORE `pip install -e '.[dev]'`. Reference: `test-pegelonline.yml`,
-`test-gtfs.yml`. Common local packages to install first:
+BEFORE `pip install -e '.[dev]'`. Reference: `feeder-tests.yml` (the
+consolidated matrix workflow). Common local packages to install first:
 
 ```
 pip install -e ./<src>_producer/<src>_producer_data

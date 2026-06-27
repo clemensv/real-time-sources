@@ -43,4 +43,9 @@ ENV AMQP_ADDRESS="kystverket-ais"
 ENV AIS_TCP_HOST="153.44.253.27"
 ENV AIS_TCP_PORT="5631"
 
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'kystverket_ais_amqp'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
 CMD ["python", "-m", "kystverket_ais_amqp", "feed"]

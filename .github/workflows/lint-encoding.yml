@@ -1,0 +1,36 @@
+name: Encoding Lint
+
+# P3 guardrail: keep catalog.json and the per-source docs UTF-8 and mojibake-free.
+# Catches the CP1252 round-trip corruption that damaged the root-README generator
+# across 106 fields (25e33ecd2) and the raw-byte / Â° / â€ corruptions found in
+# EVENTS.md files. See tools/ci/lint_catalog_encoding.py.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Lint catalog + docs for mojibake / bad encoding
+        run: |
+          set -e
+          mapfile -t files < <(
+            printf '%s\n' catalog.json README.md
+            find feeders -type f \( -name catalog.json -o -name README.md \
+              -o -name CONTAINER.md -o -name EVENTS.md \) | sort
+          )
+          existing=()
+          for x in "${files[@]}"; do [ -f "$x" ] && existing+=("$x"); done
+          echo "Linting ${#existing[@]} file(s) for encoding problems"
+          python tools/ci/lint_catalog_encoding.py "${existing[@]}"

@@ -279,7 +279,18 @@ against its own work:
    KQL + KQL Optimizer review, optional Fabric assets, EVENTS.md,
    root catalog entry, Docker E2E) must be satisfied or have a
    recorded justification.
-3. The agent has captured the verdicts from steps 1 and 2 in the PR
+3. **Runtime proof: ≥1 real event has been observed on the wire for
+   every shipped transport** (Kafka / MQTT / AMQP). A green build, a
+   started container, and passing unit tests are **not** proof — the
+   class-A "shipped but never ran" defects (a `Dockerfile.amqp` missing
+   a companion package, an `app.py` missing a `_feedurl` positional, a
+   `{time}`/`_time` placeholder collision) all passed those and emitted
+   zero events. Observe the event in the Docker E2E flow test, an
+   ACI/Fabric validation run, or a local `ONCE_MODE` run against a
+   broker. The import-time half of this class is caught deterministically
+   by `tools/ci/import_smoke.py` (CI `import-smoke.yml`); the on-the-wire
+   observation covers the first-`send_*` half.
+4. The agent has captured the verdicts from steps 1–3 in the PR
    body before handing back to the user.
 
 **The agent must attempt to correct every issue raised by the reviews
@@ -364,6 +375,18 @@ catches the entire "shipped but never ran" bug class: missing
 `__main__.py`, wrong import paths, missing Dockerfile deps that would
 crash on first start.
 
+The CI-enforced equivalent of this gate is
+`python tools/ci/import_smoke.py feeders/<source>` (workflow
+`import-smoke.yml`, scoped by `tools/ci/discover_feeders.py` to the
+feeders a PR touches, escalating to the whole fleet on a shared-tooling
+change). It py_compiles the tree, editable-installs the generated
+sub-packages in dependency order, then imports each transport variant's
+runtime module taken from the `python -m <module>` target of every
+`Dockerfile*` -- importing `<module>.app` (the MQTT/AMQP companion crash
+site) when present, else the bare module, and **never `__main__`** (72
+feeders call `main()` at module scope, which would hang). Use `--plan`
+for a no-install, compile-only check on Windows.
+
 ### Gate 2: py_compile on generated + hand-written code
 
 ```powershell
@@ -382,6 +405,19 @@ docker build -f feeders/<source>/Dockerfile.amqp feeders/<source> --no-cache -q
 
 If a Dockerfile exists for a transport and the source was modified,
 it must build. A build failure blocks the commit.
+
+Every `Dockerfile*` carries a build-time import-smoke `RUN` just before
+its final `CMD`:
+
+```dockerfile
+RUN python -c "import importlib, importlib.util as _u; _m='<module>'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+```
+
+A successful `docker build` therefore *proves* the runtime module and
+every companion package it imports are installed and import-clean inside
+the image -- the in-image equivalent of Gate 1, and the net that would
+have caught the `Dockerfile.amqp`-missing-`_producer_mqtt_client` class.
+Never delete that line when editing a Dockerfile.
 
 ### Gate 4: Unit tests pass
 
@@ -422,6 +458,26 @@ are acceptable; new un-suppressed errors are not.
 | Bridge runtime logic | 1, 2, 3, 4, 5, 6 |
 | New transport variant (MQTT/AMQP app) | 1, 2, 3, 4, 5, 6 |
 | Documentation only | None |
+
+### Enforced in CI vs advisory
+
+Several of these gates now run automatically on every pull request; the
+rest remain agent-run pre-commit checks. Knowing which is which tells you
+what a green PR has *already* proven and what you still owe by hand.
+
+| Gate | CI workflow (auto) | Scope |
+|---|---|---|
+| 1 Import smoke | `import-smoke.yml` | feeders the PR touches (fleet on shared-tooling change) |
+| 2 py_compile | folded into gates 1 and 5 | — |
+| 4 Unit tests | `feeder-tests.yml` | feeders the PR touches |
+| 5 Docker E2E | `test-docker-e2e.yml` (sharded via `discover_matrix.py`) | scoped / smoke set |
+| 6 mypy | `mypy.yml` | whole `feeders/` tree |
+| Encoding | `lint-encoding.yml` | `catalog.json` + every per-source doc |
+| 3 Docker build | advisory (agent-run) + the build-time smoke `RUN` inside each image | per touched Dockerfile |
+
+Advisory gates are still mandatory before you commit -- CI not running
+them does not make them optional. Conversely, a CI-enforced gate going
+red is never a "flake": fix it, per "All Issues Are Issues" below.
 
 ### Enforcement
 
@@ -584,13 +640,16 @@ These suppressions are permanent and correct:
 
 ### Feeder test workflows must install local packages explicitly
 
-Every `.github/workflows/test-<source>.yml` must use the pip pattern
-(not `poetry install`). Local sub-packages (`*_core`, `*_producer_data`,
-`*_producer_kafka_producer`, etc.) are NOT on PyPI — they must be
-installed with `pip install -e ./<path>` before `pip install -e '.[dev]'`.
-See `test-pegelonline.yml` and `test-gtfs.yml` for reference. Failing
+The consolidated `feeder-tests.yml` matrix workflow runs each touched
+feeder's `pytest` using the pip pattern (not `poetry install`). Local
+sub-packages (`*_core`, `*_producer_data`, `*_producer_kafka_producer`,
+etc.) are NOT on PyPI — they are installed with `pip install -e ./<path>`
+in dependency order (via `tools/ci/import_smoke.py --install-only`) before
+the feeder's `.[dev]` extra. See `feeder-tests.yml` for reference. Failing
 to install producer packages first produces
 `ERROR: No matching distribution found for <package>` at install time.
+(The six hand-maintained `test-<source>.yml` workflows were retired in
+favour of this one.)
 
 ### Branch protection is OFF → the dependabot auto-merge workflow can't work
 
@@ -634,6 +693,12 @@ generated-producer rewrite already on `main`) must be applied directly to
   a variable first.
 - Prefer `git commit -F <file>` over `-m` for multi-line or backslash-bearing
   commit messages.
+- **Regex-disabling flags silently match nothing.** `Select-String -SimpleMatch`
+  (and `findstr` without `/r`) treat the pattern as a literal, so a regex
+  alternation like `fix|refactor` matches zero lines instead of erroring —
+  yielding a confidently-wrong "no hits" result. When mining history or
+  classifying commits, confirm the matcher honours regex before trusting a
+  zero count.
 
 ### Test secrets live outside the repo
 
@@ -641,6 +706,28 @@ API keys and tokens for E2E/validation runs are stored in
 `c:\rts-creds\test-creds.json` (outside the repo, git-ignored by virtue of
 location). Never commit secrets, never echo them into logs, and read them from
 that file (or the session-local gitignored runner) rather than hardcoding.
+
+### Dependency / codegen version-bump checklist (highest-blast-radius routine action)
+
+Bumping a **shared dependency major** (cloudevents, confluent-kafka, paho,
+qpid-proton) or the **codegen tool** (xrcg / avrotize) is the repo's
+highest-blast-radius routine change — it touches every feeder at once. The two
+fleet-wide regen chores and the cloudevents `<2.0.0` flip-flop (revert
+`4d00aea4a` → re-cap `bf584c928`, 92 pyprojects) all started as a one-line bump.
+Before bumping, run this ritual:
+
+1. **Grep for relocated/removed submodules.** Search the generated producers
+   **and** the bridges for every import path the new major removes or moves
+   (the `cloudevents.http` → `cloudevents.core.bindings.http` lesson). If any
+   feeder still imports the old path, the bump breaks it at import time.
+2. **Smoke a representative sample.** Run `tools/ci/import_smoke.py` across ≥5
+   feeders spanning Kafka/MQTT/AMQP with the new version resolved — do not
+   trust that "it installed."
+3. **Pin, don't float.** Land the new constraint as an explicit cap in *every*
+   pyproject (and confirm the producer sub-packages already carry it), so a
+   transitive resolve can't silently pull the breaking major in CI.
+4. **One bump, one PR.** Never combine a version bump with unrelated feeder
+   changes — the blast radius makes bisecting a regression impossible.
 
 ### cloudevents must be pinned `<2.0.0` — 2.x removed `cloudevents.http`
 
@@ -667,8 +754,8 @@ Feeder pyprojects are PEP 621 / setuptools-scm (`[project]` with
 `dynamic = ["version"]`). `poetry install` **rejects a dynamic version in
 package mode** ("Either [project.version] or [tool.poetry.version] is required"),
 so a `poetry`-based test workflow fails at the install step before any test
-runs. Every `.github/workflows/test-<source>.yml` must use the pip pattern
-(see `test-pegelonline.yml` and `test-gtfs.yml`): set up Python with
+runs. The consolidated `feeder-tests.yml` matrix workflow uses the pip
+pattern (see `feeder-tests.yml`): set up Python with
 `cache: 'pip'`, **install the generated producer packages first**
 (`pip install -e ./<src>_producer/<src>_producer_data` then
 `..._kafka_producer`, plus any mqtt/amqp producer the tests import), then
@@ -677,4 +764,5 @@ prefix). The producer packages must be installed explicitly because the
 setuptools-scm migration drops the old poetry `path = ...` deps — so
 `pip install -e '.[dev]'` alone does not pull them and tests fail with
 `ModuleNotFoundError: No module named '<src>_producer_data'`. Incident:
-`test-usgs-iv.yml` + `test-rss.yml` migrated off poetry in `b69774da9`.
+`test-usgs-iv.yml` + `test-rss.yml` migrated off poetry in `b69774da9`
+(those per-source workflows were later consolidated into `feeder-tests.yml`).

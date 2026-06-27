@@ -1,0 +1,62 @@
+name: Import Smoke
+
+# P0a guardrail: prove every touched feeder's runtime module imports. Closes the
+# import-time half of the class-A "shipped but never ran" defects (a Dockerfile
+# that installs the wrong packages, a generated producer with a SyntaxError, an
+# app.py missing a positional). See tools/ci/import_smoke.py.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: import-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.d.outputs.matrix }}
+      empty: ${{ steps.d.outputs.empty }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Compute changed files
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          if [ -n "$base" ]; then
+            git diff --name-only "$base" "${{ github.sha }}" > changed.txt \
+              || git diff --name-only HEAD~1 HEAD > changed.txt
+          else
+            git diff --name-only HEAD~1 HEAD > changed.txt
+          fi
+          echo "---- changed ----"; cat changed.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - id: d
+        name: Compute scoped feeder matrix
+        run: |
+          export CHANGED_FILES="$(cat changed.txt)"
+          python tools/ci/discover_feeders.py
+
+  smoke:
+    needs: discover
+    if: needs.discover.outputs.empty != 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Import smoke ${{ matrix.feeder }}
+        run: python tools/ci/import_smoke.py "feeders/${{ matrix.feeder }}" --timeout 120

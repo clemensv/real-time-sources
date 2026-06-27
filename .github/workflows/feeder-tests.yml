@@ -1,0 +1,107 @@
+name: Feeder Unit Tests
+
+# P1 guardrail: run the unit tests of every feeder touched by a PR (plus the
+# whole fleet when shared tooling changes). Installs the generated producer
+# sub-packages in dependency order via import_smoke.py --install-only (the
+# local sub-packages are not on PyPI), then runs the source's pytest suite.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: feeder-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.d.outputs.matrix }}
+      empty: ${{ steps.d.outputs.empty }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Compute changed files
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          if [ -n "$base" ]; then
+            git diff --name-only "$base" "${{ github.sha }}" > changed.txt \
+              || git diff --name-only HEAD~1 HEAD > changed.txt
+          else
+            git diff --name-only HEAD~1 HEAD > changed.txt
+          fi
+          cat changed.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - id: d
+        run: |
+          export CHANGED_FILES="$(cat changed.txt)"
+          python tools/ci/discover_feeders.py
+
+  test:
+    needs: discover
+    if: needs.discover.outputs.empty != 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install (ordered) + dev extras ${{ matrix.feeder }}
+        run: |
+          set -e
+          f="feeders/${{ matrix.feeder }}"
+          # Ordered editable install of the generated sub-packages + the feeder.
+          python tools/ci/import_smoke.py "$f" --install-only
+          # Dev extras (pytest, pytest-asyncio, pytest-cov, requests-mock, ...)
+          # where the feeder declares a [dev] extra; floor-install the runners so
+          # a feeder without one still runs under coverage. Keep editable_mode=
+          # strict here too: a default-mode editable re-install of the main
+          # package would put feeders/<src> back on sys.path and re-introduce the
+          # <src>_core namespace shadow that import_smoke.py just installed away.
+          python -m pip install -e "$f[dev]" --config-settings editable_mode=strict || true
+          # Floor-install the standard hermetic-test toolchain so a feeder whose
+          # [dev] extra omits them (or has none) still collects: integration-style
+          # tests mock HTTP with requests-mock and some unit suites are async.
+          # Mirrors the canonical test-pegelonline.yml install line.
+          python -m pip install pytest pytest-cov pytest-asyncio requests-mock
+      - name: Unit tests + coverage ${{ matrix.feeder }}
+        run: |
+          set -e
+          f="feeders/${{ matrix.feeder }}"
+          if [ -d "$f/tests" ]; then
+            # Run the *console* pytest (never `python -m pytest`, which puts the
+            # feeder dir on sys.path[0]) under --import-mode=importlib, so the
+            # editable-installed `<feeder>_core` package wins over the identically
+            # named outer project dir (`feeders/<f>/<f>_core/`). With the feeder
+            # root on sys.path that outer dir shadows the install as an empty
+            # namespace package -> `ImportError: ... (unknown location)`.
+            # Container/e2e suites need Docker/a broker/live upstream and belong
+            # to the docker-e2e gate, not this hermetic unit gate.
+            cd "$f" && pytest tests/ -q --no-header \
+              --import-mode=importlib -m "not e2e" \
+              --ignore-glob='*_container.py' --ignore-glob='*_e2e.py' \
+              --cov=. --cov-report=xml -p no:cacheprovider --override-ini="addopts="
+          else
+            echo "no tests/ directory for ${{ matrix.feeder }}; skipping"
+          fi
+      - name: Upload coverage to Codecov
+        if: ${{ hashFiles(format('feeders/{0}/coverage.xml', matrix.feeder)) != '' }}
+        uses: codecov/codecov-action@v7
+        with:
+          file: feeders/${{ matrix.feeder }}/coverage.xml
+          flags: ${{ matrix.feeder }}
+          name: ${{ matrix.feeder }}-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

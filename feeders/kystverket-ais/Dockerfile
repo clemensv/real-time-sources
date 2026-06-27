@@ -21,4 +21,9 @@ ENV AIS_TCP_PORT="5631"
 ENV AIS_MESSAGE_TYPES="1,2,3,5,18,19,24,21"
 ENV AIS_FLUSH_INTERVAL="1000"
 
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'kystverket_ais'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
 CMD ["python", "-m", "kystverket_ais", "stream"]

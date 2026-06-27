@@ -365,6 +365,10 @@ After generating the script, add a `kql` reference to the source's
 Keep the existing key order. If a `notebook` flag is set, the `kql`
 key precedes it.
 
+## Runtime proof: ≥1 event on the wire (gate before declaring the feeder done)
+
+A bridge is **not done** because it builds, imports, and passes unit tests. The recurring class-A "shipped but never ran" defects -- a `Dockerfile.amqp` that installed only `_producer_data`; an `app.py` missing a `_feedurl` positional; a `{time}` subject placeholder colliding with the envelope `_time` param -- all passed build- and import-time checks and emitted **zero events** in production. Before declaring the feeder done, observe **at least one real event per shipped transport** (Kafka / MQTT / AMQP) on the wire -- in the Docker E2E flow test, an ACI/Fabric validation run, or a local `ONCE_MODE` run against a broker -- and record that proof per transport in the PR body. The import-smoke gate (`tools/ci/import_smoke.py`, CI `import-smoke.yml`) catches the import-time half of this class deterministically; the on-the-wire observation catches the first-`send_*` half.
+
 ## Mandatory Expert Review (gate before declaring the feeder done)
 
 Before opening or merging a PR that ships a new bridge or that changes

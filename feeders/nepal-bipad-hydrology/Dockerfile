@@ -24,4 +24,9 @@ RUN pip install ./nepal_bipad_hydrology_producer/nepal_bipad_hydrology_producer_
 ENV CONNECTION_STRING=""
 
 # Run the application
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'nepal_bipad_hydrology'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
 CMD ["python", "-m", "nepal_bipad_hydrology", "feed"]
