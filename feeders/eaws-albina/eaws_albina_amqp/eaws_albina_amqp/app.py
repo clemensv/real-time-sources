@@ -73,13 +73,22 @@ async def _emit_mock_amqp(producer) -> None:
     from eaws_albina_amqp_producer_data import AvalancheBulletin
     bulletin = AvalancheBulletin.from_serializer_dict({
         "region_id": "AT-07",
+        "region_name": "Tirol",
+        "bulletin_id": "mock-bulletin-001",
+        "publication_time": "2024-12-15T17:00:00Z",
+        "valid_time_start": "2024-12-15T17:00:00Z",
+        "valid_time_end": "2024-12-16T17:00:00Z",
+        "lang": "en",
+        "max_danger_rating": "moderate",
+        "max_danger_rating_value": 2,
+        "danger_ratings_json": '[{"mainValue":"moderate","elevation":{"lowerBound":"2000"}}]',
+        "avalanche_problems_json": '[{"type":"wind_slab","aspects":["N","NE"],"elevation":{"lowerBound":"2200"}}]',
+        "tendency_type": "steady",
+        "danger_patterns_json": '["dp6"]',
+        "avalanche_activity_highlights": "Mock bulletin for E2E testing",
+        "snowpack_structure_comment": "Synthetic data - summer mode",
         "country": "AT",
         "danger_level": "moderate",
-        "valid_from": "2024-12-15T17:00:00Z",
-        "valid_to": "2024-12-16T17:00:00Z",
-        "highlights": "Mock bulletin for E2E testing",
-        "comment": "Synthetic data - summer mode",
-        "tendency": "steady",
     })
     producer.send_avalanche_bulletin(data=bulletin, _region_id="AT-07", _country="AT", _danger_level="moderate")
     import time as _time; _time.sleep(1)

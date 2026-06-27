@@ -171,6 +171,7 @@ async def _emit_mock_amqp(client: _AmqpClient) -> None:
         state = ReplicationState.from_serializer_dict({
             "sequence_number": 6000000 + i,
             "timestamp": (now - datetime.timedelta(minutes=2 - i)).isoformat(),
+            "source_url": "https://planet.openstreetmap.org/replication/minute",
         })
         await client.publish_org_open_street_map_diffs_replication_state(
             sequence_number=str(6000000 + i),
@@ -183,16 +184,17 @@ async def _emit_mock_amqp(client: _AmqpClient) -> None:
     for i in range(2):
         change = MapChange.from_serializer_dict({
             "changeset_id": 150000000 + i,
-            "type": "node",
-            "id": 10000000 + i,
+            "change_type": "create",
+            "element_type": "node",
+            "element_id": 10000000 + i,
+            "geohash5": "gcpuv",
             "version": 1,
             "timestamp": now.isoformat(),
-            "uid": 12345,
-            "user": "mockuser",
-            "lat": 51.5 + i * 0.01,
-            "lon": -0.1 + i * 0.01,
+            "user_id": 12345,
+            "user_name": "mockuser",
+            "latitude": 51.5 + i * 0.01,
+            "longitude": -0.1 + i * 0.01,
             "tags": {"name": f"Mock Place {i}"},
-            "action": "create",
             "sequence_number": 6000000,
         })
         await client.publish_org_open_street_map_diffs_map_change(

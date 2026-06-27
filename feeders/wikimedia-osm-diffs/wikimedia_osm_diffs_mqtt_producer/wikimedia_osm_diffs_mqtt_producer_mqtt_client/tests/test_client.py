@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import wikimedia_osm_diffs_mqtt_producer_data
 from wikimedia_osm_diffs_mqtt_producer_data import MapChange
-from test_wikimedia_osm_diffs_mqtt_producer_data_mapchange import Test_MapChange
+from test_mapchange import Test_MapChange
 from wikimedia_osm_diffs_mqtt_producer_data import ReplicationState
-from test_wikimedia_osm_diffs_mqtt_producer_data_replicationstate import Test_ReplicationState
+from test_replicationstate import Test_ReplicationState
 from wikimedia_osm_diffs_mqtt_producer_mqtt_client import OrgOpenStreetMapDiffsMqttMqttClient
 
 @pytest_asyncio.fixture

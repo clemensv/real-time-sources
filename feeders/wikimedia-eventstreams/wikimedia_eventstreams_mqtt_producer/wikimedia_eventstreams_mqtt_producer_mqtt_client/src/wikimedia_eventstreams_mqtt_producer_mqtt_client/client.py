@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -22,6 +23,51 @@ from wikimedia_eventstreams_mqtt_producer_data import RecentChange
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -186,7 +232,7 @@ def get_default_topic_mappings_wikimedia_eventstreams_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "Wikimedia.EventStreams.RecentChange.mqtt": "Wikimedia.EventStreams.RecentChange.mqtt",
+        "Wikimedia.EventStreams.RecentChange.mqtt": "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change",
     }
 
 
@@ -236,6 +282,8 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
         self.loop = loop
         self._topic_mappings = topic_mappings or get_default_topic_mappings_wikimedia_eventstreams_mqtt()
         self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
         
         # Message handler callbacks (Dispatcher pattern)
         
@@ -244,6 +292,72 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
         
         # Attach message callback
         self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
 
     @property
     def topic_mappings(self) -> Dict[str, str]:
@@ -320,21 +434,94 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
         """
         for topic in topics:
             self.client.unsubscribe(topic)
-    
-    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
+
+    @staticmethod
+    def _build_enhanced_auth_properties(token, authentication_method: str = "OAUTH2-JWT", base=None):
+        """Build MQTT v5 CONNECT properties carrying an OAuth2/Entra JWT via
+        MQTT v5 Enhanced Authentication.
+
+        Azure Event Grid Namespaces (and other Entra-secured MQTT v5 brokers)
+        require the bearer token to be presented through the CONNECT
+        ``Authentication Method`` / ``Authentication Data`` properties, NOT the
+        username/password fields. Username/password silently fails CONNACK and
+        ``publish()`` then queues messages locally without ever reaching the
+        broker. See
+        https://learn.microsoft.com/azure/event-grid/mqtt-client-microsoft-entra-token-and-rbac
+
+        The paho client passed to this class MUST be created with
+        ``protocol=mqtt.MQTTv5`` for these properties to be honored.
         """
-        Connect to MQTT broker.
+        if not _MQTT5_AVAILABLE:
+            raise RuntimeError(
+                "MQTT v5 Enhanced Authentication (OAUTH2-JWT) requires "
+                "paho-mqtt >= 2.0; install a newer paho-mqtt to use "
+                "token-based auth."
+            )
+        connect_properties = base if base is not None else _MqttProperties(_MqttPacketTypes.CONNECT)
+        connect_properties.AuthenticationMethod = authentication_method
+        connect_properties.AuthenticationData = (
+            token.encode("utf-8") if isinstance(token, str) else token
+        )
+        return connect_properties
+
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60,
+                      token: Optional[str] = None,
+                      authentication_method: str = "OAUTH2-JWT",
+                      properties: Optional["_MqttProperties"] = None):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
 
         Args:
             broker: Broker hostname or IP
             port: Broker port
             keepalive: Keepalive interval in seconds
+            token: Optional OAuth2/Entra bearer token (JWT). When provided, it is
+                presented via MQTT v5 Enhanced Authentication
+                (Authentication Method ``OAUTH2-JWT`` + Authentication Data) as
+                required by Azure Event Grid Namespaces -- NOT as a password.
+                Requires a paho client created with ``protocol=mqtt.MQTTv5``.
+            authentication_method: MQTT v5 Authentication Method to advertise
+                when ``token`` is supplied (default ``OAUTH2-JWT``).
+            properties: Optional MQTT v5 CONNECT ``Properties`` to send. When
+                ``token`` is also supplied, the enhanced-auth fields are set on
+                these properties.
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
         """
-        self.client.connect(broker, port, keepalive)
-        self.client.loop_start()
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            connect_properties = properties
+            if token is not None:
+                connect_properties = self._build_enhanced_auth_properties(
+                    token, authentication_method, base=properties
+                )
+            if connect_properties is not None:
+                self.client.connect(broker, port, keepalive, properties=connect_properties)
+            else:
+                self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
     
     async def disconnect(self):
         """Disconnect from MQTT broker."""
+        self._connected = False
         self.client.loop_stop()
         self.client.disconnect()
 
@@ -344,11 +531,11 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
         wiki: str,
         namespace: str,
         event_id: str,
-        event_time: str,
         data: wikimedia_eventstreams_mqtt_producer_data.RecentChange,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Wikimedia.EventStreams.RecentChange.mqtt' event to an MQTT topic.
@@ -358,20 +545,19 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
             wiki: URI template variable for 'wiki'
             namespace: URI template variable for 'namespace'
             event_id: URI template variable for 'event_id'
-            event_time: URI template variable for 'event_time'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'Wikimedia.EventStreams.RecentChange.mqtt'
+            topic: Optional topic override. If not provided, uses default topic 'social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "Wikimedia.EventStreams.RecentChange.mqtt"
+        target_topic = topic if topic is not None else "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change"
         _topic_template_values: Dict[str, str] = {
             "wiki": str(wiki),
             "namespace": str(namespace),
             "event_id": str(event_id),
-            "event_time": str(event_time),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -380,9 +566,10 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
              "type":"Wikimedia.EventStreams.RecentChange",
              "source":"https://stream.wikimedia.org/v2/stream/recentchange",
              "subject":"{wiki}/{namespace}/{event_id}".format(wiki = wiki,namespace = namespace,event_id = event_id),
-             "time":"{event_time}".format(event_time = event_time)
+             "time":None
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -393,7 +580,7 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 1 if qos is None else qos
+        _effective_qos = 0 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {

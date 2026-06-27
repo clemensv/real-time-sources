@@ -52,6 +52,8 @@ async def _emit_mock_amqp(producer):
         "msc_id": "CYOW", "name": "Ottawa Intl A", "province": "ON",
         "province_territory": "ON", "latitude": 45.3225, "longitude": -75.6692,
         "elevation": 114.0, "climate_id": "6106000", "wmo_id": "71628",
+        "iata_id": "YOW", "data_provider": "MSC", "dataset_network": "SWOB",
+        "auto_man": "Auto",
     })
     producer.send_station(data=station, _msc_id="CYOW", _province="on")
     obs = WeatherObservation.from_serializer_dict({

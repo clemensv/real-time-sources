@@ -139,6 +139,7 @@ async def _emit_mock_mqtt(client: OrgOpenStreetMapDiffsMqttMqttClient) -> None:
     state = ReplicationState.from_serializer_dict({
         "sequence_number": 6000000,
         "timestamp": now.isoformat(),
+        "source_url": "https://planet.openstreetmap.org/replication/minute",
     })
     await client.publish_org_open_street_map_diffs_mqtt_replication_state(
         data=state,
@@ -149,16 +150,17 @@ async def _emit_mock_mqtt(client: OrgOpenStreetMapDiffsMqttMqttClient) -> None:
     # Emit 1 node (with coordinates → geohash5)
     node_change = MapChange.from_serializer_dict({
         "changeset_id": 150000001,
-        "type": "node",
-        "id": 10000001,
+        "change_type": "create",
+        "element_type": "node",
+        "element_id": 10000001,
+        "geohash5": "gcpvj",
         "version": 1,
         "timestamp": now.isoformat(),
-        "uid": 12345,
-        "user": "mockuser",
-        "lat": 51.5074,
-        "lon": -0.1278,
+        "user_id": 12345,
+        "user_name": "mockuser",
+        "latitude": 51.5074,
+        "longitude": -0.1278,
         "tags": {"name": "Mock Node"},
-        "action": "create",
         "sequence_number": 6000000,
     })
     await client.publish_org_open_street_map_diffs_mqtt_node(
@@ -172,14 +174,17 @@ async def _emit_mock_mqtt(client: OrgOpenStreetMapDiffsMqttMqttClient) -> None:
     # Emit 1 way (no coordinates → nogeo)
     way_change = MapChange.from_serializer_dict({
         "changeset_id": 150000002,
-        "type": "way",
-        "id": 20000001,
+        "change_type": "modify",
+        "element_type": "way",
+        "element_id": 20000001,
+        "geohash5": "nogeo",
         "version": 2,
         "timestamp": now.isoformat(),
-        "uid": 12345,
-        "user": "mockuser",
+        "user_id": 12345,
+        "user_name": "mockuser",
+        "latitude": None,
+        "longitude": None,
         "tags": {"highway": "residential"},
-        "action": "modify",
         "sequence_number": 6000000,
     })
     await client.publish_org_open_street_map_diffs_mqtt_way(
@@ -193,14 +198,17 @@ async def _emit_mock_mqtt(client: OrgOpenStreetMapDiffsMqttMqttClient) -> None:
     # Emit 1 relation (no coordinates → nogeo)
     rel_change = MapChange.from_serializer_dict({
         "changeset_id": 150000003,
-        "type": "relation",
-        "id": 30000001,
+        "change_type": "delete",
+        "element_type": "relation",
+        "element_id": 30000001,
+        "geohash5": "nogeo",
         "version": 3,
         "timestamp": now.isoformat(),
-        "uid": 12345,
-        "user": "mockuser",
+        "user_id": 12345,
+        "user_name": "mockuser",
+        "latitude": None,
+        "longitude": None,
         "tags": {"type": "route"},
-        "action": "delete",
         "sequence_number": 6000000,
     })
     await client.publish_org_open_street_map_diffs_mqtt_relation(

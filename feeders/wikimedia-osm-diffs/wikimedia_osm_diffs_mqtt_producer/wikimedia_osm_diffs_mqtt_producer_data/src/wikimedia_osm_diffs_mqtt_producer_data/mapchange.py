@@ -126,6 +126,8 @@ class MapChange:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,17 +195,17 @@ class MapChange:
             An instance of the dataclass.
         """
         return cls(
-            change_type='hcxamrctgszhtijzlrlk',
-            element_type='usxavabmnzdlwemdueww',
-            element_id=int(76),
-            geohash5='jktujeykhodauootrmrm',
-            version=int(26),
+            change_type='sxoevshsxzxzxwggfqvd',
+            element_type='penogbmozwddfoinpnxs',
+            element_id=int(8),
+            geohash5='drxceazibxrskvwvpafo',
+            version=int(79),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            changeset_id=int(9),
-            user_name='dwzgpoqfqxdalopbktor',
-            user_id=int(88),
-            latitude=float(44.64582559501585),
-            longitude=float(10.596206171316503),
-            tags='uqqffsbmdnymhxkuhrnp',
-            sequence_number=int(97)
+            changeset_id=int(58),
+            user_name='iyjregjjieutielagoxc',
+            user_id=int(20),
+            latitude=float(42.38309917683092),
+            longitude=float(63.669195579526516),
+            tags='jtqaxnwmhbchocdsacuy',
+            sequence_number=int(55)
         )

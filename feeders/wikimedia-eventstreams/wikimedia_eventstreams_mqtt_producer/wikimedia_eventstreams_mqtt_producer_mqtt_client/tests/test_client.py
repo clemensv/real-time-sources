@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import wikimedia_eventstreams_mqtt_producer_data
 from wikimedia_eventstreams_mqtt_producer_data import RecentChange
-from test_wikimedia_eventstreams_mqtt_producer_data_recentchange import Test_RecentChange
+from test_recentchange import Test_RecentChange
 from wikimedia_eventstreams_mqtt_producer_mqtt_client import WikimediaEventStreamsMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,7 +92,7 @@ async def test_wikimedia_eventstreams_mqtt_wikimedia_event_streams_recent_change
             wiki=f"test_wiki_{i}",
             namespace=f"test_namespace_{i}",
             event_id=f"test_event_id_{i}",
-            event_time=f"test_event_time_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -100,6 +100,8 @@ class UnnamedClass:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class UnnamedClass:
             An instance of the dataclass.
         """
         return cls(
-            uri='jabsunerjekgqhuzjffg',
-            request_id='horpyzmcevmgwrlfcgrj',
-            id='nifwzenahyfggdfbmzda',
-            domain='lbsvjcjytnezakjjxquq',
-            stream='bsdenwtfbzqjxfwkvjbm',
-            topic='ygrjcqrizbcvxznstoyf',
-            partition=int(34),
-            offset='xxcpcleixsbbmtpkjeym',
-            dt='rnerjxhwpgextflqyuhq'
+            uri='fdlustamkyikspcxbcaw',
+            request_id='wpdjtdxunluukxxqwshc',
+            id='ktdknqfemolrbuvljsss',
+            domain='ykoduxdqnlbvtgcoqffl',
+            stream='uvyldpzrhskdhvkxyozk',
+            topic='cigcfavzygggsuxrrgvi',
+            partition=int(31),
+            offset='foqtcsazsebqekfttmig',
+            dt='ntkfhqvekojouyvxzixf'
         )

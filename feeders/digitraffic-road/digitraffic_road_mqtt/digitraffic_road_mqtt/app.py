@@ -160,36 +160,49 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
 async def _emit_mock_mqtt(client: FiDigitrafficRoadMqttMqttClient) -> None:
     """Emit synthetic reference + telemetry for deterministic E2E testing."""
     # Reference: 1 TMS station, 1 weather station, 1 maintenance task type
-    tms_station = TmsStation.from_serializer_dict(_serializer_dict(TmsStation, {
-        "station_id": 23001, "name": "vt1_Espoo", "lat": 60.205, "lon": 24.656,
-        "road_number": 1, "road_section": 4, "municipality": "Espoo",
-        "province": "Uusimaa", "direction": 1, "free_flow_speed": 80,
-    }))
+    tms_station = TmsStation.from_serializer_dict({
+        "station_id": 23001, "name": "vt1_Espoo", "longitude": 24.656, "latitude": 60.205,
+        "tms_number": 101, "names_fi": "vt1_Espoo", "names_sv": "rv1_Esbo", "names_en": "hw1_Espoo",
+        "altitude": None, "municipality": "Espoo", "municipality_code": 49,
+        "province": "Uusimaa", "province_code": 1, "road_number": 1, "road_section": 4,
+        "distance_from_section_start": None, "carriageway": None, "side": None,
+        "station_type": "TMS", "collection_status": "GATHERING",
+        "state": None, "free_flow_speed_1": 80.0, "free_flow_speed_2": 80.0,
+        "bearing": None, "start_time": "2020-01-01T00:00:00Z", "livi_id": None,
+        "sensors": [5116, 5119, 5122], "data_updated_time": None,
+    })
     await client.publish_fi_digitraffic_road_mqtt_tms_station(station_id="23001", data=tms_station, qos=1, retain=True)
 
-    weather_station = WeatherStation.from_serializer_dict(_serializer_dict(WeatherStation, {
-        "station_id": 1001, "name": "vt1_Espoo_ws", "lat": 60.205, "lon": 24.656,
-        "road_number": 1, "road_section": 4, "municipality": "Espoo",
-        "province": "Uusimaa",
-    }))
+    weather_station = WeatherStation.from_serializer_dict({
+        "station_id": 1001, "name": "vt1_Espoo_ws", "longitude": 24.656, "latitude": 60.205,
+        "names_fi": "vt1_Espoo_ws", "names_sv": None, "names_en": None,
+        "altitude": None, "municipality": "Espoo", "municipality_code": 49,
+        "province": "Uusimaa", "province_code": 1, "road_number": 1, "road_section": 4,
+        "distance_from_section_start": None, "carriageway": None, "side": None,
+        "contract_area": None, "contract_area_code": None,
+        "station_type": "WEATHER", "master": None, "collection_status": "GATHERING",
+        "collection_interval": None, "state": None, "start_time": "2020-01-01T00:00:00Z",
+        "livi_id": None, "sensors": [1, 2, 3], "data_updated_time": None,
+    })
     await client.publish_fi_digitraffic_road_mqtt_weather_station(station_id="1001", data=weather_station, qos=1, retain=True)  # type: ignore[arg-type]
 
     task_type = MaintenanceTaskType.from_serializer_dict({
         "task_id": "BRUSHING", "name_fi": "Harjaus", "name_en": "Brushing",
+        "name_sv": None, "data_updated_time": None,
     })
     await client.publish_fi_digitraffic_road_mqtt_maintenance_task_type(task_id="BRUSHING", data=task_type, qos=1, retain=True)  # type: ignore[arg-type]
 
     # Telemetry: 1 TMS sensor reading, 1 weather sensor reading
-    tms_data = TmsSensorData.from_serializer_dict(_serializer_dict(TmsSensorData, {
+    tms_data = TmsSensorData.from_serializer_dict({
         "station_id": 23001, "sensor_id": 5116, "value": 82.0,
         "time": "2024-01-01T12:00:00Z", "start": None, "end": None,
-    }))
+    })
     await client.publish_fi_digitraffic_road_mqtt_tms_sensor_data(station_id="23001", sensor_id="5116", data=tms_data)
 
-    weather_data = WeatherSensorData.from_serializer_dict(_serializer_dict(WeatherSensorData, {
+    weather_data = WeatherSensorData.from_serializer_dict({
         "station_id": 1001, "sensor_id": 1, "value": -2.5,
         "time": "2024-01-01T12:00:00Z",
-    }))
+    })
     await client.publish_fi_digitraffic_road_mqtt_weather_sensor_data(station_id="1001", sensor_id="1", data=weather_data)  # type: ignore[arg-type]
 
     await asyncio.sleep(1)

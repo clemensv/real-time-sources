@@ -226,7 +226,7 @@ async def _emit_mock(producer) -> None:
             "sta": {"100": 0, "101": 1},
         }
         data = LightningStroke.from_serializer_dict(normalize_stroke(stroke_raw))
-        await producer.publish_blitzortung_lightning_lightning_stroke(
+        await producer.publish_lightning_stroke(
             source_id=str(data.source_id),
             geohash5=data.geohash5,
             geohash7=data.geohash7,
