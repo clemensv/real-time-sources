@@ -5911,7 +5911,7 @@ def mosquitto_nextbus():
 
 class TestNextbusMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_nextbus, nextbus_mqtt_image):
-        _run_mqtt_contract_flow('nextbus', nextbus_mqtt_image, mosquitto_nextbus, timeout=240)
+        _run_mqtt_contract_flow('nextbus', nextbus_mqtt_image, mosquitto_nextbus, extra_env={'AGENCY': 'ttc'}, timeout=240)
 
 @pytest.fixture(scope='module')
 def seattle_street_closures_mqtt_image():

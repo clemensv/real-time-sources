@@ -799,7 +799,7 @@ class TestNDWRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
 class TestNextbusAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "nextbus"
     image = "nextbus-amqp"
-    env = {"ONCE_MODE": "true"}
+    env = {"ONCE_MODE": "true", "AGENCY": "ttc"}
     expected_types = {'nextbus.Message', 'nextbus.VehiclePosition', 'nextbus.RouteConfig', 'nextbus.Schedule'}
     expected_count = 4
 
