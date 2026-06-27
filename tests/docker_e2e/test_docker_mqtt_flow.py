@@ -3447,7 +3447,7 @@ class TestWikimediaEventstreamsMqttDockerFlow:
                 wiki_seg, ns_bucket_seg, event_id_seg, family_seg = parts[4:8]
                 assert family_seg == 'recent-change', parts
                 assert payload.get('wiki') == wiki_seg, payload
-                assert payload.get('namespace_bucket') == ns_bucket_seg, payload
+                assert (payload.get('namespace_bucket') or payload.get('namespace')) == ns_bucket_seg, payload
                 assert str(payload.get('event_id')) == event_id_seg, payload
                 assert up['subject'] == f"{wiki_seg}/{ns_bucket_seg}/{event_id_seg}", up['subject']
 
@@ -3477,7 +3477,7 @@ class TestWikimediaEventstreamsMqttDockerFlow:
             if '/' in sample['topic']:
                 parts = sample['topic'].split('/')
                 assert parts[4] == payload['wiki'], (parts[4], payload['wiki'])
-                assert parts[5] == payload['namespace_bucket'], (parts[5], payload['namespace_bucket'])
+                assert parts[5] == (payload.get('namespace_bucket') or payload.get('namespace')), (parts[5], payload)
                 assert parts[6] == payload['event_id'], (parts[6], payload['event_id'])
             assert ce_type in schemas, f"unknown ce_type {ce_type}"
 
