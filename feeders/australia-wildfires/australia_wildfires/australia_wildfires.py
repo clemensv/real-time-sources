@@ -461,7 +461,7 @@ def main():
     subparsers.add_parser("list", help="List current incidents")
     feed_parser = subparsers.add_parser("feed", help="Feed data to Kafka")
     feed_parser.add_argument("--once", action="store_true",
-                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             default=argparse.SUPPRESS,
                              help='Exit after one polling cycle (also via ONCE_MODE env var).')
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)

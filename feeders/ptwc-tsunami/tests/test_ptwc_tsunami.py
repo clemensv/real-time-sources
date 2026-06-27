@@ -9,7 +9,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from ptwc_tsunami.ptwc_tsunami import (
+from ptwc_tsunami.ptwc_tsunami import parse_connection_string
+from ptwc_tsunami_core import (
     PTWCTsunamiPoller,
     _basin_for_feed,
     _get_summary_html,
@@ -18,7 +19,6 @@ from ptwc_tsunami.ptwc_tsunami import (
     _ptwc_level,
     _safe_str,
     _text,
-    parse_connection_string,
     parse_entry,
 )
 from ptwc_tsunami_mqtt.app import _topic_segment
@@ -190,15 +190,15 @@ class TestParseEntry:
         b = parse_entry(entry, "PAAQ", "NWS National Tsunami Warning Center Palmer AK")
         assert b is not None
         assert b.bulletin_id == "urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9"
-        assert b.feed == "PAAQ"
-        assert b.basin == "alaska"
-        assert b.ptwc_level == "information"
+        assert b.feed.value == "PAAQ"
+        assert b.basin.value == "alaska"
+        assert b.ptwc_level.value == "information"
         assert b.center == "NWS National Tsunami Warning Center Palmer AK"
         assert b.title == "60 miles SW of Buldir I., Alaska"
-        assert b.updated == "2026-04-03T08:28:39Z"
+        assert b.updated.isoformat() == "2026-04-03T08:28:39+00:00"
         assert b.latitude == pytest.approx(51.610)
         assert b.longitude == pytest.approx(174.990)
-        assert b.category == "Information"
+        assert b.category.value == "Information"
         assert b.magnitude == "5.2(mb)"
         assert b.affected_region == "60 miles SW of Buldir I., Alaska"
         assert b.note is not None
@@ -253,7 +253,7 @@ class TestPollerState:
         assert poller.load_state() == {}
 
 
-# --- PTWCTsunamiPoller poll_and_send ---
+# --- PTWCTsunamiPoller poll_once ---
 
 class TestPollerPollAndSend:
     @pytest.mark.asyncio
@@ -277,12 +277,10 @@ class TestPollerPollAndSend:
 
             poller.fetch_feed = mock_fetch
 
-            await poller.poll_and_send(once=True)
+            bulletins = await poller.poll_once()
 
-            mock_event_producer.send_ptwc_tsunami_bulletin.assert_called_once()
-            call_kwargs = mock_event_producer.send_ptwc_tsunami_bulletin.call_args
-            assert call_kwargs[1]["_bulletin_id"] == "urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9"
-            mock_producer.flush.assert_called_once()
+            assert len(bulletins) == 1
+            assert bulletins[0].bulletin_id == "urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9"
         finally:
             os.unlink(tmp)
 
@@ -307,9 +305,9 @@ class TestPollerPollAndSend:
 
             poller.fetch_feed = mock_fetch
 
-            await poller.poll_and_send(once=True)
+            bulletins = await poller.poll_once()
 
-            mock_event_producer.send_ptwc_tsunami_bulletin.assert_not_called()
+            assert bulletins == []
         finally:
             os.unlink(tmp)
 
@@ -329,7 +327,7 @@ class TestPollerPollAndSend:
 
             poller.fetch_feed = mock_fetch
 
-            await poller.poll_and_send(once=True)
+            bulletins = await poller.poll_once()
 
             state = poller.load_state()
             assert len(state) == 0
@@ -352,7 +350,7 @@ class TestPollerPollAndSend:
 
             poller.fetch_feed = mock_fetch
 
-            await poller.poll_and_send(once=True)
+            bulletins = await poller.poll_once()
 
             state = poller.load_state()
             assert "urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9" in state
@@ -374,7 +372,7 @@ class TestPollerPollAndSend:
 
             poller.fetch_feed = mock_fetch
 
-            await poller.poll_and_send(once=True)
+            bulletins = await poller.poll_once()
 
             state = poller.load_state()
             assert len(state) == 0

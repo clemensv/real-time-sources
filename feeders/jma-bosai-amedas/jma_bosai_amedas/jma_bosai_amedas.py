@@ -243,7 +243,7 @@ def parse_observation(station_code: str, payload: dict[str, Any], observed_at_lo
     utc = observed_at_local.astimezone(timezone.utc)
     return Observation(
         prefecture=prefecture_for_station(station_code),
-        event=EventEnum("observation"),
+        event=EventEnum("info"),
         station_code=station_code,
         observed_at=datetime.fromisoformat(utc.isoformat().replace("+00:00", "Z")),
         observed_at_local=datetime.fromisoformat(observed_at_local.isoformat()),

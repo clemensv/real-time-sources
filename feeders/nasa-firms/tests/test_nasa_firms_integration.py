@@ -4,6 +4,7 @@ Mocks the FIRMS HTTP layer but exercises the full fetch -> parse -> send flow.
 """
 
 import asyncio
+from datetime import date
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -55,7 +56,7 @@ class TestFetchAvailability:
         rec = records[0]
         assert rec.source == 'VIIRS_SNPP_NRT'
         assert rec.record_id == 'coverage'
-        assert rec.min_date == '2024-01-01'
+        assert rec.min_date == date(2024, 1, 1)
         assert rec.instrument == InstrumentEnum.VIIRS
 
 

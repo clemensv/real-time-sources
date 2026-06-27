@@ -257,6 +257,7 @@ class TestDataClasses:
             municipality="Äänekoski",
             latitude=62.537,
             longitude=25.995,
+            basin=None,
         )
         assert st.station_id == "1001"
         data = json.loads(st.to_json())
@@ -271,6 +272,7 @@ class TestDataClasses:
             municipality=None,
             latitude=0.0,
             longitude=0.0,
+            basin=None,
         )
         assert st.river_name is None
 
@@ -283,6 +285,7 @@ class TestDataClasses:
             discharge=15.3,
             discharge_unit="m3/s",
             discharge_timestamp="2023-11-14T12:00:00",
+            basin=None,
         )
         assert obs.station_id == "1001"
         data = json.loads(obs.to_json())
@@ -410,6 +413,7 @@ class TestProducerClient:
             station_id="1001", name="Äänekoski",
             river_name=None, water_area_name=None, municipality=None,
             latitude=62.537, longitude=25.995,
+            basin=None,
         )
         prod.send_fi_syke_hydrology_station("1001", st)
         mock_kafka.produce.assert_called_once()
@@ -423,6 +427,7 @@ class TestProducerClient:
             water_level=92.45, water_level_unit="cm",
             water_level_timestamp="2023-11-14T12:00:00",
             discharge=None, discharge_unit="m3/s", discharge_timestamp="",
+            basin=None,
         )
         prod.send_fi_syke_hydrology_water_level_observation("1001", obs)
         mock_kafka.produce.assert_called_once()
@@ -434,6 +439,7 @@ class TestProducerClient:
             station_id="1001", name="Test",
             river_name=None, water_area_name=None, municipality=None,
             latitude=0.0, longitude=0.0,
+            basin=None,
         )
         prod.send_fi_syke_hydrology_station("1001", st, flush_producer=False)
         mock_kafka.flush.assert_not_called()
@@ -445,6 +451,7 @@ class TestProducerClient:
             station_id="1001", name="Test",
             river_name=None, water_area_name=None, municipality=None,
             latitude=0.0, longitude=0.0,
+            basin=None,
         )
         prod.send_fi_syke_hydrology_station("1001", st)
         call_kwargs = mock_kafka.produce.call_args
