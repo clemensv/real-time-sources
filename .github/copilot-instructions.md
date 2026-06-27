@@ -640,13 +640,16 @@ These suppressions are permanent and correct:
 
 ### Feeder test workflows must install local packages explicitly
 
-Every `.github/workflows/test-<source>.yml` must use the pip pattern
-(not `poetry install`). Local sub-packages (`*_core`, `*_producer_data`,
-`*_producer_kafka_producer`, etc.) are NOT on PyPI — they must be
-installed with `pip install -e ./<path>` before `pip install -e '.[dev]'`.
-See `test-pegelonline.yml` and `test-gtfs.yml` for reference. Failing
+The consolidated `feeder-tests.yml` matrix workflow runs each touched
+feeder's `pytest` using the pip pattern (not `poetry install`). Local
+sub-packages (`*_core`, `*_producer_data`, `*_producer_kafka_producer`,
+etc.) are NOT on PyPI — they are installed with `pip install -e ./<path>`
+in dependency order (via `tools/ci/import_smoke.py --install-only`) before
+the feeder's `.[dev]` extra. See `feeder-tests.yml` for reference. Failing
 to install producer packages first produces
 `ERROR: No matching distribution found for <package>` at install time.
+(The six hand-maintained `test-<source>.yml` workflows were retired in
+favour of this one.)
 
 ### Branch protection is OFF → the dependabot auto-merge workflow can't work
 
@@ -751,8 +754,8 @@ Feeder pyprojects are PEP 621 / setuptools-scm (`[project]` with
 `dynamic = ["version"]`). `poetry install` **rejects a dynamic version in
 package mode** ("Either [project.version] or [tool.poetry.version] is required"),
 so a `poetry`-based test workflow fails at the install step before any test
-runs. Every `.github/workflows/test-<source>.yml` must use the pip pattern
-(see `test-pegelonline.yml` and `test-gtfs.yml`): set up Python with
+runs. The consolidated `feeder-tests.yml` matrix workflow uses the pip
+pattern (see `feeder-tests.yml`): set up Python with
 `cache: 'pip'`, **install the generated producer packages first**
 (`pip install -e ./<src>_producer/<src>_producer_data` then
 `..._kafka_producer`, plus any mqtt/amqp producer the tests import), then
@@ -761,4 +764,5 @@ prefix). The producer packages must be installed explicitly because the
 setuptools-scm migration drops the old poetry `path = ...` deps — so
 `pip install -e '.[dev]'` alone does not pull them and tests fail with
 `ModuleNotFoundError: No module named '<src>_producer_data'`. Incident:
-`test-usgs-iv.yml` + `test-rss.yml` migrated off poetry in `b69774da9`.
+`test-usgs-iv.yml` + `test-rss.yml` migrated off poetry in `b69774da9`
+(those per-source workflows were later consolidated into `feeder-tests.yml`).

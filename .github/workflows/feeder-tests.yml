@@ -57,15 +57,34 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
-      - name: Install (ordered) + unit tests ${{ matrix.feeder }}
+      - name: Install (ordered) + dev extras ${{ matrix.feeder }}
         run: |
           set -e
           f="feeders/${{ matrix.feeder }}"
           # Ordered editable install of the generated sub-packages + the feeder.
           python tools/ci/import_smoke.py "$f" --install-only
-          python -m pip install pytest
+          # Dev extras (pytest, pytest-asyncio, pytest-cov, requests-mock, ...)
+          # where the feeder declares a [dev] extra; floor-install the runners so
+          # a feeder without one still runs under coverage.
+          python -m pip install -e "$f[dev]" || true
+          python -m pip install pytest pytest-cov
+      - name: Unit tests + coverage ${{ matrix.feeder }}
+        run: |
+          set -e
+          f="feeders/${{ matrix.feeder }}"
           if [ -d "$f/tests" ]; then
-            cd "$f" && python -m pytest tests/ -x -q --no-header
+            cd "$f" && python -m pytest tests/ -q --no-header \
+              --cov=. --cov-report=xml -p no:cacheprovider --override-ini="addopts="
           else
             echo "no tests/ directory for ${{ matrix.feeder }}; skipping"
           fi
+      - name: Upload coverage to Codecov
+        if: ${{ hashFiles(format('feeders/{0}/coverage.xml', matrix.feeder)) != '' }}
+        uses: codecov/codecov-action@v7
+        with:
+          file: feeders/${{ matrix.feeder }}/coverage.xml
+          flags: ${{ matrix.feeder }}
+          name: ${{ matrix.feeder }}-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

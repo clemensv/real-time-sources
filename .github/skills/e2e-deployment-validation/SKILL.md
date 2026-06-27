@@ -945,7 +945,8 @@ a malformed event).
 
 ### 24. `test-noaa` CI workflow used Poetry against a setuptools `pyproject.toml`
 
-The `test-noaa.yml` workflow installed Poetry and ran `poetry install`, but
+The `test-noaa.yml` workflow (since retired and consolidated into
+`feeder-tests.yml`) installed Poetry and ran `poetry install`, but
 `feeders/noaa/pyproject.toml` uses `setuptools` as the build backend (no
 `[tool.poetry]` table). `poetry install` failed with:
 `"Either [project.version] or [tool.poetry.version] is required in package mode."`
@@ -1403,8 +1404,8 @@ When validating that feeder tests pass in CI, the most common failure mode
 is `ERROR: No matching distribution found for <local-package>`. Every
 feeder's test workflow must install generated producer packages and local
 sub-packages (e.g., `*_core`) explicitly via `pip install -e ./<path>`
-BEFORE `pip install -e '.[dev]'`. Reference: `test-pegelonline.yml`,
-`test-gtfs.yml`. Common local packages to install first:
+BEFORE `pip install -e '.[dev]'`. Reference: `feeder-tests.yml` (the
+consolidated matrix workflow). Common local packages to install first:
 
 ```
 pip install -e ./<src>_producer/<src>_producer_data
