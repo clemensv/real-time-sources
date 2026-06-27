@@ -1,0 +1,61 @@
+name: Mirror upstream images to GHCR
+
+# Periodically copies the third-party images CI depends on (Python base images
+# and the Kafka / MQTT / AMQP test brokers) from Docker Hub into this repo's
+# GHCR namespace, so the Docker E2E build/flow shards never hit Docker Hub rate
+# limits or transient pull timeouts. The image list lives in
+# .github/mirror-images.txt -- the single source of truth shared with the
+# .github/actions/seed-images composite action that consumes the mirror.
+
+on:
+  schedule:
+    # Weekly, Mondays 05:00 UTC -- an hour before the weekly full Docker E2E run.
+    - cron: '0 5 * * 1'
+  workflow_dispatch: {}
+
+concurrency:
+  group: mirror-images
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  mirror:
+    name: Copy images to GHCR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Copy each image to the GHCR mirror
+        env:
+          OWNER_REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          dest_prefix="ghcr.io/$(echo "$OWNER_REPO" | tr '[:upper:]' '[:lower:]')/mirror"
+          fail=0
+          while read -r ref category _rest; do
+            case "$ref" in ''|\#*) continue ;; esac
+            dst="${dest_prefix}/${ref}"
+            echo "::group::mirror ${ref} (${category}) -> ${dst}"
+            if docker buildx imagetools create --tag "$dst" "$ref"; then
+              echo "OK  ${ref} -> ${dst}"
+            else
+              echo "::error::failed to mirror ${ref}"
+              fail=1
+            fi
+            echo "::endgroup::"
+          done < .github/mirror-images.txt
+          exit $fail

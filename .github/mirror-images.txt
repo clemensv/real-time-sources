@@ -1,0 +1,23 @@
+# Third-party container images mirrored into GHCR to insulate CI from Docker
+# Hub rate limits (100 anonymous pulls / 6h / shared runner egress IP) and
+# transient pull timeouts (registry-1.docker.io Client.Timeout).
+#
+# The "Mirror upstream images to GHCR" workflow (.github/workflows/mirror-images.yml)
+# copies each image below to:
+#     ghcr.io/<owner>/<repo>/mirror/<image>:<tag>
+# weekly. The Docker E2E shards consume the mirror via the
+# .github/actions/seed-images composite action, which retags the GHCR copy back
+# to the canonical name so `docker build` (FROM ...) and `containers.run(...)`
+# resolve it from the local daemon cache without contacting Docker Hub. The
+# Kafka broker is seeded the same way; testcontainers' KafkaFixture defaults to
+# the same canonical tag (overridable via KAFKA_TEST_IMAGE).
+#
+# Format (whitespace-separated):  <canonical-image-ref>  <category>
+# Categories: base | mqtt | amqp | kafka
+# Blank lines and lines starting with '#' are ignored.
+python:3.10-slim                       base
+python:3.11-slim                       base
+python:3.12-slim                       base
+eclipse-mosquitto:2                    mqtt
+apache/activemq-artemis:latest-alpine  amqp
+confluentinc/cp-kafka:7.6.0            kafka

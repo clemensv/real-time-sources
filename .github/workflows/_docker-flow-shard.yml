@@ -21,6 +21,9 @@ jobs:
     name: Docker Kafka Flow
     if: ${{ inputs.matrix != '' && fromJson(inputs.matrix).include[0] != null }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     strategy:
       fail-fast: false
       max-parallel: 20
@@ -28,6 +31,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+
+      - name: Seed broker + base images from GHCR mirror
+        uses: ./.github/actions/seed-images
+        with:
+          # Seed the base images every job needs plus only this job's broker
+          # (kafka for the default/Kafka flow, otherwise mqtt or amqp).
+          categories: base ${{ contains(matrix.test_file, 'mqtt') && 'mqtt' || contains(matrix.test_file, 'amqp') && 'amqp' || 'kafka' }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
@@ -55,3 +66,8 @@ jobs:
         timeout-minutes: 45
         env:
           WSDOT_ACCESS_CODE: ${{ secrets.WSDOT_ACCESS_CODE }}
+          # CI containers are ephemeral; skip the Ryuk reaper and its Hub pull.
+          # The Kafka broker itself is seeded from the GHCR mirror above and
+          # retagged to its canonical name, so testcontainers resolves it from
+          # the local cache; a mirror miss falls back to Docker Hub.
+          TESTCONTAINERS_RYUK_DISABLED: "true"
