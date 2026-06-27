@@ -61,8 +61,13 @@ async def _emit_mock_amqp(producer):
         "observation_time": now.isoformat(), "air_temperature": -5.2,
         "dew_point": -8.1, "relative_humidity": 78.0,
         "wind_speed": 15.0, "wind_direction": 270.0, "wind_gust": 25.0,
-        "pressure_station": 101.5, "pressure_sea_level": 101.8,
-        "visibility": 24.0, "humidex": None, "wind_chill": -12.0,
+        "station_pressure": 101.5, "mean_sea_level_pressure": 101.8,
+        "visibility": 24.0, "snow_depth": None, "total_cloud_cover": None,
+        "pressure_tendency_3hr": None, "max_temperature_24hr": None,
+        "min_temperature_24hr": None, "wind_speed_1hr": None,
+        "wind_gust_1hr": None, "precipitation_1hr": None,
+        "precipitation_24hr": None, "altimeter_setting": None,
+        "humidex": None, "wind_chill": -12.0,
         "weather_condition": "Light Snow",
     })
     producer.send_weather_observation(data=obs, _msc_id="CYOW", _province="on", _time=now.isoformat())

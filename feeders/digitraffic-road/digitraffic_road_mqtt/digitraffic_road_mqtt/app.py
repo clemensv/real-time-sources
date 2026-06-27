@@ -195,13 +195,13 @@ async def _emit_mock_mqtt(client: FiDigitrafficRoadMqttMqttClient) -> None:
     # Telemetry: 1 TMS sensor reading, 1 weather sensor reading
     tms_data = TmsSensorData.from_serializer_dict({
         "station_id": 23001, "sensor_id": 5116, "value": 82.0,
-        "time": "2024-01-01T12:00:00Z", "start": None, "end": None,
+        "time": 1704110400, "start": None, "end": None,
     })
     await client.publish_fi_digitraffic_road_mqtt_tms_sensor_data(station_id="23001", sensor_id="5116", data=tms_data)
 
     weather_data = WeatherSensorData.from_serializer_dict({
         "station_id": 1001, "sensor_id": 1, "value": -2.5,
-        "time": "2024-01-01T12:00:00Z",
+        "time": 1704110400,
     })
     await client.publish_fi_digitraffic_road_mqtt_weather_sensor_data(station_id="1001", sensor_id="1", data=weather_data)  # type: ignore[arg-type]
 

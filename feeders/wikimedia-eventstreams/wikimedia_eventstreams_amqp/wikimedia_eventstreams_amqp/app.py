@@ -69,7 +69,7 @@ class WikimediaAmqpBridge:
             return False
         normalized = normalize_recent_change(payload)
         data = RecentChange.from_serializer_dict(normalized)
-        await self.client.publish_wikimedia_event_streams_recent_change(
+        await self.client.publish_recent_change(
             wiki=_norm_segment(wiki),
             namespace=_norm_segment(normalized["namespace"]),
             event_id=_norm_segment(str(event_id)),
@@ -190,7 +190,7 @@ async def _emit_mock_amqp(client: _AmqpClient) -> None:
             "log_id": None,
             "log_params_json": None,
         })
-        await client.publish_wikimedia_event_streams_recent_change(
+        await client.publish_recent_change(
             wiki="enwiki",
             namespace="0",
             event_id=f"mock-{i:08d}",

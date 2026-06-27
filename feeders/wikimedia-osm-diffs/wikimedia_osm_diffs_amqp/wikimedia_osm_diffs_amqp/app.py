@@ -102,12 +102,18 @@ class OsmDiffsAmqpBridge:
 
     async def _publish_change(self, change: dict) -> None:
         data = MapChange.from_serializer_dict(change)
-        publish = getattr(self.client, f"publish_org_open_street_map_diffs_{change['element_type']}")
-        await publish(geohash5=data.geohash5 or "nogeo", element_id=str(data.element_id), data=data, qos=0, retain=False)
+        await self.client.publish_map_change(
+            changeset_id=str(data.changeset_id),
+            element_type=data.element_type or "node",
+            element_id=str(data.element_id),
+            data=data,
+            qos=0,
+            retain=False,
+        )
 
     async def _publish_replication_state(self, seq: int, ts: datetime.datetime) -> None:
         state_data = ReplicationState(sequence_number=seq, timestamp=ts, source_url=sequence_to_url(seq, self._diff_base_url))
-        await self.client.publish_org_open_street_map_diffs_replication_state(data=state_data, qos=0, retain=True)
+        await self.client.publish_replication_state(data=state_data, qos=0, retain=True)
 
 
 def _parse_amqp_broker_url(url: str):
@@ -173,7 +179,7 @@ async def _emit_mock_amqp(client: _AmqpClient) -> None:
             "timestamp": (now - datetime.timedelta(minutes=2 - i)).isoformat(),
             "source_url": "https://planet.openstreetmap.org/replication/minute",
         })
-        await client.publish_org_open_street_map_diffs_replication_state(
+        await client.publish_replication_state(
             sequence_number=str(6000000 + i),
             _time=now.isoformat(),
             data=state,
@@ -197,7 +203,7 @@ async def _emit_mock_amqp(client: _AmqpClient) -> None:
             "tags": {"name": f"Mock Place {i}"},
             "sequence_number": 6000000,
         })
-        await client.publish_org_open_street_map_diffs_map_change(
+        await client.publish_map_change(
             changeset_id=str(150000000 + i),
             element_type="node",
             element_id=str(10000000 + i),

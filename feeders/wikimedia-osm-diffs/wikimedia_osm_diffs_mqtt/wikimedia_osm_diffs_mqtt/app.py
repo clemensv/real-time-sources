@@ -143,7 +143,7 @@ async def _emit_mock_mqtt(client: OrgOpenStreetMapDiffsMqttMqttClient) -> None:
     })
     await client.publish_org_open_street_map_diffs_mqtt_replication_state(
         data=state,
-        qos=1,
+        qos=0,
         retain=True,
         _time=now.isoformat(),
     )
