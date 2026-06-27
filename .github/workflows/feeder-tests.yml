@@ -65,8 +65,11 @@ jobs:
           python tools/ci/import_smoke.py "$f" --install-only
           # Dev extras (pytest, pytest-asyncio, pytest-cov, requests-mock, ...)
           # where the feeder declares a [dev] extra; floor-install the runners so
-          # a feeder without one still runs under coverage.
-          python -m pip install -e "$f[dev]" || true
+          # a feeder without one still runs under coverage. Keep editable_mode=
+          # strict here too: a default-mode editable re-install of the main
+          # package would put feeders/<src> back on sys.path and re-introduce the
+          # <src>_core namespace shadow that import_smoke.py just installed away.
+          python -m pip install -e "$f[dev]" --config-settings editable_mode=strict || true
           python -m pip install pytest pytest-cov
       - name: Unit tests + coverage ${{ matrix.feeder }}
         run: |

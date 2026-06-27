@@ -49,6 +49,20 @@ from pathlib import Path
 CMD_RE = re.compile(r"^\s*(?:CMD|ENTRYPOINT)\s+(\[.*\])\s*$")
 SKIP_RE = re.compile(r"[\\/](build|\.git|__pycache__)[\\/]")
 
+# Force the *strict* PEP 660 editable strategy for every local install. The
+# default ("lenient"/"compat") strategy is setuptools-version dependent: on some
+# runners it writes the feeder project root (``feeders/<src>``) onto ``sys.path``
+# via a static ``.pth``. Because each ``feeders/<src>`` holds sibling sub-project
+# dirs named exactly like their package (``<src>_core/``, ``<src>_producer/`` --
+# none of which carry an ``__init__.py`` at the project level), that root-on-path
+# turns ``<src>_core`` into an *empty namespace package* that shadows the real
+# editable install -> ``ImportError: cannot import name 'X' from '<src>_core'
+# (unknown location)`` at collection time. Strict mode only ever exposes the
+# declared packages (under ``build/__editable__.../``), never the project root,
+# so the sibling-shadow cannot form. Backends that don't understand the setting
+# (e.g. non-setuptools) simply ignore it.
+_EDITABLE_STRICT = ["--config-settings", "editable_mode=strict"]
+
 # Imports <module>.app when present (the MQTT/AMQP companion crash site), else
 # the bare module. Never __main__.
 SMOKE = (
@@ -167,13 +181,14 @@ def main(argv: list[str] | None = None) -> int:
         # intra-feeder graph resolvable regardless of order.
         for d in order:
             if _run([sys.executable, "-m", "pip", "install", "--no-input",
-                     "--no-deps", "-e", str(d)]) != 0:
+                     "--no-deps", *_EDITABLE_STRICT, "-e", str(d)]) != 0:
                 print(f"FAIL: pip install --no-deps -e {d}", file=sys.stderr)
                 return 1
         # Pass 2: resolve external dependencies now that every local package is
         # already satisfied from the editable set above.
         for d in order:
-            if _run([sys.executable, "-m", "pip", "install", "--no-input", "-e", str(d)]) != 0:
+            if _run([sys.executable, "-m", "pip", "install", "--no-input",
+                     *_EDITABLE_STRICT, "-e", str(d)]) != 0:
                 print(f"FAIL: pip install -e {d}", file=sys.stderr)
                 return 1
 
