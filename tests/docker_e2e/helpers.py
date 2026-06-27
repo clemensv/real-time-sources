@@ -29,6 +29,11 @@ from testcontainers.kafka import KafkaContainer
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 FEEDERS_ROOT = os.path.join(REPO_ROOT, 'feeders')
 
+# Kafka broker image for the test container. Overridable via KAFKA_TEST_IMAGE so
+# CI can point testcontainers at the GHCR mirror (avoiding Docker Hub rate
+# limits); local runs fall back to the canonical Docker Hub tag.
+KAFKA_TEST_IMAGE = os.environ.get('KAFKA_TEST_IMAGE', 'confluentinc/cp-kafka:7.6.0')
+
 
 def _resolve_project_dir(project_dir: str) -> str:
     """Resolve a project directory name to an absolute path.
@@ -181,7 +186,7 @@ class KafkaFixture:
         self._kafka_ip: Optional[str] = None
 
     def start(self) -> 'KafkaFixture':
-        self._kafka = KafkaContainer()
+        self._kafka = KafkaContainer(KAFKA_TEST_IMAGE)
         self._kafka.start()
         wrapped = self._kafka.get_wrapped_container()
         wrapped.reload()
