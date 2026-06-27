@@ -18,6 +18,9 @@ jobs:
     name: Docker Build & Import
     if: ${{ inputs.matrix != '' && fromJson(inputs.matrix).include[0] != null }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     strategy:
       fail-fast: false
       max-parallel: 20
@@ -25,6 +28,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+
+      - name: Seed base images from GHCR mirror
+        uses: ./.github/actions/seed-images
+        with:
+          categories: base
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
         run: |

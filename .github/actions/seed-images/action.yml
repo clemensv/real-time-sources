@@ -1,0 +1,49 @@
+name: Seed CI images from GHCR mirror
+description: >
+  Pulls the requested third-party images from this repo's GHCR mirror and
+  retags them to their canonical Docker Hub names, so subsequent
+  `docker build` (FROM ...) and `containers.run(...)` calls resolve them from
+  the local daemon cache instead of contacting Docker Hub. Best-effort: a
+  mirror miss is logged and left to fall back to Docker Hub, so the action
+  never hard-fails CI.
+
+inputs:
+  categories:
+    description: Space-separated categories to seed (any of base mqtt amqp kafka).
+    required: true
+  token:
+    description: GITHUB_TOKEN used to authenticate to GHCR.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Log in to GHCR (read-only)
+      shell: bash
+      run: |
+        echo "${{ inputs.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin \
+          || echo "::warning::GHCR login failed; image seeding will fall back to Docker Hub"
+
+    - name: Seed images from GHCR mirror
+      shell: bash
+      env:
+        OWNER_REPO: ${{ github.repository }}
+        WANT: ${{ inputs.categories }}
+      run: |
+        set -uo pipefail
+        list="${GITHUB_ACTION_PATH}/../../mirror-images.txt"
+        dest_prefix="ghcr.io/$(echo "$OWNER_REPO" | tr '[:upper:]' '[:lower:]')/mirror"
+        while read -r ref category _rest; do
+          case "$ref" in ''|\#*) continue ;; esac
+          case " $WANT " in *" $category "*) ;; *) continue ;; esac
+          src="${dest_prefix}/${ref}"
+          echo "::group::seed ${ref} (${category})"
+          if docker pull -q "$src" 2>/dev/null; then
+            docker tag "$src" "$ref"
+            echo "seeded ${ref} <- ${src}"
+          else
+            echo "::warning::mirror miss for ${ref}; will fall back to Docker Hub"
+          fi
+          echo "::endgroup::"
+        done < "$list"
+        exit 0
