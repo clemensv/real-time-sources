@@ -70,7 +70,11 @@ jobs:
           # package would put feeders/<src> back on sys.path and re-introduce the
           # <src>_core namespace shadow that import_smoke.py just installed away.
           python -m pip install -e "$f[dev]" --config-settings editable_mode=strict || true
-          python -m pip install pytest pytest-cov
+          # Floor-install the standard hermetic-test toolchain so a feeder whose
+          # [dev] extra omits them (or has none) still collects: integration-style
+          # tests mock HTTP with requests-mock and some unit suites are async.
+          # Mirrors the canonical test-pegelonline.yml install line.
+          python -m pip install pytest pytest-cov pytest-asyncio requests-mock
       - name: Unit tests + coverage ${{ matrix.feeder }}
         run: |
           set -e
