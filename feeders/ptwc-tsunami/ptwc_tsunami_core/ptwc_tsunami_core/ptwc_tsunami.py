@@ -40,7 +40,7 @@ def _get_summary_html(entry: ET.Element) -> str:
     summary_el = entry.find("atom:summary", NS)
     if summary_el is None: return ""
     raw = ET.tostring(summary_el, encoding="unicode", method="html")
-    raw = re.sub(r"^<[^>]+>", "", raw, count=1); raw = re.sub(r"</[^>]+>$", "", raw.rstrip(), count=1); raw = re.sub(r"<(/?)(?:\w+:)", r"<", raw); raw = re.sub(r'\s+xmlns:\w+="[^"]*"', "", raw); raw = re.sub(r'\s+xmlns="[^"]*"', "", raw)
+    raw = re.sub(r"^<[^>]+>", "", raw, count=1); raw = re.sub(r"</[^>]+>$", "", raw.rstrip(), count=1); raw = re.sub(r"<(/?)(?:\w+:)", r"<\1", raw); raw = re.sub(r'\s+xmlns:\w+="[^"]*"', "", raw); raw = re.sub(r'\s+xmlns="[^"]*"', "", raw)
     return raw
 def parse_entry(entry: ET.Element, feed_name: str, center: Optional[str] = None) -> Optional[TsunamiBulletin]:
     bulletin_id = _text(entry.find("atom:id", NS)); title = _text(entry.find("atom:title", NS)); updated = _text(entry.find("atom:updated", NS))

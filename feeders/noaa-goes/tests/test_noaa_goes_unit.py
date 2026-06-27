@@ -72,7 +72,7 @@ class TestStateManagement:
 
 @pytest.mark.unit
 class TestPollAlerts:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_alerts_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -85,7 +85,7 @@ class TestPollAlerts:
         assert len(alerts) == 1
         assert alerts[0]["product_id"] == "ALTK04-20240101"
 
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_alerts_error(self, mock_get, poller):
         mock_get.side_effect = Exception("Connection error")
         alerts = poller.poll_alerts()
@@ -94,7 +94,7 @@ class TestPollAlerts:
 
 @pytest.mark.unit
 class TestPollKIndex:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_k_index_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -107,7 +107,7 @@ class TestPollKIndex:
         assert len(rows) == 2
         assert rows[0]["Kp"] == 2
 
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_k_index_error(self, mock_get, poller):
         mock_get.side_effect = Exception("Timeout")
         rows = poller.poll_k_index()
@@ -116,7 +116,7 @@ class TestPollKIndex:
 
 @pytest.mark.unit
 class TestPollSolarWind:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_solar_wind_success(self, mock_get, poller):
         speed_response = Mock()
         speed_response.raise_for_status = Mock()
@@ -131,7 +131,7 @@ class TestPollSolarWind:
         assert records[0]["bt"] == 5.2
         assert records[0]["bz"] == -1.3
 
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_solar_wind_error(self, mock_get, poller):
         mock_get.side_effect = Exception("Network error")
         records = poller.poll_solar_wind()
@@ -140,7 +140,7 @@ class TestPollSolarWind:
 
 @pytest.mark.unit
 class TestPollPlasma:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_plasma_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -156,7 +156,7 @@ class TestPollPlasma:
         assert rows[0]["density"] == "5.2"
         assert rows[1]["density"] is None
 
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_plasma_empty(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -168,7 +168,7 @@ class TestPollPlasma:
 
 @pytest.mark.unit
 class TestPollMag:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_mag_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -184,7 +184,7 @@ class TestPollMag:
 
 @pytest.mark.unit
 class TestPollGoesXrays:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_goes_xrays_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -200,7 +200,7 @@ class TestPollGoesXrays:
 
 @pytest.mark.unit
 class TestPollGoesProtons:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_goes_protons_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -215,7 +215,7 @@ class TestPollGoesProtons:
 
 @pytest.mark.unit
 class TestPollGoesElectrons:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_goes_electrons_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -230,7 +230,7 @@ class TestPollGoesElectrons:
 
 @pytest.mark.unit
 class TestPollGoesMagnetometers:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_goes_magnetometers_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -246,7 +246,7 @@ class TestPollGoesMagnetometers:
 
 @pytest.mark.unit
 class TestPollXrayFlares:
-    @patch('noaa_goes.noaa_goes.requests.get')
+    @patch('noaa_goes_core.noaa_goes.requests.get')
     def test_poll_xray_flares_success(self, mock_get, poller):
         mock_response = Mock()
         mock_response.raise_for_status = Mock()
@@ -389,7 +389,7 @@ class TestSendGoesMagnetometers:
         mag_obj = call_args[0][2]
         assert mag_obj.he == 45.0
         assert mag_obj.hp == 73.0
-        assert mag_obj.arcjet_flag is None  # xrcg __post_init__ treats False as falsy → None
+        assert mag_obj.arcjet_flag is False
 
 
 @pytest.mark.unit

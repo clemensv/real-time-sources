@@ -298,7 +298,10 @@ class FirmsPoller:
         if self.last_polled_file:
             try:
                 with open(self.last_polled_file, "w", encoding="utf-8") as handle:
-                    json.dump(seen, handle)
+                    json.dump({
+                        rid: ts.isoformat() if isinstance(ts, datetime) else ts
+                        for rid, ts in seen.items()
+                    }, handle)
             except OSError as exc:
                 logger.error("Could not write last-polled file: %s", exc)
 
@@ -333,10 +336,11 @@ class FirmsPoller:
                 for source in self.sources:
                     detections = await self.fetch_detections(session, source)
                     for det in detections:
-                        if seen.get(det.record_id) == det.acq_datetime:
+                        detection_timestamp = det.acq_datetime.isoformat()
+                        if seen.get(det.record_id) == detection_timestamp:
                             continue
                         self._send_detection(det)
-                        seen[det.record_id] = det.acq_datetime
+                        seen[det.record_id] = detection_timestamp
                         total_new += 1
 
             if self.event_producer is not None:

@@ -5,6 +5,7 @@ Tests that don't require external dependencies or API calls.
 
 import pytest
 from unittest.mock import Mock, patch
+from datetime import date, datetime, timezone
 
 from nasa_firms.nasa_firms import (
     FirmsPoller,
@@ -194,7 +195,7 @@ class TestParseDetection:
         assert det.confidence_level == ConfidenceLevelenum.nominal
         assert det.daynight == DaynightEnum.D
         assert det.acq_time == "0112"  # zero-padded to HHMM
-        assert det.acq_datetime == "2024-01-15T01:12:00Z"
+        assert det.acq_datetime == datetime(2024, 1, 15, 1, 12, tzinfo=timezone.utc)
         assert det.tile == geo_tile(-12.345, 34.567)
         assert len(det.record_id) == 16
 
@@ -277,24 +278,26 @@ class TestDataClasses:
 
     def test_fire_detection_to_json(self):
         det = self._detection()
-        out = det.to_byte_array("application/json")
-        text = out if isinstance(out, str) else out.decode("utf-8")
-        assert "VIIRS_SNPP_NRT" in text
-        assert det.record_id in text
+        data = det.to_serializer_dict()
+        assert data["source"] == "VIIRS_SNPP_NRT"
+        assert data["record_id"] == det.record_id
+        assert data["acq_date"] == date(2024, 1, 15)
+        assert data["acq_datetime"] == datetime(2024, 1, 15, 1, 12, tzinfo=timezone.utc)
 
     def test_data_availability_to_json(self):
         rec = DataAvailability(
             source="MODIS_NRT",
             record_id="coverage",
             data_id="MODIS_NRT",
-            min_date="2024-01-01",
-            max_date="2024-01-15",
+            min_date=date(2024, 1, 1),
+            max_date=date(2024, 1, 15),
             instrument=InstrumentEnum.MODIS,
             satellite="Terra/Aqua",
             resolution_m=1000.0,
-            retrieved_at="2024-01-15T00:00:00+00:00",
+            retrieved_at=datetime(2024, 1, 15, tzinfo=timezone.utc),
         )
-        out = rec.to_byte_array("application/json")
-        text = out if isinstance(out, str) else out.decode("utf-8")
-        assert "MODIS_NRT" in text
-        assert "coverage" in text
+        data = rec.to_serializer_dict()
+        assert data["source"] == "MODIS_NRT"
+        assert data["record_id"] == "coverage"
+        assert data["min_date"] == date(2024, 1, 1)
+        assert data["retrieved_at"] == datetime(2024, 1, 15, tzinfo=timezone.utc)

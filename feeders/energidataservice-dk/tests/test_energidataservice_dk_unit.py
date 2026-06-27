@@ -193,8 +193,7 @@ class TestMapPowerSystemRecord:
         assert snapshot.minutes1_dk == "2026-04-08T23:30:00"
         assert snapshot.price_area == "DK"
         assert snapshot.co2_emission == 107.0
-        # Note: 0.0 values become None due to generated __post_init__ falsy check
-        assert snapshot.solar_power is None
+        assert snapshot.solar_power == pytest.approx(0.0)
         assert snapshot.offshore_wind_power == pytest.approx(1029.670044)
         assert snapshot.onshore_wind_power == pytest.approx(820.369995)
         assert snapshot.exchange_dk1_de == pytest.approx(-383.399994)
@@ -244,9 +243,8 @@ class TestMapPowerSystemRecord:
         snapshot = map_power_system_record(record)
         assert snapshot.afrr_activated_dk1 == pytest.approx(-36.389999)
         assert snapshot.afrr_activated_dk2 == pytest.approx(-5.57)
-        # 0.0 values become None due to generated __post_init__ falsy check
-        assert snapshot.mfrr_activated_dk1 is None
-        assert snapshot.mfrr_activated_dk2 is None
+        assert snapshot.mfrr_activated_dk1 == pytest.approx(0.0)
+        assert snapshot.mfrr_activated_dk2 == pytest.approx(0.0)
         assert snapshot.imbalance_dk1 == pytest.approx(100.68)
         assert snapshot.imbalance_dk2 == pytest.approx(-27.33)
 
@@ -762,14 +760,14 @@ class TestPollAndSend:
 
 
 # ---------------------------------------------------------------------------
-# Avro serialization tests
+# JSON serialization tests
 # ---------------------------------------------------------------------------
 
 @pytest.mark.unit
-class TestAvroSerialization:
-    """Tests for Avro round-trip serialization."""
+class TestJsonSerialization:
+    """Tests for generated JSON round-trip serialization."""
 
-    def test_power_system_snapshot_avro_roundtrip(self):
+    def test_power_system_snapshot_json_roundtrip(self):
         snapshot = PowerSystemSnapshot(
             minutes1_utc="2026-04-08T21:30:00",
             minutes1_dk="2026-04-08T23:30:00",
@@ -797,15 +795,15 @@ class TestAvroSerialization:
             imbalance_dk1=100.68,
             imbalance_dk2=-27.33,
         )
-        avro_bytes = snapshot.to_byte_array("avro/binary")
-        assert isinstance(avro_bytes, bytes)
-        assert len(avro_bytes) > 0
-        restored = PowerSystemSnapshot.from_data(avro_bytes, "avro/binary")
+        json_bytes = snapshot.to_byte_array("application/json")
+        assert isinstance(json_bytes, bytes)
+        assert len(json_bytes) > 0
+        restored = PowerSystemSnapshot.from_data(json_bytes, "application/json")
         assert restored.minutes1_utc == "2026-04-08T21:30:00"
         assert restored.co2_emission == 107.0
         assert restored.exchange_dk1_de == -383.4
 
-    def test_spot_price_avro_roundtrip(self):
+    def test_spot_price_json_roundtrip(self):
         price = SpotPrice(
             hour_utc="2025-09-30T21:00:00",
             hour_dk="2025-09-30T23:00:00",
@@ -813,13 +811,13 @@ class TestAvroSerialization:
             spot_price_dkk=690.7,
             spot_price_eur=92.54,
         )
-        avro_bytes = price.to_byte_array("avro/binary")
-        assert isinstance(avro_bytes, bytes)
-        restored = SpotPrice.from_data(avro_bytes, "avro/binary")
+        json_bytes = price.to_byte_array("application/json")
+        assert isinstance(json_bytes, bytes)
+        restored = SpotPrice.from_data(json_bytes, "application/json")
         assert restored.price_area == "DK1"
         assert restored.spot_price_dkk == 690.7
 
-    def test_power_system_snapshot_avro_with_nulls(self):
+    def test_power_system_snapshot_json_with_nulls(self):
         snapshot = PowerSystemSnapshot(
             minutes1_utc="2026-04-08T21:30:00",
             minutes1_dk="2026-04-08T23:30:00",
@@ -847,13 +845,13 @@ class TestAvroSerialization:
             imbalance_dk1=None,
             imbalance_dk2=None,
         )
-        avro_bytes = snapshot.to_byte_array("avro/binary")
-        restored = PowerSystemSnapshot.from_data(avro_bytes, "avro/binary")
+        json_bytes = snapshot.to_byte_array("application/json")
+        restored = PowerSystemSnapshot.from_data(json_bytes, "application/json")
         assert restored.co2_emission is None
         assert restored.solar_power is None
         assert restored.exchange_dk1_de is None
 
-    def test_spot_price_avro_with_null_prices(self):
+    def test_spot_price_json_with_null_prices(self):
         price = SpotPrice(
             hour_utc="2025-09-30T21:00:00",
             hour_dk="2025-09-30T23:00:00",
@@ -861,7 +859,7 @@ class TestAvroSerialization:
             spot_price_dkk=None,
             spot_price_eur=None,
         )
-        avro_bytes = price.to_byte_array("avro/binary")
-        restored = SpotPrice.from_data(avro_bytes, "avro/binary")
+        json_bytes = price.to_byte_array("application/json")
+        restored = SpotPrice.from_data(json_bytes, "application/json")
         assert restored.spot_price_dkk is None
         assert restored.spot_price_eur is None

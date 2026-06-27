@@ -142,8 +142,8 @@ class TestParsingHelpers:
         )
         assert observation is not None
         assert observation.station_code == "11016"
-        assert observation.observed_at == "2026-05-20T20:50:00Z"
-        assert observation.observed_at_local == "2026-05-21T05:50:00+09:00"
+        assert observation.observed_at == datetime(2026, 5, 20, 20, 50, tzinfo=timezone.utc)
+        assert observation.observed_at_local == observed_at
         assert observation.temp == 14.5
         assert observation.temp_qc_flag == 0
         assert observation.precipitation1h == 0.0

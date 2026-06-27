@@ -37,9 +37,9 @@ def _make_poller(mock_kafka_config, tmp_path):
 def test_once_mode_runs_one_cycle_and_exits(mock_kafka_config, tmp_path):
     poller = _make_poller(mock_kafka_config, tmp_path)
 
-    with patch.object(poller, 'fetch_zones', return_value=[]) as mock_zones, \
-         patch.object(poller, 'fetch_observation_stations', return_value=[]) as mock_stations, \
-         patch.object(poller, 'poll_alerts', return_value=[]) as mock_poll, \
+    with patch.object(poller.fetcher, 'fetch_zones', return_value=[]) as mock_zones, \
+         patch.object(poller.fetcher, 'fetch_observation_stations', return_value=[]) as mock_stations, \
+         patch.object(poller.fetcher, 'poll_alerts', return_value=[]) as mock_poll, \
          patch.object(_time, 'sleep') as mock_sleep:
         poller.poll_and_send(once=True)
 
@@ -59,9 +59,9 @@ def test_default_mode_does_not_break_after_one_cycle(mock_kafka_config, tmp_path
         call_log['count'] += 1
         raise KeyboardInterrupt("stop loop for test")
 
-    with patch.object(poller, 'fetch_zones', return_value=[]), \
-         patch.object(poller, 'fetch_observation_stations', return_value=[]), \
-         patch.object(poller, 'poll_alerts', return_value=[]), \
+    with patch.object(poller.fetcher, 'fetch_zones', return_value=[]), \
+         patch.object(poller.fetcher, 'fetch_observation_stations', return_value=[]), \
+         patch.object(poller.fetcher, 'poll_alerts', return_value=[]), \
          patch.object(_time, 'sleep', side_effect=_raise_after_first_sleep):
         with pytest.raises(KeyboardInterrupt):
             poller.poll_and_send(once=False)

@@ -271,7 +271,7 @@ class TestObservationDeduplication:
         event_kind, key, data, flush_producer = producer.sent[0]
         assert event_kind == "observation"
         assert key == "3"
-        assert data.timestamp == "2025-04-07T00:00:00+00:00"
+        assert data.timestamp == datetime(2025, 4, 7, 0, 0, tzinfo=timezone.utc)
         assert data.value == pytest.approx(9.371)
         assert flush_producer is False
         assert state["3"] == 1743984000000

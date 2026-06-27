@@ -221,7 +221,7 @@ def main():
                         help='Polling interval in seconds (default: 600)')
     parser.add_argument('--state-file', type=str,
                         default=os.environ.get('STATE_FILE', os.path.expanduser('~/.imgw_hydro_state.json')))
-    parser.add_argument('--once', action='store_true',
+    parser.add_argument('--once', action='store_true', dest='root_once',
                         default=os.environ.get('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
                         help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
     subparsers = parser.add_subparsers(dest='command')
@@ -229,11 +229,12 @@ def main():
     level_parser = subparsers.add_parser('level', help='Get water level for a station')
     level_parser.add_argument('station_id', help='Station ID')
     feed_parser = subparsers.add_parser('feed', help='Feed data to Kafka')
-    feed_parser.add_argument('--once', action='store_true',
+    feed_parser.add_argument('--once', action='store_true', dest='feed_once',
                              default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
                              help='Exit after one polling cycle (also via ONCE_MODE env var).')
 
     args = parser.parse_args()
+    args.once = bool(getattr(args, 'root_once', False) or getattr(args, 'feed_once', False))
     logging.basicConfig(level=logging.INFO)
     api = IMGWHydroAPI(polling_interval=args.polling_interval)
 

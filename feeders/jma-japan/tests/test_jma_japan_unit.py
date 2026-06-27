@@ -317,7 +317,7 @@ class TestParseEntries:
     def test_parse_entry_updated(self):
         root = ElementTree.fromstring(SAMPLE_REGULAR_FEED)
         bulletins = JMABulletinPoller.parse_entries(root, "regular")
-        assert bulletins[0].updated == "2026-04-09T01:17:49Z"
+        assert bulletins[0].updated.isoformat() == "2026-04-09T01:17:49+00:00"
 
     def test_parse_empty_feed(self):
         root = ElementTree.fromstring(SAMPLE_EMPTY_FEED)

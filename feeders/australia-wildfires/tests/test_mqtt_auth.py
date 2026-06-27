@@ -28,7 +28,7 @@ def test_resolve_mqtt_auth_entra_fetches_imds_token(monkeypatch):
             return b'{"accessToken": "jwt-token"}'
 
     with patch("australia_wildfires_mqtt.app.urlopen", return_value=FakeResponse()) as open_mock:
-        username, password = app._resolve_mqtt_auth(
+        username, password, connect_props = app._resolve_mqtt_auth(
             username=None,
             password=None,
             client_id=None,
@@ -37,6 +37,8 @@ def test_resolve_mqtt_auth_entra_fetches_imds_token(monkeypatch):
 
     assert username == "managed-identity-object-id"
     assert password == "jwt-token"
+    assert connect_props.AuthenticationMethod == "OAUTH2-JWT"
+    assert connect_props.AuthenticationData == b"jwt-token"
     assert open_mock.call_count == 1
     request = open_mock.call_args[0][0]
     assert request.full_url.startswith("http://169.254.169.254/metadata/identity/oauth2/token?")
@@ -45,7 +47,7 @@ def test_resolve_mqtt_auth_entra_fetches_imds_token(monkeypatch):
 
 
 def test_resolve_mqtt_auth_password_mode_keeps_cli_credentials():
-    username, password = app._resolve_mqtt_auth(
+    username, password, connect_props = app._resolve_mqtt_auth(
         username="broker-user",
         password="broker-pass",
         client_id="mqtt-client-id",
@@ -54,3 +56,4 @@ def test_resolve_mqtt_auth_password_mode_keeps_cli_credentials():
 
     assert username == "broker-user"
     assert password == "broker-pass"
+    assert connect_props is None

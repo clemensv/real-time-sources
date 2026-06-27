@@ -9,13 +9,15 @@ import xml.etree.ElementTree as ET
 from unittest.mock import Mock, patch, MagicMock
 from madrid_traffic_producer_data import MeasurementPoint, TrafficReading
 from madrid_traffic.madrid_traffic import (
+    parse_connection_string,
+)
+from madrid_traffic_core import (
     parse_european_float,
     safe_int,
     round_to_5min,
     parse_pm_xml,
     build_measurement_point,
     build_traffic_reading,
-    parse_connection_string,
     MadridTrafficPoller,
 )
 
@@ -329,150 +331,70 @@ class TestParseConnectionString:
 class TestMadridTrafficPollerInit:
     """Tests for MadridTrafficPoller initialization."""
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_init(self, mock_producer_class, mock_event_producer):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
+    def test_init(self):
+        poller = MadridTrafficPoller()
 
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
-
-        assert poller.kafka_topic == 'test-topic'
-        mock_producer_class.assert_called_once_with({'bootstrap.servers': 'localhost:9092'})
-        mock_event_producer.assert_called_once_with(mock_kafka_producer, 'test-topic')
+        assert poller._last_dedup_key is None
+        assert poller._last_reference_time == 0.0
 
 
 @pytest.mark.unit
 class TestMadridTrafficPollerParsing:
     """Tests for MadridTrafficPoller XML parsing and event emission."""
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_emit_reference_data(self, mock_producer_class, mock_event_producer_class):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer = Mock()
-        mock_event_producer.producer = mock_kafka_producer
-        mock_event_producer_class.return_value = mock_event_producer
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+    def test_get_reference_data(self):
+        poller = MadridTrafficPoller()
 
         sensors, _ = parse_pm_xml(SAMPLE_PM_XML)
-        count = poller.emit_reference_data(sensors)
-        assert count == 3
-        assert mock_event_producer.send_es_madrid_informo_measurement_point.call_count == 3
-        mock_kafka_producer.flush.assert_called_once()
+        reference_data = poller.get_reference_data(sensors)
+        assert len(reference_data) == 3
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_emit_traffic_readings_skips_errors(self, mock_producer_class, mock_event_producer_class):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer = Mock()
-        mock_event_producer.producer = mock_kafka_producer
-        mock_event_producer_class.return_value = mock_event_producer
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+    def test_get_traffic_readings_skips_errors(self):
+        poller = MadridTrafficPoller()
 
         sensors, _ = parse_pm_xml(SAMPLE_PM_XML)
         poll_time = datetime.datetime(2024, 6, 15, 14, 32, 0, tzinfo=datetime.timezone.utc)
-        count = poller.emit_traffic_readings(sensors, poll_time)
+        _, readings = poller.get_traffic_readings(sensors, poll_time)
         # 3 sensors total, but sensor 5555 has error=S, so only 2
-        assert count == 2
-        assert mock_event_producer.send_es_madrid_informo_traffic_reading.call_count == 2
+        assert len(readings) == 2
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_dedup_same_timestamp(self, mock_producer_class, mock_event_producer_class):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer = Mock()
-        mock_event_producer.producer = mock_kafka_producer
-        mock_event_producer_class.return_value = mock_event_producer
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+    def test_dedup_same_timestamp(self):
+        poller = MadridTrafficPoller()
 
         sensors, _ = parse_pm_xml(SAMPLE_PM_XML)
         poll_time = datetime.datetime(2024, 6, 15, 14, 32, 0, tzinfo=datetime.timezone.utc)
-
-        count1 = poller.emit_traffic_readings(sensors, poll_time)
-        assert count1 == 2
+        _, readings1 = poller.get_traffic_readings(sensors, poll_time)
+        assert len(readings1) == 2
 
         # Same 5-min window, should be deduped
         poll_time2 = datetime.datetime(2024, 6, 15, 14, 33, 0, tzinfo=datetime.timezone.utc)
-        count2 = poller.emit_traffic_readings(sensors, poll_time2)
-        assert count2 == 0
+        _, readings2 = poller.get_traffic_readings(sensors, poll_time2)
+        assert readings2 == []
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_new_timestamp_not_deduped(self, mock_producer_class, mock_event_producer_class):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer = Mock()
-        mock_event_producer.producer = mock_kafka_producer
-        mock_event_producer_class.return_value = mock_event_producer
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+    def test_new_timestamp_not_deduped(self):
+        poller = MadridTrafficPoller()
 
         sensors, _ = parse_pm_xml(SAMPLE_PM_XML)
         poll_time1 = datetime.datetime(2024, 6, 15, 14, 32, 0, tzinfo=datetime.timezone.utc)
-        count1 = poller.emit_traffic_readings(sensors, poll_time1)
-        assert count1 == 2
+        _, readings1 = poller.get_traffic_readings(sensors, poll_time1)
+        assert len(readings1) == 2
 
         # Different 5-min window
         poll_time2 = datetime.datetime(2024, 6, 15, 14, 37, 0, tzinfo=datetime.timezone.utc)
-        count2 = poller.emit_traffic_readings(sensors, poll_time2)
-        assert count2 == 2
+        _, readings2 = poller.get_traffic_readings(sensors, poll_time2)
+        assert len(readings2) == 2
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_emit_empty_sensors(self, mock_producer_class, mock_event_producer_class):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer = Mock()
-        mock_event_producer.producer = mock_kafka_producer
-        mock_event_producer_class.return_value = mock_event_producer
+    def test_get_reference_data_empty_sensors(self):
+        poller = MadridTrafficPoller()
 
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+        assert poller.get_reference_data([]) == []
 
-        count = poller.emit_reference_data([])
-        assert count == 0
-
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_emit_readings_empty_sensors(self, mock_producer_class, mock_event_producer_class):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer = Mock()
-        mock_event_producer.producer = mock_kafka_producer
-        mock_event_producer_class.return_value = mock_event_producer
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+    def test_get_readings_empty_sensors(self):
+        poller = MadridTrafficPoller()
 
         poll_time = datetime.datetime(2024, 6, 15, 14, 30, 0, tzinfo=datetime.timezone.utc)
-        count = poller.emit_traffic_readings([], poll_time)
-        assert count == 0
+        _, readings = poller.get_traffic_readings([], poll_time)
+        assert readings == []
 
 
 @pytest.mark.unit
@@ -480,9 +402,9 @@ class TestMadridTrafficPollerPollAndSend:
     """Tests for the poll_and_send main loop."""
 
     @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    @patch('madrid_traffic.madrid_traffic.requests.get')
-    def test_poll_and_send_once(self, mock_get, mock_producer_class, mock_event_producer_class):
+    @patch('madrid_traffic.madrid_traffic.Producer')
+    @patch('madrid_traffic_core.madrid_traffic.requests.get')
+    def test_main_once(self, mock_get, mock_producer_class, mock_event_producer_class, monkeypatch):
         mock_response = Mock()
         mock_response.text = SAMPLE_PM_XML
         mock_response.raise_for_status = Mock()
@@ -494,20 +416,18 @@ class TestMadridTrafficPollerPollAndSend:
         mock_event_producer.producer = mock_kafka_producer
         mock_event_producer_class.return_value = mock_event_producer
 
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
-        poller.poll_and_send(once=True)
+        monkeypatch.setattr('sys.argv', ['madrid-traffic', '--connection-string', 'BootstrapServer=localhost:9092;EntityPath=test-topic', '--once'])
+        from madrid_traffic.madrid_traffic import main
+        main()
 
         # Should have emitted reference data + traffic readings
         assert mock_event_producer.send_es_madrid_informo_measurement_point.call_count == 3
         assert mock_event_producer.send_es_madrid_informo_traffic_reading.call_count == 2
 
     @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    @patch('madrid_traffic.madrid_traffic.requests.get')
-    def test_poll_and_send_handles_fetch_error(self, mock_get, mock_producer_class, mock_event_producer_class):
+    @patch('madrid_traffic.madrid_traffic.Producer')
+    @patch('madrid_traffic_core.madrid_traffic.requests.get')
+    def test_main_once_handles_fetch_error(self, mock_get, mock_producer_class, mock_event_producer_class, monkeypatch):
         mock_get.side_effect = Exception("Network error")
 
         mock_kafka_producer = Mock()
@@ -516,12 +436,10 @@ class TestMadridTrafficPollerPollAndSend:
         mock_event_producer.producer = mock_kafka_producer
         mock_event_producer_class.return_value = mock_event_producer
 
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
         # Should not raise
-        poller.poll_and_send(once=True)
+        monkeypatch.setattr('sys.argv', ['madrid-traffic', '--connection-string', 'BootstrapServer=localhost:9092;EntityPath=test-topic', '--once'])
+        from madrid_traffic.madrid_traffic import main
+        main()
 
         assert mock_event_producer.send_es_madrid_informo_measurement_point.call_count == 0
         assert mock_event_producer.send_es_madrid_informo_traffic_reading.call_count == 0
@@ -531,40 +449,22 @@ class TestMadridTrafficPollerPollAndSend:
 class TestMadridTrafficPollerFetchXml:
     """Tests for fetch_xml method."""
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    @patch('madrid_traffic.madrid_traffic.requests.get')
-    def test_fetch_xml_success(self, mock_get, mock_producer_class, mock_event_producer_class):
+    @patch('madrid_traffic_core.madrid_traffic.requests.get')
+    def test_fetch_xml_success(self, mock_get):
         mock_response = Mock()
         mock_response.text = SAMPLE_PM_XML
         mock_response.raise_for_status = Mock()
         mock_get.return_value = mock_response
 
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer_class.return_value = Mock(producer=mock_kafka_producer)
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+        poller = MadridTrafficPoller()
         result = poller.fetch_xml()
         assert result == SAMPLE_PM_XML
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    @patch('madrid_traffic.madrid_traffic.requests.get')
-    def test_fetch_xml_failure(self, mock_get, mock_producer_class, mock_event_producer_class):
+    @patch('madrid_traffic_core.madrid_traffic.requests.get')
+    def test_fetch_xml_failure(self, mock_get):
         mock_get.side_effect = Exception("Connection error")
 
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer_class.return_value = Mock(producer=mock_kafka_producer)
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+        poller = MadridTrafficPoller()
         result = poller.fetch_xml()
         assert result is None
 
@@ -653,19 +553,8 @@ class TestDataclassSerialization:
 class TestReferenceDataRefresh:
     """Tests for reference data refresh timing."""
 
-    @patch('madrid_traffic.madrid_traffic.EsMadridInformoEventProducer')
-    @patch('confluent_kafka.Producer')
-    def test_reference_sent_on_first_call(self, mock_producer_class, mock_event_producer_class):
-        mock_kafka_producer = Mock()
-        mock_producer_class.return_value = mock_kafka_producer
-        mock_event_producer = Mock()
-        mock_event_producer.producer = mock_kafka_producer
-        mock_event_producer_class.return_value = mock_event_producer
-
-        poller = MadridTrafficPoller(
-            kafka_config={'bootstrap.servers': 'localhost:9092'},
-            kafka_topic='test-topic',
-        )
+    def test_reference_sent_on_first_call(self):
+        poller = MadridTrafficPoller()
         assert poller._last_reference_time == 0.0
 
 

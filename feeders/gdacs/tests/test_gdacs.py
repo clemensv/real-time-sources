@@ -8,8 +8,10 @@ import xml.etree.ElementTree as ET
 from unittest.mock import patch, Mock, AsyncMock, MagicMock
 from gdacs.gdacs import (
     GDACSPoller,
-    parse_rss_item,
     parse_connection_string,
+)
+from gdacs_core.gdacs import (
+    parse_rss_item,
     _text,
     _attr,
     _parse_float,

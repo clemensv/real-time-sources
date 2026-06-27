@@ -28,7 +28,7 @@ def test_entsoe_fabric_notebook_structure():
     assert "/sources/{src[\"id\"]}/connection" in lookup_source
 
     run_source = "".join(notebook["cells"][6]["source"])
-    assert "from entsoe import entsoe as feeder" in run_source
+    assert "from entsoe_kafka import app as feeder" in run_source
     assert "sys.argv = ['entsoe', 'feed', '--once'] if ONCE_MODE else ['entsoe', 'feed']" in run_source
     assert "ENTSOE_SECURITY_TOKEN present" in run_source
     assert "threading.Thread" in run_source

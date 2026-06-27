@@ -88,7 +88,8 @@ class TestDataClasses:
             libelle_commune="PONT-A-MOUSSON",
             code_departement="54",
             en_service=True,
-            date_ouverture_station="2012-11-11T00:00:00Z"
+            date_ouverture_station="2012-11-11T00:00:00Z",
+            basin="Rhin-Meuse",
         )
         assert s.code_station == "A694102004"
         assert s.en_service is True
@@ -99,7 +100,7 @@ class TestDataClasses:
             code_station="TEST01", libelle_station="Test", code_site="SITE01",
             longitude_station=2.0, latitude_station=48.0, libelle_cours_eau="Seine",
             libelle_commune="Paris", code_departement="75", en_service=True,
-            date_ouverture_station="2020-01-01"
+            date_ouverture_station="2020-01-01", basin="Seine-Normandie",
         )
         json_str = s.to_json()
         s2 = Station.from_data(json_str, "application/json")
@@ -113,7 +114,8 @@ class TestDataClasses:
             resultat_obs=1203.0,
             grandeur_hydro="H",
             libelle_methode_obs="Mesurée",
-            libelle_qualification_obs="Non qualifiée"
+            libelle_qualification_obs="Non qualifiée",
+            basin="Rhin-Meuse",
         )
         assert o.resultat_obs == 1203.0
         assert o.grandeur_hydro == "H"
@@ -123,7 +125,8 @@ class TestDataClasses:
         o = Observation(
             code_station="TEST01", date_obs="2024-01-01T00:00:00Z",
             resultat_obs=500.0, grandeur_hydro="Q",
-            libelle_methode_obs="Calculée", libelle_qualification_obs="Non qualifiée"
+            libelle_methode_obs="Calculée", libelle_qualification_obs="Non qualifiée",
+            basin="Seine-Normandie",
         )
         json_str = o.to_json()
         o2 = Observation.from_data(json_str, "application/json")

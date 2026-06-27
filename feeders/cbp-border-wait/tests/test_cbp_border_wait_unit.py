@@ -10,10 +10,12 @@ from unittest.mock import MagicMock, patch
 from cbp_border_wait_producer_data.gov.cbp.borderwait.port import Port
 from cbp_border_wait_producer_data.gov.cbp.borderwait.waittime import WaitTime
 from cbp_border_wait.cbp_border_wait import (
+    _parse_connection_string,
+)
+from cbp_border_wait_core import (
     CbpBorderWaitAPI,
     _load_state,
     _save_state,
-    _parse_connection_string,
     parse_int_or_none,
     parse_delay_minutes,
     parse_lanes_open,
@@ -441,7 +443,7 @@ class TestParsePort:
         assert port.port_number == "250401"
         assert port.port_name == "San Ysidro"
         assert port.border == "Mexican Border"
-        assert port.border_slug == "mexican-border"
+        assert port.border_slug.value == "mexican-border"
         assert port.crossing_name == "San Ysidro"
         assert port.hours == "24 hrs/day"
 
@@ -454,7 +456,7 @@ class TestParsePort:
     def test_canadian_border(self):
         port = CbpBorderWaitAPI.parse_port(SAMPLE_PORT_CANADIAN)
         assert port.border == "Canadian Border"
-        assert port.border_slug == "canadian-border"
+        assert port.border_slug.value == "canadian-border"
         assert port.crossing_name == "Thousand Islands Bridge"
 
     def test_na_pedestrian_lanes(self):
@@ -488,7 +490,7 @@ class TestParseWaitTime:
         assert wt.port_number == "250401"
         assert wt.port_name == "San Ysidro"
         assert wt.border == "Mexican Border"
-        assert wt.border_slug == "mexican-border"
+        assert wt.border_slug.value == "mexican-border"
         assert wt.port_status == "Open"
         assert wt.date == "4/8/2026"
         assert wt.time == "14:00:00"
@@ -579,7 +581,7 @@ class TestParseWaitTime:
 
 @pytest.mark.unit
 class TestFetchPorts:
-    @patch("cbp_border_wait.cbp_border_wait.requests.Session")
+    @patch("cbp_border_wait_core.cbp_border_wait.requests.Session")
     def test_fetch_returns_list(self, mock_session_cls):
         mock_session = MagicMock()
         mock_session_cls.return_value = mock_session
@@ -593,7 +595,7 @@ class TestFetchPorts:
         assert len(result) == 2
         assert result[0]["port_number"] == "250401"
 
-    @patch("cbp_border_wait.cbp_border_wait.requests.Session")
+    @patch("cbp_border_wait_core.cbp_border_wait.requests.Session")
     def test_fetch_empty(self, mock_session_cls):
         mock_session = MagicMock()
         mock_session_cls.return_value = mock_session

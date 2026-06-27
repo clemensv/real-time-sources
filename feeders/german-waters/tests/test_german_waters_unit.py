@@ -22,11 +22,15 @@ from german_waters_producer_data.de.waters.hydrology.waterlevelobservation impor
 # Fixtures / helpers
 # ---------------------------------------------------------------------------
 
-def _make_station(station_id: str = "by_12345", provider: str = "bayern_gkd") -> StationData:
+def _make_station(
+    station_id: str = "by_12345",
+    provider: str = "bayern_gkd",
+    water_body: str = "Donau",
+) -> StationData:
     return StationData(
         station_id=station_id,
         station_name="Regensburg",
-        water_body="Donau",
+        water_body=water_body,
         provider=provider,
         state="Bayern",
         region="Oberpfalz",
@@ -256,10 +260,10 @@ class TestObsToEvent:
         assert evt.water_body == src.water_body
         assert evt.water_level == src.water_level
         assert evt.water_level_unit == src.water_level_unit
-        assert evt.water_level_timestamp == src.water_level_timestamp
+        assert evt.water_level_timestamp.isoformat() == src.water_level_timestamp
         assert evt.discharge == src.discharge
         assert evt.discharge_unit == src.discharge_unit
-        assert evt.discharge_timestamp == src.discharge_timestamp
+        assert evt.discharge_timestamp.isoformat() == src.discharge_timestamp
         assert evt.trend == src.trend
         assert evt.situation == src.situation
 

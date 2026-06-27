@@ -7,7 +7,7 @@ import pytest
 import json
 import os
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch, MagicMock
 from gios_poland_producer_data import Station
 from gios_poland_producer_data import Sensor
@@ -160,7 +160,7 @@ class TestParseGiosTimestamp:
 
     def test_parse_datetime_passthrough(self):
         dt = datetime(2026, 4, 8, 21, 0, 0)
-        assert parse_gios_timestamp(dt) is dt
+        assert parse_gios_timestamp(dt) == datetime(2026, 4, 8, 21, 0, tzinfo=timezone.utc)
 
 
 @pytest.mark.unit

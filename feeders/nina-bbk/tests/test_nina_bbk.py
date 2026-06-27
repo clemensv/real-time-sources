@@ -8,7 +8,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from nina_bbk.nina_bbk import (
+from nina_bbk.nina_bbk import parse_connection_string
+from nina_bbk_core import (
     NINABBKPoller,
     _collect_areas,
     _find_event_code,
@@ -17,7 +18,6 @@ from nina_bbk.nina_bbk import (
     _safe_str,
     _state_from_areas,
     normalize_warning,
-    parse_connection_string,
 )
 from nina_bbk_mqtt.app import _topic_segment
 
@@ -260,15 +260,15 @@ class TestNormalizeWarning:
         assert w.state == "hessen"
         assert w.version == 5
         assert w.sender == "DE-HE-DA-W184"
-        assert w.status == "Actual"
-        assert w.msg_type == "Alert"
-        assert w.scope == "Public"
+        assert w.status.value == "Actual"
+        assert w.msg_type.value == "Alert"
+        assert w.scope.value == "Public"
         assert w.event == "Gefahreninformation"
         assert w.event_code == "BBK-EVC-067"
         assert w.category == "Health"
-        assert w.severity == "Minor"
-        assert w.urgency == "Immediate"
-        assert w.certainty == "Observed"
+        assert w.severity.value == "Minor"
+        assert w.urgency.value == "Immediate"
+        assert w.certainty.value == "Observed"
         assert w.headline == "Betrieb Infotelefon"
         assert w.description == "Test description text"
         assert w.instruction == "Test instruction"
@@ -336,7 +336,7 @@ class TestPollerState:
         assert poller.load_state() == {}
 
 
-# --- NINABBKPoller poll_and_send ---
+# --- NINABBKPoller poll_once ---
 
 class TestPollerPollAndSend:
     @pytest.mark.asyncio
@@ -362,12 +362,10 @@ class TestPollerPollAndSend:
             poller.fetch_map_data = mock_fetch_map
             poller.fetch_detail = mock_fetch_detail
 
-            await poller.poll_and_send(once=True)
+            warnings = await poller.poll_once()
 
-            mock_event_producer.send_nina_civil_warning.assert_called_once()
-            call_kwargs = mock_event_producer.send_nina_civil_warning.call_args
-            assert call_kwargs[1]["_warning_id"] == "mow.DE-HE-DA-W184-20240723-000"
-            mock_producer.flush.assert_called_once()
+            assert len(warnings) == 1
+            assert warnings[0].warning_id == "mow.DE-HE-DA-W184-20240723-000"
         finally:
             os.unlink(tmp)
 
@@ -394,9 +392,9 @@ class TestPollerPollAndSend:
             poller.fetch_map_data = mock_fetch_map
             poller.fetch_detail = mock_fetch_detail
 
-            await poller.poll_and_send(once=True)
+            warnings = await poller.poll_once()
 
-            mock_event_producer.send_nina_civil_warning.assert_not_called()
+            assert warnings == []
         finally:
             os.unlink(tmp)
 
@@ -423,9 +421,9 @@ class TestPollerPollAndSend:
             poller.fetch_map_data = mock_fetch_map
             poller.fetch_detail = mock_fetch_detail
 
-            await poller.poll_and_send(once=True)
+            warnings = await poller.poll_once()
 
-            mock_event_producer.send_nina_civil_warning.assert_called_once()
+            assert len(warnings) == 1
         finally:
             os.unlink(tmp)
 
@@ -448,7 +446,7 @@ class TestPollerPollAndSend:
             poller.fetch_map_data = mock_fetch_map
             poller.fetch_detail = mock_fetch_detail
 
-            await poller.poll_and_send(once=True)
+            warnings = await poller.poll_once()
 
             state = poller.load_state()
             assert "mow.DE-HE-DA-W184-20240723-000" in state
@@ -474,7 +472,7 @@ class TestPollerPollAndSend:
             poller.fetch_map_data = mock_fetch_map
             poller.fetch_detail = mock_fetch_detail
 
-            await poller.poll_and_send(once=True)
+            warnings = await poller.poll_once()
 
             state = poller.load_state()
             assert "mow.DE-HE-DA-W184-20240723-000" not in state
