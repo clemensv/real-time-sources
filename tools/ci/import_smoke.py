@@ -14,6 +14,10 @@ For one ``feeders/<source>`` it:
 1. ``py_compile`` every ``.py`` in the tree (generated + hand-written).
 2. Editable-installs the generated sub-packages in dependency order
    (``*_data`` -> ``*_core`` -> producers -> the main feeder package last).
+   The install runs in two passes -- a ``--no-deps`` pass that registers
+   every local package first (so a transport app that depends on the main
+   feeder package resolves even though it is not on PyPI), then a normal
+   pass that pulls external dependencies.
 3. Imports each transport variant's runtime module taken from the
    ``python -m <module>`` target of every ``Dockerfile*`` -- importing
    ``<module>.app`` when that submodule exists, else the bare ``<module>``.
@@ -154,6 +158,20 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if not args.no_install:
+        # Pass 1: register every local editable package WITHOUT dependency
+        # resolution. A transport app sub-package (e.g. ``<src>_mqtt``) often
+        # declares the main feeder package (``<src>``) as a dependency; that
+        # package is not on PyPI, so a single with-deps pass in priority order
+        # fails ("No matching distribution found for <src>") because the main
+        # package is installed last. Registering all locals first makes the
+        # intra-feeder graph resolvable regardless of order.
+        for d in order:
+            if _run([sys.executable, "-m", "pip", "install", "--no-input",
+                     "--no-deps", "-e", str(d)]) != 0:
+                print(f"FAIL: pip install --no-deps -e {d}", file=sys.stderr)
+                return 1
+        # Pass 2: resolve external dependencies now that every local package is
+        # already satisfied from the editable set above.
         for d in order:
             if _run([sys.executable, "-m", "pip", "install", "--no-input", "-e", str(d)]) != 0:
                 print(f"FAIL: pip install -e {d}", file=sys.stderr)

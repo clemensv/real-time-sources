@@ -35,11 +35,18 @@ FLEET_PATTERNS = [
 MAX_SCOPED = 25
 
 
+def _is_feeder(d: Path) -> bool:
+    # A feeder dir has a pyproject.toml; underscore-prefixed dirs (e.g.
+    # `_poller_core`) are shared libraries, not feeders, and must not enter
+    # the matrix.
+    return (d.is_dir() and not d.name.startswith("_")
+            and (d / "pyproject.toml").exists())
+
+
 def all_feeders() -> list[str]:
     if not FEEDERS.is_dir():
         return []
-    return sorted(d.name for d in FEEDERS.iterdir()
-                  if d.is_dir() and (d / "pyproject.toml").exists())
+    return sorted(d.name for d in FEEDERS.iterdir() if _is_feeder(d))
 
 
 def read_changed(argv: list[str]) -> list[str]:
@@ -63,7 +70,7 @@ def main(argv: list[str]) -> int:
     scoped: set[str] = set()
     for f in files:
         m = re.match(r"^feeders/([^/]+)/", f)
-        if m and (FEEDERS / m.group(1) / "pyproject.toml").exists():
+        if m and _is_feeder(FEEDERS / m.group(1)):
             scoped.add(m.group(1))
 
     if fleet:

@@ -73,7 +73,17 @@ jobs:
           set -e
           f="feeders/${{ matrix.feeder }}"
           if [ -d "$f/tests" ]; then
-            cd "$f" && python -m pytest tests/ -q --no-header \
+            # Run the *console* pytest (never `python -m pytest`, which puts the
+            # feeder dir on sys.path[0]) under --import-mode=importlib, so the
+            # editable-installed `<feeder>_core` package wins over the identically
+            # named outer project dir (`feeders/<f>/<f>_core/`). With the feeder
+            # root on sys.path that outer dir shadows the install as an empty
+            # namespace package -> `ImportError: ... (unknown location)`.
+            # Container/e2e suites need Docker/a broker/live upstream and belong
+            # to the docker-e2e gate, not this hermetic unit gate.
+            cd "$f" && pytest tests/ -q --no-header \
+              --import-mode=importlib -m "not e2e" \
+              --ignore-glob='*_container.py' --ignore-glob='*_e2e.py' \
               --cov=. --cov-report=xml -p no:cacheprovider --override-ini="addopts="
           else
             echo "no tests/ directory for ${{ matrix.feeder }}; skipping"
