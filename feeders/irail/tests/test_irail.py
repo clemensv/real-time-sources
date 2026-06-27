@@ -2,6 +2,8 @@
 
 import json
 import unittest
+
+import pytest
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
@@ -272,7 +274,7 @@ class TestParseDeparture(unittest.TestCase):
         self.assertEqual(dep.vehicle_number, "2117")
         self.assertEqual(dep.platform, "13")
         self.assertTrue(dep.is_normal_platform)
-        self.assertEqual(dep.occupancy, "low")
+        self.assertEqual(dep.occupancy.value, "low")
         self.assertEqual(dep.departure_connection_uri, "http://irail.be/connections/8814001/20260407/IC2117")
 
     def test_parse_departure_canceled_and_left(self):
@@ -281,7 +283,7 @@ class TestParseDeparture(unittest.TestCase):
         self.assertTrue(dep.is_canceled)
         self.assertTrue(dep.has_left)
         self.assertTrue(dep.is_extra_stop)
-        self.assertEqual(dep.occupancy, "high")
+        self.assertEqual(dep.occupancy.value, "high")
         self.assertFalse(dep.is_normal_platform)
 
     def test_parse_departure_time_conversion(self):
@@ -308,7 +310,7 @@ class TestParseDeparture(unittest.TestCase):
         raw = dict(SAMPLE_LIVEBOARD_RESPONSE["departures"]["departure"][0])
         raw["occupancy"] = {"@id": "http://api.irail.be/terms/something", "name": "xyz"}
         dep = IRailAPI.parse_departure(raw)
-        self.assertEqual(dep.occupancy, "unknown")
+        self.assertEqual(dep.occupancy.value, "unknown")
 
 
 class TestParseArrival(unittest.TestCase):
@@ -329,7 +331,7 @@ class TestParseArrival(unittest.TestCase):
         self.assertEqual(arr.vehicle_number, "2117")
         self.assertEqual(arr.platform, "13")
         self.assertTrue(arr.is_normal_platform)
-        self.assertEqual(arr.occupancy, "low")
+        self.assertEqual(arr.occupancy.value, "low")
         self.assertEqual(arr.connection_uri, "http://irail.be/connections/8814001/20260407/IC2117")
 
     def test_parse_arrival_arrived_and_canceled(self):
@@ -338,7 +340,7 @@ class TestParseArrival(unittest.TestCase):
         self.assertTrue(arr.is_canceled)
         self.assertTrue(arr.has_arrived)
         self.assertTrue(arr.is_extra_stop)
-        self.assertEqual(arr.occupancy, "high")
+        self.assertEqual(arr.occupancy.value, "high")
         self.assertFalse(arr.is_normal_platform)
 
     def test_parse_arrival_time_conversion(self):
@@ -358,7 +360,7 @@ class TestParseArrival(unittest.TestCase):
         raw = dict(SAMPLE_ARRIVALBOARD_RESPONSE["arrivals"]["arrival"][0])
         raw["occupancy"] = {"@id": "http://api.irail.be/terms/something", "name": "xyz"}
         arr = IRailAPI.parse_arrival(raw)
-        self.assertEqual(arr.occupancy, "unknown")
+        self.assertEqual(arr.occupancy.value, "unknown")
 
 
 class TestParseLiveboard(unittest.TestCase):
@@ -551,16 +553,16 @@ class TestDataClassSerialization(unittest.TestCase):
         self.assertEqual(len(d["arrivals"]), 1)
         self.assertEqual(d["arrivals"][0]["vehicle_type"], "IC")
 
-    def test_station_avro_roundtrip(self):
+    def test_station_rejects_avro(self):
+        """avro/binary is intentionally unsupported: to_byte_array is JSON-only across this repo."""
         from irail_producer_data.be.irail.station import Station
         station = Station(
             station_id="008814001", name="Brussels-South",
             standard_name="Bruxelles-Midi", longitude=4.33, latitude=50.83,
             uri="http://irail.be/stations/NMBS/008814001"
         )
-        avro_bytes = station.to_byte_array("avro/binary")
-        station2 = Station.from_data(avro_bytes, "avro/binary")
-        self.assertEqual(station2.station_id, "008814001")
+        with self.assertRaisesRegex(NotImplementedError, "Unsupported media type avro/binary"):
+            station.to_byte_array("avro/binary")
 
     def test_departure_null_platform_serialization(self):
         from irail_producer_data.be.irail.departure import Departure
@@ -576,9 +578,8 @@ class TestDataClassSerialization(unittest.TestCase):
         )
         d = dep.to_serializer_dict()
         self.assertIsNone(d["platform"])
-        avro_bytes = dep.to_byte_array("avro/binary")
-        dep2 = Departure.from_data(avro_bytes, "avro/binary")
-        self.assertIsNone(dep2.platform)
+        with self.assertRaisesRegex(NotImplementedError, "Unsupported media type avro/binary"):
+            dep.to_byte_array("avro/binary")
 
     def test_arrival_null_platform_serialization(self):
         from irail_producer_data.be.irail.arrival import Arrival
@@ -594,9 +595,8 @@ class TestDataClassSerialization(unittest.TestCase):
         )
         d = arr.to_serializer_dict()
         self.assertIsNone(d["platform"])
-        avro_bytes = arr.to_byte_array("avro/binary")
-        arr2 = Arrival.from_data(avro_bytes, "avro/binary")
-        self.assertIsNone(arr2.platform)
+        with self.assertRaisesRegex(NotImplementedError, "Unsupported media type avro/binary"):
+            arr.to_byte_array("avro/binary")
 
 
 class TestFetchStations(unittest.TestCase):
@@ -611,7 +611,7 @@ class TestFetchStations(unittest.TestCase):
         self.assertEqual(https_adapter.max_retries.total, 3)
         self.assertEqual(https_adapter.max_retries.backoff_factor, 1)
 
-    @patch("irail.irail.requests.Session")
+    @patch("irail_core.irail.requests.Session")
     def test_fetch_stations(self, mock_session_cls):
         mock_session = MagicMock()
         mock_response = MagicMock()
@@ -626,7 +626,7 @@ class TestFetchStations(unittest.TestCase):
         self.assertEqual(len(stations), 2)
         self.assertEqual(stations[0]["id"], "BE.NMBS.008814001")
 
-    @patch("irail.irail.requests.Session")
+    @patch("irail_core.irail.requests.Session")
     def test_fetch_liveboard_404(self, mock_session_cls):
         mock_session = MagicMock()
         mock_response = MagicMock()
@@ -639,7 +639,7 @@ class TestFetchStations(unittest.TestCase):
         result = api.fetch_liveboard("008814001")
         self.assertIsNone(result)
 
-    @patch("irail.irail.requests.Session")
+    @patch("irail_core.irail.requests.Session")
     def test_fetch_liveboard_arrival_params(self, mock_session_cls):
         mock_session = MagicMock()
         mock_response = MagicMock()

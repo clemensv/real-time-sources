@@ -433,8 +433,8 @@ class TestSupereventDataClass:
         assert "MS260408x" in json_str
         assert "gstlal" in json_str
 
-    def test_superevent_to_avro(self):
-        """Test Superevent serialization to Avro binary."""
+    def test_superevent_rejects_avro(self):
+        """avro/binary is intentionally unsupported: to_byte_array is JSON-only across this repo."""
         from gracedb_producer_data.org.ligo.gracedb.superevent import Superevent
 
         superevent = Superevent(
@@ -461,9 +461,8 @@ class TestSupereventDataClass:
             self_uri="https://gracedb.ligo.org/api/superevents/MS260408x/",
         )
 
-        avro_bytes = superevent.to_byte_array("avro/binary")
-        assert avro_bytes is not None
-        assert len(avro_bytes) > 0
+        with pytest.raises(NotImplementedError, match="Unsupported media type avro/binary"):
+            superevent.to_byte_array("avro/binary")
 
     def test_superevent_from_dict(self):
         """Test Superevent creation from dictionary."""
