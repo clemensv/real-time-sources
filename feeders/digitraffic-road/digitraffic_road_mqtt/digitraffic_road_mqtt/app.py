@@ -157,6 +157,45 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
     return parsed.hostname or "localhost", parsed.port or (8883 if scheme == "mqtts" else 1883), scheme == "mqtts"
 
 
+async def _emit_mock_mqtt(client: FiDigitrafficRoadMqttMqttClient) -> None:
+    """Emit synthetic reference + telemetry for deterministic E2E testing."""
+    # Reference: 1 TMS station, 1 weather station, 1 maintenance task type
+    tms_station = TmsStation.from_serializer_dict(_serializer_dict(TmsStation, {
+        "station_id": 23001, "name": "vt1_Espoo", "lat": 60.205, "lon": 24.656,
+        "road_number": 1, "road_section": 4, "municipality": "Espoo",
+        "province": "Uusimaa", "direction": 1, "free_flow_speed": 80,
+    }))
+    await client.publish_fi_digitraffic_road_mqtt_tms_station(station_id="23001", data=tms_station, qos=1, retain=True)
+
+    weather_station = WeatherStation.from_serializer_dict(_serializer_dict(WeatherStation, {
+        "station_id": 1001, "name": "vt1_Espoo_ws", "lat": 60.205, "lon": 24.656,
+        "road_number": 1, "road_section": 4, "municipality": "Espoo",
+        "province": "Uusimaa",
+    }))
+    await client.publish_fi_digitraffic_road_mqtt_weather_station(station_id="1001", data=weather_station, qos=1, retain=True)  # type: ignore[arg-type]
+
+    task_type = MaintenanceTaskType.from_serializer_dict({
+        "task_id": "BRUSHING", "name_fi": "Harjaus", "name_en": "Brushing",
+    })
+    await client.publish_fi_digitraffic_road_mqtt_maintenance_task_type(task_id="BRUSHING", data=task_type, qos=1, retain=True)  # type: ignore[arg-type]
+
+    # Telemetry: 1 TMS sensor reading, 1 weather sensor reading
+    tms_data = TmsSensorData.from_serializer_dict(_serializer_dict(TmsSensorData, {
+        "station_id": 23001, "sensor_id": 5116, "value": 82.0,
+        "time": "2024-01-01T12:00:00Z", "start": None, "end": None,
+    }))
+    await client.publish_fi_digitraffic_road_mqtt_tms_sensor_data(station_id="23001", sensor_id="5116", data=tms_data)
+
+    weather_data = WeatherSensorData.from_serializer_dict(_serializer_dict(WeatherSensorData, {
+        "station_id": 1001, "sensor_id": 1, "value": -2.5,
+        "time": "2024-01-01T12:00:00Z",
+    }))
+    await client.publish_fi_digitraffic_road_mqtt_weather_sensor_data(station_id="1001", sensor_id="1", data=weather_data)  # type: ignore[arg-type]
+
+    await asyncio.sleep(1)
+    logger.info("Mock mode: emitted synthetic digitraffic-road reference + telemetry via MQTT")
+
+
 async def _run(args: argparse.Namespace) -> None:
     broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
     tls = tls or args.mqtt_enable_tls
@@ -179,8 +218,11 @@ async def _run(args: argparse.Namespace) -> None:
     else:
         await client.connect(broker_host, broker_port)
     try:
-        source = MQTTSource(station_filter=parse_station_filter(args.station_filter), **parse_subscribe(args.subscribe))  # type: ignore[arg-type]
-        await DigitrafficRoadMqttBridge(source, client).run()
+        if getattr(args, 'mock', False):
+            await _emit_mock_mqtt(client)
+        else:
+            source = MQTTSource(station_filter=parse_station_filter(args.station_filter), **parse_subscribe(args.subscribe))  # type: ignore[arg-type]
+            await DigitrafficRoadMqttBridge(source, client).run()
     finally:
         await client.disconnect()
 
@@ -197,6 +239,7 @@ def main() -> None:
     feed_parser.add_argument("--mqtt-client-id", default=os.getenv("MQTT_CLIENT_ID"))
     feed_parser.add_argument("--subscribe", default=os.getenv("DIGITRAFFIC_ROAD_SUBSCRIBE", "tms,weather,traffic-messages,maintenance"))
     feed_parser.add_argument("--station-filter", default=os.getenv("DIGITRAFFIC_ROAD_STATION_FILTER"))
+    feed_parser.add_argument("--mock", action="store_true", default=os.getenv("DIGITRAFFIC_ROAD_MOCK", "").lower() in ("1", "true", "yes"))
     args = parser.parse_args()
     if args.command != "feed":
         parser.print_help()

@@ -163,12 +163,61 @@ def create_amqp_producer(args: argparse.Namespace, producer_cls):
     return producer_cls(host=host, address=address, port=port, username=username, password=password, content_mode=args.content_mode, use_tls=tls)
 
 
+async def _emit_mock_amqp(client: _AmqpClient) -> None:
+    """Emit synthetic MapChange + ReplicationState for deterministic E2E testing."""
+    now = datetime.datetime.now(tz=datetime.timezone.utc)
+    # Emit 2 ReplicationState events
+    for i in range(2):
+        state = ReplicationState.from_serializer_dict({
+            "sequence_number": 6000000 + i,
+            "timestamp": (now - datetime.timedelta(minutes=2 - i)).isoformat(),
+        })
+        await client.publish_org_open_street_map_diffs_replication_state(
+            sequence_number=str(6000000 + i),
+            _time=now.isoformat(),
+            data=state,
+            qos=0,
+            retain=False,
+        )
+    # Emit 2 MapChange events
+    for i in range(2):
+        change = MapChange.from_serializer_dict({
+            "changeset_id": 150000000 + i,
+            "type": "node",
+            "id": 10000000 + i,
+            "version": 1,
+            "timestamp": now.isoformat(),
+            "uid": 12345,
+            "user": "mockuser",
+            "lat": 51.5 + i * 0.01,
+            "lon": -0.1 + i * 0.01,
+            "tags": {"name": f"Mock Place {i}"},
+            "action": "create",
+            "sequence_number": 6000000,
+        })
+        await client.publish_org_open_street_map_diffs_map_change(
+            changeset_id=str(150000000 + i),
+            element_type="node",
+            element_id=str(10000000 + i),
+            _time=now.isoformat(),
+            data=change,
+            qos=0,
+            retain=False,
+        )
+    import time
+    time.sleep(1)
+    logger.info("Mock mode: emitted 4 synthetic OSM diff events via AMQP")
+
+
 async def _run(args: argparse.Namespace) -> None:
     producer = create_amqp_producer(args, OrgOpenStreetMapDiffsAmqpProducer)
     client = _AmqpClient(producer)
-    state_store = StateStore(args.state_file) if args.state_file else None
     try:
-        await OsmDiffsAmqpBridge(client, state_store=state_store, state_url=args.state_url, diff_base_url=args.diff_base_url, poll_interval=args.poll_interval, once=args.once).run()
+        if getattr(args, 'mock', False):
+            await _emit_mock_amqp(client)
+        else:
+            state_store = StateStore(args.state_file) if args.state_file else None
+            await OsmDiffsAmqpBridge(client, state_store=state_store, state_url=args.state_url, diff_base_url=args.diff_base_url, poll_interval=args.poll_interval, once=args.once).run()
     finally:
         producer.close()
 
@@ -187,6 +236,7 @@ def main() -> None:
     feed.add_argument("--state-file", default=os.getenv("OSM_DIFFS_STATE_FILE", DEFAULT_STATE_FILE))
     feed.add_argument("--poll-interval", type=int, default=int(os.getenv("OSM_DIFFS_POLL_INTERVAL", "60")))
     feed.add_argument("--once", action="store_true", default=os.getenv("OSM_DIFFS_ONCE", "false").lower() in ("true", "1", "yes"))
+    feed.add_argument("--mock", action="store_true", default=os.getenv("OSM_DIFFS_MOCK", "").lower() in ("1", "true", "yes"))
     args = p.parse_args()
     if args.command != "feed":
         p.print_help()

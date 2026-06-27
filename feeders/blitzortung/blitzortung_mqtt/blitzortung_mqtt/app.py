@@ -123,6 +123,31 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
     return parsed.hostname or "localhost", parsed.port or (8883 if scheme == "mqtts" else 1883), scheme == "mqtts"
 
 
+async def _emit_mock_mqtt(client) -> None:
+    """Emit synthetic lightning strokes for deterministic E2E testing."""
+    from datetime import datetime, timezone
+    base_time_ms = int(datetime(2024, 1, 1, tzinfo=timezone.utc).timestamp() * 1000)
+    for index in range(3):
+        stroke_raw = {
+            "src": 1, "id": 9_000_000_000 + index, "time": base_time_ms + index,
+            "lat": 50.0 + index * 0.1, "lon": 8.0 + index * 0.1,
+            "srv": 1, "del": 0, "dev": 1000.0, "sta": {"100": 0, "101": 1},
+        }
+        data = LightningStroke.from_serializer_dict(normalize_stroke(stroke_raw))
+        await client.publish_blitzortung_lightning_mqtt_lightning_stroke(
+            source_id=str(data.source_id),
+            geohash5=data.geohash5,
+            geohash7=data.geohash7,
+            stroke_id=data.stroke_id,
+            _time=data.event_time,
+            data=data,
+            qos=0,
+            retain=False,
+        )
+    await asyncio.sleep(1)
+    logger.info("Mock mode: emitted 3 synthetic Blitzortung strokes via MQTT")
+
+
 async def _run(args: argparse.Namespace) -> None:
     broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
     tls = tls or args.mqtt_enable_tls
@@ -145,7 +170,10 @@ async def _run(args: argparse.Namespace) -> None:
     else:
         await client.connect(broker_host, broker_port)
     try:
-        await BlitzortungMqttBridge(client).run(max_events=args.max_events)
+        if getattr(args, 'mock', False):
+            await _emit_mock_mqtt(client)
+        else:
+            await BlitzortungMqttBridge(client).run(max_events=args.max_events)
     finally:
         await client.disconnect()
 
@@ -164,6 +192,7 @@ def main() -> None:
     feed.add_argument("--mqtt-password", default=os.getenv("MQTT_PASSWORD"))
     feed.add_argument("--mqtt-client-id", default=os.getenv("MQTT_CLIENT_ID"))
     feed.add_argument("--max-events", type=int, default=int(os.getenv("BLITZORTUNG_MAX_EVENTS", "0")) or None)
+    feed.add_argument("--mock", action="store_true", default=os.getenv("BLITZORTUNG_MOCK", "").lower() in ("1", "true", "yes"))
     args = p.parse_args()
     if args.command != "feed":
         p.print_help()

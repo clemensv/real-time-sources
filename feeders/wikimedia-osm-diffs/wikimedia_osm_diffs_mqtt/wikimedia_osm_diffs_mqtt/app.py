@@ -132,6 +132,89 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
     return parsed.hostname or "localhost", parsed.port or (8883 if scheme == "mqtts" else 1883), scheme == "mqtts"
 
 
+async def _emit_mock_mqtt(client: OrgOpenStreetMapDiffsMqttMqttClient) -> None:
+    """Emit synthetic MapChange + ReplicationState for deterministic E2E testing."""
+    now = datetime.datetime.now(tz=datetime.timezone.utc)
+    # Emit 1 ReplicationState (retained)
+    state = ReplicationState.from_serializer_dict({
+        "sequence_number": 6000000,
+        "timestamp": now.isoformat(),
+    })
+    await client.publish_org_open_street_map_diffs_mqtt_replication_state(
+        data=state,
+        qos=1,
+        retain=True,
+        _time=now.isoformat(),
+    )
+    # Emit 1 node (with coordinates → geohash5)
+    node_change = MapChange.from_serializer_dict({
+        "changeset_id": 150000001,
+        "type": "node",
+        "id": 10000001,
+        "version": 1,
+        "timestamp": now.isoformat(),
+        "uid": 12345,
+        "user": "mockuser",
+        "lat": 51.5074,
+        "lon": -0.1278,
+        "tags": {"name": "Mock Node"},
+        "action": "create",
+        "sequence_number": 6000000,
+    })
+    await client.publish_org_open_street_map_diffs_mqtt_node(
+        geohash5="gcpvj",
+        element_id="10000001",
+        data=node_change,
+        qos=0,
+        retain=False,
+        _time=now.isoformat(),
+    )
+    # Emit 1 way (no coordinates → nogeo)
+    way_change = MapChange.from_serializer_dict({
+        "changeset_id": 150000002,
+        "type": "way",
+        "id": 20000001,
+        "version": 2,
+        "timestamp": now.isoformat(),
+        "uid": 12345,
+        "user": "mockuser",
+        "tags": {"highway": "residential"},
+        "action": "modify",
+        "sequence_number": 6000000,
+    })
+    await client.publish_org_open_street_map_diffs_mqtt_way(
+        geohash5="nogeo",
+        element_id="20000001",
+        data=way_change,
+        qos=0,
+        retain=False,
+        _time=now.isoformat(),
+    )
+    # Emit 1 relation (no coordinates → nogeo)
+    rel_change = MapChange.from_serializer_dict({
+        "changeset_id": 150000003,
+        "type": "relation",
+        "id": 30000001,
+        "version": 3,
+        "timestamp": now.isoformat(),
+        "uid": 12345,
+        "user": "mockuser",
+        "tags": {"type": "route"},
+        "action": "delete",
+        "sequence_number": 6000000,
+    })
+    await client.publish_org_open_street_map_diffs_mqtt_relation(
+        geohash5="nogeo",
+        element_id="30000001",
+        data=rel_change,
+        qos=0,
+        retain=False,
+        _time=now.isoformat(),
+    )
+    await asyncio.sleep(1)
+    logger.info("Mock mode: emitted 4 synthetic OSM diff events via MQTT")
+
+
 async def _run(args: argparse.Namespace) -> None:
     broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
     tls = tls or args.mqtt_enable_tls
@@ -150,7 +233,10 @@ async def _run(args: argparse.Namespace) -> None:
         await client.connect(broker_host, broker_port)
     state_store = StateStore(args.state_file) if args.state_file else None
     try:
-        await OsmDiffsMqttBridge(client, state_store=state_store, state_url=args.state_url, diff_base_url=args.diff_base_url, poll_interval=args.poll_interval, once=args.once).run()
+        if getattr(args, 'mock', False):
+            await _emit_mock_mqtt(client)
+        else:
+            await OsmDiffsMqttBridge(client, state_store=state_store, state_url=args.state_url, diff_base_url=args.diff_base_url, poll_interval=args.poll_interval, once=args.once).run()
     finally:
         await client.disconnect()
 
@@ -173,6 +259,7 @@ def main() -> None:
     feed.add_argument("--state-file", default=os.getenv("OSM_DIFFS_STATE_FILE", DEFAULT_STATE_FILE))
     feed.add_argument("--poll-interval", type=int, default=int(os.getenv("OSM_DIFFS_POLL_INTERVAL", "60")))
     feed.add_argument("--once", action="store_true", default=os.getenv("OSM_DIFFS_ONCE", "false").lower() in ("true", "1", "yes"))
+    feed.add_argument("--mock", action="store_true", default=os.getenv("OSM_DIFFS_MOCK", "").lower() in ("1", "true", "yes"))
     args = p.parse_args()
     if args.command != "feed":
         p.print_help()

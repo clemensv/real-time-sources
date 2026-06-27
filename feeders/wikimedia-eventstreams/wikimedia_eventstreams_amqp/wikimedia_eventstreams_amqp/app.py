@@ -145,11 +145,51 @@ def create_amqp_producer(args: argparse.Namespace, producer_cls):
     return producer_cls(host=host, address=address, port=port, username=username, password=password, content_mode=args.content_mode, use_tls=tls)
 
 
+async def _emit_mock_amqp(client: _AmqpClient) -> None:
+    """Emit synthetic RecentChange events for deterministic E2E testing."""
+    from datetime import datetime, timezone
+    for i in range(4):
+        data = RecentChange.from_serializer_dict({
+            "wiki": "enwiki",
+            "type": "edit",
+            "namespace": "0",
+            "title": f"Mock_Article_{i}",
+            "comment": "mock edit",
+            "user": "MockUser",
+            "bot": False,
+            "minor": False,
+            "patrolled": False,
+            "length_old": 100 + i,
+            "length_new": 110 + i,
+            "revision_old": 1000 + i,
+            "revision_new": 1001 + i,
+            "server_url": "https://en.wikipedia.org",
+            "server_name": "en.wikipedia.org",
+            "event_id": f"mock-{i:08d}",
+            "event_time": datetime(2024, 1, 1, 0, 0, i, tzinfo=timezone.utc).isoformat(),
+        })
+        await client.publish_wikimedia_event_streams_recent_change(
+            wiki="enwiki",
+            namespace="0",
+            event_id=f"mock-{i:08d}",
+            event_time=datetime(2024, 1, 1, 0, 0, i, tzinfo=timezone.utc).isoformat(),
+            data=data,
+            qos=0,
+            retain=False,
+        )
+    import time
+    time.sleep(1)
+    logger.info("Mock mode: emitted 4 synthetic RecentChange events via AMQP")
+
+
 async def _run(args: argparse.Namespace) -> None:
     producer = create_amqp_producer(args, WikimediaEventStreamsAmqpProducer)
     client = _AmqpClient(producer)
     try:
-        await WikimediaAmqpBridge(client, stream_url=args.stream_url, user_agent=args.user_agent).run(max_events=args.max_events)
+        if getattr(args, 'mock', False):
+            await _emit_mock_amqp(client)
+        else:
+            await WikimediaAmqpBridge(client, stream_url=args.stream_url, user_agent=args.user_agent).run(max_events=args.max_events)
     finally:
         producer.close()
 
@@ -166,6 +206,7 @@ def main() -> None:
     feed.add_argument("--stream-url", default=os.getenv("WIKIMEDIA_EVENTSTREAMS_URL", STREAM_URL))
     feed.add_argument("--user-agent", default=os.getenv("WIKIMEDIA_EVENTSTREAMS_USER_AGENT", DEFAULT_USER_AGENT))
     feed.add_argument("--max-events", type=int, default=int(os.getenv("WIKIMEDIA_EVENTSTREAMS_MAX_EVENTS", "0")) or None)
+    feed.add_argument("--mock", action="store_true", default=os.getenv("WIKIMEDIA_EVENTSTREAMS_MOCK", "").lower() in ("1", "true", "yes"))
     args = p.parse_args()
     if args.command != "feed":
         p.print_help()

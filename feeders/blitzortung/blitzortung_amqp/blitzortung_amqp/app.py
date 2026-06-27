@@ -209,6 +209,34 @@ class BlitzortungAmqpBridge:
         self._count += 1
 
 
+async def _emit_mock(producer) -> None:
+    """Emit synthetic lightning strokes for deterministic E2E testing."""
+    from datetime import datetime, timezone
+    base_time_ms = int(datetime(2024, 1, 1, tzinfo=timezone.utc).timestamp() * 1000)
+    for index in range(3):
+        stroke_raw = {
+            "src": 1,
+            "id": 9_000_000_000 + index,
+            "time": base_time_ms + index,
+            "lat": 50.0 + index * 0.1,
+            "lon": 8.0 + index * 0.1,
+            "srv": 1,
+            "del": 0,
+            "dev": 1000.0,
+            "sta": {"100": 0, "101": 1},
+        }
+        data = LightningStroke.from_serializer_dict(normalize_stroke(stroke_raw))
+        await producer.publish_blitzortung_lightning_lightning_stroke(
+            source_id=str(data.source_id),
+            geohash5=data.geohash5,
+            geohash7=data.geohash7,
+            stroke_id=data.stroke_id,
+            time=data.event_time,
+            data=data,
+        )
+    logger.info("Mock mode: emitted 3 synthetic Blitzortung strokes via AMQP")
+
+
 async def _run(args: argparse.Namespace) -> None:
     address = args.address
     if args.broker_url:
@@ -242,7 +270,10 @@ async def _run(args: argparse.Namespace) -> None:
         sas_key=args.sas_key,
     )
     try:
-        await BlitzortungAmqpBridge(producer).run(max_events=args.max_events)
+        if getattr(args, 'mock', False):
+            await _emit_mock(producer)
+        else:
+            await BlitzortungAmqpBridge(producer).run(max_events=args.max_events)
     finally:
         producer.close()
 
@@ -257,6 +288,7 @@ def main() -> None:
     feed = sub.add_parser("feed", help="Stream Blitzortung strokes to AMQP")
     add_amqp_arguments(feed, "blitzortung")
     feed.add_argument("--max-events", type=int, default=int(os.getenv("BLITZORTUNG_MAX_EVENTS", "0")) or None)
+    feed.add_argument("--mock", action="store_true", default=os.getenv("BLITZORTUNG_MOCK", "").lower() in ("1", "true", "yes"))
     args = p.parse_args()
     if args.command != "feed":
         p.print_help()

@@ -43,6 +43,31 @@ def _build(args):
     elif args.auth_mode=='sas': kwargs.update(sas_key_name=args.sas_key_name, sas_key=args.sas_key)
     else: kwargs.update(username=user,password=pwd)
     return _apply(CAGovECCCWeatherAmqpProducer(**kwargs))
+async def _emit_mock_amqp(producer):
+    """Emit synthetic Station + WeatherObservation for deterministic E2E."""
+    from datetime import datetime, timezone
+    from environment_canada_amqp_producer_data import Station, WeatherObservation
+    now = datetime.now(tz=timezone.utc)
+    station = Station.from_serializer_dict({
+        "msc_id": "CYOW", "name": "Ottawa Intl A", "province": "ON",
+        "province_territory": "ON", "latitude": 45.3225, "longitude": -75.6692,
+        "elevation": 114.0, "climate_id": "6106000", "wmo_id": "71628",
+    })
+    producer.send_station(data=station, _msc_id="CYOW", _province="on")
+    obs = WeatherObservation.from_serializer_dict({
+        "msc_id": "CYOW", "station_name": "Ottawa Intl A", "province": "ON",
+        "observation_time": now.isoformat(), "air_temperature": -5.2,
+        "dew_point": -8.1, "relative_humidity": 78.0,
+        "wind_speed": 15.0, "wind_direction": 270.0, "wind_gust": 25.0,
+        "pressure_station": 101.5, "pressure_sea_level": 101.8,
+        "visibility": 24.0, "humidex": None, "wind_chill": -12.0,
+        "weather_condition": "Light Snow",
+    })
+    producer.send_weather_observation(data=obs, _msc_id="CYOW", _province="on", _time=now.isoformat())
+    import time; time.sleep(1)
+    logger.info("Mock mode: emitted 1 Station + 1 WeatherObservation via AMQP")
+
+
 async def _run(args,producer):
     api=ECWeatherAPI(polling_interval=args.polling_interval, station_limit=args.station_limit, obs_limit=args.obs_limit); state=_load_state(args.state_file); provinces={}
     for feature in api.get_stations():
@@ -63,8 +88,12 @@ async def _run(args,producer):
         await asyncio.sleep(args.polling_interval)
 def main():
     logging.basicConfig(level=os.getenv('LOG_LEVEL','INFO').upper(), format='%(asctime)s %(levelname)s %(name)s: %(message)s')
-    p=argparse.ArgumentParser(); p.add_argument('feed_command', nargs='?', default='feed'); p.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL')); p.add_argument('--host', default=os.getenv('AMQP_HOST')); p.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT','0')) or None); p.add_argument('--address', default=os.getenv('AMQP_ADDRESS','environment-canada')); p.add_argument('--username', default=os.getenv('AMQP_USERNAME')); p.add_argument('--password', default=os.getenv('AMQP_PASSWORD')); p.add_argument('--tls', action='store_true', default=_env_bool('AMQP_TLS',False)); p.add_argument('--content-mode', choices=('binary','structured'), default=os.getenv('AMQP_CONTENT_MODE','binary')); p.add_argument('--auth-mode', choices=('password','entra','sas'), default=os.getenv('AMQP_AUTH_MODE','password')); p.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE', DEFAULT_ENTRA_AUDIENCE_SERVICEBUS)); p.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID')); p.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME')); p.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY')); p.add_argument('--state-file', default=os.getenv('STATE_FILE', os.path.expanduser(r'~/.environment_canada_amqp_state.json'))); p.add_argument('--polling-interval', type=int, default=int(os.getenv('POLLING_INTERVAL','900'))); p.add_argument('--station-limit', type=int, default=int(os.getenv('STATION_LIMIT','500'))); p.add_argument('--obs-limit', type=int, default=int(os.getenv('OBS_LIMIT','500'))); p.add_argument('--once', action='store_true', default=_env_bool('ONCE_MODE',False)); a=p.parse_args(); producer=_build(a)
-    try: asyncio.run(_run(a,producer))
+    p=argparse.ArgumentParser(); p.add_argument('feed_command', nargs='?', default='feed'); p.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL')); p.add_argument('--host', default=os.getenv('AMQP_HOST')); p.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT','0')) or None); p.add_argument('--address', default=os.getenv('AMQP_ADDRESS','environment-canada')); p.add_argument('--username', default=os.getenv('AMQP_USERNAME')); p.add_argument('--password', default=os.getenv('AMQP_PASSWORD')); p.add_argument('--tls', action='store_true', default=_env_bool('AMQP_TLS',False)); p.add_argument('--content-mode', choices=('binary','structured'), default=os.getenv('AMQP_CONTENT_MODE','binary')); p.add_argument('--auth-mode', choices=('password','entra','sas'), default=os.getenv('AMQP_AUTH_MODE','password')); p.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE', DEFAULT_ENTRA_AUDIENCE_SERVICEBUS)); p.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID')); p.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME')); p.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY')); p.add_argument('--state-file', default=os.getenv('STATE_FILE', os.path.expanduser(r'~/.environment_canada_amqp_state.json'))); p.add_argument('--polling-interval', type=int, default=int(os.getenv('POLLING_INTERVAL','900'))); p.add_argument('--station-limit', type=int, default=int(os.getenv('STATION_LIMIT','500'))); p.add_argument('--obs-limit', type=int, default=int(os.getenv('OBS_LIMIT','500'))); p.add_argument('--once', action='store_true', default=_env_bool('ONCE_MODE',False)); p.add_argument('--mock', action='store_true', default=_env_bool('ENVIRONMENT_CANADA_MOCK',False)); a=p.parse_args(); producer=_build(a)
+    try:
+        if a.mock:
+            asyncio.run(_emit_mock_amqp(producer))
+        else:
+            asyncio.run(_run(a,producer))
     finally:
         close=getattr(producer,'close',None)
         if close: close()

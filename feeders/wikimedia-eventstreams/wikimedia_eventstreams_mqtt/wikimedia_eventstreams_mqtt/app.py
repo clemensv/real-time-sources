@@ -110,6 +110,42 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
     return parsed.hostname or "localhost", parsed.port or (8883 if scheme == "mqtts" else 1883), scheme == "mqtts"
 
 
+async def _emit_mock_mqtt(client: WikimediaEventStreamsMqttMqttClient) -> None:
+    """Emit synthetic RecentChange events for deterministic E2E testing."""
+    from datetime import datetime, timezone
+    for i in range(4):
+        data = RecentChange.from_serializer_dict({
+            "wiki": "enwiki",
+            "type": "edit",
+            "namespace": "0",
+            "title": f"Mock_Article_{i}",
+            "comment": "mock edit",
+            "user": "MockUser",
+            "bot": False,
+            "minor": False,
+            "patrolled": False,
+            "length_old": 100 + i,
+            "length_new": 110 + i,
+            "revision_old": 1000 + i,
+            "revision_new": 1001 + i,
+            "server_url": "https://en.wikipedia.org",
+            "server_name": "en.wikipedia.org",
+            "event_id": f"mock-{i:08d}",
+            "event_time": datetime(2024, 1, 1, 0, 0, i, tzinfo=timezone.utc).isoformat(),
+        })
+        await client.publish_wikimedia_event_streams_recent_change_mqtt(
+            wiki="enwiki",
+            namespace="0",
+            event_id=f"mock-{i:08d}",
+            event_time=datetime(2024, 1, 1, 0, 0, i, tzinfo=timezone.utc).isoformat(),
+            data=data,
+            qos=0,
+            retain=False,
+        )
+    await asyncio.sleep(1)
+    logger.info("Mock mode: emitted 4 synthetic RecentChange events via MQTT")
+
+
 async def _run(args: argparse.Namespace) -> None:
     broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
     tls = tls or args.mqtt_enable_tls
@@ -127,7 +163,10 @@ async def _run(args: argparse.Namespace) -> None:
     else:
         await client.connect(broker_host, broker_port)
     try:
-        await WikimediaMqttBridge(client, stream_url=args.stream_url, user_agent=args.user_agent).run(max_events=args.max_events)
+        if getattr(args, 'mock', False):
+            await _emit_mock_mqtt(client)
+        else:
+            await WikimediaMqttBridge(client, stream_url=args.stream_url, user_agent=args.user_agent).run(max_events=args.max_events)
     finally:
         await client.disconnect()
 
@@ -148,6 +187,7 @@ def main() -> None:
     feed.add_argument("--stream-url", default=os.getenv("WIKIMEDIA_EVENTSTREAMS_URL", STREAM_URL))
     feed.add_argument("--user-agent", default=os.getenv("WIKIMEDIA_EVENTSTREAMS_USER_AGENT", DEFAULT_USER_AGENT))
     feed.add_argument("--max-events", type=int, default=int(os.getenv("WIKIMEDIA_EVENTSTREAMS_MAX_EVENTS", "0")) or None)
+    feed.add_argument("--mock", action="store_true", default=os.getenv("WIKIMEDIA_EVENTSTREAMS_MOCK", "").lower() in ("1", "true", "yes"))
     args = p.parse_args()
     if args.command != "feed":
         p.print_help()

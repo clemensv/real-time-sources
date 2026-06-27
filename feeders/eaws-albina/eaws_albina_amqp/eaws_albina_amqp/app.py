@@ -68,9 +68,31 @@ async def _run_live(args: argparse.Namespace, producer) -> None:
         await asyncio.sleep(args.polling_interval)
 def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument('feed_command', nargs='?', default='feed'); parser.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL')); parser.add_argument('--host', default=os.getenv('AMQP_HOST')); parser.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT', '0')) or None); parser.add_argument('--address', default=os.getenv('AMQP_ADDRESS', SOURCE_ID)); parser.add_argument('--username', default=os.getenv('AMQP_USERNAME')); parser.add_argument('--password', default=os.getenv('AMQP_PASSWORD')); parser.add_argument('--tls', action='store_true', default=_env_bool('AMQP_TLS', False)); parser.add_argument('--content-mode', choices=('binary', 'structured'), default=os.getenv('AMQP_CONTENT_MODE', 'binary')); parser.add_argument('--auth-mode', choices=('password', 'entra', 'sas'), default=os.getenv('AMQP_AUTH_MODE', 'password')); parser.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE', DEFAULT_ENTRA_AUDIENCE_SERVICEBUS)); parser.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID')); parser.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME')); parser.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY')); parser.add_argument('--polling-interval', type=int, default=int(os.getenv('POLLING_INTERVAL', '3600'))); parser.add_argument('--last-polled-file', default=os.getenv('STATE_FILE', os.path.expanduser('~/.eaws_albina_amqp_state.json'))); parser.add_argument('--once', action='store_true', default=_env_bool('ONCE_MODE', False)); parser.add_argument('--regions', default=os.getenv('EAWS_ALBINA_REGIONS', ','.join(DEFAULT_REGIONS))); parser.add_argument('--lang', default=os.getenv('EAWS_ALBINA_LANG', DEFAULT_LANG)); return parser
+async def _emit_mock_amqp(producer) -> None:
+    """Emit synthetic AvalancheBulletin for deterministic E2E testing."""
+    from eaws_albina_amqp_producer_data import AvalancheBulletin
+    bulletin = AvalancheBulletin.from_serializer_dict({
+        "region_id": "AT-07",
+        "country": "AT",
+        "danger_level": "moderate",
+        "valid_from": "2024-12-15T17:00:00Z",
+        "valid_to": "2024-12-16T17:00:00Z",
+        "highlights": "Mock bulletin for E2E testing",
+        "comment": "Synthetic data - summer mode",
+        "tendency": "steady",
+    })
+    producer.send_avalanche_bulletin(data=bulletin, _region_id="AT-07", _country="AT", _danger_level="moderate")
+    import time as _time; _time.sleep(1)
+    logger.info("Mock mode: emitted 1 synthetic AvalancheBulletin via AMQP")
+
+
 async def _async_main(args: argparse.Namespace) -> None:
     producer = _retry_producer_init(lambda: _build_amqp_producer(args))
-    try: await _run_live(args, producer)
+    try:
+        if _env_bool('EAWS_ALBINA_MOCK', False):
+            await _emit_mock_amqp(producer)
+        else:
+            await _run_live(args, producer)
     finally:
         close = getattr(producer, 'close', None)
         if close: close()
