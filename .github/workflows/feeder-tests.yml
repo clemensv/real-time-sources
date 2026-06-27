@@ -1,0 +1,71 @@
+name: Feeder Unit Tests
+
+# P1 guardrail: run the unit tests of every feeder touched by a PR (plus the
+# whole fleet when shared tooling changes). Installs the generated producer
+# sub-packages in dependency order via import_smoke.py --install-only (the
+# local sub-packages are not on PyPI), then runs the source's pytest suite.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: feeder-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.d.outputs.matrix }}
+      empty: ${{ steps.d.outputs.empty }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Compute changed files
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          if [ -n "$base" ]; then
+            git diff --name-only "$base" "${{ github.sha }}" > changed.txt \
+              || git diff --name-only HEAD~1 HEAD > changed.txt
+          else
+            git diff --name-only HEAD~1 HEAD > changed.txt
+          fi
+          cat changed.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - id: d
+        run: |
+          export CHANGED_FILES="$(cat changed.txt)"
+          python tools/ci/discover_feeders.py
+
+  test:
+    needs: discover
+    if: needs.discover.outputs.empty != 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install (ordered) + unit tests ${{ matrix.feeder }}
+        run: |
+          set -e
+          f="feeders/${{ matrix.feeder }}"
+          # Ordered editable install of the generated sub-packages + the feeder.
+          python tools/ci/import_smoke.py "$f" --install-only
+          python -m pip install pytest
+          if [ -d "$f/tests" ]; then
+            cd "$f" && python -m pytest tests/ -x -q --no-header
+          else
+            echo "no tests/ directory for ${{ matrix.feeder }}; skipping"
+          fi

@@ -359,6 +359,11 @@ RUN pip install --no-cache-dir ./<source>_amqp_producer/<source>_amqp_producer_d
 ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="<source>"
 
+# Build-time import smoke: a successful build proves <source>_amqp and its
+# companion packages import inside the image (closes the "built but never
+# ran" gap). PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = '<source>_amqp'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
 CMD ["python", "-m", "<source>_amqp", "feed"]
 ```
 

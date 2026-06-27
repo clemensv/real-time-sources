@@ -11,7 +11,7 @@ Generalized CAP 1.2 alert feeder for key-less public weather and emergency alert
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
-## Quick start — how to consume
+## Quick start â€” how to consume
 
 These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 

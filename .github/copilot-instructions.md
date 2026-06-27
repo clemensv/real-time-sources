@@ -364,6 +364,18 @@ catches the entire "shipped but never ran" bug class: missing
 `__main__.py`, wrong import paths, missing Dockerfile deps that would
 crash on first start.
 
+The CI-enforced equivalent of this gate is
+`python tools/ci/import_smoke.py feeders/<source>` (workflow
+`import-smoke.yml`, scoped by `tools/ci/discover_feeders.py` to the
+feeders a PR touches, escalating to the whole fleet on a shared-tooling
+change). It py_compiles the tree, editable-installs the generated
+sub-packages in dependency order, then imports each transport variant's
+runtime module taken from the `python -m <module>` target of every
+`Dockerfile*` -- importing `<module>.app` (the MQTT/AMQP companion crash
+site) when present, else the bare module, and **never `__main__`** (72
+feeders call `main()` at module scope, which would hang). Use `--plan`
+for a no-install, compile-only check on Windows.
+
 ### Gate 2: py_compile on generated + hand-written code
 
 ```powershell
@@ -382,6 +394,19 @@ docker build -f feeders/<source>/Dockerfile.amqp feeders/<source> --no-cache -q
 
 If a Dockerfile exists for a transport and the source was modified,
 it must build. A build failure blocks the commit.
+
+Every `Dockerfile*` carries a build-time import-smoke `RUN` just before
+its final `CMD`:
+
+```dockerfile
+RUN python -c "import importlib, importlib.util as _u; _m='<module>'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+```
+
+A successful `docker build` therefore *proves* the runtime module and
+every companion package it imports are installed and import-clean inside
+the image -- the in-image equivalent of Gate 1, and the net that would
+have caught the `Dockerfile.amqp`-missing-`_producer_mqtt_client` class.
+Never delete that line when editing a Dockerfile.
 
 ### Gate 4: Unit tests pass
 
@@ -422,6 +447,26 @@ are acceptable; new un-suppressed errors are not.
 | Bridge runtime logic | 1, 2, 3, 4, 5, 6 |
 | New transport variant (MQTT/AMQP app) | 1, 2, 3, 4, 5, 6 |
 | Documentation only | None |
+
+### Enforced in CI vs advisory
+
+Several of these gates now run automatically on every pull request; the
+rest remain agent-run pre-commit checks. Knowing which is which tells you
+what a green PR has *already* proven and what you still owe by hand.
+
+| Gate | CI workflow (auto) | Scope |
+|---|---|---|
+| 1 Import smoke | `import-smoke.yml` | feeders the PR touches (fleet on shared-tooling change) |
+| 2 py_compile | folded into gates 1 and 5 | — |
+| 4 Unit tests | `feeder-tests.yml` | feeders the PR touches |
+| 5 Docker E2E | `test-docker-e2e.yml` (sharded via `discover_matrix.py`) | scoped / smoke set |
+| 6 mypy | `mypy.yml` | whole `feeders/` tree |
+| Encoding | `lint-encoding.yml` | `catalog.json` + every per-source doc |
+| 3 Docker build | advisory (agent-run) + the build-time smoke `RUN` inside each image | per touched Dockerfile |
+
+Advisory gates are still mandatory before you commit -- CI not running
+them does not make them optional. Conversely, a CI-enforced gate going
+red is never a "flake": fix it, per "All Issues Are Issues" below.
 
 ### Enforcement
 

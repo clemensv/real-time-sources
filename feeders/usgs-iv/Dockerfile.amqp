@@ -44,4 +44,9 @@ ENV AMQP_AUTH_MODE="password"
 ENV AMQP_TLS="false"
 ENV USGS_IV_MOCK="false"
 
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'usgs_iv_amqp'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
 CMD ["python", "-m", "usgs_iv_amqp", "feed"]

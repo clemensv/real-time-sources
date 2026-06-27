@@ -427,6 +427,10 @@ LABEL source="<source>" \
       documentation="https://github.com/clemensv/real-time-sources/blob/main/<source>/CONTAINER.md" \
       license="MIT"
 # … install order: producer_data → producer_mqtt_producer → <source>_mqtt
+# Build-time import smoke: a successful build proves <source>_mqtt and its
+# companion packages import inside the image (closes the "built but never
+# ran" gap). PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = '<source>_mqtt'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
 CMD ["python", "-m", "<source>_mqtt", "feed"]
 ```
 
@@ -504,7 +508,9 @@ that:
      present in the MQTT v5 user properties.
    - Payload validates against the JsonStructure schema in the manifest.
 
-A source is not done until this passes.
+**Reuse the settled compose networking from the Kafka/MQTT E2E harness verbatim** -- the broker hostname, the shared Docker network, and the container-to-container address resolution were stabilized over many trial-and-error iterations (and one revert). Copy the existing `test_docker_mqtt_flow.py` topology; do not re-derive the networking.
+
+A source is not done until this passes **and at least one real MQTT message has been observed on the wire** for the source -- a green build, a started container, and passing unit tests do not count as proof (the class-A "shipped but never ran" defects all passed those and emitted zero messages). Record the observed-message evidence in the PR body.
 
 ## Documentation Surface
 

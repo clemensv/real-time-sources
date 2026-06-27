@@ -140,24 +140,24 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): Stable bridge identifier for the buoy or mooring dataset.
 - **`station_name`** (string, required): Human-readable station name derived from the dataset title.
 - **`observation_time`** (string, required): Observation timestamp normalized to UTC ISO 8601 form.
-- **`water_temperature_c`** (double or null, optional, Cel (Â°C)): Water temperature in degrees Celsius.
+- **`water_temperature_c`** (double or null, optional, Cel (°C)): Water temperature in degrees Celsius.
 - **`conductivity_s_m`** (double or null, optional, S/m): Electrical conductivity in siemens per meter.
 - **`pressure_dbar`** (double or null, optional, dbar): Water pressure in decibar as published by the raw datasets.
 - **`dissolved_oxygen_mg_l`** (double or null, optional, mg/L): Dissolved oxygen concentration in milligrams per liter.
 - **`ph`** (double or null, optional): Measured pH value.
-- **`chlorophyll_ug_l`** (double or null, optional, ug/L (Âµg/L)): Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter.
+- **`chlorophyll_ug_l`** (double or null, optional, ug/L (µg/L)): Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter.
 - **`turbidity_ntu`** (double or null, optional, NTU): Turbidity in nephelometric turbidity units.
-- **`chlorophyll_stddev_ug_l`** (double or null, optional, ug/L (Âµg/L)): Standard deviation of chlorophyll fluorescence in micrograms per liter.
+- **`chlorophyll_stddev_ug_l`** (double or null, optional, ug/L (µg/L)): Standard deviation of chlorophyll fluorescence in micrograms per liter.
 - **`turbidity_stddev_ntu`** (double or null, optional, NTU): Standard deviation of turbidity in nephelometric turbidity units.
 - **`salinity_psu`** (double or null, optional, PSU): Salinity in practical salinity units.
 - **`specific_conductivity_s_m`** (double or null, optional, S/m): Specific conductivity in siemens per meter.
 - **`dissolved_oxygen_saturation_pct`** (double or null, optional, P1 (%)): Dissolved oxygen saturation as a percentage.
-- **`nitrate_umol`** (double or null, optional, umol (Âµmol)): Nitrate or nitrate-plus-nitrite concentration in micromoles.
+- **`nitrate_umol`** (double or null, optional, umol (µmol)): Nitrate or nitrate-plus-nitrite concentration in micromoles.
 - **`nitrate_mg_l`** (double or null, optional, mg/L): Nitrate or nitrate-plus-nitrite concentration in milligrams per liter.
-- **`wind_direction_deg`** (double or null, optional, deg (Â°)): Wind direction in degrees at the buoy surface.
+- **`wind_direction_deg`** (double or null, optional, deg (°)): Wind direction in degrees at the buoy surface.
 - **`wind_speed_m_s`** (double or null, optional, m/s): Wind speed in meters per second at the buoy surface.
-- **`photosynthetically_active_radiation_umol_s_m2`** (double or null, optional, umol/s/m2 (Âµmol/s/mÂ²)): Photosynthetically active radiation in micromoles per second per square meter.
-- **`air_temperature_f`** (double or null, optional, [degF] (Â°F)): Air temperature in degrees Fahrenheit.
+- **`photosynthetically_active_radiation_umol_s_m2`** (double or null, optional, umol/s/m2 (µmol/s/m²)): Photosynthetically active radiation in micromoles per second per square meter.
+- **`air_temperature_f`** (double or null, optional, [degF] (°F)): Air temperature in degrees Fahrenheit.
 - **`air_humidity_pct`** (double or null, optional, P1 (%)): Relative humidity percentage.
 - **`air_pressure_in_hg`** (double or null, optional, [in_i'Hg] (inHg)): Air pressure in inches of mercury.
 - **`system_battery_v`** (double or null, optional, V): System battery voltage in volts.
