@@ -279,7 +279,18 @@ against its own work:
    KQL + KQL Optimizer review, optional Fabric assets, EVENTS.md,
    root catalog entry, Docker E2E) must be satisfied or have a
    recorded justification.
-3. The agent has captured the verdicts from steps 1 and 2 in the PR
+3. **Runtime proof: ≥1 real event has been observed on the wire for
+   every shipped transport** (Kafka / MQTT / AMQP). A green build, a
+   started container, and passing unit tests are **not** proof — the
+   class-A "shipped but never ran" defects (a `Dockerfile.amqp` missing
+   a companion package, an `app.py` missing a `_feedurl` positional, a
+   `{time}`/`_time` placeholder collision) all passed those and emitted
+   zero events. Observe the event in the Docker E2E flow test, an
+   ACI/Fabric validation run, or a local `ONCE_MODE` run against a
+   broker. The import-time half of this class is caught deterministically
+   by `tools/ci/import_smoke.py` (CI `import-smoke.yml`); the on-the-wire
+   observation covers the first-`send_*` half.
+4. The agent has captured the verdicts from steps 1–3 in the PR
    body before handing back to the user.
 
 **The agent must attempt to correct every issue raised by the reviews
@@ -679,6 +690,12 @@ generated-producer rewrite already on `main`) must be applied directly to
   a variable first.
 - Prefer `git commit -F <file>` over `-m` for multi-line or backslash-bearing
   commit messages.
+- **Regex-disabling flags silently match nothing.** `Select-String -SimpleMatch`
+  (and `findstr` without `/r`) treat the pattern as a literal, so a regex
+  alternation like `fix|refactor` matches zero lines instead of erroring —
+  yielding a confidently-wrong "no hits" result. When mining history or
+  classifying commits, confirm the matcher honours regex before trusting a
+  zero count.
 
 ### Test secrets live outside the repo
 
@@ -686,6 +703,28 @@ API keys and tokens for E2E/validation runs are stored in
 `c:\rts-creds\test-creds.json` (outside the repo, git-ignored by virtue of
 location). Never commit secrets, never echo them into logs, and read them from
 that file (or the session-local gitignored runner) rather than hardcoding.
+
+### Dependency / codegen version-bump checklist (highest-blast-radius routine action)
+
+Bumping a **shared dependency major** (cloudevents, confluent-kafka, paho,
+qpid-proton) or the **codegen tool** (xrcg / avrotize) is the repo's
+highest-blast-radius routine change — it touches every feeder at once. The two
+fleet-wide regen chores and the cloudevents `<2.0.0` flip-flop (revert
+`4d00aea4a` → re-cap `bf584c928`, 92 pyprojects) all started as a one-line bump.
+Before bumping, run this ritual:
+
+1. **Grep for relocated/removed submodules.** Search the generated producers
+   **and** the bridges for every import path the new major removes or moves
+   (the `cloudevents.http` → `cloudevents.core.bindings.http` lesson). If any
+   feeder still imports the old path, the bump breaks it at import time.
+2. **Smoke a representative sample.** Run `tools/ci/import_smoke.py` across ≥5
+   feeders spanning Kafka/MQTT/AMQP with the new version resolved — do not
+   trust that "it installed."
+3. **Pin, don't float.** Land the new constraint as an explicit cap in *every*
+   pyproject (and confirm the producer sub-packages already carry it), so a
+   transitive resolve can't silently pull the breaking major in CI.
+4. **One bump, one PR.** Never combine a version bump with unrelated feeder
+   changes — the blast radius makes bisecting a regression impossible.
 
 ### cloudevents must be pinned `<2.0.0` — 2.x removed `cloudevents.http`
 

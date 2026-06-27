@@ -1005,6 +1005,21 @@ modify source code** based solely on a Docker build failure.
    (which means GitHub Actions considers the run green despite stale job
    entries in the PR checks UI).
 
+### MQTT/Kafka E2E container networking is settled — do not re-litigate
+
+The compose topology for the Docker E2E flow tests was stabilized over a long
+trial-and-error campaign (8+ commits and one revert, `f945d2d78`). **The
+accepted baseline is a custom bridge network with container-IP / container-name
+resolution between the feeder and the broker.** Under GitHub-runner load this
+baseline shows a ~25% transient TCP-connect failure on the Docker-bridge path
+— that flake is a **known runner infrastructure issue, not a code or topology
+bug**. Do **not** "fix" it by switching network mode, swapping
+`host.docker.internal` for service names, adding or removing `--network`, or
+otherwise re-deriving the topology: that path was already explored and
+reverted. Reuse `test_docker_mqtt_flow.py` / `test_docker_kafka_flow.py`
+networking **verbatim**; on a transient connect failure, rerun the job (per
+§ 26), don't change the wiring.
+
 ### 11. MQTT user properties use bare names (no `ce-` prefix)
 
 The generated MQTT client's `_ce_headers_to_mqtt5_properties` helper strips the
