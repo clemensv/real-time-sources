@@ -123,7 +123,7 @@ class TestBridgeHandleEvent:
         event_producer.send_wikimedia_event_streams_recent_change.assert_called_once()
         call = event_producer.send_wikimedia_event_streams_recent_change.call_args
         assert call.kwargs["_event_id"] == SAMPLE_EVENT["meta"]["id"]
-        assert call.kwargs["_event_time"] == SAMPLE_EVENT["meta"]["dt"]
+        assert call.kwargs["_time"] == SAMPLE_EVENT["meta"]["dt"]
 
     def test_skips_canary(self, tmp_path: Path) -> None:
         event_producer = MagicMock()

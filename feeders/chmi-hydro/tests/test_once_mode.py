@@ -47,6 +47,8 @@ def _fake_get(url, *args, **kwargs):
     resp.raise_for_status = MagicMock()
     if "meta1.json" in url:
         resp.json.return_value = SAMPLE_META_PAYLOAD
+    elif url.rstrip("/").endswith("/data"):
+        resp.text = '<a href="0-203-1-001000.json">0-203-1-001000.json</a>'
     else:
         resp.json.return_value = SAMPLE_STATION_DATA
     return resp

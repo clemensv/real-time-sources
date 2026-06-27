@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 import nextbus.nextbus as nb
+import nextbus_core as nb_core
 
 BASE_URL = "https://retro.umoiq.com/service/publicXMLFeed"
 
@@ -40,15 +41,15 @@ VEHICLE_LOCATIONS_XML = b"""<?xml version="1.0" encoding="utf-8" ?>
 @pytest.fixture(autouse=True)
 def reset_global_state():
     """Clear module-level checksum/state dicts so tests don't bleed into each other."""
-    nb.route_checksums.clear()
-    nb.schedule_checksums.clear()
-    nb.messages_checksums.clear()
-    nb.vehicle_last_report_times.clear()
+    nb_core.route_checksums.clear()
+    nb_core.schedule_checksums.clear()
+    nb_core.messages_checksums.clear()
+    nb_core.vehicle_last_report_times.clear()
     yield
-    nb.route_checksums.clear()
-    nb.schedule_checksums.clear()
-    nb.messages_checksums.clear()
-    nb.vehicle_last_report_times.clear()
+    nb_core.route_checksums.clear()
+    nb_core.schedule_checksums.clear()
+    nb_core.messages_checksums.clear()
+    nb_core.vehicle_last_report_times.clear()
 
 
 # ---------------------------------------------------------------------------
@@ -223,7 +224,9 @@ class TestPollAndSubmitVehicleLocations:
     def _make_producer(self):
         producer = MagicMock()
         mock_batch = MagicMock()
-        mock_batch.__len__ = lambda self: 1
+        events = []
+        mock_batch.add.side_effect = events.append
+        mock_batch.__len__ = lambda self: len(events)
         producer.create_batch.return_value = mock_batch
         return producer, mock_batch
 
@@ -285,5 +288,6 @@ class TestPollAndSubmitVehicleLocations:
         result = nb.poll_and_submit_vehicle_locations(producer, "sf-muni", "*", 1699999999000.0)
 
         assert result == 1699999999000.0
-        producer.create_batch.assert_not_called()
-        producer.send_batch.assert_not_called()
+        producer.create_batch.assert_called_once_with(partition_key="sf-muni")
+        producer.send_batch.assert_called_once_with(producer.create_batch.return_value)
+        producer.create_batch.return_value.add.assert_not_called()

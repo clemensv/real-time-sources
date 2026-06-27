@@ -15,6 +15,7 @@ from wsdot.wsdot import (
     _FLOW_READING_MAP,
     _emit_batch,
 )
+from wsdot_producer_data.us.wa.wsdot.traffic.flowreadingenum import FlowReadingenum
 
 
 # ---------------------------------------------------------------------------
@@ -159,27 +160,27 @@ class TestParseReading:
         assert reading.flow_data_id == "1234"
         assert reading.station_name == "I-5 at Seneca"
         assert reading.region == "Northwest"
-        assert reading.flow_reading == "WideOpen"
+        assert reading.flow_reading == FlowReadingenum.WideOpen
         assert reading.reading_time == "2021-04-01T00:00:00+00:00"
 
     def test_heavy_traffic(self):
         reading = WSDOTApi.parse_reading(SAMPLE_FLOW_NO_LOCATION)
-        assert reading.flow_reading == "Heavy"
+        assert reading.flow_reading == FlowReadingenum.Heavy
 
     def test_unknown_reading(self):
         reading = WSDOTApi.parse_reading(SAMPLE_FLOW_EMPTY_DIRECTION)
-        assert reading.flow_reading == "Unknown"
+        assert reading.flow_reading == FlowReadingenum.Unknown
 
     def test_all_flow_values(self):
         for byte_val, expected_str in _FLOW_READING_MAP.items():
             raw = {**SAMPLE_FLOW_DATA, "FlowReadingValue": byte_val}
             reading = WSDOTApi.parse_reading(raw)
-            assert reading.flow_reading == expected_str
+            assert reading.flow_reading.value == expected_str
 
     def test_out_of_range_flow_value(self):
         raw = {**SAMPLE_FLOW_DATA, "FlowReadingValue": 99}
         reading = WSDOTApi.parse_reading(raw)
-        assert reading.flow_reading == "Unknown"
+        assert reading.flow_reading == FlowReadingenum.Unknown
 
     def test_reading_time_parsed(self):
         reading = WSDOTApi.parse_reading(SAMPLE_FLOW_DATA)
@@ -296,7 +297,7 @@ class TestDataClassSerialization:
         json_str = reading.to_json()
         restored = reading.from_json(json_str)
         assert restored.flow_data_id == reading.flow_data_id
-        assert restored.flow_reading.value == reading.flow_reading
+        assert restored.flow_reading == reading.flow_reading
 
 
 # ---------------------------------------------------------------------------

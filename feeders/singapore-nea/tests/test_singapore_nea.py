@@ -6,13 +6,15 @@ from unittest.mock import MagicMock, patch, call
 from datetime import datetime, timezone
 
 from singapore_nea.singapore_nea import (
-    NEAWeatherAPI,
-    merge_observations,
     parse_connection_string,
     send_stations,
     feed_observations,
-    _load_state,
-    _save_state,
+)
+from singapore_nea_core import (
+    NEAWeatherAPI,
+    merge_observations,
+    load_state as _load_state,
+    save_state as _save_state,
     FIELD_MAP,
 )
 

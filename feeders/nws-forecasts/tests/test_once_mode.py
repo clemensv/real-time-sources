@@ -20,9 +20,7 @@ def test_once_flag_exits_after_single_cycle(monkeypatch):
 
     from nws_forecasts.nws_forecasts import NWSForecastPoller, main
 
-    with patch.object(NWSForecastPoller, "refresh_zone_cache", autospec=True) as refresh, \
-            patch.object(NWSForecastPoller, "emit_reference_data", autospec=True) as emit_ref, \
-            patch.object(NWSForecastPoller, "poll_once", autospec=True, return_value=0) as poll_once, \
+    with patch.object(NWSForecastPoller, "run", autospec=True) as run, \
             patch("nws_forecasts.nws_forecasts.Producer") as producer_cls, \
             patch("nws_forecasts.nws_forecasts.MicrosoftOpenDataUSNOAANWSForecastsEventProducer") as ev_producer_cls, \
             patch("nws_forecasts.nws_forecasts.time.sleep", side_effect=AssertionError("sleep called in --once mode")):
@@ -31,9 +29,8 @@ def test_once_flag_exits_after_single_cycle(monkeypatch):
         # main() must return cleanly without ever sleeping.
         main()
 
-    refresh.assert_called()
-    emit_ref.assert_called()
-    poll_once.assert_called_once()
+    run.assert_called_once()
+    assert run.call_args.kwargs == {"once": True}
 
 
 def test_once_flag_via_env_var(monkeypatch):
@@ -43,9 +40,7 @@ def test_once_flag_via_env_var(monkeypatch):
 
     from nws_forecasts.nws_forecasts import NWSForecastPoller, main
 
-    with patch.object(NWSForecastPoller, "refresh_zone_cache", autospec=True), \
-            patch.object(NWSForecastPoller, "emit_reference_data", autospec=True), \
-            patch.object(NWSForecastPoller, "poll_once", autospec=True, return_value=0) as poll_once, \
+    with patch.object(NWSForecastPoller, "run", autospec=True) as run, \
             patch("nws_forecasts.nws_forecasts.Producer") as producer_cls, \
             patch("nws_forecasts.nws_forecasts.MicrosoftOpenDataUSNOAANWSForecastsEventProducer") as ev_producer_cls, \
             patch("nws_forecasts.nws_forecasts.time.sleep", side_effect=AssertionError("sleep called in --once mode")):
@@ -53,4 +48,5 @@ def test_once_flag_via_env_var(monkeypatch):
         ev_producer_cls.return_value = MagicMock()
         main()
 
-    poll_once.assert_called_once()
+    run.assert_called_once()
+    assert run.call_args.kwargs == {"once": True}

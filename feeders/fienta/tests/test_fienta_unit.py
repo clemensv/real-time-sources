@@ -14,6 +14,7 @@ from fienta_producer_data import Event, EventSaleStatus
 from fienta.fienta import (
     FIENTA_API_URL,
     POLL_INTERVAL_SECONDS,
+    USER_AGENT,
     FientaPoller,
     _resolve_api_filters,
     fetch_all_events,
@@ -365,6 +366,7 @@ class TestFetchAllEvents:
         mock_get.assert_called_once_with(
             FIENTA_API_URL,
             params={"page": 1, "country": "EE", "locale": "en"},
+            headers={"User-Agent": USER_AGENT},
             timeout=60,
         )
 

@@ -9,8 +9,10 @@ import os
 import datetime
 from unittest.mock import Mock, patch, MagicMock
 from eaws_albina.eaws_albina import (
-    AlbinaPoller,
     parse_connection_string,
+)
+from eaws_albina_core import (
+    AlbinaPoller,
     DANGER_RATING_MAP,
     DEFAULT_REGIONS,
     BASE_URL,
@@ -131,17 +133,12 @@ def temp_state_file(tmp_path):
 
 
 def _make_poller(mock_kafka_config, temp_state_file, regions=None, lang="en"):
-    """Create an AlbinaPoller with a mocked Kafka producer."""
-    with patch("confluent_kafka.Producer") as mock_producer_class:
-        mock_producer_class.return_value = MagicMock()
-        poller = AlbinaPoller(
-            kafka_config=mock_kafka_config,
-            kafka_topic="test-topic",
-            last_polled_file=temp_state_file,
-            regions=regions,
-            lang=lang,
-        )
-    return poller
+    """Create a transport-neutral AlbinaPoller."""
+    return AlbinaPoller(
+        last_polled_file=temp_state_file,
+        regions=regions,
+        lang=lang,
+    )
 
 
 @pytest.mark.unit
@@ -150,7 +147,7 @@ class TestAlbinaPollerInit:
         poller = _make_poller(mock_kafka_config, temp_state_file)
         assert poller.regions == DEFAULT_REGIONS
         assert poller.lang == "en"
-        assert poller.kafka_topic == "test-topic"
+        assert poller.last_polled_file == temp_state_file
 
     def test_custom_regions(self, mock_kafka_config, temp_state_file):
         poller = _make_poller(mock_kafka_config, temp_state_file, regions=["AT-07"])
@@ -393,7 +390,7 @@ class TestParseBulletins:
 
 @pytest.mark.unit
 class TestFetchBulletin:
-    @patch("eaws_albina.eaws_albina.requests.get")
+    @patch("eaws_albina_core.eaws_albina.requests.get")
     def test_fetch_success(self, mock_get):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -404,7 +401,7 @@ class TestFetchBulletin:
         assert result is not None
         assert "bulletins" in result
 
-    @patch("eaws_albina.eaws_albina.requests.get")
+    @patch("eaws_albina_core.eaws_albina.requests.get")
     def test_fetch_404(self, mock_get):
         mock_response = Mock()
         mock_response.status_code = 404
@@ -412,13 +409,13 @@ class TestFetchBulletin:
         result = AlbinaPoller.fetch_bulletin("https://example.com/test.json")
         assert result is None
 
-    @patch("eaws_albina.eaws_albina.requests.get")
+    @patch("eaws_albina_core.eaws_albina.requests.get")
     def test_fetch_network_error(self, mock_get):
         mock_get.side_effect = Exception("Connection timeout")
         result = AlbinaPoller.fetch_bulletin("https://example.com/test.json")
         assert result is None
 
-    @patch("eaws_albina.eaws_albina.requests.get")
+    @patch("eaws_albina_core.eaws_albina.requests.get")
     def test_fetch_server_error(self, mock_get):
         mock_response = Mock()
         mock_response.status_code = 500
@@ -430,49 +427,49 @@ class TestFetchBulletin:
 
 @pytest.mark.unit
 class TestFetchAndSend:
-    @patch("eaws_albina.eaws_albina.requests.get")
-    def test_fetch_and_send_new_events(self, mock_get, mock_kafka_config, temp_state_file):
+    @patch("eaws_albina_core.eaws_albina.requests.get")
+    def test_fetch_for_date_new_events(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.raise_for_status = Mock()
         mock_response.json.return_value = SAMPLE_BULLETIN
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file, regions=["AT-07"])
-        count = poller.fetch_and_send("2026-04-09")
-        assert count == 1
+        events = poller.fetch_for_date("2026-04-09")
+        assert len(events) == 1
 
-    @patch("eaws_albina.eaws_albina.requests.get")
-    def test_fetch_and_send_dedup(self, mock_get, mock_kafka_config, temp_state_file):
+    @patch("eaws_albina_core.eaws_albina.requests.get")
+    def test_fetch_for_date_dedup(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.raise_for_status = Mock()
         mock_response.json.return_value = SAMPLE_BULLETIN
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file, regions=["AT-07"])
-        count1 = poller.fetch_and_send("2026-04-09")
-        count2 = poller.fetch_and_send("2026-04-09")
-        assert count1 == 1
-        assert count2 == 0
+        events1 = poller.fetch_for_date("2026-04-09")
+        events2 = poller.fetch_for_date("2026-04-09")
+        assert len(events1) == 1
+        assert events2 == []
 
-    @patch("eaws_albina.eaws_albina.requests.get")
-    def test_fetch_and_send_404(self, mock_get, mock_kafka_config, temp_state_file):
+    @patch("eaws_albina_core.eaws_albina.requests.get")
+    def test_fetch_for_date_404(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 404
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file, regions=["AT-07"])
-        count = poller.fetch_and_send("2026-08-15")
-        assert count == 0
+        events = poller.fetch_for_date("2026-08-15")
+        assert events == []
 
-    @patch("eaws_albina.eaws_albina.requests.get")
-    def test_fetch_and_send_multi_region(self, mock_get, mock_kafka_config, temp_state_file):
+    @patch("eaws_albina_core.eaws_albina.requests.get")
+    def test_fetch_for_date_multi_region(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.raise_for_status = Mock()
         mock_response.json.return_value = SAMPLE_MULTI_REGION
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file, regions=["AT-07"])
-        count = poller.fetch_and_send("2026-04-09")
-        assert count == 3
+        events = poller.fetch_for_date("2026-04-09")
+        assert len(events) == 3
 
 
 @pytest.mark.unit

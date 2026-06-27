@@ -7,6 +7,7 @@ import pytest
 import json
 import os
 import tempfile
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch, MagicMock
 from noaa_ndbc_producer_data import BuoyContinuousWindObservation
 from noaa_ndbc_producer_data import BuoyDartMeasurement
@@ -18,6 +19,10 @@ from noaa_ndbc_producer_data import BuoySolarRadiationObservation
 from noaa_ndbc_producer_data import BuoyStation
 from noaa_ndbc_producer_data import BuoySupplementalMeasurement
 from noaa_ndbc.noaa_ndbc import NDBCBuoyPoller, USER_AGENT, parse_connection_string, parse_float
+
+
+def _utc(year, month, day, hour, minute, second=0):
+    return datetime(year, month, day, hour, minute, second, tzinfo=timezone.utc)
 
 
 SAMPLE_STATION_TABLE_TEXT = """\
@@ -258,7 +263,7 @@ class TestNDBCBuoyPoller:
         assert obs1.station_id == "41001"
         assert obs1.latitude == 34.700
         assert obs1.longitude == -72.700
-        assert obs1.timestamp == "2024-06-15T14:50:00+00:00"
+        assert obs1.timestamp == _utc(2024, 6, 15, 14, 50)
         assert obs1.wind_direction == 210.0
         assert obs1.wind_speed == 8.2
         assert obs1.gust == 10.3
@@ -378,7 +383,7 @@ class TestNDBCBuoyPoller:
 
         assert observation is not None
         assert observation.station_id == "51WH0"
-        assert observation.timestamp == "2026-04-07T20:30:00+00:00"
+        assert observation.timestamp == _utc(2026, 4, 7, 20, 30)
         assert observation.shortwave_radiation_licor is None
         assert observation.shortwave_radiation_eppley == 241.6
         assert observation.longwave_radiation == 411.1
@@ -397,7 +402,7 @@ class TestNDBCBuoyPoller:
 
         assert observation is not None
         assert observation.station_id == "51WH0"
-        assert observation.timestamp == "2026-04-07T20:30:00+00:00"
+        assert observation.timestamp == _utc(2026, 4, 7, 20, 30)
         assert observation.depth == 1.0
         assert observation.ocean_temperature == 23.5
         assert observation.conductivity is None
@@ -422,7 +427,7 @@ class TestNDBCBuoyPoller:
 
         assert measurement is not None
         assert measurement.station_id == "21413"
-        assert measurement.timestamp == "2026-03-04T17:45:00+00:00"
+        assert measurement.timestamp == _utc(2026, 3, 4, 17, 45)
         assert measurement.measurement_type_code == 1
         assert measurement.water_column_height == 5779.945
 
@@ -440,7 +445,7 @@ class TestNDBCBuoyPoller:
 
         assert observation is not None
         assert observation.station_id == "BURL1"
-        assert observation.timestamp == "2026-03-01T03:00:00+00:00"
+        assert observation.timestamp == _utc(2026, 3, 1, 3, 0)
         assert observation.wind_direction == 72.0
         assert observation.wind_speed == 4.6
         assert observation.gust_direction == 70.0
@@ -461,7 +466,7 @@ class TestNDBCBuoyPoller:
 
         assert measurement is not None
         assert measurement.station_id == "41002"
-        assert measurement.timestamp == "2026-03-01T05:00:00+00:00"
+        assert measurement.timestamp == _utc(2026, 3, 1, 5, 0)
         assert measurement.lowest_pressure == 1016.7
         assert measurement.lowest_pressure_time_code == "0452"
         assert measurement.highest_wind_speed == 3.0
@@ -482,7 +487,7 @@ class TestNDBCBuoyPoller:
 
         assert summary is not None
         assert summary.station_id == "41002"
-        assert summary.timestamp == "2026-03-15T09:10:00+00:00"
+        assert summary.timestamp == _utc(2026, 3, 15, 9, 10)
         assert summary.significant_wave_height == 1.3
         assert summary.swell_height == 0.5
         assert summary.swell_period == 8.3
@@ -508,7 +513,7 @@ class TestNDBCBuoyPoller:
 
         assert measurement is not None
         assert measurement.station_id == "BOBF1"
-        assert measurement.timestamp == "2026-04-08T10:00:00+00:00"
+        assert measurement.timestamp == _utc(2026, 4, 8, 10, 0)
         assert measurement.accumulation == 0.0
 
     @patch('noaa_ndbc.noaa_ndbc.requests.get')
@@ -570,6 +575,7 @@ class TestNDBCBuoyPoller:
             latitude=34.7,
             longitude=-72.7,
             timezone="E",
+            region=None,
         )
         observation = BuoyObservation(
             station_id="41001",
@@ -590,6 +596,7 @@ class TestNDBCBuoyPoller:
             pressure_tendency=-1.2,
             visibility=None,
             tide=None,
+            region=None,
         )
         solar_observation = BuoySolarRadiationObservation(
             station_id="51WH0",
@@ -597,6 +604,7 @@ class TestNDBCBuoyPoller:
             shortwave_radiation_licor=None,
             shortwave_radiation_eppley=241.6,
             longwave_radiation=411.1,
+            region=None,
         )
         ocean_observation = BuoyOceanographicObservation(
             station_id="51WH0",
@@ -611,12 +619,14 @@ class TestNDBCBuoyPoller:
             turbidity=0.4,
             ph=8.0,
             redox_potential=-44.0,
+            region=None,
         )
         dart_measurement = BuoyDartMeasurement(
             station_id="21413",
             timestamp="2026-03-04T17:45:00+00:00",
             measurement_type_code=1,
             water_column_height=5779.945,
+            region=None,
         )
         continuous_wind_observation = BuoyContinuousWindObservation(
             station_id="BURL1",
@@ -626,6 +636,7 @@ class TestNDBCBuoyPoller:
             gust_direction=70.0,
             gust=5.1,
             gust_time_code="0253",
+            region=None,
         )
         supplemental_measurement = BuoySupplementalMeasurement(
             station_id="41002",
@@ -635,6 +646,7 @@ class TestNDBCBuoyPoller:
             highest_wind_speed=3.0,
             highest_wind_direction=350.0,
             highest_wind_time_code="0453",
+            region=None,
         )
         detailed_wave_summary = BuoyDetailedWaveSummary(
             station_id="41002",
@@ -649,11 +661,13 @@ class TestNDBCBuoyPoller:
             steepness="VERY_STEEP",
             average_wave_period=4.6,
             mean_wave_direction=109.0,
+            region=None,
         )
         hourly_rain_measurement = BuoyHourlyRainMeasurement(
             station_id="BOBF1",
             timestamp="2026-04-08T10:00:00+00:00",
             accumulation="0.0",
+            region=None,
         )
 
         with patch.object(poller, 'fetch_stations', return_value=[station]), \
@@ -755,6 +769,7 @@ class TestNDBCBuoyPoller:
             pressure_tendency=-1.2,
             visibility=None,
             tide=None,
+            region=None,
         )
         solar_observation = BuoySolarRadiationObservation(
             station_id="51WH0",
@@ -762,6 +777,7 @@ class TestNDBCBuoyPoller:
             shortwave_radiation_licor=None,
             shortwave_radiation_eppley=241.6,
             longwave_radiation=411.1,
+            region=None,
         )
         ocean_observation = BuoyOceanographicObservation(
             station_id="51WH0",
@@ -776,12 +792,14 @@ class TestNDBCBuoyPoller:
             turbidity=0.4,
             ph=8.0,
             redox_potential=-44.0,
+            region=None,
         )
         dart_measurement = BuoyDartMeasurement(
             station_id="21413",
             timestamp="2026-03-04T17:45:00+00:00",
             measurement_type_code=1,
             water_column_height=5779.945,
+            region=None,
         )
         continuous_wind_observation = BuoyContinuousWindObservation(
             station_id="BURL1",
@@ -791,6 +809,7 @@ class TestNDBCBuoyPoller:
             gust_direction=70.0,
             gust=5.1,
             gust_time_code="0253",
+            region=None,
         )
         supplemental_measurement = BuoySupplementalMeasurement(
             station_id="41002",
@@ -800,6 +819,7 @@ class TestNDBCBuoyPoller:
             highest_wind_speed=3.0,
             highest_wind_direction=350.0,
             highest_wind_time_code="0453",
+            region=None,
         )
         detailed_wave_summary = BuoyDetailedWaveSummary(
             station_id="41002",
@@ -814,11 +834,13 @@ class TestNDBCBuoyPoller:
             steepness="VERY_STEEP",
             average_wave_period=4.6,
             mean_wave_direction=109.0,
+            region=None,
         )
         hourly_rain_measurement = BuoyHourlyRainMeasurement(
             station_id="BOBF1",
             timestamp="2026-04-08T10:00:00+00:00",
             accumulation="0.0",
+            region=None,
         )
 
         with patch.object(poller, 'fetch_stations', return_value=[]), \

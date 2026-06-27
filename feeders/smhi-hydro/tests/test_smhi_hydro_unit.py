@@ -2,6 +2,7 @@
 
 import json
 import pytest
+from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch, PropertyMock
 from smhi_hydro.smhi_hydro import SMHIHydroAPI, parse_connection_string, feed_stations
 from smhi_hydro_producer_data import Station
@@ -129,7 +130,7 @@ class TestParseObservation:
         assert obs.catchment_name == "MOÄLVEN"
         assert obs.discharge == 16.0
         assert obs.quality == "O"
-        assert "2026" in obs.timestamp
+        assert obs.timestamp.year == 2026
 
     def test_parse_latest_observation_small_value(self):
         obs = SMHIHydroAPI.parse_latest_observation(SAMPLE_STATION_DATA_2)
@@ -149,8 +150,7 @@ class TestParseObservation:
     def test_parse_observation_timestamp_is_iso(self):
         obs = SMHIHydroAPI.parse_latest_observation(SAMPLE_STATION_DATA)
         assert obs is not None
-        assert "T" in obs.timestamp
-        assert obs.timestamp.endswith("+00:00")
+        assert obs.timestamp == datetime(2026, 3, 25, 16, 0, tzinfo=timezone.utc)
 
     def test_parse_observation_uses_latest_value(self):
         """The last entry in the value array should be used."""
@@ -172,7 +172,7 @@ class TestParseObservation:
         assert isinstance(obs.station_id, str)
         assert isinstance(obs.station_name, str)
         assert isinstance(obs.catchment_name, str)
-        assert isinstance(obs.timestamp, str)
+        assert isinstance(obs.timestamp, datetime)
         assert isinstance(obs.discharge, float)
         assert isinstance(obs.quality, str)
 

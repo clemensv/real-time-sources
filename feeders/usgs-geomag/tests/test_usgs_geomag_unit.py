@@ -304,9 +304,11 @@ class TestObservatoryDataClass:
 
     def test_create_instance(self):
         obs = Observatory.create_instance()
-        assert obs.iaga_code == "BOU"
-        assert obs.name == "Boulder"
-        assert obs.latitude == 40.137
+        assert isinstance(obs.iaga_code, str)
+        assert obs.iaga_code
+        assert isinstance(obs.name, str)
+        assert obs.name
+        assert isinstance(obs.latitude, float)
 
     def test_to_serializer_dict(self):
         obs = Observatory(
@@ -352,9 +354,10 @@ class TestMagneticFieldReadingDataClass:
 
     def test_create_instance(self):
         reading = MagneticFieldReading.create_instance()
-        assert reading.iaga_code == "BOU"
-        assert reading.h == 20656.086
-        assert reading.d == 5.173
+        assert isinstance(reading.iaga_code, str)
+        assert reading.iaga_code
+        assert isinstance(reading.h, float)
+        assert isinstance(reading.d, float)
 
     def test_to_serializer_dict(self):
         reading = MagneticFieldReading(

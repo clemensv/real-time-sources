@@ -6,6 +6,7 @@ Tests core functionality without external dependencies.
 import pytest
 import json
 import os
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch, MagicMock
 from aviationweather_producer_data import Metar, Sigmet, Station
 from aviationweather.aviationweather import (
@@ -345,7 +346,7 @@ class TestParseMetar:
         metar = AviationWeatherPoller.parse_metar(SAMPLE_METAR_RESPONSE[0])
         assert metar is not None
         assert metar.icao_id == "KJFK"
-        assert "2026-04-08" in metar.obs_time
+        assert metar.obs_time == datetime(2026, 4, 8, 19, 51, tzinfo=timezone.utc)
         assert metar.temp == pytest.approx(5.6)
         assert metar.dewp == pytest.approx(-5.0)
         assert metar.wdir == 200
@@ -426,7 +427,7 @@ class TestParseMetar:
     def test_parse_metar_report_time_iso(self):
         metar = AviationWeatherPoller.parse_metar(SAMPLE_METAR_RESPONSE[0])
         assert metar is not None
-        assert metar.report_time == "2026-04-08T20:00:00.000Z"
+        assert metar.report_time == datetime(2026, 4, 8, 20, 0, tzinfo=timezone.utc)
 
     def test_parse_metar_invalid_report_time(self):
         raw = dict(SAMPLE_METAR_RESPONSE[0])
@@ -460,12 +461,12 @@ class TestParseUsSigmet:
         assert sigmet.altitude_low is None
         assert sigmet.movement_dir == "180"
         assert sigmet.movement_spd == "40"
-        assert sigmet.severity == 5
+        assert sigmet.severity == "5"
         assert sigmet.qualifier is None
         assert sigmet.sigmet_id == "6w"
         assert sigmet.region == "kkci"
-        assert "2026-04-08" in sigmet.valid_time_from
-        assert "2026-04-08" in sigmet.valid_time_to
+        assert sigmet.valid_time_from == datetime(2026, 4, 8, 19, 55, tzinfo=timezone.utc)
+        assert sigmet.valid_time_to == datetime(2026, 4, 8, 21, 55, tzinfo=timezone.utc)
 
     def test_parse_us_sigmet_coords_serialized(self):
         sigmet = AviationWeatherPoller.parse_us_sigmet(SAMPLE_AIRSIGMET_RESPONSE[0])
@@ -833,4 +834,3 @@ class TestDataclassSerialization:
         data = json.loads(sigmet.to_json())
         assert data["icao_id"] == "KKCI"
         assert data["hazard"] == "CONVECTIVE"
-

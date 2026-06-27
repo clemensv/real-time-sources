@@ -44,12 +44,12 @@ class TestNWSAlertPoller:
     def test_init(self, mock_kafka_config, temp_state_file):
         poller = _make_poller(mock_kafka_config, temp_state_file)
         assert poller.kafka_topic == 'test-topic'
-        assert poller.last_polled_file == temp_state_file
-        assert poller.station_ids == []
+        assert poller.fetcher.last_polled_file == temp_state_file
+        assert poller.fetcher.station_ids == []
 
     def test_load_seen_alerts_empty(self, mock_kafka_config):
         poller = _make_poller(mock_kafka_config, '/tmp/nonexistent_nws_state.json')
-        state = poller.load_seen_alerts()
+        state = poller.fetcher.load_seen_alerts()
         assert state == {"seen_ids": []}
 
     def test_load_seen_alerts_existing(self, mock_kafka_config, temp_state_file):
@@ -57,17 +57,17 @@ class TestNWSAlertPoller:
         with open(temp_state_file, 'w', encoding='utf-8') as f:
             json.dump(state_data, f)
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        state = poller.load_seen_alerts()
+        state = poller.fetcher.load_seen_alerts()
         assert state["seen_ids"] == ["alert1", "alert2", "alert3"]
 
     def test_save_seen_alerts(self, mock_kafka_config, temp_state_file):
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        poller.save_seen_alerts({"seen_ids": ["alert1", "alert2"]})
+        poller.fetcher.save_seen_alerts({"seen_ids": ["alert1", "alert2"]})
         with open(temp_state_file, 'r', encoding='utf-8') as f:
             saved = json.load(f)
         assert saved["seen_ids"] == ["alert1", "alert2"]
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_poll_alerts_success(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -98,15 +98,15 @@ class TestNWSAlertPoller:
         }
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        features = poller.poll_alerts()
+        features = poller.fetcher.poll_alerts()
         assert len(features) == 1
         assert features[0]["properties"]["id"] == "urn:oid:2.49.0.1.840.0.test1"
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_poll_alerts_api_error(self, mock_get, mock_kafka_config, temp_state_file):
         mock_get.side_effect = Exception("Connection error")
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        features = poller.poll_alerts()
+        features = poller.fetcher.poll_alerts()
         assert features == []
 
 
@@ -141,7 +141,7 @@ class TestParseConnectionString:
 
 @pytest.mark.unit
 class TestFetchZones:
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_zones_success(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -175,23 +175,23 @@ class TestFetchZones:
         }
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        zones = poller.fetch_zones()
+        zones = poller.fetcher.fetch_zones()
         assert len(zones) == 2
-        assert zones[0].zone_id == "AKZ101"
-        assert zones[0].state == "AK"
-        assert zones[1].zone_id == "TXZ211"
+        assert zones[0]["zone_id"] == "AKZ101"
+        assert zones[0]["state"] == "AK"
+        assert zones[1]["zone_id"] == "TXZ211"
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_zones_api_error(self, mock_get, mock_kafka_config, temp_state_file):
         mock_get.side_effect = Exception("Connection error")
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        zones = poller.fetch_zones()
+        zones = poller.fetcher.fetch_zones()
         assert zones == []
 
 
 @pytest.mark.unit
 class TestFetchObservationStations:
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_stations_success(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -226,20 +226,20 @@ class TestFetchObservationStations:
         }
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        stations = poller.fetch_observation_stations()
+        stations = poller.fetcher.fetch_observation_stations()
         assert len(stations) == 2
-        assert stations[0].station_id == "KJFK"
-        assert stations[0].name == "New York, Kennedy International Airport"
-        assert stations[0].elevation_m == 7.0
-        assert stations[0].time_zone == "America/New_York"
-        assert stations[0].forecast_zone == "NYZ178"
-        assert stations[0].county == "NYC081"
-        assert stations[0].fire_weather_zone == "NYZ178"
-        assert stations[0].state == "NY"
-        assert stations[0].zone_id == "NYZ178"
-        assert stations[1].station_id == "KLAX"
+        assert stations[0]["station_id"] == "KJFK"
+        assert stations[0]["name"] == "New York, Kennedy International Airport"
+        assert stations[0]["elevation_m"] == 7.0
+        assert stations[0]["time_zone"] == "America/New_York"
+        assert stations[0]["forecast_zone"] == "NYZ178"
+        assert stations[0]["county"] == "NYC081"
+        assert stations[0]["fire_weather_zone"] == "NYZ178"
+        assert stations[0]["state"] == "NY"
+        assert stations[0]["zone_id"] == "NYZ178"
+        assert stations[1]["station_id"] == "KLAX"
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_stations_null_elevation(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -262,21 +262,21 @@ class TestFetchObservationStations:
         }
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        stations = poller.fetch_observation_stations()
+        stations = poller.fetcher.fetch_observation_stations()
         assert len(stations) == 1
-        assert stations[0].elevation_m is None
+        assert stations[0]["elevation_m"] is None
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_stations_api_error(self, mock_get, mock_kafka_config, temp_state_file):
         mock_get.side_effect = Exception("Connection error")
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        stations = poller.fetch_observation_stations()
+        stations = poller.fetcher.fetch_observation_stations()
         assert stations == []
 
 
 @pytest.mark.unit
 class TestFetchLatestObservation:
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_observation_success(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -300,33 +300,33 @@ class TestFetchLatestObservation:
         }
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        obs = poller.fetch_latest_observation("KJFK")
+        obs = poller.fetcher.fetch_latest_observation("KJFK")
         assert obs is not None
-        assert obs.station_id == "KJFK"
-        assert obs.timestamp == "2026-04-07T20:25:00+00:00"
-        assert obs.text_description == "Clear"
-        assert obs.temperature == 11.0
-        assert obs.dewpoint == -3.0
-        assert obs.wind_direction == 320.0
-        assert obs.wind_speed == 28.0
-        assert obs.wind_gust == 50.0
-        assert obs.barometric_pressure == 102370.0
-        assert obs.sea_level_pressure == 102400.0
-        assert obs.visibility == 16093.0
-        assert obs.relative_humidity == 35.0
-        assert obs.wind_chill is None
-        assert obs.heat_index is None
+        assert obs["station_id"] == "KJFK"
+        assert obs["timestamp"] == "2026-04-07T20:25:00+00:00"
+        assert obs["text_description"] == "Clear"
+        assert obs["temperature"] == 11.0
+        assert obs["dewpoint"] == -3.0
+        assert obs["wind_direction"] == 320.0
+        assert obs["wind_speed"] == 28.0
+        assert obs["wind_gust"] == 50.0
+        assert obs["barometric_pressure"] == 102370.0
+        assert obs["sea_level_pressure"] == 102400.0
+        assert obs["visibility"] == 16093.0
+        assert obs["relative_humidity"] == 35.0
+        assert obs["wind_chill"] is None
+        assert obs["heat_index"] is None
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_observation_404(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 404
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        obs = poller.fetch_latest_observation("XXXXX")
+        obs = poller.fetcher.fetch_latest_observation("XXXXX")
         assert obs is None
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_observation_no_timestamp(self, mock_get, mock_kafka_config, temp_state_file):
         mock_response = Mock()
         mock_response.status_code = 200
@@ -334,14 +334,14 @@ class TestFetchLatestObservation:
         mock_response.json.return_value = {"properties": {"textDescription": "Clear"}}
         mock_get.return_value = mock_response
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        obs = poller.fetch_latest_observation("KJFK")
+        obs = poller.fetcher.fetch_latest_observation("KJFK")
         assert obs is None
 
-    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws_core.noaa_nws.requests.get')
     def test_fetch_observation_network_error(self, mock_get, mock_kafka_config, temp_state_file):
         mock_get.side_effect = Exception("timeout")
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        obs = poller.fetch_latest_observation("KJFK")
+        obs = poller.fetcher.fetch_latest_observation("KJFK")
         assert obs is None
 
 
@@ -349,10 +349,10 @@ class TestFetchLatestObservation:
 class TestExtractValue:
     def test_extract_from_quantity_object(self, mock_kafka_config, temp_state_file):
         poller = _make_poller(mock_kafka_config, temp_state_file)
-        assert poller._extract_value({"value": 11, "unitCode": "wmoUnit:degC"}) == 11.0
-        assert poller._extract_value({"value": 0}) == 0.0
-        assert poller._extract_value({"value": None}) is None
-        assert poller._extract_value(None) is None
+        assert poller.fetcher._extract_value({"value": 11, "unitCode": "wmoUnit:degC"}) == 11.0
+        assert poller.fetcher._extract_value({"value": 0}) == 0.0
+        assert poller.fetcher._extract_value({"value": None}) is None
+        assert poller.fetcher._extract_value(None) is None
 
 
 @pytest.mark.unit
@@ -374,7 +374,10 @@ class TestDataclasses:
             event="Tornado Warning",
             sender_name="NWS Test",
             headline="Test Headline",
-            description="Test Description"
+            description="Test Description",
+            zone_id="OKZ025",
+            state="OK",
+            event_type="Tornado Warning",
         )
         assert alert.alert_id == "test-id"
         assert alert.severity == "Severe"

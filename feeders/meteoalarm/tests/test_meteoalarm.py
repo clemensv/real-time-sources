@@ -15,6 +15,9 @@ from meteoalarm.meteoalarm import (
     _topic_slug,
 )
 from meteoalarm_mqtt.app import _topic_segment
+from meteoalarm_producer_data.severityenum import SeverityEnum
+from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
+from meteoalarm_producer_data.urgencyenum import UrgencyEnum
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -162,15 +165,15 @@ class TestNormalizeWarning:
         assert w is not None
         assert w.identifier == "2.49.0.0.276.0.DWD.PVW.12345.abc"
         assert w.country == "germany"
-        assert w.severity == "Moderate"
-        assert w.urgency == "Immediate"
+        assert w.severity == SeverityEnum.Moderate
+        assert w.urgency == UrgencyEnum.Immediate
         assert w.event == "STURMBÖEN"
         assert w.awareness_level == "2; yellow; Moderate"
         assert w.awareness_type == "wind"
         assert w.awareness_type_raw == "1; Wind"
         assert "Bayreuth" in w.area_desc
         assert "DE042" in w.geocodes
-        assert w.msg_type == "Alert"
+        assert w.msg_type == MsgTypeenum.Alert
 
     def test_no_identifier(self):
         assert normalize_warning(_make_alert(identifier=None), "germany") is None
@@ -208,7 +211,7 @@ class TestNormalizeWarning:
     def test_cancel_message(self):
         w = normalize_warning(_make_alert(msgType="Cancel"), "france")
         assert w is not None
-        assert w.msg_type == "Cancel"
+        assert w.msg_type == MsgTypeenum.Cancel
         assert w.country == "france"
 
 

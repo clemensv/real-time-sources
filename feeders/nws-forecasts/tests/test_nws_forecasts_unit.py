@@ -10,9 +10,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import requests
+import nws_forecasts_core.nws_forecasts as forecasts_core
 
 from nws_forecasts.nws_forecasts import NWSForecastPoller, parse_connection_string, parse_zone_list
-from nws_forecasts_producer_data import ForecastZone, LandForecastPeriod, LandZoneForecast, MarineForecastPeriod, MarineZoneForecast, ZoneTypeenum
+from nws_forecasts_producer_data import LandForecastPeriod, LandZoneForecast, MarineForecastPeriod, MarineZoneForecast, ZoneTypeenum
 
 
 SAMPLE_MARINE_TEXT = """Expires:202604141045;;317911
@@ -54,10 +55,10 @@ def temp_state_file():
         os.unlink(path)
 
 
-def _zone(zone_id: str, zone_type: ZoneTypeenum) -> ForecastZone:
-    return ForecastZone(
+def _zone(zone_id: str, zone_type: ZoneTypeenum) -> forecasts_core.NWSForecastZone:
+    return forecasts_core.NWSForecastZone(
         zone_id=zone_id,
-        zone_type=zone_type,
+        zone_type=zone_type.value,
         name=zone_id,
         state=zone_id[:2],
         forecast_office_url="https://api.weather.gov/offices/SEW",
@@ -147,7 +148,7 @@ class TestHelpers:
 class TestMarineParsing:
     def test_parse_marine_forecast(self, mock_kafka_config, temp_state_file):
         poller = _build_poller(mock_kafka_config, temp_state_file)
-        forecast = poller.parse_marine_forecast("PZZ135", SAMPLE_MARINE_TEXT)
+        forecast = poller._fetcher.parse_marine_forecast("PZZ135", SAMPLE_MARINE_TEXT)
         assert forecast.zone_id == "PZZ135"
         assert forecast.zone_name == "Puget Sound and Hood Canal"
         assert forecast.wmo_header == "FZUS56 KSEW 132142"
@@ -159,24 +160,24 @@ class TestMarineParsing:
 class TestPollerResilience:
     def test_reference_refresh_keeps_cached_zone_on_failure(self, mock_kafka_config, temp_state_file):
         poller = _build_poller(mock_kafka_config, temp_state_file)
-        poller.zones = ["WAZ315"]
-        poller.zone_cache = {"WAZ315": _zone("WAZ315", ZoneTypeenum.public)}
-        with patch.object(poller, "fetch_zone", side_effect=requests.Timeout("boom")):
-            poller.refresh_zone_cache()
-        assert "WAZ315" in poller.zone_cache
-        assert poller.zone_cache["WAZ315"].zone_id == "WAZ315"
+        poller._fetcher.zones = ["WAZ315"]
+        poller._fetcher.zone_cache = {"WAZ315": _zone("WAZ315", ZoneTypeenum.public)}
+        with patch.object(poller._fetcher, "fetch_zone", side_effect=forecasts_core.requests.Timeout("boom")):
+            poller._fetcher.refresh_zone_cache()
+        assert "WAZ315" in poller._fetcher.zone_cache
+        assert poller._fetcher.zone_cache["WAZ315"].zone_id == "WAZ315"
 
     def test_poll_once_flush_failure_does_not_advance_state(self, mock_kafka_config, temp_state_file):
         with open(temp_state_file, "w", encoding="utf-8") as handle:
             json.dump({"land_updates": {}, "marine_hashes": {}}, handle)
 
         poller = _build_poller(mock_kafka_config, temp_state_file)
-        poller.zones = ["WAZ315"]
-        poller.zone_cache = {"WAZ315": _zone("WAZ315", ZoneTypeenum.public)}
+        poller._fetcher.zones = ["WAZ315"]
+        poller._fetcher.zone_cache = {"WAZ315": _zone("WAZ315", ZoneTypeenum.public)}
         poller.kafka_client.flush.return_value = 1
-        with patch.object(poller, "fetch_land_forecast", return_value=_land_forecast("WAZ315")):
+        with patch.object(poller._fetcher, "fetch_land_forecast", return_value=_land_forecast("WAZ315")):
             with pytest.raises(RuntimeError):
-                poller.poll_once()
+                poller._fetcher.poll_once()
 
         with open(temp_state_file, "r", encoding="utf-8") as handle:
             state = json.load(handle)
@@ -184,15 +185,16 @@ class TestPollerResilience:
 
     def test_poll_once_skips_failed_slice_and_emits_other_slice(self, mock_kafka_config, temp_state_file):
         poller = _build_poller(mock_kafka_config, temp_state_file)
-        poller.zone_cache = {
+        poller._fetcher.zone_cache = {
             "WAZ315": _zone("WAZ315", ZoneTypeenum.public),
             "PZZ135": _zone("PZZ135", ZoneTypeenum.marine),
         }
 
-        with patch.object(poller, "fetch_land_forecast", side_effect=requests.Timeout("land failed")), patch.object(
-            poller, "fetch_marine_forecast", return_value=_marine_forecast("PZZ135")
+        poller._fetcher.zones = ["WAZ315", "PZZ135"]
+        with patch.object(poller._fetcher, "fetch_land_forecast", side_effect=forecasts_core.requests.Timeout("land failed")), patch.object(
+            poller._fetcher, "fetch_marine_forecast", return_value=_marine_forecast("PZZ135")
         ):
-            emitted = poller.poll_once()
+            emitted = poller._fetcher.poll_once()
 
         assert emitted == 1
         poller.producer.send_microsoft_open_data_us_noaa_nws_land_zone_forecast.assert_not_called()

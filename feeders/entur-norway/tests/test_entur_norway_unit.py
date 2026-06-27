@@ -1,6 +1,7 @@
 """Unit tests for the Entur Norway SIRI bridge."""
 
 import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
 
 import pytest
 
@@ -226,8 +227,8 @@ class TestParseEtJourneys:
         assert evj.estimated_calls[0].stop_point_ref == 'NSB:StopPlace:1'
         assert evj.estimated_calls[0].order == 1
         assert evj.estimated_calls[0].stop_point_name == 'Oslo S'
-        assert evj.estimated_calls[0].aimed_departure_time == '2024-01-15T08:00:00'
-        assert evj.estimated_calls[0].expected_departure_time == '2024-01-15T08:02:00'
+        assert evj.estimated_calls[0].aimed_departure_time == datetime(2024, 1, 15, 8, 0)
+        assert evj.estimated_calls[0].expected_departure_time == datetime(2024, 1, 15, 8, 2)
         assert evj.estimated_calls[1].stop_point_ref == 'NSB:StopPlace:2'
 
     def test_empty_xml_returns_empty_list(self):
@@ -389,7 +390,7 @@ class TestParseVmJourneys:
         assert mvj.delay_seconds == 150  # PT2M30S
         assert mvj.vehicle_ref == 'NSB:Vehicle:42'
         assert mvj.occupancy_status == 'seatsAvailable'
-        assert mvj.recorded_at_time == '2024-01-15T08:05:00Z'
+        assert mvj.recorded_at_time == datetime(2024, 1, 15, 8, 5, tzinfo=timezone.utc)
 
     def test_empty_returns_empty_list(self):
         root = ET.fromstring(f'<Siri xmlns="{SIRI_NS}"><ServiceDelivery/></Siri>')
@@ -492,7 +493,7 @@ class TestParseSxSituations:
         sit = self.bridge.parse_sx_situations(root)[0][1]
         assert sit.situation_number == 'ENT:SituationNumber:12345'
         assert sit.version == '1'
-        assert sit.creation_time == '2024-01-15T06:00:00Z'
+        assert sit.creation_time == datetime(2024, 1, 15, 6, 0, tzinfo=timezone.utc)
         assert sit.source_type == 'directReport'
         assert sit.source_name == 'Entur'
         assert sit.progress == 'open'
@@ -501,8 +502,8 @@ class TestParseSxSituations:
         assert sit.summary == 'Service disruption on R10'
         assert sit.description == 'Trains delayed due to engineering works.'
         assert len(sit.validity_periods) == 1
-        assert sit.validity_periods[0].start_time == '2024-01-15T06:00:00Z'
-        assert sit.validity_periods[0].end_time == '2024-01-15T23:59:00Z'
+        assert sit.validity_periods[0].start_time == datetime(2024, 1, 15, 6, 0, tzinfo=timezone.utc)
+        assert sit.validity_periods[0].end_time == datetime(2024, 1, 15, 23, 59, tzinfo=timezone.utc)
         assert sit.affects_line_refs == ['NSB:Line:R10']
         assert sit.affects_stop_point_refs == ['NSB:StopPlace:1', 'NSB:StopPlace:2']
 

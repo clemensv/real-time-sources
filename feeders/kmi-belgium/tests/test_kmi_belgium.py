@@ -27,6 +27,7 @@ class Station:
     station_code: str
     latitude: float
     longitude: float
+    region: str | None = None
 
 
 @dataclass
@@ -50,6 +51,7 @@ class WeatherObservation:
     sun_duration: float | None = None
     short_wave_from_sky_avg: float | None = None
     sun_int_avg: float | None = None
+    region: str | None = None
 
 
 producer_data.Station = Station

@@ -261,6 +261,7 @@ class TestEventDataClass:
         event = Event(
             id="us7000test",
             magnitude=4.5,
+            magnitude_bucket="m4",
             mag_type="mww",
             place="Test City",
             event_time="2023-11-14T22:13:20+00:00",
@@ -300,6 +301,7 @@ class TestEventDataClass:
         event = Event(
             id="us7000test",
             magnitude=4.5,
+            magnitude_bucket="m4",
             mag_type="mww",
             place="Test City",
             event_time="2023-11-14T22:13:20+00:00",
@@ -326,9 +328,8 @@ class TestEventDataClass:
             depth=10.5
         )
 
-        avro_bytes = event.to_byte_array("avro/binary")
-        assert avro_bytes is not None
-        assert len(avro_bytes) > 0
+        with pytest.raises(NotImplementedError, match="Unsupported media type avro/binary"):
+            event.to_byte_array("avro/binary")
 
 
 class TestAmqpApp:

@@ -5,9 +5,11 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from nws_alerts.nws_alerts import (
+    parse_connection_string,
+)
+from nws_alerts_core import (
     NWSAlertsPoller,
     normalize_alert,
-    parse_connection_string,
     _safe_str,
     _join_codes,
     _find_nws_headline,
@@ -116,7 +118,7 @@ class TestNormalizeAlert:
         assert a is not None
         assert a.alert_id == "urn:oid:2.49.0.1.840.0.abc123"
         assert a.event == "Tornado Warning"
-        assert a.severity == "Severe"
+        assert a.severity.value == "Severe"
         assert a.state == "md"
         assert a.event_type == "tornado-warning"
         assert a.same_codes == "024031"
@@ -133,7 +135,7 @@ class TestNormalizeAlert:
     def test_no_severity_defaults_unknown(self):
         a = normalize_alert(_make_props(severity=None))
         assert a is not None
-        assert a.severity == "Unknown"
+        assert a.severity.value == "Unknown"
 
     def test_minimal(self):
         a = normalize_alert({
@@ -170,42 +172,34 @@ class TestPollerPollAndSend:
     @pytest.mark.asyncio
     async def test_emits_new(self, tmp_path):
         poller = NWSAlertsPoller(state_file=str(tmp_path / "s.json"))
-        poller.event_producer = MagicMock()
-        poller.event_producer.send_nws_weather_alert = AsyncMock()
-        poller.event_producer.producer = MagicMock()
 
         features = [{"properties": _make_props()}]
         with patch.object(poller, "fetch_alerts", new_callable=AsyncMock, return_value=features):
-            await poller.poll_and_send(once=True)
+            alerts = await poller.poll_once()
 
-        poller.event_producer.send_nws_weather_alert.assert_called_once()
+        assert len(alerts) == 1
+        assert alerts[0].alert_id == "urn:oid:2.49.0.1.840.0.abc123"
 
     @pytest.mark.asyncio
     async def test_skips_seen(self, tmp_path):
         sf = str(tmp_path / "s.json")
         poller = NWSAlertsPoller(state_file=sf)
         poller.save_state({"urn:oid:2.49.0.1.840.0.abc123": "2026-04-07T10:00:00+00:00"})
-        poller.event_producer = MagicMock()
-        poller.event_producer.send_nws_weather_alert = AsyncMock()
-        poller.event_producer.producer = MagicMock()
 
         features = [{"properties": _make_props()}]
         with patch.object(poller, "fetch_alerts", new_callable=AsyncMock, return_value=features):
-            await poller.poll_and_send(once=True)
+            alerts = await poller.poll_once()
 
-        poller.event_producer.send_nws_weather_alert.assert_not_called()
+        assert alerts == []
 
     @pytest.mark.asyncio
     async def test_handles_error(self, tmp_path):
         poller = NWSAlertsPoller(state_file=str(tmp_path / "s.json"))
-        poller.event_producer = MagicMock()
-        poller.event_producer.send_nws_weather_alert = AsyncMock()
-        poller.event_producer.producer = MagicMock()
 
         with patch.object(poller, "fetch_alerts", new_callable=AsyncMock, side_effect=Exception("fail")):
-            await poller.poll_and_send(once=True)
+            alerts = await poller.poll_once()
 
-        poller.event_producer.send_nws_weather_alert.assert_not_called()
+        assert alerts == []
 
 
 class TestParseConnectionString:

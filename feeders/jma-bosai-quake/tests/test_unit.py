@@ -132,10 +132,10 @@ def test_list_entry_normalization_from_fixture():
     assert report.report_id == "20260521010824_1"
     assert report.serial == 1
     assert report.info_type.value == "ISSUED"
-    assert report.report_datetime == "2026-05-20T16:11:00+00:00"
-    assert report.control_datetime == "2026-05-20T16:11:47+00:00"
-    assert report.control_datetime_local == "2026-05-21T01:11:47+09:00"
-    assert report.origin_datetime == "2026-05-20T16:08:00+00:00"
+    assert report.report_datetime.isoformat() == "2026-05-20T16:11:00+00:00"
+    assert report.control_datetime.isoformat() == "2026-05-20T16:11:47+00:00"
+    assert report.control_datetime_local.isoformat() == "2026-05-21T01:11:47+09:00"
+    assert report.origin_datetime.isoformat() == "2026-05-20T16:08:00+00:00"
     assert report.latitude == 35.0
     assert report.longitude == 135.5
     assert report.depth_km == 10.0
@@ -234,4 +234,3 @@ def test_state_file_persists_seen_keys():
 
 def test_default_state_file_matches_repo_contract():
     assert DEFAULT_STATE_FILE == ".\\state\\jma-bosai-quake.json"
-

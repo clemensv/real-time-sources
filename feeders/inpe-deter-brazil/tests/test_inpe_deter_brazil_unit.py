@@ -19,6 +19,7 @@ from inpe_deter_brazil.inpe_deter_brazil import (
     parse_connection_string,
     to_rfc3339_timestamp,
 )
+from inpe_deter_brazil_producer_data.br.inpe.deter.biomeenum import BiomeEnum
 
 
 SAMPLE_AMAZON_FEATURE = {
@@ -324,7 +325,7 @@ class TestParseAlert:
 
         assert alert is not None
         assert alert.alert_id == "91537_hist"
-        assert alert.biome == "amazon"
+        assert alert.biome == BiomeEnum.amazon
         assert alert.classname == "DESMATAMENTO_CR"
         assert alert.view_date == "2026-02-21"
         assert alert.satellite == "AMAZONIA-1"
@@ -342,7 +343,7 @@ class TestParseAlert:
 
         assert alert is not None
         assert alert.alert_id == "10001_curr"
-        assert alert.biome == "cerrado"
+        assert alert.biome == BiomeEnum.cerrado
         assert alert.classname == "DESMATAMENTO_CR"
         assert alert.view_date == "2021-09-17"
         assert alert.satellite == "CBERS-4"
@@ -440,8 +441,8 @@ class TestParseAlert:
         poller = INPEDeterPoller()
         alert_amz = poller.parse_alert(SAMPLE_AMAZON_FEATURE, "amazon")
         alert_cer = poller.parse_alert(SAMPLE_CERRADO_FEATURE, "cerrado")
-        assert alert_amz.biome == "amazon"
-        assert alert_cer.biome == "cerrado"
+        assert alert_amz.biome == BiomeEnum.amazon
+        assert alert_cer.biome == BiomeEnum.cerrado
 
     def test_parse_alert_area_from_areamunkm(self):
         """Test that area_km2 is correctly read from areamunkm."""
@@ -610,8 +611,8 @@ class TestDeforestationAlertDataClass:
         assert "amazon" in json_str
         assert "DESMATAMENTO_CR" in json_str
 
-    def test_alert_to_avro(self):
-        """Test DeforestationAlert serialization to Avro binary."""
+    def test_alert_rejects_avro_media_type(self):
+        """Test DeforestationAlert rejects unsupported Avro serialization."""
         from inpe_deter_brazil_producer_data.br.inpe.deter.deforestationalert import DeforestationAlert
 
         alert = DeforestationAlert(
@@ -632,9 +633,8 @@ class TestDeforestationAlertDataClass:
             centroid_longitude=-46.35,
         )
 
-        avro_bytes = alert.to_byte_array("avro/binary")
-        assert avro_bytes is not None
-        assert len(avro_bytes) > 0
+        with pytest.raises(NotImplementedError, match="Unsupported media type avro/binary"):
+            alert.to_byte_array("avro/binary")
 
     def test_alert_to_json_with_nulls(self):
         """Test serialization with null optional fields."""
@@ -689,8 +689,8 @@ class TestDeforestationAlertDataClass:
         assert alert.classname == "MINERACAO"
         assert alert.area_km2 == 2.5
 
-    def test_alert_avro_roundtrip(self):
-        """Test Avro encode/decode roundtrip."""
+    def test_alert_avro_roundtrip_is_unsupported(self):
+        """Test unsupported Avro encode/decode roundtrip fails explicitly."""
         from inpe_deter_brazil_producer_data.br.inpe.deter.deforestationalert import DeforestationAlert
 
         alert = DeforestationAlert(
@@ -711,11 +711,8 @@ class TestDeforestationAlertDataClass:
             centroid_longitude=-47.9,
         )
 
-        avro_bytes = alert.to_byte_array("avro/binary")
-        restored = DeforestationAlert.from_data(avro_bytes, "avro/binary")
-        assert restored.alert_id == "roundtrip_test"
-        assert restored.biome == "cerrado"
-        assert restored.area_km2 == pytest.approx(3.14)
+        with pytest.raises(NotImplementedError, match="Unsupported media type avro/binary"):
+            alert.to_byte_array("avro/binary")
 
     def test_alert_json_roundtrip(self):
         """Test JSON encode/decode roundtrip."""
