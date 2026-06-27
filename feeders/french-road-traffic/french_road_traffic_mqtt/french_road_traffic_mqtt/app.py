@@ -138,7 +138,19 @@ async def _run(args: argparse.Namespace) -> None:
         if not await loop.run_in_executor(None, lambda: connected.wait(30)):
             raise RuntimeError("MQTT CONNACK timeout after 30s")
     else:
-        await event_client.connect(host, port)
+        # Direct paho connect: multiple generated MqttClient instances sharing one
+        # paho client overwrite each other's on_connect, causing connect() timeout.
+        connected = threading.Event()
+
+        def _on_connect_plain(_client, _userdata, _flags, reason_code, _properties=None):
+            if (reason_code if isinstance(reason_code, int) else getattr(reason_code, "value", reason_code)) == 0:
+                connected.set()
+
+        paho_client.on_connect = _on_connect_plain
+        paho_client.connect(host, port, keepalive=60)
+        paho_client.loop_start()
+        if not await loop.run_in_executor(None, lambda: connected.wait(30)):
+            raise RuntimeError("MQTT CONNACK timeout after 30s")
     try:
         while True:
             await _publish_cycle(source, flow_client, event_client)

@@ -132,7 +132,27 @@ async def _run_feed(args: argparse.Namespace) -> None:
     msi_client = NLNDWMSIMqttMqttClient(paho_client)
     sit_client = NLNDWSituationsMqttMqttClient(paho_client)
 
-    await avg_client.connect(host, port, token=entra_token)
+    # Direct paho connect: multiple generated MqttClient instances sharing one
+    # paho client overwrite each other's on_connect, causing connect() timeout.
+    import threading as _threading
+    _connected = _threading.Event()
+    def _on_connack(client, userdata, flags, reason_code, props=None):
+        rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
+        if rc == 0:
+            _connected.set()
+    paho_client.on_connect = _on_connack
+    if entra_token is not None:
+        from paho.mqtt.properties import Properties as _Props
+        from paho.mqtt.packettypes import PacketTypes as _Pkt
+        _cp = _Props(_Pkt.CONNECT)
+        _cp.AuthenticationMethod = "OAUTH2-JWT"
+        _cp.AuthenticationData = entra_token.encode("utf-8") if isinstance(entra_token, str) else entra_token
+        paho_client.connect(host, port, keepalive=60, clean_start=True, properties=_cp)
+    else:
+        paho_client.connect(host, port, keepalive=60)
+    paho_client.loop_start()
+    if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+        raise RuntimeError('MQTT CONNACK timeout after 30s')
 
     acquirer = NdwAcquirer(
         base_url=args.base_url,

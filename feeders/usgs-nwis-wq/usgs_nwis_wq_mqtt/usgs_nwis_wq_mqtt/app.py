@@ -146,7 +146,19 @@ async def feed(host, port, username=None, password=None, tls=False, client_id=No
         if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
             raise RuntimeError('MQTT CONNACK timeout after 30s')
     else:
-        await clients[0].connect(host, port)
+        # Direct paho connect: multiple generated MqttClient instances sharing one
+        # paho client overwrite each other's on_connect, causing connect() timeout.
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
+            if rc == 0:
+                _connected.set()
+        paho.on_connect = _on_connack
+        paho.connect(host, port, keepalive=60)
+        paho.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
     try:
         for client in clients:
             await _publish_mock(client)

@@ -67,7 +67,18 @@ async def feed(args: argparse.Namespace) -> None:
         paho_client.connect(host, port, keepalive=60, clean_start=True, properties=props); paho_client.loop_start()
         logger.info("Using Entra ID MQTT auth (expires %s)", expires_at.isoformat())
     else:
-        await sensor_client.connect(host, port)
+        # Direct paho connect: multiple generated MqttClient instances sharing one
+        # paho client overwrite each other's on_connect, causing connect() timeout.
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
+            if rc == 0:
+                _connected.set()
+        paho_client.on_connect = _on_connack
+        paho_client.connect(host, port, keepalive=60); paho_client.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
     last_reference_refresh=0.0; reference_refresh=max(300,args.reference_refresh_interval); locations_cache=[]; sensors_cache={}
     try:
         while True:

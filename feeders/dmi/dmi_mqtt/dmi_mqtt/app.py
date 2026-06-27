@@ -336,7 +336,19 @@ async def feed(
         )
         paho_client.loop_start()
     else:
-        await met_client.connect(broker_host, broker_port)
+        # Direct paho connect: multiple generated MqttClient instances sharing one
+        # paho client overwrite each other's on_connect, causing connect() timeout.
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
+            if rc == 0:
+                _connected.set()
+        paho_client.on_connect = _on_connack
+        paho_client.connect(broker_host, broker_port, keepalive=60)
+        paho_client.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
 
     refresh_task: Optional[asyncio.Task] = None
     if auth_mode == "entra" and expires_at is not None:

@@ -252,20 +252,23 @@ def main(argv=None):
         if _entra_props is None and (resolved_username or resolved_password): p.username_pw_set(resolved_username, resolved_password)
         if _entra_props is not None or a.mqtt_broker_url.startswith(('mqtts://', 'ssl://')): p.tls_set()
         w=SGGovNEAWeatherMqttMqttClient(client=p, content_mode='binary', loop=asyncio.get_running_loop()); aq=SGGovNEAAirQualityMqttMqttClient(client=p, content_mode='binary', loop=asyncio.get_running_loop())
-        # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+        # Direct paho connect for multi-group feeders: multiple generated MqttClient
+        # instances sharing one paho client overwrite each other's on_connect callback,
+        # so calling a single wrapper's connect() times out. Use direct paho connect instead.
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
+            if rc == 0:
+                _connected.set()
+        p.on_connect = _on_connack
         if _entra_props is not None:
-            import threading as _threading
-            _connected = _threading.Event()
-            def _on_connack(client, userdata, flags, reason_code, props=None):
-                if reason_code == 0:
-                    _connected.set()
-            p.on_connect = _on_connack
             p.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
-            p.loop_start()
-            if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
-                raise RuntimeError('MQTT CONNACK timeout after 30s')
         else:
-            await w.connect(host,port)
+            p.connect(host, port, keepalive=60)
+        p.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
         if a.mock:
             await _mock(w,aq); await asyncio.sleep(1)
         else:

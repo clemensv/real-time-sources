@@ -188,7 +188,16 @@ def main():
     if args.auth_mode == 'entra':
         paho.connect(host, port, keepalive=60, clean_start=True, properties=props); paho.loop_start()
         refresh_stop = _start_entra_refresh_thread(paho, host, port, args.entra_audience, args.entra_client_id, expires_at)
-    else: loop.run_until_complete(domain_client.connect(host, port))
+    else:
+        # Direct paho connect: multiple generated MqttClient instances sharing one
+        # paho client overwrite each other's on_connect, causing connect() timeout.
+        import threading as _thr
+        _ev = _thr.Event()
+        def _on_connack(c, u, f, rc, p=None):
+            if (rc if isinstance(rc, int) else getattr(rc, 'value', rc)) == 0: _ev.set()
+        paho.on_connect = _on_connack
+        paho.connect(host, port, keepalive=60); paho.loop_start()
+        if not _ev.wait(30): raise RuntimeError('MQTT CONNACK timeout after 30s')
     _run_or_sample(args, MqttPublisher(domain_client, psr_client, cross_client, loop, refresh_stop))
 
 if __name__ == '__main__':

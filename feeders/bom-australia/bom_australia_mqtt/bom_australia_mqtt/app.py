@@ -107,7 +107,22 @@ async def _run_live(args: argparse.Namespace) -> None:
         raw_client, content_mode=args.content_mode
     )
 
-    await weather_client.connect(broker, port, properties=connect_props)
+    # Direct paho connect: multiple generated MqttClient instances sharing one paho
+    # client overwrite each other's on_connect callback, causing connect() timeout.
+    import threading as _threading
+    _connected = _threading.Event()
+    def _on_connack(client, userdata, flags, reason_code, props=None):
+        rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
+        if rc == 0:
+            _connected.set()
+    raw_client.on_connect = _on_connack
+    if connect_props is not None:
+        raw_client.connect(broker, port, keepalive=60, clean_start=True, properties=connect_props)
+    else:
+        raw_client.connect(broker, port, keepalive=60)
+    raw_client.loop_start()
+    if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+        raise RuntimeError('MQTT CONNACK timeout after 30s')
 
     api = BOMAustraliaAPI(polling_interval=args.polling_interval, fetch_workers=args.fetch_workers)
 

@@ -118,7 +118,22 @@ async def _connect_clients(args: argparse.Namespace) -> tuple[GtfsMqttPublisher,
 
     realtime_client = GeneralTransitFeedRealTimeMqttMqttClient(paho_client, content_mode=args.mqtt_content_mode)
     static_client = GeneralTransitFeedStaticMqttMqttClient(paho_client, content_mode=args.mqtt_content_mode)
-    await realtime_client.connect(broker_host, port=broker_port, keepalive=30, properties=entra_props)
+    # Direct paho connect: multiple generated MqttClient instances sharing one
+    # paho client overwrite each other's on_connect, causing connect() timeout.
+    import threading as _threading
+    _connected = _threading.Event()
+    def _on_connack(client, userdata, flags, reason_code, props=None):
+        rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
+        if rc == 0:
+            _connected.set()
+    paho_client.on_connect = _on_connack
+    if entra_props is not None:
+        paho_client.connect(broker_host, broker_port, keepalive=30, clean_start=True, properties=entra_props)
+    else:
+        paho_client.connect(broker_host, broker_port, keepalive=30)
+    paho_client.loop_start()
+    if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+        raise RuntimeError('MQTT CONNACK timeout after 30s')
     return GtfsMqttPublisher(realtime_client, static_client), realtime_client
 
 

@@ -22,6 +22,18 @@ def _save_state(state_file: str, data: dict) -> None:
     except Exception as exc: logging.warning('Could not save state to %s: %s', state_file, exc)
 def slugify_topic_segment(value: str, fallback: str = 'unknown') -> str:
     slug = re.sub(r'[^a-z0-9]+', '-', str(value or '').lower()).strip('-'); return slug or fallback
+
+# CBP API switched from English ("Canadian Border"/"Mexican Border") to Spanish
+# ("Frontera canadiense"/"Frontera mexicana"). Normalize to the contract enum values.
+_BORDER_SLUG_ALIASES: Dict[str, str] = {
+    'frontera-canadiense': 'canadian-border',
+    'frontera-mexicana': 'mexican-border',
+}
+
+def _normalize_border_slug(border: str) -> str:
+    """Normalize border field to the enum-defined slug."""
+    slug = slugify_topic_segment(border)
+    return _BORDER_SLUG_ALIASES.get(slug, slug)
 def parse_int_or_none(value: str) -> Optional[int]:
     if value is None: return None
     value = str(value).strip()
@@ -44,9 +56,9 @@ class CbpBorderWaitAPI:
     @staticmethod
     def parse_port(raw: Dict[str, Any]) -> Port:
         pv = raw.get('passenger_vehicle_lanes', {}); cv = raw.get('commercial_vehicle_lanes', {}); ped = raw.get('pedestrian_lanes', {}); border = raw.get('border', '')
-        return Port(port_number=raw.get('port_number', ''), border_slug=BorderSlugenum(slugify_topic_segment(border)), port_name=raw.get('port_name', ''), border=border, crossing_name=raw.get('crossing_name', ''), hours=raw.get('hours', ''), passenger_vehicle_max_lanes=parse_int_or_none(pv.get('maximum_lanes', '')), commercial_vehicle_max_lanes=parse_int_or_none(cv.get('maximum_lanes', '')), pedestrian_max_lanes=parse_int_or_none(ped.get('maximum_lanes', '')))
+        return Port(port_number=raw.get('port_number', ''), border_slug=BorderSlugenum(_normalize_border_slug(border)), port_name=raw.get('port_name', ''), border=border, crossing_name=raw.get('crossing_name', ''), hours=raw.get('hours', ''), passenger_vehicle_max_lanes=parse_int_or_none(pv.get('maximum_lanes', '')), commercial_vehicle_max_lanes=parse_int_or_none(cv.get('maximum_lanes', '')), pedestrian_max_lanes=parse_int_or_none(ped.get('maximum_lanes', '')))
     @staticmethod
     def parse_wait_time(raw: Dict[str, Any]) -> WaitTime:
         pv = raw.get('passenger_vehicle_lanes', {}); ped = raw.get('pedestrian_lanes', {}); cv = raw.get('commercial_vehicle_lanes', {})
         pv_std_delay, pv_std_lanes, pv_std_status = _extract_lane(pv.get('standard_lanes', {})); pv_ns_delay, pv_ns_lanes, pv_ns_status = _extract_lane(pv.get('NEXUS_SENTRI_lanes', {})); pv_rd_delay, pv_rd_lanes, pv_rd_status = _extract_lane(pv.get('ready_lanes', {})); ped_std_delay, ped_std_lanes, ped_std_status = _extract_lane(ped.get('standard_lanes', {})); ped_rd_delay, ped_rd_lanes, ped_rd_status = _extract_lane(ped.get('ready_lanes', {})); cv_std_delay, cv_std_lanes, cv_std_status = _extract_lane(cv.get('standard_lanes', {})); cv_fast_delay, cv_fast_lanes, cv_fast_status = _extract_lane(cv.get('FAST_lanes', {})); border = raw.get('border', '')
-        return WaitTime(port_number=raw.get('port_number', ''), border_slug=BorderSlugenum(slugify_topic_segment(border)), port_name=raw.get('port_name', ''), border=border, crossing_name=raw.get('crossing_name', ''), port_status=raw.get('port_status', ''), date=raw.get('date', ''), time=raw.get('time', ''), passenger_vehicle_standard_delay=pv_std_delay, passenger_vehicle_standard_lanes_open=pv_std_lanes, passenger_vehicle_standard_operational_status=pv_std_status, passenger_vehicle_nexus_sentri_delay=pv_ns_delay, passenger_vehicle_nexus_sentri_lanes_open=pv_ns_lanes, passenger_vehicle_nexus_sentri_operational_status=pv_ns_status, passenger_vehicle_ready_delay=pv_rd_delay, passenger_vehicle_ready_lanes_open=pv_rd_lanes, passenger_vehicle_ready_operational_status=pv_rd_status, pedestrian_standard_delay=ped_std_delay, pedestrian_standard_lanes_open=ped_std_lanes, pedestrian_standard_operational_status=ped_std_status, pedestrian_ready_delay=ped_rd_delay, pedestrian_ready_lanes_open=ped_rd_lanes, pedestrian_ready_operational_status=ped_rd_status, commercial_vehicle_standard_delay=cv_std_delay, commercial_vehicle_standard_lanes_open=cv_std_lanes, commercial_vehicle_standard_operational_status=cv_std_status, commercial_vehicle_fast_delay=cv_fast_delay, commercial_vehicle_fast_lanes_open=cv_fast_lanes, commercial_vehicle_fast_operational_status=cv_fast_status, construction_notice=raw.get('construction_notice', '') or None)
+        return WaitTime(port_number=raw.get('port_number', ''), border_slug=BorderSlugenum(_normalize_border_slug(border)), port_name=raw.get('port_name', ''), border=border, crossing_name=raw.get('crossing_name', ''), port_status=raw.get('port_status', ''), date=raw.get('date', ''), time=raw.get('time', ''), passenger_vehicle_standard_delay=pv_std_delay, passenger_vehicle_standard_lanes_open=pv_std_lanes, passenger_vehicle_standard_operational_status=pv_std_status, passenger_vehicle_nexus_sentri_delay=pv_ns_delay, passenger_vehicle_nexus_sentri_lanes_open=pv_ns_lanes, passenger_vehicle_nexus_sentri_operational_status=pv_ns_status, passenger_vehicle_ready_delay=pv_rd_delay, passenger_vehicle_ready_lanes_open=pv_rd_lanes, passenger_vehicle_ready_operational_status=pv_rd_status, pedestrian_standard_delay=ped_std_delay, pedestrian_standard_lanes_open=ped_std_lanes, pedestrian_standard_operational_status=ped_std_status, pedestrian_ready_delay=ped_rd_delay, pedestrian_ready_lanes_open=ped_rd_lanes, pedestrian_ready_operational_status=ped_rd_status, commercial_vehicle_standard_delay=cv_std_delay, commercial_vehicle_standard_lanes_open=cv_std_lanes, commercial_vehicle_standard_operational_status=cv_std_status, commercial_vehicle_fast_delay=cv_fast_delay, commercial_vehicle_fast_lanes_open=cv_fast_lanes, commercial_vehicle_fast_operational_status=cv_fast_status, construction_notice=raw.get('construction_notice', '') or None)
