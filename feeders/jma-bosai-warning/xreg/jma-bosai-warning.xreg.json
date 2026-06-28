@@ -323,6 +323,7 @@
                     }
                   },
                   "event": {
+                    "name": "OfficeEventEnum",
                     "type": "string",
                     "description": "Fixed MQTT topic event segment for retained office reference records.",
                     "enum": [
@@ -403,6 +404,7 @@
                     }
                   },
                   "event": {
+                    "name": "WeatherWarningEventEnum",
                     "type": "string",
                     "description": "Fixed MQTT topic event segment for JMA Bosai weather warning state records.",
                     "enum": [

@@ -33,19 +33,19 @@ class Test_TsunamiAlert(unittest.TestCase):
         Create instance of TsunamiAlert for testing
         """
         instance = TsunamiAlert(
-            event_id='aslhcuurakgvidjlmehc',
-            serial=int(34),
+            event_id='qjmbrluicnhjzbuprhdk',
+            serial=int(20),
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='sndnrfuupxtmvmkvmqnn',
-            title_en='ctesbwlgasvswdfghrtd',
-            bulletin_type='wsgcwfldhtmzgevichku',
-            detail_url='uybgaahbtvqomtptbbbs',
-            affected_coastal_regions=[None, None, None, None, None],
-            observations=[None],
-            prefecture='kihebvvtfububsvqrajs',
-            severity=SeverityEnum.info
+            title_jp='bbmbefaugnaxetotdvyo',
+            title_en='gsszpajqvdleqpnescla',
+            bulletin_type='pfsdsayhxbegrzxzzvey',
+            detail_url='znoybrnythcgslalsisl',
+            affected_coastal_regions=[None, None],
+            observations=[None, None, None],
+            prefecture='nvjypdleiheyrbcgwowo',
+            severity=SeverityEnum.advisory
         )
         return instance
 
@@ -54,7 +54,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'aslhcuurakgvidjlmehc'
+        test_value = 'qjmbrluicnhjzbuprhdk'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test serial property
         """
-        test_value = int(34)
+        test_value = int(20)
         self.instance.serial = test_value
         self.assertEqual(self.instance.serial, test_value)
     
@@ -94,7 +94,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_jp property
         """
-        test_value = 'sndnrfuupxtmvmkvmqnn'
+        test_value = 'bbmbefaugnaxetotdvyo'
         self.instance.title_jp = test_value
         self.assertEqual(self.instance.title_jp, test_value)
     
@@ -102,7 +102,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_en property
         """
-        test_value = 'ctesbwlgasvswdfghrtd'
+        test_value = 'gsszpajqvdleqpnescla'
         self.instance.title_en = test_value
         self.assertEqual(self.instance.title_en, test_value)
     
@@ -110,7 +110,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test bulletin_type property
         """
-        test_value = 'wsgcwfldhtmzgevichku'
+        test_value = 'pfsdsayhxbegrzxzzvey'
         self.instance.bulletin_type = test_value
         self.assertEqual(self.instance.bulletin_type, test_value)
     
@@ -118,7 +118,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test detail_url property
         """
-        test_value = 'uybgaahbtvqomtptbbbs'
+        test_value = 'znoybrnythcgslalsisl'
         self.instance.detail_url = test_value
         self.assertEqual(self.instance.detail_url, test_value)
     
@@ -126,7 +126,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test affected_coastal_regions property
         """
-        test_value = [None, None, None, None, None]
+        test_value = [None, None]
         self.instance.affected_coastal_regions = test_value
         self.assertEqual(self.instance.affected_coastal_regions, test_value)
     
@@ -134,7 +134,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test observations property
         """
-        test_value = [None]
+        test_value = [None, None, None]
         self.instance.observations = test_value
         self.assertEqual(self.instance.observations, test_value)
     
@@ -142,7 +142,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'kihebvvtfububsvqrajs'
+        test_value = 'nvjypdleiheyrbcgwowo'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -150,7 +150,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = SeverityEnum.info
+        test_value = SeverityEnum.advisory
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     

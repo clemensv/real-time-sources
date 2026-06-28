@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_amqp_producer_data.statusenum import StatusEnum
+from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -163,9 +163,9 @@ class WarningItem:
             An instance of the dataclass.
         """
         return cls(
-            code='bmmmtzmfavthiabubptq',
-            code_description_jp='nhgtdedjgumnjeizcyva',
-            code_description_en='zsmwujvusmdekqxvkrhe',
+            code='ilmsajrozlsvtusukuvq',
+            code_description_jp='bweaxhskztpcukcvbzxr',
+            code_description_en='ceuxsgqksiagurjgqfch',
             status=StatusEnum.ISSUED,
-            severity=SeverityEnum.info
+            severity=SeverityEnum.advisory
         )

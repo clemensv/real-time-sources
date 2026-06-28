@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_amqp_producer_data.warningitem import WarningItem
-from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_amqp_producer_data.statusenum import StatusEnum
+from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 
 
 class Test_WarningItem(unittest.TestCase):
@@ -30,11 +30,11 @@ class Test_WarningItem(unittest.TestCase):
         Create instance of WarningItem for testing
         """
         instance = WarningItem(
-            code='bmmmtzmfavthiabubptq',
-            code_description_jp='nhgtdedjgumnjeizcyva',
-            code_description_en='zsmwujvusmdekqxvkrhe',
+            code='ilmsajrozlsvtusukuvq',
+            code_description_jp='bweaxhskztpcukcvbzxr',
+            code_description_en='ceuxsgqksiagurjgqfch',
             status=StatusEnum.ISSUED,
-            severity=SeverityEnum.info
+            severity=SeverityEnum.advisory
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'bmmmtzmfavthiabubptq'
+        test_value = 'ilmsajrozlsvtusukuvq'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -51,7 +51,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code_description_jp property
         """
-        test_value = 'nhgtdedjgumnjeizcyva'
+        test_value = 'bweaxhskztpcukcvbzxr'
         self.instance.code_description_jp = test_value
         self.assertEqual(self.instance.code_description_jp, test_value)
     
@@ -59,7 +59,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code_description_en property
         """
-        test_value = 'zsmwujvusmdekqxvkrhe'
+        test_value = 'ceuxsgqksiagurjgqfch'
         self.instance.code_description_en = test_value
         self.assertEqual(self.instance.code_description_en, test_value)
     
@@ -75,7 +75,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = SeverityEnum.info
+        test_value = SeverityEnum.advisory
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
