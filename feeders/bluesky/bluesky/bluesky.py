@@ -139,11 +139,15 @@ class BlueskyFirehose:
             source = iter_mock_firehose_events(max_events=12)
         else:
             source = iter_firehose_events(firehose_url=self.firehose_url, collections=list(self.collections) if self.collections else None, cursor_provider=lambda: self.cursor, user_agent=USER_AGENT)
-        async for event in source:
-            self._send_event(event)
-            if event.seq % 1000 == 0:
-                self.save_cursor()
-                self.producer.flush()
+        try:
+            async for event in source:
+                self._send_event(event)
+                if event.seq % 1000 == 0:
+                    self.save_cursor()
+                    self.producer.flush()
+        finally:
+            self.save_cursor()
+            self.producer.flush()
 
     def close(self) -> None:
         self.save_cursor()
