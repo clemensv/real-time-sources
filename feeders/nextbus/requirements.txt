@@ -4,4 +4,4 @@ cloudevents>=2.2.0,<3.0.0
 dataclasses_json>=0.6.7
 avro>=1.11.3
 flit>=3.12.0
-setuptools_scm>=10.0.5
+setuptools_scm>=10.2.0
