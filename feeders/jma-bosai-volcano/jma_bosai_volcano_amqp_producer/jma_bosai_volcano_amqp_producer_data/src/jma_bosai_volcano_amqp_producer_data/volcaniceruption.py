@@ -13,7 +13,7 @@ from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
 from jma_bosai_volcano_amqp_producer_data.eruptiontypeenum import EruptionTypeenum
-from jma_bosai_volcano_amqp_producer_data.eventenum import EventEnum
+from jma_bosai_volcano_amqp_producer_data.volcaniceruptioneventenum import VolcanicEruptionEventEnum
 import datetime
 
 
@@ -43,7 +43,7 @@ class VolcanicEruption:
         info_type_jp (typing.Optional[str])
         area_codes (typing.List[str])
         prefecture (str)
-        event (EventEnum)
+        event (VolcanicEruptionEventEnum)
     """
     
     
@@ -66,7 +66,7 @@ class VolcanicEruption:
     info_type_jp: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info_type_jp"))
     area_codes: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_codes"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: VolcanicEruptionEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'VolcanicEruption':
@@ -195,24 +195,24 @@ class VolcanicEruption:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='jyabuibenjaitrnbblst',
-            event_id='mcrjrkplwsmutaxbhssm',
+            volcano_code='oggrvzidbmmbbwxrnuxr',
+            event_id='uffpipkynsubfvuaevqz',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_type=EruptionTypeenum.ERUPTION,
-            crater_name='nowidyesnxwyuuueophd',
-            colored_plume_height_m=float(88.14556340282216),
-            white_plume_height_m=float(36.42096783915717),
-            maximum_plume_height_since_start_m=float(53.02785173146892),
-            plume_direction='wnuofbitromkhpdhzdpf',
-            ash_dispersal_direction='xkiyobbnaiyvvdrwdojx',
+            crater_name='bjdnidgejdukkshjyjlm',
+            colored_plume_height_m=float(34.0690344125205),
+            white_plume_height_m=float(43.76409200152316),
+            maximum_plume_height_since_start_m=float(11.50591634202176),
+            plume_direction='twjqjrvxqqzvsuocymru',
+            ash_dispersal_direction='stgnxgarsbhhazfxdzvl',
             pyroclastic_flow_observed=True,
-            plume_amount_jp='hkyygegmulmifawpwolu',
-            description='iwvpjzxuyerhkucumczg',
-            info_type_jp='rulrqblsuopuqeyuhsit',
-            area_codes=['kvyydwgqftskjxlstypl'],
-            prefecture='lueupckqhojokcmqrwwz',
-            event=EventEnum.warning
+            plume_amount_jp='ishaomjkygiwwpkbzhol',
+            description='euvgssycgapissxeakdx',
+            info_type_jp='tvfenkhulukjyrdaubix',
+            area_codes=['tcjkwkyytkjetxxpfdxm', 'fzncmxfgvtqrvckzpbtj', 'lfcaqbkwgmznqgejdnqt'],
+            prefecture='mpowbhosoxxrsldzktci',
+            event=VolcanicEruptionEventEnum.eruption
         )

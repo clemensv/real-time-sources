@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+from jma_bosai_volcano_producer_data.volcanicwarningeventenum import VolcanicWarningEventEnum
 from jma_bosai_volcano_producer_data.conditionenum import ConditionEnum
-from jma_bosai_volcano_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -35,7 +35,7 @@ class VolcanicWarning:
         info_type_jp (str)
         area_codes (typing.List[str])
         prefecture (str)
-        event (EventEnum)
+        event (VolcanicWarningEventEnum)
     """
     
     
@@ -50,7 +50,7 @@ class VolcanicWarning:
     info_type_jp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info_type_jp"))
     area_codes: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_codes"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: VolcanicWarningEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'VolcanicWarning':
@@ -179,16 +179,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='odrwiiecbeoncuycyxpe',
-            event_id='vnjhsoiqashzmyjzkral',
+            volcano_code='hkeedajppaocowalrbie',
+            event_id='plxbrciygnggplugmvmt',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            alert_level_code='pvwsfuilefbuujfxzgds',
-            alert_level_name='liahglddsoxaljmqztux',
-            previous_level_code='ctjjiyxyavsphewnhbzh',
+            alert_level_code='jjfgjnjhempivhnxxvvz',
+            alert_level_name='qsiyoowlgdsnoppzodyf',
+            previous_level_code='knxorcjjwlsxfvovxdfz',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='vbbjalrmirajuquqtvor',
-            area_codes=['yhjwaqtjhtsfstnblxbw', 'zzpxvmakouekxltskbrz', 'cxuchekryxaqlomyxmhs'],
-            prefecture='jigkfvfiitmjldnuszey',
-            event=EventEnum.info
+            info_type_jp='bzkntmoviofbdgbngrvl',
+            area_codes=['hdoagcgfqcivmhoxzzyh', 'itwpoysiqwxtphhusdkq'],
+            prefecture='jhgnqmplnupwlpsberxs',
+            event=VolcanicWarningEventEnum.warning
         )

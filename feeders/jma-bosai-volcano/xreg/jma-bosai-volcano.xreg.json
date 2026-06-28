@@ -319,6 +319,7 @@
                     "pattern": "^[a-z0-9][a-z0-9-]*$"
                   },
                   "event": {
+                    "name": "VolcanoEventEnum",
                     "type": "string",
                     "enum": [
                       "info"
@@ -459,6 +460,7 @@
                     "pattern": "^[a-z0-9][a-z0-9-]*$"
                   },
                   "event": {
+                    "name": "VolcanicWarningEventEnum",
                     "type": "string",
                     "enum": [
                       "warning"
@@ -657,6 +659,7 @@
                     "pattern": "^[a-z0-9][a-z0-9-]*$"
                   },
                   "event": {
+                    "name": "VolcanicEruptionEventEnum",
                     "type": "string",
                     "enum": [
                       "eruption"
