@@ -246,8 +246,8 @@ def parse_observation(station_code: str, payload: dict[str, Any], observed_at_lo
         prefecture=prefecture_for_station(station_code),
         event=ObservationEventEnum.observation,
         station_code=station_code,
-        observed_at=datetime.fromisoformat(utc.isoformat().replace("+00:00", "Z")),
-        observed_at_local=datetime.fromisoformat(observed_at_local.isoformat()),
+        observed_at=utc,
+        observed_at_local=observed_at_local,
         **values,
     )
 
@@ -318,7 +318,7 @@ class JmaBosaiAmedasAPI:
         if not text:
             return None
         try:
-            return datetime.fromisoformat(text)
+            return datetime.fromisoformat(text.strip().replace("Z", "+00:00"))
         except ValueError as exc:
             logging.warning("Could not parse latest_time.txt value %r: %s", text, exc)
             return None

@@ -107,11 +107,11 @@ async def feed(api,host,port,*,state_file,polling_interval,metadata_refresh_hour
             await asyncio.sleep(max(0,polling_interval-(time.monotonic()-start)))
     finally:
         # WORKAROUND(xregistry/codegen#486): the generated MqttClient.disconnect()
-        # calls loop_stop() before disconnect(), which tears down paho's network
-        # loop while QoS-1 PUBLISH packets are still queued. In --once mode the
-        # last-published message (the Observation telemetry) is dropped before it
-        # reaches the broker, so only the Station reference event survives. Drain
-        # paho's outbound queue (bounded, best-effort) before the broken disconnect.
+        # calls loop_stop() before disconnect(), tearing down paho's network loop
+        # while fire-and-forget QoS-1 PUBLISH packets may still be queued (the
+        # generated publish_* methods discard the MQTTMessageInfo and never await
+        # PUBACK). Drain paho's outbound queue (bounded, best-effort) so the last
+        # telemetry PUBLISH reaches the broker before the disconnect ordering bug.
         try:
             _drain_deadline = time.monotonic() + 10.0
             while (getattr(pc, "_out_messages", None) or getattr(pc, "_out_packet", None)) and time.monotonic() < _drain_deadline:
