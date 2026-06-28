@@ -312,6 +312,22 @@ function Test-IsDispatchChunk {
 
 $resolvedXregPath = (Resolve-Path $XregPath).Path
 $resolvedOutputPath = [System.IO.Path]::GetFullPath($OutputPath)
+
+# Hand-maintenance guard: this generator emits the base schema (tables, mappings,
+# materialized views, update policies) only. A few sources carry hand-authored
+# helper tails (e.g. Map-friendly enrichment + trend functions) below the base.
+# Overwriting them silently discards that work, so honour an opt-out sentinel: if
+# the target file declares 'xreg-generator:hand-maintained', skip regeneration.
+# To refresh the base for such a file, remove the sentinel, regenerate, then
+# re-merge the helper tail.
+if (Test-Path $resolvedOutputPath) {
+    $existingKql = Get-Content $resolvedOutputPath -Raw -ErrorAction SilentlyContinue
+    if ($existingKql -and ($existingKql -match 'xreg-generator:hand-maintained')) {
+        Write-Warning "Skipping ${resolvedOutputPath}: hand-maintained sentinel present; not overwriting. Remove the sentinel, regenerate the base, then re-merge the helper tail if the schema changed."
+        exit 0
+    }
+}
+
 $xregDocument = Get-Content $resolvedXregPath -Raw | ConvertFrom-Json
 
 $schemaUris = New-Object System.Collections.Generic.List[string]
