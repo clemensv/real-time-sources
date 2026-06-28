@@ -105,7 +105,20 @@ async def feed(api,host,port,*,state_file,polling_interval,metadata_refresh_hour
             start=time.monotonic(); await cycle(api,client,state,state_file,metadata_refresh_hours)
             if once: break
             await asyncio.sleep(max(0,polling_interval-(time.monotonic()-start)))
-    finally: await client.disconnect()
+    finally:
+        # WORKAROUND(xregistry/codegen#486): the generated MqttClient.disconnect()
+        # calls loop_stop() before disconnect(), which tears down paho's network
+        # loop while QoS-1 PUBLISH packets are still queued. In --once mode the
+        # last-published message (the Observation telemetry) is dropped before it
+        # reaches the broker, so only the Station reference event survives. Drain
+        # paho's outbound queue (bounded, best-effort) before the broken disconnect.
+        try:
+            _drain_deadline = time.monotonic() + 10.0
+            while (getattr(pc, "_out_messages", None) or getattr(pc, "_out_packet", None)) and time.monotonic() < _drain_deadline:
+                await asyncio.sleep(0.1)
+        except Exception:  # pragma: no cover - drain is best-effort
+            pass
+        await client.disconnect()
 def parse_url(url):
     p=urlparse(url if '://' in url else 'mqtt://'+url); tls=(p.scheme or 'mqtt').lower() in ('mqtts','ssl','tls'); return p.hostname or 'localhost', p.port or (8883 if tls else 1883), tls
 def main():
