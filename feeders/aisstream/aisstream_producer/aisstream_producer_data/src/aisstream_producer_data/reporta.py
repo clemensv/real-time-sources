@@ -17,7 +17,7 @@ import json
 @dataclass
 class ReportA:
     """
-    Provider field for report a in this record.
+    Part A of the Class B static data report, carrying the vessel name (present when PartNumber = 0).
     
     Attributes:
         Valid (bool)
@@ -155,6 +155,6 @@ class ReportA:
             An instance of the dataclass.
         """
         return cls(
-            Valid=True,
-            Name='qmxqeqorfpuwbbxqkjfr'
+            Valid=False,
+            Name='hfdzwaatvhomealmedvq'
         )

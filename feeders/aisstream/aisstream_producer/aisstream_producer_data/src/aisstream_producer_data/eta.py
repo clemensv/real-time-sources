@@ -17,7 +17,7 @@ import json
 @dataclass
 class Eta:
     """
-    Provider field for eta in this record.
+    Estimated time of arrival (ETA) at destination, in UTC, encoded as separate month, day, hour and minute fields.
     
     Attributes:
         Month (int)
@@ -159,8 +159,8 @@ class Eta:
             An instance of the dataclass.
         """
         return cls(
-            Month=int(89),
-            Day=int(29),
-            Hour=int(60),
-            Minute=int(81)
+            Month=int(17),
+            Day=int(69),
+            Hour=int(79),
+            Minute=int(64)
         )

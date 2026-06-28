@@ -34,6 +34,10 @@ if ($LASTEXITCODE -eq 0) {
 }
 
 
+# Clean the AMQP output directory so stale generated files do not leak.
+$amqpOut = Join-Path $projectRoot "aisstream_amqp_producer"
+if (Test-Path $amqpOut) { Remove-Item -Path $amqpOut -Recurse -Force }
+
 xrcg generate `
     --style amqpproducer `
     --language py `

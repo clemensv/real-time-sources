@@ -17,7 +17,7 @@ import json
 @dataclass
 class StandardClassBPositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Standard Class B equipment position report (ITU-R M.1371 message 18) relayed by aisstream.io. Class B 'CS' and 'SO' shipborne mobile equipment use it to report position, speed and course over ground; it also advertises the unit's display, DSC, band and Message 22 capabilities.
     
     Attributes:
         MessageID (int)
@@ -195,26 +195,26 @@ class StandardClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(7),
-            RepeatIndicator=int(36),
-            UserID=int(64),
-            Valid=True,
-            Spare1=int(12),
-            Sog=float(4.631150893497027),
+            MessageID=int(22),
+            RepeatIndicator=int(41),
+            UserID=int(77),
+            Valid=False,
+            Spare1=int(51),
+            Sog=float(43.54303615271156),
             PositionAccuracy=False,
-            Longitude=float(70.33430251050638),
-            Latitude=float(48.05787508403646),
-            Cog=float(23.62450692377496),
-            TrueHeading=int(15),
-            Timestamp=int(21),
-            Spare2=int(97),
-            ClassBUnit=True,
+            Longitude=float(82.98106393795828),
+            Latitude=float(6.395780537643447),
+            Cog=float(98.1805301035709),
+            TrueHeading=int(41),
+            Timestamp=int(1),
+            Spare2=int(46),
+            ClassBUnit=False,
             ClassBDisplay=False,
-            ClassBDsc=False,
+            ClassBDsc=True,
             ClassBBand=False,
             ClassBMsg22=True,
             AssignedMode=True,
             Raim=False,
             CommunicationStateIsItdma=True,
-            CommunicationState=int(3)
+            CommunicationState=int(58)
         )

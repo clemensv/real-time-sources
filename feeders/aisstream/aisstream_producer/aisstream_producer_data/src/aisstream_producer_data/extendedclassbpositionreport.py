@@ -18,7 +18,7 @@ from aisstream_producer_data.dimension import Dimension
 @dataclass
 class ExtendedClassBPositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Extended Class B equipment position report (ITU-R M.1371 message 19) relayed by aisstream.io. In addition to position, course and speed it carries the vessel name, ship and cargo type, overall dimensions and antenna reference point, and electronic fix type.
     
     Attributes:
         MessageID (int)
@@ -194,25 +194,25 @@ class ExtendedClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(87),
-            RepeatIndicator=int(15),
-            UserID=int(28),
+            MessageID=int(9),
+            RepeatIndicator=int(26),
+            UserID=int(69),
             Valid=False,
-            Spare1=int(33),
-            Sog=float(27.09997572324221),
+            Spare1=int(27),
+            Sog=float(48.884175196596225),
             PositionAccuracy=False,
-            Longitude=float(70.33548292264962),
-            Latitude=float(2.3039251523765736),
-            Cog=float(6.576264660174102),
-            TrueHeading=int(32),
-            Timestamp=int(79),
-            Spare2=int(34),
-            Name='yvjdzkceadhiwawfvcww',
-            Type=int(55),
+            Longitude=float(66.20021370903028),
+            Latitude=float(98.63926099386387),
+            Cog=float(55.24217173350156),
+            TrueHeading=int(57),
+            Timestamp=int(92),
+            Spare2=int(15),
+            Name='kvhsuxjntgvjojhijdqp',
+            Type=int(89),
             Dimension=None,
-            FixType=int(35),
-            Raim=False,
+            FixType=int(30),
+            Raim=True,
             Dte=False,
             AssignedMode=False,
-            Spare3=int(40)
+            Spare3=int(53)
         )

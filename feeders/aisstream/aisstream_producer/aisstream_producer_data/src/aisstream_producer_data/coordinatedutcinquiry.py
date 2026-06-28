@@ -17,7 +17,7 @@ import json
 @dataclass
 class CoordinatedUTCInquiry:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    UTC and date inquiry (ITU-R M.1371 message 10) relayed by aisstream.io. A station sends it to request a UTC and date response (message 11) from an addressed station, typically a base station.
     
     Attributes:
         MessageID (int)
@@ -165,11 +165,11 @@ class CoordinatedUTCInquiry:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(95),
-            RepeatIndicator=int(54),
-            UserID=int(52),
+            MessageID=int(4),
+            RepeatIndicator=int(21),
+            UserID=int(18),
             Valid=True,
-            Spare1=int(58),
-            DestinationID=int(35),
-            Spare2=int(1)
+            Spare1=int(25),
+            DestinationID=int(85),
+            Spare2=int(79)
         )

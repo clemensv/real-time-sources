@@ -19,7 +19,7 @@ from aisstream_producer_data.reportb import ReportB
 @dataclass
 class StaticDataReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Class B static data report (ITU-R M.1371 message 24) relayed by aisstream.io. The report is split into Part A (vessel name) and Part B (ship type, vendor identification, call sign, dimensions/antenna reference point and electronic fix type); PartNumber selects which part this message carries.
     
     Attributes:
         MessageID (int)
@@ -169,12 +169,12 @@ class StaticDataReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(21),
-            RepeatIndicator=int(28),
-            UserID=int(6),
+            MessageID=int(53),
+            RepeatIndicator=int(53),
+            UserID=int(5),
             Valid=False,
-            Reserved=int(40),
-            PartNumber=False,
+            Reserved=int(0),
+            PartNumber=True,
             ReportA=None,
             ReportB=None
         )

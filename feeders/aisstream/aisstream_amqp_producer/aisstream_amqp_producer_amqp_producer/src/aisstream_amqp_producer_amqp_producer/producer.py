@@ -443,8 +443,28 @@ class _CbsAzureHandler(MessagingHandler):
                 fut.set_exception(exc)
         self._pending.clear()
 from aisstream_amqp_producer_data import PositionReport
-from aisstream_amqp_producer_data import ShipStatic
-from aisstream_amqp_producer_data import AidToNavigation
+from aisstream_amqp_producer_data import ShipStaticData
+from aisstream_amqp_producer_data import StandardClassBPositionReport
+from aisstream_amqp_producer_data import ExtendedClassBPositionReport
+from aisstream_amqp_producer_data import AidsToNavigationReport
+from aisstream_amqp_producer_data import StaticDataReport
+from aisstream_amqp_producer_data import BaseStationReport
+from aisstream_amqp_producer_data import SafetyBroadcastMessage
+from aisstream_amqp_producer_data import StandardSearchAndRescueAircraftReport
+from aisstream_amqp_producer_data import LongRangeAisBroadcastMessage
+from aisstream_amqp_producer_data import AddressedSafetyMessage
+from aisstream_amqp_producer_data import AddressedBinaryMessage
+from aisstream_amqp_producer_data import AssignedModeCommand
+from aisstream_amqp_producer_data import BinaryAcknowledge
+from aisstream_amqp_producer_data import BinaryBroadcastMessage
+from aisstream_amqp_producer_data import ChannelManagement
+from aisstream_amqp_producer_data import CoordinatedUTCInquiry
+from aisstream_amqp_producer_data import DataLinkManagementMessage
+from aisstream_amqp_producer_data import GnssBroadcastBinaryMessage
+from aisstream_amqp_producer_data import GroupAssignmentCommand
+from aisstream_amqp_producer_data import Interrogation
+from aisstream_amqp_producer_data import MultiSlotBinaryMessage
+from aisstream_amqp_producer_data import SingleSlotBinaryMessage
 
 class IOAISstreamAmqpProducer:
     """
@@ -690,10 +710,7 @@ class IOAISstreamAmqpProducer:
     
     def send_position_report(self,
         data: PositionReport,
-        _mmsi: str,
-        _flag: str,
-        _ship_type: str,
-        _geohash5: str,
+        _user_id: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -701,10 +718,7 @@ class IOAISstreamAmqpProducer:
         A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
         
         Args:
-            _mmsi (str): Value for placeholder mmsi in attribute subject
-            _flag (str): Value for AMQP protocol option placeholder flag
-            _ship_type (str): Value for AMQP protocol option placeholder ship_type
-            _geohash5 (str): Value for AMQP protocol option placeholder geohash5
+            _user_id (str): Value for placeholder UserID in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (PositionReport): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
@@ -712,11 +726,11 @@ class IOAISstreamAmqpProducer:
         # Build CloudEvent attributes
         attributes = {
             "type":
-            "IO.AISstream.mqtt.PositionReport",
+            "IO.AISstream.PositionReport",
             "source":
             "wss://stream.aisstream.io/v0/stream",
             "subject":
-            "{mmsi}".format(mmsi=_mmsi),
+            "{UserID}".format(UserID=_user_id),
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -752,12 +766,9 @@ class IOAISstreamAmqpProducer:
         if amqp_creation_time is not None:
             amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "{mmsi}".format(mmsi=_mmsi)
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
 
         app_properties = {}
-        app_properties["flag"] = "{flag}".format(flag=_flag)
-        app_properties["ship_type"] = "{ship_type}".format(ship_type=_ship_type)
-        app_properties["geohash5"] = "{geohash5}".format(geohash5=_geohash5)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -777,10 +788,7 @@ class IOAISstreamAmqpProducer:
     
     def send_position_report_batch(self,
         data_array: typing.List[PositionReport],
-        _mmsi: str,
-        _flag: str,
-        _ship_type: str,
-        _geohash5: str,
+        _user_id: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -788,53 +796,41 @@ class IOAISstreamAmqpProducer:
         
         Args:
             data_array (typing.List[PositionReport]): Array of message data objects
-            _mmsi (str): Value for placeholder mmsi in attribute subject
+            _user_id (str): Value for placeholder UserID in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            _flag (str): Value for AMQP protocol option placeholder flag
-            _ship_type (str): Value for AMQP protocol option placeholder ship_type
-            _geohash5 (str): Value for AMQP protocol option placeholder geohash5
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_position_report(
                 data=data,
-                _mmsi=_mmsi,
+                _user_id=_user_id,
                 _time=_time,
-                _flag=_flag,
-                _ship_type=_ship_type,
-                _geohash5=_geohash5,
                 content_type=content_type)
     
     
-    def send_ship_static(self,
-        data: ShipStatic,
-        _mmsi: str,
-        _flag: str,
-        _ship_type: str,
-        _geohash5: str,
+    def send_ship_static_data(self,
+        data: ShipStaticData,
+        _user_id: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
-        Send the `IO.AISstream.amqp.ShipStatic` message
+        Send the `IO.AISstream.amqp.ShipStaticData` message
         A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
         
         Args:
-            _mmsi (str): Value for placeholder mmsi in attribute subject
-            _flag (str): Value for AMQP protocol option placeholder flag
-            _ship_type (str): Value for AMQP protocol option placeholder ship_type
-            _geohash5 (str): Value for AMQP protocol option placeholder geohash5
+            _user_id (str): Value for placeholder UserID in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            data (ShipStatic): The message data object
+            data (ShipStaticData): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
         # Build CloudEvent attributes
         attributes = {
             "type":
-            "IO.AISstream.mqtt.ShipStatic",
+            "IO.AISstream.ShipStaticData",
             "source":
             "wss://stream.aisstream.io/v0/stream",
             "subject":
-            "{mmsi}".format(mmsi=_mmsi),
+            "{UserID}".format(UserID=_user_id),
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -870,12 +866,9 @@ class IOAISstreamAmqpProducer:
         if amqp_creation_time is not None:
             amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "{mmsi}".format(mmsi=_mmsi)
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
 
         app_properties = {}
-        app_properties["flag"] = "{flag}".format(flag=_flag)
-        app_properties["ship_type"] = "{ship_type}".format(ship_type=_ship_type)
-        app_properties["geohash5"] = "{geohash5}".format(geohash5=_geohash5)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -893,66 +886,51 @@ class IOAISstreamAmqpProducer:
         else:
             self._send_via_blocking_sender(amqp_msg)
     
-    def send_ship_static_batch(self,
-        data_array: typing.List[ShipStatic],
-        _mmsi: str,
-        _flag: str,
-        _ship_type: str,
-        _geohash5: str,
+    def send_ship_static_data_batch(self,
+        data_array: typing.List[ShipStaticData],
+        _user_id: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `IO.AISstream.amqp.ShipStatic` messages
+        Send multiple `IO.AISstream.amqp.ShipStaticData` messages
         
         Args:
-            data_array (typing.List[ShipStatic]): Array of message data objects
-            _mmsi (str): Value for placeholder mmsi in attribute subject
+            data_array (typing.List[ShipStaticData]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            _flag (str): Value for AMQP protocol option placeholder flag
-            _ship_type (str): Value for AMQP protocol option placeholder ship_type
-            _geohash5 (str): Value for AMQP protocol option placeholder geohash5
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_ship_static(
+            self.send_ship_static_data(
                 data=data,
-                _mmsi=_mmsi,
+                _user_id=_user_id,
                 _time=_time,
-                _flag=_flag,
-                _ship_type=_ship_type,
-                _geohash5=_geohash5,
                 content_type=content_type)
     
     
-    def send_aid_to_navigation(self,
-        data: AidToNavigation,
-        _mmsi: str,
-        _flag: str,
-        _ship_type: str,
-        _geohash5: str,
+    def send_standard_class_bposition_report(self,
+        data: StandardClassBPositionReport,
+        _user_id: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
-        Send the `IO.AISstream.amqp.AidToNavigation` message
+        Send the `IO.AISstream.amqp.StandardClassBPositionReport` message
         A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
         
         Args:
-            _mmsi (str): Value for placeholder mmsi in attribute subject
-            _flag (str): Value for AMQP protocol option placeholder flag
-            _ship_type (str): Value for AMQP protocol option placeholder ship_type
-            _geohash5 (str): Value for AMQP protocol option placeholder geohash5
+            _user_id (str): Value for placeholder UserID in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            data (AidToNavigation): The message data object
+            data (StandardClassBPositionReport): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
         # Build CloudEvent attributes
         attributes = {
             "type":
-            "IO.AISstream.mqtt.AidToNavigation",
+            "IO.AISstream.StandardClassBPositionReport",
             "source":
             "wss://stream.aisstream.io/v0/stream",
             "subject":
-            "{mmsi}".format(mmsi=_mmsi),
+            "{UserID}".format(UserID=_user_id),
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -988,12 +966,9 @@ class IOAISstreamAmqpProducer:
         if amqp_creation_time is not None:
             amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "{mmsi}".format(mmsi=_mmsi)
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
 
         app_properties = {}
-        app_properties["flag"] = "{flag}".format(flag=_flag)
-        app_properties["ship_type"] = "{ship_type}".format(ship_type=_ship_type)
-        app_properties["geohash5"] = "{geohash5}".format(geohash5=_geohash5)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1011,34 +986,2025 @@ class IOAISstreamAmqpProducer:
         else:
             self._send_via_blocking_sender(amqp_msg)
     
-    def send_aid_to_navigation_batch(self,
-        data_array: typing.List[AidToNavigation],
-        _mmsi: str,
-        _flag: str,
-        _ship_type: str,
-        _geohash5: str,
+    def send_standard_class_bposition_report_batch(self,
+        data_array: typing.List[StandardClassBPositionReport],
+        _user_id: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `IO.AISstream.amqp.AidToNavigation` messages
+        Send multiple `IO.AISstream.amqp.StandardClassBPositionReport` messages
         
         Args:
-            data_array (typing.List[AidToNavigation]): Array of message data objects
-            _mmsi (str): Value for placeholder mmsi in attribute subject
+            data_array (typing.List[StandardClassBPositionReport]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            _flag (str): Value for AMQP protocol option placeholder flag
-            _ship_type (str): Value for AMQP protocol option placeholder ship_type
-            _geohash5 (str): Value for AMQP protocol option placeholder geohash5
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_aid_to_navigation(
+            self.send_standard_class_bposition_report(
                 data=data,
-                _mmsi=_mmsi,
+                _user_id=_user_id,
                 _time=_time,
-                _flag=_flag,
-                _ship_type=_ship_type,
-                _geohash5=_geohash5,
+                content_type=content_type)
+    
+    
+    def send_extended_class_bposition_report(self,
+        data: ExtendedClassBPositionReport,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.ExtendedClassBPositionReport` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (ExtendedClassBPositionReport): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.ExtendedClassBPositionReport",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_extended_class_bposition_report_batch(self,
+        data_array: typing.List[ExtendedClassBPositionReport],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.ExtendedClassBPositionReport` messages
+        
+        Args:
+            data_array (typing.List[ExtendedClassBPositionReport]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_extended_class_bposition_report(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_aids_to_navigation_report(self,
+        data: AidsToNavigationReport,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.AidsToNavigationReport` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (AidsToNavigationReport): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.AidsToNavigationReport",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_aids_to_navigation_report_batch(self,
+        data_array: typing.List[AidsToNavigationReport],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.AidsToNavigationReport` messages
+        
+        Args:
+            data_array (typing.List[AidsToNavigationReport]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_aids_to_navigation_report(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_static_data_report(self,
+        data: StaticDataReport,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.StaticDataReport` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (StaticDataReport): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.StaticDataReport",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_static_data_report_batch(self,
+        data_array: typing.List[StaticDataReport],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.StaticDataReport` messages
+        
+        Args:
+            data_array (typing.List[StaticDataReport]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_static_data_report(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_base_station_report(self,
+        data: BaseStationReport,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.BaseStationReport` message
+        A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (BaseStationReport): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.BaseStationReport",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_base_station_report_batch(self,
+        data_array: typing.List[BaseStationReport],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.BaseStationReport` messages
+        
+        Args:
+            data_array (typing.List[BaseStationReport]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_base_station_report(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_safety_broadcast_message(self,
+        data: SafetyBroadcastMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.SafetyBroadcastMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (SafetyBroadcastMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.SafetyBroadcastMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_safety_broadcast_message_batch(self,
+        data_array: typing.List[SafetyBroadcastMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.SafetyBroadcastMessage` messages
+        
+        Args:
+            data_array (typing.List[SafetyBroadcastMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_safety_broadcast_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_standard_search_and_rescue_aircraft_report(self,
+        data: StandardSearchAndRescueAircraftReport,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.StandardSearchAndRescueAircraftReport` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (StandardSearchAndRescueAircraftReport): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.StandardSearchAndRescueAircraftReport",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_standard_search_and_rescue_aircraft_report_batch(self,
+        data_array: typing.List[StandardSearchAndRescueAircraftReport],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.StandardSearchAndRescueAircraftReport` messages
+        
+        Args:
+            data_array (typing.List[StandardSearchAndRescueAircraftReport]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_standard_search_and_rescue_aircraft_report(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_long_range_ais_broadcast_message(self,
+        data: LongRangeAisBroadcastMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.LongRangeAisBroadcastMessage` message
+        A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (LongRangeAisBroadcastMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.LongRangeAisBroadcastMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_long_range_ais_broadcast_message_batch(self,
+        data_array: typing.List[LongRangeAisBroadcastMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.LongRangeAisBroadcastMessage` messages
+        
+        Args:
+            data_array (typing.List[LongRangeAisBroadcastMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_long_range_ais_broadcast_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_addressed_safety_message(self,
+        data: AddressedSafetyMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.AddressedSafetyMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (AddressedSafetyMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.AddressedSafetyMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_addressed_safety_message_batch(self,
+        data_array: typing.List[AddressedSafetyMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.AddressedSafetyMessage` messages
+        
+        Args:
+            data_array (typing.List[AddressedSafetyMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_addressed_safety_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_addressed_binary_message(self,
+        data: AddressedBinaryMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.AddressedBinaryMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (AddressedBinaryMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.AddressedBinaryMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_addressed_binary_message_batch(self,
+        data_array: typing.List[AddressedBinaryMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.AddressedBinaryMessage` messages
+        
+        Args:
+            data_array (typing.List[AddressedBinaryMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_addressed_binary_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_assigned_mode_command(self,
+        data: AssignedModeCommand,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.AssignedModeCommand` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (AssignedModeCommand): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.AssignedModeCommand",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_assigned_mode_command_batch(self,
+        data_array: typing.List[AssignedModeCommand],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.AssignedModeCommand` messages
+        
+        Args:
+            data_array (typing.List[AssignedModeCommand]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_assigned_mode_command(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_binary_acknowledge(self,
+        data: BinaryAcknowledge,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.BinaryAcknowledge` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (BinaryAcknowledge): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.BinaryAcknowledge",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_binary_acknowledge_batch(self,
+        data_array: typing.List[BinaryAcknowledge],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.BinaryAcknowledge` messages
+        
+        Args:
+            data_array (typing.List[BinaryAcknowledge]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_binary_acknowledge(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_binary_broadcast_message(self,
+        data: BinaryBroadcastMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.BinaryBroadcastMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (BinaryBroadcastMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.BinaryBroadcastMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_binary_broadcast_message_batch(self,
+        data_array: typing.List[BinaryBroadcastMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.BinaryBroadcastMessage` messages
+        
+        Args:
+            data_array (typing.List[BinaryBroadcastMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_binary_broadcast_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_channel_management(self,
+        data: ChannelManagement,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.ChannelManagement` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (ChannelManagement): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.ChannelManagement",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_channel_management_batch(self,
+        data_array: typing.List[ChannelManagement],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.ChannelManagement` messages
+        
+        Args:
+            data_array (typing.List[ChannelManagement]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_channel_management(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_coordinated_utcinquiry(self,
+        data: CoordinatedUTCInquiry,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.CoordinatedUTCInquiry` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (CoordinatedUTCInquiry): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.CoordinatedUTCInquiry",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_coordinated_utcinquiry_batch(self,
+        data_array: typing.List[CoordinatedUTCInquiry],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.CoordinatedUTCInquiry` messages
+        
+        Args:
+            data_array (typing.List[CoordinatedUTCInquiry]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_coordinated_utcinquiry(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_data_link_management_message(self,
+        data: DataLinkManagementMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.DataLinkManagementMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (DataLinkManagementMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.DataLinkManagementMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_data_link_management_message_batch(self,
+        data_array: typing.List[DataLinkManagementMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.DataLinkManagementMessage` messages
+        
+        Args:
+            data_array (typing.List[DataLinkManagementMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_data_link_management_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_gnss_broadcast_binary_message(self,
+        data: GnssBroadcastBinaryMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.GnssBroadcastBinaryMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (GnssBroadcastBinaryMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.GnssBroadcastBinaryMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_gnss_broadcast_binary_message_batch(self,
+        data_array: typing.List[GnssBroadcastBinaryMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.GnssBroadcastBinaryMessage` messages
+        
+        Args:
+            data_array (typing.List[GnssBroadcastBinaryMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_gnss_broadcast_binary_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_group_assignment_command(self,
+        data: GroupAssignmentCommand,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.GroupAssignmentCommand` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (GroupAssignmentCommand): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.GroupAssignmentCommand",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_group_assignment_command_batch(self,
+        data_array: typing.List[GroupAssignmentCommand],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.GroupAssignmentCommand` messages
+        
+        Args:
+            data_array (typing.List[GroupAssignmentCommand]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_group_assignment_command(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_interrogation(self,
+        data: Interrogation,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.Interrogation` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (Interrogation): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.Interrogation",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_interrogation_batch(self,
+        data_array: typing.List[Interrogation],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.Interrogation` messages
+        
+        Args:
+            data_array (typing.List[Interrogation]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_interrogation(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_multi_slot_binary_message(self,
+        data: MultiSlotBinaryMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.MultiSlotBinaryMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (MultiSlotBinaryMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.MultiSlotBinaryMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_multi_slot_binary_message_batch(self,
+        data_array: typing.List[MultiSlotBinaryMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.MultiSlotBinaryMessage` messages
+        
+        Args:
+            data_array (typing.List[MultiSlotBinaryMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_multi_slot_binary_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_single_slot_binary_message(self,
+        data: SingleSlotBinaryMessage,
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `IO.AISstream.amqp.SingleSlotBinaryMessage` message
+        A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+        
+        Args:
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (SingleSlotBinaryMessage): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "IO.AISstream.SingleSlotBinaryMessage",
+            "source":
+            "wss://stream.aisstream.io/v0/stream",
+            "subject":
+            "{UserID}".format(UserID=_user_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{UserID}".format(UserID=_user_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_single_slot_binary_message_batch(self,
+        data_array: typing.List[SingleSlotBinaryMessage],
+        _user_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `IO.AISstream.amqp.SingleSlotBinaryMessage` messages
+        
+        Args:
+            data_array (typing.List[SingleSlotBinaryMessage]): Array of message data objects
+            _user_id (str): Value for placeholder UserID in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_single_slot_binary_message(
+                data=data,
+                _user_id=_user_id,
+                _time=_time,
                 content_type=content_type)
     
     

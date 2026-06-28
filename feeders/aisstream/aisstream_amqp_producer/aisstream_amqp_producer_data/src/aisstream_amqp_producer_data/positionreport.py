@@ -11,53 +11,52 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_amqp_producer_data.msgtypeenum import MsgTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class PositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Class A Automatic Identification System (AIS) position report (ITU-R M.1371 messages 1, 2 and 3) as decoded and relayed by the aisstream.io firehose. It reports a Class A vessel's instantaneous navigational situation - position, course, speed, heading, rate of turn and navigational status - together with the TDMA communication state used for slot management.
     
     Attributes:
-        mmsi (str)
-        flag (str)
-        ship_type (str)
-        geohash5 (str)
-        msg_type (MsgTypeenum)
-        user_id (int)
-        latitude (float)
-        longitude (float)
-        sog (typing.Optional[float])
-        cog (typing.Optional[float])
-        true_heading (typing.Optional[int])
-        navigational_status (typing.Optional[int])
-        rate_of_turn (typing.Optional[int])
-        position_accuracy (typing.Optional[bool])
-        timestamp (typing.Optional[int])
-        raim (typing.Optional[bool])
-        message_id (int)
+        MessageID (int)
+        RepeatIndicator (typing.Optional[int])
+        UserID (int)
+        Valid (bool)
+        NavigationalStatus (typing.Optional[int])
+        RateOfTurn (typing.Optional[int])
+        Sog (typing.Optional[float])
+        PositionAccuracy (typing.Optional[bool])
+        Longitude (float)
+        Latitude (float)
+        Cog (typing.Optional[float])
+        TrueHeading (typing.Optional[int])
+        Timestamp (typing.Optional[int])
+        SpecialManoeuvreIndicator (typing.Optional[int])
+        Spare (typing.Optional[int])
+        Raim (typing.Optional[bool])
+        CommunicationState (typing.Optional[int])
     """
     
     
-    mmsi: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
-    flag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="flag"))
-    ship_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
-    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
-    msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
-    user_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="user_id"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    sog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sog"))
-    cog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cog"))
-    true_heading: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="true_heading"))
-    navigational_status: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="navigational_status"))
-    rate_of_turn: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rate_of_turn"))
-    position_accuracy: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position_accuracy"))
-    timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
-    raim: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="raim"))
-    message_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="message_id"))
+    MessageID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="MessageID"))
+    RepeatIndicator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="RepeatIndicator"))
+    UserID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UserID"))
+    Valid: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Valid"))
+    NavigationalStatus: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="NavigationalStatus"))
+    RateOfTurn: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="RateOfTurn"))
+    Sog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Sog"))
+    PositionAccuracy: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="PositionAccuracy"))
+    Longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Longitude"))
+    Latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Latitude"))
+    Cog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Cog"))
+    TrueHeading: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="TrueHeading"))
+    Timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Timestamp"))
+    SpecialManoeuvreIndicator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="SpecialManoeuvreIndicator"))
+    Spare: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare"))
+    Raim: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Raim"))
+    CommunicationState: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="CommunicationState"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'PositionReport':
@@ -186,21 +185,21 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='jcstiqdnjiuaaopomaxh',
-            flag='svnookznzawetiqtubfw',
-            ship_type='gntkrujsbmrbftwgmphz',
-            geohash5='nnkkhydpoqidskxjtiqm',
-            msg_type=MsgTypeenum.position_MINUSreport,
-            user_id=int(89),
-            latitude=float(47.18348052113552),
-            longitude=float(84.14852793393463),
-            sog=float(16.789186644681664),
-            cog=float(52.57080686354586),
-            true_heading=int(55),
-            navigational_status=int(46),
-            rate_of_turn=int(63),
-            position_accuracy=False,
-            timestamp=int(28),
-            raim=True,
-            message_id=int(2)
+            MessageID=int(56),
+            RepeatIndicator=int(21),
+            UserID=int(5),
+            Valid=False,
+            NavigationalStatus=int(33),
+            RateOfTurn=int(85),
+            Sog=float(80.23100963741201),
+            PositionAccuracy=True,
+            Longitude=float(69.68900496162846),
+            Latitude=float(23.67668500804392),
+            Cog=float(4.6410600127397394),
+            TrueHeading=int(3),
+            Timestamp=int(56),
+            SpecialManoeuvreIndicator=int(87),
+            Spare=int(58),
+            Raim=True,
+            CommunicationState=int(23)
         )

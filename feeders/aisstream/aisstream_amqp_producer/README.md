@@ -135,13 +135,113 @@ producer.send_position_report(
     content_type="application/json"
 )
 
-producer.send_ship_static(
-    data=ShipStatic(...),
+producer.send_ship_static_data(
+    data=ShipStaticData(...),
     content_type="application/json"
 )
 
-producer.send_aid_to_navigation(
-    data=AidToNavigation(...),
+producer.send_standard_class_bposition_report(
+    data=StandardClassBPositionReport(...),
+    content_type="application/json"
+)
+
+producer.send_extended_class_bposition_report(
+    data=ExtendedClassBPositionReport(...),
+    content_type="application/json"
+)
+
+producer.send_aids_to_navigation_report(
+    data=AidsToNavigationReport(...),
+    content_type="application/json"
+)
+
+producer.send_static_data_report(
+    data=StaticDataReport(...),
+    content_type="application/json"
+)
+
+producer.send_base_station_report(
+    data=BaseStationReport(...),
+    content_type="application/json"
+)
+
+producer.send_safety_broadcast_message(
+    data=SafetyBroadcastMessage(...),
+    content_type="application/json"
+)
+
+producer.send_standard_search_and_rescue_aircraft_report(
+    data=StandardSearchAndRescueAircraftReport(...),
+    content_type="application/json"
+)
+
+producer.send_long_range_ais_broadcast_message(
+    data=LongRangeAisBroadcastMessage(...),
+    content_type="application/json"
+)
+
+producer.send_addressed_safety_message(
+    data=AddressedSafetyMessage(...),
+    content_type="application/json"
+)
+
+producer.send_addressed_binary_message(
+    data=AddressedBinaryMessage(...),
+    content_type="application/json"
+)
+
+producer.send_assigned_mode_command(
+    data=AssignedModeCommand(...),
+    content_type="application/json"
+)
+
+producer.send_binary_acknowledge(
+    data=BinaryAcknowledge(...),
+    content_type="application/json"
+)
+
+producer.send_binary_broadcast_message(
+    data=BinaryBroadcastMessage(...),
+    content_type="application/json"
+)
+
+producer.send_channel_management(
+    data=ChannelManagement(...),
+    content_type="application/json"
+)
+
+producer.send_coordinated_utcinquiry(
+    data=CoordinatedUTCInquiry(...),
+    content_type="application/json"
+)
+
+producer.send_data_link_management_message(
+    data=DataLinkManagementMessage(...),
+    content_type="application/json"
+)
+
+producer.send_gnss_broadcast_binary_message(
+    data=GnssBroadcastBinaryMessage(...),
+    content_type="application/json"
+)
+
+producer.send_group_assignment_command(
+    data=GroupAssignmentCommand(...),
+    content_type="application/json"
+)
+
+producer.send_interrogation(
+    data=Interrogation(...),
+    content_type="application/json"
+)
+
+producer.send_multi_slot_binary_message(
+    data=MultiSlotBinaryMessage(...),
+    content_type="application/json"
+)
+
+producer.send_single_slot_binary_message(
+    data=SingleSlotBinaryMessage(...),
     content_type="application/json"
 )
 
@@ -174,7 +274,7 @@ messages for AIS-equipped vessels received by the AISStream network.
 
 **Parameters:**
 - `data` (PositionReport): The message data object
-- `_mmsi` (str): Value for placeholder mmsi in attribute subject
+- `_user_id` (str): Value for placeholder UserID in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_position_report_batch()`
@@ -183,47 +283,447 @@ Send multiple PositionReport messages in sequence.
 
 **Parameters:**
 - `data_array` (List[PositionReport]): Array of message data objects
-- `_mmsi` (str): Value for placeholder mmsi in attribute subject
+- `_user_id` (str): Value for placeholder UserID in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
-##### `send_ship_static()`
+##### `send_ship_static_data()`
 A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
 messages for AIS-equipped vessels received by the AISStream network.
 
 **Parameters:**
-- `data` (ShipStatic): The message data object
-- `_mmsi` (str): Value for placeholder mmsi in attribute subject
+- `data` (ShipStaticData): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_ship_static_batch()`
+##### `send_ship_static_data_batch()`
 
-Send multiple ShipStatic messages in sequence.
+Send multiple ShipStaticData messages in sequence.
 
 **Parameters:**
-- `data_array` (List[ShipStatic]): Array of message data objects
-- `_mmsi` (str): Value for placeholder mmsi in attribute subject
+- `data_array` (List[ShipStaticData]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
-##### `send_aid_to_navigation()`
+##### `send_standard_class_bposition_report()`
 A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
 messages for AIS-equipped vessels received by the AISStream network.
 
 **Parameters:**
-- `data` (AidToNavigation): The message data object
-- `_mmsi` (str): Value for placeholder mmsi in attribute subject
+- `data` (StandardClassBPositionReport): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_aid_to_navigation_batch()`
+##### `send_standard_class_bposition_report_batch()`
 
-Send multiple AidToNavigation messages in sequence.
+Send multiple StandardClassBPositionReport messages in sequence.
 
 **Parameters:**
-- `data_array` (List[AidToNavigation]): Array of message data objects
-- `_mmsi` (str): Value for placeholder mmsi in attribute subject
+- `data_array` (List[StandardClassBPositionReport]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_extended_class_bposition_report()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (ExtendedClassBPositionReport): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_extended_class_bposition_report_batch()`
+
+Send multiple ExtendedClassBPositionReport messages in sequence.
+
+**Parameters:**
+- `data_array` (List[ExtendedClassBPositionReport]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_aids_to_navigation_report()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (AidsToNavigationReport): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_aids_to_navigation_report_batch()`
+
+Send multiple AidsToNavigationReport messages in sequence.
+
+**Parameters:**
+- `data_array` (List[AidsToNavigationReport]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_static_data_report()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (StaticDataReport): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_static_data_report_batch()`
+
+Send multiple StaticDataReport messages in sequence.
+
+**Parameters:**
+- `data_array` (List[StaticDataReport]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_base_station_report()`
+A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It
+gives consumers stable identifiers and labels needed to interpret realtime updates.
+
+**Parameters:**
+- `data` (BaseStationReport): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_base_station_report_batch()`
+
+Send multiple BaseStationReport messages in sequence.
+
+**Parameters:**
+- `data_array` (List[BaseStationReport]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_safety_broadcast_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (SafetyBroadcastMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_safety_broadcast_message_batch()`
+
+Send multiple SafetyBroadcastMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[SafetyBroadcastMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_standard_search_and_rescue_aircraft_report()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (StandardSearchAndRescueAircraftReport): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_standard_search_and_rescue_aircraft_report_batch()`
+
+Send multiple StandardSearchAndRescueAircraftReport messages in sequence.
+
+**Parameters:**
+- `data_array` (List[StandardSearchAndRescueAircraftReport]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_long_range_ais_broadcast_message()`
+A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or
+voyage information available from the upstream feed.
+
+**Parameters:**
+- `data` (LongRangeAisBroadcastMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_long_range_ais_broadcast_message_batch()`
+
+Send multiple LongRangeAisBroadcastMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[LongRangeAisBroadcastMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_addressed_safety_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (AddressedSafetyMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_addressed_safety_message_batch()`
+
+Send multiple AddressedSafetyMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[AddressedSafetyMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_addressed_binary_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (AddressedBinaryMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_addressed_binary_message_batch()`
+
+Send multiple AddressedBinaryMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[AddressedBinaryMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_assigned_mode_command()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (AssignedModeCommand): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_assigned_mode_command_batch()`
+
+Send multiple AssignedModeCommand messages in sequence.
+
+**Parameters:**
+- `data_array` (List[AssignedModeCommand]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_binary_acknowledge()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (BinaryAcknowledge): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_binary_acknowledge_batch()`
+
+Send multiple BinaryAcknowledge messages in sequence.
+
+**Parameters:**
+- `data_array` (List[BinaryAcknowledge]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_binary_broadcast_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (BinaryBroadcastMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_binary_broadcast_message_batch()`
+
+Send multiple BinaryBroadcastMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[BinaryBroadcastMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_channel_management()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (ChannelManagement): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_channel_management_batch()`
+
+Send multiple ChannelManagement messages in sequence.
+
+**Parameters:**
+- `data_array` (List[ChannelManagement]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_coordinated_utcinquiry()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (CoordinatedUTCInquiry): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_coordinated_utcinquiry_batch()`
+
+Send multiple CoordinatedUTCInquiry messages in sequence.
+
+**Parameters:**
+- `data_array` (List[CoordinatedUTCInquiry]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_data_link_management_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (DataLinkManagementMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_data_link_management_message_batch()`
+
+Send multiple DataLinkManagementMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[DataLinkManagementMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_gnss_broadcast_binary_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (GnssBroadcastBinaryMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_gnss_broadcast_binary_message_batch()`
+
+Send multiple GnssBroadcastBinaryMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[GnssBroadcastBinaryMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_group_assignment_command()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (GroupAssignmentCommand): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_group_assignment_command_batch()`
+
+Send multiple GroupAssignmentCommand messages in sequence.
+
+**Parameters:**
+- `data_array` (List[GroupAssignmentCommand]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_interrogation()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (Interrogation): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_interrogation_batch()`
+
+Send multiple Interrogation messages in sequence.
+
+**Parameters:**
+- `data_array` (List[Interrogation]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_multi_slot_binary_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (MultiSlotBinaryMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_multi_slot_binary_message_batch()`
+
+Send multiple MultiSlotBinaryMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[MultiSlotBinaryMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_single_slot_binary_message()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
+
+**Parameters:**
+- `data` (SingleSlotBinaryMessage): The message data object
+- `_user_id` (str): Value for placeholder UserID in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_single_slot_binary_message_batch()`
+
+Send multiple SingleSlotBinaryMessage messages in sequence.
+
+**Parameters:**
+- `data_array` (List[SingleSlotBinaryMessage]): Array of message data objects
+- `_user_id` (str): Value for placeholder UserID in attribute subject
 - `content_type` (str): Content type of the message data
 
 

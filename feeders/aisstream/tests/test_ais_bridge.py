@@ -8,14 +8,6 @@ from aisstream.ais_bridge import (
     _emit_event, _mmsi_key_mapper, _parse_bounding_boxes, AISBridge,
 )
 
-_AISSTREAM_CONTRACT_XFAIL = (
-    "ESCALATED contract bug: generated PositionReport requires enrichment fields "
-    "(mmsi/flag/ship_type/geohash5/msg_type) referenced by the MQTT/AMQP topic "
-    "templates but absent from the AIS-native data schema and the raw aisstream "
-    "payload; the bridge cannot emit PositionReport without fabricating data. "
-    "Needs manifest reconciliation + producer regen + expert review. Do NOT fabricate."
-)
-
 
 class TestMmsiKeyMapper:
     def test_returns_user_id_string(self):
@@ -43,7 +35,6 @@ class TestParseBoundingBoxes:
 
 
 class TestEmitEvent:
-    @pytest.mark.xfail(strict=True, reason=_AISSTREAM_CONTRACT_XFAIL)
     def test_position_report(self):
         producer = MagicMock()
         payload = {
@@ -59,7 +50,6 @@ class TestEmitEvent:
         assert result is True
         producer.send_io_aisstream_position_report.assert_called_once()
 
-    @pytest.mark.xfail(strict=True, reason=_AISSTREAM_CONTRACT_XFAIL)
     def test_position_report_passes_mmsi_placeholder(self):
         producer = MagicMock()
         payload = {
@@ -177,7 +167,6 @@ class TestAISBridgeFiltering:
         bridge._on_message(msg)
         assert event_prod.send_io_aisstream_position_report.call_count == 0
 
-    @pytest.mark.xfail(strict=True, reason=_AISSTREAM_CONTRACT_XFAIL)
     def test_mmsi_filter_allows(self):
         ws = MagicMock()
         kafka = MagicMock()
@@ -208,7 +197,6 @@ class TestAISBridgeFiltering:
         bridge._on_message(msg)
         event_prod.send_io_aisstream_position_report.assert_called_once()
 
-    @pytest.mark.xfail(strict=True, reason=_AISSTREAM_CONTRACT_XFAIL)
     def test_emit_mock_corpus_sends_three_events_and_flushes(self):
         ws = MagicMock()
         kafka = MagicMock()

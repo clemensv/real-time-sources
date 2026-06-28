@@ -28,10 +28,50 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from aisstream_amqp_producer_amqp_producer import *
 from aisstream_amqp_producer_data import PositionReport
 from test_positionreport import Test_PositionReport
-from aisstream_amqp_producer_data import ShipStatic
-from test_shipstatic import Test_ShipStatic
-from aisstream_amqp_producer_data import AidToNavigation
-from test_aidtonavigation import Test_AidToNavigation
+from aisstream_amqp_producer_data import ShipStaticData
+from test_shipstaticdata import Test_ShipStaticData
+from aisstream_amqp_producer_data import StandardClassBPositionReport
+from test_standardclassbpositionreport import Test_StandardClassBPositionReport
+from aisstream_amqp_producer_data import ExtendedClassBPositionReport
+from test_extendedclassbpositionreport import Test_ExtendedClassBPositionReport
+from aisstream_amqp_producer_data import AidsToNavigationReport
+from test_aidstonavigationreport import Test_AidsToNavigationReport
+from aisstream_amqp_producer_data import StaticDataReport
+from test_staticdatareport import Test_StaticDataReport
+from aisstream_amqp_producer_data import BaseStationReport
+from test_basestationreport import Test_BaseStationReport
+from aisstream_amqp_producer_data import SafetyBroadcastMessage
+from test_safetybroadcastmessage import Test_SafetyBroadcastMessage
+from aisstream_amqp_producer_data import StandardSearchAndRescueAircraftReport
+from test_standardsearchandrescueaircraftreport import Test_StandardSearchAndRescueAircraftReport
+from aisstream_amqp_producer_data import LongRangeAisBroadcastMessage
+from test_longrangeaisbroadcastmessage import Test_LongRangeAisBroadcastMessage
+from aisstream_amqp_producer_data import AddressedSafetyMessage
+from test_addressedsafetymessage import Test_AddressedSafetyMessage
+from aisstream_amqp_producer_data import AddressedBinaryMessage
+from test_addressedbinarymessage import Test_AddressedBinaryMessage
+from aisstream_amqp_producer_data import AssignedModeCommand
+from test_assignedmodecommand import Test_AssignedModeCommand
+from aisstream_amqp_producer_data import BinaryAcknowledge
+from test_binaryacknowledge import Test_BinaryAcknowledge
+from aisstream_amqp_producer_data import BinaryBroadcastMessage
+from test_binarybroadcastmessage import Test_BinaryBroadcastMessage
+from aisstream_amqp_producer_data import ChannelManagement
+from test_channelmanagement import Test_ChannelManagement
+from aisstream_amqp_producer_data import CoordinatedUTCInquiry
+from test_coordinatedutcinquiry import Test_CoordinatedUTCInquiry
+from aisstream_amqp_producer_data import DataLinkManagementMessage
+from test_datalinkmanagementmessage import Test_DataLinkManagementMessage
+from aisstream_amqp_producer_data import GnssBroadcastBinaryMessage
+from test_gnssbroadcastbinarymessage import Test_GnssBroadcastBinaryMessage
+from aisstream_amqp_producer_data import GroupAssignmentCommand
+from test_groupassignmentcommand import Test_GroupAssignmentCommand
+from aisstream_amqp_producer_data import Interrogation
+from test_interrogation import Test_Interrogation
+from aisstream_amqp_producer_data import MultiSlotBinaryMessage
+from test_multislotbinarymessage import Test_MultiSlotBinaryMessage
+from aisstream_amqp_producer_data import SingleSlotBinaryMessage
+from test_singleslotbinarymessage import Test_SingleSlotBinaryMessage
 
 
 
@@ -301,10 +341,7 @@ class TestIOAISstreamAmqpProducer:
             for i in range(5):
                 producer.send_position_report(
                     data=payload,
-                    _mmsi="value",
-                    _flag="value",
-                    _ship_type="value",
-                    _geohash5="value",
+                    _user_id="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -328,16 +365,13 @@ class TestIOAISstreamAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "IO.AISstream.mqtt.PositionReport"
+                    assert cloud_event_payload.get("type") == "IO.AISstream.PositionReport"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "{mmsi}".format(mmsi="value")
-                assert properties.get('flag') == "{flag}".format(flag="value")
-                assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
-                assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
+                assert received.subject == "{UserID}".format(UserID="value")
         finally:
             producer.close()
 
@@ -357,10 +391,7 @@ class TestIOAISstreamAmqpProducer:
         try:
             producer.send_position_report(
                 data=payload,
-                _mmsi="value",
-                _flag="value",
-                _ship_type="value",
-                _geohash5="value",
+                _user_id="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -370,17 +401,14 @@ class TestIOAISstreamAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'IO.AISstream.mqtt.PositionReport'
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.PositionReport'
         assert received.body is not None
-        assert received.subject == "{mmsi}".format(mmsi="value")
-        assert properties.get('flag') == "{flag}".format(flag="value")
-        assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
-        assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
+        assert received.subject == "{UserID}".format(UserID="value")
     
-    def test_send_ship_static(self, artemis_container):
-        """Send and receive a ShipStatic message via ActiveMQ Artemis."""
+    def test_send_ship_static_data(self, artemis_container):
+        """Send and receive a ShipStaticData message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
-        payload = Test_ShipStatic.create_instance()
+        payload = Test_ShipStaticData.create_instance()
 
         producer = IOAISstreamAmqpProducer(
             host=artemis_container["host"],
@@ -399,12 +427,9 @@ class TestIOAISstreamAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_ship_static(
+                producer.send_ship_static_data(
                     data=payload,
-                    _mmsi="value",
-                    _flag="value",
-                    _ship_type="value",
-                    _geohash5="value",
+                    _user_id="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -428,22 +453,19 @@ class TestIOAISstreamAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "IO.AISstream.mqtt.ShipStatic"
+                    assert cloud_event_payload.get("type") == "IO.AISstream.ShipStaticData"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "{mmsi}".format(mmsi="value")
-                assert properties.get('flag') == "{flag}".format(flag="value")
-                assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
-                assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
+                assert received.subject == "{UserID}".format(UserID="value")
         finally:
             producer.close()
 
-    def test_send_ship_static_single_fresh_connection(self, artemis_container):
-        """Send exactly one ShipStatic message on a fresh producer connection."""
-        payload = Test_ShipStatic.create_instance()
+    def test_send_ship_static_data_single_fresh_connection(self, artemis_container):
+        """Send exactly one ShipStaticData message on a fresh producer connection."""
+        payload = Test_ShipStaticData.create_instance()
 
         producer = IOAISstreamAmqpProducer(
             host=artemis_container["host"],
@@ -455,12 +477,9 @@ class TestIOAISstreamAmqpProducer:
         )
 
         try:
-            producer.send_ship_static(
+            producer.send_ship_static_data(
                 data=payload,
-                _mmsi="value",
-                _flag="value",
-                _ship_type="value",
-                _geohash5="value",
+                _user_id="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -470,17 +489,14 @@ class TestIOAISstreamAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'IO.AISstream.mqtt.ShipStatic'
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.ShipStaticData'
         assert received.body is not None
-        assert received.subject == "{mmsi}".format(mmsi="value")
-        assert properties.get('flag') == "{flag}".format(flag="value")
-        assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
-        assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
+        assert received.subject == "{UserID}".format(UserID="value")
     
-    def test_send_aid_to_navigation(self, artemis_container):
-        """Send and receive a AidToNavigation message via ActiveMQ Artemis."""
+    def test_send_standard_class_bposition_report(self, artemis_container):
+        """Send and receive a StandardClassBPositionReport message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
-        payload = Test_AidToNavigation.create_instance()
+        payload = Test_StandardClassBPositionReport.create_instance()
 
         producer = IOAISstreamAmqpProducer(
             host=artemis_container["host"],
@@ -499,12 +515,9 @@ class TestIOAISstreamAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_aid_to_navigation(
+                producer.send_standard_class_bposition_report(
                     data=payload,
-                    _mmsi="value",
-                    _flag="value",
-                    _ship_type="value",
-                    _geohash5="value",
+                    _user_id="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -528,22 +541,19 @@ class TestIOAISstreamAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "IO.AISstream.mqtt.AidToNavigation"
+                    assert cloud_event_payload.get("type") == "IO.AISstream.StandardClassBPositionReport"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "{mmsi}".format(mmsi="value")
-                assert properties.get('flag') == "{flag}".format(flag="value")
-                assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
-                assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
+                assert received.subject == "{UserID}".format(UserID="value")
         finally:
             producer.close()
 
-    def test_send_aid_to_navigation_single_fresh_connection(self, artemis_container):
-        """Send exactly one AidToNavigation message on a fresh producer connection."""
-        payload = Test_AidToNavigation.create_instance()
+    def test_send_standard_class_bposition_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one StandardClassBPositionReport message on a fresh producer connection."""
+        payload = Test_StandardClassBPositionReport.create_instance()
 
         producer = IOAISstreamAmqpProducer(
             host=artemis_container["host"],
@@ -555,12 +565,9 @@ class TestIOAISstreamAmqpProducer:
         )
 
         try:
-            producer.send_aid_to_navigation(
+            producer.send_standard_class_bposition_report(
                 data=payload,
-                _mmsi="value",
-                _flag="value",
-                _ship_type="value",
-                _geohash5="value",
+                _user_id="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -570,10 +577,1767 @@ class TestIOAISstreamAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'IO.AISstream.mqtt.AidToNavigation'
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.StandardClassBPositionReport'
         assert received.body is not None
-        assert received.subject == "{mmsi}".format(mmsi="value")
-        assert properties.get('flag') == "{flag}".format(flag="value")
-        assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
-        assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_extended_class_bposition_report(self, artemis_container):
+        """Send and receive a ExtendedClassBPositionReport message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_ExtendedClassBPositionReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_extended_class_bposition_report(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.ExtendedClassBPositionReport"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_extended_class_bposition_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one ExtendedClassBPositionReport message on a fresh producer connection."""
+        payload = Test_ExtendedClassBPositionReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_extended_class_bposition_report(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.ExtendedClassBPositionReport'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_aids_to_navigation_report(self, artemis_container):
+        """Send and receive a AidsToNavigationReport message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_AidsToNavigationReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_aids_to_navigation_report(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.AidsToNavigationReport"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_aids_to_navigation_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one AidsToNavigationReport message on a fresh producer connection."""
+        payload = Test_AidsToNavigationReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_aids_to_navigation_report(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.AidsToNavigationReport'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_static_data_report(self, artemis_container):
+        """Send and receive a StaticDataReport message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_StaticDataReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_static_data_report(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.StaticDataReport"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_static_data_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one StaticDataReport message on a fresh producer connection."""
+        payload = Test_StaticDataReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_static_data_report(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.StaticDataReport'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_base_station_report(self, artemis_container):
+        """Send and receive a BaseStationReport message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_BaseStationReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_base_station_report(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.BaseStationReport"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_base_station_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one BaseStationReport message on a fresh producer connection."""
+        payload = Test_BaseStationReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_base_station_report(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.BaseStationReport'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_safety_broadcast_message(self, artemis_container):
+        """Send and receive a SafetyBroadcastMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_SafetyBroadcastMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_safety_broadcast_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.SafetyBroadcastMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_safety_broadcast_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one SafetyBroadcastMessage message on a fresh producer connection."""
+        payload = Test_SafetyBroadcastMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_safety_broadcast_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.SafetyBroadcastMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_standard_search_and_rescue_aircraft_report(self, artemis_container):
+        """Send and receive a StandardSearchAndRescueAircraftReport message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_StandardSearchAndRescueAircraftReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_standard_search_and_rescue_aircraft_report(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.StandardSearchAndRescueAircraftReport"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_standard_search_and_rescue_aircraft_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one StandardSearchAndRescueAircraftReport message on a fresh producer connection."""
+        payload = Test_StandardSearchAndRescueAircraftReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_standard_search_and_rescue_aircraft_report(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.StandardSearchAndRescueAircraftReport'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_long_range_ais_broadcast_message(self, artemis_container):
+        """Send and receive a LongRangeAisBroadcastMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_LongRangeAisBroadcastMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_long_range_ais_broadcast_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.LongRangeAisBroadcastMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_long_range_ais_broadcast_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one LongRangeAisBroadcastMessage message on a fresh producer connection."""
+        payload = Test_LongRangeAisBroadcastMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_long_range_ais_broadcast_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.LongRangeAisBroadcastMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_addressed_safety_message(self, artemis_container):
+        """Send and receive a AddressedSafetyMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_AddressedSafetyMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_addressed_safety_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.AddressedSafetyMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_addressed_safety_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one AddressedSafetyMessage message on a fresh producer connection."""
+        payload = Test_AddressedSafetyMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_addressed_safety_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.AddressedSafetyMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_addressed_binary_message(self, artemis_container):
+        """Send and receive a AddressedBinaryMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_AddressedBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_addressed_binary_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.AddressedBinaryMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_addressed_binary_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one AddressedBinaryMessage message on a fresh producer connection."""
+        payload = Test_AddressedBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_addressed_binary_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.AddressedBinaryMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_assigned_mode_command(self, artemis_container):
+        """Send and receive a AssignedModeCommand message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_AssignedModeCommand.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_assigned_mode_command(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.AssignedModeCommand"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_assigned_mode_command_single_fresh_connection(self, artemis_container):
+        """Send exactly one AssignedModeCommand message on a fresh producer connection."""
+        payload = Test_AssignedModeCommand.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_assigned_mode_command(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.AssignedModeCommand'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_binary_acknowledge(self, artemis_container):
+        """Send and receive a BinaryAcknowledge message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_BinaryAcknowledge.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_binary_acknowledge(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.BinaryAcknowledge"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_binary_acknowledge_single_fresh_connection(self, artemis_container):
+        """Send exactly one BinaryAcknowledge message on a fresh producer connection."""
+        payload = Test_BinaryAcknowledge.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_binary_acknowledge(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.BinaryAcknowledge'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_binary_broadcast_message(self, artemis_container):
+        """Send and receive a BinaryBroadcastMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_BinaryBroadcastMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_binary_broadcast_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.BinaryBroadcastMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_binary_broadcast_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one BinaryBroadcastMessage message on a fresh producer connection."""
+        payload = Test_BinaryBroadcastMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_binary_broadcast_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.BinaryBroadcastMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_channel_management(self, artemis_container):
+        """Send and receive a ChannelManagement message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_ChannelManagement.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_channel_management(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.ChannelManagement"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_channel_management_single_fresh_connection(self, artemis_container):
+        """Send exactly one ChannelManagement message on a fresh producer connection."""
+        payload = Test_ChannelManagement.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_channel_management(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.ChannelManagement'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_coordinated_utcinquiry(self, artemis_container):
+        """Send and receive a CoordinatedUTCInquiry message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_CoordinatedUTCInquiry.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_coordinated_utcinquiry(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.CoordinatedUTCInquiry"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_coordinated_utcinquiry_single_fresh_connection(self, artemis_container):
+        """Send exactly one CoordinatedUTCInquiry message on a fresh producer connection."""
+        payload = Test_CoordinatedUTCInquiry.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_coordinated_utcinquiry(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.CoordinatedUTCInquiry'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_data_link_management_message(self, artemis_container):
+        """Send and receive a DataLinkManagementMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_DataLinkManagementMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_data_link_management_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.DataLinkManagementMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_data_link_management_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one DataLinkManagementMessage message on a fresh producer connection."""
+        payload = Test_DataLinkManagementMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_data_link_management_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.DataLinkManagementMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_gnss_broadcast_binary_message(self, artemis_container):
+        """Send and receive a GnssBroadcastBinaryMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_GnssBroadcastBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_gnss_broadcast_binary_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.GnssBroadcastBinaryMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_gnss_broadcast_binary_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one GnssBroadcastBinaryMessage message on a fresh producer connection."""
+        payload = Test_GnssBroadcastBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_gnss_broadcast_binary_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.GnssBroadcastBinaryMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_group_assignment_command(self, artemis_container):
+        """Send and receive a GroupAssignmentCommand message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_GroupAssignmentCommand.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_group_assignment_command(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.GroupAssignmentCommand"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_group_assignment_command_single_fresh_connection(self, artemis_container):
+        """Send exactly one GroupAssignmentCommand message on a fresh producer connection."""
+        payload = Test_GroupAssignmentCommand.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_group_assignment_command(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.GroupAssignmentCommand'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_interrogation(self, artemis_container):
+        """Send and receive a Interrogation message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_Interrogation.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_interrogation(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.Interrogation"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_interrogation_single_fresh_connection(self, artemis_container):
+        """Send exactly one Interrogation message on a fresh producer connection."""
+        payload = Test_Interrogation.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_interrogation(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.Interrogation'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_multi_slot_binary_message(self, artemis_container):
+        """Send and receive a MultiSlotBinaryMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_MultiSlotBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_multi_slot_binary_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.MultiSlotBinaryMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_multi_slot_binary_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one MultiSlotBinaryMessage message on a fresh producer connection."""
+        payload = Test_MultiSlotBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_multi_slot_binary_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.MultiSlotBinaryMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
+    
+    def test_send_single_slot_binary_message(self, artemis_container):
+        """Send and receive a SingleSlotBinaryMessage message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_SingleSlotBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+        
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_single_slot_binary_message(
+                    data=payload,
+                    _user_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+                annotations = received.annotations or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "IO.AISstream.SingleSlotBinaryMessage"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "{UserID}".format(UserID="value")
+        finally:
+            producer.close()
+
+    def test_send_single_slot_binary_message_single_fresh_connection(self, artemis_container):
+        """Send exactly one SingleSlotBinaryMessage message on a fresh producer connection."""
+        payload = Test_SingleSlotBinaryMessage.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_single_slot_binary_message(
+                data=payload,
+                _user_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.SingleSlotBinaryMessage'
+        assert received.body is not None
+        assert received.subject == "{UserID}".format(UserID="value")
 

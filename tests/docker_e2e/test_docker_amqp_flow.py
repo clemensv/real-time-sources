@@ -278,7 +278,13 @@ class TestAisstreamAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "aisstream"
     image = "aisstream-amqp"
     env = {"AISSTREAM_MOCK": "true"}
-    expected_types = {"IO.AISstream.mqtt.PositionReport", "IO.AISstream.mqtt.ShipStatic", "IO.AISstream.mqtt.AidToNavigation"}
+    # AMQP carries the same 23 raw AIS types as Kafka, keyed identically by
+    # UserID (no enrichment). The mock corpus exercises three of them.
+    expected_types = {
+        "IO.AISstream.PositionReport",
+        "IO.AISstream.ShipStaticData",
+        "IO.AISstream.AidsToNavigationReport",
+    }
 
 
 @pytest.mark.skip(

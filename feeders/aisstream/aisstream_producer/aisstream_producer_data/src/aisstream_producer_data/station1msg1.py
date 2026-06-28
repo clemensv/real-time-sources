@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station1Msg1:
     """
-    Provider field for station1 msg1 in this record.
+    First message requested from interrogated station 1: the AIS message type requested and the TDMA slot offset at which the reply should be sent.
     
     Attributes:
         Valid (bool)
@@ -160,7 +160,7 @@ class Station1Msg1:
         """
         return cls(
             Valid=False,
-            StationID=int(89),
-            MessageID=int(27),
-            SlotOffset=int(37)
+            StationID=int(79),
+            MessageID=int(12),
+            SlotOffset=int(25)
         )

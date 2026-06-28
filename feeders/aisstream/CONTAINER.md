@@ -52,8 +52,8 @@ This source ships three container images backed by the same upstream WebSocket c
 
 | Image | Transport | Default behavior |
 |---|---|---|
-| `ghcr.io/clemensv/real-time-sources-aisstream` | Apache Kafka 2.x (Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode), key = `{mmsi}`, all 23 AIS message families |
-| `ghcr.io/clemensv/real-time-sources-aisstream-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}`, QoS 0 non-retained, CloudEvent attributes as MQTT 5 user properties, routing-friendly subset (`PositionReport`, `ShipStatic`, `AidToNavigation`) |
+| `ghcr.io/clemensv/real-time-sources-aisstream` | Apache Kafka 2.x (Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode), key = `{UserID}` (the AIS source MMSI), all 23 AIS message families |
+| `ghcr.io/clemensv/real-time-sources-aisstream-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}`, QoS 0 non-retained, CloudEvent attributes as MQTT 5 user properties, **all 23 AIS message families** with raw bodies and flag/ship-type/geohash routing baked into the topic |
 | `ghcr.io/clemensv/real-time-sources-aisstream-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | One AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
 
 All three images consume the AISstream.io WebSocket firehose and re-emit CloudEvents. The on-the-wire schemas live in [EVENTS.md](EVENTS.md).
@@ -134,7 +134,7 @@ docker run --rm \
 
 The MQTT image (`…-aisstream-mqtt`) publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree at QoS 0 with `retain=false` on each leaf. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source-azure-event-grid).
 
-The MQTT contract is intentionally narrower than the Kafka contract: only three event families are published (`PositionReport`, `ShipStatic`, `AidToNavigation`), each carrying five routing axes baked into the topic tree.
+The MQTT image publishes the **same 23 AIS message families** as the Kafka and AMQP images — the message body is the identical raw AIS CloudEvent. What is unique to MQTT is that five routing axes (flag, ship-type bucket, geohash, MMSI, message type) are computed by the bridge and baked into the Unified-Namespace topic tree, so subscribers can filter by vessel flag, type, or location without parsing the payload. The enrichment lives **only** in the topic — it is never injected into the event body.
 
 ### Topic template
 
@@ -148,13 +148,13 @@ maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type
 | `{ship_type}` | Kebab bucket: `cargo`, `tanker`, `passenger`, `fishing`, `tug`, `pleasure-craft`, `high-speed`, `pilot`, `sar`, `aton`, `other`, `unknown`. |
 | `{geohash5}` | 5-character geohash of the last known position (`00000` if unknown for a static report). |
 | `{mmsi}` | 9-digit MMSI. |
-| `{msg_type}` | Literal tail per family: `position-report`, `static`, `aid-to-navigation`. |
+| `{msg_type}` | Kebab-case AIS message family — one of the 23 type names: `position-report`, `ship-static-data`, `standard-class-b-position-report`, `extended-class-b-position-report`, `aids-to-navigation-report`, `static-data-report`, `base-station-report`, `safety-broadcast-message`, `standard-search-and-rescue-aircraft-report`, `long-range-ais-broadcast-message`, `addressed-safety-message`, `addressed-binary-message`, `assigned-mode-command`, `binary-acknowledge`, `binary-broadcast-message`, `channel-management`, `coordinated-utc-inquiry`, `data-link-management-message`, `gnss-broadcast-binary-message`, `group-assignment-command`, `interrogation`, `multi-slot-binary-message`, `single-slot-binary-message`. |
 
 `ContentType` is `application/json`; CloudEvents attributes ride as MQTT 5 user properties; `subject` equals the MMSI.
 
 #### Ship-type and position caches
 
-`ShipStatic` (AIS Type 5 / 24) messages populate an in-memory MMSI → ship-type cache; subsequent `PositionReport` messages from the same MMSI inherit that bucket. Likewise the most recent position is cached so that later static reports get a real `geohash5` instead of `00000`. Caches are process-local and rebuild from the live stream after every restart.
+`ShipStaticData` (AIS Type 5) and `StaticDataReport` (AIS Type 24) messages populate an in-memory MMSI → ship-type cache; subsequent position messages from the same MMSI inherit that bucket for topic routing. Likewise the most recent position is cached so that later static reports get a real `geohash5` instead of `00000`. Caches are process-local and rebuild from the live stream after every restart. These caches affect **only** the topic axes — the event body is always the verbatim raw AIS message.
 
 #### MID → ISO mapping
 
@@ -190,7 +190,7 @@ docker run --rm \
 
 ## Using the AMQP image
 
-The AMQP image (`…-aisstream-amqp`) publishes CloudEvents over AMQP 1.0 to a single AMQP node (queue, topic, or address). It targets two deployment shapes:
+The AMQP image (`…-aisstream-amqp`) publishes CloudEvents over AMQP 1.0 to a single AMQP node (queue, topic, or address). Like the Kafka image, it carries **all 23 AIS message families** with raw bodies, and sets the CloudEvent `subject` (and the AMQP message `subject` property) to `{UserID}` — the AIS source MMSI — so consumers get the same identity as the Kafka key. It targets two deployment shapes:
 
 ### Generic AMQP 1.0 brokers (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch)
 

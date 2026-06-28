@@ -46,19 +46,159 @@ async def handle_io_aisstream_mqtt_position_report(mqtt_msg,cloud_event, io_aiss
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
     print(f"  Data: {io_aisstream_mqtt_position_report_data}")
 
-async def handle_io_aisstream_mqtt_ship_static(mqtt_msg,cloud_event, io_aisstream_mqtt_ship_static_data):
-    """ Handles the IO.AISstream.mqtt.ShipStatic message """
-    print(f"Received IO.AISstream.mqtt.ShipStatic on topic {mqtt_msg.topic}")
+async def handle_io_aisstream_mqtt_ship_static_data(mqtt_msg,cloud_event, io_aisstream_mqtt_ship_static_data_data):
+    """ Handles the IO.AISstream.mqtt.ShipStaticData message """
+    print(f"Received IO.AISstream.mqtt.ShipStaticData on topic {mqtt_msg.topic}")
     if cloud_event:
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
-    print(f"  Data: {io_aisstream_mqtt_ship_static_data}")
+    print(f"  Data: {io_aisstream_mqtt_ship_static_data_data}")
 
-async def handle_io_aisstream_mqtt_aid_to_navigation(mqtt_msg,cloud_event, io_aisstream_mqtt_aid_to_navigation_data):
-    """ Handles the IO.AISstream.mqtt.AidToNavigation message """
-    print(f"Received IO.AISstream.mqtt.AidToNavigation on topic {mqtt_msg.topic}")
+async def handle_io_aisstream_mqtt_standard_class_bposition_report(mqtt_msg,cloud_event, io_aisstream_mqtt_standard_class_bposition_report_data):
+    """ Handles the IO.AISstream.mqtt.StandardClassBPositionReport message """
+    print(f"Received IO.AISstream.mqtt.StandardClassBPositionReport on topic {mqtt_msg.topic}")
     if cloud_event:
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
-    print(f"  Data: {io_aisstream_mqtt_aid_to_navigation_data}")
+    print(f"  Data: {io_aisstream_mqtt_standard_class_bposition_report_data}")
+
+async def handle_io_aisstream_mqtt_extended_class_bposition_report(mqtt_msg,cloud_event, io_aisstream_mqtt_extended_class_bposition_report_data):
+    """ Handles the IO.AISstream.mqtt.ExtendedClassBPositionReport message """
+    print(f"Received IO.AISstream.mqtt.ExtendedClassBPositionReport on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_extended_class_bposition_report_data}")
+
+async def handle_io_aisstream_mqtt_aids_to_navigation_report(mqtt_msg,cloud_event, io_aisstream_mqtt_aids_to_navigation_report_data):
+    """ Handles the IO.AISstream.mqtt.AidsToNavigationReport message """
+    print(f"Received IO.AISstream.mqtt.AidsToNavigationReport on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_aids_to_navigation_report_data}")
+
+async def handle_io_aisstream_mqtt_static_data_report(mqtt_msg,cloud_event, io_aisstream_mqtt_static_data_report_data):
+    """ Handles the IO.AISstream.mqtt.StaticDataReport message """
+    print(f"Received IO.AISstream.mqtt.StaticDataReport on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_static_data_report_data}")
+
+async def handle_io_aisstream_mqtt_base_station_report(mqtt_msg,cloud_event, io_aisstream_mqtt_base_station_report_data):
+    """ Handles the IO.AISstream.mqtt.BaseStationReport message """
+    print(f"Received IO.AISstream.mqtt.BaseStationReport on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_base_station_report_data}")
+
+async def handle_io_aisstream_mqtt_safety_broadcast_message(mqtt_msg,cloud_event, io_aisstream_mqtt_safety_broadcast_message_data):
+    """ Handles the IO.AISstream.mqtt.SafetyBroadcastMessage message """
+    print(f"Received IO.AISstream.mqtt.SafetyBroadcastMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_safety_broadcast_message_data}")
+
+async def handle_io_aisstream_mqtt_standard_search_and_rescue_aircraft_report(mqtt_msg,cloud_event, io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_data):
+    """ Handles the IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport message """
+    print(f"Received IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_data}")
+
+async def handle_io_aisstream_mqtt_long_range_ais_broadcast_message(mqtt_msg,cloud_event, io_aisstream_mqtt_long_range_ais_broadcast_message_data):
+    """ Handles the IO.AISstream.mqtt.LongRangeAisBroadcastMessage message """
+    print(f"Received IO.AISstream.mqtt.LongRangeAisBroadcastMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_long_range_ais_broadcast_message_data}")
+
+async def handle_io_aisstream_mqtt_addressed_safety_message(mqtt_msg,cloud_event, io_aisstream_mqtt_addressed_safety_message_data):
+    """ Handles the IO.AISstream.mqtt.AddressedSafetyMessage message """
+    print(f"Received IO.AISstream.mqtt.AddressedSafetyMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_addressed_safety_message_data}")
+
+async def handle_io_aisstream_mqtt_addressed_binary_message(mqtt_msg,cloud_event, io_aisstream_mqtt_addressed_binary_message_data):
+    """ Handles the IO.AISstream.mqtt.AddressedBinaryMessage message """
+    print(f"Received IO.AISstream.mqtt.AddressedBinaryMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_addressed_binary_message_data}")
+
+async def handle_io_aisstream_mqtt_assigned_mode_command(mqtt_msg,cloud_event, io_aisstream_mqtt_assigned_mode_command_data):
+    """ Handles the IO.AISstream.mqtt.AssignedModeCommand message """
+    print(f"Received IO.AISstream.mqtt.AssignedModeCommand on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_assigned_mode_command_data}")
+
+async def handle_io_aisstream_mqtt_binary_acknowledge(mqtt_msg,cloud_event, io_aisstream_mqtt_binary_acknowledge_data):
+    """ Handles the IO.AISstream.mqtt.BinaryAcknowledge message """
+    print(f"Received IO.AISstream.mqtt.BinaryAcknowledge on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_binary_acknowledge_data}")
+
+async def handle_io_aisstream_mqtt_binary_broadcast_message(mqtt_msg,cloud_event, io_aisstream_mqtt_binary_broadcast_message_data):
+    """ Handles the IO.AISstream.mqtt.BinaryBroadcastMessage message """
+    print(f"Received IO.AISstream.mqtt.BinaryBroadcastMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_binary_broadcast_message_data}")
+
+async def handle_io_aisstream_mqtt_channel_management(mqtt_msg,cloud_event, io_aisstream_mqtt_channel_management_data):
+    """ Handles the IO.AISstream.mqtt.ChannelManagement message """
+    print(f"Received IO.AISstream.mqtt.ChannelManagement on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_channel_management_data}")
+
+async def handle_io_aisstream_mqtt_coordinated_utcinquiry(mqtt_msg,cloud_event, io_aisstream_mqtt_coordinated_utcinquiry_data):
+    """ Handles the IO.AISstream.mqtt.CoordinatedUTCInquiry message """
+    print(f"Received IO.AISstream.mqtt.CoordinatedUTCInquiry on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_coordinated_utcinquiry_data}")
+
+async def handle_io_aisstream_mqtt_data_link_management_message(mqtt_msg,cloud_event, io_aisstream_mqtt_data_link_management_message_data):
+    """ Handles the IO.AISstream.mqtt.DataLinkManagementMessage message """
+    print(f"Received IO.AISstream.mqtt.DataLinkManagementMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_data_link_management_message_data}")
+
+async def handle_io_aisstream_mqtt_gnss_broadcast_binary_message(mqtt_msg,cloud_event, io_aisstream_mqtt_gnss_broadcast_binary_message_data):
+    """ Handles the IO.AISstream.mqtt.GnssBroadcastBinaryMessage message """
+    print(f"Received IO.AISstream.mqtt.GnssBroadcastBinaryMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_gnss_broadcast_binary_message_data}")
+
+async def handle_io_aisstream_mqtt_group_assignment_command(mqtt_msg,cloud_event, io_aisstream_mqtt_group_assignment_command_data):
+    """ Handles the IO.AISstream.mqtt.GroupAssignmentCommand message """
+    print(f"Received IO.AISstream.mqtt.GroupAssignmentCommand on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_group_assignment_command_data}")
+
+async def handle_io_aisstream_mqtt_interrogation(mqtt_msg,cloud_event, io_aisstream_mqtt_interrogation_data):
+    """ Handles the IO.AISstream.mqtt.Interrogation message """
+    print(f"Received IO.AISstream.mqtt.Interrogation on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_interrogation_data}")
+
+async def handle_io_aisstream_mqtt_multi_slot_binary_message(mqtt_msg,cloud_event, io_aisstream_mqtt_multi_slot_binary_message_data):
+    """ Handles the IO.AISstream.mqtt.MultiSlotBinaryMessage message """
+    print(f"Received IO.AISstream.mqtt.MultiSlotBinaryMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_multi_slot_binary_message_data}")
+
+async def handle_io_aisstream_mqtt_single_slot_binary_message(mqtt_msg,cloud_event, io_aisstream_mqtt_single_slot_binary_message_data):
+    """ Handles the IO.AISstream.mqtt.SingleSlotBinaryMessage message """
+    print(f"Received IO.AISstream.mqtt.SingleSlotBinaryMessage on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {io_aisstream_mqtt_single_slot_binary_message_data}")
 
 async def main(broker_host, broker_port, topic, username=None, password=None):
     """ Main function for MQTT client """

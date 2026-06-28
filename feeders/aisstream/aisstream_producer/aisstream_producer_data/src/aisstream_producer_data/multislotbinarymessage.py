@@ -18,7 +18,7 @@ from aisstream_producer_data.applicationid import ApplicationID
 @dataclass
 class MultiSlotBinaryMessage:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Multiple-slot binary message with communication state (ITU-R M.1371 message 26) relayed by aisstream.io. It carries a larger application-specific binary payload (optionally addressed, with an application identifier) spanning multiple TDMA slots and includes the link communication state.
     
     Attributes:
         MessageID (int)
@@ -178,17 +178,17 @@ class MultiSlotBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(38),
-            RepeatIndicator=int(96),
-            UserID=int(13),
+            MessageID=int(44),
+            RepeatIndicator=int(58),
+            UserID=int(20),
             Valid=True,
             DestinationIDValid=True,
-            ApplicationIDValid=False,
-            DestinationID=int(25),
-            Spare1=int(58),
+            ApplicationIDValid=True,
+            DestinationID=int(2),
+            Spare1=int(52),
             ApplicationID=None,
-            Payload='zkxlgzgfdlzwuawrlxid',
-            Spare2=int(44),
-            CommunicationStateIsItdma=False,
-            CommunicationState=int(79)
+            Payload='ubxjhggnshyrbjpkpram',
+            Spare2=int(99),
+            CommunicationStateIsItdma=True,
+            CommunicationState=int(57)
         )
