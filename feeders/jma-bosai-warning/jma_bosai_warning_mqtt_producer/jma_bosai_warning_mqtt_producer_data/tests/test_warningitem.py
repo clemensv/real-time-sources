@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_mqtt_producer_data.warningitem import WarningItem
-from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_mqtt_producer_data.statusenum import StatusEnum
+from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 
 
 class Test_WarningItem(unittest.TestCase):
@@ -30,9 +30,9 @@ class Test_WarningItem(unittest.TestCase):
         Create instance of WarningItem for testing
         """
         instance = WarningItem(
-            code='cwnblsbmwriwxnmslagm',
-            code_description_jp='oqptsxtkcllhenhnulfa',
-            code_description_en='flepnmqodsmbyrydwbxc',
+            code='ghegvovudrmljxtvapas',
+            code_description_jp='vpivkhqxfthasjseonyl',
+            code_description_en='dnsgknmcgsbeujigydvb',
             status=StatusEnum.ISSUED,
             severity=SeverityEnum.info
         )
@@ -43,7 +43,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'cwnblsbmwriwxnmslagm'
+        test_value = 'ghegvovudrmljxtvapas'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -51,7 +51,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code_description_jp property
         """
-        test_value = 'oqptsxtkcllhenhnulfa'
+        test_value = 'vpivkhqxfthasjseonyl'
         self.instance.code_description_jp = test_value
         self.assertEqual(self.instance.code_description_jp, test_value)
     
@@ -59,7 +59,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code_description_en property
         """
-        test_value = 'flepnmqodsmbyrydwbxc'
+        test_value = 'dnsgknmcgsbeujigydvb'
         self.instance.code_description_en = test_value
         self.assertEqual(self.instance.code_description_en, test_value)
     

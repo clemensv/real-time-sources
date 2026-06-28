@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+from jma_bosai_warning_producer_data.weatherwarningeventenum import WeatherWarningEventEnum
 from jma_bosai_warning_producer_data.warningitem import WarningItem
-from jma_bosai_warning_producer_data.eventenum import EventEnum
 from jma_bosai_warning_producer_data.severityenum import SeverityEnum
 import datetime
 
@@ -29,7 +29,7 @@ class WeatherWarning:
         severity (SeverityEnum)
         office_code (str)
         area_code (str)
-        event (EventEnum)
+        event (WeatherWarningEventEnum)
         area_name (str)
         report_datetime (datetime.datetime)
         report_datetime_local (datetime.datetime)
@@ -43,7 +43,7 @@ class WeatherWarning:
     severity: SeverityEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
     office_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="office_code"))
     area_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_code"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: WeatherWarningEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
     area_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_name"))
     report_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     report_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
@@ -178,15 +178,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='awighpqqefzrghbgcqsa',
+            prefecture='dyckstaqrujnvncbzeja',
             severity=SeverityEnum.info,
-            office_code='pucmdschdsbfjftmcsym',
-            area_code='luqjzipetldojblvrhgp',
-            event=EventEnum.warning,
-            area_name='yqlgngzclmjlnatxdmkv',
+            office_code='rubjvrilwuhyoaxggzpu',
+            area_code='iuijcdoemrfyorlufdeb',
+            event=WeatherWarningEventEnum.warning,
+            area_name='xmotdpantvpchbxmdedd',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='qxplnrmszwgjqlkifitg',
-            warnings=[None, None, None],
-            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
+            headline_text='ftmrrgbnameolndsvkci',
+            warnings=[None, None],
+            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

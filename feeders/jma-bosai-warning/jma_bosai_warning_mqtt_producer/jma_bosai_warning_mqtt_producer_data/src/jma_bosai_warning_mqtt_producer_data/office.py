@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_warning_mqtt_producer_data.officetypeenum import OfficeTypeenum
 from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
-from jma_bosai_warning_mqtt_producer_data.eventenum import EventEnum
+from jma_bosai_warning_mqtt_producer_data.officetypeenum import OfficeTypeenum
+from jma_bosai_warning_mqtt_producer_data.officeeventenum import OfficeEventEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -31,7 +31,7 @@ class Office:
         office_type (OfficeTypeenum)
         prefecture (str)
         severity (SeverityEnum)
-        event (EventEnum)
+        event (OfficeEventEnum)
     """
     
     
@@ -43,7 +43,7 @@ class Office:
     office_type: OfficeTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="office_type"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
     severity: SeverityEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: OfficeEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Office':
@@ -172,13 +172,13 @@ class Office:
             An instance of the dataclass.
         """
         return cls(
-            office_code='xnqjgaavhztkgdtzhkic',
-            area_code='vfjipppeutqdgysmboxo',
-            name_jp='rsduxpyqtelmdmbqqtdu',
-            name_en='sdohkefinxubgjzzlkss',
-            parent_office_code='lbmbzovtcazglpykzyqu',
+            office_code='zqhheaqfqbtsmnwxhcgd',
+            area_code='kdmyumlwaonwsilolvgj',
+            name_jp='btcxfateczzqjaisziws',
+            name_en='ezqvytarhmygytxsjwbz',
+            parent_office_code='qekrpovoflhqtkgzezch',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='dcmpewvywbgawpfltysf',
+            prefecture='yvignhwsqrbszrtqinnh',
             severity=SeverityEnum.info,
-            event=EventEnum.info
+            event=OfficeEventEnum.info
         )

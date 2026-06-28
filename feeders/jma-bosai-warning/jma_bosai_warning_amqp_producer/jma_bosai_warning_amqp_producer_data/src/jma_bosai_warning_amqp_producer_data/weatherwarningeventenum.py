@@ -1,16 +1,14 @@
 from enum import Enum
 
 
-class SeverityEnum(Enum):
+class WeatherWarningEventEnum(Enum):
     """
-    Japan-native tsunami warning severity axis: advisory, warning, or emergency.
+    Fixed MQTT topic event segment for JMA Bosai weather warning state records.
     """
-    advisory = 'advisory'
     warning = 'warning'
-    emergency = 'emergency'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int | str) -> 'SeverityEnum':
+    def from_ordinal(cls, ordinal: int | str) -> 'WeatherWarningEventEnum':
         """
         Get enum member by ordinal
 
@@ -31,12 +29,12 @@ class SeverityEnum(Enum):
             raise IndexError("Ordinal out of range for enum")
 
     @classmethod
-    def to_ordinal(cls, member: 'SeverityEnum') -> int:
+    def to_ordinal(cls, member: 'WeatherWarningEventEnum') -> int:
         """
         Get enum ordinal
 
         Args:
-            member (SeverityEnum): The enum member to get the ordinal of.
+            member (WeatherWarningEventEnum): The enum member to get the ordinal of.
 
         Returns:
             The ordinal of the enum member.

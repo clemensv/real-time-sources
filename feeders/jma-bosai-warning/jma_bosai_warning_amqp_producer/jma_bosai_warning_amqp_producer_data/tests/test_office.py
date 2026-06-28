@@ -9,9 +9,9 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_amqp_producer_data.office import Office
-from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
-from jma_bosai_warning_amqp_producer_data.eventenum import EventEnum
 from jma_bosai_warning_amqp_producer_data.officetypeenum import OfficeTypeenum
+from jma_bosai_warning_amqp_producer_data.officeeventenum import OfficeEventEnum
+from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 
 
 class Test_Office(unittest.TestCase):
@@ -31,15 +31,15 @@ class Test_Office(unittest.TestCase):
         Create instance of Office for testing
         """
         instance = Office(
-            office_code='wjdjcmogyrahvfxjrwts',
-            area_code='bqtwyuniznrkujgtpklc',
-            name_jp='qlsoscancivfftowgwdf',
-            name_en='pbfewbwkthuqdzodnyfj',
-            parent_office_code='fkivdukoastjokrmlaca',
+            office_code='hshqmovabofeukjswfby',
+            area_code='yvblrymnhttwwipxpetz',
+            name_jp='mwkjqagyxvufpilllodw',
+            name_en='dbmbcphmwgtafqniapmh',
+            parent_office_code='qpqjtgesxoomfqhwxslf',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='esmmmbstpqajxnuarjwk',
-            severity=SeverityEnum.info,
-            event=EventEnum.info
+            prefecture='iavbtfobrmegmhpjmrag',
+            severity=SeverityEnum.advisory,
+            event=OfficeEventEnum.info
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_Office(unittest.TestCase):
         """
         Test office_code property
         """
-        test_value = 'wjdjcmogyrahvfxjrwts'
+        test_value = 'hshqmovabofeukjswfby'
         self.instance.office_code = test_value
         self.assertEqual(self.instance.office_code, test_value)
     
@@ -56,7 +56,7 @@ class Test_Office(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'bqtwyuniznrkujgtpklc'
+        test_value = 'yvblrymnhttwwipxpetz'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -64,7 +64,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_jp property
         """
-        test_value = 'qlsoscancivfftowgwdf'
+        test_value = 'mwkjqagyxvufpilllodw'
         self.instance.name_jp = test_value
         self.assertEqual(self.instance.name_jp, test_value)
     
@@ -72,7 +72,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'pbfewbwkthuqdzodnyfj'
+        test_value = 'dbmbcphmwgtafqniapmh'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     
@@ -80,7 +80,7 @@ class Test_Office(unittest.TestCase):
         """
         Test parent_office_code property
         """
-        test_value = 'fkivdukoastjokrmlaca'
+        test_value = 'qpqjtgesxoomfqhwxslf'
         self.instance.parent_office_code = test_value
         self.assertEqual(self.instance.parent_office_code, test_value)
     
@@ -96,7 +96,7 @@ class Test_Office(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'esmmmbstpqajxnuarjwk'
+        test_value = 'iavbtfobrmegmhpjmrag'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -104,7 +104,7 @@ class Test_Office(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = SeverityEnum.info
+        test_value = SeverityEnum.advisory
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -112,7 +112,7 @@ class Test_Office(unittest.TestCase):
         """
         Test event property
         """
-        test_value = EventEnum.info
+        test_value = OfficeEventEnum.info
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     
