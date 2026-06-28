@@ -1,3 +1,4 @@
+<!-- xreg-generator:hand-maintained — hand-polished beyond tools/printdoc.py output (CloudEvents envelope tables). tools/generate-events-md.ps1 skips this file. To refresh from the manifest: remove this line, regenerate, then re-apply the hand sections. -->
 # ERDDAP Events
 
 CloudEvents emitted by the generalized ERDDAP tabledap feeder.

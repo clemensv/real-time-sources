@@ -1,3 +1,4 @@
+// xreg-generator:hand-maintained — carries hand-authored helpers (Map-friendly enrichment + trend functions) below the generated base. tools/generate-kql-from-xreg.ps1 skips this file. To refresh the base: remove this line, regenerate, then re-merge the helper tail.
 .create-merge table [_cloudevents_dispatch] (
     [specversion]: string,
     [type]: string,

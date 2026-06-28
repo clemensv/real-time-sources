@@ -1,3 +1,4 @@
+<!-- xreg-generator:hand-maintained — hand-polished beyond tools/printdoc.py output (README/CONTAINER link-triangle). tools/generate-events-md.ps1 skips this file. To refresh from the manifest: remove this line, regenerate, then re-apply the hand sections. -->
 # GBFS Bikeshare event reference
 
 This document defines the CloudEvents contract emitted by the GBFS bikeshare feeder. For the project overview see README.md; for the published container images and runtime configuration see CONTAINER.md.
