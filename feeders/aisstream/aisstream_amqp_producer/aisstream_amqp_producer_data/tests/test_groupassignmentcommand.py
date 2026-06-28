@@ -28,22 +28,22 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         Create instance of GroupAssignmentCommand for testing
         """
         instance = GroupAssignmentCommand(
-            MessageID=int(86),
-            RepeatIndicator=int(83),
-            UserID=int(34),
-            Valid=True,
-            Spare1=int(23),
-            Longitude1=float(75.97287728134525),
-            Latitude1=float(29.66079920102571),
-            Longitude2=float(82.03053916686386),
-            Latitude2=float(8.884087312452548),
-            StationType=int(90),
-            ShipType=int(92),
-            Spare2=int(44),
-            TxRxMode=int(93),
-            ReportingInterval=int(44),
-            QuietTime=int(18),
-            Spare3=int(18)
+            MessageID=int(7),
+            RepeatIndicator=int(65),
+            UserID=int(19),
+            Valid=False,
+            Spare1=int(51),
+            Longitude1=float(5.844031839716168),
+            Latitude1=float(29.94124905175375),
+            Longitude2=float(23.99530157740766),
+            Latitude2=float(13.588014620591082),
+            StationType=int(82),
+            ShipType=int(34),
+            Spare2=int(95),
+            TxRxMode=int(28),
+            ReportingInterval=int(59),
+            QuietTime=int(20),
+            Spare3=int(61)
         )
         return instance
 
@@ -52,7 +52,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(86)
+        test_value = int(7)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -60,7 +60,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(83)
+        test_value = int(65)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -68,7 +68,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(34)
+        test_value = int(19)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -76,7 +76,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -84,7 +84,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(23)
+        test_value = int(51)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -92,7 +92,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Longitude1 property
         """
-        test_value = float(75.97287728134525)
+        test_value = float(5.844031839716168)
         self.instance.Longitude1 = test_value
         self.assertEqual(self.instance.Longitude1, test_value)
     
@@ -100,7 +100,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Latitude1 property
         """
-        test_value = float(29.66079920102571)
+        test_value = float(29.94124905175375)
         self.instance.Latitude1 = test_value
         self.assertEqual(self.instance.Latitude1, test_value)
     
@@ -108,7 +108,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Longitude2 property
         """
-        test_value = float(82.03053916686386)
+        test_value = float(23.99530157740766)
         self.instance.Longitude2 = test_value
         self.assertEqual(self.instance.Longitude2, test_value)
     
@@ -116,7 +116,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Latitude2 property
         """
-        test_value = float(8.884087312452548)
+        test_value = float(13.588014620591082)
         self.instance.Latitude2 = test_value
         self.assertEqual(self.instance.Latitude2, test_value)
     
@@ -124,7 +124,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test StationType property
         """
-        test_value = int(90)
+        test_value = int(82)
         self.instance.StationType = test_value
         self.assertEqual(self.instance.StationType, test_value)
     
@@ -132,7 +132,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test ShipType property
         """
-        test_value = int(92)
+        test_value = int(34)
         self.instance.ShipType = test_value
         self.assertEqual(self.instance.ShipType, test_value)
     
@@ -140,7 +140,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(44)
+        test_value = int(95)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     
@@ -148,7 +148,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test TxRxMode property
         """
-        test_value = int(93)
+        test_value = int(28)
         self.instance.TxRxMode = test_value
         self.assertEqual(self.instance.TxRxMode, test_value)
     
@@ -156,7 +156,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test ReportingInterval property
         """
-        test_value = int(44)
+        test_value = int(59)
         self.instance.ReportingInterval = test_value
         self.assertEqual(self.instance.ReportingInterval, test_value)
     
@@ -164,7 +164,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test QuietTime property
         """
-        test_value = int(18)
+        test_value = int(20)
         self.instance.QuietTime = test_value
         self.assertEqual(self.instance.QuietTime, test_value)
     
@@ -172,7 +172,7 @@ class Test_GroupAssignmentCommand(unittest.TestCase):
         """
         Test Spare3 property
         """
-        test_value = int(18)
+        test_value = int(61)
         self.instance.Spare3 = test_value
         self.assertEqual(self.instance.Spare3, test_value)
     

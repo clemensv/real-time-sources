@@ -11,15 +11,15 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_mqtt_producer_data.area import Area
 from aisstream_mqtt_producer_data.unicast import Unicast
+from aisstream_mqtt_producer_data.area import Area
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class ChannelManagement:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Channel management command (ITU-R M.1371 message 22) relayed by aisstream.io. A base station uses it to designate the AIS operating channels, bandwidths, transmit/receive mode, power level and transitional zone for a defined geographic region or for individually addressed stations.
     
     Attributes:
         MessageID (int)
@@ -185,20 +185,20 @@ class ChannelManagement:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(81),
-            RepeatIndicator=int(32),
-            UserID=int(7),
-            Valid=False,
-            Spare1=int(66),
-            ChannelA=int(35),
-            ChannelB=int(64),
-            TxRxMode=int(89),
-            LowPower=False,
+            MessageID=int(28),
+            RepeatIndicator=int(91),
+            UserID=int(92),
+            Valid=True,
+            Spare1=int(97),
+            ChannelA=int(17),
+            ChannelB=int(44),
+            TxRxMode=int(98),
+            LowPower=True,
             Area=None,
             Unicast=None,
-            IsAddressed=False,
-            BwA=False,
-            BwB=True,
-            TransitionalZoneSize=int(12),
-            Spare4=int(87)
+            IsAddressed=True,
+            BwA=True,
+            BwB=False,
+            TransitionalZoneSize=int(84),
+            Spare4=int(23)
         )

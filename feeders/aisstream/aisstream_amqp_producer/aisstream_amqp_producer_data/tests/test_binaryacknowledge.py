@@ -28,12 +28,12 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         Create instance of BinaryAcknowledge for testing
         """
         instance = BinaryAcknowledge(
-            MessageID=int(54),
-            RepeatIndicator=int(10),
-            UserID=int(2),
-            Valid=True,
-            Spare=int(88),
-            Destinations={'hmebirvqosqsiyrbwchl': 'sywkatwddagwqxkfmumm', 'qhjoffvdnchtsxyycvgk': 'dvbpqrpubitdffcmxmfk'}
+            MessageID=int(1),
+            RepeatIndicator=int(2),
+            UserID=int(96),
+            Valid=False,
+            Spare=int(72),
+            Destinations={'fjhgpframluijufuvphd': 'sulhmuweztbvjuahykrv', 'savbuagflpcikitspvmk': 'ycmroxczstajpoaqedyw'}
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(54)
+        test_value = int(1)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -50,7 +50,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(10)
+        test_value = int(2)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -58,7 +58,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(2)
+        test_value = int(96)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -66,7 +66,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -74,7 +74,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(88)
+        test_value = int(72)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -82,7 +82,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test Destinations property
         """
-        test_value = {'hmebirvqosqsiyrbwchl': 'sywkatwddagwqxkfmumm', 'qhjoffvdnchtsxyycvgk': 'dvbpqrpubitdffcmxmfk'}
+        test_value = {'fjhgpframluijufuvphd': 'sulhmuweztbvjuahykrv', 'savbuagflpcikitspvmk': 'ycmroxczstajpoaqedyw'}
         self.instance.Destinations = test_value
         self.assertEqual(self.instance.Destinations, test_value)
     

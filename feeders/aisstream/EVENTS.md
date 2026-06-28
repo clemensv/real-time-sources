@@ -4,10 +4,10 @@ AISStream publishes vessel position, voyage, safety, and static AIS messages fro
 
 ## At a glance
 
-- **Event types:** 26 documented event types (29 transport bindings in the manifest).
+- **Event types:** 23 documented event types (69 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
-- **Reference vs telemetry:** 1 reference/catalog event type and 25 telemetry event types.
-- **Identity:** `{UserID}`, `{mmsi}` identifies the resource each event is about.
+- **Reference vs telemetry:** 1 reference/catalog event type and 22 telemetry event types.
+- **Identity:** `{UserID}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
@@ -31,7 +31,7 @@ while True:
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 ### MQTT 5
 
-Connect to `mqtt://localhost:1883` and subscribe to `maritime/intl/aisstream/aisstream/+/+/+/+/position-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/static`, `maritime/intl/aisstream/aisstream/+/+/+/+/aid-to-navigation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+Connect to `mqtt://localhost:1883` and subscribe to `maritime/intl/aisstream/aisstream/+/+/+/+/position-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/ship-static-data`, `maritime/intl/aisstream/aisstream/+/+/+/+/standard-class-b-position-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/extended-class-b-position-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/aids-to-navigation-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/static-data-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/base-station-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/safety-broadcast-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/standard-search-and-rescue-aircraft-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/long-range-ais-broadcast-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/addressed-safety-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/addressed-binary-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/assigned-mode-command`, `maritime/intl/aisstream/aisstream/+/+/+/+/binary-acknowledge`, `maritime/intl/aisstream/aisstream/+/+/+/+/binary-broadcast-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/channel-management`, `maritime/intl/aisstream/aisstream/+/+/+/+/coordinated-utc-inquiry`, `maritime/intl/aisstream/aisstream/+/+/+/+/data-link-management-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/gnss-broadcast-binary-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/group-assignment-command`, `maritime/intl/aisstream/aisstream/+/+/+/+/interrogation`, `maritime/intl/aisstream/aisstream/+/+/+/+/multi-slot-binary-message`, `maritime/intl/aisstream/aisstream/+/+/+/+/single-slot-binary-message`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
 ```python
 import paho.mqtt.client as mqtt
@@ -66,39 +66,41 @@ CloudEvents type: `IO.AISstream.PositionReport`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Class A Automatic Identification System (AIS) position report (ITU-R M.1371 messages 1, 2 and 3) as decoded and relayed by the aisstream.io firehose.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Position Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`NavigationalStatus`** (int32, optional): Provider field for navigational status in this record.
-- **`RateOfTurn`** (int32, optional): Provider field for rate of turn in this record.
-- **`Sog`** (double, optional): Provider field for sog in this record.
-- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
-- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
-- **`Cog`** (double, optional): Provider field for cog in this record.
-- **`TrueHeading`** (int32, optional): Provider field for true heading in this record.
-- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
-- **`SpecialManoeuvreIndicator`** (int32, optional): Provider field for special manoeuvre indicator in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`Raim`** (boolean, optional): Provider field for raim in this record.
-- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this Class A position report it is 1 for a scheduled report, 2 for an assigned-schedule report or 3 for a special / interrogation-response report (the three variants share an identical field layout).
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`NavigationalStatus`** (int32, optional): Navigational status code (ITU-R M.1371): 0 = under way using engine, 1 = at anchor, 2 = not under command, 3 = restricted manoeuvrability, 4 = constrained by her draught, 5 = moored, 6 = aground, 7 = engaged in fishing, 8 = under way sailing, 9-13 = reserved/special categories, 14 = AIS-SART/MOB/EPIRB active, 15 = undefined (default).
+- **`RateOfTurn`** (int32, optional): Rate of turn as the AIS-encoded value in the range -128..127. 0 = not turning; positive = turning to starboard (right), negative = turning to port (left); +127/-127 = turning faster than 5 degrees per 30 s; -128 = no turn information available. Decoded degrees per minute = (value/4.733) squared, carrying the sign of the value.
+- **`Sog`** (double, optional, [kn_i] (kt)): Speed over ground in knots (aisstream.io reports the decoded value; AIS native resolution is 0.1 kn, 102.3 = not available).
+- **`PositionAccuracy`** (boolean, optional): Position accuracy flag: true = high accuracy (better than 10 m, e.g. DGNSS-corrected), false = low accuracy (greater than 10 m, autonomous GNSS).
+- **`Longitude`** (double, required, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive (range -180 to 180; 181 = position not available).
+- **`Latitude`** (double, required, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive (range -90 to 90; 91 = position not available).
+- **`Cog`** (double, optional, deg (°)): Course over ground in degrees true (0-359.9; the encoded value 3600, i.e. 360 degrees, means not available).
+- **`TrueHeading`** (int32, optional, deg (°)): Heading in degrees true from the vessel's compass or gyro (0-359); 511 = heading not available.
+- **`Timestamp`** (int32, optional): UTC second of the minute (0-59) at which the report was generated by the originating station's electronic position-fixing system; 60 = time stamp not available (default), 61 = positioning system in manual input mode, 62 = positioning system in dead-reckoning mode, 63 = positioning system inoperative.
+- **`SpecialManoeuvreIndicator`** (int32, optional): Special manoeuvre indicator: 0 = not available (default), 1 = not engaged in special manoeuvre, 2 = engaged in special manoeuvre (e.g. a regional passing arrangement).
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Raim`** (boolean, optional): Receiver Autonomous Integrity Monitoring (RAIM) flag of the position-fixing device: true = RAIM in use, false = RAIM not in use.
+- **`CommunicationState`** (int32, optional): SOTDMA/ITDMA communication state value carrying the synchronisation state and slot time-out / slot-allocation information used by the AIS TDMA link layer.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -135,56 +137,58 @@ CloudEvents type: `IO.AISstream.ShipStaticData`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Class A static and voyage-related data report (ITU-R M.1371 message 5) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/ship-static-data`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Ship Static Data` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`AisVersion`** (int32, optional): Provider field for ais version in this record.
-- **`ImoNumber`** (int32, optional): Provider field for imo number in this record.
-- **`CallSign`** (string, optional): Provider field for call sign in this record.
-- **`Name`** (string, optional): Human-readable name of the resource.
-- **`Type`** (int32, optional): Provider field for type in this record.
-- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-shipstaticdata-dimension).
-- **`FixType`** (int32, optional): Provider field for fix type in this record.
-- **`Eta`** (object, optional): Provider field for eta in this record. See [Eta](#payload-io-aisstream-shipstaticdata-eta).
-- **`MaximumStaticDraught`** (double, optional): Provider field for maximum static draught in this record.
-- **`Destination`** (string, optional): Provider field for destination in this record.
-- **`Dte`** (boolean, optional): Provider field for dte in this record.
-- **`Spare`** (boolean, optional): Provider field for spare in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this static and voyage-related data report it is 5.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`AisVersion`** (int32, optional): AIS protocol version the station complies with: 0 = ITU-R M.1371-1; values 1, 2 and 3 indicate later editions of the standard.
+- **`ImoNumber`** (int32, optional): IMO ship identification number (a seven-digit number that stays with the hull for its lifetime); 0 = not available or not applicable.
+- **`CallSign`** (string, optional): International radio call sign of the vessel as up to 7 six-bit ASCII characters (right-padded with '@'); an all-'@' value means not available.
+- **`Name`** (string, optional): Name of the vessel as up to 20 six-bit ASCII characters (right-padded with '@'); an all-'@' value means not available.
+- **`Type`** (int32, optional): Ship and cargo type code (0-99): the tens digit gives the category (3x = special craft, 6x = passenger, 7x = cargo, 8x = tanker, 9x = other) and the units digit the subtype or hazard class. 0 = not available.
+- **`Dimension`** (object, optional): Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D. See [Dimension](#payload-io-aisstream-shipstaticdata-dimension).
+- **`FixType`** (int32, optional): Type of electronic position-fixing device: 0 = undefined, 1 = GPS, 2 = GLONASS, 3 = combined GPS/GLONASS, 4 = Loran-C, 5 = Chayka, 6 = integrated navigation system, 7 = surveyed, 8 = Galileo, 15 = internal GNSS.
+- **`Eta`** (object, optional): Estimated time of arrival (ETA) at destination, in UTC, encoded as separate month, day, hour and minute fields. See [Eta](#payload-io-aisstream-shipstaticdata-eta).
+- **`MaximumStaticDraught`** (double, optional, m): Maximum present static draught of the vessel in metres (AIS resolution 0.1 m); 0 = not available, 25.5 = 25.5 m or greater.
+- **`Destination`** (string, optional): Free-text destination of the current voyage as up to 20 six-bit ASCII characters (right-padded with '@'), typically a UN/LOCODE or port name; an all-'@' value means not available.
+- **`Dte`** (boolean, optional): Data terminal equipment (DTE) readiness flag: false = DTE ready/available, true = DTE not available.
+- **`Spare`** (boolean, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 ##### Dimension
 <a id="payload-io-aisstream-shipstaticdata-dimension"></a>
 
-Provider field for dimension in this record.
+Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D.
 
-- **`A`** (int32, required): Provider field for a in this record.
-- **`B`** (int32, required): Provider field for b in this record.
-- **`C`** (int32, required): Provider field for c in this record.
-- **`D`** (int32, required): Provider field for d in this record.
+- **`A`** (int32, required, m): Distance from the position-fixing antenna to the bow of the vessel, in metres (overall length = A + B). 0 = not available.
+- **`B`** (int32, required, m): Distance from the position-fixing antenna to the stern of the vessel, in metres. 0 = not available.
+- **`C`** (int32, required, m): Distance from the position-fixing antenna to the port side of the vessel, in metres (beam = C + D). 0 = not available.
+- **`D`** (int32, required, m): Distance from the position-fixing antenna to the starboard side of the vessel, in metres. 0 = not available.
 ##### Eta
 <a id="payload-io-aisstream-shipstaticdata-eta"></a>
 
-Provider field for eta in this record.
+Estimated time of arrival (ETA) at destination, in UTC, encoded as separate month, day, hour and minute fields.
 
-- **`Month`** (int32, required): Provider field for month in this record.
-- **`Day`** (int32, required): Provider field for day in this record.
-- **`Hour`** (int32, required): Provider field for hour in this record.
-- **`Minute`** (int32, required): Provider field for minute in this record.
+- **`Month`** (int32, required): Estimated time of arrival - month (UTC), 1-12; 0 = not available.
+- **`Day`** (int32, required): Estimated time of arrival - day of month (UTC), 1-31; 0 = not available.
+- **`Hour`** (int32, required): Estimated time of arrival - hour (UTC), 0-23; 24 = not available.
+- **`Minute`** (int32, required): Estimated time of arrival - minute (UTC), 0-59; 60 = not available.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -230,44 +234,46 @@ CloudEvents type: `IO.AISstream.StandardClassBPositionReport`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Standard Class B equipment position report (ITU-R M.1371 message 18) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/standard-class-b-position-report`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Standard Class Bposition Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`Sog`** (double, optional): Provider field for sog in this record.
-- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
-- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
-- **`Cog`** (double, optional): Provider field for cog in this record.
-- **`TrueHeading`** (int32, optional): Provider field for true heading in this record.
-- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
-- **`ClassBUnit`** (boolean, optional): Provider field for class b unit in this record.
-- **`ClassBDisplay`** (boolean, optional): Provider field for class b display in this record.
-- **`ClassBDsc`** (boolean, optional): Provider field for class b dsc in this record.
-- **`ClassBBand`** (boolean, optional): Provider field for class b band in this record.
-- **`ClassBMsg22`** (boolean, optional): Provider field for class b msg22 in this record.
-- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
-- **`Raim`** (boolean, optional): Provider field for raim in this record.
-- **`CommunicationStateIsItdma`** (boolean, optional): Provider field for communication state is itdma in this record.
-- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this standard Class B position report it is 18.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Sog`** (double, optional, [kn_i] (kt)): Speed over ground in knots (aisstream.io reports the decoded value; AIS native resolution is 0.1 kn, 102.3 = not available).
+- **`PositionAccuracy`** (boolean, optional): Position accuracy flag: true = high accuracy (better than 10 m, e.g. DGNSS-corrected), false = low accuracy (greater than 10 m, autonomous GNSS).
+- **`Longitude`** (double, required, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive (range -180 to 180; 181 = position not available).
+- **`Latitude`** (double, required, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive (range -90 to 90; 91 = position not available).
+- **`Cog`** (double, optional, deg (°)): Course over ground in degrees true (0-359.9; the encoded value 3600, i.e. 360 degrees, means not available).
+- **`TrueHeading`** (int32, optional, deg (°)): Heading in degrees true from the vessel's compass or gyro (0-359); 511 = heading not available.
+- **`Timestamp`** (int32, optional): UTC second of the minute (0-59) at which the report was generated by the originating station's electronic position-fixing system; 60 = time stamp not available (default), 61 = positioning system in manual input mode, 62 = positioning system in dead-reckoning mode, 63 = positioning system inoperative.
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`ClassBUnit`** (boolean, optional): Class B unit type flag: true = 'CS' (carrier-sense) unit, false = 'SO' (self-organising) unit.
+- **`ClassBDisplay`** (boolean, optional): Class B capability flag: true = the unit is equipped with a display showing received AIS messages.
+- **`ClassBDsc`** (boolean, optional): Class B capability flag: true = the unit is equipped with a DSC (digital selective calling) function.
+- **`ClassBBand`** (boolean, optional): Class B capability flag: true = the unit can operate over the whole marine band (both AIS channels), false = limited band.
+- **`ClassBMsg22`** (boolean, optional): Class B capability flag: true = the unit can accept channel-management commands via Message 22, false = not capable.
+- **`AssignedMode`** (boolean, optional): Assigned-mode flag: true = the station's reporting behaviour is controlled by a base station (assigned mode, via message 16/23), false = autonomous mode.
+- **`Raim`** (boolean, optional): Receiver Autonomous Integrity Monitoring (RAIM) flag of the position-fixing device: true = RAIM in use, false = RAIM not in use.
+- **`CommunicationStateIsItdma`** (boolean, optional): Indicates how to interpret CommunicationState: true = the station is using ITDMA (incremental) access, false = SOTDMA (self-organising) access.
+- **`CommunicationState`** (int32, optional): SOTDMA/ITDMA communication state value carrying the synchronisation state and slot time-out / slot-allocation information used by the AIS TDMA link layer.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -309,52 +315,54 @@ CloudEvents type: `IO.AISstream.ExtendedClassBPositionReport`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Extended Class B equipment position report (ITU-R M.1371 message 19) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/extended-class-b-position-report`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Extended Class Bposition Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`Sog`** (double, optional): Provider field for sog in this record.
-- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
-- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
-- **`Cog`** (double, optional): Provider field for cog in this record.
-- **`TrueHeading`** (int32, optional): Provider field for true heading in this record.
-- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
-- **`Name`** (string, optional): Human-readable name of the resource.
-- **`Type`** (int32, optional): Provider field for type in this record.
-- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-extendedclassbpositionreport-dimension).
-- **`FixType`** (int32, optional): Provider field for fix type in this record.
-- **`Raim`** (boolean, optional): Provider field for raim in this record.
-- **`Dte`** (boolean, optional): Provider field for dte in this record.
-- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
-- **`Spare3`** (int32, optional): Provider field for spare3 in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this extended Class B position report it is 19.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Sog`** (double, optional, [kn_i] (kt)): Speed over ground in knots (aisstream.io reports the decoded value; AIS native resolution is 0.1 kn, 102.3 = not available).
+- **`PositionAccuracy`** (boolean, optional): Position accuracy flag: true = high accuracy (better than 10 m, e.g. DGNSS-corrected), false = low accuracy (greater than 10 m, autonomous GNSS).
+- **`Longitude`** (double, required, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive (range -180 to 180; 181 = position not available).
+- **`Latitude`** (double, required, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive (range -90 to 90; 91 = position not available).
+- **`Cog`** (double, optional, deg (°)): Course over ground in degrees true (0-359.9; the encoded value 3600, i.e. 360 degrees, means not available).
+- **`TrueHeading`** (int32, optional, deg (°)): Heading in degrees true from the vessel's compass or gyro (0-359); 511 = heading not available.
+- **`Timestamp`** (int32, optional): UTC second of the minute (0-59) at which the report was generated by the originating station's electronic position-fixing system; 60 = time stamp not available (default), 61 = positioning system in manual input mode, 62 = positioning system in dead-reckoning mode, 63 = positioning system inoperative.
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Name`** (string, optional): Name of the vessel as up to 20 six-bit ASCII characters (right-padded with '@'); an all-'@' value means not available.
+- **`Type`** (int32, optional): Ship and cargo type code (0-99): the tens digit gives the category (3x = special craft, 6x = passenger, 7x = cargo, 8x = tanker, 9x = other) and the units digit the subtype or hazard class. 0 = not available.
+- **`Dimension`** (object, optional): Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D. See [Dimension](#payload-io-aisstream-extendedclassbpositionreport-dimension).
+- **`FixType`** (int32, optional): Type of electronic position-fixing device: 0 = undefined, 1 = GPS, 2 = GLONASS, 3 = combined GPS/GLONASS, 4 = Loran-C, 5 = Chayka, 6 = integrated navigation system, 7 = surveyed, 8 = Galileo, 15 = internal GNSS.
+- **`Raim`** (boolean, optional): Receiver Autonomous Integrity Monitoring (RAIM) flag of the position-fixing device: true = RAIM in use, false = RAIM not in use.
+- **`Dte`** (boolean, optional): Data terminal equipment (DTE) readiness flag: false = DTE ready/available, true = DTE not available.
+- **`AssignedMode`** (boolean, optional): Assigned-mode flag: true = the station's reporting behaviour is controlled by a base station (assigned mode, via message 16/23), false = autonomous mode.
+- **`Spare3`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 ##### Dimension
 <a id="payload-io-aisstream-extendedclassbpositionreport-dimension"></a>
 
-Provider field for dimension in this record.
+Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D.
 
-- **`A`** (int32, required): Provider field for a in this record.
-- **`B`** (int32, required): Provider field for b in this record.
-- **`C`** (int32, required): Provider field for c in this record.
-- **`D`** (int32, required): Provider field for d in this record.
+- **`A`** (int32, required, m): Distance from the position-fixing antenna to the bow of the vessel, in metres (overall length = A + B). 0 = not available.
+- **`B`** (int32, required, m): Distance from the position-fixing antenna to the stern of the vessel, in metres. 0 = not available.
+- **`C`** (int32, required, m): Distance from the position-fixing antenna to the port side of the vessel, in metres (beam = C + D). 0 = not available.
+- **`D`** (int32, required, m): Distance from the position-fixing antenna to the starboard side of the vessel, in metres. 0 = not available.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -400,50 +408,52 @@ CloudEvents type: `IO.AISstream.AidsToNavigationReport`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Aids-to-Navigation (AtoN) report (ITU-R M.1371 message 21) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aids-to-navigation-report`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Aids To Navigation Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Type`** (int32, optional): Provider field for type in this record.
-- **`Name`** (string, optional): Human-readable name of the resource.
-- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
-- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
-- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-aidstonavigationreport-dimension).
-- **`Fixtype`** (int32, optional): Provider field for fixtype in this record.
-- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
-- **`OffPosition`** (boolean, optional): Provider field for off position in this record.
-- **`AtoN`** (int32, optional): Provider field for ato n in this record.
-- **`Raim`** (boolean, optional): Provider field for raim in this record.
-- **`VirtualAtoN`** (boolean, optional): Provider field for virtual ato n in this record.
-- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
-- **`Spare`** (boolean, optional): Provider field for spare in this record.
-- **`NameExtension`** (string, optional): Provider field for name extension in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this aids-to-navigation report it is 21.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Type`** (int32, optional): Aid-to-Navigation type code (0-31) per ITU-R M.1371 (e.g. 1 = reference point, 5 = light without sectors, 9 = beacon, 20-31 = cardinal, lateral, special and safe-water marks); 0 = default/type not specified.
+- **`Name`** (string, optional): Name of the aid to navigation as up to 20 six-bit ASCII characters (right-padded with '@'); continued in NameExtension when longer than 20 characters.
+- **`PositionAccuracy`** (boolean, optional): Position accuracy flag: true = high accuracy (better than 10 m, e.g. DGNSS-corrected), false = low accuracy (greater than 10 m, autonomous GNSS).
+- **`Longitude`** (double, required, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive (range -180 to 180; 181 = position not available).
+- **`Latitude`** (double, required, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive (range -90 to 90; 91 = position not available).
+- **`Dimension`** (object, optional): Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D. See [Dimension](#payload-io-aisstream-aidstonavigationreport-dimension).
+- **`Fixtype`** (int32, optional): Type of electronic position-fixing device: 0 = undefined, 1 = GPS, 2 = GLONASS, 3 = combined GPS/GLONASS, 4 = Loran-C, 5 = Chayka, 6 = integrated navigation system, 7 = surveyed, 8 = Galileo, 15 = internal GNSS.
+- **`Timestamp`** (int32, optional): UTC second of the minute (0-59) at which the report was generated by the originating station's electronic position-fixing system; 60 = time stamp not available (default), 61 = positioning system in manual input mode, 62 = positioning system in dead-reckoning mode, 63 = positioning system inoperative.
+- **`OffPosition`** (boolean, optional): Off-position flag for the aid to navigation: true = the AtoN is not at its charted position (only meaningful when the time stamp is 0-59).
+- **`AtoN`** (int32, optional): Aid-to-Navigation status: eight status/condition bits reserved for regional or competent-authority use; 0 = default.
+- **`Raim`** (boolean, optional): Receiver Autonomous Integrity Monitoring (RAIM) flag of the position-fixing device: true = RAIM in use, false = RAIM not in use.
+- **`VirtualAtoN`** (boolean, optional): Virtual aid-to-navigation flag: true = a virtual AtoN with no physical structure (synthesised by a base station), false = a real, physical AtoN.
+- **`AssignedMode`** (boolean, optional): Assigned-mode flag: true = the station's reporting behaviour is controlled by a base station (assigned mode, via message 16/23), false = autonomous mode.
+- **`Spare`** (boolean, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`NameExtension`** (string, optional): Continuation of the aid-to-navigation name beyond the first 20 characters (0-14 additional six-bit ASCII characters); empty when the name fits within the Name field.
 ##### Dimension
 <a id="payload-io-aisstream-aidstonavigationreport-dimension"></a>
 
-Provider field for dimension in this record.
+Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D.
 
-- **`A`** (int32, required): Provider field for a in this record.
-- **`B`** (int32, required): Provider field for b in this record.
-- **`C`** (int32, required): Provider field for c in this record.
-- **`D`** (int32, required): Provider field for d in this record.
+- **`A`** (int32, required, m): Distance from the position-fixing antenna to the bow of the vessel, in metres (overall length = A + B). 0 = not available.
+- **`B`** (int32, required, m): Distance from the position-fixing antenna to the stern of the vessel, in metres. 0 = not available.
+- **`C`** (int32, required, m): Distance from the position-fixing antenna to the port side of the vessel, in metres (beam = C + D). 0 = not available.
+- **`D`** (int32, required, m): Distance from the position-fixing antenna to the starboard side of the vessel, in metres. 0 = not available.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -487,60 +497,62 @@ CloudEvents type: `IO.AISstream.StaticDataReport`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Class B static data report (ITU-R M.1371 message 24) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static-data-report`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Static Data Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Reserved`** (int32, optional): Provider field for reserved in this record.
-- **`PartNumber`** (boolean, optional): Provider field for part number in this record.
-- **`ReportA`** (object, optional): Provider field for report a in this record. See [ReportA](#payload-io-aisstream-staticdatareport-reporta).
-- **`ReportB`** (object, optional): Provider field for report b in this record. See [ReportB](#payload-io-aisstream-staticdatareport-reportb).
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this Class B static data report it is 24.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Reserved`** (int32, optional): Reserved field defined by ITU-R M.1371 for regional or future use; not semantically meaningful.
+- **`PartNumber`** (boolean, optional): Selects which part of the Class B static data report this message carries: false (0) = Part A (vessel name), true (1) = Part B (ship type, vendor ID, call sign, dimensions and fix type).
+- **`ReportA`** (object, optional): Part A of the Class B static data report, carrying the vessel name (present when PartNumber = 0). See [ReportA](#payload-io-aisstream-staticdatareport-reporta).
+- **`ReportB`** (object, optional): Part B of the Class B static data report, carrying ship type, vendor identification, call sign, dimensions and fix type (present when PartNumber = 1). See [ReportB](#payload-io-aisstream-staticdatareport-reportb).
 ##### ReportA
 <a id="payload-io-aisstream-staticdatareport-reporta"></a>
 
-Provider field for report a in this record.
+Part A of the Class B static data report, carrying the vessel name (present when PartNumber = 0).
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Name`** (string, required): Human-readable name of the resource.
+- **`Valid`** (boolean, required): Flag indicating Part A of the static data report was present and successfully decoded.
+- **`Name`** (string, required): Name of the vessel from Part A of the static data report, as up to 20 six-bit ASCII characters (right-padded with '@').
 ##### ReportB
 <a id="payload-io-aisstream-staticdatareport-reportb"></a>
 
-Provider field for report b in this record.
+Part B of the Class B static data report, carrying ship type, vendor identification, call sign, dimensions and fix type (present when PartNumber = 1).
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`ShipType`** (int32, optional): Provider field for ship type in this record.
-- **`VendorIDName`** (string, optional): Provider field for vendor i d name in this record.
-- **`VenderIDModel`** (int32, optional): Provider field for vender i d model in this record.
-- **`VenderIDSerial`** (int32, optional): Provider field for vender i d serial in this record.
-- **`CallSign`** (string, optional): Provider field for call sign in this record.
-- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-staticdatareport-reportb-dimension).
-- **`FixType`** (int32, optional): Provider field for fix type in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Valid`** (boolean, required): Flag indicating Part B of the static data report was present and successfully decoded.
+- **`ShipType`** (int32, optional): Ship and cargo type code (0-99) reported in Part B of the static data report; 0 = not available.
+- **`VendorIDName`** (string, optional): Manufacturer/vendor identifier of the Class B unit (three six-bit ASCII characters of the vendor ID).
+- **`VenderIDModel`** (int32, optional): Vendor model code of the Class B unit (manufacturer-assigned equipment model identifier).
+- **`VenderIDSerial`** (int32, optional): Vendor serial number of the Class B unit (manufacturer-assigned unit serial number).
+- **`CallSign`** (string, optional): International radio call sign of the vessel as up to 7 six-bit ASCII characters (right-padded with '@'); an all-'@' value means not available.
+- **`Dimension`** (object, optional): Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D. See [Dimension](#payload-io-aisstream-staticdatareport-reportb-dimension).
+- **`FixType`** (int32, optional): Type of electronic position-fixing device: 0 = undefined, 1 = GPS, 2 = GLONASS, 3 = combined GPS/GLONASS, 4 = Loran-C, 5 = Chayka, 6 = integrated navigation system, 7 = surveyed, 8 = Galileo, 15 = internal GNSS.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 ##### Dimension
 <a id="payload-io-aisstream-staticdatareport-dimension"></a>
 
-Provider field for dimension in this record.
+Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D.
 
-- **`A`** (int32, required): Provider field for a in this record.
-- **`B`** (int32, required): Provider field for b in this record.
-- **`C`** (int32, required): Provider field for c in this record.
-- **`D`** (int32, required): Provider field for d in this record.
+- **`A`** (int32, required, m): Distance from the position-fixing antenna to the bow of the vessel, in metres (overall length = A + B). 0 = not available.
+- **`B`** (int32, required, m): Distance from the position-fixing antenna to the stern of the vessel, in metres. 0 = not available.
+- **`C`** (int32, required, m): Distance from the position-fixing antenna to the port side of the vessel, in metres (beam = C + D). 0 = not available.
+- **`D`** (int32, required, m): Distance from the position-fixing antenna to the starboard side of the vessel, in metres. 0 = not available.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -586,40 +598,42 @@ CloudEvents type: `IO.AISstream.BaseStationReport`
 
 #### What it tells you
 
-A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates. AIS base station report (ITU-R M.1371 message 4) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/base-station-report`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Base Station Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`UtcYear`** (int32, optional): Provider field for utc year in this record.
-- **`UtcMonth`** (int32, optional): Provider field for utc month in this record.
-- **`UtcDay`** (int32, optional): Provider field for utc day in this record.
-- **`UtcHour`** (int32, optional): Provider field for utc hour in this record.
-- **`UtcMinute`** (int32, optional): Provider field for utc minute in this record.
-- **`UtcSecond`** (int32, optional): Provider field for utc second in this record.
-- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
-- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
-- **`FixType`** (int32, optional): Provider field for fix type in this record.
-- **`LongRangeEnable`** (boolean, optional): Provider field for long range enable in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`Raim`** (boolean, optional): Provider field for raim in this record.
-- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this base station report it is 4.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`UtcYear`** (int32, optional): UTC year of the base station's time reference (e.g. 2026); 0 = not available.
+- **`UtcMonth`** (int32, optional): UTC month of the base station's time reference (1-12); 0 = not available.
+- **`UtcDay`** (int32, optional): UTC day of month of the base station's time reference (1-31); 0 = not available.
+- **`UtcHour`** (int32, optional): UTC hour of the base station's time reference (0-23); 24 = not available.
+- **`UtcMinute`** (int32, optional): UTC minute of the base station's time reference (0-59); 60 = not available.
+- **`UtcSecond`** (int32, optional): UTC second of the base station's time reference (0-59); 60 = not available.
+- **`PositionAccuracy`** (boolean, optional): Position accuracy flag: true = high accuracy (better than 10 m, e.g. DGNSS-corrected), false = low accuracy (greater than 10 m, autonomous GNSS).
+- **`Longitude`** (double, required, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive (range -180 to 180; 181 = position not available).
+- **`Latitude`** (double, required, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive (range -90 to 90; 91 = position not available).
+- **`FixType`** (int32, optional): Type of electronic position-fixing device: 0 = undefined, 1 = GPS, 2 = GLONASS, 3 = combined GPS/GLONASS, 4 = Loran-C, 5 = Chayka, 6 = integrated navigation system, 7 = surveyed, 8 = Galileo, 15 = internal GNSS.
+- **`LongRangeEnable`** (boolean, optional): Flag indicating the base station is able to handle long-range AIS messages: true = capable.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Raim`** (boolean, optional): Receiver Autonomous Integrity Monitoring (RAIM) flag of the position-fixing device: true = RAIM in use, false = RAIM not in use.
+- **`CommunicationState`** (int32, optional): SOTDMA/ITDMA communication state value carrying the synchronisation state and slot time-out / slot-allocation information used by the AIS TDMA link layer.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -657,28 +671,30 @@ CloudEvents type: `IO.AISstream.SafetyBroadcastMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Safety-related broadcast message (ITU-R M.1371 message 14) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/safety-broadcast-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Safety Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`Text`** (string, optional): Provider field for text in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this safety-related broadcast message it is 14.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Text`** (string, optional): Free-text safety-related message content, encoded as six-bit ASCII characters.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -704,41 +720,43 @@ CloudEvents type: `IO.AISstream.StandardSearchAndRescueAircraftReport`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Standard search-and-rescue (SAR) aircraft position report (ITU-R M.1371 message 9) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/standard-search-and-rescue-aircraft-report`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Standard Search And Rescue Aircraft Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Altitude`** (int32, optional): Provider field for altitude in this record.
-- **`Sog`** (double, optional): Provider field for sog in this record.
-- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
-- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
-- **`Cog`** (double, optional): Provider field for cog in this record.
-- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
-- **`AltFromBaro`** (boolean, optional): Provider field for alt from baro in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`Dte`** (boolean, optional): Provider field for dte in this record.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
-- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
-- **`Raim`** (boolean, optional): Provider field for raim in this record.
-- **`CommunicationStateIsItdma`** (boolean, optional): Provider field for communication state is itdma in this record.
-- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this standard SAR aircraft position report it is 9.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Altitude`** (int32, optional, m): Altitude of the SAR aircraft above sea level in metres (0-4094); 4095 = not available. Derived from GNSS unless AltFromBaro indicates a barometric source.
+- **`Sog`** (double, optional, [kn_i] (kt)): Speed over ground in knots (aisstream.io reports the decoded value; AIS native resolution is 0.1 kn, 102.3 = not available).
+- **`PositionAccuracy`** (boolean, optional): Position accuracy flag: true = high accuracy (better than 10 m, e.g. DGNSS-corrected), false = low accuracy (greater than 10 m, autonomous GNSS).
+- **`Longitude`** (double, required, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive (range -180 to 180; 181 = position not available).
+- **`Latitude`** (double, required, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive (range -90 to 90; 91 = position not available).
+- **`Cog`** (double, optional, deg (°)): Course over ground in degrees true (0-359.9; the encoded value 3600, i.e. 360 degrees, means not available).
+- **`Timestamp`** (int32, optional): UTC second of the minute (0-59) at which the report was generated by the originating station's electronic position-fixing system; 60 = time stamp not available (default), 61 = positioning system in manual input mode, 62 = positioning system in dead-reckoning mode, 63 = positioning system inoperative.
+- **`AltFromBaro`** (boolean, optional): Altitude source flag: true = altitude derived from a barometric (QNH) sensor, false = altitude derived from the GNSS receiver.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Dte`** (boolean, optional): Data terminal equipment (DTE) readiness flag: false = DTE ready/available, true = DTE not available.
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`AssignedMode`** (boolean, optional): Assigned-mode flag: true = the station's reporting behaviour is controlled by a base station (assigned mode, via message 16/23), false = autonomous mode.
+- **`Raim`** (boolean, optional): Receiver Autonomous Integrity Monitoring (RAIM) flag of the position-fixing device: true = RAIM in use, false = RAIM not in use.
+- **`CommunicationStateIsItdma`** (boolean, optional): Indicates how to interpret CommunicationState: true = the station is using ITDMA (incremental) access, false = SOTDMA (self-organising) access.
+- **`CommunicationState`** (int32, optional): SOTDMA/ITDMA communication state value carrying the synchronisation state and slot time-out / slot-allocation information used by the AIS TDMA link layer.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -777,35 +795,37 @@ CloudEvents type: `IO.AISstream.LongRangeAisBroadcastMessage`
 
 #### What it tells you
 
-A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
+A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed. Long-range AIS broadcast / position report for long-range applications (ITU-R M.1371 message 27) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/long-range-ais-broadcast-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Long Range Ais Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
-- **`Raim`** (boolean, optional): Provider field for raim in this record.
-- **`NavigationalStatus`** (int32, optional): Provider field for navigational status in this record.
-- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
-- **`Sog`** (double, optional): Provider field for sog in this record.
-- **`Cog`** (double, optional): Provider field for cog in this record.
-- **`PositionLatency`** (boolean, optional): Provider field for position latency in this record.
-- **`Spare`** (boolean, optional): Provider field for spare in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this long-range AIS broadcast it is 27.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`PositionAccuracy`** (boolean, optional): Position accuracy flag: true = high accuracy (better than 10 m, e.g. DGNSS-corrected), false = low accuracy (greater than 10 m, autonomous GNSS).
+- **`Raim`** (boolean, optional): Receiver Autonomous Integrity Monitoring (RAIM) flag of the position-fixing device: true = RAIM in use, false = RAIM not in use.
+- **`NavigationalStatus`** (int32, optional): Navigational status code (ITU-R M.1371): 0 = under way using engine, 1 = at anchor, 2 = not under command, 3 = restricted manoeuvrability, 4 = constrained by her draught, 5 = moored, 6 = aground, 7 = engaged in fishing, 8 = under way sailing, 9-13 = reserved/special categories, 14 = AIS-SART/MOB/EPIRB active, 15 = undefined (default).
+- **`Longitude`** (double, required, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive, at the reduced 1/10-minute resolution used by long-range reports; 181 = position not available.
+- **`Latitude`** (double, required, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive, at the reduced 1/10-minute resolution used by long-range reports; 91 = position not available.
+- **`Sog`** (double, optional, [kn_i] (kt)): Speed over ground in knots at the reduced resolution used by long-range reports (0-62); 63 = not available.
+- **`Cog`** (double, optional, deg (°)): Course over ground in degrees true at the reduced resolution used by long-range reports (0-359); 511 = not available.
+- **`PositionLatency`** (boolean, optional): Position latency flag: false = the reported position is the current GNSS position (latency less than 5 s), true = the reported position may be older than 5 s.
+- **`Spare`** (boolean, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -838,31 +858,33 @@ CloudEvents type: `IO.AISstream.AddressedSafetyMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Addressed safety-related message (ITU-R M.1371 message 12) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/addressed-safety-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Addressed Safety Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Sequenceinteger`** (int32, optional): Provider field for sequenceinteger in this record.
-- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
-- **`Retransmission`** (boolean, optional): Provider field for retransmission in this record.
-- **`Spare`** (boolean, optional): Provider field for spare in this record.
-- **`Text`** (string, optional): Provider field for text in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this addressed safety-related message it is 12.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Sequenceinteger`** (int32, optional): Sequence number (0-3) used to pair this addressed message with its acknowledgement (message 7 or 13).
+- **`DestinationID`** (int32, optional): Maritime Mobile Service Identity (MMSI) of the addressed destination station this message is sent to.
+- **`Retransmission`** (boolean, optional): Retransmission flag: true = this message is a retransmission of a previously sent message, false = first transmission.
+- **`Spare`** (boolean, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Text`** (string, optional): Free-text safety-related message content, encoded as six-bit ASCII characters.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -891,40 +913,42 @@ CloudEvents type: `IO.AISstream.AddressedBinaryMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Addressed binary message (ITU-R M.1371 message 6) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/addressed-binary-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Addressed Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Sequenceinteger`** (int32, optional): Provider field for sequenceinteger in this record.
-- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
-- **`Retransmission`** (boolean, optional): Provider field for retransmission in this record.
-- **`Spare`** (boolean, optional): Provider field for spare in this record.
-- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-addressedbinarymessage-applicationid).
-- **`BinaryData`** (string, optional): Provider field for binary data in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this addressed binary message it is 6.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Sequenceinteger`** (int32, optional): Sequence number (0-3) used to pair this addressed message with its acknowledgement (message 7 or 13).
+- **`DestinationID`** (int32, optional): Maritime Mobile Service Identity (MMSI) of the addressed destination station this message is sent to.
+- **`Retransmission`** (boolean, optional): Retransmission flag: true = this message is a retransmission of a previously sent message, false = first transmission.
+- **`Spare`** (boolean, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`ApplicationID`** (object, optional): Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier. See [ApplicationID](#payload-io-aisstream-addressedbinarymessage-applicationid).
+- **`BinaryData`** (string, optional): Application-specific binary payload defined by the application identifier, conveyed as a string of binary data.
 ##### ApplicationID
 <a id="payload-io-aisstream-addressedbinarymessage-applicationid"></a>
 
-Provider field for application i d in this record.
+Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier.
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
-- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
+- **`Valid`** (boolean, required): Flag indicating the application identifier (DAC/FI) was present and successfully decoded.
+- **`DesignatedAreaCode`** (int32, required): Designated Area Code (DAC) of the application identifier - the maritime jurisdiction or region authority that defines the binary application (e.g. 1 = international).
+- **`FunctionIdentifier`** (int32, required): Function Identifier (FI) of the application identifier - selects the specific application message within the Designated Area Code.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -958,28 +982,30 @@ CloudEvents type: `IO.AISstream.AssignedModeCommand`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Assigned mode command (ITU-R M.1371 message 16) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/assigned-mode-command`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Assigned Mode Command` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`Commands`** (map, optional): Provider field for commands in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this assigned mode command it is 16.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Commands`** (map, optional): Map of the assignment commands carried by this message (keyed by command index, normally two entries), each assigning a destination station MMSI together with a slot offset and increment; the aisstream.io feed encodes each command as a string value.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1005,28 +1031,30 @@ CloudEvents type: `IO.AISstream.BinaryAcknowledge`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Binary acknowledgement (ITU-R M.1371 message 7) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/binary-acknowledge`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Binary Acknowledge` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`Destinations`** (map, optional): Provider field for destinations in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this binary acknowledgement it is 7.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Destinations`** (map, optional): Map of the acknowledged destinations (keyed by index, up to four entries), each identifying an addressed station and the sequence number of the binary message being acknowledged; the aisstream.io feed encodes each entry as a string value.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1052,37 +1080,39 @@ CloudEvents type: `IO.AISstream.BinaryBroadcastMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Binary broadcast message (ITU-R M.1371 message 8) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/binary-broadcast-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Binary Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-binarybroadcastmessage-applicationid).
-- **`BinaryData`** (string, optional): Provider field for binary data in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this binary broadcast message it is 8.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`ApplicationID`** (object, optional): Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier. See [ApplicationID](#payload-io-aisstream-binarybroadcastmessage-applicationid).
+- **`BinaryData`** (string, optional): Application-specific binary payload defined by the application identifier, conveyed as a string of binary data.
 ##### ApplicationID
 <a id="payload-io-aisstream-binarybroadcastmessage-applicationid"></a>
 
-Provider field for application i d in this record.
+Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier.
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
-- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
+- **`Valid`** (boolean, required): Flag indicating the application identifier (DAC/FI) was present and successfully decoded.
+- **`DesignatedAreaCode`** (int32, required): Designated Area Code (DAC) of the application identifier - the maritime jurisdiction or region authority that defines the binary application (e.g. 1 = international).
+- **`FunctionIdentifier`** (int32, required): Function Identifier (FI) of the application identifier - selects the specific application message within the Designated Area Code.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1113,56 +1143,58 @@ CloudEvents type: `IO.AISstream.ChannelManagement`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Channel management command (ITU-R M.1371 message 22) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/channel-management`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Channel Management` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`ChannelA`** (int32, optional): Provider field for channel a in this record.
-- **`ChannelB`** (int32, optional): Provider field for channel b in this record.
-- **`TxRxMode`** (int32, optional): Provider field for tx rx mode in this record.
-- **`LowPower`** (boolean, optional): Provider field for low power in this record.
-- **`Area`** (object, optional): Provider field for area in this record. See [Area](#payload-io-aisstream-channelmanagement-area).
-- **`Unicast`** (object, optional): Provider field for unicast in this record. See [Unicast](#payload-io-aisstream-channelmanagement-unicast).
-- **`IsAddressed`** (boolean, optional): Provider field for is addressed in this record.
-- **`BwA`** (boolean, optional): Provider field for bw a in this record.
-- **`BwB`** (boolean, optional): Provider field for bw b in this record.
-- **`TransitionalZoneSize`** (int32, optional): Provider field for transitional zone size in this record.
-- **`Spare4`** (int32, optional): Provider field for spare4 in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this channel management command it is 22.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`ChannelA`** (int32, optional): Primary AIS frequency channel number the command designates as channel A for the region or addressed stations.
+- **`ChannelB`** (int32, optional): Secondary AIS frequency channel number the command designates as channel B for the region or addressed stations.
+- **`TxRxMode`** (int32, optional): Transmit/receive mode the command sets: 0 = Tx A and Tx B, Rx A and Rx B (default); 1 = Tx A only, Rx A and Rx B; 2 = Tx B only, Rx A and Rx B; 3 = reserved.
+- **`LowPower`** (boolean, optional): Transmitter power-level flag for the designated channels: true = low power (1 W), false = high power.
+- **`Area`** (object, optional): Rectangular geographic region the channel-management command applies to, defined by two opposite corners (north-east and south-west) in WGS-84 decimal degrees. See [Area](#payload-io-aisstream-channelmanagement-area).
+- **`Unicast`** (object, optional): Addressed (unicast) form of the channel-management command, carrying the MMSIs of the one or two stations the command is addressed to (used when IsAddressed is true). See [Unicast](#payload-io-aisstream-channelmanagement-unicast).
+- **`IsAddressed`** (boolean, optional): Addressing mode flag: true = the command is addressed to the specific stations in Unicast, false = it applies to the geographic region in Area (broadcast).
+- **`BwA`** (boolean, optional): Bandwidth flag for channel A: false = default 25 kHz channel, true = 12.5 kHz channel.
+- **`BwB`** (boolean, optional): Bandwidth flag for channel B: false = default 25 kHz channel, true = 12.5 kHz channel.
+- **`TransitionalZoneSize`** (int32, optional): Size of the transitional zone around the region, in nautical miles (transmitted value + 1 nm), within which stations may use either the old or the new channel assignment.
+- **`Spare4`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 ##### Area
 <a id="payload-io-aisstream-channelmanagement-area"></a>
 
-Provider field for area in this record.
+Rectangular geographic region the channel-management command applies to, defined by two opposite corners (north-east and south-west) in WGS-84 decimal degrees.
 
-- **`Longitude1`** (double, required): Provider field for longitude1 in this record.
-- **`Latitude1`** (double, required): Provider field for latitude1 in this record.
-- **`Longitude2`** (double, required): Provider field for longitude2 in this record.
-- **`Latitude2`** (double, required): Provider field for latitude2 in this record.
+- **`Longitude1`** (double, required, deg (°)): Longitude of the first (north-east) corner of the region the command applies to, in WGS-84 decimal degrees, east positive.
+- **`Latitude1`** (double, required, deg (°)): Latitude of the first (north-east) corner of the region the command applies to, in WGS-84 decimal degrees, north positive.
+- **`Longitude2`** (double, required, deg (°)): Longitude of the second (south-west) corner of the region the command applies to, in WGS-84 decimal degrees, east positive.
+- **`Latitude2`** (double, required, deg (°)): Latitude of the second (south-west) corner of the region the command applies to, in WGS-84 decimal degrees, north positive.
 ##### Unicast
 <a id="payload-io-aisstream-channelmanagement-unicast"></a>
 
-Provider field for unicast in this record.
+Addressed (unicast) form of the channel-management command, carrying the MMSIs of the one or two stations the command is addressed to (used when IsAddressed is true).
 
-- **`AddressStation1`** (int32, required): Provider field for address station1 in this record.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
-- **`AddressStation2`** (int32, required): Provider field for address station2 in this record.
-- **`Spare3`** (int32, optional): Provider field for spare3 in this record.
+- **`AddressStation1`** (int32, required): MMSI of the first station addressed by the channel-management command.
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`AddressStation2`** (int32, required): MMSI of the second station addressed by the channel-management command.
+- **`Spare3`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1208,29 +1240,31 @@ CloudEvents type: `IO.AISstream.CoordinatedUTCInquiry`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. UTC and date inquiry (ITU-R M.1371 message 10) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/coordinated-utc-inquiry`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Coordinated Utcinquiry` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this UTC and date inquiry it is 10.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`DestinationID`** (int32, optional): Maritime Mobile Service Identity (MMSI) of the addressed destination station this message is sent to.
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1257,28 +1291,30 @@ CloudEvents type: `IO.AISstream.DataLinkManagementMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Data link management message (ITU-R M.1371 message 20) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/data-link-management-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Data Link Management Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`Data`** (map, optional): Provider field for data in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this data link management message it is 20.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Data`** (map, optional): Map of the TDMA slot reservations carried by this message (keyed by index, up to four entries), each describing a reserved block by slot offset, number of slots, time-out and increment; the aisstream.io feed encodes each reservation as a string value.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1304,31 +1340,33 @@ CloudEvents type: `IO.AISstream.GnssBroadcastBinaryMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. GNSS/DGNSS broadcast binary message (ITU-R M.1371 message 17) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/gnss-broadcast-binary-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Gnss Broadcast Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`Longitude`** (double, optional): Longitude of the resource in WGS 84 coordinates.
-- **`Latitude`** (double, optional): Latitude of the resource in WGS 84 coordinates.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
-- **`Data`** (string, optional): Provider field for data in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this GNSS/DGNSS broadcast binary message it is 17.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Longitude`** (double, optional, deg (°)): Longitude of the reported position in WGS-84 decimal degrees, east positive (range -180 to 180; 181 = position not available).
+- **`Latitude`** (double, optional, deg (°)): Latitude of the reported position in WGS-84 decimal degrees, north positive (range -90 to 90; 91 = position not available).
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Data`** (string, optional): Differential GNSS (DGNSS) correction payload broadcast by the reference station, conveyed as a string of binary data.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1357,38 +1395,40 @@ CloudEvents type: `IO.AISstream.GroupAssignmentCommand`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Group assignment command (ITU-R M.1371 message 23) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/group-assignment-command`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Group Assignment Command` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`Longitude1`** (double, optional): Provider field for longitude1 in this record.
-- **`Latitude1`** (double, optional): Provider field for latitude1 in this record.
-- **`Longitude2`** (double, optional): Provider field for longitude2 in this record.
-- **`Latitude2`** (double, optional): Provider field for latitude2 in this record.
-- **`StationType`** (int32, optional): Provider field for station type in this record.
-- **`ShipType`** (int32, optional): Provider field for ship type in this record.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
-- **`TxRxMode`** (int32, optional): Provider field for tx rx mode in this record.
-- **`ReportingInterval`** (int32, optional): Provider field for reporting interval in this record.
-- **`QuietTime`** (int32, optional): Provider field for quiet time in this record.
-- **`Spare3`** (int32, optional): Provider field for spare3 in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this group assignment command it is 23.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Longitude1`** (double, optional, deg (°)): Longitude of the first (north-east) corner of the region the command applies to, in WGS-84 decimal degrees, east positive.
+- **`Latitude1`** (double, optional, deg (°)): Latitude of the first (north-east) corner of the region the command applies to, in WGS-84 decimal degrees, north positive.
+- **`Longitude2`** (double, optional, deg (°)): Longitude of the second (south-west) corner of the region the command applies to, in WGS-84 decimal degrees, east positive.
+- **`Latitude2`** (double, optional, deg (°)): Latitude of the second (south-west) corner of the region the command applies to, in WGS-84 decimal degrees, north positive.
+- **`StationType`** (int32, optional): Station type the assignment applies to: 0 = all stations, 1 = Class A, 2 = all Class B, 3 = SAR airborne, 4 = Class B 'SO', 5 = Class B 'CS', 6 = inland waterways, 10 = base station coverage region (ITU-R M.1371).
+- **`ShipType`** (int32, optional): Ship and cargo type code (0-99) selecting which vessels the command applies to; 0 = all types.
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`TxRxMode`** (int32, optional): Transmit/receive mode the command sets: 0 = Tx A and Tx B, Rx A and Rx B (default); 1 = Tx A only, Rx A and Rx B; 2 = Tx B only, Rx A and Rx B; 3 = reserved.
+- **`ReportingInterval`** (int32, optional): Assigned reporting interval code (ITU-R M.1371): selects the autonomous reporting rate the addressed stations must use (0 = as autonomously determined, 1 = 10 min, 2 = 6 min, 3 = 3 min, 4 = 1 min, 5 = 30 s, up to 9 = 2 s).
+- **`QuietTime`** (int32, optional): Assigned quiet time in minutes (0 = no quiet time; 1-15 = number of minutes during which the addressed stations must not transmit).
+- **`Spare3`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1424,59 +1464,61 @@ CloudEvents type: `IO.AISstream.Interrogation`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Interrogation (ITU-R M.1371 message 15) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/interrogation`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Interrogation` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`Station1Msg1`** (object, optional): Provider field for station1 msg1 in this record. See [Station1Msg1](#payload-io-aisstream-interrogation-station1msg1).
-- **`Station1Msg2`** (object, optional): Provider field for station1 msg2 in this record. See [Station1Msg2](#payload-io-aisstream-interrogation-station1msg2).
-- **`Station2`** (object, optional): Provider field for station2 in this record. See [Station2](#payload-io-aisstream-interrogation-station2).
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this interrogation message it is 15.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`Station1Msg1`** (object, optional): First message requested from interrogated station 1: the AIS message type requested and the TDMA slot offset at which the reply should be sent. See [Station1Msg1](#payload-io-aisstream-interrogation-station1msg1).
+- **`Station1Msg2`** (object, optional): Second message requested from interrogated station 1 (the same station): an additional AIS message type requested and its reply slot offset. See [Station1Msg2](#payload-io-aisstream-interrogation-station1msg2).
+- **`Station2`** (object, optional): Message requested from a second interrogated station: that station's MMSI, the AIS message type requested and the reply slot offset. See [Station2](#payload-io-aisstream-interrogation-station2).
 ##### Station1Msg1
 <a id="payload-io-aisstream-interrogation-station1msg1"></a>
 
-Provider field for station1 msg1 in this record.
+First message requested from interrogated station 1: the AIS message type requested and the TDMA slot offset at which the reply should be sent.
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`StationID`** (int32, required): Provider field for station i d in this record.
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`SlotOffset`** (int32, required): Provider field for slot offset in this record.
+- **`Valid`** (boolean, required): Flag indicating this interrogation request slot was present and successfully decoded.
+- **`StationID`** (int32, required): MMSI of the first interrogated station.
+- **`MessageID`** (int32, required): AIS message type number requested from the interrogated station.
+- **`SlotOffset`** (int32, required): Requested TDMA slot offset at which the interrogated station should transmit its reply (0 = no specific slot requested).
 ##### Station1Msg2
 <a id="payload-io-aisstream-interrogation-station1msg2"></a>
 
-Provider field for station1 msg2 in this record.
+Second message requested from interrogated station 1 (the same station): an additional AIS message type requested and its reply slot offset.
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`SlotOffset`** (int32, required): Provider field for slot offset in this record.
+- **`Valid`** (boolean, required): Flag indicating this second interrogation request for station 1 was present and successfully decoded.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`MessageID`** (int32, required): AIS message type number requested from the interrogated station (the second requested message).
+- **`SlotOffset`** (int32, required): Requested TDMA slot offset for the reply to the second requested message (0 = no specific slot requested).
 ##### Station2
 <a id="payload-io-aisstream-interrogation-station2"></a>
 
-Provider field for station2 in this record.
+Message requested from a second interrogated station: that station's MMSI, the AIS message type requested and the reply slot offset.
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`StationID`** (int32, required): Provider field for station i d in this record.
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`SlotOffset`** (int32, required): Provider field for slot offset in this record.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`Valid`** (boolean, required): Flag indicating the second interrogated station's request was present and successfully decoded.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`StationID`** (int32, required): MMSI of the second interrogated station.
+- **`MessageID`** (int32, required): AIS message type number requested from the second interrogated station.
+- **`SlotOffset`** (int32, required): Requested TDMA slot offset at which the second interrogated station should transmit its reply (0 = no specific slot requested).
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1521,43 +1563,45 @@ CloudEvents type: `IO.AISstream.MultiSlotBinaryMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Multiple-slot binary message with communication state (ITU-R M.1371 message 26) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/multi-slot-binary-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Multi Slot Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`DestinationIDValid`** (boolean, optional): Provider field for destination i d valid in this record.
-- **`ApplicationIDValid`** (boolean, optional): Provider field for application i d valid in this record.
-- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
-- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
-- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-multislotbinarymessage-applicationid).
-- **`Payload`** (string, optional): Provider field for payload in this record.
-- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
-- **`CommunicationStateIsItdma`** (boolean, optional): Provider field for communication state is itdma in this record.
-- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this multiple-slot binary message with communication state it is 26.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`DestinationIDValid`** (boolean, optional): Flag indicating the message is addressed and the DestinationID field is valid (true) rather than a broadcast (false).
+- **`ApplicationIDValid`** (boolean, optional): Flag indicating the application identifier (DAC/FI) is present and the ApplicationID field is valid.
+- **`DestinationID`** (int32, optional): Maritime Mobile Service Identity (MMSI) of the addressed destination station this message is sent to.
+- **`Spare1`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`ApplicationID`** (object, optional): Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier. See [ApplicationID](#payload-io-aisstream-multislotbinarymessage-applicationid).
+- **`Payload`** (string, optional): Application-specific binary payload, conveyed as a string of binary data.
+- **`Spare2`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`CommunicationStateIsItdma`** (boolean, optional): Indicates how to interpret CommunicationState: true = the station is using ITDMA (incremental) access, false = SOTDMA (self-organising) access.
+- **`CommunicationState`** (int32, optional): SOTDMA/ITDMA communication state value carrying the synchronisation state and slot time-out / slot-allocation information used by the AIS TDMA link layer.
 ##### ApplicationID
 <a id="payload-io-aisstream-multislotbinarymessage-applicationid"></a>
 
-Provider field for application i d in this record.
+Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier.
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
-- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
+- **`Valid`** (boolean, required): Flag indicating the application identifier (DAC/FI) was present and successfully decoded.
+- **`DesignatedAreaCode`** (int32, required): Designated Area Code (DAC) of the application identifier - the maritime jurisdiction or region authority that defines the binary application (e.g. 1 = international).
+- **`FunctionIdentifier`** (int32, required): Function Identifier (FI) of the application identifier - selects the specific application message within the Designated Area Code.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1594,40 +1638,42 @@ CloudEvents type: `IO.AISstream.SingleSlotBinaryMessage`
 
 #### What it tells you
 
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network. Single-slot binary message (ITU-R M.1371 message 25) relayed by aisstream.io.
 
 #### Identity
 
-Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aisstream`, key `{UserID}` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/single-slot-binary-message`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{UserID}` |
 
 #### Payload
 
 `Single Slot Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): Provider field for message i d in this record.
-- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
-- **`UserID`** (int32, required): Provider field for user i d in this record.
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`DestinationIDValid`** (boolean, optional): Provider field for destination i d valid in this record.
-- **`ApplicationIDValid`** (boolean, optional): Provider field for application i d valid in this record.
-- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
-- **`Spare`** (int32, optional): Provider field for spare in this record.
-- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-singleslotbinarymessage-applicationid).
-- **`Payload`** (string, optional): Provider field for payload in this record.
+- **`MessageID`** (int32, required): AIS message type number per ITU-R M.1371, carried in the first six bits of every AIS message; for this single-slot binary message it is 25.
+- **`RepeatIndicator`** (int32, optional): Repeat indicator set by AIS repeater stations to count how many times the message has been repeated: 0 = original transmission, 3 = do not repeat any more.
+- **`UserID`** (int32, required): Maritime Mobile Service Identity (MMSI) of the transmitting station - the nine-digit identity of the vessel or station and the partition/event key for this stream.
+- **`Valid`** (boolean, required): aisstream.io decoder flag: true = the AIS sentence was decoded successfully and the fields in this message are reliable; false = the message could not be fully decoded.
+- **`DestinationIDValid`** (boolean, optional): Flag indicating the message is addressed and the DestinationID field is valid (true) rather than a broadcast (false).
+- **`ApplicationIDValid`** (boolean, optional): Flag indicating the application identifier (DAC/FI) is present and the ApplicationID field is valid.
+- **`DestinationID`** (int32, optional): Maritime Mobile Service Identity (MMSI) of the addressed destination station this message is sent to.
+- **`Spare`** (int32, optional): Spare bits reserved by ITU-R M.1371 for future use; transmitted as zero and carry no semantic meaning.
+- **`ApplicationID`** (object, optional): Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier. See [ApplicationID](#payload-io-aisstream-singleslotbinarymessage-applicationid).
+- **`Payload`** (string, optional): Application-specific binary payload, conveyed as a string of binary data.
 ##### ApplicationID
 <a id="payload-io-aisstream-singleslotbinarymessage-applicationid"></a>
 
-Provider field for application i d in this record.
+Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier.
 
-- **`Valid`** (boolean, required): Provider field for valid in this record.
-- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
-- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
+- **`Valid`** (boolean, required): Flag indicating the application identifier (DAC/FI) was present and successfully decoded.
+- **`DesignatedAreaCode`** (int32, required): Designated Area Code (DAC) of the application identifier - the maritime jurisdiction or region authority that defines the binary application (e.g. 1 = international).
+- **`FunctionIdentifier`** (int32, required): Function Identifier (FI) of the application identifier - selects the specific application message within the Designated Area Code.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1648,225 +1694,6 @@ Synthetic example values are generated deterministically from the schema: consta
     "FunctionIdentifier": 0
   },
   "Payload": "string"
-}
-```
-
-#### Reference vs telemetry
-
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
-
-### Position Report
-
-CloudEvents type: `IO.AISstream.mqtt.PositionReport`
-
-#### What it tells you
-
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
-
-#### Identity
-
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
-
-#### Where to find it
-
-| Transport | Location |
-| --- | --- |
-| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report`, retain `false`, QoS `0` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}` |
-
-#### Payload
-
-`Position Report` payloads are JSON object. Required fields: `mmsi`, `flag`, `ship_type`, `geohash5`, `msg_type`, `user_id`, `latitude`, `longitude`, `message_id`.
-
-- **`mmsi`** (string, required): Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. Constraints: pattern `^[0-9]{9}$`.
-- **`flag`** (string, required): ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. Constraints: pattern `^[a-z]{2}$|^xx$`.
-- **`ship_type`** (string, required): Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'.
-- **`geohash5`** (string, required): 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. Constraints: pattern `^[0-9b-hjkmnp-z]{5}$`.
-- **`msg_type`** (enum, required): Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.
-- **`user_id`** (int32, required): Source AIS UserID (numeric MMSI, 9-digit).
-- **`latitude`** (double, required): Reported latitude in WGS-84 decimal degrees.
-- **`longitude`** (double, required): Reported longitude in WGS-84 decimal degrees.
-- **`sog`** (double, optional): Speed over ground in knots (0..102.2).
-- **`cog`** (double, optional): Course over ground in degrees (0..359.9).
-- **`true_heading`** (int32, optional): True heading in degrees (0..359, 511 = not available).
-- **`navigational_status`** (int32, optional): ITU navigation status code (0..15).
-- **`rate_of_turn`** (int32, optional): Rate of turn in AIS-encoded units.
-- **`position_accuracy`** (boolean, optional): True if the reported position is high accuracy (DGPS).
-- **`timestamp`** (int32, optional): AIS report timestamp seconds-of-minute (0..59, 60..63 = special).
-- **`raim`** (boolean, optional): RAIM (Receiver Autonomous Integrity Monitoring) flag.
-- **`message_id`** (int32, required): Original ITU-R M.1371 message ID (1, 2, 3, 4, 9, 18, 19, or 27).
-##### `msg_type` values
-
-- `position-report`: Provider coded value `position-report` for this field.
-- `static`: Provider coded value `static` for this field.
-- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
-#### Example payload
-
-Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
-
-```json
-{
-  "mmsi": "string",
-  "flag": "string",
-  "ship_type": "string",
-  "geohash5": "string",
-  "msg_type": "position-report",
-  "user_id": 0,
-  "latitude": 0,
-  "longitude": 0,
-  "sog": 0,
-  "cog": 0,
-  "true_heading": 0,
-  "navigational_status": 0,
-  "rate_of_turn": 0,
-  "position_accuracy": false,
-  "timestamp": 0,
-  "raim": false,
-  "message_id": 0
-}
-```
-
-#### Reference vs telemetry
-
-This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
-
-### Ship Static
-
-CloudEvents type: `IO.AISstream.mqtt.ShipStatic`
-
-#### What it tells you
-
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
-
-#### Identity
-
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
-
-#### Where to find it
-
-| Transport | Location |
-| --- | --- |
-| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static`, retain `false`, QoS `0` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}` |
-
-#### Payload
-
-`Ship Static` payloads are JSON object. Required fields: `mmsi`, `flag`, `ship_type`, `geohash5`, `msg_type`, `user_id`, `name`, `ship_type_code`, `message_id`.
-
-- **`mmsi`** (string, required): Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. Constraints: pattern `^[0-9]{9}$`.
-- **`flag`** (string, required): ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. Constraints: pattern `^[a-z]{2}$|^xx$`.
-- **`ship_type`** (string, required): Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'.
-- **`geohash5`** (string, required): 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. Constraints: pattern `^[0-9b-hjkmnp-z]{5}$`.
-- **`msg_type`** (enum, required): Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.
-- **`user_id`** (int32, required): Source AIS UserID (numeric MMSI, 9-digit).
-- **`name`** (string, required): Vessel name as broadcast (max 20 chars, trimmed of AIS '@' padding).
-- **`call_sign`** (string, optional): Radio call sign as broadcast (max 7 chars).
-- **`imo_number`** (int32, optional): IMO number (7-digit). 0 if not assigned.
-- **`ship_type_code`** (int32, required): Raw ITU-R M.1371 ship type code (0..99).
-- **`destination`** (string, optional): Voyage destination string (max 20 chars). Empty for Type 24.
-- **`eta`** (string, optional): Voyage ETA as ISO-8601 string, derived from AIS month/day/hour/minute. Empty if absent.
-- **`draught`** (double, optional): Maximum present static draught in metres. 0.0 if not provided.
-- **`dim_to_bow`** (int32, optional): Distance from reference point to bow in metres.
-- **`dim_to_stern`** (int32, optional): Distance from reference point to stern in metres.
-- **`dim_to_port`** (int32, optional): Distance from reference point to port side in metres.
-- **`dim_to_starboard`** (int32, optional): Distance from reference point to starboard side in metres.
-- **`message_id`** (int32, required): Original ITU-R M.1371 message ID (5 or 24).
-##### `msg_type` values
-
-- `position-report`: Provider coded value `position-report` for this field.
-- `static`: Provider coded value `static` for this field.
-- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
-#### Example payload
-
-Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
-
-```json
-{
-  "mmsi": "string",
-  "flag": "string",
-  "ship_type": "string",
-  "geohash5": "string",
-  "msg_type": "position-report",
-  "user_id": 0,
-  "name": "string",
-  "call_sign": "string",
-  "imo_number": 0,
-  "ship_type_code": 0,
-  "destination": "string",
-  "eta": "string",
-  "draught": 0,
-  "dim_to_bow": 0,
-  "dim_to_stern": 0,
-  "dim_to_port": 0,
-  "dim_to_starboard": 0,
-  "message_id": 0
-}
-```
-
-#### Reference vs telemetry
-
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
-
-### Aid To Navigation
-
-CloudEvents type: `IO.AISstream.mqtt.AidToNavigation`
-
-#### What it tells you
-
-A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
-
-#### Identity
-
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
-
-#### Where to find it
-
-| Transport | Location |
-| --- | --- |
-| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation`, retain `false`, QoS `0` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}` |
-
-#### Payload
-
-`Aid To Navigation` payloads are JSON object. Required fields: `mmsi`, `flag`, `ship_type`, `geohash5`, `msg_type`, `user_id`, `name`, `type`, `latitude`, `longitude`, `message_id`.
-
-- **`mmsi`** (string, required): Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. Constraints: pattern `^[0-9]{9}$`.
-- **`flag`** (string, required): ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. Constraints: pattern `^[a-z]{2}$|^xx$`.
-- **`ship_type`** (string, required): Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'.
-- **`geohash5`** (string, required): 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. Constraints: pattern `^[0-9b-hjkmnp-z]{5}$`.
-- **`msg_type`** (enum, required): Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.
-- **`user_id`** (int32, required): Source AIS UserID for the AtoN station (9-digit MMSI).
-- **`name`** (string, required): AtoN name as broadcast.
-- **`type`** (int32, required): AtoN type code (0..31) per ITU-R M.1371.
-- **`latitude`** (double, required): Reported latitude in WGS-84 decimal degrees.
-- **`longitude`** (double, required): Reported longitude in WGS-84 decimal degrees.
-- **`off_position`** (boolean, optional): True if the AtoN is reported off its assigned position.
-- **`virtual_atoN`** (boolean, optional): True if this is a virtual AtoN broadcast by a base station.
-- **`message_id`** (int32, required): Original ITU-R M.1371 message ID (21).
-##### `msg_type` values
-
-- `position-report`: Provider coded value `position-report` for this field.
-- `static`: Provider coded value `static` for this field.
-- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
-#### Example payload
-
-Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
-
-```json
-{
-  "mmsi": "string",
-  "flag": "string",
-  "ship_type": "string",
-  "geohash5": "string",
-  "msg_type": "position-report",
-  "user_id": 0,
-  "name": "string",
-  "type": 0,
-  "latitude": 0,
-  "longitude": 0,
-  "off_position": false,
-  "virtual_atoN": false,
-  "message_id": 0
 }
 ```
 

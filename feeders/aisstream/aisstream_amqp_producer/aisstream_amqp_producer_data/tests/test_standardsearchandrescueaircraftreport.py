@@ -28,25 +28,25 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         Create instance of StandardSearchAndRescueAircraftReport for testing
         """
         instance = StandardSearchAndRescueAircraftReport(
-            MessageID=int(38),
-            RepeatIndicator=int(63),
-            UserID=int(72),
+            MessageID=int(5),
+            RepeatIndicator=int(68),
+            UserID=int(24),
             Valid=True,
-            Altitude=int(68),
-            Sog=float(30.226247903650272),
+            Altitude=int(20),
+            Sog=float(88.6499078129273),
             PositionAccuracy=False,
-            Longitude=float(45.10238243529171),
-            Latitude=float(65.7942339752232),
-            Cog=float(25.332129162785467),
-            Timestamp=int(69),
+            Longitude=float(3.870481221761002),
+            Latitude=float(3.6768113949176673),
+            Cog=float(45.669023744493096),
+            Timestamp=int(43),
             AltFromBaro=True,
-            Spare1=int(57),
-            Dte=True,
-            Spare2=int(81),
+            Spare1=int(36),
+            Dte=False,
+            Spare2=int(23),
             AssignedMode=False,
-            Raim=False,
+            Raim=True,
             CommunicationStateIsItdma=False,
-            CommunicationState=int(68)
+            CommunicationState=int(95)
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(38)
+        test_value = int(5)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -63,7 +63,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(63)
+        test_value = int(68)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -71,7 +71,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(72)
+        test_value = int(24)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -87,7 +87,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Altitude property
         """
-        test_value = int(68)
+        test_value = int(20)
         self.instance.Altitude = test_value
         self.assertEqual(self.instance.Altitude, test_value)
     
@@ -95,7 +95,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Sog property
         """
-        test_value = float(30.226247903650272)
+        test_value = float(88.6499078129273)
         self.instance.Sog = test_value
         self.assertEqual(self.instance.Sog, test_value)
     
@@ -111,7 +111,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(45.10238243529171)
+        test_value = float(3.870481221761002)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -119,7 +119,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(65.7942339752232)
+        test_value = float(3.6768113949176673)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -127,7 +127,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Cog property
         """
-        test_value = float(25.332129162785467)
+        test_value = float(45.669023744493096)
         self.instance.Cog = test_value
         self.assertEqual(self.instance.Cog, test_value)
     
@@ -135,7 +135,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Timestamp property
         """
-        test_value = int(69)
+        test_value = int(43)
         self.instance.Timestamp = test_value
         self.assertEqual(self.instance.Timestamp, test_value)
     
@@ -151,7 +151,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(57)
+        test_value = int(36)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -159,7 +159,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Dte property
         """
-        test_value = True
+        test_value = False
         self.instance.Dte = test_value
         self.assertEqual(self.instance.Dte, test_value)
     
@@ -167,7 +167,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(81)
+        test_value = int(23)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     
@@ -183,7 +183,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test Raim property
         """
-        test_value = False
+        test_value = True
         self.instance.Raim = test_value
         self.assertEqual(self.instance.Raim, test_value)
     
@@ -199,7 +199,7 @@ class Test_StandardSearchAndRescueAircraftReport(unittest.TestCase):
         """
         Test CommunicationState property
         """
-        test_value = int(68)
+        test_value = int(95)
         self.instance.CommunicationState = test_value
         self.assertEqual(self.instance.CommunicationState, test_value)
     

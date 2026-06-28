@@ -17,7 +17,7 @@ import json
 @dataclass
 class StandardClassBPositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Standard Class B equipment position report (ITU-R M.1371 message 18) relayed by aisstream.io. Class B 'CS' and 'SO' shipborne mobile equipment use it to report position, speed and course over ground; it also advertises the unit's display, DSC, band and Message 22 capabilities.
     
     Attributes:
         MessageID (int)
@@ -195,26 +195,26 @@ class StandardClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(82),
-            RepeatIndicator=int(18),
-            UserID=int(18),
+            MessageID=int(22),
+            RepeatIndicator=int(41),
+            UserID=int(77),
             Valid=False,
-            Spare1=int(16),
-            Sog=float(81.38958843507056),
-            PositionAccuracy=True,
-            Longitude=float(98.62945915865448),
-            Latitude=float(41.27495780378435),
-            Cog=float(43.40821883484741),
-            TrueHeading=int(53),
-            Timestamp=int(8),
-            Spare2=int(38),
+            Spare1=int(51),
+            Sog=float(43.54303615271156),
+            PositionAccuracy=False,
+            Longitude=float(82.98106393795828),
+            Latitude=float(6.395780537643447),
+            Cog=float(98.1805301035709),
+            TrueHeading=int(41),
+            Timestamp=int(1),
+            Spare2=int(46),
             ClassBUnit=False,
             ClassBDisplay=False,
-            ClassBDsc=False,
-            ClassBBand=True,
+            ClassBDsc=True,
+            ClassBBand=False,
             ClassBMsg22=True,
             AssignedMode=True,
-            Raim=True,
+            Raim=False,
             CommunicationStateIsItdma=True,
-            CommunicationState=int(74)
+            CommunicationState=int(58)
         )

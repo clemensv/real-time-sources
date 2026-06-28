@@ -11,15 +11,15 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_mqtt_producer_data.reportb import ReportB
 from aisstream_mqtt_producer_data.reporta import ReportA
+from aisstream_mqtt_producer_data.reportb import ReportB
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class StaticDataReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Class B static data report (ITU-R M.1371 message 24) relayed by aisstream.io. The report is split into Part A (vessel name) and Part B (ship type, vendor identification, call sign, dimensions/antenna reference point and electronic fix type); PartNumber selects which part this message carries.
     
     Attributes:
         MessageID (int)
@@ -169,11 +169,11 @@ class StaticDataReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(49),
-            RepeatIndicator=int(84),
-            UserID=int(100),
-            Valid=True,
-            Reserved=int(82),
+            MessageID=int(99),
+            RepeatIndicator=int(35),
+            UserID=int(31),
+            Valid=False,
+            Reserved=int(17),
             PartNumber=False,
             ReportA=None,
             ReportB=None

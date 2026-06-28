@@ -17,7 +17,7 @@ import json
 @dataclass
 class GroupAssignmentCommand:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Group assignment command (ITU-R M.1371 message 23) relayed by aisstream.io. A base station uses it to control the reporting behaviour (reporting interval, quiet time and Tx/Rx mode) of a group of stations selected by region, station type and ship type.
     
     Attributes:
         MessageID (int)
@@ -183,20 +183,20 @@ class GroupAssignmentCommand:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(20),
-            RepeatIndicator=int(45),
-            UserID=int(60),
-            Valid=False,
-            Spare1=int(20),
-            Longitude1=float(71.40143662120126),
-            Latitude1=float(82.41754577939665),
-            Longitude2=float(17.447334558058934),
-            Latitude2=float(96.67523382276806),
-            StationType=int(18),
-            ShipType=int(49),
-            Spare2=int(90),
-            TxRxMode=int(43),
-            ReportingInterval=int(17),
-            QuietTime=int(90),
-            Spare3=int(41)
+            MessageID=int(89),
+            RepeatIndicator=int(76),
+            UserID=int(51),
+            Valid=True,
+            Spare1=int(74),
+            Longitude1=float(8.271975930429942),
+            Latitude1=float(18.512772922765087),
+            Longitude2=float(45.95284852639212),
+            Latitude2=float(50.861149423246275),
+            StationType=int(96),
+            ShipType=int(32),
+            Spare2=int(50),
+            TxRxMode=int(42),
+            ReportingInterval=int(90),
+            QuietTime=int(37),
+            Spare3=int(88)
         )

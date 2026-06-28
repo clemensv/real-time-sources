@@ -28,15 +28,15 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         Create instance of GnssBroadcastBinaryMessage for testing
         """
         instance = GnssBroadcastBinaryMessage(
-            MessageID=int(77),
-            RepeatIndicator=int(82),
-            UserID=int(2),
+            MessageID=int(22),
+            RepeatIndicator=int(23),
+            UserID=int(38),
             Valid=False,
-            Spare1=int(23),
-            Longitude=float(93.43177912212282),
-            Latitude=float(6.049322824958548),
-            Spare2=int(19),
-            Data='mgsfhhzzxktmgpmbdzpb'
+            Spare1=int(58),
+            Longitude=float(19.253053872653236),
+            Latitude=float(65.96052474248592),
+            Spare2=int(21),
+            Data='mvxrubawxwwmqjcvqiwn'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(77)
+        test_value = int(22)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -53,7 +53,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(82)
+        test_value = int(23)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -61,7 +61,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(2)
+        test_value = int(38)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -77,7 +77,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(23)
+        test_value = int(58)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -85,7 +85,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(93.43177912212282)
+        test_value = float(19.253053872653236)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(6.049322824958548)
+        test_value = float(65.96052474248592)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -101,7 +101,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(19)
+        test_value = int(21)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     
@@ -109,7 +109,7 @@ class Test_GnssBroadcastBinaryMessage(unittest.TestCase):
         """
         Test Data property
         """
-        test_value = 'mgsfhhzzxktmgpmbdzpb'
+        test_value = 'mvxrubawxwwmqjcvqiwn'
         self.instance.Data = test_value
         self.assertEqual(self.instance.Data, test_value)
     

@@ -2439,11 +2439,17 @@ class TestRWSWaterwebservicesMqttDockerFlow:
 
 
 def _load_aisstream_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
-    """Return ``{type_value: jstruct_schema}`` for all 3 aisstream MQTT families."""
+    """Return ``{type_value: jstruct_schema}`` for all 23 raw AIS schemas.
+
+    All three transports (Kafka, AMQP, MQTT) now share the single raw
+    ``IO.AISstream.jstruct`` schemagroup. The MQTT enrichment lives entirely in
+    the topic levels, so the wire body is the faithful raw AIS message and is
+    validated against these schemas keyed by the un-prefixed CloudEvents type.
+    """
     xreg_path = os.path.join(REPO_ROOT, 'feeders', 'aisstream', 'xreg', 'aisstream.xreg.json')
     with open(xreg_path, 'r', encoding='utf-8') as fh:
         manifest = json.load(fh)
-    schemagroup = manifest['schemagroups']['IO.AISstream.mqtt.jstruct']
+    schemagroup = manifest['schemagroups']['IO.AISstream.jstruct']
     out: Dict[str, Dict[str, Any]] = {}
     for full_name, schema in schemagroup['schemas'].items():
         out[full_name] = schema['versions']['1']['schema']
@@ -2607,9 +2613,9 @@ class TestAisstreamMqttDockerFlow:
         assert collected, 'No AIS firehose messages received from broker'
 
         expected_event_types = {
-            'IO.AISstream.mqtt.ShipStatic',
-            'IO.AISstream.mqtt.PositionReport',
-            'IO.AISstream.mqtt.AidToNavigation',
+            'IO.AISstream.ShipStaticData',
+            'IO.AISstream.PositionReport',
+            'IO.AISstream.AidsToNavigationReport',
         }
         observed_types = {m['user_properties'].get('type') for m in collected}
         missing = expected_event_types - observed_types
@@ -2631,11 +2637,14 @@ class TestAisstreamMqttDockerFlow:
             assert len(flag_seg) == 2, parts
             assert len(geohash5_seg) == 5, parts
             assert mmsi_seg.isdigit() and len(mmsi_seg) == 9, parts
-            assert msg_type_seg in {'position-report', 'static', 'aid-to-navigation'}, parts
+            assert msg_type_seg in {'position-report', 'ship-static-data', 'aids-to-navigation-report'}, parts
             # subject == mmsi
             assert up['subject'] == mmsi_seg, (up['subject'], mmsi_seg)
 
-        # Payload axes must round-trip exactly with the topic segments.
+        # The MQTT payload is now the FAITHFUL RAW AIS message (PascalCase
+        # ITU-R M.1371 fields). Enrichment lives ONLY in the topic levels and
+        # must NOT leak into the body. Validate each raw payload against its
+        # shared JSON Structure schema, keyed by the un-prefixed CE type.
         schemas = _load_aisstream_mqtt_schemas()
 
         def _to_dict(p):
@@ -2651,31 +2660,41 @@ class TestAisstreamMqttDockerFlow:
 
         for sample in collected:
             ce_type = sample['user_properties'].get('type')
-            payload = globals()['_to_dict'](sample['payload'])
+            payload = _to_dict(sample['payload'])
             assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
-            for axis in ('mmsi', 'flag', 'ship_type', 'geohash5', 'msg_type'):
-                assert axis in payload, f"missing axis {axis} in payload for {sample['topic']}: {payload}"
+            # Raw AIS body, not the old enriched envelope.
+            assert 'MessageID' in payload and 'UserID' in payload, (
+                f"payload is not a raw AIS message for {sample['topic']}: {sorted(payload)[:8]}"
+            )
+            # The topic-routing axes must NOT be present as payload fields.
+            for leaked in ('flag', 'ship_type', 'geohash5', 'mmsi', 'msg_type'):
+                assert leaked not in payload, (
+                    f"enrichment axis {leaked!r} leaked into raw payload for {sample['topic']}"
+                )
             parts = sample['topic'].split('/')
-            assert parts[4] == payload['flag'], (parts[4], payload['flag'])
-            assert parts[5] == payload['ship_type'], (parts[5], payload['ship_type'])
-            assert parts[6] == payload['geohash5'], (parts[6], payload['geohash5'])
-            assert parts[7] == payload['mmsi'], (parts[7], payload['mmsi'])
-            assert parts[8] == payload['msg_type'], (parts[8], payload['msg_type'])
+            # The topic mmsi level is the zero-padded 9-digit UserID from the body.
+            assert str(payload['UserID']).zfill(9) == parts[7], (payload['UserID'], parts[7])
             assert ce_type in schemas, f"unknown ce_type {ce_type}"
+            errors = list(InstanceValidator(schemas[ce_type], extended=True).validate_instance(payload))
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
 
-        # Verify ship_type cache mechanic: the position-report inherits
-        # the ship-type bucket published earlier by ShipStatic for the
-        # same MMSI ('cargo' in our mock corpus).
-        static_msgs = [m for m in collected if m['user_properties'].get('type') == 'IO.AISstream.mqtt.ShipStatic']
-        pos_msgs = [m for m in collected if m['user_properties'].get('type') == 'IO.AISstream.mqtt.PositionReport']
+        # Verify the ship_type cache mechanic through the TOPIC levels (the
+        # enrichment no longer rides in the payload): the position-report for
+        # the same MMSI inherits the 'cargo' bucket published earlier by the
+        # ship-static-data message, and the flag derives from the MMSI MID.
+        def _topic_axes(sample):
+            p = sample['topic'].split('/')
+            return {'flag': p[4], 'ship_type': p[5], 'geohash5': p[6], 'mmsi': p[7], 'msg_type': p[8]}
+
+        static_msgs = [m for m in collected if m['user_properties'].get('type') == 'IO.AISstream.ShipStaticData']
+        pos_msgs = [m for m in collected if m['user_properties'].get('type') == 'IO.AISstream.PositionReport']
         assert static_msgs and pos_msgs
-        static_payload = _to_dict(static_msgs[0]['payload'])
-        pos_payload = _to_dict(pos_msgs[0]['payload'])
-        assert static_payload['ship_type'] == 'cargo'
-        assert pos_payload['ship_type'] == 'cargo', (
-            f"position-report should inherit ship_type from cached ShipStatic; got {pos_payload['ship_type']!r}"
+        assert _topic_axes(static_msgs[0])['ship_type'] == 'cargo'
+        pos_axes = _topic_axes(pos_msgs[0])
+        assert pos_axes['ship_type'] == 'cargo', (
+            f"position-report should inherit ship_type from cached ship-static-data; got {pos_axes['ship_type']!r}"
         )
-        assert pos_payload['flag'] == 'de'  # MID 211 -> Germany
+        assert pos_axes['flag'] == 'de'  # MID 211 -> Germany
 
 
 

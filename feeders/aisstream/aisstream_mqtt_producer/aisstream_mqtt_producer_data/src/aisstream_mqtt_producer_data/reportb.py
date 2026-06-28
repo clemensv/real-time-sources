@@ -18,7 +18,7 @@ from aisstream_mqtt_producer_data.dimension import Dimension
 @dataclass
 class ReportB:
     """
-    Provider field for report b in this record.
+    Part B of the Class B static data report, carrying ship type, vendor identification, call sign, dimensions and fix type (present when PartNumber = 1).
     
     Attributes:
         Valid (bool)
@@ -170,13 +170,13 @@ class ReportB:
             An instance of the dataclass.
         """
         return cls(
-            Valid=False,
-            ShipType=int(20),
-            VendorIDName='ksgdliiyhsokndmkgtsh',
-            VenderIDModel=int(77),
-            VenderIDSerial=int(79),
-            CallSign='nquvoikijiyuhqqmnmau',
+            Valid=True,
+            ShipType=int(95),
+            VendorIDName='osaleklenyqterixseec',
+            VenderIDModel=int(78),
+            VenderIDSerial=int(85),
+            CallSign='dbiceozodmabluasrsyl',
             Dimension=None,
-            FixType=int(23),
-            Spare=int(96)
+            FixType=int(54),
+            Spare=int(58)
         )

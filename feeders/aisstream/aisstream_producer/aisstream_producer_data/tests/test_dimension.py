@@ -28,10 +28,10 @@ class Test_Dimension(unittest.TestCase):
         Create instance of Dimension for testing
         """
         instance = Dimension(
-            A=int(18),
-            B=int(51),
-            C=int(76),
-            D=int(49)
+            A=int(9),
+            B=int(59),
+            C=int(60),
+            D=int(9)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Dimension(unittest.TestCase):
         """
         Test A property
         """
-        test_value = int(18)
+        test_value = int(9)
         self.instance.A = test_value
         self.assertEqual(self.instance.A, test_value)
     
@@ -48,7 +48,7 @@ class Test_Dimension(unittest.TestCase):
         """
         Test B property
         """
-        test_value = int(51)
+        test_value = int(59)
         self.instance.B = test_value
         self.assertEqual(self.instance.B, test_value)
     
@@ -56,7 +56,7 @@ class Test_Dimension(unittest.TestCase):
         """
         Test C property
         """
-        test_value = int(76)
+        test_value = int(60)
         self.instance.C = test_value
         self.assertEqual(self.instance.C, test_value)
     
@@ -64,7 +64,7 @@ class Test_Dimension(unittest.TestCase):
         """
         Test D property
         """
-        test_value = int(49)
+        test_value = int(9)
         self.instance.D = test_value
         self.assertEqual(self.instance.D, test_value)
     

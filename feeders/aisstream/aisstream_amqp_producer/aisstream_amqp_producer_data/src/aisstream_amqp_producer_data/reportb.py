@@ -18,7 +18,7 @@ from aisstream_amqp_producer_data.dimension import Dimension
 @dataclass
 class ReportB:
     """
-    Provider field for report b in this record.
+    Part B of the Class B static data report, carrying ship type, vendor identification, call sign, dimensions and fix type (present when PartNumber = 1).
     
     Attributes:
         Valid (bool)
@@ -171,12 +171,12 @@ class ReportB:
         """
         return cls(
             Valid=False,
-            ShipType=int(80),
-            VendorIDName='gpqnooriliiunfvyfamt',
-            VenderIDModel=int(6),
-            VenderIDSerial=int(1),
-            CallSign='npchprzcksbtzylengbd',
+            ShipType=int(34),
+            VendorIDName='mxmcwavovrkbotnscrir',
+            VenderIDModel=int(7),
+            VenderIDSerial=int(6),
+            CallSign='eovoqwatxgsotokzbdcb',
             Dimension=None,
-            FixType=int(10),
-            Spare=int(90)
+            FixType=int(99),
+            Spare=int(45)
         )

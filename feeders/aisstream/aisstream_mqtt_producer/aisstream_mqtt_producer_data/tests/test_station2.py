@@ -28,12 +28,12 @@ class Test_Station2(unittest.TestCase):
         Create instance of Station2 for testing
         """
         instance = Station2(
-            Valid=False,
-            Spare1=int(18),
-            StationID=int(97),
-            MessageID=int(98),
-            SlotOffset=int(7),
-            Spare2=int(68)
+            Valid=True,
+            Spare1=int(63),
+            StationID=int(67),
+            MessageID=int(4),
+            SlotOffset=int(3),
+            Spare2=int(53)
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -50,7 +50,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(18)
+        test_value = int(63)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -58,7 +58,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test StationID property
         """
-        test_value = int(97)
+        test_value = int(67)
         self.instance.StationID = test_value
         self.assertEqual(self.instance.StationID, test_value)
     
@@ -66,7 +66,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(98)
+        test_value = int(4)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -74,7 +74,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test SlotOffset property
         """
-        test_value = int(7)
+        test_value = int(3)
         self.instance.SlotOffset = test_value
         self.assertEqual(self.instance.SlotOffset, test_value)
     
@@ -82,7 +82,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(68)
+        test_value = int(53)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     

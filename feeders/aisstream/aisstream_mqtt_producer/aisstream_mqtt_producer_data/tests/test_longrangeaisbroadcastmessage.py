@@ -28,19 +28,19 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         Create instance of LongRangeAisBroadcastMessage for testing
         """
         instance = LongRangeAisBroadcastMessage(
-            MessageID=int(6),
-            RepeatIndicator=int(15),
-            UserID=int(98),
-            Valid=True,
-            PositionAccuracy=False,
-            Raim=False,
-            NavigationalStatus=int(85),
-            Longitude=float(33.6743550194499),
-            Latitude=float(40.73664157839365),
-            Sog=float(38.41057715881622),
-            Cog=float(82.2055704184188),
-            PositionLatency=True,
-            Spare=False
+            MessageID=int(38),
+            RepeatIndicator=int(67),
+            UserID=int(36),
+            Valid=False,
+            PositionAccuracy=True,
+            Raim=True,
+            NavigationalStatus=int(38),
+            Longitude=float(81.58775655996226),
+            Latitude=float(91.01364253285645),
+            Sog=float(55.290601797154395),
+            Cog=float(40.542912922804156),
+            PositionLatency=False,
+            Spare=True
         )
         return instance
 
@@ -49,7 +49,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(6)
+        test_value = int(38)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -57,7 +57,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(15)
+        test_value = int(67)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -65,7 +65,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(98)
+        test_value = int(36)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -73,7 +73,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -81,7 +81,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test PositionAccuracy property
         """
-        test_value = False
+        test_value = True
         self.instance.PositionAccuracy = test_value
         self.assertEqual(self.instance.PositionAccuracy, test_value)
     
@@ -89,7 +89,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test Raim property
         """
-        test_value = False
+        test_value = True
         self.instance.Raim = test_value
         self.assertEqual(self.instance.Raim, test_value)
     
@@ -97,7 +97,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test NavigationalStatus property
         """
-        test_value = int(85)
+        test_value = int(38)
         self.instance.NavigationalStatus = test_value
         self.assertEqual(self.instance.NavigationalStatus, test_value)
     
@@ -105,7 +105,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(33.6743550194499)
+        test_value = float(81.58775655996226)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -113,7 +113,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(40.73664157839365)
+        test_value = float(91.01364253285645)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -121,7 +121,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test Sog property
         """
-        test_value = float(38.41057715881622)
+        test_value = float(55.290601797154395)
         self.instance.Sog = test_value
         self.assertEqual(self.instance.Sog, test_value)
     
@@ -129,7 +129,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test Cog property
         """
-        test_value = float(82.2055704184188)
+        test_value = float(40.542912922804156)
         self.instance.Cog = test_value
         self.assertEqual(self.instance.Cog, test_value)
     
@@ -137,7 +137,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test PositionLatency property
         """
-        test_value = True
+        test_value = False
         self.instance.PositionLatency = test_value
         self.assertEqual(self.instance.PositionLatency, test_value)
     
@@ -145,7 +145,7 @@ class Test_LongRangeAisBroadcastMessage(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = False
+        test_value = True
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     

@@ -17,7 +17,7 @@ import json
 @dataclass
 class BaseStationReport:
     """
-    A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+    AIS base station report (ITU-R M.1371 message 4) relayed by aisstream.io. A fixed shore station broadcasts it to convey the authoritative UTC date and time, its surveyed position, position-fixing device type and long-range messaging capability, allowing mobile stations to synchronise to the AIS network.
     
     Attributes:
         MessageID (int)
@@ -187,22 +187,22 @@ class BaseStationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(59),
-            RepeatIndicator=int(55),
-            UserID=int(82),
-            Valid=False,
-            UtcYear=int(5),
-            UtcMonth=int(84),
-            UtcDay=int(46),
-            UtcHour=int(78),
-            UtcMinute=int(76),
-            UtcSecond=int(12),
-            PositionAccuracy=False,
-            Longitude=float(34.68576765524922),
-            Latitude=float(46.5972877816522),
-            FixType=int(98),
-            LongRangeEnable=True,
-            Spare=int(91),
-            Raim=True,
-            CommunicationState=int(55)
+            MessageID=int(20),
+            RepeatIndicator=int(32),
+            UserID=int(72),
+            Valid=True,
+            UtcYear=int(26),
+            UtcMonth=int(28),
+            UtcDay=int(15),
+            UtcHour=int(52),
+            UtcMinute=int(47),
+            UtcSecond=int(6),
+            PositionAccuracy=True,
+            Longitude=float(17.880470199230647),
+            Latitude=float(1.7471055701011151),
+            FixType=int(46),
+            LongRangeEnable=False,
+            Spare=int(95),
+            Raim=False,
+            CommunicationState=int(47)
         )

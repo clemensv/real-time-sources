@@ -17,7 +17,7 @@ import json
 @dataclass
 class BinaryAcknowledge:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Binary acknowledgement (ITU-R M.1371 message 7) relayed by aisstream.io. It acknowledges receipt of one or more addressed binary messages (message 6) back to their originators.
     
     Attributes:
         MessageID (int)
@@ -163,10 +163,10 @@ class BinaryAcknowledge:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(6),
-            RepeatIndicator=int(2),
-            UserID=int(73),
+            MessageID=int(8),
+            RepeatIndicator=int(32),
+            UserID=int(55),
             Valid=False,
-            Spare=int(11),
-            Destinations={'xafwwzhqfozntncyulan': 'lkwqmwqeeqqrzkuwvnsk'}
+            Spare=int(3),
+            Destinations={'zqupaqystkbzjunntktu': 'kkwjmnamlsulxkmywfhq', 'hpjpmxwovspfesifpfpj': 'ejrsbbdfoddeqxazieoc', 'cwycmbqskpmkphfapjct': 'jhytyhdcsgotqbfllzxf'}
         )

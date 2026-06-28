@@ -17,7 +17,7 @@ import json
 @dataclass
 class StandardSearchAndRescueAircraftReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Standard search-and-rescue (SAR) aircraft position report (ITU-R M.1371 message 9) relayed by aisstream.io. Aircraft engaged in SAR operations use it to report altitude, position, course and speed over ground for coordination with surface units.
     
     Attributes:
         MessageID (int)
@@ -189,23 +189,23 @@ class StandardSearchAndRescueAircraftReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(78),
-            RepeatIndicator=int(34),
-            UserID=int(28),
-            Valid=False,
-            Altitude=int(38),
-            Sog=float(35.641773976491656),
+            MessageID=int(8),
+            RepeatIndicator=int(30),
+            UserID=int(84),
+            Valid=True,
+            Altitude=int(61),
+            Sog=float(65.6481909986249),
             PositionAccuracy=False,
-            Longitude=float(42.38436668337472),
-            Latitude=float(13.798819144096841),
-            Cog=float(64.87537308664133),
-            Timestamp=int(41),
-            AltFromBaro=False,
-            Spare1=int(62),
+            Longitude=float(65.80195056393498),
+            Latitude=float(81.34450569785018),
+            Cog=float(63.13717441127649),
+            Timestamp=int(26),
+            AltFromBaro=True,
+            Spare1=int(22),
             Dte=False,
-            Spare2=int(77),
-            AssignedMode=False,
-            Raim=False,
+            Spare2=int(23),
+            AssignedMode=True,
+            Raim=True,
             CommunicationStateIsItdma=False,
-            CommunicationState=int(42)
+            CommunicationState=int(13)
         )

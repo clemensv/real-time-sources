@@ -17,7 +17,7 @@ import json
 @dataclass
 class AssignedModeCommand:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Assigned mode command (ITU-R M.1371 message 16) relayed by aisstream.io. A base station uses it to assign transmission slots and reporting behaviour (slot offset and increment) to one or two addressed mobile stations.
     
     Attributes:
         MessageID (int)
@@ -163,10 +163,10 @@ class AssignedModeCommand:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(22),
-            RepeatIndicator=int(65),
-            UserID=int(81),
+            MessageID=int(93),
+            RepeatIndicator=int(58),
+            UserID=int(95),
             Valid=False,
-            Spare=int(4),
-            Commands={'ggvsxmtgvrmqdmyeeqrj': 'iksvwatluejrfutyvjqv', 'hejaeeemwuoavjguvlqy': 'smnwodaplbmggmeezddo', 'iapttfqwtgdmqrfrkrss': 'lfhojbvlrynyxdtyxbuv', 'tdsoaqiixnepqewtslhb': 'hyvttgqvjtljfyihzkrk', 'jnczoyjphazwaffxxqjq': 'suaooorlmbaursdxsrjf'}
+            Spare=int(91),
+            Commands={'hcgpnegtdixoggfdwkfv': 'pllsqjykxxztdqrzjaei', 'ioruphpsfurrzaeglkpc': 'htasghjfbqiynpddboua', 'rvampduyxrnqdpyexfgd': 'ydhgpuqmycqrtybhetzc', 'dyvdunvdgicimpfazrmx': 'gnwisjcaghdengrqsmlz', 'zvammjoqlwewqeiczsjm': 'sscojbvmhejwfxiniogh'}
         )

@@ -29,11 +29,11 @@ class Test_Station2(unittest.TestCase):
         """
         instance = Station2(
             Valid=True,
-            Spare1=int(16),
-            StationID=int(71),
-            MessageID=int(12),
-            SlotOffset=int(16),
-            Spare2=int(2)
+            Spare1=int(21),
+            StationID=int(73),
+            MessageID=int(36),
+            SlotOffset=int(26),
+            Spare2=int(33)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(16)
+        test_value = int(21)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -58,7 +58,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test StationID property
         """
-        test_value = int(71)
+        test_value = int(73)
         self.instance.StationID = test_value
         self.assertEqual(self.instance.StationID, test_value)
     
@@ -66,7 +66,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(12)
+        test_value = int(36)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -74,7 +74,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test SlotOffset property
         """
-        test_value = int(16)
+        test_value = int(26)
         self.instance.SlotOffset = test_value
         self.assertEqual(self.instance.SlotOffset, test_value)
     
@@ -82,7 +82,7 @@ class Test_Station2(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(2)
+        test_value = int(33)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     

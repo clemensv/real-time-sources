@@ -17,7 +17,7 @@ import json
 @dataclass
 class DataLinkManagementMessage:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Data link management message (ITU-R M.1371 message 20) relayed by aisstream.io. A base station broadcasts it to reserve TDMA slots (offset, number of slots, time-out and increment) for its own use, managing the AIS data link.
     
     Attributes:
         MessageID (int)
@@ -163,10 +163,10 @@ class DataLinkManagementMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(3),
-            RepeatIndicator=int(9),
-            UserID=int(38),
-            Valid=False,
-            Spare=int(14),
-            Data={'sjvjenafpmnyexcbbhrz': 'zrloslwmaadgcqgghzpi', 'pmtyavjusexuyfjcnidy': 'awttsqwzvjpkocvmnexl'}
+            MessageID=int(78),
+            RepeatIndicator=int(94),
+            UserID=int(25),
+            Valid=True,
+            Spare=int(78),
+            Data={'xlurogijbwuebqyjxmqb': 'xfaketwjnaxkydoxfrha', 'xmtotsaeoioglblvkfev': 'sgrlssvkrivscatvstel', 'rdzflbkbfxivykdcvtbo': 'ijmmmdzyeotscyoallfe', 'cmojwxxmxlmnsthojiti': 'picprtvesdqweqpyicfg', 'epuhxaewccelrxczvdyr': 'wzqymsygnhyffexfhsla'}
         )

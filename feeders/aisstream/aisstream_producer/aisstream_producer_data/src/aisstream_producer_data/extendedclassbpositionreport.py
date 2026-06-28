@@ -18,7 +18,7 @@ from aisstream_producer_data.dimension import Dimension
 @dataclass
 class ExtendedClassBPositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Extended Class B equipment position report (ITU-R M.1371 message 19) relayed by aisstream.io. In addition to position, course and speed it carries the vessel name, ship and cargo type, overall dimensions and antenna reference point, and electronic fix type.
     
     Attributes:
         MessageID (int)
@@ -194,25 +194,25 @@ class ExtendedClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(95),
-            RepeatIndicator=int(17),
-            UserID=int(66),
-            Valid=True,
-            Spare1=int(47),
-            Sog=float(44.9803923286602),
-            PositionAccuracy=True,
-            Longitude=float(59.39857433499238),
-            Latitude=float(0.5123714863597195),
-            Cog=float(72.93804758782537),
-            TrueHeading=int(0),
-            Timestamp=int(8),
-            Spare2=int(37),
-            Name='wvjeasayempfbpjwrbsf',
-            Type=int(100),
+            MessageID=int(9),
+            RepeatIndicator=int(26),
+            UserID=int(69),
+            Valid=False,
+            Spare1=int(27),
+            Sog=float(48.884175196596225),
+            PositionAccuracy=False,
+            Longitude=float(66.20021370903028),
+            Latitude=float(98.63926099386387),
+            Cog=float(55.24217173350156),
+            TrueHeading=int(57),
+            Timestamp=int(92),
+            Spare2=int(15),
+            Name='kvhsuxjntgvjojhijdqp',
+            Type=int(89),
             Dimension=None,
-            FixType=int(68),
+            FixType=int(30),
             Raim=True,
             Dte=False,
-            AssignedMode=True,
-            Spare3=int(31)
+            AssignedMode=False,
+            Spare3=int(53)
         )

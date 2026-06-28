@@ -18,7 +18,7 @@ from aisstream_mqtt_producer_data.dimension import Dimension
 @dataclass
 class AidsToNavigationReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Aids-to-Navigation (AtoN) report (ITU-R M.1371 message 21) relayed by aisstream.io. It is transmitted by, or on behalf of, a physical or virtual aid to navigation to report its type, name, position, dimensions and status flags (off-position, RAIM, virtual and assigned mode).
     
     Attributes:
         MessageID (int)
@@ -190,23 +190,23 @@ class AidsToNavigationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(19),
-            RepeatIndicator=int(52),
-            UserID=int(2),
-            Valid=False,
-            Type=int(62),
-            Name='kskotbgpzoxvumrlqwul',
+            MessageID=int(47),
+            RepeatIndicator=int(24),
+            UserID=int(97),
+            Valid=True,
+            Type=int(61),
+            Name='qkygscikkjuwetttgddf',
             PositionAccuracy=True,
-            Longitude=float(35.09890789362213),
-            Latitude=float(87.07868541265078),
+            Longitude=float(22.675291383231265),
+            Latitude=float(12.908440368241248),
             Dimension=None,
-            Fixtype=int(7),
-            Timestamp=int(22),
-            OffPosition=False,
-            AtoN=int(34),
+            Fixtype=int(38),
+            Timestamp=int(25),
+            OffPosition=True,
+            AtoN=int(32),
             Raim=False,
-            VirtualAtoN=False,
-            AssignedMode=False,
-            Spare=False,
-            NameExtension='ffvjcqvfpkcjkvaxkiuo'
+            VirtualAtoN=True,
+            AssignedMode=True,
+            Spare=True,
+            NameExtension='hhpbbemhaomgvqymrxpo'
         )

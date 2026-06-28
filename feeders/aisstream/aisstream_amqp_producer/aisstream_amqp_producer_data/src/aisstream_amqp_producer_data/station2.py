@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station2:
     """
-    Provider field for station2 in this record.
+    Message requested from a second interrogated station: that station's MMSI, the AIS message type requested and the reply slot offset.
     
     Attributes:
         Valid (bool)
@@ -164,9 +164,9 @@ class Station2:
         """
         return cls(
             Valid=True,
-            Spare1=int(16),
-            StationID=int(71),
-            MessageID=int(12),
-            SlotOffset=int(16),
-            Spare2=int(2)
+            Spare1=int(21),
+            StationID=int(73),
+            MessageID=int(36),
+            SlotOffset=int(26),
+            Spare2=int(33)
         )

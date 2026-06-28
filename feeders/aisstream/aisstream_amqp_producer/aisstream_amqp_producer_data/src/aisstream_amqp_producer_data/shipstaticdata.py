@@ -19,7 +19,7 @@ from aisstream_amqp_producer_data.dimension import Dimension
 @dataclass
 class ShipStaticData:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Class A static and voyage-related data report (ITU-R M.1371 message 5) relayed by aisstream.io. It carries the transmitting vessel's identity (MMSI, IMO number, call sign and name), ship and cargo type, overall dimensions and antenna reference point, electronic fix type, maximum static draught, destination and estimated time of arrival.
     
     Attributes:
         MessageID (int)
@@ -185,20 +185,20 @@ class ShipStaticData:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(18),
-            RepeatIndicator=int(53),
-            UserID=int(34),
-            Valid=True,
-            AisVersion=int(58),
-            ImoNumber=int(73),
-            CallSign='zseejrhntytweootvpcn',
-            Name='oonuubbhhhjdaxkjpoag',
-            Type=int(33),
+            MessageID=int(95),
+            RepeatIndicator=int(90),
+            UserID=int(90),
+            Valid=False,
+            AisVersion=int(87),
+            ImoNumber=int(4),
+            CallSign='knovaerxljjqmaicxscw',
+            Name='oesphszbfgfqcttmctcx',
+            Type=int(58),
             Dimension=None,
-            FixType=int(100),
+            FixType=int(39),
             Eta=None,
-            MaximumStaticDraught=float(97.72412110213152),
-            Destination='zgqgbusdgkplxjbsfpgd',
-            Dte=False,
-            Spare=True
+            MaximumStaticDraught=float(28.143966283293153),
+            Destination='zhttshdykuqnysjamroj',
+            Dte=True,
+            Spare=False
         )

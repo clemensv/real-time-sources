@@ -17,7 +17,7 @@ import json
 @dataclass
 class StandardClassBPositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Standard Class B equipment position report (ITU-R M.1371 message 18) relayed by aisstream.io. Class B 'CS' and 'SO' shipborne mobile equipment use it to report position, speed and course over ground; it also advertises the unit's display, DSC, band and Message 22 capabilities.
     
     Attributes:
         MessageID (int)
@@ -195,26 +195,26 @@ class StandardClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(52),
-            RepeatIndicator=int(81),
-            UserID=int(23),
+            MessageID=int(38),
+            RepeatIndicator=int(18),
+            UserID=int(39),
             Valid=False,
-            Spare1=int(27),
-            Sog=float(26.91708949639702),
+            Spare1=int(8),
+            Sog=float(2.3292187883365845),
             PositionAccuracy=True,
-            Longitude=float(82.11024777429445),
-            Latitude=float(68.71103248331904),
-            Cog=float(37.02163745109785),
-            TrueHeading=int(70),
-            Timestamp=int(49),
-            Spare2=int(84),
+            Longitude=float(20.735337797993083),
+            Latitude=float(49.7605063199759),
+            Cog=float(36.289343249669685),
+            TrueHeading=int(83),
+            Timestamp=int(61),
+            Spare2=int(8),
             ClassBUnit=True,
             ClassBDisplay=True,
-            ClassBDsc=False,
+            ClassBDsc=True,
             ClassBBand=False,
             ClassBMsg22=False,
-            AssignedMode=False,
+            AssignedMode=True,
             Raim=False,
-            CommunicationStateIsItdma=True,
-            CommunicationState=int(8)
+            CommunicationStateIsItdma=False,
+            CommunicationState=int(0)
         )

@@ -29,9 +29,9 @@ class Test_Station1Msg1(unittest.TestCase):
         """
         instance = Station1Msg1(
             Valid=True,
-            StationID=int(41),
-            MessageID=int(33),
-            SlotOffset=int(92)
+            StationID=int(92),
+            MessageID=int(76),
+            SlotOffset=int(5)
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_Station1Msg1(unittest.TestCase):
         """
         Test StationID property
         """
-        test_value = int(41)
+        test_value = int(92)
         self.instance.StationID = test_value
         self.assertEqual(self.instance.StationID, test_value)
     
@@ -56,7 +56,7 @@ class Test_Station1Msg1(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(33)
+        test_value = int(76)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -64,7 +64,7 @@ class Test_Station1Msg1(unittest.TestCase):
         """
         Test SlotOffset property
         """
-        test_value = int(92)
+        test_value = int(5)
         self.instance.SlotOffset = test_value
         self.assertEqual(self.instance.SlotOffset, test_value)
     

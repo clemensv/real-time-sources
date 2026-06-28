@@ -18,7 +18,7 @@ from aisstream_mqtt_producer_data.applicationid import ApplicationID
 @dataclass
 class AddressedBinaryMessage:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Addressed binary message (ITU-R M.1371 message 6) relayed by aisstream.io. It carries an application-specific binary payload, identified by an application identifier (DAC/FI), to a single addressed station with sequence and retransmission control.
     
     Attributes:
         MessageID (int)
@@ -172,14 +172,14 @@ class AddressedBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(68),
-            RepeatIndicator=int(38),
-            UserID=int(88),
-            Valid=False,
-            Sequenceinteger=int(7),
-            DestinationID=int(99),
+            MessageID=int(78),
+            RepeatIndicator=int(66),
+            UserID=int(85),
+            Valid=True,
+            Sequenceinteger=int(88),
+            DestinationID=int(41),
             Retransmission=False,
             Spare=True,
             ApplicationID=None,
-            BinaryData='tkpwnmbcfwytgfsyoggt'
+            BinaryData='bkamjvhskxdxdpzzpoqg'
         )

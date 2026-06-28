@@ -17,7 +17,7 @@ import json
 @dataclass
 class Area:
     """
-    Provider field for area in this record.
+    Rectangular geographic region the channel-management command applies to, defined by two opposite corners (north-east and south-west) in WGS-84 decimal degrees.
     
     Attributes:
         Longitude1 (float)
@@ -159,8 +159,8 @@ class Area:
             An instance of the dataclass.
         """
         return cls(
-            Longitude1=float(48.84473655115985),
-            Latitude1=float(99.58146538096325),
-            Longitude2=float(14.79821583164539),
-            Latitude2=float(7.595608598498805)
+            Longitude1=float(45.90190220808928),
+            Latitude1=float(94.50275673242498),
+            Longitude2=float(76.42748404979645),
+            Latitude2=float(23.560011620532507)
         )

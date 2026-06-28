@@ -19,7 +19,7 @@ from aisstream_producer_data.unicast import Unicast
 @dataclass
 class ChannelManagement:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Channel management command (ITU-R M.1371 message 22) relayed by aisstream.io. A base station uses it to designate the AIS operating channels, bandwidths, transmit/receive mode, power level and transitional zone for a defined geographic region or for individually addressed stations.
     
     Attributes:
         MessageID (int)
@@ -185,20 +185,20 @@ class ChannelManagement:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(7),
-            RepeatIndicator=int(48),
-            UserID=int(11),
-            Valid=False,
-            Spare1=int(76),
-            ChannelA=int(74),
-            ChannelB=int(35),
-            TxRxMode=int(48),
+            MessageID=int(61),
+            RepeatIndicator=int(15),
+            UserID=int(34),
+            Valid=True,
+            Spare1=int(59),
+            ChannelA=int(8),
+            ChannelB=int(12),
+            TxRxMode=int(9),
             LowPower=False,
             Area=None,
             Unicast=None,
-            IsAddressed=True,
-            BwA=True,
+            IsAddressed=False,
+            BwA=False,
             BwB=True,
-            TransitionalZoneSize=int(92),
-            Spare4=int(44)
+            TransitionalZoneSize=int(63),
+            Spare4=int(36)
         )

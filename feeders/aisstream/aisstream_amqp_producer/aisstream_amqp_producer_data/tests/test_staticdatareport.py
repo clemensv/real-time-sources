@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from aisstream_amqp_producer_data.staticdatareport import StaticDataReport
-from aisstream_amqp_producer_data.reporta import ReportA
 from aisstream_amqp_producer_data.reportb import ReportB
+from aisstream_amqp_producer_data.reporta import ReportA
 
 
 class Test_StaticDataReport(unittest.TestCase):
@@ -30,11 +30,11 @@ class Test_StaticDataReport(unittest.TestCase):
         Create instance of StaticDataReport for testing
         """
         instance = StaticDataReport(
-            MessageID=int(27),
-            RepeatIndicator=int(91),
-            UserID=int(36),
+            MessageID=int(36),
+            RepeatIndicator=int(97),
+            UserID=int(90),
             Valid=False,
-            Reserved=int(0),
+            Reserved=int(52),
             PartNumber=False,
             ReportA=None,
             ReportB=None
@@ -46,7 +46,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(27)
+        test_value = int(36)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -54,7 +54,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(91)
+        test_value = int(97)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -62,7 +62,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(36)
+        test_value = int(90)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -78,7 +78,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test Reserved property
         """
-        test_value = int(0)
+        test_value = int(52)
         self.instance.Reserved = test_value
         self.assertEqual(self.instance.Reserved, test_value)
     

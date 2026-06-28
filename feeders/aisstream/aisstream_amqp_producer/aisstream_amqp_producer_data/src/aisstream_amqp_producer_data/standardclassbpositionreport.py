@@ -17,7 +17,7 @@ import json
 @dataclass
 class StandardClassBPositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Standard Class B equipment position report (ITU-R M.1371 message 18) relayed by aisstream.io. Class B 'CS' and 'SO' shipborne mobile equipment use it to report position, speed and course over ground; it also advertises the unit's display, DSC, band and Message 22 capabilities.
     
     Attributes:
         MessageID (int)
@@ -195,26 +195,26 @@ class StandardClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(50),
-            RepeatIndicator=int(78),
-            UserID=int(15),
+            MessageID=int(17),
+            RepeatIndicator=int(94),
+            UserID=int(88),
             Valid=True,
-            Spare1=int(43),
-            Sog=float(46.757544469263976),
-            PositionAccuracy=True,
-            Longitude=float(91.35096492225176),
-            Latitude=float(77.55934694336203),
-            Cog=float(12.066091646172872),
-            TrueHeading=int(3),
-            Timestamp=int(31),
-            Spare2=int(78),
+            Spare1=int(82),
+            Sog=float(60.26575940960741),
+            PositionAccuracy=False,
+            Longitude=float(83.03071041364997),
+            Latitude=float(49.28802203948235),
+            Cog=float(67.02964065176043),
+            TrueHeading=int(62),
+            Timestamp=int(22),
+            Spare2=int(3),
             ClassBUnit=False,
-            ClassBDisplay=True,
-            ClassBDsc=False,
+            ClassBDisplay=False,
+            ClassBDsc=True,
             ClassBBand=False,
-            ClassBMsg22=True,
-            AssignedMode=False,
-            Raim=False,
-            CommunicationStateIsItdma=True,
-            CommunicationState=int(24)
+            ClassBMsg22=False,
+            AssignedMode=True,
+            Raim=True,
+            CommunicationStateIsItdma=False,
+            CommunicationState=int(85)
         )

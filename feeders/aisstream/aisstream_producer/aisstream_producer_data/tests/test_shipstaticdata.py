@@ -30,21 +30,21 @@ class Test_ShipStaticData(unittest.TestCase):
         Create instance of ShipStaticData for testing
         """
         instance = ShipStaticData(
-            MessageID=int(3),
-            RepeatIndicator=int(16),
-            UserID=int(20),
+            MessageID=int(15),
+            RepeatIndicator=int(2),
+            UserID=int(70),
             Valid=True,
-            AisVersion=int(100),
-            ImoNumber=int(42),
-            CallSign='dzeorggqerqsrkvlslty',
-            Name='eztpktewzvphqzapzbui',
-            Type=int(91),
+            AisVersion=int(83),
+            ImoNumber=int(93),
+            CallSign='ocsvqhftlqvhzhoxtztg',
+            Name='jzirteqzsqbmykyefytj',
+            Type=int(92),
             Dimension=None,
-            FixType=int(10),
+            FixType=int(87),
             Eta=None,
-            MaximumStaticDraught=float(38.91275748166642),
-            Destination='wrhzsvzuyzzjlwkvkgjk',
-            Dte=False,
+            MaximumStaticDraught=float(95.4148515733479),
+            Destination='auuhsewnqnohyhmerrpu',
+            Dte=True,
             Spare=True
         )
         return instance
@@ -54,7 +54,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(3)
+        test_value = int(15)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -62,7 +62,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(16)
+        test_value = int(2)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -70,7 +70,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(20)
+        test_value = int(70)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -86,7 +86,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test AisVersion property
         """
-        test_value = int(100)
+        test_value = int(83)
         self.instance.AisVersion = test_value
         self.assertEqual(self.instance.AisVersion, test_value)
     
@@ -94,7 +94,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test ImoNumber property
         """
-        test_value = int(42)
+        test_value = int(93)
         self.instance.ImoNumber = test_value
         self.assertEqual(self.instance.ImoNumber, test_value)
     
@@ -102,7 +102,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test CallSign property
         """
-        test_value = 'dzeorggqerqsrkvlslty'
+        test_value = 'ocsvqhftlqvhzhoxtztg'
         self.instance.CallSign = test_value
         self.assertEqual(self.instance.CallSign, test_value)
     
@@ -110,7 +110,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test Name property
         """
-        test_value = 'eztpktewzvphqzapzbui'
+        test_value = 'jzirteqzsqbmykyefytj'
         self.instance.Name = test_value
         self.assertEqual(self.instance.Name, test_value)
     
@@ -118,7 +118,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test Type property
         """
-        test_value = int(91)
+        test_value = int(92)
         self.instance.Type = test_value
         self.assertEqual(self.instance.Type, test_value)
     
@@ -134,7 +134,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test FixType property
         """
-        test_value = int(10)
+        test_value = int(87)
         self.instance.FixType = test_value
         self.assertEqual(self.instance.FixType, test_value)
     
@@ -150,7 +150,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test MaximumStaticDraught property
         """
-        test_value = float(38.91275748166642)
+        test_value = float(95.4148515733479)
         self.instance.MaximumStaticDraught = test_value
         self.assertEqual(self.instance.MaximumStaticDraught, test_value)
     
@@ -158,7 +158,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test Destination property
         """
-        test_value = 'wrhzsvzuyzzjlwkvkgjk'
+        test_value = 'auuhsewnqnohyhmerrpu'
         self.instance.Destination = test_value
         self.assertEqual(self.instance.Destination, test_value)
     
@@ -166,7 +166,7 @@ class Test_ShipStaticData(unittest.TestCase):
         """
         Test Dte property
         """
-        test_value = False
+        test_value = True
         self.instance.Dte = test_value
         self.assertEqual(self.instance.Dte, test_value)
     

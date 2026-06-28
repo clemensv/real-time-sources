@@ -17,7 +17,7 @@ import json
 @dataclass
 class PositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Class A Automatic Identification System (AIS) position report (ITU-R M.1371 messages 1, 2 and 3) as decoded and relayed by the aisstream.io firehose. It reports a Class A vessel's instantaneous navigational situation - position, course, speed, heading, rate of turn and navigational status - together with the TDMA communication state used for slot management.
     
     Attributes:
         MessageID (int)
@@ -185,21 +185,21 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(15),
-            RepeatIndicator=int(69),
-            UserID=int(50),
-            Valid=True,
-            NavigationalStatus=int(78),
-            RateOfTurn=int(36),
-            Sog=float(6.04062065609371),
-            PositionAccuracy=False,
-            Longitude=float(83.66755243943291),
-            Latitude=float(52.309764753153296),
-            Cog=float(61.47902603833867),
-            TrueHeading=int(69),
-            Timestamp=int(92),
-            SpecialManoeuvreIndicator=int(42),
-            Spare=int(58),
+            MessageID=int(49),
+            RepeatIndicator=int(64),
+            UserID=int(61),
+            Valid=False,
+            NavigationalStatus=int(50),
+            RateOfTurn=int(58),
+            Sog=float(7.265722223218307),
+            PositionAccuracy=True,
+            Longitude=float(81.65627924308613),
+            Latitude=float(59.628229567783066),
+            Cog=float(2.8850614410830477),
+            TrueHeading=int(7),
+            Timestamp=int(38),
+            SpecialManoeuvreIndicator=int(15),
+            Spare=int(29),
             Raim=True,
-            CommunicationState=int(31)
+            CommunicationState=int(1)
         )

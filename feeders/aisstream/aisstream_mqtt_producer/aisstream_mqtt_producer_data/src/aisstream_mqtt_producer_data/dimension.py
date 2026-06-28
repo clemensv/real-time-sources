@@ -17,7 +17,7 @@ import json
 @dataclass
 class Dimension:
     """
-    Provider field for dimension in this record.
+    Reference point for the reported position and overall vessel dimensions, given as distances in metres from the position-fixing antenna to the bow (A), stern (B), port side (C) and starboard side (D); overall length = A + B and beam = C + D.
     
     Attributes:
         A (int)
@@ -159,8 +159,8 @@ class Dimension:
             An instance of the dataclass.
         """
         return cls(
-            A=int(61),
-            B=int(23),
-            C=int(11),
-            D=int(3)
+            A=int(52),
+            B=int(7),
+            C=int(72),
+            D=int(21)
         )

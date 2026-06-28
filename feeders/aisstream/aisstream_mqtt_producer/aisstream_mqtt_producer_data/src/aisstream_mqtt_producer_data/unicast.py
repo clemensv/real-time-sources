@@ -17,7 +17,7 @@ import json
 @dataclass
 class Unicast:
     """
-    Provider field for unicast in this record.
+    Addressed (unicast) form of the channel-management command, carrying the MMSIs of the one or two stations the command is addressed to (used when IsAddressed is true).
     
     Attributes:
         AddressStation1 (int)
@@ -159,8 +159,8 @@ class Unicast:
             An instance of the dataclass.
         """
         return cls(
-            AddressStation1=int(9),
-            Spare2=int(100),
-            AddressStation2=int(21),
-            Spare3=int(44)
+            AddressStation1=int(11),
+            Spare2=int(48),
+            AddressStation2=int(22),
+            Spare3=int(21)
         )

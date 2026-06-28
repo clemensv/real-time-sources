@@ -17,7 +17,7 @@ import json
 @dataclass
 class AddressedSafetyMessage:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Addressed safety-related message (ITU-R M.1371 message 12) relayed by aisstream.io. It delivers free-text safety information to a single addressed station (DestinationID) and supports sequencing and retransmission control.
     
     Attributes:
         MessageID (int)
@@ -169,13 +169,13 @@ class AddressedSafetyMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(6),
-            RepeatIndicator=int(77),
-            UserID=int(90),
-            Valid=False,
-            Sequenceinteger=int(31),
-            DestinationID=int(31),
+            MessageID=int(67),
+            RepeatIndicator=int(21),
+            UserID=int(89),
+            Valid=True,
+            Sequenceinteger=int(22),
+            DestinationID=int(2),
             Retransmission=False,
-            Spare=True,
-            Text='pensodiilmpfqbeusdie'
+            Spare=False,
+            Text='ooxbdmcrbkpxennpfkiy'
         )

@@ -29,13 +29,13 @@ class Test_BinaryBroadcastMessage(unittest.TestCase):
         Create instance of BinaryBroadcastMessage for testing
         """
         instance = BinaryBroadcastMessage(
-            MessageID=int(13),
-            RepeatIndicator=int(56),
-            UserID=int(63),
+            MessageID=int(26),
+            RepeatIndicator=int(16),
+            UserID=int(61),
             Valid=True,
-            Spare=int(6),
+            Spare=int(73),
             ApplicationID=None,
-            BinaryData='pauesymvwxnkjbczjldb'
+            BinaryData='orfbpdbrxrpifuywaxtn'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_BinaryBroadcastMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(13)
+        test_value = int(26)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -52,7 +52,7 @@ class Test_BinaryBroadcastMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(56)
+        test_value = int(16)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -60,7 +60,7 @@ class Test_BinaryBroadcastMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(63)
+        test_value = int(61)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -76,7 +76,7 @@ class Test_BinaryBroadcastMessage(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(6)
+        test_value = int(73)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -92,7 +92,7 @@ class Test_BinaryBroadcastMessage(unittest.TestCase):
         """
         Test BinaryData property
         """
-        test_value = 'pauesymvwxnkjbczjldb'
+        test_value = 'orfbpdbrxrpifuywaxtn'
         self.instance.BinaryData = test_value
         self.assertEqual(self.instance.BinaryData, test_value)
     

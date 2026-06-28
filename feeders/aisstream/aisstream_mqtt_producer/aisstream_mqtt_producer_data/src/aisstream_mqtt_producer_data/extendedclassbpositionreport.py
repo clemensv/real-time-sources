@@ -18,7 +18,7 @@ from aisstream_mqtt_producer_data.dimension import Dimension
 @dataclass
 class ExtendedClassBPositionReport:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Extended Class B equipment position report (ITU-R M.1371 message 19) relayed by aisstream.io. In addition to position, course and speed it carries the vessel name, ship and cargo type, overall dimensions and antenna reference point, and electronic fix type.
     
     Attributes:
         MessageID (int)
@@ -194,25 +194,25 @@ class ExtendedClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(85),
-            RepeatIndicator=int(8),
-            UserID=int(50),
-            Valid=True,
-            Spare1=int(37),
-            Sog=float(13.568940028754906),
-            PositionAccuracy=True,
-            Longitude=float(65.94063111158417),
-            Latitude=float(49.275624356774685),
-            Cog=float(79.84376243914036),
-            TrueHeading=int(22),
-            Timestamp=int(64),
-            Spare2=int(53),
-            Name='meugrubchywefspxgdqv',
-            Type=int(59),
+            MessageID=int(6),
+            RepeatIndicator=int(57),
+            UserID=int(64),
+            Valid=False,
+            Spare1=int(90),
+            Sog=float(34.867688905712036),
+            PositionAccuracy=False,
+            Longitude=float(24.292112454510793),
+            Latitude=float(6.132872518856647),
+            Cog=float(21.857031099196167),
+            TrueHeading=int(1),
+            Timestamp=int(18),
+            Spare2=int(42),
+            Name='abznrfllswdhxcfgpaoz',
+            Type=int(96),
             Dimension=None,
-            FixType=int(12),
+            FixType=int(100),
             Raim=False,
             Dte=True,
             AssignedMode=True,
-            Spare3=int(79)
+            Spare3=int(46)
         )

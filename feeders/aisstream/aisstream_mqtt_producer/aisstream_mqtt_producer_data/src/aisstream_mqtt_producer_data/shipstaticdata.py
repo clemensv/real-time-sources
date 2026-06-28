@@ -19,7 +19,7 @@ from aisstream_mqtt_producer_data.eta import Eta
 @dataclass
 class ShipStaticData:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Class A static and voyage-related data report (ITU-R M.1371 message 5) relayed by aisstream.io. It carries the transmitting vessel's identity (MMSI, IMO number, call sign and name), ship and cargo type, overall dimensions and antenna reference point, electronic fix type, maximum static draught, destination and estimated time of arrival.
     
     Attributes:
         MessageID (int)
@@ -185,20 +185,20 @@ class ShipStaticData:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(37),
-            RepeatIndicator=int(41),
-            UserID=int(5),
+            MessageID=int(23),
+            RepeatIndicator=int(5),
+            UserID=int(21),
             Valid=True,
-            AisVersion=int(92),
-            ImoNumber=int(30),
-            CallSign='nidtgjvlqpwtouqzkuda',
-            Name='ulnugizirulbymeletzp',
-            Type=int(74),
+            AisVersion=int(34),
+            ImoNumber=int(96),
+            CallSign='wlgrzjmzsekxygbptomc',
+            Name='ltfkmfsubwpavwkrdgya',
+            Type=int(37),
             Dimension=None,
-            FixType=int(46),
+            FixType=int(91),
             Eta=None,
-            MaximumStaticDraught=float(39.66900062519832),
-            Destination='utjvwmffwkpujhkenjts',
-            Dte=True,
-            Spare=False
+            MaximumStaticDraught=float(5.768249829258032),
+            Destination='gttshhvuzzddwhdxxxwc',
+            Dte=False,
+            Spare=True
         )

@@ -17,7 +17,7 @@ import json
 @dataclass
 class ApplicationID:
     """
-    Provider field for application i d in this record.
+    Binary application identifier (ITU-R M.1371 IAI) selecting the application that defines the binary payload; it comprises a Designated Area Code and a Function Identifier.
     
     Attributes:
         Valid (bool)
@@ -157,7 +157,7 @@ class ApplicationID:
             An instance of the dataclass.
         """
         return cls(
-            Valid=False,
-            DesignatedAreaCode=int(26),
-            FunctionIdentifier=int(3)
+            Valid=True,
+            DesignatedAreaCode=int(58),
+            FunctionIdentifier=int(11)
         )

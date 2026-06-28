@@ -65,7 +65,7 @@ The bridge does the boring work — WebSocket reconnect with exponential backoff
 
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| **Kafka** | `ghcr.io/clemensv/real-time-sources-aisstream` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{mmsi}` |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-aisstream` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{UserID}` (the AIS source MMSI) |
 | **MQTT** | `ghcr.io/clemensv/real-time-sources-aisstream-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic tree under `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}`, JSON body, CloudEvent attributes as MQTT 5 user properties, non-retained at QoS 0 |
 | **AMQP** | `ghcr.io/clemensv/real-time-sources-aisstream-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | Single AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
 
@@ -73,18 +73,18 @@ All three variants share:
 
 * The upstream WebSocket client (`aisstream` package).
 * The xRegistry contract (`xreg/aisstream.xreg.json`).
-* CloudEvents schemas for all 23 ITU-R M.1371-5 message families (Kafka), or an enriched routing-friendly subset (MQTT).
+* The same CloudEvents schemas for all 23 ITU-R M.1371-5 message families on **every** transport. MQTT additionally exposes flag / ship-type / geohash routing through its topic tree, but the event body is the identical raw AIS message everywhere.
 
 ## Key features
 
 - **Global AIS coverage** — terrestrial AIS aggregated from community ground stations worldwide (~200 km from coast).
-- **23 AIS event types** on the Kafka transport — every standard ITU-R M.1371-5 message family.
+- **23 AIS event types** on every transport (Kafka, MQTT, AMQP) — every standard ITU-R M.1371-5 message family, with identical raw bodies.
 - **Server-side filtering** — geographic bounding boxes, MMSI lists, and message-type filters applied at the AISstream.io API.
 - **Client-side MMSI filter** — additional local filter for fine-grained downstream control.
 - **Auto-reconnect** — exponential backoff on WebSocket failures, critical given the service's reliability profile.
 - **Three transport binaries** with identical configuration knobs upstream (API key, bounding boxes, filters) — switch transport without changing the data model.
 - **Azure Event Hubs / Microsoft Fabric Event Streams** ready via standard connection strings (Kafka variant).
-- **Unified Namespace** ready out of the box with MQTT 5.0 binary CloudEvents enriched with flag, ship-type bucket, and geohash5 routing axes (MQTT variant).
+- **Unified Namespace** ready out of the box — the MQTT variant routes the raw AIS CloudEvents through a flag / ship-type / geohash / MMSI / message-type topic tree (enrichment lives in the topic, never in the payload).
 - **Azure Service Bus / Event Hubs over AMQP 1.0 with Microsoft Entra ID** (no SAS-key rotation) via the AMQP variant's CBS put-token flow, plus SAS-token CBS for the Service Bus emulator and SAS-only namespaces.
 
 ## Repository layout
@@ -93,7 +93,7 @@ All three variants share:
 aisstream/
   xreg/aisstream.xreg.json       # shared xRegistry contract
   aisstream/                     # WebSocket client + Kafka feeder application
-  aisstream_mqtt/                # MQTT/UNS feeder application (with enrichment)
+  aisstream_mqtt/                # MQTT/UNS feeder application (raw bodies; topic enrichment)
   aisstream_amqp/                # AMQP 1.0 feeder application
   aisstream_producer/            # xRegistry-generated Kafka producer
   aisstream_mqtt_producer/       # xRegistry-generated MQTT producer
@@ -144,7 +144,7 @@ Topics published (non-retained, QoS 0):
 maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
 ```
 
-`{flag}` is the ISO-3166-1 alpha-2 code derived from the MMSI MID, `{ship_type}` is a kebab bucket (`cargo`, `tanker`, `passenger`, …), `{geohash5}` is a 5-character geohash of the last known position, and `{msg_type}` is `position-report`, `static`, or `aid-to-navigation`. See [CONTAINER.md](CONTAINER.md#mqtt-image) for the full enrichment table.
+`{flag}` is the ISO-3166-1 alpha-2 code derived from the MMSI MID, `{ship_type}` is a kebab bucket (`cargo`, `tanker`, `passenger`, …), `{geohash5}` is a 5-character geohash of the last known position, and `{msg_type}` is the kebab-case AIS message family (one of all 23 — e.g. `position-report`, `ship-static-data`, `aids-to-navigation-report`). See [CONTAINER.md](CONTAINER.md#mqtt-image) for the full enrichment table and the complete `{msg_type}` list.
 
 ### AMQP 1.0
 
@@ -161,9 +161,9 @@ For Azure Service Bus or Event Hubs with Microsoft Entra ID, the Service Bus emu
 
 The complete list of environment variables for every variant (Kafka, MQTT, AMQP), every authentication mode (SASL PLAIN, Microsoft Entra ID via CBS, SAS-token CBS), every filter knob (bounding boxes, MMSI list, message-type allow-list, flush interval), and every Azure deployment shape lives in [CONTAINER.md](CONTAINER.md). The runtime entry point for every image is `python -m aisstream{,_mqtt,_amqp} stream`; the image's default `CMD` invokes it for you.
 
-## AIS message types (Kafka transport)
+## AIS message types (all transports)
 
-The Kafka transport carries every standard ITU-R M.1371-5 AIS message family. The MQTT transport carries a routing-friendly subset (`PositionReport`, `ShipStatic`, `AidToNavigation`); see [CONTAINER.md](CONTAINER.md#mqtt-image) for why.
+Every transport (Kafka, MQTT, AMQP) carries all 23 standard ITU-R M.1371-5 AIS message families, with identical raw bodies. The MQTT transport additionally routes each message through the Unified-Namespace topic tree; see [CONTAINER.md](CONTAINER.md#mqtt-image) for the routing axes.
 
 ### Vessel position and movement
 

@@ -18,7 +18,7 @@ from aisstream_amqp_producer_data.applicationid import ApplicationID
 @dataclass
 class SingleSlotBinaryMessage:
     """
-    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
+    Single-slot binary message (ITU-R M.1371 message 25) relayed by aisstream.io. It carries a short application-specific binary payload that fits in a single TDMA slot and may be addressed or broadcast, optionally with an application identifier.
     
     Attributes:
         MessageID (int)
@@ -172,14 +172,14 @@ class SingleSlotBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(59),
-            RepeatIndicator=int(9),
-            UserID=int(41),
+            MessageID=int(54),
+            RepeatIndicator=int(15),
+            UserID=int(38),
             Valid=False,
             DestinationIDValid=False,
             ApplicationIDValid=False,
-            DestinationID=int(87),
-            Spare=int(1),
+            DestinationID=int(92),
+            Spare=int(25),
             ApplicationID=None,
-            Payload='cfhmpojsumnsrbqmohrh'
+            Payload='pzkkcyrtrcclrlpnkemv'
         )

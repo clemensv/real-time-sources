@@ -28,12 +28,12 @@ class Test_DataLinkManagementMessage(unittest.TestCase):
         Create instance of DataLinkManagementMessage for testing
         """
         instance = DataLinkManagementMessage(
-            MessageID=int(3),
-            RepeatIndicator=int(9),
-            UserID=int(38),
-            Valid=False,
-            Spare=int(14),
-            Data={'sjvjenafpmnyexcbbhrz': 'zrloslwmaadgcqgghzpi', 'pmtyavjusexuyfjcnidy': 'awttsqwzvjpkocvmnexl'}
+            MessageID=int(78),
+            RepeatIndicator=int(94),
+            UserID=int(25),
+            Valid=True,
+            Spare=int(78),
+            Data={'xlurogijbwuebqyjxmqb': 'xfaketwjnaxkydoxfrha', 'xmtotsaeoioglblvkfev': 'sgrlssvkrivscatvstel', 'rdzflbkbfxivykdcvtbo': 'ijmmmdzyeotscyoallfe', 'cmojwxxmxlmnsthojiti': 'picprtvesdqweqpyicfg', 'epuhxaewccelrxczvdyr': 'wzqymsygnhyffexfhsla'}
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_DataLinkManagementMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(3)
+        test_value = int(78)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -50,7 +50,7 @@ class Test_DataLinkManagementMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(9)
+        test_value = int(94)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -58,7 +58,7 @@ class Test_DataLinkManagementMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(38)
+        test_value = int(25)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -66,7 +66,7 @@ class Test_DataLinkManagementMessage(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -74,7 +74,7 @@ class Test_DataLinkManagementMessage(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(14)
+        test_value = int(78)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -82,7 +82,7 @@ class Test_DataLinkManagementMessage(unittest.TestCase):
         """
         Test Data property
         """
-        test_value = {'sjvjenafpmnyexcbbhrz': 'zrloslwmaadgcqgghzpi', 'pmtyavjusexuyfjcnidy': 'awttsqwzvjpkocvmnexl'}
+        test_value = {'xlurogijbwuebqyjxmqb': 'xfaketwjnaxkydoxfrha', 'xmtotsaeoioglblvkfev': 'sgrlssvkrivscatvstel', 'rdzflbkbfxivykdcvtbo': 'ijmmmdzyeotscyoallfe', 'cmojwxxmxlmnsthojiti': 'picprtvesdqweqpyicfg', 'epuhxaewccelrxczvdyr': 'wzqymsygnhyffexfhsla'}
         self.instance.Data = test_value
         self.assertEqual(self.instance.Data, test_value)
     

@@ -28,10 +28,10 @@ class Test_Eta(unittest.TestCase):
         Create instance of Eta for testing
         """
         instance = Eta(
-            Month=int(19),
+            Month=int(97),
             Day=int(89),
-            Hour=int(14),
-            Minute=int(50)
+            Hour=int(19),
+            Minute=int(86)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Eta(unittest.TestCase):
         """
         Test Month property
         """
-        test_value = int(19)
+        test_value = int(97)
         self.instance.Month = test_value
         self.assertEqual(self.instance.Month, test_value)
     
@@ -56,7 +56,7 @@ class Test_Eta(unittest.TestCase):
         """
         Test Hour property
         """
-        test_value = int(14)
+        test_value = int(19)
         self.instance.Hour = test_value
         self.assertEqual(self.instance.Hour, test_value)
     
@@ -64,7 +64,7 @@ class Test_Eta(unittest.TestCase):
         """
         Test Minute property
         """
-        test_value = int(50)
+        test_value = int(86)
         self.instance.Minute = test_value
         self.assertEqual(self.instance.Minute, test_value)
     

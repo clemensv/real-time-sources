@@ -9,9 +9,9 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from aisstream_producer_data.interrogation import Interrogation
-from aisstream_producer_data.station1msg1 import Station1Msg1
 from aisstream_producer_data.station2 import Station2
 from aisstream_producer_data.station1msg2 import Station1Msg2
+from aisstream_producer_data.station1msg1 import Station1Msg1
 
 
 class Test_Interrogation(unittest.TestCase):
@@ -31,11 +31,11 @@ class Test_Interrogation(unittest.TestCase):
         Create instance of Interrogation for testing
         """
         instance = Interrogation(
-            MessageID=int(76),
-            RepeatIndicator=int(36),
-            UserID=int(57),
+            MessageID=int(1),
+            RepeatIndicator=int(33),
+            UserID=int(44),
             Valid=False,
-            Spare=int(50),
+            Spare=int(73),
             Station1Msg1=None,
             Station1Msg2=None,
             Station2=None
@@ -47,7 +47,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(76)
+        test_value = int(1)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -55,7 +55,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(36)
+        test_value = int(33)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -63,7 +63,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(57)
+        test_value = int(44)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -79,7 +79,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(50)
+        test_value = int(73)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
