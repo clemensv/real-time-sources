@@ -9,7 +9,7 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_amedas_mqtt_producer_data.jp.jma.amedas.observation import Observation
-from jma_bosai_amedas_mqtt_producer_data.jp.jma.amedas.eventenum import EventEnum
+from jma_bosai_amedas_mqtt_producer_data.jp.jma.amedas.observationeventenum import ObservationEventEnum
 import datetime
 
 
@@ -30,59 +30,59 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            station_code='tqlwoeoivrpzhhayxdnp',
+            station_code='upbdzcwehyoomyudlnra',
             observed_at=datetime.datetime.now(datetime.timezone.utc),
             observed_at_local=datetime.datetime.now(datetime.timezone.utc),
-            temp=float(41.08538657532582),
-            temp_qc_flag=int(62),
-            humidity=float(60.771537467673376),
-            humidity_qc_flag=int(18),
-            pressure=float(86.76545601890328),
-            pressure_qc_flag=int(20),
-            normal_pressure=float(69.6910774185313),
-            normal_pressure_qc_flag=int(99),
-            wind_speed=float(51.071892769057484),
-            wind_speed_qc_flag=int(38),
-            wind_direction=float(58.30854372203119),
-            wind_direction_qc_flag=int(92),
-            wind_gust=float(76.94762775506338),
-            wind_gust_qc_flag=int(44),
-            wind_gust_direction=float(54.450928588488814),
+            temp=float(68.0627430153537),
+            temp_qc_flag=int(5),
+            humidity=float(15.087123721470885),
+            humidity_qc_flag=int(79),
+            pressure=float(27.470588919034967),
+            pressure_qc_flag=int(81),
+            normal_pressure=float(12.895615583171205),
+            normal_pressure_qc_flag=int(77),
+            wind_speed=float(96.45188834113459),
+            wind_speed_qc_flag=int(82),
+            wind_direction=float(93.0944064209247),
+            wind_direction_qc_flag=int(39),
+            wind_gust=float(67.90141181180616),
+            wind_gust_qc_flag=int(92),
+            wind_gust_direction=float(21.610504882875283),
             wind_gust_time=datetime.datetime.now(datetime.timezone.utc),
-            max_temp=float(91.07809214420068),
+            max_temp=float(47.17259321015518),
             max_temp_time=datetime.datetime.now(datetime.timezone.utc),
-            min_temp=float(1.2871954827694543),
+            min_temp=float(89.1409846138587),
             min_temp_time=datetime.datetime.now(datetime.timezone.utc),
-            precipitation10m=float(23.217712216998322),
-            precipitation10m_qc_flag=int(94),
-            precipitation1h=float(22.613473312964416),
-            precipitation1h_qc_flag=int(5),
-            precipitation3h=float(79.09480224667973),
-            precipitation3h_qc_flag=int(50),
-            precipitation24h=float(71.51910142328036),
-            precipitation24h_qc_flag=int(61),
-            sun10m=float(7.694738443758986),
+            precipitation10m=float(22.2351241664827),
+            precipitation10m_qc_flag=int(71),
+            precipitation1h=float(57.49557604338222),
+            precipitation1h_qc_flag=int(22),
+            precipitation3h=float(40.1474619587925),
+            precipitation3h_qc_flag=int(28),
+            precipitation24h=float(37.134568737648756),
+            precipitation24h_qc_flag=int(57),
+            sun10m=float(26.642754516474966),
             sun10m_qc_flag=int(76),
-            sun1h=float(11.062150222933587),
-            sun1h_qc_flag=int(43),
-            snow=float(41.86972414278398),
-            snow_qc_flag=int(59),
-            snow1h=float(78.69760627226444),
-            snow1h_qc_flag=int(27),
-            snow6h=float(33.65254411645279),
-            snow6h_qc_flag=int(67),
-            snow12h=float(71.90718865670401),
-            snow12h_qc_flag=int(58),
-            snow24h=float(29.333712037403693),
-            snow24h_qc_flag=int(48),
-            visibility=float(68.44408688478774),
-            visibility_qc_flag=int(86),
-            cloud=float(2.018613271180558),
-            cloud_qc_flag=int(0),
-            weather=float(42.49395729435413),
-            weather_qc_flag=int(47),
-            prefecture='hjqeqqltmwoexacwgcgk',
-            event=EventEnum.info
+            sun1h=float(88.42742935778645),
+            sun1h_qc_flag=int(0),
+            snow=float(87.07000487462055),
+            snow_qc_flag=int(81),
+            snow1h=float(91.00533157948702),
+            snow1h_qc_flag=int(49),
+            snow6h=float(88.28643335201511),
+            snow6h_qc_flag=int(63),
+            snow12h=float(29.090829135107697),
+            snow12h_qc_flag=int(65),
+            snow24h=float(58.878460370255766),
+            snow24h_qc_flag=int(77),
+            visibility=float(16.743612479898328),
+            visibility_qc_flag=int(85),
+            cloud=float(22.704240262005303),
+            cloud_qc_flag=int(16),
+            weather=float(15.376174800836884),
+            weather_qc_flag=int(93),
+            prefecture='zbwcpzycwwwdlrivdmeq',
+            event=ObservationEventEnum.observation
         )
         return instance
 
@@ -91,7 +91,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'tqlwoeoivrpzhhayxdnp'
+        test_value = 'upbdzcwehyoomyudlnra'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -115,7 +115,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test temp property
         """
-        test_value = float(41.08538657532582)
+        test_value = float(68.0627430153537)
         self.instance.temp = test_value
         self.assertEqual(self.instance.temp, test_value)
     
@@ -123,7 +123,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test temp_qc_flag property
         """
-        test_value = int(62)
+        test_value = int(5)
         self.instance.temp_qc_flag = test_value
         self.assertEqual(self.instance.temp_qc_flag, test_value)
     
@@ -131,7 +131,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test humidity property
         """
-        test_value = float(60.771537467673376)
+        test_value = float(15.087123721470885)
         self.instance.humidity = test_value
         self.assertEqual(self.instance.humidity, test_value)
     
@@ -139,7 +139,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test humidity_qc_flag property
         """
-        test_value = int(18)
+        test_value = int(79)
         self.instance.humidity_qc_flag = test_value
         self.assertEqual(self.instance.humidity_qc_flag, test_value)
     
@@ -147,7 +147,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pressure property
         """
-        test_value = float(86.76545601890328)
+        test_value = float(27.470588919034967)
         self.instance.pressure = test_value
         self.assertEqual(self.instance.pressure, test_value)
     
@@ -155,7 +155,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pressure_qc_flag property
         """
-        test_value = int(20)
+        test_value = int(81)
         self.instance.pressure_qc_flag = test_value
         self.assertEqual(self.instance.pressure_qc_flag, test_value)
     
@@ -163,7 +163,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test normal_pressure property
         """
-        test_value = float(69.6910774185313)
+        test_value = float(12.895615583171205)
         self.instance.normal_pressure = test_value
         self.assertEqual(self.instance.normal_pressure, test_value)
     
@@ -171,7 +171,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test normal_pressure_qc_flag property
         """
-        test_value = int(99)
+        test_value = int(77)
         self.instance.normal_pressure_qc_flag = test_value
         self.assertEqual(self.instance.normal_pressure_qc_flag, test_value)
     
@@ -179,7 +179,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(51.071892769057484)
+        test_value = float(96.45188834113459)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -187,7 +187,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test wind_speed_qc_flag property
         """
-        test_value = int(38)
+        test_value = int(82)
         self.instance.wind_speed_qc_flag = test_value
         self.assertEqual(self.instance.wind_speed_qc_flag, test_value)
     
@@ -195,7 +195,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test wind_direction property
         """
-        test_value = float(58.30854372203119)
+        test_value = float(93.0944064209247)
         self.instance.wind_direction = test_value
         self.assertEqual(self.instance.wind_direction, test_value)
     
@@ -203,7 +203,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test wind_direction_qc_flag property
         """
-        test_value = int(92)
+        test_value = int(39)
         self.instance.wind_direction_qc_flag = test_value
         self.assertEqual(self.instance.wind_direction_qc_flag, test_value)
     
@@ -211,7 +211,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test wind_gust property
         """
-        test_value = float(76.94762775506338)
+        test_value = float(67.90141181180616)
         self.instance.wind_gust = test_value
         self.assertEqual(self.instance.wind_gust, test_value)
     
@@ -219,7 +219,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test wind_gust_qc_flag property
         """
-        test_value = int(44)
+        test_value = int(92)
         self.instance.wind_gust_qc_flag = test_value
         self.assertEqual(self.instance.wind_gust_qc_flag, test_value)
     
@@ -227,7 +227,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test wind_gust_direction property
         """
-        test_value = float(54.450928588488814)
+        test_value = float(21.610504882875283)
         self.instance.wind_gust_direction = test_value
         self.assertEqual(self.instance.wind_gust_direction, test_value)
     
@@ -243,7 +243,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test max_temp property
         """
-        test_value = float(91.07809214420068)
+        test_value = float(47.17259321015518)
         self.instance.max_temp = test_value
         self.assertEqual(self.instance.max_temp, test_value)
     
@@ -259,7 +259,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test min_temp property
         """
-        test_value = float(1.2871954827694543)
+        test_value = float(89.1409846138587)
         self.instance.min_temp = test_value
         self.assertEqual(self.instance.min_temp, test_value)
     
@@ -275,7 +275,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation10m property
         """
-        test_value = float(23.217712216998322)
+        test_value = float(22.2351241664827)
         self.instance.precipitation10m = test_value
         self.assertEqual(self.instance.precipitation10m, test_value)
     
@@ -283,7 +283,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation10m_qc_flag property
         """
-        test_value = int(94)
+        test_value = int(71)
         self.instance.precipitation10m_qc_flag = test_value
         self.assertEqual(self.instance.precipitation10m_qc_flag, test_value)
     
@@ -291,7 +291,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation1h property
         """
-        test_value = float(22.613473312964416)
+        test_value = float(57.49557604338222)
         self.instance.precipitation1h = test_value
         self.assertEqual(self.instance.precipitation1h, test_value)
     
@@ -299,7 +299,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation1h_qc_flag property
         """
-        test_value = int(5)
+        test_value = int(22)
         self.instance.precipitation1h_qc_flag = test_value
         self.assertEqual(self.instance.precipitation1h_qc_flag, test_value)
     
@@ -307,7 +307,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation3h property
         """
-        test_value = float(79.09480224667973)
+        test_value = float(40.1474619587925)
         self.instance.precipitation3h = test_value
         self.assertEqual(self.instance.precipitation3h, test_value)
     
@@ -315,7 +315,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation3h_qc_flag property
         """
-        test_value = int(50)
+        test_value = int(28)
         self.instance.precipitation3h_qc_flag = test_value
         self.assertEqual(self.instance.precipitation3h_qc_flag, test_value)
     
@@ -323,7 +323,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation24h property
         """
-        test_value = float(71.51910142328036)
+        test_value = float(37.134568737648756)
         self.instance.precipitation24h = test_value
         self.assertEqual(self.instance.precipitation24h, test_value)
     
@@ -331,7 +331,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test precipitation24h_qc_flag property
         """
-        test_value = int(61)
+        test_value = int(57)
         self.instance.precipitation24h_qc_flag = test_value
         self.assertEqual(self.instance.precipitation24h_qc_flag, test_value)
     
@@ -339,7 +339,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test sun10m property
         """
-        test_value = float(7.694738443758986)
+        test_value = float(26.642754516474966)
         self.instance.sun10m = test_value
         self.assertEqual(self.instance.sun10m, test_value)
     
@@ -355,7 +355,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test sun1h property
         """
-        test_value = float(11.062150222933587)
+        test_value = float(88.42742935778645)
         self.instance.sun1h = test_value
         self.assertEqual(self.instance.sun1h, test_value)
     
@@ -363,7 +363,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test sun1h_qc_flag property
         """
-        test_value = int(43)
+        test_value = int(0)
         self.instance.sun1h_qc_flag = test_value
         self.assertEqual(self.instance.sun1h_qc_flag, test_value)
     
@@ -371,7 +371,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow property
         """
-        test_value = float(41.86972414278398)
+        test_value = float(87.07000487462055)
         self.instance.snow = test_value
         self.assertEqual(self.instance.snow, test_value)
     
@@ -379,7 +379,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow_qc_flag property
         """
-        test_value = int(59)
+        test_value = int(81)
         self.instance.snow_qc_flag = test_value
         self.assertEqual(self.instance.snow_qc_flag, test_value)
     
@@ -387,7 +387,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow1h property
         """
-        test_value = float(78.69760627226444)
+        test_value = float(91.00533157948702)
         self.instance.snow1h = test_value
         self.assertEqual(self.instance.snow1h, test_value)
     
@@ -395,7 +395,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow1h_qc_flag property
         """
-        test_value = int(27)
+        test_value = int(49)
         self.instance.snow1h_qc_flag = test_value
         self.assertEqual(self.instance.snow1h_qc_flag, test_value)
     
@@ -403,7 +403,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow6h property
         """
-        test_value = float(33.65254411645279)
+        test_value = float(88.28643335201511)
         self.instance.snow6h = test_value
         self.assertEqual(self.instance.snow6h, test_value)
     
@@ -411,7 +411,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow6h_qc_flag property
         """
-        test_value = int(67)
+        test_value = int(63)
         self.instance.snow6h_qc_flag = test_value
         self.assertEqual(self.instance.snow6h_qc_flag, test_value)
     
@@ -419,7 +419,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow12h property
         """
-        test_value = float(71.90718865670401)
+        test_value = float(29.090829135107697)
         self.instance.snow12h = test_value
         self.assertEqual(self.instance.snow12h, test_value)
     
@@ -427,7 +427,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow12h_qc_flag property
         """
-        test_value = int(58)
+        test_value = int(65)
         self.instance.snow12h_qc_flag = test_value
         self.assertEqual(self.instance.snow12h_qc_flag, test_value)
     
@@ -435,7 +435,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow24h property
         """
-        test_value = float(29.333712037403693)
+        test_value = float(58.878460370255766)
         self.instance.snow24h = test_value
         self.assertEqual(self.instance.snow24h, test_value)
     
@@ -443,7 +443,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test snow24h_qc_flag property
         """
-        test_value = int(48)
+        test_value = int(77)
         self.instance.snow24h_qc_flag = test_value
         self.assertEqual(self.instance.snow24h_qc_flag, test_value)
     
@@ -451,7 +451,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test visibility property
         """
-        test_value = float(68.44408688478774)
+        test_value = float(16.743612479898328)
         self.instance.visibility = test_value
         self.assertEqual(self.instance.visibility, test_value)
     
@@ -459,7 +459,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test visibility_qc_flag property
         """
-        test_value = int(86)
+        test_value = int(85)
         self.instance.visibility_qc_flag = test_value
         self.assertEqual(self.instance.visibility_qc_flag, test_value)
     
@@ -467,7 +467,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test cloud property
         """
-        test_value = float(2.018613271180558)
+        test_value = float(22.704240262005303)
         self.instance.cloud = test_value
         self.assertEqual(self.instance.cloud, test_value)
     
@@ -475,7 +475,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test cloud_qc_flag property
         """
-        test_value = int(0)
+        test_value = int(16)
         self.instance.cloud_qc_flag = test_value
         self.assertEqual(self.instance.cloud_qc_flag, test_value)
     
@@ -483,7 +483,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test weather property
         """
-        test_value = float(42.49395729435413)
+        test_value = float(15.376174800836884)
         self.instance.weather = test_value
         self.assertEqual(self.instance.weather, test_value)
     
@@ -491,7 +491,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test weather_qc_flag property
         """
-        test_value = int(47)
+        test_value = int(93)
         self.instance.weather_qc_flag = test_value
         self.assertEqual(self.instance.weather_qc_flag, test_value)
     
@@ -499,7 +499,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'hjqeqqltmwoexacwgcgk'
+        test_value = 'zbwcpzycwwwdlrivdmeq'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -507,7 +507,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test event property
         """
-        test_value = EventEnum.info
+        test_value = ObservationEventEnum.observation
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     

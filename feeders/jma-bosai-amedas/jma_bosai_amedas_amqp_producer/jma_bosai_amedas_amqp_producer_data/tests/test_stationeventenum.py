@@ -4,29 +4,29 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from jma_bosai_amedas_producer_data.jp.jma.amedas.eventenum import EventEnum
+from jma_bosai_amedas_amqp_producer_data.jp.jma.amedas.stationeventenum import StationEventEnum
 
 
-class Test_EventEnum(unittest.TestCase):
+class Test_StationEventEnum(unittest.TestCase):
     """
-    Test case for EventEnum
+    Test case for StationEventEnum
     """
 
     def setUp(self):
         """
         Setup test
         """
-        self.instance = EventEnum.info
+        self.instance = StationEventEnum.info
 
     @staticmethod
     def create_instance():
         """
-        Create instance of EventEnum
+        Create instance of StationEventEnum
         """
-        return EventEnum.info
+        return StationEventEnum.info
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(EventEnum.info.value, 'info')
+        self.assertEqual(StationEventEnum.info.value, 'info')

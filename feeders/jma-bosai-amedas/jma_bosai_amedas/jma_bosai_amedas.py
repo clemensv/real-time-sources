@@ -19,7 +19,8 @@ from confluent_kafka import Producer
 
 from jma_bosai_amedas_producer_data.jp.jma.amedas.observation import Observation
 from jma_bosai_amedas_producer_data.jp.jma.amedas.station import Station
-from jma_bosai_amedas_producer_data.jp.jma.amedas.eventenum import EventEnum
+from jma_bosai_amedas_producer_data.jp.jma.amedas.stationeventenum import StationEventEnum
+from jma_bosai_amedas_producer_data.jp.jma.amedas.observationeventenum import ObservationEventEnum
 try:
     from jma_bosai_amedas_producer_kafka_producer.producer import JPJMAAmedasEventProducer
 except ModuleNotFoundError:
@@ -183,7 +184,7 @@ def _measurement_kwargs() -> dict[str, Any]:
 def parse_station(station_code: str, payload: dict[str, Any]) -> Station:
     return Station(
         prefecture=prefecture_for_station(station_code),
-        event=EventEnum("info"),
+        event=StationEventEnum.info,
         station_code=station_code,
         kj_name=payload.get("kjName", ""),
         kana=payload.get("kana") or payload.get("knName", ""),
@@ -243,7 +244,7 @@ def parse_observation(station_code: str, payload: dict[str, Any], observed_at_lo
     utc = observed_at_local.astimezone(timezone.utc)
     return Observation(
         prefecture=prefecture_for_station(station_code),
-        event=EventEnum("info"),
+        event=ObservationEventEnum.observation,
         station_code=station_code,
         observed_at=datetime.fromisoformat(utc.isoformat().replace("+00:00", "Z")),
         observed_at_local=datetime.fromisoformat(observed_at_local.isoformat()),

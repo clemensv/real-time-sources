@@ -315,6 +315,7 @@
                               "pattern": "^[a-z0-9][a-z0-9-]*$"
                             },
                             "event": {
+                              "name": "StationEventEnum",
                               "type": "string",
                               "enum": [
                                 "info"
@@ -834,6 +835,7 @@
                               "pattern": "^[a-z0-9][a-z0-9-]*$"
                             },
                             "event": {
+                              "name": "ObservationEventEnum",
                               "type": "string",
                               "enum": [
                                 "observation"

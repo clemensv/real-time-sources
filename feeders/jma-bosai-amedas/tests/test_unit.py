@@ -17,6 +17,8 @@ from jma_bosai_amedas.jma_bosai_amedas import (
     point_detail_time_to_utc,
     point_file_time,
 )
+from jma_bosai_amedas_producer_data.jp.jma.amedas.stationeventenum import StationEventEnum
+from jma_bosai_amedas_producer_data.jp.jma.amedas.observationeventenum import ObservationEventEnum
 
 
 class FakeResponse:
@@ -124,6 +126,33 @@ class TestParsingHelpers:
         assert station.altitude_m == 3.0
         assert station.station_type == "A"
         assert "humidity" in station.enabled_measurements
+
+    def test_station_and_observation_carry_distinct_event_segments(self):
+        # Regression: the Station and Observation inline `event` enums used to
+        # collide into a single generated EventEnum (last-writer-wins, keeping
+        # only Station's "info"), which forced Observation messages onto the
+        # wrong `/info` topic segment. Each message type must now carry its own
+        # distinctly-named enum with the correct fixed value.
+        station = parse_station(
+            "44132",
+            {
+                "kjName": "東京",
+                "knName": "トウキョウ",
+                "enName": "Tokyo",
+                "lat": [35, 41.4],
+                "lon": [139, 45.6],
+                "alt": 25,
+                "type": "A",
+                "elems": "11111111",
+            },
+        )
+        observed_at = datetime(2026, 5, 21, 5, 50, tzinfo=timezone(timedelta(hours=9)))
+        observation = parse_observation("11016", {"temp": [14.5, 0]}, observed_at)
+        assert station.event is StationEventEnum.info
+        assert station.event.value == "info"
+        assert observation is not None
+        assert observation.event is ObservationEventEnum.observation
+        assert observation.event.value == "observation"
 
     def test_observation_parsing_from_fixture(self):
         observed_at = datetime(2026, 5, 21, 5, 50, tzinfo=timezone(timedelta(hours=9)))
