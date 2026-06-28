@@ -9,7 +9,7 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_volcano_producer_data.volcano import Volcano
-from jma_bosai_volcano_producer_data.eventenum import EventEnum
+from jma_bosai_volcano_producer_data.volcanoeventenum import VolcanoEventEnum
 
 
 class Test_Volcano(unittest.TestCase):
@@ -29,15 +29,15 @@ class Test_Volcano(unittest.TestCase):
         Create instance of Volcano for testing
         """
         instance = Volcano(
-            volcano_code='biqbwxqhupvvdgmkjzgv',
-            name_jp='bfgmwupiqrcofrzfxddl',
-            name_en='wukhcbmphdlemexepuew',
-            latitude=float(23.5819475489331),
-            longitude=float(76.99826376158799),
-            elevation_m=float(52.2475435573893),
-            level_operation=False,
-            prefecture='bsblkqduxxcqybizrxoj',
-            event=EventEnum.info
+            volcano_code='qcohxjiizgojienxhsfa',
+            name_jp='cosuyrapvtwxntubxrfq',
+            name_en='iioljkimoxgsqhnohnss',
+            latitude=float(85.18622989046791),
+            longitude=float(25.625840277936184),
+            elevation_m=float(74.80512298523027),
+            level_operation=True,
+            prefecture='epwujyilhheppkgvcvhc',
+            event=VolcanoEventEnum.info
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test volcano_code property
         """
-        test_value = 'biqbwxqhupvvdgmkjzgv'
+        test_value = 'qcohxjiizgojienxhsfa'
         self.instance.volcano_code = test_value
         self.assertEqual(self.instance.volcano_code, test_value)
     
@@ -54,7 +54,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test name_jp property
         """
-        test_value = 'bfgmwupiqrcofrzfxddl'
+        test_value = 'cosuyrapvtwxntubxrfq'
         self.instance.name_jp = test_value
         self.assertEqual(self.instance.name_jp, test_value)
     
@@ -62,7 +62,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'wukhcbmphdlemexepuew'
+        test_value = 'iioljkimoxgsqhnohnss'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     
@@ -70,7 +70,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(23.5819475489331)
+        test_value = float(85.18622989046791)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -78,7 +78,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(76.99826376158799)
+        test_value = float(25.625840277936184)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test elevation_m property
         """
-        test_value = float(52.2475435573893)
+        test_value = float(74.80512298523027)
         self.instance.elevation_m = test_value
         self.assertEqual(self.instance.elevation_m, test_value)
     
@@ -94,7 +94,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test level_operation property
         """
-        test_value = False
+        test_value = True
         self.instance.level_operation = test_value
         self.assertEqual(self.instance.level_operation, test_value)
     
@@ -102,7 +102,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'bsblkqduxxcqybizrxoj'
+        test_value = 'epwujyilhheppkgvcvhc'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -110,7 +110,7 @@ class Test_Volcano(unittest.TestCase):
         """
         Test event property
         """
-        test_value = EventEnum.info
+        test_value = VolcanoEventEnum.info
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     

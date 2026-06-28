@@ -1,8 +1,10 @@
+from .volcanoeventenum import VolcanoEventEnum
+from .volcano import Volcano
 from .conditionenum import ConditionEnum
-from .eventenum import EventEnum
+from .volcanicwarningeventenum import VolcanicWarningEventEnum
 from .volcanicwarning import VolcanicWarning
 from .eruptiontypeenum import EruptionTypeenum
+from .volcaniceruptioneventenum import VolcanicEruptionEventEnum
 from .volcaniceruption import VolcanicEruption
-from .volcano import Volcano
 
-__all__ = ["ConditionEnum", "EventEnum", "VolcanicWarning", "EruptionTypeenum", "VolcanicEruption", "Volcano"]
+__all__ = ["VolcanoEventEnum", "Volcano", "ConditionEnum", "VolcanicWarningEventEnum", "VolcanicWarning", "EruptionTypeenum", "VolcanicEruptionEventEnum", "VolcanicEruption"]

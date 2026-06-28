@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_volcano_producer_data.eventenum import EventEnum
+from jma_bosai_volcano_producer_data.volcanoeventenum import VolcanoEventEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -29,7 +29,7 @@ class Volcano:
         elevation_m (typing.Optional[float])
         level_operation (bool)
         prefecture (str)
-        event (EventEnum)
+        event (VolcanoEventEnum)
     """
     
     
@@ -41,7 +41,7 @@ class Volcano:
     elevation_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation_m"))
     level_operation: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level_operation"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: VolcanoEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Volcano':
@@ -170,13 +170,13 @@ class Volcano:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='biqbwxqhupvvdgmkjzgv',
-            name_jp='bfgmwupiqrcofrzfxddl',
-            name_en='wukhcbmphdlemexepuew',
-            latitude=float(23.5819475489331),
-            longitude=float(76.99826376158799),
-            elevation_m=float(52.2475435573893),
-            level_operation=False,
-            prefecture='bsblkqduxxcqybizrxoj',
-            event=EventEnum.info
+            volcano_code='qcohxjiizgojienxhsfa',
+            name_jp='cosuyrapvtwxntubxrfq',
+            name_en='iioljkimoxgsqhnohnss',
+            latitude=float(85.18622989046791),
+            longitude=float(25.625840277936184),
+            elevation_m=float(74.80512298523027),
+            level_operation=True,
+            prefecture='epwujyilhheppkgvcvhc',
+            event=VolcanoEventEnum.info
         )

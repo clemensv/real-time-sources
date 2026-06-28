@@ -1,14 +1,14 @@
 from enum import Enum
 
 
-class EventEnum(Enum):
+class VolcanicWarningEventEnum(Enum):
     """
-    Fixed topic event segment for Volcano messages.
+    Fixed topic event segment for VolcanicWarning messages.
     """
-    info = 'info'
+    warning = 'warning'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int | str) -> 'EventEnum':
+    def from_ordinal(cls, ordinal: int | str) -> 'VolcanicWarningEventEnum':
         """
         Get enum member by ordinal
 
@@ -29,12 +29,12 @@ class EventEnum(Enum):
             raise IndexError("Ordinal out of range for enum")
 
     @classmethod
-    def to_ordinal(cls, member: 'EventEnum') -> int:
+    def to_ordinal(cls, member: 'VolcanicWarningEventEnum') -> int:
         """
         Get enum ordinal
 
         Args:
-            member (EventEnum): The enum member to get the ordinal of.
+            member (VolcanicWarningEventEnum): The enum member to get the ordinal of.
 
         Returns:
             The ordinal of the enum member.

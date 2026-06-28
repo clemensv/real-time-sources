@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_volcano_mqtt_producer_data.eventenum import EventEnum
+from jma_bosai_volcano_mqtt_producer_data.volcanoeventenum import VolcanoEventEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -29,7 +29,7 @@ class Volcano:
         elevation_m (typing.Optional[float])
         level_operation (bool)
         prefecture (str)
-        event (EventEnum)
+        event (VolcanoEventEnum)
     """
     
     
@@ -41,7 +41,7 @@ class Volcano:
     elevation_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation_m"))
     level_operation: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level_operation"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: VolcanoEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Volcano':
@@ -170,13 +170,13 @@ class Volcano:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='mvyrarvjirnszequhtle',
-            name_jp='yrktkeguuqyigqnnnyyq',
-            name_en='sahfmiqbjzhxssrgfsgd',
-            latitude=float(82.22054932012946),
-            longitude=float(79.68018424622372),
-            elevation_m=float(71.401683819042),
+            volcano_code='plfziigujkjszbhhgqmi',
+            name_jp='oggxxathcqksircgmxnu',
+            name_en='ojuckpjrgakywbighgdr',
+            latitude=float(91.81731369906664),
+            longitude=float(5.061855898952317),
+            elevation_m=float(8.099434509988978),
             level_operation=False,
-            prefecture='atjiuwdjezrdywtatjpx',
-            event=EventEnum.eruption
+            prefecture='avuqodhyxpsfwzhxzusi',
+            event=VolcanoEventEnum.info
         )
