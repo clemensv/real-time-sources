@@ -23,7 +23,7 @@ jobs:
       matrix: ${{ steps.d.outputs.matrix }}
       empty: ${{ steps.d.outputs.empty }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Compute changed files
@@ -52,7 +52,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
