@@ -963,7 +963,14 @@ class TestBomAustraliaAmqpDockerFlow(AmqpDockerFlowBase):
 class TestDwdAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "dwd"
     image = "dwd-amqp"
-    env = {"ONCE_MODE": "true", "DWD_MODULES": "station_metadata,station_obs_10min,station_obs_10min_extremes"}
+    # DWD has no mock mode; it is a live multi-module poller. Without a station
+    # filter the obs modules emit ~169k messages in one ONCE_MODE pass, which
+    # overruns the 512m Artemis tmpfs and aborts the connection (framing-error)
+    # so the feeder exits non-zero. Bound the obs modules to a handful of major,
+    # currently-active solar 10-min stations (station_metadata still emits all
+    # stations as reference data) so the feeder exits 0 while every expected
+    # type still appears.
+    env = {"ONCE_MODE": "true", "DWD_MODULES": "station_metadata,station_obs_10min,station_obs_10min_extremes", "DWD_STATIONS": "00183,00232,00342,00460,00662,00691"}
     expected_types = {'DE.DWD.CDC.StationMetadata', 'DE.DWD.CDC.AirTemperature10Min', 'DE.DWD.CDC.Precipitation10Min', 'DE.DWD.CDC.Wind10Min', 'DE.DWD.CDC.Solar10Min', 'DE.DWD.CDC.ExtremeWind10Min', 'DE.DWD.CDC.ExtremeTemperature10Min'}
     expected_count = 7
 

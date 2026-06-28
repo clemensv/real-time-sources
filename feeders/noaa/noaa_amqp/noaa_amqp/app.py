@@ -10,6 +10,7 @@ package.
 
 import argparse
 import dataclasses
+import enum
 import inspect
 import logging
 import os
@@ -55,32 +56,45 @@ _SEND_SUFFIX = {
 # no salinity/conductivity/currents), so MOCK_MODE synthesises one sample of
 # each generated send_* type. Normal operation polls the live NOAA API.
 # ---------------------------------------------------------------------------
+def _unwrap_type(annotation):
+    """Strip Optional/Union wrappers down to the first concrete type."""
+    origin = typing.get_origin(annotation)
+    if origin is None:
+        return annotation
+    args = [a for a in typing.get_args(annotation) if a is not type(None)]
+    return args[0] if args else str
+
+
 def _sample_value(name, annotation):
-    lname = name.lower().rstrip("_")
-    if lname in ("station_id", "station_number", "code_station", "station_ref", "station_reference", "site_number"):
-        return "mock-station"
-    if lname in ("sensor_num",):
+    """Deterministic sample value for a generated data-class field (MOCK_MODE).
+
+    Type-driven first (enums, numbers, bools), then a small name-based fallback,
+    so every synthetic instance constructs and serialises without contacting the
+    live NOAA API.
+    """
+    typ = _unwrap_type(annotation)
+    try:
+        if isinstance(typ, type) and issubclass(typ, enum.Enum):
+            return list(typ)[0]
+    except TypeError:
+        pass
+    if typ is bool or "bool" in str(typ):
+        return False
+    if typ is int or "int" in str(typ):
         return 1
-    if lname in ("parameter_code",):
-        return "00010"
-    if lname in ("state",):
-        return "CA"
-    if lname in ("region",):
-        return "PACIFIC"
-    if lname in ("basin", "river", "water_body", "water_body_name", "river_name", "libelle_cours_eau", "water_area_name"):
-        return "mock-basin"
-    if "time" in lname or "date" in lname:
-        return datetime.now(timezone.utc).isoformat()
+    if typ is float or "float" in str(typ) or "double" in str(typ):
+        return 1.0
+    lname = name.lower().rstrip("_")
     if "lat" in lname:
         return 45.0
-    if lname in ("longitude", "long", "lng") or "lon" in lname:
+    if "lon" in lname:
         return -75.0
-    if any(x in lname for x in ("level", "value", "temperature", "speed", "pressure", "height", "depth", "salinity", "conductivity", "humidity", "visibility", "discharge", "flow", "elevation", "latitude")):
-        return 1.0
-    if any(x in lname for x in ("count", "code", "num", "bin", "direction", "timezonecorr")):
-        return 1
-    if lname.startswith("is_") or lname in ("tidal", "greatlakes", "observedst", "stormsurge", "forecast", "outlook", "nonnavigational", "en_service", "outside_sigma_band", "flat_tolerance_limit", "rate_of_change_limit", "max_min_expected_height", "max_pressure_exceeded", "min_pressure_exceeded", "rate_of_change_exceeded", "max_temp_exceeded", "min_temp_exceeded", "max_humidity_exceeded", "min_humidity_exceeded", "max_conductivity_exceeded", "min_conductivity_exceeded"):
-        return False
+    if "time" in lname or "date" in lname:
+        return datetime.now(timezone.utc).isoformat()
+    if lname in ("station_id", "station_number", "site_number"):
+        return "mock-station"
+    if lname == "region":
+        return "PACIFIC"
     return "mock"
 
 
@@ -154,6 +168,49 @@ def _send_telemetry(producer, product, station_id, region_slug, obj, time_iso):
     method(data=obj, _station_id=station_id, _region=region_slug, _time=time_iso)
 
 
+def _mock_build(cls, **overrides):
+    """Construct a generated data class with deterministic sample field values.
+
+    Overrides that do not correspond to a field on ``cls`` are ignored, so the
+    same override set can be passed to every event type.
+    """
+    try:
+        hints = typing.get_type_hints(cls)
+    except Exception:  # pragma: no cover - fall back to raw annotations
+        hints = {}
+    kwargs = {}
+    for f in dataclasses.fields(cls):
+        if f.name in overrides:
+            kwargs[f.name] = overrides[f.name]
+        else:
+            kwargs[f.name] = _sample_value(f.name, hints.get(f.name, f.type))
+    return cls(**kwargs)
+
+
+def _emit_mock(producer):
+    """MOCK_MODE: emit one synthetic instance of every event type, no polling.
+
+    The Docker E2E AMQP flow runs the container with MOCK_MODE=true + ONCE_MODE
+    and asserts the Station reference type (plus best-effort telemetry types)
+    reach the broker. Live polling cannot satisfy that in a single pass, so we
+    synthesise one sample of each generated send_* type instead.
+    """
+    region = "PACIFIC"
+    region_slug = _slug(region)
+    ts_iso = datetime.now(timezone.utc).isoformat()
+    station = _mock_build(ncd.Station, station_id="mock-station", region=region)
+    _send_station(producer, station)
+    logging.info("MOCK_MODE: emitted station mock-station")
+    classes = {"water_level": ncd.WaterLevel, **_DATA_CLASSES}
+    for product, cls in classes.items():
+        try:
+            obj = _mock_build(cls, station_id="mock-station", region=region, timestamp=ts_iso)
+            _send_telemetry(producer, product, "mock-station", region_slug, obj, ts_iso)
+            logging.info("MOCK_MODE: emitted %s", product)
+        except Exception as exc:  # best-effort telemetry; Station above is required
+            logging.warning("MOCK_MODE: skipped %s: %s", product, exc)
+
+
 def feed(
     host,
     port,
@@ -172,11 +229,15 @@ def feed(
     state_file=None,
     polling_interval=300,
     once=False,
+    mock=False,
 ):
     cls = next(obj for obj in globals().values() if isinstance(obj, type) and obj.__name__.endswith("AmqpProducer"))
     producer = _retry_producer_init(lambda: _build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key))
     api = NOAAClient()
     try:
+        if mock:
+            _emit_mock(producer)
+            return
         raw_stations = api.fetch_stations_raw()
         stations = ncd.Station.schema().load(raw_stations, many=True)  # pylint: disable=no-member
         stations = noaa_core.select_stations(stations, station)
@@ -298,4 +359,5 @@ def main(argv=None):
         state_file=args.state_file,
         polling_interval=args.polling_interval,
         once=args.once,
+        mock=args.mock,
     )
