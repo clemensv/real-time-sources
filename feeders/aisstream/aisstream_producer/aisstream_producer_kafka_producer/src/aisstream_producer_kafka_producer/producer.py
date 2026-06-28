@@ -77,8 +77,6 @@ from aisstream_producer_data import GroupAssignmentCommand
 from aisstream_producer_data import Interrogation
 from aisstream_producer_data import MultiSlotBinaryMessage
 from aisstream_producer_data import SingleSlotBinaryMessage
-from aisstream_producer_data import ShipStatic
-from aisstream_producer_data import AidToNavigation
 
 class IOAISstreamEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -1034,7 +1032,7 @@ class IOAISstreamMqttEventProducer:
         """
         kafka_key = None
         attributes = {
-             "type":"IO.AISstream.mqtt.PositionReport",
+             "type":"IO.AISstream.PositionReport",
              "source":"wss://stream.aisstream.io/v0/stream",
              "subject":"{mmsi}".format(mmsi = _mmsi)
         }
@@ -1053,21 +1051,21 @@ class IOAISstreamMqttEventProducer:
             self.producer.flush()
 
 
-    def send_io_aisstream_mqtt_ship_static(self,_mmsi : str, data: ShipStatic, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ShipStatic], str]=None) -> None:
+    def send_io_aisstream_mqtt_ship_static_data(self,_mmsi : str, data: ShipStaticData, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ShipStaticData], str]=None) -> None:
         """
-        Sends the 'IO.AISstream.mqtt.ShipStatic' event to the Kafka topic
+        Sends the 'IO.AISstream.mqtt.ShipStaticData' event to the Kafka topic
 
         Args:
             _mmsi(str):  Value for placeholder mmsi in attribute subject
-            data: (ShipStatic): The event data to be sent
+            data: (ShipStaticData): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, ShipStatic], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, ShipStaticData], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
         kafka_key = None
         attributes = {
-             "type":"IO.AISstream.mqtt.ShipStatic",
+             "type":"IO.AISstream.ShipStaticData",
              "source":"wss://stream.aisstream.io/v0/stream",
              "subject":"{mmsi}".format(mmsi = _mmsi)
         }
@@ -1086,21 +1084,681 @@ class IOAISstreamMqttEventProducer:
             self.producer.flush()
 
 
-    def send_io_aisstream_mqtt_aid_to_navigation(self,_mmsi : str, data: AidToNavigation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AidToNavigation], str]=None) -> None:
+    def send_io_aisstream_mqtt_standard_class_bposition_report(self,_mmsi : str, data: StandardClassBPositionReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StandardClassBPositionReport], str]=None) -> None:
         """
-        Sends the 'IO.AISstream.mqtt.AidToNavigation' event to the Kafka topic
+        Sends the 'IO.AISstream.mqtt.StandardClassBPositionReport' event to the Kafka topic
 
         Args:
             _mmsi(str):  Value for placeholder mmsi in attribute subject
-            data: (AidToNavigation): The event data to be sent
+            data: (StandardClassBPositionReport): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, AidToNavigation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, StandardClassBPositionReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
         kafka_key = None
         attributes = {
-             "type":"IO.AISstream.mqtt.AidToNavigation",
+             "type":"IO.AISstream.StandardClassBPositionReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_extended_class_bposition_report(self,_mmsi : str, data: ExtendedClassBPositionReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ExtendedClassBPositionReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.ExtendedClassBPositionReport' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (ExtendedClassBPositionReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ExtendedClassBPositionReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.ExtendedClassBPositionReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_aids_to_navigation_report(self,_mmsi : str, data: AidsToNavigationReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AidsToNavigationReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.AidsToNavigationReport' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (AidsToNavigationReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AidsToNavigationReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AidsToNavigationReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_static_data_report(self,_mmsi : str, data: StaticDataReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StaticDataReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.StaticDataReport' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (StaticDataReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, StaticDataReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.StaticDataReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_base_station_report(self,_mmsi : str, data: BaseStationReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BaseStationReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.BaseStationReport' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (BaseStationReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BaseStationReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.BaseStationReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_safety_broadcast_message(self,_mmsi : str, data: SafetyBroadcastMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SafetyBroadcastMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.SafetyBroadcastMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (SafetyBroadcastMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, SafetyBroadcastMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.SafetyBroadcastMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_standard_search_and_rescue_aircraft_report(self,_mmsi : str, data: StandardSearchAndRescueAircraftReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StandardSearchAndRescueAircraftReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (StandardSearchAndRescueAircraftReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, StandardSearchAndRescueAircraftReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.StandardSearchAndRescueAircraftReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_long_range_ais_broadcast_message(self,_mmsi : str, data: LongRangeAisBroadcastMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LongRangeAisBroadcastMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.LongRangeAisBroadcastMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (LongRangeAisBroadcastMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, LongRangeAisBroadcastMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.LongRangeAisBroadcastMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_addressed_safety_message(self,_mmsi : str, data: AddressedSafetyMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AddressedSafetyMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.AddressedSafetyMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (AddressedSafetyMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AddressedSafetyMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AddressedSafetyMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_addressed_binary_message(self,_mmsi : str, data: AddressedBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AddressedBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.AddressedBinaryMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (AddressedBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AddressedBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AddressedBinaryMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_assigned_mode_command(self,_mmsi : str, data: AssignedModeCommand, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AssignedModeCommand], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.AssignedModeCommand' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (AssignedModeCommand): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AssignedModeCommand], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AssignedModeCommand",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_binary_acknowledge(self,_mmsi : str, data: BinaryAcknowledge, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BinaryAcknowledge], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.BinaryAcknowledge' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (BinaryAcknowledge): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BinaryAcknowledge], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.BinaryAcknowledge",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_binary_broadcast_message(self,_mmsi : str, data: BinaryBroadcastMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BinaryBroadcastMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.BinaryBroadcastMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (BinaryBroadcastMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BinaryBroadcastMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.BinaryBroadcastMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_channel_management(self,_mmsi : str, data: ChannelManagement, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ChannelManagement], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.ChannelManagement' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (ChannelManagement): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ChannelManagement], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.ChannelManagement",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_coordinated_utcinquiry(self,_mmsi : str, data: CoordinatedUTCInquiry, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CoordinatedUTCInquiry], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.CoordinatedUTCInquiry' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (CoordinatedUTCInquiry): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, CoordinatedUTCInquiry], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.CoordinatedUTCInquiry",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_data_link_management_message(self,_mmsi : str, data: DataLinkManagementMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataLinkManagementMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.DataLinkManagementMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (DataLinkManagementMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, DataLinkManagementMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.DataLinkManagementMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_gnss_broadcast_binary_message(self,_mmsi : str, data: GnssBroadcastBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GnssBroadcastBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.GnssBroadcastBinaryMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (GnssBroadcastBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, GnssBroadcastBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.GnssBroadcastBinaryMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_group_assignment_command(self,_mmsi : str, data: GroupAssignmentCommand, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GroupAssignmentCommand], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.GroupAssignmentCommand' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (GroupAssignmentCommand): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, GroupAssignmentCommand], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.GroupAssignmentCommand",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_interrogation(self,_mmsi : str, data: Interrogation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Interrogation], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.Interrogation' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (Interrogation): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Interrogation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.Interrogation",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_multi_slot_binary_message(self,_mmsi : str, data: MultiSlotBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MultiSlotBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.MultiSlotBinaryMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (MultiSlotBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, MultiSlotBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.MultiSlotBinaryMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_mqtt_single_slot_binary_message(self,_mmsi : str, data: SingleSlotBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SingleSlotBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.mqtt.SingleSlotBinaryMessage' event to the Kafka topic
+
+        Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            data: (SingleSlotBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, SingleSlotBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.SingleSlotBinaryMessage",
              "source":"wss://stream.aisstream.io/v0/stream",
              "subject":"{mmsi}".format(mmsi = _mmsi)
         }
@@ -1238,12 +1896,12 @@ class IOAISstreamAmqpEventProducer:
             payload = payload.encode('utf-8')
         return payload
 
-    def send_io_aisstream_amqp_position_report(self,_mmsi : str, data: PositionReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PositionReport], str]=None) -> None:
+    def send_io_aisstream_amqp_position_report(self,_user_id : str, data: PositionReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PositionReport], str]=None) -> None:
         """
         Sends the 'IO.AISstream.amqp.PositionReport' event to the Kafka topic
 
         Args:
-            _mmsi(str):  Value for placeholder mmsi in attribute subject
+            _user_id(str):  Value for placeholder UserID in attribute subject
             data: (PositionReport): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
@@ -1252,9 +1910,9 @@ class IOAISstreamAmqpEventProducer:
         """
         kafka_key = None
         attributes = {
-             "type":"IO.AISstream.mqtt.PositionReport",
+             "type":"IO.AISstream.PositionReport",
              "source":"wss://stream.aisstream.io/v0/stream",
-             "subject":"{mmsi}".format(mmsi = _mmsi)
+             "subject":"{UserID}".format(UserID = _user_id)
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1271,23 +1929,23 @@ class IOAISstreamAmqpEventProducer:
             self.producer.flush()
 
 
-    def send_io_aisstream_amqp_ship_static(self,_mmsi : str, data: ShipStatic, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ShipStatic], str]=None) -> None:
+    def send_io_aisstream_amqp_ship_static_data(self,_user_id : str, data: ShipStaticData, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ShipStaticData], str]=None) -> None:
         """
-        Sends the 'IO.AISstream.amqp.ShipStatic' event to the Kafka topic
+        Sends the 'IO.AISstream.amqp.ShipStaticData' event to the Kafka topic
 
         Args:
-            _mmsi(str):  Value for placeholder mmsi in attribute subject
-            data: (ShipStatic): The event data to be sent
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (ShipStaticData): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, ShipStatic], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, ShipStaticData], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
         kafka_key = None
         attributes = {
-             "type":"IO.AISstream.mqtt.ShipStatic",
+             "type":"IO.AISstream.ShipStaticData",
              "source":"wss://stream.aisstream.io/v0/stream",
-             "subject":"{mmsi}".format(mmsi = _mmsi)
+             "subject":"{UserID}".format(UserID = _user_id)
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1304,23 +1962,683 @@ class IOAISstreamAmqpEventProducer:
             self.producer.flush()
 
 
-    def send_io_aisstream_amqp_aid_to_navigation(self,_mmsi : str, data: AidToNavigation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AidToNavigation], str]=None) -> None:
+    def send_io_aisstream_amqp_standard_class_bposition_report(self,_user_id : str, data: StandardClassBPositionReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StandardClassBPositionReport], str]=None) -> None:
         """
-        Sends the 'IO.AISstream.amqp.AidToNavigation' event to the Kafka topic
+        Sends the 'IO.AISstream.amqp.StandardClassBPositionReport' event to the Kafka topic
 
         Args:
-            _mmsi(str):  Value for placeholder mmsi in attribute subject
-            data: (AidToNavigation): The event data to be sent
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (StandardClassBPositionReport): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, AidToNavigation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, StandardClassBPositionReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
         kafka_key = None
         attributes = {
-             "type":"IO.AISstream.mqtt.AidToNavigation",
+             "type":"IO.AISstream.StandardClassBPositionReport",
              "source":"wss://stream.aisstream.io/v0/stream",
-             "subject":"{mmsi}".format(mmsi = _mmsi)
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_extended_class_bposition_report(self,_user_id : str, data: ExtendedClassBPositionReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ExtendedClassBPositionReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.ExtendedClassBPositionReport' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (ExtendedClassBPositionReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ExtendedClassBPositionReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.ExtendedClassBPositionReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_aids_to_navigation_report(self,_user_id : str, data: AidsToNavigationReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AidsToNavigationReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.AidsToNavigationReport' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (AidsToNavigationReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AidsToNavigationReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AidsToNavigationReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_static_data_report(self,_user_id : str, data: StaticDataReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StaticDataReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.StaticDataReport' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (StaticDataReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, StaticDataReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.StaticDataReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_base_station_report(self,_user_id : str, data: BaseStationReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BaseStationReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.BaseStationReport' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (BaseStationReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BaseStationReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.BaseStationReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_safety_broadcast_message(self,_user_id : str, data: SafetyBroadcastMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SafetyBroadcastMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.SafetyBroadcastMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (SafetyBroadcastMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, SafetyBroadcastMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.SafetyBroadcastMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_standard_search_and_rescue_aircraft_report(self,_user_id : str, data: StandardSearchAndRescueAircraftReport, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StandardSearchAndRescueAircraftReport], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.StandardSearchAndRescueAircraftReport' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (StandardSearchAndRescueAircraftReport): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, StandardSearchAndRescueAircraftReport], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.StandardSearchAndRescueAircraftReport",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_long_range_ais_broadcast_message(self,_user_id : str, data: LongRangeAisBroadcastMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LongRangeAisBroadcastMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.LongRangeAisBroadcastMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (LongRangeAisBroadcastMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, LongRangeAisBroadcastMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.LongRangeAisBroadcastMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_addressed_safety_message(self,_user_id : str, data: AddressedSafetyMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AddressedSafetyMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.AddressedSafetyMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (AddressedSafetyMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AddressedSafetyMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AddressedSafetyMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_addressed_binary_message(self,_user_id : str, data: AddressedBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AddressedBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.AddressedBinaryMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (AddressedBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AddressedBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AddressedBinaryMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_assigned_mode_command(self,_user_id : str, data: AssignedModeCommand, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AssignedModeCommand], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.AssignedModeCommand' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (AssignedModeCommand): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AssignedModeCommand], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.AssignedModeCommand",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_binary_acknowledge(self,_user_id : str, data: BinaryAcknowledge, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BinaryAcknowledge], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.BinaryAcknowledge' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (BinaryAcknowledge): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BinaryAcknowledge], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.BinaryAcknowledge",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_binary_broadcast_message(self,_user_id : str, data: BinaryBroadcastMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BinaryBroadcastMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.BinaryBroadcastMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (BinaryBroadcastMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BinaryBroadcastMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.BinaryBroadcastMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_channel_management(self,_user_id : str, data: ChannelManagement, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ChannelManagement], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.ChannelManagement' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (ChannelManagement): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ChannelManagement], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.ChannelManagement",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_coordinated_utcinquiry(self,_user_id : str, data: CoordinatedUTCInquiry, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CoordinatedUTCInquiry], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.CoordinatedUTCInquiry' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (CoordinatedUTCInquiry): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, CoordinatedUTCInquiry], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.CoordinatedUTCInquiry",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_data_link_management_message(self,_user_id : str, data: DataLinkManagementMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataLinkManagementMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.DataLinkManagementMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (DataLinkManagementMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, DataLinkManagementMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.DataLinkManagementMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_gnss_broadcast_binary_message(self,_user_id : str, data: GnssBroadcastBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GnssBroadcastBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.GnssBroadcastBinaryMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (GnssBroadcastBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, GnssBroadcastBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.GnssBroadcastBinaryMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_group_assignment_command(self,_user_id : str, data: GroupAssignmentCommand, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GroupAssignmentCommand], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.GroupAssignmentCommand' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (GroupAssignmentCommand): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, GroupAssignmentCommand], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.GroupAssignmentCommand",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_interrogation(self,_user_id : str, data: Interrogation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Interrogation], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.Interrogation' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (Interrogation): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Interrogation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.Interrogation",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_multi_slot_binary_message(self,_user_id : str, data: MultiSlotBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MultiSlotBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.MultiSlotBinaryMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (MultiSlotBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, MultiSlotBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.MultiSlotBinaryMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_io_aisstream_amqp_single_slot_binary_message(self,_user_id : str, data: SingleSlotBinaryMessage, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SingleSlotBinaryMessage], str]=None) -> None:
+        """
+        Sends the 'IO.AISstream.amqp.SingleSlotBinaryMessage' event to the Kafka topic
+
+        Args:
+            _user_id(str):  Value for placeholder UserID in attribute subject
+            data: (SingleSlotBinaryMessage): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, SingleSlotBinaryMessage], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"IO.AISstream.SingleSlotBinaryMessage",
+             "source":"wss://stream.aisstream.io/v0/stream",
+             "subject":"{UserID}".format(UserID = _user_id)
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

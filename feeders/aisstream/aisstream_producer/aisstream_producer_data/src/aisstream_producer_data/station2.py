@@ -164,9 +164,9 @@ class Station2:
         """
         return cls(
             Valid=True,
-            Spare1=int(35),
-            StationID=int(73),
-            MessageID=int(64),
-            SlotOffset=int(28),
-            Spare2=int(19)
+            Spare1=int(62),
+            StationID=int(48),
+            MessageID=int(29),
+            SlotOffset=int(20),
+            Spare2=int(94)
         )

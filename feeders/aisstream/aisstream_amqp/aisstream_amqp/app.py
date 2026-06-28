@@ -10,12 +10,19 @@ import sys
 from typing import Optional
 from urllib.parse import urlparse
 
-from aisstream_core import AisStreamBridge
-from aisstream_amqp_producer_data import AidToNavigation, PositionReport, ShipStatic
+from aisstream_core import AIS_MESSAGE_TYPES, AisStreamBridge, mock_envelopes
+import aisstream_amqp_producer_data as _amqp_data
 from aisstream_amqp_producer_amqp_producer.producer import IOAISstreamAmqpProducer
 
 logger = logging.getLogger("aisstream_amqp")
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
+
+# Upstream MessageType -> (raw data class, AMQP send method). The AMQP transport
+# carries the same 23 raw AIS types as Kafka, keyed identically by UserID.
+_AMQP_DISPATCH = {
+    mt: (getattr(_amqp_data, mt), f"send_{suffix}")
+    for mt, suffix in AIS_MESSAGE_TYPES
+}
 
 
 def _parse_amqp_broker_url(url: str) -> tuple[str, int, bool, Optional[str], Optional[str], Optional[str]]:
@@ -79,50 +86,37 @@ def create_amqp_producer(args: argparse.Namespace, producer_cls):
     return _build_amqp_producer(producer_cls, host=host, port=port, address=address, use_tls=tls, content_mode=args.content_mode, auth_mode=args.auth_mode, username=username, password=password, entra_audience=args.entra_audience, entra_client_id=args.entra_client_id, sas_key_name=args.sas_key_name, sas_key=args.sas_key)
 
 
-class AisStreamAmqpClientAdapter:
+class AisStreamAmqpClient:
+    """Emit each raw AIS type over AMQP 1.0, keyed by UserID (mirrors Kafka)."""
+
     def __init__(self, producer: IOAISstreamAmqpProducer):
         self._producer = producer
 
-    async def publish_position_report(self, *, mmsi, flag, ship_type, geohash5, payload):
-        data = PositionReport(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, msg_type="position-report", **payload)
-        self._producer.send_position_report(data=data, _mmsi=mmsi, _flag=flag, _ship_type=ship_type, _geohash5=geohash5)
-
-    async def publish_ship_static(self, *, mmsi, flag, ship_type, geohash5, payload):
-        data = ShipStatic(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, msg_type="static", **payload)
-        self._producer.send_ship_static(data=data, _mmsi=mmsi, _flag=flag, _ship_type=ship_type, _geohash5=geohash5)
-
-    async def publish_aid_to_navigation(self, *, mmsi, flag, ship_type, geohash5, payload):
-        data = AidToNavigation(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, msg_type="aid-to-navigation", **payload)
-        self._producer.send_aid_to_navigation(data=data, _mmsi=mmsi, _flag=flag, _ship_type=ship_type, _geohash5=geohash5)
+    async def emit(self, message_type, payload, *, user_id, mmsi, flag, ship_type, geohash5):
+        mapping = _AMQP_DISPATCH.get(message_type)
+        if mapping is None:
+            logger.debug("Skipping unknown message type: %s", message_type)
+            return
+        data_class, method_name = mapping
+        try:
+            data = data_class.from_serializer_dict(payload)
+        except Exception as exc:  # noqa: BLE001 - bad upstream payload, skip
+            logger.warning("Failed to decode %s: %s", message_type, exc)
+            return
+        getattr(self._producer, method_name)(data=data, _user_id=str(user_id))
 
 
 async def _run(args: argparse.Namespace) -> None:
     producer = create_amqp_producer(args, IOAISstreamAmqpProducer)
+    bridge = AisStreamBridge(AisStreamAmqpClient(producer), api_key=args.api_key, ws_url=args.ws_url)
     if args.mock:
-        logger.info("Running AISstream AMQP bridge in mock mode")
-        adapter = AisStreamAmqpClientAdapter(producer)
-        # Emit canned mock data matching the Kafka bridge's mock corpus
-        await adapter.publish_ship_static(
-            mmsi="219000001", flag="DK", ship_type="cargo", geohash5="u4pru",
-            payload={"user_id": 219000001, "name": "AISSTREAM MOCK STATIC",
-                     "call_sign": "OXAI1", "imo_number": 1234567,
-                     "ship_type_code": 70, "dim_to_bow": 10, "dim_to_stern": 90,
-                     "dim_to_port": 8, "dim_to_starboard": 8, "eta": "03-15 12:00",
-                     "draught": 8.5, "destination": "AARHUS", "message_id": 5})
-        await adapter.publish_position_report(
-            mmsi="219000001", flag="DK", ship_type="cargo", geohash5="u4pru",
-            payload={"user_id": 219000001, "navigational_status": 0, "rate_of_turn": 0,
-                     "sog": 12.3, "position_accuracy": True,
-                     "longitude": 10.21, "latitude": 56.15, "cog": 90.5,
-                     "true_heading": 91, "timestamp": 10, "raim": True, "message_id": 1})
-        await adapter.publish_aid_to_navigation(
-            mmsi="992190001", flag="DK", ship_type="unknown", geohash5="u4pru",
-            payload={"user_id": 992190001, "name": "MOCK BUOY", "type": 5,
-                     "latitude": 56.17, "longitude": 10.25,
-                     "off_position": False, "virtual_atoN": False, "message_id": 21})
-        producer.close()
+        logger.info("Mock mode: emitting synthetic AIS corpus and exiting")
+        try:
+            for envelope in mock_envelopes():
+                await bridge.handle_envelope(envelope)
+        finally:
+            producer.close()
         return
-    bridge = AisStreamBridge(AisStreamAmqpClientAdapter(producer), api_key=args.api_key, ws_url=args.ws_url)
     try:
         await bridge.run(max_events=args.max_events)
     finally:

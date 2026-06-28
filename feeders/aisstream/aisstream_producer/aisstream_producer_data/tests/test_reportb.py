@@ -30,14 +30,14 @@ class Test_ReportB(unittest.TestCase):
         """
         instance = ReportB(
             Valid=False,
-            ShipType=int(95),
-            VendorIDName='xwhwbhstqeyyuuzujyny',
-            VenderIDModel=int(38),
-            VenderIDSerial=int(6),
-            CallSign='sdchapsazhymzxgaclwi',
+            ShipType=int(49),
+            VendorIDName='ylmzstmnrclvwejpxadg',
+            VenderIDModel=int(2),
+            VenderIDSerial=int(64),
+            CallSign='ircopgoyqynmtsuhxvdm',
             Dimension=None,
-            FixType=int(69),
-            Spare=int(1)
+            FixType=int(14),
+            Spare=int(97)
         )
         return instance
 
@@ -54,7 +54,7 @@ class Test_ReportB(unittest.TestCase):
         """
         Test ShipType property
         """
-        test_value = int(95)
+        test_value = int(49)
         self.instance.ShipType = test_value
         self.assertEqual(self.instance.ShipType, test_value)
     
@@ -62,7 +62,7 @@ class Test_ReportB(unittest.TestCase):
         """
         Test VendorIDName property
         """
-        test_value = 'xwhwbhstqeyyuuzujyny'
+        test_value = 'ylmzstmnrclvwejpxadg'
         self.instance.VendorIDName = test_value
         self.assertEqual(self.instance.VendorIDName, test_value)
     
@@ -70,7 +70,7 @@ class Test_ReportB(unittest.TestCase):
         """
         Test VenderIDModel property
         """
-        test_value = int(38)
+        test_value = int(2)
         self.instance.VenderIDModel = test_value
         self.assertEqual(self.instance.VenderIDModel, test_value)
     
@@ -78,7 +78,7 @@ class Test_ReportB(unittest.TestCase):
         """
         Test VenderIDSerial property
         """
-        test_value = int(6)
+        test_value = int(64)
         self.instance.VenderIDSerial = test_value
         self.assertEqual(self.instance.VenderIDSerial, test_value)
     
@@ -86,7 +86,7 @@ class Test_ReportB(unittest.TestCase):
         """
         Test CallSign property
         """
-        test_value = 'sdchapsazhymzxgaclwi'
+        test_value = 'ircopgoyqynmtsuhxvdm'
         self.instance.CallSign = test_value
         self.assertEqual(self.instance.CallSign, test_value)
     
@@ -102,7 +102,7 @@ class Test_ReportB(unittest.TestCase):
         """
         Test FixType property
         """
-        test_value = int(69)
+        test_value = int(14)
         self.instance.FixType = test_value
         self.assertEqual(self.instance.FixType, test_value)
     
@@ -110,7 +110,7 @@ class Test_ReportB(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(1)
+        test_value = int(97)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     

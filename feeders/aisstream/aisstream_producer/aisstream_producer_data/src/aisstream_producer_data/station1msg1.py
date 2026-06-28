@@ -160,7 +160,7 @@ class Station1Msg1:
         """
         return cls(
             Valid=False,
-            StationID=int(89),
-            MessageID=int(27),
-            SlotOffset=int(37)
+            StationID=int(65),
+            MessageID=int(90),
+            SlotOffset=int(64)
         )

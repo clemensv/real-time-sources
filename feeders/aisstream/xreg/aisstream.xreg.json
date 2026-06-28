@@ -520,7 +520,7 @@
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
-              "value": "IO.AISstream.mqtt.PositionReport"
+              "value": "IO.AISstream.PositionReport"
             },
             "source": {
               "value": "wss://stream.aisstream.io/v0/stream"
@@ -536,17 +536,17 @@
             "retain": false
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.PositionReport",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.PositionReport",
           "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
-        "IO.AISstream.mqtt.ShipStatic": {
-          "messageid": "IO.AISstream.mqtt.ShipStatic.mqtt",
-          "name": "ShipStatic",
+        "IO.AISstream.mqtt.ShipStaticData": {
+          "messageid": "IO.AISstream.mqtt.ShipStaticData.mqtt",
+          "name": "ShipStaticData",
           "protocol": "MQTT/5.0",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
-              "value": "IO.AISstream.mqtt.ShipStatic"
+              "value": "IO.AISstream.ShipStaticData"
             },
             "source": {
               "value": "wss://stream.aisstream.io/v0/stream"
@@ -557,22 +557,22 @@
             }
           },
           "protocoloptions": {
-            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static",
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/ship-static-data",
             "qos": 0,
             "retain": false
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.ShipStatic",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ShipStaticData",
           "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
-        "IO.AISstream.mqtt.AidToNavigation": {
-          "messageid": "IO.AISstream.mqtt.AidToNavigation.mqtt",
-          "name": "AidToNavigation",
+        "IO.AISstream.mqtt.StandardClassBPositionReport": {
+          "messageid": "IO.AISstream.mqtt.StandardClassBPositionReport.mqtt",
+          "name": "StandardClassBPositionReport",
           "protocol": "MQTT/5.0",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
-              "value": "IO.AISstream.mqtt.AidToNavigation"
+              "value": "IO.AISstream.StandardClassBPositionReport"
             },
             "source": {
               "value": "wss://stream.aisstream.io/v0/stream"
@@ -583,12 +583,532 @@
             }
           },
           "protocoloptions": {
-            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation",
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/standard-class-b-position-report",
             "qos": 0,
             "retain": false
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.AidToNavigation",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardClassBPositionReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.ExtendedClassBPositionReport": {
+          "messageid": "IO.AISstream.mqtt.ExtendedClassBPositionReport.mqtt",
+          "name": "ExtendedClassBPositionReport",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.ExtendedClassBPositionReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/extended-class-b-position-report",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ExtendedClassBPositionReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.AidsToNavigationReport": {
+          "messageid": "IO.AISstream.mqtt.AidsToNavigationReport.mqtt",
+          "name": "AidsToNavigationReport",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AidsToNavigationReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aids-to-navigation-report",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AidsToNavigationReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.StaticDataReport": {
+          "messageid": "IO.AISstream.mqtt.StaticDataReport.mqtt",
+          "name": "StaticDataReport",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.StaticDataReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static-data-report",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StaticDataReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.BaseStationReport": {
+          "messageid": "IO.AISstream.mqtt.BaseStationReport.mqtt",
+          "name": "BaseStationReport",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.BaseStationReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/base-station-report",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BaseStationReport",
+          "description": "A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
+        },
+        "IO.AISstream.mqtt.SafetyBroadcastMessage": {
+          "messageid": "IO.AISstream.mqtt.SafetyBroadcastMessage.mqtt",
+          "name": "SafetyBroadcastMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.SafetyBroadcastMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/safety-broadcast-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SafetyBroadcastMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport": {
+          "messageid": "IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport.mqtt",
+          "name": "StandardSearchAndRescueAircraftReport",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.StandardSearchAndRescueAircraftReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/standard-search-and-rescue-aircraft-report",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardSearchAndRescueAircraftReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.LongRangeAisBroadcastMessage": {
+          "messageid": "IO.AISstream.mqtt.LongRangeAisBroadcastMessage.mqtt",
+          "name": "LongRangeAisBroadcastMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.LongRangeAisBroadcastMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/long-range-ais-broadcast-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.LongRangeAisBroadcastMessage",
+          "description": "A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
+        },
+        "IO.AISstream.mqtt.AddressedSafetyMessage": {
+          "messageid": "IO.AISstream.mqtt.AddressedSafetyMessage.mqtt",
+          "name": "AddressedSafetyMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AddressedSafetyMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/addressed-safety-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedSafetyMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.AddressedBinaryMessage": {
+          "messageid": "IO.AISstream.mqtt.AddressedBinaryMessage.mqtt",
+          "name": "AddressedBinaryMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AddressedBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/addressed-binary-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedBinaryMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.AssignedModeCommand": {
+          "messageid": "IO.AISstream.mqtt.AssignedModeCommand.mqtt",
+          "name": "AssignedModeCommand",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AssignedModeCommand"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/assigned-mode-command",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AssignedModeCommand",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.BinaryAcknowledge": {
+          "messageid": "IO.AISstream.mqtt.BinaryAcknowledge.mqtt",
+          "name": "BinaryAcknowledge",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.BinaryAcknowledge"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/binary-acknowledge",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryAcknowledge",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.BinaryBroadcastMessage": {
+          "messageid": "IO.AISstream.mqtt.BinaryBroadcastMessage.mqtt",
+          "name": "BinaryBroadcastMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.BinaryBroadcastMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/binary-broadcast-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryBroadcastMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.ChannelManagement": {
+          "messageid": "IO.AISstream.mqtt.ChannelManagement.mqtt",
+          "name": "ChannelManagement",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.ChannelManagement"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/channel-management",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ChannelManagement",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.CoordinatedUTCInquiry": {
+          "messageid": "IO.AISstream.mqtt.CoordinatedUTCInquiry.mqtt",
+          "name": "CoordinatedUTCInquiry",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.CoordinatedUTCInquiry"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/coordinated-utc-inquiry",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.CoordinatedUTCInquiry",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.DataLinkManagementMessage": {
+          "messageid": "IO.AISstream.mqtt.DataLinkManagementMessage.mqtt",
+          "name": "DataLinkManagementMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.DataLinkManagementMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/data-link-management-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.DataLinkManagementMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.GnssBroadcastBinaryMessage": {
+          "messageid": "IO.AISstream.mqtt.GnssBroadcastBinaryMessage.mqtt",
+          "name": "GnssBroadcastBinaryMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.GnssBroadcastBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/gnss-broadcast-binary-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GnssBroadcastBinaryMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.GroupAssignmentCommand": {
+          "messageid": "IO.AISstream.mqtt.GroupAssignmentCommand.mqtt",
+          "name": "GroupAssignmentCommand",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.GroupAssignmentCommand"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/group-assignment-command",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GroupAssignmentCommand",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.Interrogation": {
+          "messageid": "IO.AISstream.mqtt.Interrogation.mqtt",
+          "name": "Interrogation",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.Interrogation"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/interrogation",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.Interrogation",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.MultiSlotBinaryMessage": {
+          "messageid": "IO.AISstream.mqtt.MultiSlotBinaryMessage.mqtt",
+          "name": "MultiSlotBinaryMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.MultiSlotBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/multi-slot-binary-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.MultiSlotBinaryMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
+        },
+        "IO.AISstream.mqtt.SingleSlotBinaryMessage": {
+          "messageid": "IO.AISstream.mqtt.SingleSlotBinaryMessage.mqtt",
+          "name": "SingleSlotBinaryMessage",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.SingleSlotBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/single-slot-binary-message",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SingleSlotBinaryMessage",
           "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         }
       },
@@ -599,93 +1119,322 @@
       "messages": {
         "IO.AISstream.amqp.PositionReport": {
           "name": "PositionReport",
-          "basemessageuri": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.PositionReport",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.PositionReport",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
               "subject": {
                 "type": "uritemplate",
-                "value": "{mmsi}",
-                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
-              }
-            },
-            "application-properties": {
-              "flag": {
-                "type": "uritemplate",
-                "value": "{flag}",
-                "description": "Routing axis 'flag' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
-              },
-              "ship_type": {
-                "type": "uritemplate",
-                "value": "{ship_type}",
-                "description": "Routing axis 'ship_type' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
-              },
-              "geohash5": {
-                "type": "uritemplate",
-                "value": "{geohash5}",
-                "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
               }
             }
           }
         },
-        "IO.AISstream.amqp.ShipStatic": {
-          "name": "ShipStatic",
-          "basemessageuri": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.ShipStatic",
+        "IO.AISstream.amqp.ShipStaticData": {
+          "name": "ShipStaticData",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.ShipStaticData",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
               "subject": {
                 "type": "uritemplate",
-                "value": "{mmsi}",
-                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
-              }
-            },
-            "application-properties": {
-              "flag": {
-                "type": "uritemplate",
-                "value": "{flag}",
-                "description": "Routing axis 'flag' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
-              },
-              "ship_type": {
-                "type": "uritemplate",
-                "value": "{ship_type}",
-                "description": "Routing axis 'ship_type' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
-              },
-              "geohash5": {
-                "type": "uritemplate",
-                "value": "{geohash5}",
-                "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
               }
             }
           }
         },
-        "IO.AISstream.amqp.AidToNavigation": {
-          "name": "AidToNavigation",
-          "basemessageuri": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.AidToNavigation",
+        "IO.AISstream.amqp.StandardClassBPositionReport": {
+          "name": "StandardClassBPositionReport",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.StandardClassBPositionReport",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
               "subject": {
                 "type": "uritemplate",
-                "value": "{mmsi}",
-                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
               }
-            },
-            "application-properties": {
-              "flag": {
+            }
+          }
+        },
+        "IO.AISstream.amqp.ExtendedClassBPositionReport": {
+          "name": "ExtendedClassBPositionReport",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.ExtendedClassBPositionReport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
                 "type": "uritemplate",
-                "value": "{flag}",
-                "description": "Routing axis 'flag' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
-              },
-              "ship_type": {
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.AidsToNavigationReport": {
+          "name": "AidsToNavigationReport",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.AidsToNavigationReport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
                 "type": "uritemplate",
-                "value": "{ship_type}",
-                "description": "Routing axis 'ship_type' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
-              },
-              "geohash5": {
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.StaticDataReport": {
+          "name": "StaticDataReport",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.StaticDataReport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
                 "type": "uritemplate",
-                "value": "{geohash5}",
-                "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.BaseStationReport": {
+          "name": "BaseStationReport",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.BaseStationReport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.SafetyBroadcastMessage": {
+          "name": "SafetyBroadcastMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.SafetyBroadcastMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.StandardSearchAndRescueAircraftReport": {
+          "name": "StandardSearchAndRescueAircraftReport",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.StandardSearchAndRescueAircraftReport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.LongRangeAisBroadcastMessage": {
+          "name": "LongRangeAisBroadcastMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.LongRangeAisBroadcastMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.AddressedSafetyMessage": {
+          "name": "AddressedSafetyMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedSafetyMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.AddressedBinaryMessage": {
+          "name": "AddressedBinaryMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedBinaryMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.AssignedModeCommand": {
+          "name": "AssignedModeCommand",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.AssignedModeCommand",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.BinaryAcknowledge": {
+          "name": "BinaryAcknowledge",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryAcknowledge",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.BinaryBroadcastMessage": {
+          "name": "BinaryBroadcastMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryBroadcastMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.ChannelManagement": {
+          "name": "ChannelManagement",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.ChannelManagement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.CoordinatedUTCInquiry": {
+          "name": "CoordinatedUTCInquiry",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.CoordinatedUTCInquiry",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.DataLinkManagementMessage": {
+          "name": "DataLinkManagementMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.DataLinkManagementMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.GnssBroadcastBinaryMessage": {
+          "name": "GnssBroadcastBinaryMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.GnssBroadcastBinaryMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.GroupAssignmentCommand": {
+          "name": "GroupAssignmentCommand",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.GroupAssignmentCommand",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.Interrogation": {
+          "name": "Interrogation",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.Interrogation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.MultiSlotBinaryMessage": {
+          "name": "MultiSlotBinaryMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.MultiSlotBinaryMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
+              }
+            }
+          }
+        },
+        "IO.AISstream.amqp.SingleSlotBinaryMessage": {
+          "name": "SingleSlotBinaryMessage",
+          "basemessageuri": "/messagegroups/IO.AISstream/messages/IO.AISstream.SingleSlotBinaryMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{UserID}",
+                "description": "AMQP message subject matching the CloudEvents subject and the Kafka message key (UserID) for this AIS event type."
               }
             }
           }
@@ -2787,343 +3536,6 @@
                 },
                 "$id": "https://example.com/schemas/IO/AISstream/SingleSlotBinaryMessage",
                 "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
-              }
-            }
-          }
-        }
-      }
-    },
-    "IO.AISstream.mqtt.jstruct": {
-      "format": "JsonStructure/draft-02",
-      "schemas": {
-        "IO.AISstream.mqtt.PositionReport": {
-          "name": "PositionReport",
-          "format": "JsonStructure/draft-02",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "JsonStructure/draft-02",
-              "schema": {
-                "$schema": "https://json-structure.org/meta/extended/v0/#",
-                "type": "object",
-                "name": "PositionReport",
-                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
-                "required": [
-                  "mmsi",
-                  "flag",
-                  "ship_type",
-                  "geohash5",
-                  "msg_type",
-                  "user_id",
-                  "latitude",
-                  "longitude",
-                  "message_id"
-                ],
-                "properties": {
-                  "mmsi": {
-                    "type": "string",
-                    "pattern": "^[0-9]{9}$",
-                    "description": "Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
-                  },
-                  "flag": {
-                    "type": "string",
-                    "pattern": "^[a-z]{2}$|^xx$",
-                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits."
-                  },
-                  "ship_type": {
-                    "type": "string",
-                    "description": "Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'."
-                  },
-                  "geohash5": {
-                    "type": "string",
-                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
-                    "description": "5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen."
-                  },
-                  "msg_type": {
-                    "type": "string",
-                    "enum": [
-                      "position-report",
-                      "static",
-                      "aid-to-navigation"
-                    ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
-                    "descriptions": {
-                      "position-report": "Provider coded value `position-report` for this field.",
-                      "static": "Provider coded value `static` for this field.",
-                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
-                    }
-                  },
-                  "user_id": {
-                    "type": "int32",
-                    "description": "Source AIS UserID (numeric MMSI, 9-digit)."
-                  },
-                  "latitude": {
-                    "type": "double",
-                    "description": "Reported latitude in WGS-84 decimal degrees."
-                  },
-                  "longitude": {
-                    "type": "double",
-                    "description": "Reported longitude in WGS-84 decimal degrees."
-                  },
-                  "sog": {
-                    "type": "double",
-                    "description": "Speed over ground in knots (0..102.2)."
-                  },
-                  "cog": {
-                    "type": "double",
-                    "description": "Course over ground in degrees (0..359.9)."
-                  },
-                  "true_heading": {
-                    "type": "int32",
-                    "description": "True heading in degrees (0..359, 511 = not available)."
-                  },
-                  "navigational_status": {
-                    "type": "int32",
-                    "description": "ITU navigation status code (0..15)."
-                  },
-                  "rate_of_turn": {
-                    "type": "int32",
-                    "description": "Rate of turn in AIS-encoded units."
-                  },
-                  "position_accuracy": {
-                    "type": "boolean",
-                    "description": "True if the reported position is high accuracy (DGPS)."
-                  },
-                  "timestamp": {
-                    "type": "int32",
-                    "description": "AIS report timestamp seconds-of-minute (0..59, 60..63 = special)."
-                  },
-                  "raim": {
-                    "type": "boolean",
-                    "description": "RAIM (Receiver Autonomous Integrity Monitoring) flag."
-                  },
-                  "message_id": {
-                    "type": "int32",
-                    "description": "Original ITU-R M.1371 message ID (1, 2, 3, 4, 9, 18, 19, or 27)."
-                  }
-                },
-                "$id": "https://schemas.real-time-sources.dev/aisstream/mqtt/PositionReport",
-                "$uses": [
-                  "JSONStructureAlternateNames"
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.mqtt.ShipStatic": {
-          "name": "ShipStatic",
-          "format": "JsonStructure/draft-02",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "JsonStructure/draft-02",
-              "schema": {
-                "$schema": "https://json-structure.org/meta/extended/v0/#",
-                "type": "object",
-                "name": "ShipStatic",
-                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
-                "required": [
-                  "mmsi",
-                  "flag",
-                  "ship_type",
-                  "geohash5",
-                  "msg_type",
-                  "user_id",
-                  "name",
-                  "ship_type_code",
-                  "message_id"
-                ],
-                "properties": {
-                  "mmsi": {
-                    "type": "string",
-                    "pattern": "^[0-9]{9}$",
-                    "description": "Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
-                  },
-                  "flag": {
-                    "type": "string",
-                    "pattern": "^[a-z]{2}$|^xx$",
-                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits."
-                  },
-                  "ship_type": {
-                    "type": "string",
-                    "description": "Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'."
-                  },
-                  "geohash5": {
-                    "type": "string",
-                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
-                    "description": "5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen."
-                  },
-                  "msg_type": {
-                    "type": "string",
-                    "enum": [
-                      "position-report",
-                      "static",
-                      "aid-to-navigation"
-                    ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
-                    "descriptions": {
-                      "position-report": "Provider coded value `position-report` for this field.",
-                      "static": "Provider coded value `static` for this field.",
-                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
-                    }
-                  },
-                  "user_id": {
-                    "type": "int32",
-                    "description": "Source AIS UserID (numeric MMSI, 9-digit)."
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Vessel name as broadcast (max 20 chars, trimmed of AIS '@' padding)."
-                  },
-                  "call_sign": {
-                    "type": "string",
-                    "description": "Radio call sign as broadcast (max 7 chars)."
-                  },
-                  "imo_number": {
-                    "type": "int32",
-                    "description": "IMO number (7-digit). 0 if not assigned."
-                  },
-                  "ship_type_code": {
-                    "type": "int32",
-                    "description": "Raw ITU-R M.1371 ship type code (0..99)."
-                  },
-                  "destination": {
-                    "type": "string",
-                    "description": "Voyage destination string (max 20 chars). Empty for Type 24."
-                  },
-                  "eta": {
-                    "type": "string",
-                    "description": "Voyage ETA as ISO-8601 string, derived from AIS month/day/hour/minute. Empty if absent."
-                  },
-                  "draught": {
-                    "type": "double",
-                    "description": "Maximum present static draught in metres. 0.0 if not provided."
-                  },
-                  "dim_to_bow": {
-                    "type": "int32",
-                    "description": "Distance from reference point to bow in metres."
-                  },
-                  "dim_to_stern": {
-                    "type": "int32",
-                    "description": "Distance from reference point to stern in metres."
-                  },
-                  "dim_to_port": {
-                    "type": "int32",
-                    "description": "Distance from reference point to port side in metres."
-                  },
-                  "dim_to_starboard": {
-                    "type": "int32",
-                    "description": "Distance from reference point to starboard side in metres."
-                  },
-                  "message_id": {
-                    "type": "int32",
-                    "description": "Original ITU-R M.1371 message ID (5 or 24)."
-                  }
-                },
-                "$id": "https://schemas.real-time-sources.dev/aisstream/mqtt/ShipStatic",
-                "$uses": [
-                  "JSONStructureAlternateNames"
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.mqtt.AidToNavigation": {
-          "name": "AidToNavigation",
-          "format": "JsonStructure/draft-02",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "JsonStructure/draft-02",
-              "schema": {
-                "$schema": "https://json-structure.org/meta/extended/v0/#",
-                "type": "object",
-                "name": "AidToNavigation",
-                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
-                "required": [
-                  "mmsi",
-                  "flag",
-                  "ship_type",
-                  "geohash5",
-                  "msg_type",
-                  "user_id",
-                  "name",
-                  "type",
-                  "latitude",
-                  "longitude",
-                  "message_id"
-                ],
-                "properties": {
-                  "mmsi": {
-                    "type": "string",
-                    "pattern": "^[0-9]{9}$",
-                    "description": "Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
-                  },
-                  "flag": {
-                    "type": "string",
-                    "pattern": "^[a-z]{2}$|^xx$",
-                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits."
-                  },
-                  "ship_type": {
-                    "type": "string",
-                    "description": "Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'."
-                  },
-                  "geohash5": {
-                    "type": "string",
-                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
-                    "description": "5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen."
-                  },
-                  "msg_type": {
-                    "type": "string",
-                    "enum": [
-                      "position-report",
-                      "static",
-                      "aid-to-navigation"
-                    ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
-                    "descriptions": {
-                      "position-report": "Provider coded value `position-report` for this field.",
-                      "static": "Provider coded value `static` for this field.",
-                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
-                    }
-                  },
-                  "user_id": {
-                    "type": "int32",
-                    "description": "Source AIS UserID for the AtoN station (9-digit MMSI)."
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "AtoN name as broadcast."
-                  },
-                  "type": {
-                    "type": "int32",
-                    "description": "AtoN type code (0..31) per ITU-R M.1371."
-                  },
-                  "latitude": {
-                    "type": "double",
-                    "description": "Reported latitude in WGS-84 decimal degrees."
-                  },
-                  "longitude": {
-                    "type": "double",
-                    "description": "Reported longitude in WGS-84 decimal degrees."
-                  },
-                  "off_position": {
-                    "type": "boolean",
-                    "description": "True if the AtoN is reported off its assigned position."
-                  },
-                  "virtual_atoN": {
-                    "type": "boolean",
-                    "description": "True if this is a virtual AtoN broadcast by a base station."
-                  },
-                  "message_id": {
-                    "type": "int32",
-                    "description": "Original ITU-R M.1371 message ID (21)."
-                  }
-                },
-                "$id": "https://schemas.real-time-sources.dev/aisstream/mqtt/AidToNavigation",
-                "$uses": [
-                  "JSONStructureAlternateNames"
-                ]
               }
             }
           }

@@ -14,11 +14,19 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from aisstream_core import AisStreamBridge
-from aisstream_mqtt_producer_data import AidToNavigation, PositionReport, ShipStatic
+from aisstream_core import AIS_MESSAGE_TYPES, AisStreamBridge, mock_envelopes
+import aisstream_mqtt_producer_data as _mqtt_data
 from aisstream_mqtt_producer_mqtt_client.client import IOAISstreamMqttMqttClient
 
 logger = logging.getLogger("aisstream_mqtt")
+
+# Upstream MessageType -> (raw data class, MQTT publish method). The MQTT
+# transport carries the same 23 raw AIS types as Kafka; the bridge computes the
+# flag/ship_type/geohash5/mmsi topic levels per message (payload stays raw).
+_MQTT_DISPATCH = {
+    mt: (getattr(_mqtt_data, mt), f"publish_io_aisstream_mqtt_{suffix}")
+    for mt, suffix in AIS_MESSAGE_TYPES
+}
 
 
 def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
@@ -57,29 +65,27 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
     return resolved_client_id, resolved_username, resolved_password, connect_props
 
 
-class AisStreamMqttClientAdapter:
+class AisStreamMqttClient:
+    """Publish each raw AIS type to its enriched UNS topic (rich topic tree)."""
+
     def __init__(self, client: IOAISstreamMqttMqttClient):
         self._client = client
 
-    async def publish_position_report(self, *, mmsi, flag, ship_type, geohash5, payload):
-        data = PositionReport(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, msg_type="position-report", **payload)
-        await self._client.publish_io_aisstream_mqtt_position_report(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, data=data, qos=0, retain=False)
-
-    async def publish_ship_static(self, *, mmsi, flag, ship_type, geohash5, payload):
-        data = ShipStatic(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, msg_type="static", **payload)
-        await self._client.publish_io_aisstream_mqtt_ship_static(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, data=data, qos=0, retain=False)
-
-    async def publish_aid_to_navigation(self, *, mmsi, flag, ship_type, geohash5, payload):
-        data = AidToNavigation(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, msg_type="aid-to-navigation", **payload)
-        await self._client.publish_io_aisstream_mqtt_aid_to_navigation(mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5, data=data, qos=0, retain=False)
-
-
-def _mock_envelopes():
-    return [
-        {"MessageType": "ShipStaticData", "MetaData": {"MMSI": 211_555_001}, "Message": {"ShipStaticData": {"UserID": 211_555_001, "Name": "MOCK CARGO       @@@@", "CallSign": "DXXX@", "ImoNumber": 9_111_222, "Type": 70, "Destination": "DEHAM@@@@@@@@@@@@@@@", "Eta": {"Month": 5, "Day": 23, "Hour": 12, "Minute": 0}, "MaximumStaticDraught": 8.5, "Dimension": {"A": 100, "B": 50, "C": 10, "D": 22}, "MessageID": 5}}},
-        {"MessageType": "PositionReport", "MetaData": {"MMSI": 211_555_001}, "Message": {"PositionReport": {"UserID": 211_555_001, "Latitude": 53.5511, "Longitude": 9.9937, "Sog": 12.3, "Cog": 95.1, "TrueHeading": 95, "NavigationalStatus": 0, "RateOfTurn": 0, "PositionAccuracy": True, "Timestamp": 30, "Raim": False, "MessageID": 1}}},
-        {"MessageType": "AidsToNavigationReport", "MetaData": {"MMSI": 992_111_001}, "Message": {"AidsToNavigationReport": {"UserID": 992_111_001, "Name": "ELBE BUOY 7", "Type": 1, "Latitude": 53.88, "Longitude": 8.71, "OffPosition": False, "VirtualAtoN": False, "MessageID": 21}}},
-    ]
+    async def emit(self, message_type, payload, *, user_id, mmsi, flag, ship_type, geohash5):
+        mapping = _MQTT_DISPATCH.get(message_type)
+        if mapping is None:
+            logger.debug("Skipping unknown message type: %s", message_type)
+            return
+        data_class, method_name = mapping
+        try:
+            data = data_class.from_serializer_dict(payload)
+        except Exception as exc:  # noqa: BLE001 - bad upstream payload, skip
+            logger.warning("Failed to decode %s: %s", message_type, exc)
+            return
+        await getattr(self._client, method_name)(
+            mmsi=mmsi, flag=flag, ship_type=ship_type, geohash5=geohash5,
+            data=data, qos=0, retain=False,
+        )
 
 
 def _parse_broker(url: str) -> tuple[str, int, bool]:
@@ -110,11 +116,11 @@ async def _run(args: argparse.Namespace) -> None:
         paho_client.loop_start()
     else:
         await mqtt_client.connect(broker_host, broker_port)
-    bridge = AisStreamBridge(AisStreamMqttClientAdapter(mqtt_client), api_key=args.api_key, ws_url=args.ws_url)
+    bridge = AisStreamBridge(AisStreamMqttClient(mqtt_client), api_key=args.api_key, ws_url=args.ws_url)
     try:
         if args.mock:
             logger.info("Mock mode: emitting synthetic AIS corpus and exiting")
-            for envelope in _mock_envelopes():
+            for envelope in mock_envelopes():
                 await bridge.handle_envelope(envelope)
             await asyncio.sleep(1.0)
             return

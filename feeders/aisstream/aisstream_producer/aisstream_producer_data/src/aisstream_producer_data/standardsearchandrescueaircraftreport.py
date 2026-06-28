@@ -189,23 +189,23 @@ class StandardSearchAndRescueAircraftReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(14),
-            RepeatIndicator=int(9),
-            UserID=int(86),
-            Valid=True,
-            Altitude=int(7),
-            Sog=float(94.05831826852558),
+            MessageID=int(78),
+            RepeatIndicator=int(34),
+            UserID=int(28),
+            Valid=False,
+            Altitude=int(38),
+            Sog=float(35.641773976491656),
             PositionAccuracy=False,
-            Longitude=float(87.98085014075176),
-            Latitude=float(77.99490119919396),
-            Cog=float(31.082391853425804),
-            Timestamp=int(55),
+            Longitude=float(42.38436668337472),
+            Latitude=float(13.798819144096841),
+            Cog=float(64.87537308664133),
+            Timestamp=int(41),
             AltFromBaro=False,
-            Spare1=int(25),
+            Spare1=int(62),
             Dte=False,
-            Spare2=int(76),
-            AssignedMode=True,
+            Spare2=int(77),
+            AssignedMode=False,
             Raim=False,
-            CommunicationStateIsItdma=True,
-            CommunicationState=int(67)
+            CommunicationStateIsItdma=False,
+            CommunicationState=int(42)
         )

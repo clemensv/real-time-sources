@@ -155,7 +155,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `IO.AISstream.mqtt.PositionReport`:
+```Asynchronous handler hook for `IO.AISstream.mqtt.PositionReport`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -185,62 +187,22 @@ io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_position_report_async = io_aisstr
 
 make build
 
-```##### `io_aisstream_mqtt_ship_static_async`
+```##### `io_aisstream_mqtt_ship_static_data_async`
 
 
 
 ## Test```python
 
-io_aisstream_mqtt_ship_static_async:  Callable[[PartitionContext, EventData, CloudEvent, ShipStatic], Awaitable[None]]
-
-```bash```
-
-make test
-
-```Asynchronous handler hook for `IO.AISstream.mqtt.ShipStatic`:
-
-
-The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
-
-- `partition_context`: The partition context.
-- `event`: The event data.
-- `cloud_event`: The CloudEvent.
-- `data`: The event data of type `aisstream_mqtt_producer_data.ShipStatic`.
-
-Example:
-
-```python
-async def io_aisstream_mqtt_ship_static_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: ShipStatic) -> None:
-    # Process the event data
-    await partition_context.update_checkpoint(event)
-```
-
-The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-```python
-io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_ship_static_async = io_aisstream_mqtt_ship_static_event
-```
-
-
-
-make build
-
-```##### `io_aisstream_mqtt_aid_to_navigation_async`
-
-
-
-## Test```python
-
-io_aisstream_mqtt_aid_to_navigation_async:  Callable[[PartitionContext, EventData, CloudEvent, AidToNavigation],
+io_aisstream_mqtt_ship_static_data_async:  Callable[[PartitionContext, EventData, CloudEvent, ShipStaticData],
 Awaitable[None]]
 
 ```bash```
 
 make test
 
-```Asynchronous handler hook for `IO.AISstream.mqtt.AidToNavigation`:
+```Asynchronous handler hook for `IO.AISstream.mqtt.ShipStaticData`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -248,13 +210,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `aisstream_mqtt_producer_data.AidToNavigation`.
+- `data`: The event data of type `aisstream_mqtt_producer_data.ShipStaticData`.
 
 Example:
 
 ```python
-async def io_aisstream_mqtt_aid_to_navigation_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: AidToNavigation) -> None:
+async def io_aisstream_mqtt_ship_static_data_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: ShipStaticData) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```
@@ -263,7 +225,968 @@ The handler functions is then assigned to the event dispatcher for the message g
 responsible for calling the appropriate handler function when a message is received. Example:
 
 ```python
-io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_aid_to_navigation_async = io_aisstream_mqtt_aid_to_navigation_event
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_ship_static_data_async = io_aisstream_mqtt_ship_static_data_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_standard_class_bposition_report_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_standard_class_bposition_report_async:  Callable[[PartitionContext, EventData, CloudEvent,
+StandardClassBPositionReport], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.StandardClassBPositionReport`: A transport update from AISStream
+public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels
+received by the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.StandardClassBPositionReport`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_standard_class_bposition_report_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: StandardClassBPositionReport) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_standard_class_bposition_report_async =
+io_aisstream_mqtt_standard_class_bposition_report_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_extended_class_bposition_report_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_extended_class_bposition_report_async:  Callable[[PartitionContext, EventData, CloudEvent,
+ExtendedClassBPositionReport], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.ExtendedClassBPositionReport`: A transport update from AISStream
+public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels
+received by the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.ExtendedClassBPositionReport`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_extended_class_bposition_report_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: ExtendedClassBPositionReport) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_extended_class_bposition_report_async =
+io_aisstream_mqtt_extended_class_bposition_report_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_aids_to_navigation_report_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_aids_to_navigation_report_async:  Callable[[PartitionContext, EventData, CloudEvent,
+AidsToNavigationReport], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.AidsToNavigationReport`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.AidsToNavigationReport`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_aids_to_navigation_report_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: AidsToNavigationReport) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_aids_to_navigation_report_async =
+io_aisstream_mqtt_aids_to_navigation_report_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_static_data_report_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_static_data_report_async:  Callable[[PartitionContext, EventData, CloudEvent, StaticDataReport],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.StaticDataReport`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.StaticDataReport`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_static_data_report_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: StaticDataReport) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_static_data_report_async = io_aisstream_mqtt_static_data_report_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_base_station_report_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_base_station_report_async:  Callable[[PartitionContext, EventData, CloudEvent, BaseStationReport],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.BaseStationReport`: A reference record from AISStream public AIS
+firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels
+needed to interpret realtime updates.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.BaseStationReport`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_base_station_report_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: BaseStationReport) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_base_station_report_async = io_aisstream_mqtt_base_station_report_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_safety_broadcast_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_safety_broadcast_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+SafetyBroadcastMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.SafetyBroadcastMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.SafetyBroadcastMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_safety_broadcast_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: SafetyBroadcastMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_safety_broadcast_message_async =
+io_aisstream_mqtt_safety_broadcast_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async:  Callable[[PartitionContext, EventData, CloudEvent,
+StandardSearchAndRescueAircraftReport], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport`: A transport update from
+AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped
+vessels received by the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.StandardSearchAndRescueAircraftReport`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event(partition_context: PartitionContext, event:
+EventData, cloud_event: CloudEvent, data: StandardSearchAndRescueAircraftReport) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async =
+io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_long_range_ais_broadcast_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_long_range_ais_broadcast_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+LongRangeAisBroadcastMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.LongRangeAisBroadcastMessage`: A vehicle or vessel update from
+AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from
+the upstream feed.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.LongRangeAisBroadcastMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_long_range_ais_broadcast_message_event(partition_context: PartitionContext, event:
+EventData, cloud_event: CloudEvent, data: LongRangeAisBroadcastMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_long_range_ais_broadcast_message_async =
+io_aisstream_mqtt_long_range_ais_broadcast_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_addressed_safety_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_addressed_safety_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+AddressedSafetyMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.AddressedSafetyMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.AddressedSafetyMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_addressed_safety_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: AddressedSafetyMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_addressed_safety_message_async =
+io_aisstream_mqtt_addressed_safety_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_addressed_binary_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_addressed_binary_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+AddressedBinaryMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.AddressedBinaryMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.AddressedBinaryMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_addressed_binary_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: AddressedBinaryMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_addressed_binary_message_async =
+io_aisstream_mqtt_addressed_binary_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_assigned_mode_command_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_assigned_mode_command_async:  Callable[[PartitionContext, EventData, CloudEvent, AssignedModeCommand],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.AssignedModeCommand`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.AssignedModeCommand`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_assigned_mode_command_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: AssignedModeCommand) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_assigned_mode_command_async =
+io_aisstream_mqtt_assigned_mode_command_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_binary_acknowledge_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_binary_acknowledge_async:  Callable[[PartitionContext, EventData, CloudEvent, BinaryAcknowledge],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.BinaryAcknowledge`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.BinaryAcknowledge`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_binary_acknowledge_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: BinaryAcknowledge) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_binary_acknowledge_async = io_aisstream_mqtt_binary_acknowledge_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_binary_broadcast_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_binary_broadcast_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+BinaryBroadcastMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.BinaryBroadcastMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.BinaryBroadcastMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_binary_broadcast_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: BinaryBroadcastMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_binary_broadcast_message_async =
+io_aisstream_mqtt_binary_broadcast_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_channel_management_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_channel_management_async:  Callable[[PartitionContext, EventData, CloudEvent, ChannelManagement],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.ChannelManagement`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.ChannelManagement`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_channel_management_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: ChannelManagement) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_channel_management_async = io_aisstream_mqtt_channel_management_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_coordinated_utcinquiry_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_coordinated_utcinquiry_async:  Callable[[PartitionContext, EventData, CloudEvent,
+CoordinatedUTCInquiry], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.CoordinatedUTCInquiry`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.CoordinatedUTCInquiry`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_coordinated_utcinquiry_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: CoordinatedUTCInquiry) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_coordinated_utcinquiry_async =
+io_aisstream_mqtt_coordinated_utcinquiry_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_data_link_management_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_data_link_management_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+DataLinkManagementMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.DataLinkManagementMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.DataLinkManagementMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_data_link_management_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: DataLinkManagementMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_data_link_management_message_async =
+io_aisstream_mqtt_data_link_management_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_gnss_broadcast_binary_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_gnss_broadcast_binary_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+GnssBroadcastBinaryMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.GnssBroadcastBinaryMessage`: A transport update from AISStream
+public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels
+received by the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.GnssBroadcastBinaryMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_gnss_broadcast_binary_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: GnssBroadcastBinaryMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_gnss_broadcast_binary_message_async =
+io_aisstream_mqtt_gnss_broadcast_binary_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_group_assignment_command_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_group_assignment_command_async:  Callable[[PartitionContext, EventData, CloudEvent,
+GroupAssignmentCommand], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.GroupAssignmentCommand`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.GroupAssignmentCommand`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_group_assignment_command_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: GroupAssignmentCommand) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_group_assignment_command_async =
+io_aisstream_mqtt_group_assignment_command_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_interrogation_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_interrogation_async:  Callable[[PartitionContext, EventData, CloudEvent, Interrogation],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.Interrogation`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.Interrogation`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_interrogation_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: Interrogation) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_interrogation_async = io_aisstream_mqtt_interrogation_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_multi_slot_binary_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_multi_slot_binary_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+MultiSlotBinaryMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.MultiSlotBinaryMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.MultiSlotBinaryMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_multi_slot_binary_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: MultiSlotBinaryMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_multi_slot_binary_message_async =
+io_aisstream_mqtt_multi_slot_binary_message_event
+```
+
+
+
+make build
+
+```##### `io_aisstream_mqtt_single_slot_binary_message_async`
+
+
+
+## Test```python
+
+io_aisstream_mqtt_single_slot_binary_message_async:  Callable[[PartitionContext, EventData, CloudEvent,
+SingleSlotBinaryMessage], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `IO.AISstream.mqtt.SingleSlotBinaryMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `aisstream_mqtt_producer_data.SingleSlotBinaryMessage`.
+
+Example:
+
+```python
+async def io_aisstream_mqtt_single_slot_binary_message_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: SingleSlotBinaryMessage) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_single_slot_binary_message_async =
+io_aisstream_mqtt_single_slot_binary_message_event
 ```
 
 

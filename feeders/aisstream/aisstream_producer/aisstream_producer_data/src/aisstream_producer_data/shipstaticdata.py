@@ -185,20 +185,20 @@ class ShipStaticData:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(91),
-            RepeatIndicator=int(44),
-            UserID=int(91),
+            MessageID=int(3),
+            RepeatIndicator=int(16),
+            UserID=int(20),
             Valid=True,
-            AisVersion=int(13),
-            ImoNumber=int(30),
-            CallSign='yyeyspszbqygsesavfkg',
-            Name='qokoqijgumhucxfcxrrq',
-            Type=int(77),
+            AisVersion=int(100),
+            ImoNumber=int(42),
+            CallSign='dzeorggqerqsrkvlslty',
+            Name='eztpktewzvphqzapzbui',
+            Type=int(91),
             Dimension=None,
-            FixType=int(6),
+            FixType=int(10),
             Eta=None,
-            MaximumStaticDraught=float(73.48297206076546),
-            Destination='mmlyrmjeynaclqmxbqku',
-            Dte=True,
-            Spare=False
+            MaximumStaticDraught=float(38.91275748166642),
+            Destination='wrhzsvzuyzzjlwkvkgjk',
+            Dte=False,
+            Spare=True
         )

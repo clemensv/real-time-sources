@@ -36,6 +36,112 @@ POSITION_REPORT_TYPES = {
 STATIC_TYPES = {"ShipStaticData", "StaticDataReport"}
 AID_TO_NAVIGATION_TYPES = {"AidsToNavigationReport"}
 
+# Single source of truth: every upstream AISstream MessageType paired with the
+# snake_case method suffix the generators derive from it. The generated data
+# class name equals the MessageType string for all 23 types, so a transport's
+# dispatch table is `{mt: (getattr(producer_data, mt), <prefix> + suffix)}`.
+# Kafka uses `send_io_aisstream_<suffix>`, AMQP uses `send_<suffix>`, and MQTT
+# uses `publish_io_aisstream_mqtt_<suffix>`.
+AIS_MESSAGE_TYPES: List[tuple[str, str]] = [
+    ("PositionReport", "position_report"),
+    ("ShipStaticData", "ship_static_data"),
+    ("StandardClassBPositionReport", "standard_class_bposition_report"),
+    ("ExtendedClassBPositionReport", "extended_class_bposition_report"),
+    ("AidsToNavigationReport", "aids_to_navigation_report"),
+    ("StaticDataReport", "static_data_report"),
+    ("BaseStationReport", "base_station_report"),
+    ("SafetyBroadcastMessage", "safety_broadcast_message"),
+    ("StandardSearchAndRescueAircraftReport", "standard_search_and_rescue_aircraft_report"),
+    ("LongRangeAisBroadcastMessage", "long_range_ais_broadcast_message"),
+    ("AddressedSafetyMessage", "addressed_safety_message"),
+    ("AddressedBinaryMessage", "addressed_binary_message"),
+    ("AssignedModeCommand", "assigned_mode_command"),
+    ("BinaryAcknowledge", "binary_acknowledge"),
+    ("BinaryBroadcastMessage", "binary_broadcast_message"),
+    ("ChannelManagement", "channel_management"),
+    ("CoordinatedUTCInquiry", "coordinated_utcinquiry"),
+    ("DataLinkManagementMessage", "data_link_management_message"),
+    ("GnssBroadcastBinaryMessage", "gnss_broadcast_binary_message"),
+    ("GroupAssignmentCommand", "group_assignment_command"),
+    ("Interrogation", "interrogation"),
+    ("MultiSlotBinaryMessage", "multi_slot_binary_message"),
+    ("SingleSlotBinaryMessage", "single_slot_binary_message"),
+]
+
+
+def extract_ship_type_code(payload: Dict[str, Any]) -> Any:
+    """Return the AIS ship-type code used for the MQTT ``ship_type`` topic level.
+
+    Type 5 (``ShipStaticData``) carries the code at the top level under ``Type``.
+    Type 24 (``StaticDataReport``) Part B nests it under ``ReportB.ShipType`` —
+    reading only the top level silently mislabels every Class-B vessel as
+    ``unknown``. Check the nested Part-B report as a fallback.
+    """
+    code = payload.get("Type") or payload.get("ShipType")
+    if code:
+        return code
+    report_b = payload.get("ReportB")
+    if isinstance(report_b, dict):
+        return report_b.get("ShipType") or report_b.get("Type") or 0
+    return 0
+
+
+def mock_envelopes() -> List[Dict[str, Any]]:
+    """A small synthetic AISstream corpus (raw upstream envelope shape).
+
+    Mirrors the Kafka bridge's mock corpus so all three transports exercise the
+    same static / position / aid-to-navigation paths in ``--mock`` runs.
+    """
+    return [
+        {
+            "MessageType": "ShipStaticData",
+            "MetaData": {"MMSI": 211_555_001},
+            "Message": {
+                "ShipStaticData": {
+                    "MessageID": 5, "RepeatIndicator": 0, "UserID": 211_555_001,
+                    "Valid": True, "AisVersion": 1, "ImoNumber": 9_111_222,
+                    "CallSign": "DXXX@", "Name": "MOCK CARGO       @@@@",
+                    "Type": 70,
+                    "Dimension": {"A": 100, "B": 50, "C": 10, "D": 22},
+                    "FixType": 1,
+                    "Eta": {"Month": 5, "Day": 23, "Hour": 12, "Minute": 0},
+                    "MaximumStaticDraught": 8.5, "Destination": "DEHAM@@@@@@@@@@@@@@@",
+                    "Dte": False, "Spare": False,
+                }
+            },
+        },
+        {
+            "MessageType": "PositionReport",
+            "MetaData": {"MMSI": 211_555_001},
+            "Message": {
+                "PositionReport": {
+                    "MessageID": 1, "RepeatIndicator": 0, "UserID": 211_555_001,
+                    "Valid": True, "NavigationalStatus": 0, "RateOfTurn": 0,
+                    "Sog": 12.3, "PositionAccuracy": True,
+                    "Longitude": 9.9937, "Latitude": 53.5511,
+                    "Cog": 95.1, "TrueHeading": 95, "Timestamp": 30,
+                    "SpecialManoeuvreIndicator": 0, "Spare": 0,
+                    "Raim": False, "CommunicationState": 0,
+                }
+            },
+        },
+        {
+            "MessageType": "AidsToNavigationReport",
+            "MetaData": {"MMSI": 992_111_001},
+            "Message": {
+                "AidsToNavigationReport": {
+                    "MessageID": 21, "RepeatIndicator": 0, "UserID": 992_111_001,
+                    "Valid": True, "Type": 1, "Name": "ELBE BUOY 7",
+                    "PositionAccuracy": True, "Longitude": 8.71, "Latitude": 53.88,
+                    "Dimension": {"A": 2, "B": 2, "C": 1, "D": 1},
+                    "Fixtype": 1, "Timestamp": 20, "OffPosition": False,
+                    "AtoN": 0, "Raim": False, "VirtualAtoN": False,
+                    "AssignedMode": False, "Spare": False, "NameExtension": "",
+                }
+            },
+        },
+    ]
+
 
 @lru_cache(maxsize=1)
 def _load_mid_table() -> Dict[str, str]:
@@ -314,111 +420,69 @@ class AisStreamBridge:
                 await asyncio.sleep(retry_delay)
                 retry_delay = min(retry_delay * 2, 60)
 
+    def _enrich(self, message_type: str, payload: Dict[str, Any], meta: Dict[str, Any]):
+        """Derive the MQTT topic-routing tuple for any of the 23 AIS types.
+
+        Returns ``(user_id, mmsi, flag, ship_type, geohash5)`` or ``None`` when
+        the message carries no usable MMSI (cannot be keyed or routed). The
+        ``ship_type`` and position caches are refreshed from static and
+        positioned messages so that types lacking those fields inherit the most
+        recent value for the same vessel.
+        """
+        user_id = payload.get("UserID") or meta.get("MMSI")
+        mmsi = _mmsi9(user_id)
+        if mmsi is None:
+            return None
+        flag = mid_to_iso(int(mmsi))
+
+        if message_type in STATIC_TYPES:
+            bucket = ship_type_bucket(extract_ship_type_code(payload))
+            self.ship_type_cache.set(mmsi, bucket)
+            ship_type = bucket if bucket != "unknown" else self.ship_type_cache.get(mmsi)
+        elif message_type in AID_TO_NAVIGATION_TYPES:
+            ship_type = "aton"
+        else:
+            ship_type = self.ship_type_cache.get(mmsi)
+
+        lat = payload.get("Latitude")
+        lon = payload.get("Longitude")
+        geohash = "00000"
+        if lat is not None and lon is not None:
+            try:
+                latf, lonf = float(lat), float(lon)
+                self.position_cache.set(mmsi, latf, lonf)
+                geohash = geohash5(latf, lonf)
+            except (TypeError, ValueError):
+                geohash = "00000"
+        else:
+            cached = self.position_cache.get(mmsi)
+            if cached:
+                geohash = geohash5(*cached)
+        return user_id, mmsi, flag, ship_type, geohash
+
     async def handle_envelope(self, envelope: Dict[str, Any]) -> None:
+        """Dispatch one raw AISstream envelope to the transport client.
+
+        The full upstream payload is forwarded unchanged; the bridge only
+        computes the enrichment tuple the MQTT topic template needs. AMQP and
+        Kafka clients ignore everything but ``user_id``.
+        """
         message_type = envelope.get("MessageType")
         meta = envelope.get("MetaData") or {}
         message = envelope.get("Message") or {}
         payload = next(iter(message.values()), {}) if isinstance(message, dict) else {}
-        if not isinstance(payload, dict):
+        if not message_type or not isinstance(payload, dict):
             return
-
-        user_id = payload.get("UserID") or meta.get("MMSI")
-        mmsi = _mmsi9(user_id)
-        if mmsi is None:
+        enriched = self._enrich(message_type, payload, meta)
+        if enriched is None:
             return
-        flag = mid_to_iso(int(mmsi))
-
-        if message_type in STATIC_TYPES:
-            ship_type_code = payload.get("Type") or payload.get("ShipType") or 0
-            bucket = ship_type_bucket(ship_type_code)
-            self.ship_type_cache.set(mmsi, bucket)
-            cached_pos = self.position_cache.get(mmsi)
-            geohash = geohash5(*cached_pos) if cached_pos else "00000"
-            eta_parts = payload.get("Eta") or {}
-            eta = ""
-            if isinstance(eta_parts, dict) and eta_parts:
-                try:
-                    eta = (
-                        f"{int(eta_parts.get('Month') or 0):02d}-"
-                        f"{int(eta_parts.get('Day') or 0):02d}T"
-                        f"{int(eta_parts.get('Hour') or 0):02d}:"
-                        f"{int(eta_parts.get('Minute') or 0):02d}:00Z"
-                    )
-                except (TypeError, ValueError):
-                    eta = ""
-            dims = payload.get("Dimension") or {}
-            await self.client.publish_ship_static(
-                mmsi=mmsi,
-                flag=flag,
-                ship_type=bucket,
-                geohash5=geohash,
-                payload={
-                    "user_id": int(user_id) if user_id is not None else 0,
-                    "name": (payload.get("Name") or payload.get("ShipName") or "").strip().strip("@"),
-                    "call_sign": (payload.get("CallSign") or "").strip().strip("@"),
-                    "imo_number": int(payload.get("ImoNumber") or 0),
-                    "ship_type_code": int(payload.get("Type") or payload.get("ShipType") or 0),
-                    "destination": (payload.get("Destination") or "").strip().strip("@"),
-                    "eta": eta,
-                    "draught": float(payload.get("MaximumStaticDraught") or 0.0),
-                    "dim_to_bow": int(dims.get("A") or 0),
-                    "dim_to_stern": int(dims.get("B") or 0),
-                    "dim_to_port": int(dims.get("C") or 0),
-                    "dim_to_starboard": int(dims.get("D") or 0),
-                    "message_id": int(payload.get("MessageID") or 0),
-                },
-            )
-            return
-
-        if message_type in POSITION_REPORT_TYPES:
-            lat = payload.get("Latitude")
-            lon = payload.get("Longitude")
-            if lat is None or lon is None:
-                return
-            bucket = self.ship_type_cache.get(mmsi)
-            latitude = float(lat)
-            longitude = float(lon)
-            self.position_cache.set(mmsi, latitude, longitude)
-            await self.client.publish_position_report(
-                mmsi=mmsi,
-                flag=flag,
-                ship_type=bucket,
-                geohash5=geohash5(latitude, longitude),
-                payload={
-                    "user_id": int(user_id) if user_id is not None else 0,
-                    "latitude": latitude,
-                    "longitude": longitude,
-                    "sog": float(payload.get("Sog") or 0.0),
-                    "cog": float(payload.get("Cog") or 0.0),
-                    "true_heading": int(payload.get("TrueHeading") or 0),
-                    "navigational_status": int(payload.get("NavigationalStatus") or 0),
-                    "rate_of_turn": int(payload.get("RateOfTurn") or 0),
-                    "position_accuracy": bool(payload.get("PositionAccuracy") or False),
-                    "timestamp": int(payload.get("Timestamp") or 0),
-                    "raim": bool(payload.get("Raim") or False),
-                    "message_id": int(payload.get("MessageID") or 0),
-                },
-            )
-            return
-
-        if message_type in AID_TO_NAVIGATION_TYPES:
-            lat = payload.get("Latitude")
-            lon = payload.get("Longitude")
-            if lat is None or lon is None:
-                return
-            await self.client.publish_aid_to_navigation(
-                mmsi=mmsi,
-                flag=flag,
-                ship_type="aton",
-                geohash5=geohash5(lat, lon),
-                payload={
-                    "user_id": int(user_id) if user_id is not None else 0,
-                    "name": (payload.get("Name") or "").strip().strip("@"),
-                    "type": int(payload.get("Type") or 0),
-                    "latitude": float(lat),
-                    "longitude": float(lon),
-                    "off_position": bool(payload.get("OffPosition") or False),
-                    "virtual_atoN": bool(payload.get("VirtualAtoN") or False),
-                    "message_id": int(payload.get("MessageID") or 21),
-                },
-            )
+        user_id, mmsi, flag, ship_type, geohash = enriched
+        await self.client.emit(
+            message_type,
+            payload,
+            user_id=user_id,
+            mmsi=mmsi,
+            flag=flag,
+            ship_type=ship_type,
+            geohash5=geohash,
+        )

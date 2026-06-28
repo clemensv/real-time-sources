@@ -163,10 +163,10 @@ class DataLinkManagementMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(84),
-            RepeatIndicator=int(33),
-            UserID=int(40),
-            Valid=False,
-            Spare=int(54),
-            Data={'ndccpxxflcdzgkhciygn': 'ncmjktdjohzorwsoqlkf'}
+            MessageID=int(26),
+            RepeatIndicator=int(93),
+            UserID=int(25),
+            Valid=True,
+            Spare=int(96),
+            Data={'hgihkswtwpobhsbqiwxg': 'utsbqtaohucfmdyqdnyy'}
         )

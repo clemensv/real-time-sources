@@ -6061,21 +6061,21 @@ io_aisstream_amqp_dispatcher.io_aisstream_mqtt_position_report_async = io_aisstr
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_ship_static_async`
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_ship_static_data_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'io_aisstream_mqtt_ship_static_async:  Callable[[ConsumerRecord, CloudEvent,
-ShipStatic], Awaitable[None]]
+    sasl_password='your-password'io_aisstream_mqtt_ship_static_data_async:  Callable[[ConsumerRecord, CloudEvent,
+ShipStaticData], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `IO.AISstream.mqtt.ShipStatic`: A transport update from AISStream public AIS firehose. It
-carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+Asynchronous handler hook for `IO.AISstream.mqtt.ShipStaticData`: A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
 network.
 
 ## Generated Producer Classes
@@ -6086,7 +6086,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ShipStatic`.
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ShipStaticData`.
 
 
 
@@ -6096,8 +6096,8 @@ Producer for `IO.AISstream` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_mqtt_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
-None:
+async def io_aisstream_mqtt_ship_static_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ShipStaticData) -> None:
 
 ```python    # Process the event data
 
@@ -6114,7 +6114,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_dispatcher.io_aisstream_mqtt_ship_static_async = io_aisstream_mqtt_ship_static_event
+io_aisstream_dispatcher.io_aisstream_mqtt_ship_static_data_async = io_aisstream_mqtt_ship_static_data_event
 
 **Parameters:**```
 
@@ -6124,7 +6124,7 @@ io_aisstream_dispatcher.io_aisstream_mqtt_ship_static_async = io_aisstream_mqtt_
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ShipStatic`.
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ShipStaticData`.
 
 
 
@@ -6134,8 +6134,8 @@ Producer for `IO.AISstream.mqtt` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_mqtt_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
-None:
+async def io_aisstream_mqtt_ship_static_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ShipStaticData) -> None:
 
 ```python    # Process the event data
 
@@ -6152,7 +6152,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_ship_static_async = io_aisstream_mqtt_ship_static_event
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_ship_static_data_async = io_aisstream_mqtt_ship_static_data_event
 
 **Parameters:**```
 
@@ -6162,7 +6162,7 @@ io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_ship_static_async = io_aisstream_
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ShipStatic`.
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ShipStaticData`.
 
 
 
@@ -6172,8 +6172,8 @@ Producer for `IO.AISstream.amqp` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_mqtt_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
-None:
+async def io_aisstream_mqtt_ship_static_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ShipStaticData) -> None:
 
 ```python    # Process the event data
 
@@ -6190,7 +6190,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_amqp_dispatcher.io_aisstream_mqtt_ship_static_async = io_aisstream_mqtt_ship_static_event
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_ship_static_data_async = io_aisstream_mqtt_ship_static_data_event
 
 **Parameters:**```
 
@@ -6202,22 +6202,22 @@ io_aisstream_amqp_dispatcher.io_aisstream_mqtt_ship_static_async = io_aisstream_
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_aid_to_navigation_async`
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_standard_class_bposition_report_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'io_aisstream_mqtt_aid_to_navigation_async:  Callable[[ConsumerRecord, CloudEvent,
-AidToNavigation], Awaitable[None]]
+    sasl_password='your-password'io_aisstream_mqtt_standard_class_bposition_report_async:  Callable[[ConsumerRecord,
+CloudEvent, StandardClassBPositionReport], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `IO.AISstream.mqtt.AidToNavigation`: A transport update from AISStream public AIS
-firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
-AISStream network.
+Asynchronous handler hook for `IO.AISstream.mqtt.StandardClassBPositionReport`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
 
 ## Generated Producer Classes
 
@@ -6227,7 +6227,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AidToNavigation`.
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.StandardClassBPositionReport`.
 
 
 
@@ -6237,8 +6237,8 @@ Producer for `IO.AISstream` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_mqtt_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-AidToNavigation) -> None:
+async def io_aisstream_mqtt_standard_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StandardClassBPositionReport) -> None:
 
 ```python    # Process the event data
 
@@ -6255,7 +6255,8 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_dispatcher.io_aisstream_mqtt_aid_to_navigation_async = io_aisstream_mqtt_aid_to_navigation_event
+io_aisstream_dispatcher.io_aisstream_mqtt_standard_class_bposition_report_async =
+io_aisstream_mqtt_standard_class_bposition_report_event
 
 **Parameters:**```
 
@@ -6265,7 +6266,7 @@ io_aisstream_dispatcher.io_aisstream_mqtt_aid_to_navigation_async = io_aisstream
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AidToNavigation`.
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.StandardClassBPositionReport`.
 
 
 
@@ -6275,8 +6276,8 @@ Producer for `IO.AISstream.mqtt` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_mqtt_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-AidToNavigation) -> None:
+async def io_aisstream_mqtt_standard_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StandardClassBPositionReport) -> None:
 
 ```python    # Process the event data
 
@@ -6293,7 +6294,8 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_aid_to_navigation_async = io_aisstream_mqtt_aid_to_navigation_event
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_standard_class_bposition_report_async =
+io_aisstream_mqtt_standard_class_bposition_report_event
 
 **Parameters:**```
 
@@ -6303,7 +6305,7 @@ io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_aid_to_navigation_async = io_aiss
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AidToNavigation`.
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.StandardClassBPositionReport`.
 
 
 
@@ -6313,8 +6315,8 @@ Producer for `IO.AISstream.amqp` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_mqtt_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-AidToNavigation) -> None:
+async def io_aisstream_mqtt_standard_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StandardClassBPositionReport) -> None:
 
 ```python    # Process the event data
 
@@ -6331,7 +6333,2873 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_amqp_dispatcher.io_aisstream_mqtt_aid_to_navigation_async = io_aisstream_mqtt_aid_to_navigation_event
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_standard_class_bposition_report_async =
+io_aisstream_mqtt_standard_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_extended_class_bposition_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_extended_class_bposition_report_async:  Callable[[ConsumerRecord,
+CloudEvent, ExtendedClassBPositionReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.ExtendedClassBPositionReport`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ExtendedClassBPositionReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_extended_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtendedClassBPositionReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_extended_class_bposition_report_async =
+io_aisstream_mqtt_extended_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ExtendedClassBPositionReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_extended_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtendedClassBPositionReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_extended_class_bposition_report_async =
+io_aisstream_mqtt_extended_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ExtendedClassBPositionReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_extended_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtendedClassBPositionReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_extended_class_bposition_report_async =
+io_aisstream_mqtt_extended_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_aids_to_navigation_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_aids_to_navigation_report_async:  Callable[[ConsumerRecord,
+CloudEvent, AidsToNavigationReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.AidsToNavigationReport`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AidsToNavigationReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_aids_to_navigation_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidsToNavigationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_aids_to_navigation_report_async =
+io_aisstream_mqtt_aids_to_navigation_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AidsToNavigationReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_aids_to_navigation_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidsToNavigationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_aids_to_navigation_report_async =
+io_aisstream_mqtt_aids_to_navigation_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AidsToNavigationReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_aids_to_navigation_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidsToNavigationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_aids_to_navigation_report_async =
+io_aisstream_mqtt_aids_to_navigation_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_static_data_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_static_data_report_async:  Callable[[ConsumerRecord, CloudEvent,
+StaticDataReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.StaticDataReport`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.StaticDataReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_static_data_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticDataReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_static_data_report_async = io_aisstream_mqtt_static_data_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.StaticDataReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_static_data_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticDataReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_static_data_report_async = io_aisstream_mqtt_static_data_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.StaticDataReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_static_data_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticDataReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_static_data_report_async = io_aisstream_mqtt_static_data_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_base_station_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_base_station_report_async:  Callable[[ConsumerRecord, CloudEvent,
+BaseStationReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.BaseStationReport`: A reference record from AISStream public AIS
+firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels
+needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.BaseStationReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_base_station_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BaseStationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_base_station_report_async = io_aisstream_mqtt_base_station_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.BaseStationReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_base_station_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BaseStationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_base_station_report_async = io_aisstream_mqtt_base_station_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.BaseStationReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_base_station_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BaseStationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_base_station_report_async = io_aisstream_mqtt_base_station_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_safety_broadcast_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_safety_broadcast_message_async:  Callable[[ConsumerRecord,
+CloudEvent, SafetyBroadcastMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.SafetyBroadcastMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.SafetyBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_safety_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_safety_broadcast_message_async =
+io_aisstream_mqtt_safety_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.SafetyBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_safety_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_safety_broadcast_message_async =
+io_aisstream_mqtt_safety_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.SafetyBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_safety_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_safety_broadcast_message_async =
+io_aisstream_mqtt_safety_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async:
+Callable[[ConsumerRecord, CloudEvent, StandardSearchAndRescueAircraftReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport`: A transport update from
+AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped
+vessels received by the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.StandardSearchAndRescueAircraftReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: StandardSearchAndRescueAircraftReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async =
+io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type
+`aisstream_producer_data.StandardSearchAndRescueAircraftReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: StandardSearchAndRescueAircraftReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async =
+io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type
+`aisstream_producer_data.StandardSearchAndRescueAircraftReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: StandardSearchAndRescueAircraftReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_async =
+io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_long_range_ais_broadcast_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_long_range_ais_broadcast_message_async:  Callable[[ConsumerRecord,
+CloudEvent, LongRangeAisBroadcastMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.LongRangeAisBroadcastMessage`: A vehicle or vessel update from
+AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from
+the upstream feed.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.LongRangeAisBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_long_range_ais_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: LongRangeAisBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_long_range_ais_broadcast_message_async =
+io_aisstream_mqtt_long_range_ais_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.LongRangeAisBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_long_range_ais_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: LongRangeAisBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_long_range_ais_broadcast_message_async =
+io_aisstream_mqtt_long_range_ais_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.LongRangeAisBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_long_range_ais_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: LongRangeAisBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_long_range_ais_broadcast_message_async =
+io_aisstream_mqtt_long_range_ais_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_addressed_safety_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_addressed_safety_message_async:  Callable[[ConsumerRecord,
+CloudEvent, AddressedSafetyMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.AddressedSafetyMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AddressedSafetyMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_addressed_safety_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedSafetyMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_addressed_safety_message_async =
+io_aisstream_mqtt_addressed_safety_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AddressedSafetyMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_addressed_safety_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedSafetyMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_addressed_safety_message_async =
+io_aisstream_mqtt_addressed_safety_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AddressedSafetyMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_addressed_safety_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedSafetyMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_addressed_safety_message_async =
+io_aisstream_mqtt_addressed_safety_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_addressed_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_addressed_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, AddressedBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.AddressedBinaryMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AddressedBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_addressed_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_addressed_binary_message_async =
+io_aisstream_mqtt_addressed_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AddressedBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_addressed_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_addressed_binary_message_async =
+io_aisstream_mqtt_addressed_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AddressedBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_addressed_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_addressed_binary_message_async =
+io_aisstream_mqtt_addressed_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_assigned_mode_command_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_assigned_mode_command_async:  Callable[[ConsumerRecord, CloudEvent,
+AssignedModeCommand], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.AssignedModeCommand`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AssignedModeCommand`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_assigned_mode_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AssignedModeCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_assigned_mode_command_async = io_aisstream_mqtt_assigned_mode_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AssignedModeCommand`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_assigned_mode_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AssignedModeCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_assigned_mode_command_async =
+io_aisstream_mqtt_assigned_mode_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AssignedModeCommand`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_assigned_mode_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AssignedModeCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_assigned_mode_command_async =
+io_aisstream_mqtt_assigned_mode_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_binary_acknowledge_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_binary_acknowledge_async:  Callable[[ConsumerRecord, CloudEvent,
+BinaryAcknowledge], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.BinaryAcknowledge`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.BinaryAcknowledge`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_binary_acknowledge_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryAcknowledge) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_binary_acknowledge_async = io_aisstream_mqtt_binary_acknowledge_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.BinaryAcknowledge`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_binary_acknowledge_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryAcknowledge) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_binary_acknowledge_async = io_aisstream_mqtt_binary_acknowledge_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.BinaryAcknowledge`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_binary_acknowledge_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryAcknowledge) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_binary_acknowledge_async = io_aisstream_mqtt_binary_acknowledge_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_binary_broadcast_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_binary_broadcast_message_async:  Callable[[ConsumerRecord,
+CloudEvent, BinaryBroadcastMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.BinaryBroadcastMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.BinaryBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_binary_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_binary_broadcast_message_async =
+io_aisstream_mqtt_binary_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.BinaryBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_binary_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_binary_broadcast_message_async =
+io_aisstream_mqtt_binary_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.BinaryBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_binary_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_binary_broadcast_message_async =
+io_aisstream_mqtt_binary_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_channel_management_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_channel_management_async:  Callable[[ConsumerRecord, CloudEvent,
+ChannelManagement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.ChannelManagement`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ChannelManagement`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_channel_management_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChannelManagement) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_channel_management_async = io_aisstream_mqtt_channel_management_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ChannelManagement`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_channel_management_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChannelManagement) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_channel_management_async = io_aisstream_mqtt_channel_management_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ChannelManagement`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_channel_management_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChannelManagement) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_channel_management_async = io_aisstream_mqtt_channel_management_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_coordinated_utcinquiry_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_coordinated_utcinquiry_async:  Callable[[ConsumerRecord, CloudEvent,
+CoordinatedUTCInquiry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.CoordinatedUTCInquiry`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.CoordinatedUTCInquiry`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_coordinated_utcinquiry_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+CoordinatedUTCInquiry) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_coordinated_utcinquiry_async = io_aisstream_mqtt_coordinated_utcinquiry_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.CoordinatedUTCInquiry`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_coordinated_utcinquiry_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+CoordinatedUTCInquiry) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_coordinated_utcinquiry_async =
+io_aisstream_mqtt_coordinated_utcinquiry_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.CoordinatedUTCInquiry`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_coordinated_utcinquiry_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+CoordinatedUTCInquiry) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_coordinated_utcinquiry_async =
+io_aisstream_mqtt_coordinated_utcinquiry_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_data_link_management_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_data_link_management_message_async:  Callable[[ConsumerRecord,
+CloudEvent, DataLinkManagementMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.DataLinkManagementMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.DataLinkManagementMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_data_link_management_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DataLinkManagementMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_data_link_management_message_async =
+io_aisstream_mqtt_data_link_management_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.DataLinkManagementMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_data_link_management_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DataLinkManagementMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_data_link_management_message_async =
+io_aisstream_mqtt_data_link_management_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.DataLinkManagementMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_data_link_management_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DataLinkManagementMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_data_link_management_message_async =
+io_aisstream_mqtt_data_link_management_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_gnss_broadcast_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_gnss_broadcast_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, GnssBroadcastBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.GnssBroadcastBinaryMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.GnssBroadcastBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_gnss_broadcast_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GnssBroadcastBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_gnss_broadcast_binary_message_async =
+io_aisstream_mqtt_gnss_broadcast_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.GnssBroadcastBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_gnss_broadcast_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GnssBroadcastBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_gnss_broadcast_binary_message_async =
+io_aisstream_mqtt_gnss_broadcast_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.GnssBroadcastBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_gnss_broadcast_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GnssBroadcastBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_gnss_broadcast_binary_message_async =
+io_aisstream_mqtt_gnss_broadcast_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_group_assignment_command_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_group_assignment_command_async:  Callable[[ConsumerRecord,
+CloudEvent, GroupAssignmentCommand], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.GroupAssignmentCommand`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.GroupAssignmentCommand`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_group_assignment_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GroupAssignmentCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_group_assignment_command_async =
+io_aisstream_mqtt_group_assignment_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.GroupAssignmentCommand`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_group_assignment_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GroupAssignmentCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_group_assignment_command_async =
+io_aisstream_mqtt_group_assignment_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.GroupAssignmentCommand`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_group_assignment_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GroupAssignmentCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_group_assignment_command_async =
+io_aisstream_mqtt_group_assignment_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_interrogation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_interrogation_async:  Callable[[ConsumerRecord, CloudEvent,
+Interrogation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.Interrogation`: A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.Interrogation`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_interrogation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Interrogation) ->
+None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_interrogation_async = io_aisstream_mqtt_interrogation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.Interrogation`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_interrogation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Interrogation) ->
+None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_interrogation_async = io_aisstream_mqtt_interrogation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.Interrogation`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_interrogation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Interrogation) ->
+None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_interrogation_async = io_aisstream_mqtt_interrogation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_multi_slot_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_multi_slot_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, MultiSlotBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.MultiSlotBinaryMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.MultiSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_multi_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MultiSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_multi_slot_binary_message_async =
+io_aisstream_mqtt_multi_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.MultiSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_multi_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MultiSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_multi_slot_binary_message_async =
+io_aisstream_mqtt_multi_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.MultiSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_multi_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MultiSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_multi_slot_binary_message_async =
+io_aisstream_mqtt_multi_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_mqtt_single_slot_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_mqtt_single_slot_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, SingleSlotBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.mqtt.SingleSlotBinaryMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.SingleSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_single_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SingleSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_mqtt_single_slot_binary_message_async =
+io_aisstream_mqtt_single_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.SingleSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_single_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SingleSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_mqtt_single_slot_binary_message_async =
+io_aisstream_mqtt_single_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.SingleSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_mqtt_single_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SingleSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_mqtt_single_slot_binary_message_async =
+io_aisstream_mqtt_single_slot_binary_message_event
 
 **Parameters:**```
 
@@ -6454,17 +9322,17 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_io_aisstream_mqtt_ship_static`Dispatchers have the following protected methods:
+##### `send_io_aisstream_mqtt_ship_static_data`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_io_aisstream_mqtt_ship_static(
+async def send_io_aisstream_mqtt_ship_static_data(
 
     self,##### `_process_event`
 
-    data: ShipStatic,
+    data: ShipStaticData,
 
     partition_key: Optional[str] = None,```python
 
@@ -6478,15 +9346,15 @@ async def send_io_aisstream_mqtt_ship_static(
 
 
 
-Send a single `IO.AISstream.mqtt.ShipStatic` message. A transport update from AISStream public AIS firehose. It carries
-vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+Send a single `IO.AISstream.mqtt.ShipStaticData` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
 network.Args:
 
 - `record`: The Kafka record.
 
 **Parameters:**
 
-- `data`: Message data of type `ShipStatic`
+- `data`: Message data of type `ShipStaticData`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -6502,9 +9370,9 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_io_aisstream_mqtt_ship_static(
+await producer.send_io_aisstream_mqtt_ship_static_data(
 
-    data=ShipStatic(...),Args:
+    data=ShipStaticData(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -6514,7 +9382,7 @@ await producer.send_io_aisstream_mqtt_ship_static(
 
 ```
 
-Send multiple `IO.AISstream.mqtt.ShipStatic` messages in a batch.
+Send multiple `IO.AISstream.mqtt.ShipStaticData` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -6537,15 +9405,15 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_io_aisstream_mqtt_ship_static_batch(```
+await producer.send_io_aisstream_mqtt_ship_static_data_batch(```
 
     messages=[
 
-        ShipStatic(...),Initializes the runner with a Kafka consumer.
+        ShipStaticData(...),Initializes the runner with a Kafka consumer.
 
-        ShipStatic(...),
+        ShipStaticData(...),
 
-        ShipStatic(...)Args:
+        ShipStaticData(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -6559,17 +9427,17 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_io_aisstream_mqtt_aid_to_navigation`Dispatchers have the following protected methods:
+##### `send_io_aisstream_mqtt_standard_class_bposition_report`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_io_aisstream_mqtt_aid_to_navigation(
+async def send_io_aisstream_mqtt_standard_class_bposition_report(
 
     self,##### `_process_event`
 
-    data: AidToNavigation,
+    data: StandardClassBPositionReport,
 
     partition_key: Optional[str] = None,```python
 
@@ -6583,15 +9451,15 @@ async def send_io_aisstream_mqtt_aid_to_navigation(
 
 
 
-Send a single `IO.AISstream.mqtt.AidToNavigation` message. A transport update from AISStream public AIS firehose. It
-carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
-network.Args:
+Send a single `IO.AISstream.mqtt.StandardClassBPositionReport` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
 
 - `record`: The Kafka record.
 
 **Parameters:**
 
-- `data`: Message data of type `AidToNavigation`
+- `data`: Message data of type `StandardClassBPositionReport`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -6607,9 +9475,9 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_io_aisstream_mqtt_aid_to_navigation(
+await producer.send_io_aisstream_mqtt_standard_class_bposition_report(
 
-    data=AidToNavigation(...),Args:
+    data=StandardClassBPositionReport(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -6619,7 +9487,7 @@ await producer.send_io_aisstream_mqtt_aid_to_navigation(
 
 ```
 
-Send multiple `IO.AISstream.mqtt.AidToNavigation` messages in a batch.
+Send multiple `IO.AISstream.mqtt.StandardClassBPositionReport` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -6642,15 +9510,2116 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_io_aisstream_mqtt_aid_to_navigation_batch(```
+await producer.send_io_aisstream_mqtt_standard_class_bposition_report_batch(```
 
     messages=[
 
-        AidToNavigation(...),Initializes the runner with a Kafka consumer.
+        StandardClassBPositionReport(...),Initializes the runner with a Kafka consumer.
 
-        AidToNavigation(...),
+        StandardClassBPositionReport(...),
 
-        AidToNavigation(...)Args:
+        StandardClassBPositionReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_extended_class_bposition_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_extended_class_bposition_report(
+
+    self,##### `_process_event`
+
+    data: ExtendedClassBPositionReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.ExtendedClassBPositionReport` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ExtendedClassBPositionReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_extended_class_bposition_report(
+
+    data=ExtendedClassBPositionReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.ExtendedClassBPositionReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_extended_class_bposition_report_batch(```
+
+    messages=[
+
+        ExtendedClassBPositionReport(...),Initializes the runner with a Kafka consumer.
+
+        ExtendedClassBPositionReport(...),
+
+        ExtendedClassBPositionReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_aids_to_navigation_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_aids_to_navigation_report(
+
+    self,##### `_process_event`
+
+    data: AidsToNavigationReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.AidsToNavigationReport` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AidsToNavigationReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_aids_to_navigation_report(
+
+    data=AidsToNavigationReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.AidsToNavigationReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_aids_to_navigation_report_batch(```
+
+    messages=[
+
+        AidsToNavigationReport(...),Initializes the runner with a Kafka consumer.
+
+        AidsToNavigationReport(...),
+
+        AidsToNavigationReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_static_data_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_static_data_report(
+
+    self,##### `_process_event`
+
+    data: StaticDataReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.StaticDataReport` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `StaticDataReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_static_data_report(
+
+    data=StaticDataReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.StaticDataReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_static_data_report_batch(```
+
+    messages=[
+
+        StaticDataReport(...),Initializes the runner with a Kafka consumer.
+
+        StaticDataReport(...),
+
+        StaticDataReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_base_station_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_base_station_report(
+
+    self,##### `_process_event`
+
+    data: BaseStationReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.BaseStationReport` message. A reference record from AISStream public AIS firehose for a
+station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to
+interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BaseStationReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_base_station_report(
+
+    data=BaseStationReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.BaseStationReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_base_station_report_batch(```
+
+    messages=[
+
+        BaseStationReport(...),Initializes the runner with a Kafka consumer.
+
+        BaseStationReport(...),
+
+        BaseStationReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_safety_broadcast_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_safety_broadcast_message(
+
+    self,##### `_process_event`
+
+    data: SafetyBroadcastMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.SafetyBroadcastMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SafetyBroadcastMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_safety_broadcast_message(
+
+    data=SafetyBroadcastMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.SafetyBroadcastMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_safety_broadcast_message_batch(```
+
+    messages=[
+
+        SafetyBroadcastMessage(...),Initializes the runner with a Kafka consumer.
+
+        SafetyBroadcastMessage(...),
+
+        SafetyBroadcastMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_standard_search_and_rescue_aircraft_report`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_standard_search_and_rescue_aircraft_report(
+
+    self,##### `_process_event`
+
+    data: StandardSearchAndRescueAircraftReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport` message. A transport update from AISStream
+public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels
+received by the AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `StandardSearchAndRescueAircraftReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_standard_search_and_rescue_aircraft_report(
+
+    data=StandardSearchAndRescueAircraftReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.StandardSearchAndRescueAircraftReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_standard_search_and_rescue_aircraft_report_batch(```
+
+    messages=[
+
+        StandardSearchAndRescueAircraftReport(...),Initializes the runner with a Kafka consumer.
+
+        StandardSearchAndRescueAircraftReport(...),
+
+        StandardSearchAndRescueAircraftReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_long_range_ais_broadcast_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_long_range_ais_broadcast_message(
+
+    self,##### `_process_event`
+
+    data: LongRangeAisBroadcastMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.LongRangeAisBroadcastMessage` message. A vehicle or vessel update from AISStream public
+AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream
+feed.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `LongRangeAisBroadcastMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_long_range_ais_broadcast_message(
+
+    data=LongRangeAisBroadcastMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.LongRangeAisBroadcastMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_long_range_ais_broadcast_message_batch(```
+
+    messages=[
+
+        LongRangeAisBroadcastMessage(...),Initializes the runner with a Kafka consumer.
+
+        LongRangeAisBroadcastMessage(...),
+
+        LongRangeAisBroadcastMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_addressed_safety_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_addressed_safety_message(
+
+    self,##### `_process_event`
+
+    data: AddressedSafetyMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.AddressedSafetyMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AddressedSafetyMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_addressed_safety_message(
+
+    data=AddressedSafetyMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.AddressedSafetyMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_addressed_safety_message_batch(```
+
+    messages=[
+
+        AddressedSafetyMessage(...),Initializes the runner with a Kafka consumer.
+
+        AddressedSafetyMessage(...),
+
+        AddressedSafetyMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_addressed_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_addressed_binary_message(
+
+    self,##### `_process_event`
+
+    data: AddressedBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.AddressedBinaryMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AddressedBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_addressed_binary_message(
+
+    data=AddressedBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.AddressedBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_addressed_binary_message_batch(```
+
+    messages=[
+
+        AddressedBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        AddressedBinaryMessage(...),
+
+        AddressedBinaryMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_assigned_mode_command`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_assigned_mode_command(
+
+    self,##### `_process_event`
+
+    data: AssignedModeCommand,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.AssignedModeCommand` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AssignedModeCommand`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_assigned_mode_command(
+
+    data=AssignedModeCommand(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.AssignedModeCommand` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_assigned_mode_command_batch(```
+
+    messages=[
+
+        AssignedModeCommand(...),Initializes the runner with a Kafka consumer.
+
+        AssignedModeCommand(...),
+
+        AssignedModeCommand(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_binary_acknowledge`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_binary_acknowledge(
+
+    self,##### `_process_event`
+
+    data: BinaryAcknowledge,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.BinaryAcknowledge` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BinaryAcknowledge`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_binary_acknowledge(
+
+    data=BinaryAcknowledge(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.BinaryAcknowledge` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_binary_acknowledge_batch(```
+
+    messages=[
+
+        BinaryAcknowledge(...),Initializes the runner with a Kafka consumer.
+
+        BinaryAcknowledge(...),
+
+        BinaryAcknowledge(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_binary_broadcast_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_binary_broadcast_message(
+
+    self,##### `_process_event`
+
+    data: BinaryBroadcastMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.BinaryBroadcastMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BinaryBroadcastMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_binary_broadcast_message(
+
+    data=BinaryBroadcastMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.BinaryBroadcastMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_binary_broadcast_message_batch(```
+
+    messages=[
+
+        BinaryBroadcastMessage(...),Initializes the runner with a Kafka consumer.
+
+        BinaryBroadcastMessage(...),
+
+        BinaryBroadcastMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_channel_management`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_channel_management(
+
+    self,##### `_process_event`
+
+    data: ChannelManagement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.ChannelManagement` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChannelManagement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_channel_management(
+
+    data=ChannelManagement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.ChannelManagement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_channel_management_batch(```
+
+    messages=[
+
+        ChannelManagement(...),Initializes the runner with a Kafka consumer.
+
+        ChannelManagement(...),
+
+        ChannelManagement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_coordinated_utcinquiry`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_coordinated_utcinquiry(
+
+    self,##### `_process_event`
+
+    data: CoordinatedUTCInquiry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.CoordinatedUTCInquiry` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `CoordinatedUTCInquiry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_coordinated_utcinquiry(
+
+    data=CoordinatedUTCInquiry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.CoordinatedUTCInquiry` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_coordinated_utcinquiry_batch(```
+
+    messages=[
+
+        CoordinatedUTCInquiry(...),Initializes the runner with a Kafka consumer.
+
+        CoordinatedUTCInquiry(...),
+
+        CoordinatedUTCInquiry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_data_link_management_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_data_link_management_message(
+
+    self,##### `_process_event`
+
+    data: DataLinkManagementMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.DataLinkManagementMessage` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DataLinkManagementMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_data_link_management_message(
+
+    data=DataLinkManagementMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.DataLinkManagementMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_data_link_management_message_batch(```
+
+    messages=[
+
+        DataLinkManagementMessage(...),Initializes the runner with a Kafka consumer.
+
+        DataLinkManagementMessage(...),
+
+        DataLinkManagementMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_gnss_broadcast_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_gnss_broadcast_binary_message(
+
+    self,##### `_process_event`
+
+    data: GnssBroadcastBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.GnssBroadcastBinaryMessage` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GnssBroadcastBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_gnss_broadcast_binary_message(
+
+    data=GnssBroadcastBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.GnssBroadcastBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_gnss_broadcast_binary_message_batch(```
+
+    messages=[
+
+        GnssBroadcastBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        GnssBroadcastBinaryMessage(...),
+
+        GnssBroadcastBinaryMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_group_assignment_command`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_group_assignment_command(
+
+    self,##### `_process_event`
+
+    data: GroupAssignmentCommand,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.GroupAssignmentCommand` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GroupAssignmentCommand`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_group_assignment_command(
+
+    data=GroupAssignmentCommand(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.GroupAssignmentCommand` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_group_assignment_command_batch(```
+
+    messages=[
+
+        GroupAssignmentCommand(...),Initializes the runner with a Kafka consumer.
+
+        GroupAssignmentCommand(...),
+
+        GroupAssignmentCommand(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_interrogation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_interrogation(
+
+    self,##### `_process_event`
+
+    data: Interrogation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.Interrogation` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Interrogation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_interrogation(
+
+    data=Interrogation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.Interrogation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_interrogation_batch(```
+
+    messages=[
+
+        Interrogation(...),Initializes the runner with a Kafka consumer.
+
+        Interrogation(...),
+
+        Interrogation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_multi_slot_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_multi_slot_binary_message(
+
+    self,##### `_process_event`
+
+    data: MultiSlotBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.MultiSlotBinaryMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MultiSlotBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_multi_slot_binary_message(
+
+    data=MultiSlotBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.MultiSlotBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_multi_slot_binary_message_batch(```
+
+    messages=[
+
+        MultiSlotBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        MultiSlotBinaryMessage(...),
+
+        MultiSlotBinaryMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_mqtt_single_slot_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_mqtt_single_slot_binary_message(
+
+    self,##### `_process_event`
+
+    data: SingleSlotBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.mqtt.SingleSlotBinaryMessage` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SingleSlotBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_mqtt_single_slot_binary_message(
+
+    data=SingleSlotBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.mqtt.SingleSlotBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_mqtt_single_slot_binary_message_batch(```
+
+    messages=[
+
+        SingleSlotBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        SingleSlotBinaryMessage(...),
+
+        SingleSlotBinaryMessage(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -6893,21 +11862,21 @@ io_aisstream_amqp_dispatcher.io_aisstream_amqp_position_report_async = io_aisstr
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `io_aisstream_amqp_ship_static_async`
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_ship_static_data_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'io_aisstream_amqp_ship_static_async:  Callable[[ConsumerRecord, CloudEvent,
-ShipStatic], Awaitable[None]]
+    sasl_password='your-password'io_aisstream_amqp_ship_static_data_async:  Callable[[ConsumerRecord, CloudEvent,
+ShipStaticData], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `IO.AISstream.amqp.ShipStatic`: A transport update from AISStream public AIS firehose. It
-carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+Asynchronous handler hook for `IO.AISstream.amqp.ShipStaticData`: A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
 network.
 
 ## Generated Producer Classes
@@ -6918,7 +11887,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ShipStatic`.
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ShipStaticData`.
 
 
 
@@ -6928,8 +11897,8 @@ Producer for `IO.AISstream` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_amqp_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
-None:
+async def io_aisstream_amqp_ship_static_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ShipStaticData) -> None:
 
 ```python    # Process the event data
 
@@ -6946,7 +11915,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_dispatcher.io_aisstream_amqp_ship_static_async = io_aisstream_amqp_ship_static_event
+io_aisstream_dispatcher.io_aisstream_amqp_ship_static_data_async = io_aisstream_amqp_ship_static_data_event
 
 **Parameters:**```
 
@@ -6956,7 +11925,7 @@ io_aisstream_dispatcher.io_aisstream_amqp_ship_static_async = io_aisstream_amqp_
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ShipStatic`.
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ShipStaticData`.
 
 
 
@@ -6966,8 +11935,8 @@ Producer for `IO.AISstream.mqtt` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_amqp_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
-None:
+async def io_aisstream_amqp_ship_static_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ShipStaticData) -> None:
 
 ```python    # Process the event data
 
@@ -6984,7 +11953,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_mqtt_dispatcher.io_aisstream_amqp_ship_static_async = io_aisstream_amqp_ship_static_event
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_ship_static_data_async = io_aisstream_amqp_ship_static_data_event
 
 **Parameters:**```
 
@@ -6994,7 +11963,7 @@ io_aisstream_mqtt_dispatcher.io_aisstream_amqp_ship_static_async = io_aisstream_
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ShipStatic`.
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ShipStaticData`.
 
 
 
@@ -7004,8 +11973,8 @@ Producer for `IO.AISstream.amqp` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_amqp_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
-None:
+async def io_aisstream_amqp_ship_static_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ShipStaticData) -> None:
 
 ```python    # Process the event data
 
@@ -7022,7 +11991,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_amqp_dispatcher.io_aisstream_amqp_ship_static_async = io_aisstream_amqp_ship_static_event
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_ship_static_data_async = io_aisstream_amqp_ship_static_data_event
 
 **Parameters:**```
 
@@ -7034,22 +12003,22 @@ io_aisstream_amqp_dispatcher.io_aisstream_amqp_ship_static_async = io_aisstream_
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `io_aisstream_amqp_aid_to_navigation_async`
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_standard_class_bposition_report_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'io_aisstream_amqp_aid_to_navigation_async:  Callable[[ConsumerRecord, CloudEvent,
-AidToNavigation], Awaitable[None]]
+    sasl_password='your-password'io_aisstream_amqp_standard_class_bposition_report_async:  Callable[[ConsumerRecord,
+CloudEvent, StandardClassBPositionReport], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `IO.AISstream.amqp.AidToNavigation`: A transport update from AISStream public AIS
-firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
-AISStream network.
+Asynchronous handler hook for `IO.AISstream.amqp.StandardClassBPositionReport`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
 
 ## Generated Producer Classes
 
@@ -7059,7 +12028,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AidToNavigation`.
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.StandardClassBPositionReport`.
 
 
 
@@ -7069,8 +12038,8 @@ Producer for `IO.AISstream` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_amqp_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-AidToNavigation) -> None:
+async def io_aisstream_amqp_standard_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StandardClassBPositionReport) -> None:
 
 ```python    # Process the event data
 
@@ -7087,7 +12056,8 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_dispatcher.io_aisstream_amqp_aid_to_navigation_async = io_aisstream_amqp_aid_to_navigation_event
+io_aisstream_dispatcher.io_aisstream_amqp_standard_class_bposition_report_async =
+io_aisstream_amqp_standard_class_bposition_report_event
 
 **Parameters:**```
 
@@ -7097,7 +12067,7 @@ io_aisstream_dispatcher.io_aisstream_amqp_aid_to_navigation_async = io_aisstream
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AidToNavigation`.
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.StandardClassBPositionReport`.
 
 
 
@@ -7107,8 +12077,8 @@ Producer for `IO.AISstream.mqtt` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_amqp_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-AidToNavigation) -> None:
+async def io_aisstream_amqp_standard_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StandardClassBPositionReport) -> None:
 
 ```python    # Process the event data
 
@@ -7125,7 +12095,8 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_mqtt_dispatcher.io_aisstream_amqp_aid_to_navigation_async = io_aisstream_amqp_aid_to_navigation_event
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_standard_class_bposition_report_async =
+io_aisstream_amqp_standard_class_bposition_report_event
 
 **Parameters:**```
 
@@ -7135,7 +12106,7 @@ io_aisstream_mqtt_dispatcher.io_aisstream_amqp_aid_to_navigation_async = io_aiss
 
 - `cloud_event`: The CloudEvent.
 
-### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AidToNavigation`.
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.StandardClassBPositionReport`.
 
 
 
@@ -7145,8 +12116,8 @@ Producer for `IO.AISstream.amqp` message group.Example:
 
 #### Constructor```python
 
-async def io_aisstream_amqp_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-AidToNavigation) -> None:
+async def io_aisstream_amqp_standard_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StandardClassBPositionReport) -> None:
 
 ```python    # Process the event data
 
@@ -7163,7 +12134,2873 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-io_aisstream_amqp_dispatcher.io_aisstream_amqp_aid_to_navigation_async = io_aisstream_amqp_aid_to_navigation_event
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_standard_class_bposition_report_async =
+io_aisstream_amqp_standard_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_extended_class_bposition_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_extended_class_bposition_report_async:  Callable[[ConsumerRecord,
+CloudEvent, ExtendedClassBPositionReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.ExtendedClassBPositionReport`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ExtendedClassBPositionReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_extended_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtendedClassBPositionReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_extended_class_bposition_report_async =
+io_aisstream_amqp_extended_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ExtendedClassBPositionReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_extended_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtendedClassBPositionReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_extended_class_bposition_report_async =
+io_aisstream_amqp_extended_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ExtendedClassBPositionReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_extended_class_bposition_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtendedClassBPositionReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_extended_class_bposition_report_async =
+io_aisstream_amqp_extended_class_bposition_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_aids_to_navigation_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_aids_to_navigation_report_async:  Callable[[ConsumerRecord,
+CloudEvent, AidsToNavigationReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.AidsToNavigationReport`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AidsToNavigationReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_aids_to_navigation_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidsToNavigationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_aids_to_navigation_report_async =
+io_aisstream_amqp_aids_to_navigation_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AidsToNavigationReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_aids_to_navigation_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidsToNavigationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_aids_to_navigation_report_async =
+io_aisstream_amqp_aids_to_navigation_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AidsToNavigationReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_aids_to_navigation_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidsToNavigationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_aids_to_navigation_report_async =
+io_aisstream_amqp_aids_to_navigation_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_static_data_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_static_data_report_async:  Callable[[ConsumerRecord, CloudEvent,
+StaticDataReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.StaticDataReport`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.StaticDataReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_static_data_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticDataReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_static_data_report_async = io_aisstream_amqp_static_data_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.StaticDataReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_static_data_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticDataReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_static_data_report_async = io_aisstream_amqp_static_data_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.StaticDataReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_static_data_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticDataReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_static_data_report_async = io_aisstream_amqp_static_data_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_base_station_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_base_station_report_async:  Callable[[ConsumerRecord, CloudEvent,
+BaseStationReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.BaseStationReport`: A reference record from AISStream public AIS
+firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels
+needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.BaseStationReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_base_station_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BaseStationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_base_station_report_async = io_aisstream_amqp_base_station_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.BaseStationReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_base_station_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BaseStationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_base_station_report_async = io_aisstream_amqp_base_station_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.BaseStationReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_base_station_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BaseStationReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_base_station_report_async = io_aisstream_amqp_base_station_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_safety_broadcast_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_safety_broadcast_message_async:  Callable[[ConsumerRecord,
+CloudEvent, SafetyBroadcastMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.SafetyBroadcastMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.SafetyBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_safety_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_safety_broadcast_message_async =
+io_aisstream_amqp_safety_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.SafetyBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_safety_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_safety_broadcast_message_async =
+io_aisstream_amqp_safety_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.SafetyBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_safety_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_safety_broadcast_message_async =
+io_aisstream_amqp_safety_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_standard_search_and_rescue_aircraft_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_standard_search_and_rescue_aircraft_report_async:
+Callable[[ConsumerRecord, CloudEvent, StandardSearchAndRescueAircraftReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.StandardSearchAndRescueAircraftReport`: A transport update from
+AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped
+vessels received by the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.StandardSearchAndRescueAircraftReport`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_standard_search_and_rescue_aircraft_report_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: StandardSearchAndRescueAircraftReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_standard_search_and_rescue_aircraft_report_async =
+io_aisstream_amqp_standard_search_and_rescue_aircraft_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type
+`aisstream_producer_data.StandardSearchAndRescueAircraftReport`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_standard_search_and_rescue_aircraft_report_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: StandardSearchAndRescueAircraftReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_standard_search_and_rescue_aircraft_report_async =
+io_aisstream_amqp_standard_search_and_rescue_aircraft_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type
+`aisstream_producer_data.StandardSearchAndRescueAircraftReport`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_standard_search_and_rescue_aircraft_report_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: StandardSearchAndRescueAircraftReport) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_standard_search_and_rescue_aircraft_report_async =
+io_aisstream_amqp_standard_search_and_rescue_aircraft_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_long_range_ais_broadcast_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_long_range_ais_broadcast_message_async:  Callable[[ConsumerRecord,
+CloudEvent, LongRangeAisBroadcastMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.LongRangeAisBroadcastMessage`: A vehicle or vessel update from
+AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from
+the upstream feed.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.LongRangeAisBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_long_range_ais_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: LongRangeAisBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_long_range_ais_broadcast_message_async =
+io_aisstream_amqp_long_range_ais_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.LongRangeAisBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_long_range_ais_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: LongRangeAisBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_long_range_ais_broadcast_message_async =
+io_aisstream_amqp_long_range_ais_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.LongRangeAisBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_long_range_ais_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: LongRangeAisBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_long_range_ais_broadcast_message_async =
+io_aisstream_amqp_long_range_ais_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_addressed_safety_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_addressed_safety_message_async:  Callable[[ConsumerRecord,
+CloudEvent, AddressedSafetyMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.AddressedSafetyMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AddressedSafetyMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_addressed_safety_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedSafetyMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_addressed_safety_message_async =
+io_aisstream_amqp_addressed_safety_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AddressedSafetyMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_addressed_safety_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedSafetyMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_addressed_safety_message_async =
+io_aisstream_amqp_addressed_safety_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AddressedSafetyMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_addressed_safety_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedSafetyMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_addressed_safety_message_async =
+io_aisstream_amqp_addressed_safety_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_addressed_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_addressed_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, AddressedBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.AddressedBinaryMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AddressedBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_addressed_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_addressed_binary_message_async =
+io_aisstream_amqp_addressed_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AddressedBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_addressed_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_addressed_binary_message_async =
+io_aisstream_amqp_addressed_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AddressedBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_addressed_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AddressedBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_addressed_binary_message_async =
+io_aisstream_amqp_addressed_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_assigned_mode_command_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_assigned_mode_command_async:  Callable[[ConsumerRecord, CloudEvent,
+AssignedModeCommand], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.AssignedModeCommand`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.AssignedModeCommand`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_assigned_mode_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AssignedModeCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_assigned_mode_command_async = io_aisstream_amqp_assigned_mode_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.AssignedModeCommand`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_assigned_mode_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AssignedModeCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_assigned_mode_command_async =
+io_aisstream_amqp_assigned_mode_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.AssignedModeCommand`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_assigned_mode_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AssignedModeCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_assigned_mode_command_async =
+io_aisstream_amqp_assigned_mode_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_binary_acknowledge_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_binary_acknowledge_async:  Callable[[ConsumerRecord, CloudEvent,
+BinaryAcknowledge], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.BinaryAcknowledge`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.BinaryAcknowledge`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_binary_acknowledge_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryAcknowledge) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_binary_acknowledge_async = io_aisstream_amqp_binary_acknowledge_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.BinaryAcknowledge`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_binary_acknowledge_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryAcknowledge) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_binary_acknowledge_async = io_aisstream_amqp_binary_acknowledge_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.BinaryAcknowledge`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_binary_acknowledge_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryAcknowledge) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_binary_acknowledge_async = io_aisstream_amqp_binary_acknowledge_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_binary_broadcast_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_binary_broadcast_message_async:  Callable[[ConsumerRecord,
+CloudEvent, BinaryBroadcastMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.BinaryBroadcastMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.BinaryBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_binary_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_binary_broadcast_message_async =
+io_aisstream_amqp_binary_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.BinaryBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_binary_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_binary_broadcast_message_async =
+io_aisstream_amqp_binary_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.BinaryBroadcastMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_binary_broadcast_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BinaryBroadcastMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_binary_broadcast_message_async =
+io_aisstream_amqp_binary_broadcast_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_channel_management_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_channel_management_async:  Callable[[ConsumerRecord, CloudEvent,
+ChannelManagement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.ChannelManagement`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.ChannelManagement`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_channel_management_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChannelManagement) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_channel_management_async = io_aisstream_amqp_channel_management_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.ChannelManagement`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_channel_management_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChannelManagement) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_channel_management_async = io_aisstream_amqp_channel_management_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.ChannelManagement`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_channel_management_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChannelManagement) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_channel_management_async = io_aisstream_amqp_channel_management_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_coordinated_utcinquiry_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_coordinated_utcinquiry_async:  Callable[[ConsumerRecord, CloudEvent,
+CoordinatedUTCInquiry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.CoordinatedUTCInquiry`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.CoordinatedUTCInquiry`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_coordinated_utcinquiry_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+CoordinatedUTCInquiry) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_coordinated_utcinquiry_async = io_aisstream_amqp_coordinated_utcinquiry_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.CoordinatedUTCInquiry`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_coordinated_utcinquiry_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+CoordinatedUTCInquiry) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_coordinated_utcinquiry_async =
+io_aisstream_amqp_coordinated_utcinquiry_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.CoordinatedUTCInquiry`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_coordinated_utcinquiry_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+CoordinatedUTCInquiry) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_coordinated_utcinquiry_async =
+io_aisstream_amqp_coordinated_utcinquiry_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_data_link_management_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_data_link_management_message_async:  Callable[[ConsumerRecord,
+CloudEvent, DataLinkManagementMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.DataLinkManagementMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.DataLinkManagementMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_data_link_management_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DataLinkManagementMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_data_link_management_message_async =
+io_aisstream_amqp_data_link_management_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.DataLinkManagementMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_data_link_management_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DataLinkManagementMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_data_link_management_message_async =
+io_aisstream_amqp_data_link_management_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.DataLinkManagementMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_data_link_management_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DataLinkManagementMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_data_link_management_message_async =
+io_aisstream_amqp_data_link_management_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_gnss_broadcast_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_gnss_broadcast_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, GnssBroadcastBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.GnssBroadcastBinaryMessage`: A transport update from AISStream public
+AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by
+the AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.GnssBroadcastBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_gnss_broadcast_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GnssBroadcastBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_gnss_broadcast_binary_message_async =
+io_aisstream_amqp_gnss_broadcast_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.GnssBroadcastBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_gnss_broadcast_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GnssBroadcastBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_gnss_broadcast_binary_message_async =
+io_aisstream_amqp_gnss_broadcast_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.GnssBroadcastBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_gnss_broadcast_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GnssBroadcastBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_gnss_broadcast_binary_message_async =
+io_aisstream_amqp_gnss_broadcast_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_group_assignment_command_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_group_assignment_command_async:  Callable[[ConsumerRecord,
+CloudEvent, GroupAssignmentCommand], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.GroupAssignmentCommand`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.GroupAssignmentCommand`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_group_assignment_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GroupAssignmentCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_group_assignment_command_async =
+io_aisstream_amqp_group_assignment_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.GroupAssignmentCommand`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_group_assignment_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GroupAssignmentCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_group_assignment_command_async =
+io_aisstream_amqp_group_assignment_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.GroupAssignmentCommand`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_group_assignment_command_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GroupAssignmentCommand) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_group_assignment_command_async =
+io_aisstream_amqp_group_assignment_command_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_interrogation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_interrogation_async:  Callable[[ConsumerRecord, CloudEvent,
+Interrogation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.Interrogation`: A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.Interrogation`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_interrogation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Interrogation) ->
+None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_interrogation_async = io_aisstream_amqp_interrogation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.Interrogation`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_interrogation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Interrogation) ->
+None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_interrogation_async = io_aisstream_amqp_interrogation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.Interrogation`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_interrogation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Interrogation) ->
+None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_interrogation_async = io_aisstream_amqp_interrogation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_multi_slot_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_multi_slot_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, MultiSlotBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.MultiSlotBinaryMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.MultiSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_multi_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MultiSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_multi_slot_binary_message_async =
+io_aisstream_amqp_multi_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.MultiSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_multi_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MultiSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_multi_slot_binary_message_async =
+io_aisstream_amqp_multi_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.MultiSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_multi_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MultiSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_multi_slot_binary_message_async =
+io_aisstream_amqp_multi_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `io_aisstream_amqp_single_slot_binary_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'io_aisstream_amqp_single_slot_binary_message_async:  Callable[[ConsumerRecord,
+CloudEvent, SingleSlotBinaryMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `IO.AISstream.amqp.SingleSlotBinaryMessage`: A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamProducer- `data`: The event data of type `aisstream_producer_data.SingleSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_single_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SingleSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_dispatcher.io_aisstream_amqp_single_slot_binary_message_async =
+io_aisstream_amqp_single_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamMqttProducer- `data`: The event data of type `aisstream_producer_data.SingleSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_single_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SingleSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_mqtt_dispatcher.io_aisstream_amqp_single_slot_binary_message_async =
+io_aisstream_amqp_single_slot_binary_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### IOAISstreamAmqpProducer- `data`: The event data of type `aisstream_producer_data.SingleSlotBinaryMessage`.
+
+
+
+Producer for `IO.AISstream.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def io_aisstream_amqp_single_slot_binary_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SingleSlotBinaryMessage) -> None:
+
+```python    # Process the event data
+
+IOAISstreamAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+io_aisstream_amqp_dispatcher.io_aisstream_amqp_single_slot_binary_message_async =
+io_aisstream_amqp_single_slot_binary_message_event
 
 **Parameters:**```
 
@@ -7286,17 +15123,17 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_io_aisstream_amqp_ship_static`Dispatchers have the following protected methods:
+##### `send_io_aisstream_amqp_ship_static_data`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_io_aisstream_amqp_ship_static(
+async def send_io_aisstream_amqp_ship_static_data(
 
     self,##### `_process_event`
 
-    data: ShipStatic,
+    data: ShipStaticData,
 
     partition_key: Optional[str] = None,```python
 
@@ -7310,15 +15147,15 @@ async def send_io_aisstream_amqp_ship_static(
 
 
 
-Send a single `IO.AISstream.amqp.ShipStatic` message. A transport update from AISStream public AIS firehose. It carries
-vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+Send a single `IO.AISstream.amqp.ShipStaticData` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
 network.Args:
 
 - `record`: The Kafka record.
 
 **Parameters:**
 
-- `data`: Message data of type `ShipStatic`
+- `data`: Message data of type `ShipStaticData`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -7334,9 +15171,9 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_io_aisstream_amqp_ship_static(
+await producer.send_io_aisstream_amqp_ship_static_data(
 
-    data=ShipStatic(...),Args:
+    data=ShipStaticData(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -7346,7 +15183,7 @@ await producer.send_io_aisstream_amqp_ship_static(
 
 ```
 
-Send multiple `IO.AISstream.amqp.ShipStatic` messages in a batch.
+Send multiple `IO.AISstream.amqp.ShipStaticData` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -7369,15 +15206,15 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_io_aisstream_amqp_ship_static_batch(```
+await producer.send_io_aisstream_amqp_ship_static_data_batch(```
 
     messages=[
 
-        ShipStatic(...),Initializes the runner with a Kafka consumer.
+        ShipStaticData(...),Initializes the runner with a Kafka consumer.
 
-        ShipStatic(...),
+        ShipStaticData(...),
 
-        ShipStatic(...)Args:
+        ShipStaticData(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -7391,17 +15228,17 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_io_aisstream_amqp_aid_to_navigation`Dispatchers have the following protected methods:
+##### `send_io_aisstream_amqp_standard_class_bposition_report`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_io_aisstream_amqp_aid_to_navigation(
+async def send_io_aisstream_amqp_standard_class_bposition_report(
 
     self,##### `_process_event`
 
-    data: AidToNavigation,
+    data: StandardClassBPositionReport,
 
     partition_key: Optional[str] = None,```python
 
@@ -7415,15 +15252,15 @@ async def send_io_aisstream_amqp_aid_to_navigation(
 
 
 
-Send a single `IO.AISstream.amqp.AidToNavigation` message. A transport update from AISStream public AIS firehose. It
-carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
-network.Args:
+Send a single `IO.AISstream.amqp.StandardClassBPositionReport` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
 
 - `record`: The Kafka record.
 
 **Parameters:**
 
-- `data`: Message data of type `AidToNavigation`
+- `data`: Message data of type `StandardClassBPositionReport`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -7439,9 +15276,9 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_io_aisstream_amqp_aid_to_navigation(
+await producer.send_io_aisstream_amqp_standard_class_bposition_report(
 
-    data=AidToNavigation(...),Args:
+    data=StandardClassBPositionReport(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -7451,7 +15288,7 @@ await producer.send_io_aisstream_amqp_aid_to_navigation(
 
 ```
 
-Send multiple `IO.AISstream.amqp.AidToNavigation` messages in a batch.
+Send multiple `IO.AISstream.amqp.StandardClassBPositionReport` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -7474,15 +15311,2116 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_io_aisstream_amqp_aid_to_navigation_batch(```
+await producer.send_io_aisstream_amqp_standard_class_bposition_report_batch(```
 
     messages=[
 
-        AidToNavigation(...),Initializes the runner with a Kafka consumer.
+        StandardClassBPositionReport(...),Initializes the runner with a Kafka consumer.
 
-        AidToNavigation(...),
+        StandardClassBPositionReport(...),
 
-        AidToNavigation(...)Args:
+        StandardClassBPositionReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_extended_class_bposition_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_extended_class_bposition_report(
+
+    self,##### `_process_event`
+
+    data: ExtendedClassBPositionReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.ExtendedClassBPositionReport` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ExtendedClassBPositionReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_extended_class_bposition_report(
+
+    data=ExtendedClassBPositionReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.ExtendedClassBPositionReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_extended_class_bposition_report_batch(```
+
+    messages=[
+
+        ExtendedClassBPositionReport(...),Initializes the runner with a Kafka consumer.
+
+        ExtendedClassBPositionReport(...),
+
+        ExtendedClassBPositionReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_aids_to_navigation_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_aids_to_navigation_report(
+
+    self,##### `_process_event`
+
+    data: AidsToNavigationReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.AidsToNavigationReport` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AidsToNavigationReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_aids_to_navigation_report(
+
+    data=AidsToNavigationReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.AidsToNavigationReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_aids_to_navigation_report_batch(```
+
+    messages=[
+
+        AidsToNavigationReport(...),Initializes the runner with a Kafka consumer.
+
+        AidsToNavigationReport(...),
+
+        AidsToNavigationReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_static_data_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_static_data_report(
+
+    self,##### `_process_event`
+
+    data: StaticDataReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.StaticDataReport` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `StaticDataReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_static_data_report(
+
+    data=StaticDataReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.StaticDataReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_static_data_report_batch(```
+
+    messages=[
+
+        StaticDataReport(...),Initializes the runner with a Kafka consumer.
+
+        StaticDataReport(...),
+
+        StaticDataReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_base_station_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_base_station_report(
+
+    self,##### `_process_event`
+
+    data: BaseStationReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.BaseStationReport` message. A reference record from AISStream public AIS firehose for a
+station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to
+interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BaseStationReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_base_station_report(
+
+    data=BaseStationReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.BaseStationReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_base_station_report_batch(```
+
+    messages=[
+
+        BaseStationReport(...),Initializes the runner with a Kafka consumer.
+
+        BaseStationReport(...),
+
+        BaseStationReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_safety_broadcast_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_safety_broadcast_message(
+
+    self,##### `_process_event`
+
+    data: SafetyBroadcastMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.SafetyBroadcastMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SafetyBroadcastMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_safety_broadcast_message(
+
+    data=SafetyBroadcastMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.SafetyBroadcastMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_safety_broadcast_message_batch(```
+
+    messages=[
+
+        SafetyBroadcastMessage(...),Initializes the runner with a Kafka consumer.
+
+        SafetyBroadcastMessage(...),
+
+        SafetyBroadcastMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_standard_search_and_rescue_aircraft_report`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_standard_search_and_rescue_aircraft_report(
+
+    self,##### `_process_event`
+
+    data: StandardSearchAndRescueAircraftReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.StandardSearchAndRescueAircraftReport` message. A transport update from AISStream
+public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels
+received by the AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `StandardSearchAndRescueAircraftReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_standard_search_and_rescue_aircraft_report(
+
+    data=StandardSearchAndRescueAircraftReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.StandardSearchAndRescueAircraftReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_standard_search_and_rescue_aircraft_report_batch(```
+
+    messages=[
+
+        StandardSearchAndRescueAircraftReport(...),Initializes the runner with a Kafka consumer.
+
+        StandardSearchAndRescueAircraftReport(...),
+
+        StandardSearchAndRescueAircraftReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_long_range_ais_broadcast_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_long_range_ais_broadcast_message(
+
+    self,##### `_process_event`
+
+    data: LongRangeAisBroadcastMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.LongRangeAisBroadcastMessage` message. A vehicle or vessel update from AISStream public
+AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream
+feed.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `LongRangeAisBroadcastMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_long_range_ais_broadcast_message(
+
+    data=LongRangeAisBroadcastMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.LongRangeAisBroadcastMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_long_range_ais_broadcast_message_batch(```
+
+    messages=[
+
+        LongRangeAisBroadcastMessage(...),Initializes the runner with a Kafka consumer.
+
+        LongRangeAisBroadcastMessage(...),
+
+        LongRangeAisBroadcastMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_addressed_safety_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_addressed_safety_message(
+
+    self,##### `_process_event`
+
+    data: AddressedSafetyMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.AddressedSafetyMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AddressedSafetyMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_addressed_safety_message(
+
+    data=AddressedSafetyMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.AddressedSafetyMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_addressed_safety_message_batch(```
+
+    messages=[
+
+        AddressedSafetyMessage(...),Initializes the runner with a Kafka consumer.
+
+        AddressedSafetyMessage(...),
+
+        AddressedSafetyMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_addressed_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_addressed_binary_message(
+
+    self,##### `_process_event`
+
+    data: AddressedBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.AddressedBinaryMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AddressedBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_addressed_binary_message(
+
+    data=AddressedBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.AddressedBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_addressed_binary_message_batch(```
+
+    messages=[
+
+        AddressedBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        AddressedBinaryMessage(...),
+
+        AddressedBinaryMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_assigned_mode_command`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_assigned_mode_command(
+
+    self,##### `_process_event`
+
+    data: AssignedModeCommand,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.AssignedModeCommand` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AssignedModeCommand`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_assigned_mode_command(
+
+    data=AssignedModeCommand(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.AssignedModeCommand` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_assigned_mode_command_batch(```
+
+    messages=[
+
+        AssignedModeCommand(...),Initializes the runner with a Kafka consumer.
+
+        AssignedModeCommand(...),
+
+        AssignedModeCommand(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_binary_acknowledge`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_binary_acknowledge(
+
+    self,##### `_process_event`
+
+    data: BinaryAcknowledge,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.BinaryAcknowledge` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BinaryAcknowledge`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_binary_acknowledge(
+
+    data=BinaryAcknowledge(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.BinaryAcknowledge` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_binary_acknowledge_batch(```
+
+    messages=[
+
+        BinaryAcknowledge(...),Initializes the runner with a Kafka consumer.
+
+        BinaryAcknowledge(...),
+
+        BinaryAcknowledge(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_binary_broadcast_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_binary_broadcast_message(
+
+    self,##### `_process_event`
+
+    data: BinaryBroadcastMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.BinaryBroadcastMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BinaryBroadcastMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_binary_broadcast_message(
+
+    data=BinaryBroadcastMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.BinaryBroadcastMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_binary_broadcast_message_batch(```
+
+    messages=[
+
+        BinaryBroadcastMessage(...),Initializes the runner with a Kafka consumer.
+
+        BinaryBroadcastMessage(...),
+
+        BinaryBroadcastMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_channel_management`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_channel_management(
+
+    self,##### `_process_event`
+
+    data: ChannelManagement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.ChannelManagement` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChannelManagement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_channel_management(
+
+    data=ChannelManagement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.ChannelManagement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_channel_management_batch(```
+
+    messages=[
+
+        ChannelManagement(...),Initializes the runner with a Kafka consumer.
+
+        ChannelManagement(...),
+
+        ChannelManagement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_coordinated_utcinquiry`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_coordinated_utcinquiry(
+
+    self,##### `_process_event`
+
+    data: CoordinatedUTCInquiry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.CoordinatedUTCInquiry` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `CoordinatedUTCInquiry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_coordinated_utcinquiry(
+
+    data=CoordinatedUTCInquiry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.CoordinatedUTCInquiry` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_coordinated_utcinquiry_batch(```
+
+    messages=[
+
+        CoordinatedUTCInquiry(...),Initializes the runner with a Kafka consumer.
+
+        CoordinatedUTCInquiry(...),
+
+        CoordinatedUTCInquiry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_data_link_management_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_data_link_management_message(
+
+    self,##### `_process_event`
+
+    data: DataLinkManagementMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.DataLinkManagementMessage` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DataLinkManagementMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_data_link_management_message(
+
+    data=DataLinkManagementMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.DataLinkManagementMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_data_link_management_message_batch(```
+
+    messages=[
+
+        DataLinkManagementMessage(...),Initializes the runner with a Kafka consumer.
+
+        DataLinkManagementMessage(...),
+
+        DataLinkManagementMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_gnss_broadcast_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_gnss_broadcast_binary_message(
+
+    self,##### `_process_event`
+
+    data: GnssBroadcastBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.GnssBroadcastBinaryMessage` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GnssBroadcastBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_gnss_broadcast_binary_message(
+
+    data=GnssBroadcastBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.GnssBroadcastBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_gnss_broadcast_binary_message_batch(```
+
+    messages=[
+
+        GnssBroadcastBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        GnssBroadcastBinaryMessage(...),
+
+        GnssBroadcastBinaryMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_group_assignment_command`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_group_assignment_command(
+
+    self,##### `_process_event`
+
+    data: GroupAssignmentCommand,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.GroupAssignmentCommand` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GroupAssignmentCommand`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_group_assignment_command(
+
+    data=GroupAssignmentCommand(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.GroupAssignmentCommand` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_group_assignment_command_batch(```
+
+    messages=[
+
+        GroupAssignmentCommand(...),Initializes the runner with a Kafka consumer.
+
+        GroupAssignmentCommand(...),
+
+        GroupAssignmentCommand(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_interrogation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_interrogation(
+
+    self,##### `_process_event`
+
+    data: Interrogation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.Interrogation` message. A transport update from AISStream public AIS firehose. It
+carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Interrogation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_interrogation(
+
+    data=Interrogation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.Interrogation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_interrogation_batch(```
+
+    messages=[
+
+        Interrogation(...),Initializes the runner with a Kafka consumer.
+
+        Interrogation(...),
+
+        Interrogation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_multi_slot_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_multi_slot_binary_message(
+
+    self,##### `_process_event`
+
+    data: MultiSlotBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.MultiSlotBinaryMessage` message. A transport update from AISStream public AIS firehose.
+It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MultiSlotBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_multi_slot_binary_message(
+
+    data=MultiSlotBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.MultiSlotBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_multi_slot_binary_message_batch(```
+
+    messages=[
+
+        MultiSlotBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        MultiSlotBinaryMessage(...),
+
+        MultiSlotBinaryMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_io_aisstream_amqp_single_slot_binary_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_io_aisstream_amqp_single_slot_binary_message(
+
+    self,##### `_process_event`
+
+    data: SingleSlotBinaryMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `IO.AISstream.amqp.SingleSlotBinaryMessage` message. A transport update from AISStream public AIS
+firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the
+AISStream network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SingleSlotBinaryMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_io_aisstream_amqp_single_slot_binary_message(
+
+    data=SingleSlotBinaryMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `IO.AISstream.amqp.SingleSlotBinaryMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_io_aisstream_amqp_single_slot_binary_message_batch(```
+
+    messages=[
+
+        SingleSlotBinaryMessage(...),Initializes the runner with a Kafka consumer.
+
+        SingleSlotBinaryMessage(...),
+
+        SingleSlotBinaryMessage(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

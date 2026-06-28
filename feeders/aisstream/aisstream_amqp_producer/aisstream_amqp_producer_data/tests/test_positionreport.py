@@ -9,7 +9,6 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from aisstream_amqp_producer_data.positionreport import PositionReport
-from aisstream_amqp_producer_data.msgtypeenum import MsgTypeenum
 
 
 class Test_PositionReport(unittest.TestCase):
@@ -29,162 +28,162 @@ class Test_PositionReport(unittest.TestCase):
         Create instance of PositionReport for testing
         """
         instance = PositionReport(
-            mmsi='jcstiqdnjiuaaopomaxh',
-            flag='svnookznzawetiqtubfw',
-            ship_type='gntkrujsbmrbftwgmphz',
-            geohash5='nnkkhydpoqidskxjtiqm',
-            msg_type=MsgTypeenum.position_MINUSreport,
-            user_id=int(89),
-            latitude=float(47.18348052113552),
-            longitude=float(84.14852793393463),
-            sog=float(16.789186644681664),
-            cog=float(52.57080686354586),
-            true_heading=int(55),
-            navigational_status=int(46),
-            rate_of_turn=int(63),
-            position_accuracy=False,
-            timestamp=int(28),
-            raim=True,
-            message_id=int(2)
+            MessageID=int(32),
+            RepeatIndicator=int(48),
+            UserID=int(71),
+            Valid=True,
+            NavigationalStatus=int(71),
+            RateOfTurn=int(22),
+            Sog=float(28.652937528948563),
+            PositionAccuracy=True,
+            Longitude=float(31.702666474534002),
+            Latitude=float(64.5659395197065),
+            Cog=float(54.528239740299234),
+            TrueHeading=int(12),
+            Timestamp=int(1),
+            SpecialManoeuvreIndicator=int(95),
+            Spare=int(73),
+            Raim=True,
+            CommunicationState=int(40)
         )
         return instance
 
     
-    def test_mmsi_property(self):
+    def test_MessageID_property(self):
         """
-        Test mmsi property
+        Test MessageID property
         """
-        test_value = 'jcstiqdnjiuaaopomaxh'
-        self.instance.mmsi = test_value
-        self.assertEqual(self.instance.mmsi, test_value)
+        test_value = int(32)
+        self.instance.MessageID = test_value
+        self.assertEqual(self.instance.MessageID, test_value)
     
-    def test_flag_property(self):
+    def test_RepeatIndicator_property(self):
         """
-        Test flag property
+        Test RepeatIndicator property
         """
-        test_value = 'svnookznzawetiqtubfw'
-        self.instance.flag = test_value
-        self.assertEqual(self.instance.flag, test_value)
+        test_value = int(48)
+        self.instance.RepeatIndicator = test_value
+        self.assertEqual(self.instance.RepeatIndicator, test_value)
     
-    def test_ship_type_property(self):
+    def test_UserID_property(self):
         """
-        Test ship_type property
+        Test UserID property
         """
-        test_value = 'gntkrujsbmrbftwgmphz'
-        self.instance.ship_type = test_value
-        self.assertEqual(self.instance.ship_type, test_value)
+        test_value = int(71)
+        self.instance.UserID = test_value
+        self.assertEqual(self.instance.UserID, test_value)
     
-    def test_geohash5_property(self):
+    def test_Valid_property(self):
         """
-        Test geohash5 property
-        """
-        test_value = 'nnkkhydpoqidskxjtiqm'
-        self.instance.geohash5 = test_value
-        self.assertEqual(self.instance.geohash5, test_value)
-    
-    def test_msg_type_property(self):
-        """
-        Test msg_type property
-        """
-        test_value = MsgTypeenum.position_MINUSreport
-        self.instance.msg_type = test_value
-        self.assertEqual(self.instance.msg_type, test_value)
-    
-    def test_user_id_property(self):
-        """
-        Test user_id property
-        """
-        test_value = int(89)
-        self.instance.user_id = test_value
-        self.assertEqual(self.instance.user_id, test_value)
-    
-    def test_latitude_property(self):
-        """
-        Test latitude property
-        """
-        test_value = float(47.18348052113552)
-        self.instance.latitude = test_value
-        self.assertEqual(self.instance.latitude, test_value)
-    
-    def test_longitude_property(self):
-        """
-        Test longitude property
-        """
-        test_value = float(84.14852793393463)
-        self.instance.longitude = test_value
-        self.assertEqual(self.instance.longitude, test_value)
-    
-    def test_sog_property(self):
-        """
-        Test sog property
-        """
-        test_value = float(16.789186644681664)
-        self.instance.sog = test_value
-        self.assertEqual(self.instance.sog, test_value)
-    
-    def test_cog_property(self):
-        """
-        Test cog property
-        """
-        test_value = float(52.57080686354586)
-        self.instance.cog = test_value
-        self.assertEqual(self.instance.cog, test_value)
-    
-    def test_true_heading_property(self):
-        """
-        Test true_heading property
-        """
-        test_value = int(55)
-        self.instance.true_heading = test_value
-        self.assertEqual(self.instance.true_heading, test_value)
-    
-    def test_navigational_status_property(self):
-        """
-        Test navigational_status property
-        """
-        test_value = int(46)
-        self.instance.navigational_status = test_value
-        self.assertEqual(self.instance.navigational_status, test_value)
-    
-    def test_rate_of_turn_property(self):
-        """
-        Test rate_of_turn property
-        """
-        test_value = int(63)
-        self.instance.rate_of_turn = test_value
-        self.assertEqual(self.instance.rate_of_turn, test_value)
-    
-    def test_position_accuracy_property(self):
-        """
-        Test position_accuracy property
-        """
-        test_value = False
-        self.instance.position_accuracy = test_value
-        self.assertEqual(self.instance.position_accuracy, test_value)
-    
-    def test_timestamp_property(self):
-        """
-        Test timestamp property
-        """
-        test_value = int(28)
-        self.instance.timestamp = test_value
-        self.assertEqual(self.instance.timestamp, test_value)
-    
-    def test_raim_property(self):
-        """
-        Test raim property
+        Test Valid property
         """
         test_value = True
-        self.instance.raim = test_value
-        self.assertEqual(self.instance.raim, test_value)
+        self.instance.Valid = test_value
+        self.assertEqual(self.instance.Valid, test_value)
     
-    def test_message_id_property(self):
+    def test_NavigationalStatus_property(self):
         """
-        Test message_id property
+        Test NavigationalStatus property
         """
-        test_value = int(2)
-        self.instance.message_id = test_value
-        self.assertEqual(self.instance.message_id, test_value)
+        test_value = int(71)
+        self.instance.NavigationalStatus = test_value
+        self.assertEqual(self.instance.NavigationalStatus, test_value)
+    
+    def test_RateOfTurn_property(self):
+        """
+        Test RateOfTurn property
+        """
+        test_value = int(22)
+        self.instance.RateOfTurn = test_value
+        self.assertEqual(self.instance.RateOfTurn, test_value)
+    
+    def test_Sog_property(self):
+        """
+        Test Sog property
+        """
+        test_value = float(28.652937528948563)
+        self.instance.Sog = test_value
+        self.assertEqual(self.instance.Sog, test_value)
+    
+    def test_PositionAccuracy_property(self):
+        """
+        Test PositionAccuracy property
+        """
+        test_value = True
+        self.instance.PositionAccuracy = test_value
+        self.assertEqual(self.instance.PositionAccuracy, test_value)
+    
+    def test_Longitude_property(self):
+        """
+        Test Longitude property
+        """
+        test_value = float(31.702666474534002)
+        self.instance.Longitude = test_value
+        self.assertEqual(self.instance.Longitude, test_value)
+    
+    def test_Latitude_property(self):
+        """
+        Test Latitude property
+        """
+        test_value = float(64.5659395197065)
+        self.instance.Latitude = test_value
+        self.assertEqual(self.instance.Latitude, test_value)
+    
+    def test_Cog_property(self):
+        """
+        Test Cog property
+        """
+        test_value = float(54.528239740299234)
+        self.instance.Cog = test_value
+        self.assertEqual(self.instance.Cog, test_value)
+    
+    def test_TrueHeading_property(self):
+        """
+        Test TrueHeading property
+        """
+        test_value = int(12)
+        self.instance.TrueHeading = test_value
+        self.assertEqual(self.instance.TrueHeading, test_value)
+    
+    def test_Timestamp_property(self):
+        """
+        Test Timestamp property
+        """
+        test_value = int(1)
+        self.instance.Timestamp = test_value
+        self.assertEqual(self.instance.Timestamp, test_value)
+    
+    def test_SpecialManoeuvreIndicator_property(self):
+        """
+        Test SpecialManoeuvreIndicator property
+        """
+        test_value = int(95)
+        self.instance.SpecialManoeuvreIndicator = test_value
+        self.assertEqual(self.instance.SpecialManoeuvreIndicator, test_value)
+    
+    def test_Spare_property(self):
+        """
+        Test Spare property
+        """
+        test_value = int(73)
+        self.instance.Spare = test_value
+        self.assertEqual(self.instance.Spare, test_value)
+    
+    def test_Raim_property(self):
+        """
+        Test Raim property
+        """
+        test_value = True
+        self.instance.Raim = test_value
+        self.assertEqual(self.instance.Raim, test_value)
+    
+    def test_CommunicationState_property(self):
+        """
+        Test CommunicationState property
+        """
+        test_value = int(40)
+        self.instance.CommunicationState = test_value
+        self.assertEqual(self.instance.CommunicationState, test_value)
     
     def test_to_byte_array_json(self):
         """

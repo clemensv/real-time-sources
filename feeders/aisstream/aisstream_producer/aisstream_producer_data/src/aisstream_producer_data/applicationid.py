@@ -157,7 +157,7 @@ class ApplicationID:
             An instance of the dataclass.
         """
         return cls(
-            Valid=True,
-            DesignatedAreaCode=int(59),
-            FunctionIdentifier=int(50)
+            Valid=False,
+            DesignatedAreaCode=int(93),
+            FunctionIdentifier=int(18)
         )

@@ -169,13 +169,13 @@ class GnssBroadcastBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(38),
-            RepeatIndicator=int(35),
-            UserID=int(18),
+            MessageID=int(46),
+            RepeatIndicator=int(81),
+            UserID=int(55),
             Valid=False,
-            Spare1=int(19),
-            Longitude=float(45.120298099755374),
-            Latitude=float(83.18158658321684),
-            Spare2=int(23),
-            Data='eifrhwettekvwczscvtj'
+            Spare1=int(8),
+            Longitude=float(74.18129588724389),
+            Latitude=float(73.03702621168587),
+            Spare2=int(67),
+            Data='vahrtkdzxkjfbqywjswb'
         )

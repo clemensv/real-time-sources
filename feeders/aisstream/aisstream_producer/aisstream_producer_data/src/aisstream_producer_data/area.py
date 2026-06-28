@@ -159,8 +159,8 @@ class Area:
             An instance of the dataclass.
         """
         return cls(
-            Longitude1=float(36.754712337188444),
-            Latitude1=float(58.78085705041504),
-            Longitude2=float(53.75652685881206),
-            Latitude2=float(97.3457445248879)
+            Longitude1=float(16.847533085698608),
+            Latitude1=float(64.31528468816516),
+            Longitude2=float(90.28715457956426),
+            Latitude2=float(76.8117609650082)
         )

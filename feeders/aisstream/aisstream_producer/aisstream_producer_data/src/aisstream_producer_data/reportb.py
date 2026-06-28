@@ -171,12 +171,12 @@ class ReportB:
         """
         return cls(
             Valid=False,
-            ShipType=int(95),
-            VendorIDName='xwhwbhstqeyyuuzujyny',
-            VenderIDModel=int(38),
-            VenderIDSerial=int(6),
-            CallSign='sdchapsazhymzxgaclwi',
+            ShipType=int(49),
+            VendorIDName='ylmzstmnrclvwejpxadg',
+            VenderIDModel=int(2),
+            VenderIDSerial=int(64),
+            CallSign='ircopgoyqynmtsuhxvdm',
             Dimension=None,
-            FixType=int(69),
-            Spare=int(1)
+            FixType=int(14),
+            Spare=int(97)
         )

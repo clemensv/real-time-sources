@@ -159,8 +159,8 @@ class Dimension:
             An instance of the dataclass.
         """
         return cls(
-            A=int(88),
-            B=int(75),
-            C=int(1),
-            D=int(26)
+            A=int(18),
+            B=int(51),
+            C=int(76),
+            D=int(49)
         )
