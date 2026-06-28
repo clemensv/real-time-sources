@@ -12,7 +12,7 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_amedas_amqp_producer_data.jp.jma.amedas.eventenum import EventEnum
+from jma_bosai_amedas_amqp_producer_data.jp.jma.amedas.observationeventenum import ObservationEventEnum
 import datetime
 
 
@@ -75,7 +75,7 @@ class Observation:
         weather (typing.Optional[float])
         weather_qc_flag (typing.Optional[int])
         prefecture (str)
-        event (EventEnum)
+        event (ObservationEventEnum)
     """
     
     
@@ -131,7 +131,7 @@ class Observation:
     weather: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="weather"))
     weather_qc_flag: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="weather_qc_flag"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: ObservationEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Observation':
@@ -260,57 +260,57 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='thsiecgpvpkjflrhgyxj',
+            station_code='dyzwxdqfyxchfuplxzqz',
             observed_at=datetime.datetime.now(datetime.timezone.utc),
             observed_at_local=datetime.datetime.now(datetime.timezone.utc),
-            temp=float(42.27657990761908),
-            temp_qc_flag=int(92),
-            humidity=float(29.786285655412993),
-            humidity_qc_flag=int(91),
-            pressure=float(43.88308316303253),
-            pressure_qc_flag=int(0),
-            normal_pressure=float(36.06101429537374),
-            normal_pressure_qc_flag=int(86),
-            wind_speed=float(76.19619847511721),
-            wind_speed_qc_flag=int(51),
-            wind_direction=float(14.931818292305564),
-            wind_direction_qc_flag=int(54),
-            wind_gust=float(27.45661497985361),
-            wind_gust_qc_flag=int(16),
-            wind_gust_direction=float(55.480236932212875),
+            temp=float(26.120468748978876),
+            temp_qc_flag=int(38),
+            humidity=float(84.16824925759275),
+            humidity_qc_flag=int(28),
+            pressure=float(3.286051109640775),
+            pressure_qc_flag=int(55),
+            normal_pressure=float(7.872044872880579),
+            normal_pressure_qc_flag=int(2),
+            wind_speed=float(72.3617312864713),
+            wind_speed_qc_flag=int(49),
+            wind_direction=float(65.78773443732919),
+            wind_direction_qc_flag=int(80),
+            wind_gust=float(76.47197236636293),
+            wind_gust_qc_flag=int(100),
+            wind_gust_direction=float(60.86237199503736),
             wind_gust_time=datetime.datetime.now(datetime.timezone.utc),
-            max_temp=float(37.476860385682556),
+            max_temp=float(73.44595475574788),
             max_temp_time=datetime.datetime.now(datetime.timezone.utc),
-            min_temp=float(80.0181504859434),
+            min_temp=float(80.32624047620158),
             min_temp_time=datetime.datetime.now(datetime.timezone.utc),
-            precipitation10m=float(73.3786400815131),
-            precipitation10m_qc_flag=int(66),
-            precipitation1h=float(43.719338236506466),
-            precipitation1h_qc_flag=int(96),
-            precipitation3h=float(12.0447676798623),
-            precipitation3h_qc_flag=int(12),
-            precipitation24h=float(1.8569469505839598),
-            precipitation24h_qc_flag=int(71),
-            sun10m=float(49.0700282507682),
-            sun10m_qc_flag=int(0),
-            sun1h=float(13.54277815371363),
-            sun1h_qc_flag=int(48),
-            snow=float(98.42043431737146),
-            snow_qc_flag=int(53),
-            snow1h=float(67.31999832023011),
-            snow1h_qc_flag=int(18),
-            snow6h=float(2.4574009341924663),
-            snow6h_qc_flag=int(31),
-            snow12h=float(33.99724173763119),
-            snow12h_qc_flag=int(20),
-            snow24h=float(10.948427640864633),
-            snow24h_qc_flag=int(57),
-            visibility=float(52.19764763725249),
-            visibility_qc_flag=int(77),
-            cloud=float(54.61594693004472),
-            cloud_qc_flag=int(2),
-            weather=float(40.5860763376991),
-            weather_qc_flag=int(6),
-            prefecture='bxorpqipzjqrruxnegmi',
-            event=EventEnum.observation
+            precipitation10m=float(90.90829072732306),
+            precipitation10m_qc_flag=int(82),
+            precipitation1h=float(57.524985152182495),
+            precipitation1h_qc_flag=int(79),
+            precipitation3h=float(88.88439441799942),
+            precipitation3h_qc_flag=int(21),
+            precipitation24h=float(27.70874100120013),
+            precipitation24h_qc_flag=int(78),
+            sun10m=float(12.224805196580634),
+            sun10m_qc_flag=int(9),
+            sun1h=float(57.74262415650844),
+            sun1h_qc_flag=int(32),
+            snow=float(84.8252167750316),
+            snow_qc_flag=int(66),
+            snow1h=float(73.34151298650671),
+            snow1h_qc_flag=int(89),
+            snow6h=float(48.02134457930271),
+            snow6h_qc_flag=int(24),
+            snow12h=float(56.49469592744355),
+            snow12h_qc_flag=int(84),
+            snow24h=float(12.805664620263336),
+            snow24h_qc_flag=int(94),
+            visibility=float(10.654270615760863),
+            visibility_qc_flag=int(8),
+            cloud=float(53.168051314754806),
+            cloud_qc_flag=int(50),
+            weather=float(53.70579634378151),
+            weather_qc_flag=int(2),
+            prefecture='fmkufclxmnqvwdfoivzq',
+            event=ObservationEventEnum.observation
         )

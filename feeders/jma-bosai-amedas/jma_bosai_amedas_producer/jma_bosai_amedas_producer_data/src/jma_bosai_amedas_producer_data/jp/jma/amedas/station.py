@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_amedas_producer_data.jp.jma.amedas.eventenum import EventEnum
+from jma_bosai_amedas_producer_data.jp.jma.amedas.stationeventenum import StationEventEnum
 from jma_bosai_amedas_producer_data.jp.jma.amedas.stationtypeenum import StationTypeenum
 
 
@@ -33,7 +33,7 @@ class Station:
         elems_bitmask (str)
         enabled_measurements (typing.List[str])
         prefecture (str)
-        event (EventEnum)
+        event (StationEventEnum)
     """
     
     
@@ -48,7 +48,7 @@ class Station:
     elems_bitmask: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elems_bitmask"))
     enabled_measurements: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="enabled_measurements"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: StationEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -177,16 +177,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='dcyqztuhkdeycsxrgwpv',
-            kj_name='ejjjrnrmsiczglehckta',
-            kana='crkmgwpzytdetqthmzoh',
-            en_name='kiozqpxgmnqnzhikbcay',
-            latitude=float(82.69727195439002),
-            longitude=float(77.54832701802569),
-            altitude_m=float(16.449210712686057),
+            station_code='pwlpvitrildrhdnmmoru',
+            kj_name='vnheiiisuskpleqyqhqf',
+            kana='coduwiwohgypwvzcegox',
+            en_name='thlzgnvqhnfsdkxtnxbo',
+            latitude=float(2.9543478099315346),
+            longitude=float(48.135648033601186),
+            altitude_m=float(43.915468970217574),
             station_type=StationTypeenum.A,
-            elems_bitmask='nlgohofuecdbyrqqfogy',
-            enabled_measurements=['sqrxhiioilzgnlpmitaf'],
-            prefecture='mwwcozogbiqkakahxncr',
-            event=EventEnum.info
+            elems_bitmask='uerdngjmdyfvcqlxndsq',
+            enabled_measurements=['rjsgtghkakwvcruemkka', 'ecegvhgkbatdfjuzyxjp', 'fcpklqkzinodwsozmydn', 'pnipyttfpagxuskropeu'],
+            prefecture='palgwwrvokxyjuqrbezf',
+            event=StationEventEnum.info
         )

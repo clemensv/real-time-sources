@@ -12,7 +12,7 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_amedas_producer_data.jp.jma.amedas.eventenum import EventEnum
+from jma_bosai_amedas_producer_data.jp.jma.amedas.observationeventenum import ObservationEventEnum
 import datetime
 
 
@@ -75,7 +75,7 @@ class Observation:
         weather (typing.Optional[float])
         weather_qc_flag (typing.Optional[int])
         prefecture (str)
-        event (EventEnum)
+        event (ObservationEventEnum)
     """
     
     
@@ -131,7 +131,7 @@ class Observation:
     weather: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="weather"))
     weather_qc_flag: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="weather_qc_flag"))
     prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
-    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    event: ObservationEventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Observation':
@@ -260,57 +260,57 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='nijuffqvfcyrqfyddqlk',
+            station_code='vairtbctpjzvkcbvruuk',
             observed_at=datetime.datetime.now(datetime.timezone.utc),
             observed_at_local=datetime.datetime.now(datetime.timezone.utc),
-            temp=float(84.42113254095929),
-            temp_qc_flag=int(22),
-            humidity=float(72.65975392017363),
-            humidity_qc_flag=int(18),
-            pressure=float(38.962098100811396),
-            pressure_qc_flag=int(85),
-            normal_pressure=float(61.597540310502055),
-            normal_pressure_qc_flag=int(25),
-            wind_speed=float(59.16405373546525),
-            wind_speed_qc_flag=int(82),
-            wind_direction=float(43.48210582856606),
-            wind_direction_qc_flag=int(42),
-            wind_gust=float(59.89760271919033),
-            wind_gust_qc_flag=int(3),
-            wind_gust_direction=float(17.638913892428597),
+            temp=float(54.17276332377574),
+            temp_qc_flag=int(3),
+            humidity=float(97.02598126342016),
+            humidity_qc_flag=int(0),
+            pressure=float(37.73785241925373),
+            pressure_qc_flag=int(25),
+            normal_pressure=float(41.71585320377319),
+            normal_pressure_qc_flag=int(54),
+            wind_speed=float(58.199990472418015),
+            wind_speed_qc_flag=int(96),
+            wind_direction=float(22.739027890897745),
+            wind_direction_qc_flag=int(74),
+            wind_gust=float(26.11570081655786),
+            wind_gust_qc_flag=int(58),
+            wind_gust_direction=float(19.63783707843675),
             wind_gust_time=datetime.datetime.now(datetime.timezone.utc),
-            max_temp=float(48.70628960929528),
+            max_temp=float(76.02766949591081),
             max_temp_time=datetime.datetime.now(datetime.timezone.utc),
-            min_temp=float(6.992368246439506),
+            min_temp=float(20.098143761898836),
             min_temp_time=datetime.datetime.now(datetime.timezone.utc),
-            precipitation10m=float(13.324006506643226),
-            precipitation10m_qc_flag=int(67),
-            precipitation1h=float(93.83156200338144),
-            precipitation1h_qc_flag=int(32),
-            precipitation3h=float(65.12741918339606),
-            precipitation3h_qc_flag=int(29),
-            precipitation24h=float(96.85411597447265),
-            precipitation24h_qc_flag=int(52),
-            sun10m=float(68.86629395007301),
-            sun10m_qc_flag=int(31),
-            sun1h=float(30.708907167721698),
-            sun1h_qc_flag=int(33),
-            snow=float(17.323064133876088),
-            snow_qc_flag=int(79),
-            snow1h=float(71.27634973352674),
-            snow1h_qc_flag=int(9),
-            snow6h=float(21.462287655299196),
-            snow6h_qc_flag=int(71),
-            snow12h=float(46.422932421026566),
-            snow12h_qc_flag=int(45),
-            snow24h=float(69.01230216311401),
-            snow24h_qc_flag=int(25),
-            visibility=float(87.74490769094744),
-            visibility_qc_flag=int(92),
-            cloud=float(68.41367475814002),
-            cloud_qc_flag=int(80),
-            weather=float(99.13870639899551),
-            weather_qc_flag=int(9),
-            prefecture='oehtknxpomsmvdtwlwjm',
-            event=EventEnum.info
+            precipitation10m=float(68.13465301661573),
+            precipitation10m_qc_flag=int(63),
+            precipitation1h=float(84.15334961296527),
+            precipitation1h_qc_flag=int(17),
+            precipitation3h=float(26.956377027769708),
+            precipitation3h_qc_flag=int(3),
+            precipitation24h=float(64.95824714073702),
+            precipitation24h_qc_flag=int(39),
+            sun10m=float(46.00823323426408),
+            sun10m_qc_flag=int(46),
+            sun1h=float(32.61236807662824),
+            sun1h_qc_flag=int(91),
+            snow=float(90.63692370556893),
+            snow_qc_flag=int(25),
+            snow1h=float(56.342785658782915),
+            snow1h_qc_flag=int(58),
+            snow6h=float(24.075898905563385),
+            snow6h_qc_flag=int(77),
+            snow12h=float(64.4953750772281),
+            snow12h_qc_flag=int(56),
+            snow24h=float(4.137427914824954),
+            snow24h_qc_flag=int(38),
+            visibility=float(69.45466187009619),
+            visibility_qc_flag=int(72),
+            cloud=float(59.98047346338944),
+            cloud_qc_flag=int(16),
+            weather=float(88.9804418282978),
+            weather_qc_flag=int(69),
+            prefecture='amxzxutodtqspyzyqxhx',
+            event=ObservationEventEnum.observation
         )
