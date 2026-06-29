@@ -56,7 +56,10 @@ function Read-XregInfo([string]$Manifest) {
 }
 function Get-Entries {
     $excluded=@('.git','.github','tools','ghpages','docs','tests','node_modules','.events-md-check')
-    Get-ChildItem $RepoRoot -Directory | Where-Object { $excluded -notcontains $_.Name -and ((-not $Source) -or $_.Name -eq $Source) } | ForEach-Object {
+    $feedersDir=Join-Path $RepoRoot 'feeders'
+    $roots=@(Get-ChildItem $RepoRoot -Directory)
+    if (Test-Path $feedersDir) { $roots += Get-ChildItem $feedersDir -Directory }
+    $roots | Where-Object { $excluded -notcontains $_.Name -and ((-not $Source) -or $_.Name -eq $Source) } | ForEach-Object {
         $dir=$_; $xreg=Join-Path $dir.FullName 'xreg'; if (-not (Test-Path $xreg)) { return }
         Get-ChildItem $xreg -Filter '*.xreg.json' -File | ForEach-Object {
             $xi=Read-XregInfo $_.FullName; $ri=Read-ReadmeInfo $dir.FullName; $human=Humanize $dir.Name

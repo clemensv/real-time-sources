@@ -2126,7 +2126,7 @@ virtual aviation network, pilots & controllers
 
 </details>
 
-<details open><summary><b>🚦 Road and Public Transport</b> &nbsp;<sub>15 sources</sub></summary>
+<details open><summary><b>🚦 Road and Public Transport</b> &nbsp;<sub>16 sources</sub></summary>
 
 <table width="100%">
 <tr><td>
@@ -2250,6 +2250,31 @@ national road network, DATEX II
 [![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgtfs%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgtfs%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgtfs%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgtfs%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#gtfs/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#gtfs/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-gtfs)
 
 <sub>📘 <a href="feeders/gtfs/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/gtfs/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/gtfs/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://gtfs.org/">gtfs.org</a></sub>
+
+</details>
+
+</td></tr>
+<tr><td>
+
+<details><summary><picture><img align="middle" alt="Finland / Helsinki" title="Finland / Helsinki" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;<b>HSL HFP</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;transit vehicle positions via MQTT, ~1,700 vehicles @ 1 Hz</sub></summary>
+
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland / Helsinki" title="Finland / Helsinki" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;Finland / Helsinki</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{operator_id}/{vehicle_number}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">18 type(s)</td></tr>
+<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">passing</a></td></tr>
+<tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
+</table>
+
+transit vehicle positions via MQTT, ~1,700 vehicles @ 1 Hz
+
+<sub><b>📍 keyed by</b> <code>{operator_id}/{vehicle_number}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>vp</code>, <code>due</code>, <code>arr</code>, <code>dep</code>, <code>ars</code>, <code>pde</code>, <code>pas</code>, <code>wait</code>, <code>doo</code>, <code>doc</code>, <code>vja</code>, <code>vjout</code>, <code>tlr</code>, <code>tla</code>, <code>da</code>, <code>dout</code>, <code>ba</code>, <code>bout</code></sub>
+
+<sub><b>DEPLOY</b></sub><br>
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fhsl-hfp%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fhsl-hfp%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fhsl-hfp%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fhsl-hfp%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fhsl-hfp%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#hsl-hfp/fabric-aci) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-hsl-hfp)
+
+<sub>📘 <a href="feeders/hsl-hfp/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/hsl-hfp/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/hsl-hfp/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://www.hsl.fi/en/hsl/open-data">hsl.fi</a></sub>
 
 </details>
 

@@ -133,7 +133,7 @@
     "name": "CAP Alerts",
     "cat": "Weather",
     "key": false,
-    "desc": "Global \u2014 configurable CAP 1.2 public alerts",
+    "desc": "Global — configurable CAP 1.2 public alerts",
     "kql": true,
     "notebook": true,
     "mqtt": true,
@@ -489,6 +489,16 @@
     "notebook": true
   },
   {
+    "id": "hsl-hfp",
+    "name": "HSL HFP",
+    "cat": "Transport",
+    "key": false,
+    "desc": "Finland / Helsinki — transit vehicle positions via MQTT, ~1,700 vehicles @ 1 Hz",
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "hko-hong-kong",
     "name": "HKO Hong Kong",
     "cat": "Weather",
@@ -701,7 +711,7 @@
     "name": "OpenAQ",
     "cat": "Air Quality",
     "key": true,
-    "desc": "Global \u2014 locations, sensors, latest pollutant measurements",
+    "desc": "Global — locations, sensors, latest pollutant measurements",
     "kql": true,
     "notebook": true,
     "mqtt": true,
@@ -1092,7 +1102,7 @@
     "name": "Tokyo Docomo Bikeshare",
     "cat": "Transport",
     "key": true,
-    "desc": "Tokyo, Japan \u2014 Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare",
+    "desc": "Tokyo, Japan — Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare",
     "kafka": true,
     "kql": true,
     "mqtt": true,

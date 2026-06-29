@@ -1,0 +1,42 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hsl-hfp-mqtt"
+dynamic = [
+    "version",
+]
+description = "HSL HFP MQTT/UNS feeder — Helsinki Region Transport vehicle telemetry as MQTT 5.0 binary-mode CloudEvents"
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.12.1,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "paho-mqtt>=2.0.0",
+]
+
+[project.scripts]
+hsl-hfp-mqtt = "hsl_hfp_mqtt.app:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "hsl_hfp_mqtt",
+]

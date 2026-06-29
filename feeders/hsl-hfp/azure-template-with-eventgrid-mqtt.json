@@ -1,0 +1,220 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploy HSL HFP MQTT feeder with a new Azure Event Grid namespace MQTT broker and managed identity publisher role assignment."
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "defaultValue": "hsl-hfp",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Prefix used to derive unique Azure resource names for the HSL HFP Event Grid MQTT deployment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for the HSL HFP Event Grid namespace, managed identity, and container group."
+      }
+    },
+    "topicRoot": {
+      "type": "string",
+      "defaultValue": "hsl-hfp/#",
+      "metadata": {
+        "description": "MQTT topic root under which the HSL HFP bridge publishes CloudEvents into the Event Grid namespace."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-hsl-hfp-mqtt:latest",
+      "metadata": {
+        "description": "Container image to deploy for the HSL HFP MQTT bridge. Use the -mqtt tag published from this repository."
+      }
+    }
+  },
+  "variables": {
+    "namespaceName": "[concat(parameters('namePrefix'), '-egns')]",
+    "topicSpaceName": "hsl-hfp",
+    "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
+    "containerGroupName": "[concat(parameters('namePrefix'), '-mqtt')]",
+    "publisherRoleId": "/providers/Microsoft.Authorization/roleDefinitions/a12b0b94-b317-4dcd-84a8-502ce99884c6",
+    "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
+    "namespaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces', variables('namespaceName'))]",
+    "topicSpaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces/topicSpaces', variables('namespaceName'), variables('topicSpaceName'))]",
+    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('userIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[variables('namespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard",
+        "capacity": 1
+      },
+      "properties": {
+        "topicSpacesConfiguration": {
+          "state": "Enabled"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces/topicSpaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[concat(variables('namespaceName'), '/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('namespaceResourceId')]"
+      ],
+      "properties": {
+        "topicTemplates": [
+          "[parameters('topicRoot')]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('roleAssignmentName')]",
+      "scope": "[concat('Microsoft.EventGrid/namespaces/', variables('namespaceName'), '/topicSpaces/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('topicSpaceResourceId')]",
+        "[variables('userIdentityResourceId')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('publisherRoleId')]",
+        "principalId": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('userIdentityResourceId')]": {}
+        }
+      },
+      "dependsOn": [
+        "[variables('namespaceResourceId')]",
+        "[variables('topicSpaceResourceId')]",
+        "[extensionResourceId(variables('topicSpaceResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "containers": [
+          {
+            "name": "[variables('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": ""
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "value": ""
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+                },
+                {
+                  "name": "MQTT_CONTENT_MODE",
+                  "value": "binary"
+                },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
+                {
+                  "name": "MQTT_ENTRA_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "MQTT_CA_FILE",
+                  "value": ""
+                },
+                {
+                  "name": "HFP_MQTT_HOST",
+                  "value": "mqtt.hsl.fi"
+                },
+                {
+                  "name": "HFP_MQTT_PORT",
+                  "value": "8883"
+                },
+                {
+                  "name": "HFP_MQTT_TLS",
+                  "value": "true"
+                },
+                {
+                  "name": "HFP_TOPIC_FILTERS",
+                  "value": "/hfp/v2/journey/#"
+                },
+                {
+                  "name": "REFERENCE_REFRESH_INTERVAL",
+                  "value": "43200"
+                },
+                {
+                  "name": "SKIP_REFERENCE",
+                  "value": "false"
+                },
+                {
+                  "name": "HSL_GTFS_URL",
+                  "value": "https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "namespaceName": {
+      "type": "string",
+      "value": "[variables('namespaceName')]"
+    },
+    "mqttHostname": {
+      "type": "string",
+      "value": "[reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname]"
+    }
+  }
+}

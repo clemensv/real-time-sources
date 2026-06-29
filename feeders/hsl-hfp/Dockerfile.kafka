@@ -1,0 +1,34 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/hsl-hfp"
+LABEL org.opencontainers.image.title="HSL HFP → Apache Kafka bridge"
+LABEL org.opencontainers.image.description="Subscribes to the Helsinki Region Transport (HSL) High-Frequency Positioning MQTT firehose and forwards every vehicle, stop, door, traffic-light, and sign-on/off event — plus GTFS operator/route/stop reference data — as CloudEvents to Apache Kafka or any Kafka-compatible service that supports TLS + SASL/PLAIN (Confluent Cloud, Microsoft Fabric Event Streams, Azure Event Hubs)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/hsl-hfp/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
+# Bring in the local hsl-hfp source tree. The generated upstream subscriber and
+# Kafka producer packages plus the shared acquisition core (the root hsl_hfp
+# package) are installed sequentially to avoid path-resolution races in local
+# installs.
+COPY . /app
+
+RUN pip install --no-cache-dir ./hsl_hfp_producer/hsl_hfp_producer_data \
+ && pip install --no-cache-dir ./hsl_hfp_producer/hsl_hfp_producer_kafka_producer \
+ && pip install --no-cache-dir ./hsl_hfp_upstream_producer/hsl_hfp_upstream_data \
+ && pip install --no-cache-dir ./hsl_hfp_upstream_producer/hsl_hfp_upstream_mqtt_client \
+ && pip install --no-cache-dir .
+
+ENV CONNECTION_STRING=""
+
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'hsl_hfp'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
+CMD ["python", "-m", "hsl_hfp", "feed"]

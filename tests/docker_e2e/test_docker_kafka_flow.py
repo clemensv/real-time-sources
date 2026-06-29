@@ -210,6 +210,10 @@ def digitraffic_maritime_image():
     return build_image('digitraffic-maritime')
 
 @pytest.fixture(scope='module')
+def hsl_hfp_image():
+    return build_image('hsl-hfp', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def bom_australia_image():
     return build_image('bom-australia')
 
@@ -857,6 +861,34 @@ class TestDigitrafficMaritimeDockerFlow:
             ],
             min_messages=3,
             timeout=360,
+        )
+
+
+# ---------------------------------------------------------------------------
+# HSL HFP (Helsinki high-frequency vehicle positioning, MQTT firehose)
+# ---------------------------------------------------------------------------
+
+class TestHslHfpDockerFlow:
+    TOPIC = 'test-hsl-hfp'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, hsl_hfp_image):
+        # hsl-hfp subscribes to the live anonymous mqtt.hsl.fi firehose. We
+        # bound the run (--once / ONCE_MAX_SECONDS) and scope the subscription
+        # to ongoing vehicle positions to keep the volume manageable. GTFS
+        # static reference (operators/routes/stops) is emitted first, then vp.
+        _run_kafka_flow_test(
+            kafka, hsl_hfp_image, self.TOPIC,
+            reference_types=['fi.hsl.gtfs'],
+            telemetry_types=['fi.hsl.hfp.vp'],
+            command=['python', '-m', 'hsl_hfp', 'feed'],
+            extra_env={
+                'ONCE_MODE': '1',
+                'ONCE_MAX_EVENTS': '400',
+                'ONCE_MAX_SECONDS': '150',
+                'HFP_TOPIC_FILTERS': '/hfp/v2/journey/ongoing/vp/#',
+            },
+            min_messages=5,
+            timeout=300,
         )
 
 
