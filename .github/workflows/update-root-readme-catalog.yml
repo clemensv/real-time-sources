@@ -1,5 +1,16 @@
 name: Update root README catalog
 
+# Regenerates the root README.md catalog block from catalog.json + the per-source
+# xreg manifests, then opens (or updates) a pull request instead of pushing directly
+# to main. Direct pushes to main are rejected by branch protection, so the change is
+# proposed as a reviewable PR on the rolling branch `auto/readme-catalog-sync`.
+#
+# Token note: a PR opened with the default GITHUB_TOKEN does NOT trigger the required
+# status checks (mypy, lint) -- GitHub suppresses workflow recursion. To get those
+# checks to run and let the PR auto-merge, set a repo secret CATALOG_BOT_TOKEN to a
+# fine-grained PAT with contents:write + pull-requests:write. Without it the workflow
+# still opens the PR and a maintainer merges it (close/reopen to trigger checks).
+
 on:
   push:
     branches: [ main ]
@@ -12,6 +23,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   regenerate:
@@ -19,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CATALOG_BOT_TOKEN || secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-python@v6
         with:
@@ -28,14 +40,33 @@ jobs:
       - name: Regenerate root README catalog block
         run: python tools/docs/generate_root_catalog.py
 
-      - name: Commit if changed
+      - name: Open or update sync PR if changed
+        env:
+          GH_TOKEN: ${{ secrets.CATALOG_BOT_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           if git diff --quiet -- README.md; then
-            echo "No changes."
+            echo "No changes -- root README catalog already in sync."
             exit 0
           fi
+          branch="auto/readme-catalog-sync"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
           git add README.md
           git commit -m "docs: regenerate root README catalog block" -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
-          git push
+          git push --force origin "$branch"
+          printf '%s\n' \
+            'Automated regeneration of the root README.md catalog block by the' \
+            '**Update root README catalog** workflow. Review and merge to keep the' \
+            'catalog in sync with catalog.json and the per-source xreg manifests.' \
+            '' \
+            '> If the required checks (mypy, lint) do not appear, PRs opened by the' \
+            '> default GITHUB_TOKEN do not trigger them: close and reopen this PR, or' \
+            '> set a CATALOG_BOT_TOKEN PAT secret to enable checks + auto-merge.' \
+            > pr-body.md
+          if [ -z "$(gh pr list --head "$branch" --state open --json number --jq '.[0].number')" ]; then
+            gh pr create --base main --head "$branch" --title "docs: sync root README catalog block" --body-file pr-body.md
+          else
+            echo "Updated existing sync PR for $branch."
+          fi
+          gh pr merge "$branch" --auto --squash --delete-branch || echo "Auto-merge unavailable (no PAT or checks pending) -- maintainer merge required."
