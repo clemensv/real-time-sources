@@ -537,30 +537,21 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "description": "Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject.",
-                    "altnames": {
-                      "json": "stationId"
-                    }
+                    "description": "Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject."
                   },
                   "wmo_station_id": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "World Meteorological Organization (WMO) station identifier when registered with WMO.",
-                    "altnames": {
-                      "json": "wmoStationId"
-                    }
+                    "description": "World Meteorological Organization (WMO) station identifier when registered with WMO."
                   },
                   "wmo_country_code": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "WMO country code as an integer string (e.g. '06' for Denmark).",
-                    "altnames": {
-                      "json": "wmoCountryCode"
-                    }
+                    "description": "WMO country code as an integer string (e.g. '06' for Denmark)."
                   },
                   "name": {
                     "type": "string",
@@ -594,10 +585,7 @@
                       "string",
                       "null"
                     ],
-                    "description": "DMI region identifier within the country.",
-                    "altnames": {
-                      "json": "regionId"
-                    }
+                    "description": "DMI region identifier within the country."
                   },
                   "type": {
                     "type": [
@@ -618,10 +606,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).",
-                    "altnames": {
-                      "json": "parameterId"
-                    }
+                    "description": "List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity'])."
                   },
                   "latitude": {
                     "type": "double",
@@ -643,10 +628,7 @@
                       "null"
                     ],
                     "description": "Height of the station above mean sea level.",
-                    "unit": "m",
-                    "altnames": {
-                      "json": "stationHeight"
-                    }
+                    "unit": "m"
                   },
                   "barometer_height": {
                     "type": [
@@ -654,10 +636,7 @@
                       "null"
                     ],
                     "description": "Height of the barometer above mean sea level.",
-                    "unit": "m",
-                    "altnames": {
-                      "json": "barometerHeight"
-                    }
+                    "unit": "m"
                   },
                   "anemometer_height": {
                     "type": [
@@ -665,50 +644,35 @@
                       "null"
                     ],
                     "description": "Height of the anemometer above ground level.",
-                    "unit": "m",
-                    "altnames": {
-                      "json": "anemometerHeight"
-                    }
+                    "unit": "m"
                   },
                   "valid_from": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Timestamp from which this station-metadata version is valid.",
-                    "altnames": {
-                      "json": "validFrom"
-                    }
+                    "description": "Timestamp from which this station-metadata version is valid."
                   },
                   "valid_to": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Timestamp after which this station-metadata version is no longer valid; null while current.",
-                    "altnames": {
-                      "json": "validTo"
-                    }
+                    "description": "Timestamp after which this station-metadata version is no longer valid; null while current."
                   },
                   "operation_from": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Timestamp from which the station began operating.",
-                    "altnames": {
-                      "json": "operationFrom"
-                    }
+                    "description": "Timestamp from which the station began operating."
                   },
                   "operation_to": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Timestamp at which the station stopped operating; null while operational.",
-                    "altnames": {
-                      "json": "operationTo"
-                    }
+                    "description": "Timestamp at which the station stopped operating; null while operational."
                   },
                   "created": {
                     "type": [
@@ -758,24 +722,15 @@
                       "string",
                       "null"
                     ],
-                    "description": "DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency.",
-                    "altnames": {
-                      "json": "id"
-                    }
+                    "description": "DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency."
                   },
                   "station_id": {
                     "type": "string",
-                    "description": "Reporting station identifier (foreign key to Station).",
-                    "altnames": {
-                      "json": "stationId"
-                    }
+                    "description": "Reporting station identifier (foreign key to Station)."
                   },
                   "parameter_id": {
                     "type": "string",
                     "description": "DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').",
-                    "altnames": {
-                      "json": "parameterId"
-                    },
                     "enum": [
                       "temp_dry",
                       "temp_dew",
@@ -873,10 +828,7 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "description": "Stable DMI ocean station identifier.",
-                    "altnames": {
-                      "json": "stationId"
-                    }
+                    "description": "Stable DMI ocean station identifier."
                   },
                   "name": {
                     "type": "string",
@@ -927,10 +879,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).",
-                    "altnames": {
-                      "json": "parameterId"
-                    }
+                    "description": "Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw})."
                   },
                   "latitude": {
                     "type": "double",
@@ -951,38 +900,26 @@
                       "datetime",
                       "null"
                     ],
-                    "description": "Metadata-validity start.",
-                    "altnames": {
-                      "json": "validFrom"
-                    }
+                    "description": "Metadata-validity start."
                   },
                   "valid_to": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Metadata-validity end.",
-                    "altnames": {
-                      "json": "validTo"
-                    }
+                    "description": "Metadata-validity end."
                   },
                   "operation_from": {
                     "type": [
                       "datetime",
                       "null"
-                    ],
-                    "altnames": {
-                      "json": "operationFrom"
-                    }
+                    ]
                   },
                   "operation_to": {
                     "type": [
                       "datetime",
                       "null"
-                    ],
-                    "altnames": {
-                      "json": "operationTo"
-                    }
+                    ]
                   },
                   "created": {
                     "type": [
@@ -1026,10 +963,7 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "description": "Stable identifier of the tidewater prediction station/grid-point.",
-                    "altnames": {
-                      "json": "stationId"
-                    }
+                    "description": "Stable identifier of the tidewater prediction station/grid-point."
                   },
                   "name": {
                     "type": [
@@ -1082,19 +1016,13 @@
                     "type": [
                       "datetime",
                       "null"
-                    ],
-                    "altnames": {
-                      "json": "validFrom"
-                    }
+                    ]
                   },
                   "valid_to": {
                     "type": [
                       "datetime",
                       "null"
-                    ],
-                    "altnames": {
-                      "json": "validTo"
-                    }
+                    ]
                   }
                 },
                 "$uses": [
@@ -1130,23 +1058,14 @@
                       "string",
                       "null"
                     ],
-                    "description": "DMI-assigned row identifier (not stable across re-ingestions).",
-                    "altnames": {
-                      "json": "id"
-                    }
+                    "description": "DMI-assigned row identifier (not stable across re-ingestions)."
                   },
                   "station_id": {
-                    "type": "string",
-                    "altnames": {
-                      "json": "stationId"
-                    }
+                    "type": "string"
                   },
                   "parameter_id": {
                     "type": "string",
                     "description": "One of sealev_dvr, sealev_ln, sea_reg, tw.",
-                    "altnames": {
-                      "json": "parameterId"
-                    },
                     "altenums": {
                       "descriptions": {
                         "sealev_dvr": "Sea level relative to DVR90 datum (cm)",
@@ -1220,33 +1139,21 @@
                       "string",
                       "null"
                     ],
-                    "description": "DMI-assigned row identifier.",
-                    "altnames": {
-                      "json": "id"
-                    }
+                    "description": "DMI-assigned row identifier."
                   },
                   "station_id": {
-                    "type": "string",
-                    "altnames": {
-                      "json": "stationId"
-                    }
+                    "type": "string"
                   },
                   "prediction_type": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Granularity of the prediction series (typically '10minutes').",
-                    "altnames": {
-                      "json": "predictionType"
-                    }
+                    "description": "Granularity of the prediction series (typically '10minutes')."
                   },
                   "prediction_time": {
                     "type": "datetime",
-                    "description": "Target time for which the value is predicted.",
-                    "altnames": {
-                      "json": "predictionTime"
-                    }
+                    "description": "Target time for which the value is predicted."
                   },
                   "value": {
                     "type": "double",
@@ -1302,10 +1209,7 @@
                 "properties": {
                   "sensor_id": {
                     "type": "string",
-                    "description": "Stable sensor identifier (1..6 for DMI-owned sensors).",
-                    "altnames": {
-                      "json": "sensorId"
-                    }
+                    "description": "Stable sensor identifier (1..6 for DMI-owned sensors)."
                   },
                   "name": {
                     "type": [
@@ -1356,19 +1260,13 @@
                     "type": [
                       "datetime",
                       "null"
-                    ],
-                    "altnames": {
-                      "json": "activeFrom"
-                    }
+                    ]
                   },
                   "active_to": {
                     "type": [
                       "datetime",
                       "null"
-                    ],
-                    "altnames": {
-                      "json": "activeTo"
-                    }
+                    ]
                   }
                 },
                 "$uses": [
@@ -1402,10 +1300,7 @@
                 "properties": {
                   "strike_id": {
                     "type": "string",
-                    "description": "Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03').",
-                    "altnames": {
-                      "json": "id"
-                    }
+                    "description": "Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03')."
                   },
                   "observed": {
                     "type": "datetime",

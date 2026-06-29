@@ -215,9 +215,6 @@
                   },
                   "water_body": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "Gewaesser"
-                    },
                     "description": "Provider-supplied water body value for this record."
                   },
                   "state": {
@@ -225,7 +222,10 @@
                     "description": "State, province, or region containing the station."
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Provider-supplied region value for this record."
                   },
                   "provider": {
@@ -241,34 +241,52 @@
                     "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "river_km": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Provider-supplied river km value for this record."
                   },
                   "altitude": {
-                    "type": ["double", "null"],
-                    "altnames": {
-                      "lang:de": "Hoehe"
-                    },
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Provider-supplied altitude value for this record."
                   },
                   "station_type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Provider-supplied station type value for this record."
                   },
                   "warn_level_cm": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Provider-supplied warn level cm value for this record."
                   },
                   "alarm_level_cm": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Provider-supplied alarm level cm value for this record."
                   },
                   "warn_level_m3s": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Provider-supplied warn level m3s value for this record."
                   },
                   "alarm_level_m3s": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Provider-supplied alarm level m3s value for this record."
                   }
                 },

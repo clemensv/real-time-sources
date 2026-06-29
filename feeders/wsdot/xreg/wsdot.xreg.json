@@ -1394,24 +1394,15 @@
                             "properties": {
                               "flow_data_id": {
                                 "type": "string",
-                                "description": "Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.",
-                                "altnames": {
-                                  "json": "FlowDataID"
-                                }
+                                "description": "Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID."
                               },
                               "station_name": {
                                 "type": "string",
-                                "description": "Descriptive name of the flow sensor station.",
-                                "altnames": {
-                                  "json": "StationName"
-                                }
+                                "description": "Descriptive name of the flow sensor station."
                               },
                               "region": {
                                 "type": "string",
                                 "description": "WSDOT geographic coverage region.",
-                                "altnames": {
-                                  "json": "Region"
-                                },
                                 "enum": [
                                   "Eastern",
                                   "Northwest",
@@ -1424,55 +1415,37 @@
                                   "string",
                                   "null"
                                 ],
-                                "description": "Location description. Null if not provided.",
-                                "altnames": {
-                                  "json": "Description"
-                                }
+                                "description": "Location description. Null if not provided."
                               },
                               "road_name": {
                                 "type": "string",
-                                "description": "Road designation where the sensor is installed.",
-                                "altnames": {
-                                  "json": "RoadName"
-                                }
+                                "description": "Road designation where the sensor is installed."
                               },
                               "direction": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Direction of travel monitored. Examples: NB, SB, EB, WB.",
-                                "altnames": {
-                                  "json": "Direction"
-                                }
+                                "description": "Direction of travel monitored. Examples: NB, SB, EB, WB."
                               },
                               "milepost": {
                                 "type": [
                                   "double",
                                   "null"
                                 ],
-                                "description": "Milepost marker along the roadway.",
-                                "altnames": {
-                                  "json": "MilePost"
-                                }
+                                "description": "Milepost marker along the roadway."
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84 decimal degrees.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84 decimal degrees.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               }
                             },
                             "required": [
@@ -1524,24 +1497,15 @@
                             "properties": {
                               "flow_data_id": {
                                 "type": "string",
-                                "description": "Sensor station identifier, stringified from upstream FlowDataID.",
-                                "altnames": {
-                                  "json": "FlowDataID"
-                                }
+                                "description": "Sensor station identifier, stringified from upstream FlowDataID."
                               },
                               "station_name": {
                                 "type": "string",
-                                "description": "Station name.",
-                                "altnames": {
-                                  "json": "StationName"
-                                }
+                                "description": "Station name."
                               },
                               "region": {
                                 "type": "string",
                                 "description": "WSDOT region.",
-                                "altnames": {
-                                  "json": "Region"
-                                },
                                 "enum": [
                                   "Eastern",
                                   "Northwest",
@@ -1573,10 +1537,7 @@
                               },
                               "reading_time": {
                                 "type": "string",
-                                "description": "ISO 8601 UTC timestamp of the reading.",
-                                "altnames": {
-                                  "json": "Time"
-                                }
+                                "description": "ISO 8601 UTC timestamp of the reading."
                               }
                             },
                             "required": [
@@ -1627,58 +1588,37 @@
                             "properties": {
                               "travel_time_id": {
                                 "type": "string",
-                                "description": "Unique route identifier, stringified from upstream TravelTimeID.",
-                                "altnames": {
-                                  "json": "TravelTimeID"
-                                }
+                                "description": "Unique route identifier, stringified from upstream TravelTimeID."
                               },
                               "name": {
                                 "type": "string",
-                                "description": "Short route segment name.",
-                                "altnames": {
-                                  "json": "Name"
-                                }
+                                "description": "Short route segment name."
                               },
                               "description": {
                                 "type": "string",
-                                "description": "Longer description including lane type.",
-                                "altnames": {
-                                  "json": "Description"
-                                }
+                                "description": "Longer description including lane type."
                               },
                               "distance": {
                                 "type": "double",
                                 "description": "Route distance in miles.",
                                 "unit": "mi",
-                                "symbol": "mi",
-                                "altnames": {
-                                  "json": "Distance"
-                                }
+                                "symbol": "mi"
                               },
                               "average_time": {
                                 "type": "int32",
                                 "description": "Historical average travel time in minutes.",
                                 "unit": "min",
-                                "symbol": "min",
-                                "altnames": {
-                                  "json": "AverageTime"
-                                }
+                                "symbol": "min"
                               },
                               "current_time": {
                                 "type": "int32",
                                 "description": "Current real-time travel time in minutes.",
                                 "unit": "min",
-                                "symbol": "min",
-                                "altnames": {
-                                  "json": "CurrentTime"
-                                }
+                                "symbol": "min"
                               },
                               "time_updated": {
                                 "type": "string",
-                                "description": "ISO 8601 UTC timestamp of last update.",
-                                "altnames": {
-                                  "json": "TimeUpdated"
-                                }
+                                "description": "ISO 8601 UTC timestamp of last update."
                               },
                               "start_description": {
                                 "type": [
@@ -1824,44 +1764,29 @@
                             "properties": {
                               "mountain_pass_id": {
                                 "type": "string",
-                                "description": "Unique pass identifier, stringified from upstream MountainPassId.",
-                                "altnames": {
-                                  "json": "MountainPassId"
-                                }
+                                "description": "Unique pass identifier, stringified from upstream MountainPassId."
                               },
                               "mountain_pass_name": {
                                 "type": "string",
-                                "description": "Pass name with highway designation.",
-                                "altnames": {
-                                  "json": "MountainPassName"
-                                }
+                                "description": "Pass name with highway designation."
                               },
                               "elevation_in_feet": {
                                 "type": "int32",
                                 "description": "Summit elevation in feet above sea level.",
                                 "unit": "ft",
-                                "symbol": "ft",
-                                "altnames": {
-                                  "json": "ElevationInFeet"
-                                }
+                                "symbol": "ft"
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               },
                               "temperature_in_fahrenheit": {
                                 "type": [
@@ -1870,31 +1795,19 @@
                                 ],
                                 "description": "Temperature at the summit in Fahrenheit. Null if not reporting.",
                                 "unit": "degF",
-                                "symbol": "°F",
-                                "altnames": {
-                                  "json": "TemperatureInFahrenheit"
-                                }
+                                "symbol": "°F"
                               },
                               "weather_condition": {
                                 "type": "string",
-                                "description": "Current weather condition text. Examples: Clear, Rain, Snow, Fog.",
-                                "altnames": {
-                                  "json": "WeatherCondition"
-                                }
+                                "description": "Current weather condition text. Examples: Clear, Rain, Snow, Fog."
                               },
                               "road_condition": {
                                 "type": "string",
-                                "description": "Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice.",
-                                "altnames": {
-                                  "json": "RoadCondition"
-                                }
+                                "description": "Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice."
                               },
                               "travel_advisory_active": {
                                 "type": "boolean",
-                                "description": "True if a travel advisory is in effect.",
-                                "altnames": {
-                                  "json": "TravelAdvisoryActive"
-                                }
+                                "description": "True if a travel advisory is in effect."
                               },
                               "restriction_one_direction": {
                                 "type": [
@@ -1926,10 +1839,7 @@
                               },
                               "date_updated": {
                                 "type": "string",
-                                "description": "ISO 8601 UTC timestamp of last update.",
-                                "altnames": {
-                                  "json": "DateUpdated"
-                                }
+                                "description": "ISO 8601 UTC timestamp of last update."
                               }
                             },
                             "required": [
@@ -1990,35 +1900,23 @@
                             "properties": {
                               "station_id": {
                                 "type": "string",
-                                "description": "Station identifier from upstream StationID. The WeatherStation reference event is synthesized from the current-readings payload (the legacy WeatherStations endpoint was decommissioned), so this is the same numeric station identifier carried by WeatherReading.",
-                                "altnames": {
-                                  "json": "StationID"
-                                }
+                                "description": "Station identifier from upstream StationID. The WeatherStation reference event is synthesized from the current-readings payload (the legacy WeatherStations endpoint was decommissioned), so this is the same numeric station identifier carried by WeatherReading."
                               },
                               "station_name": {
                                 "type": "string",
-                                "description": "Station name with highway and milepost.",
-                                "altnames": {
-                                  "json": "StationName"
-                                }
+                                "description": "Station name with highway and milepost."
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               }
                             },
                             "required": [
@@ -2065,24 +1963,15 @@
                             "properties": {
                               "station_id": {
                                 "type": "string",
-                                "description": "Station identifier from upstream StationID.",
-                                "altnames": {
-                                  "json": "StationID"
-                                }
+                                "description": "Station identifier from upstream StationID."
                               },
                               "station_name": {
                                 "type": "string",
-                                "description": "Station name.",
-                                "altnames": {
-                                  "json": "StationName"
-                                }
+                                "description": "Station name."
                               },
                               "reading_time": {
                                 "type": "string",
-                                "description": "ISO 8601 UTC timestamp.",
-                                "altnames": {
-                                  "json": "ReadingTime"
-                                }
+                                "description": "ISO 8601 UTC timestamp."
                               },
                               "temperature_in_fahrenheit": {
                                 "type": [
@@ -2091,10 +1980,7 @@
                                 ],
                                 "description": "Air temperature in Fahrenheit.",
                                 "unit": "degF",
-                                "symbol": "°F",
-                                "altnames": {
-                                  "json": "TemperatureInFahrenheit"
-                                }
+                                "symbol": "°F"
                               },
                               "precipitation_in_inches": {
                                 "type": [
@@ -2103,10 +1989,7 @@
                                 ],
                                 "description": "Precipitation in inches.",
                                 "unit": "in",
-                                "symbol": "in",
-                                "altnames": {
-                                  "json": "PrecipitationInInches"
-                                }
+                                "symbol": "in"
                               },
                               "wind_speed_in_mph": {
                                 "type": [
@@ -2115,10 +1998,7 @@
                                 ],
                                 "description": "Wind speed in mph.",
                                 "unit": "mi/h",
-                                "symbol": "mph",
-                                "altnames": {
-                                  "json": "WindSpeedInMPH"
-                                }
+                                "symbol": "mph"
                               },
                               "wind_gust_speed_in_mph": {
                                 "type": [
@@ -2127,10 +2007,7 @@
                                 ],
                                 "description": "Wind gust speed in mph.",
                                 "unit": "mi/h",
-                                "symbol": "mph",
-                                "altnames": {
-                                  "json": "WindGustSpeedInMPH"
-                                }
+                                "symbol": "mph"
                               },
                               "wind_direction": {
                                 "type": [
@@ -2139,20 +2016,14 @@
                                 ],
                                 "description": "Wind direction in degrees from true north.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "WindDirection"
-                                }
+                                "symbol": "°"
                               },
                               "wind_direction_cardinal": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Wind direction as cardinal abbreviation.",
-                                "altnames": {
-                                  "json": "WindDirectionCardinal"
-                                }
+                                "description": "Wind direction as cardinal abbreviation."
                               },
                               "barometric_pressure": {
                                 "type": [
@@ -2161,10 +2032,7 @@
                                 ],
                                 "description": "Barometric pressure in hPa.",
                                 "unit": "hPa",
-                                "symbol": "hPa",
-                                "altnames": {
-                                  "json": "BarometricPressure"
-                                }
+                                "symbol": "hPa"
                               },
                               "relative_humidity": {
                                 "type": [
@@ -2173,48 +2041,33 @@
                                 ],
                                 "description": "Relative humidity percentage.",
                                 "unit": "%",
-                                "symbol": "%",
-                                "altnames": {
-                                  "json": "RelativeHumidity"
-                                }
+                                "symbol": "%"
                               },
                               "visibility": {
                                 "type": [
                                   "double",
                                   "null"
                                 ],
-                                "description": "Visibility distance.",
-                                "altnames": {
-                                  "json": "Visibility"
-                                }
+                                "description": "Visibility distance."
                               },
                               "sky_coverage": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Sky coverage description.",
-                                "altnames": {
-                                  "json": "SkyCoverage"
-                                }
+                                "description": "Sky coverage description."
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               }
                             },
                             "required": [
@@ -2276,112 +2129,70 @@
                             "properties": {
                               "trip_name": {
                                 "type": "string",
-                                "description": "Tolled route segment identifier.",
-                                "altnames": {
-                                  "json": "TripName"
-                                }
+                                "description": "Tolled route segment identifier."
                               },
                               "state_route": {
                                 "type": "string",
-                                "description": "State route number.",
-                                "altnames": {
-                                  "json": "StateRoute"
-                                }
+                                "description": "State route number."
                               },
                               "travel_direction": {
                                 "type": "string",
-                                "description": "Travel direction: N, S, E, W.",
-                                "altnames": {
-                                  "json": "TravelDirection"
-                                }
+                                "description": "Travel direction: N, S, E, W."
                               },
                               "current_toll": {
                                 "type": "int32",
-                                "description": "Current toll in cents.",
-                                "altnames": {
-                                  "json": "CurrentToll"
-                                }
+                                "description": "Current toll in cents."
                               },
                               "current_message": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Optional status message.",
-                                "altnames": {
-                                  "json": "CurrentMessage"
-                                }
+                                "description": "Optional status message."
                               },
                               "time_updated": {
                                 "type": "string",
-                                "description": "ISO 8601 UTC timestamp.",
-                                "altnames": {
-                                  "json": "TimeUpdated"
-                                }
+                                "description": "ISO 8601 UTC timestamp."
                               },
                               "start_location_name": {
                                 "type": "string",
-                                "description": "Start location name.",
-                                "altnames": {
-                                  "json": "StartLocationName"
-                                }
+                                "description": "Start location name."
                               },
                               "start_latitude": {
                                 "type": "double",
                                 "description": "Start latitude.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "StartLatitude"
-                                }
+                                "symbol": "°"
                               },
                               "start_longitude": {
                                 "type": "double",
                                 "description": "Start longitude.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "StartLongitude"
-                                }
+                                "symbol": "°"
                               },
                               "start_milepost": {
                                 "type": "double",
-                                "description": "Start milepost.",
-                                "altnames": {
-                                  "json": "StartMilepost"
-                                }
+                                "description": "Start milepost."
                               },
                               "end_location_name": {
                                 "type": "string",
-                                "description": "End location name.",
-                                "altnames": {
-                                  "json": "EndLocationName"
-                                }
+                                "description": "End location name."
                               },
                               "end_latitude": {
                                 "type": "double",
                                 "description": "End latitude.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "EndLatitude"
-                                }
+                                "symbol": "°"
                               },
                               "end_longitude": {
                                 "type": "double",
                                 "description": "End longitude.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "EndLongitude"
-                                }
+                                "symbol": "°"
                               },
                               "end_milepost": {
                                 "type": "double",
-                                "description": "End milepost.",
-                                "altnames": {
-                                  "json": "EndMilepost"
-                                }
+                                "description": "End milepost."
                               }
                             },
                             "required": [
@@ -2442,95 +2253,65 @@
                             "properties": {
                               "state_route_id": {
                                 "type": "string",
-                                "description": "State route identifier, first part of composite key.",
-                                "altnames": {
-                                  "json": "StateRouteID"
-                                }
+                                "description": "State route identifier, first part of composite key."
                               },
                               "bridge_number": {
                                 "type": "string",
-                                "description": "Bridge or structure number, second part of composite key.",
-                                "altnames": {
-                                  "json": "BridgeNumber"
-                                }
+                                "description": "Bridge or structure number, second part of composite key."
                               },
                               "bridge_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Bridge or structure name.",
-                                "altnames": {
-                                  "json": "BridgeName"
-                                }
+                                "description": "Bridge or structure name."
                               },
                               "location_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Location relative to landmarks.",
-                                "altnames": {
-                                  "json": "LocationName"
-                                }
+                                "description": "Location relative to landmarks."
                               },
                               "location_description": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Detailed location description.",
-                                "altnames": {
-                                  "json": "LocationDescription"
-                                }
+                                "description": "Detailed location description."
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               },
                               "state": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "State abbreviation, typically WA.",
-                                "altnames": {
-                                  "json": "State"
-                                }
+                                "description": "State abbreviation, typically WA."
                               },
                               "restriction_type": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Type: BridgeRestriction, RoadRestriction.",
-                                "altnames": {
-                                  "json": "RestrictionType"
-                                }
+                                "description": "Type: BridgeRestriction, RoadRestriction."
                               },
                               "vehicle_type": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Affected vehicle type.",
-                                "altnames": {
-                                  "json": "VehicleType"
-                                }
+                                "description": "Affected vehicle type."
                               },
                               "restriction_weight_in_pounds": {
                                 "type": [
@@ -2539,10 +2320,7 @@
                                 ],
                                 "description": "Axle weight limit in pounds.",
                                 "unit": "lb",
-                                "symbol": "lbs",
-                                "altnames": {
-                                  "json": "RestrictionWeightInPounds"
-                                }
+                                "symbol": "lbs"
                               },
                               "maximum_gross_vehicle_weight_in_pounds": {
                                 "type": [
@@ -2551,10 +2329,7 @@
                                 ],
                                 "description": "GVW limit in pounds.",
                                 "unit": "lb",
-                                "symbol": "lbs",
-                                "altnames": {
-                                  "json": "MaximumGrossVehicleWeightInPounds"
-                                }
+                                "symbol": "lbs"
                               },
                               "restriction_height_in_inches": {
                                 "type": [
@@ -2563,10 +2338,7 @@
                                 ],
                                 "description": "Height limit in inches.",
                                 "unit": "in",
-                                "symbol": "in",
-                                "altnames": {
-                                  "json": "RestrictionHeightInInches"
-                                }
+                                "symbol": "in"
                               },
                               "restriction_width_in_inches": {
                                 "type": [
@@ -2575,10 +2347,7 @@
                                 ],
                                 "description": "Width limit in inches.",
                                 "unit": "in",
-                                "symbol": "in",
-                                "altnames": {
-                                  "json": "RestrictionWidthInInches"
-                                }
+                                "symbol": "in"
                               },
                               "restriction_length_in_inches": {
                                 "type": [
@@ -2587,78 +2356,51 @@
                                 ],
                                 "description": "Length limit in inches.",
                                 "unit": "in",
-                                "symbol": "in",
-                                "altnames": {
-                                  "json": "RestrictionLengthInInches"
-                                }
+                                "symbol": "in"
                               },
                               "is_permanent_restriction": {
                                 "type": "boolean",
-                                "description": "True if permanent.",
-                                "altnames": {
-                                  "json": "IsPermanentRestriction"
-                                }
+                                "description": "True if permanent."
                               },
                               "is_warning": {
                                 "type": "boolean",
-                                "description": "True if warning only.",
-                                "altnames": {
-                                  "json": "IsWarning"
-                                }
+                                "description": "True if warning only."
                               },
                               "is_detour_available": {
                                 "type": "boolean",
-                                "description": "True if detour exists.",
-                                "altnames": {
-                                  "json": "IsDetourAvailable"
-                                }
+                                "description": "True if detour exists."
                               },
                               "is_exceptions_allowed": {
                                 "type": "boolean",
-                                "description": "True if permits available.",
-                                "altnames": {
-                                  "json": "IsExceptionsAllowed"
-                                }
+                                "description": "True if permits available."
                               },
                               "restriction_comment": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Additional details.",
-                                "altnames": {
-                                  "json": "RestrictionComment"
-                                }
+                                "description": "Additional details."
                               },
                               "date_posted": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "ISO 8601 UTC date posted.",
-                                "altnames": {
-                                  "json": "DatePosted"
-                                }
+                                "description": "ISO 8601 UTC date posted."
                               },
                               "date_effective": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "ISO 8601 UTC date effective.",
-                                "altnames": {
-                                  "json": "DateEffective"
-                                }
+                                "description": "ISO 8601 UTC date effective."
                               },
                               "date_expires": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "ISO 8601 UTC date expires.",
-                                "altnames": {
-                                  "json": "DateExpires"
-                                }
+                                "description": "ISO 8601 UTC date expires."
                               }
                             },
                             "required": [
@@ -2728,10 +2470,7 @@
                             "properties": {
                               "crossing_name": {
                                 "type": "string",
-                                "description": "Crossing lane identifier.",
-                                "altnames": {
-                                  "json": "CrossingName"
-                                }
+                                "description": "Crossing lane identifier."
                               },
                               "wait_time": {
                                 "type": [
@@ -2740,17 +2479,11 @@
                                 ],
                                 "description": "Wait time in minutes.",
                                 "unit": "min",
-                                "symbol": "min",
-                                "altnames": {
-                                  "json": "WaitTime"
-                                }
+                                "symbol": "min"
                               },
                               "time": {
                                 "type": "string",
-                                "description": "ISO 8601 UTC measurement timestamp.",
-                                "altnames": {
-                                  "json": "Time"
-                                }
+                                "description": "ISO 8601 UTC measurement timestamp."
                               },
                               "description": {
                                 "type": [
@@ -2830,59 +2563,38 @@
                             "properties": {
                               "vessel_id": {
                                 "type": "string",
-                                "description": "Vessel identifier, stringified from upstream VesselID.",
-                                "altnames": {
-                                  "json": "VesselID"
-                                }
+                                "description": "Vessel identifier, stringified from upstream VesselID."
                               },
                               "vessel_name": {
                                 "type": "string",
-                                "description": "Ferry vessel name.",
-                                "altnames": {
-                                  "json": "VesselName"
-                                }
+                                "description": "Ferry vessel name."
                               },
                               "mmsi": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "Maritime Mobile Service Identity for AIS.",
-                                "altnames": {
-                                  "json": "Mmsi"
-                                }
+                                "description": "Maritime Mobile Service Identity for AIS."
                               },
                               "in_service": {
                                 "type": "boolean",
-                                "description": "True if in active service.",
-                                "altnames": {
-                                  "json": "InService"
-                                }
+                                "description": "True if in active service."
                               },
                               "at_dock": {
                                 "type": "boolean",
-                                "description": "True if docked.",
-                                "altnames": {
-                                  "json": "AtDock"
-                                }
+                                "description": "True if docked."
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               },
                               "speed": {
                                 "type": [
@@ -2891,10 +2603,7 @@
                                 ],
                                 "description": "Speed in knots.",
                                 "unit": "kn",
-                                "symbol": "kn",
-                                "altnames": {
-                                  "json": "Speed"
-                                }
+                                "symbol": "kn"
                               },
                               "heading": {
                                 "type": [
@@ -2903,110 +2612,77 @@
                                 ],
                                 "description": "Heading in degrees.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Heading"
-                                }
+                                "symbol": "°"
                               },
                               "departing_terminal_id": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "Departure terminal ID.",
-                                "altnames": {
-                                  "json": "DepartingTerminalID"
-                                }
+                                "description": "Departure terminal ID."
                               },
                               "departing_terminal_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Departure terminal name.",
-                                "altnames": {
-                                  "json": "DepartingTerminalName"
-                                }
+                                "description": "Departure terminal name."
                               },
                               "departing_terminal_abbrev": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Departure terminal abbreviation.",
-                                "altnames": {
-                                  "json": "DepartingTerminalAbbrev"
-                                }
+                                "description": "Departure terminal abbreviation."
                               },
                               "arriving_terminal_id": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "Arrival terminal ID.",
-                                "altnames": {
-                                  "json": "ArrivingTerminalID"
-                                }
+                                "description": "Arrival terminal ID."
                               },
                               "arriving_terminal_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Arrival terminal name.",
-                                "altnames": {
-                                  "json": "ArrivingTerminalName"
-                                }
+                                "description": "Arrival terminal name."
                               },
                               "arriving_terminal_abbrev": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Arrival terminal abbreviation.",
-                                "altnames": {
-                                  "json": "ArrivingTerminalAbbrev"
-                                }
+                                "description": "Arrival terminal abbreviation."
                               },
                               "scheduled_departure": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "ISO 8601 UTC scheduled departure.",
-                                "altnames": {
-                                  "json": "ScheduledDeparture"
-                                }
+                                "description": "ISO 8601 UTC scheduled departure."
                               },
                               "left_dock": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "ISO 8601 UTC actual departure.",
-                                "altnames": {
-                                  "json": "LeftDock"
-                                }
+                                "description": "ISO 8601 UTC actual departure."
                               },
                               "eta": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "ISO 8601 UTC estimated arrival.",
-                                "altnames": {
-                                  "json": "Eta"
-                                }
+                                "description": "ISO 8601 UTC estimated arrival."
                               },
                               "eta_basis": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "ETA calculation description.",
-                                "altnames": {
-                                  "json": "EtaBasis"
-                                }
+                                "description": "ETA calculation description."
                               },
                               "route_abbreviation": {
                                 "type": [
@@ -3017,10 +2693,7 @@
                               },
                               "timestamp": {
                                 "type": "string",
-                                "description": "ISO 8601 UTC position timestamp.",
-                                "altnames": {
-                                  "json": "TimeStamp"
-                                }
+                                "description": "ISO 8601 UTC position timestamp."
                               }
                             },
                             "required": [
@@ -4050,35 +3723,23 @@
                             "properties": {
                               "station_id": {
                                 "type": "string",
-                                "description": "Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key.",
-                                "altnames": {
-                                  "json": "StationId"
-                                }
+                                "description": "Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key."
                               },
                               "station_name": {
                                 "type": "string",
-                                "description": "Station name (unique across the Scanweb network).",
-                                "altnames": {
-                                  "json": "StationName"
-                                }
+                                "description": "Station name (unique across the Scanweb network)."
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               },
                               "elevation": {
                                 "type": [
@@ -4087,10 +3748,7 @@
                                 ],
                                 "description": "Station elevation above sea level.",
                                 "unit": "m",
-                                "symbol": "m",
-                                "altnames": {
-                                  "json": "Elevation"
-                                }
+                                "symbol": "m"
                               }
                             },
                             "required": [
@@ -4138,35 +3796,23 @@
                             "properties": {
                               "station_id": {
                                 "type": "string",
-                                "description": "Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank).",
-                                "altnames": {
-                                  "json": "StationId"
-                                }
+                                "description": "Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank)."
                               },
                               "station_name": {
                                 "type": "string",
-                                "description": "Station name.",
-                                "altnames": {
-                                  "json": "StationName"
-                                }
+                                "description": "Station name."
                               },
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": "double",
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               },
                               "elevation": {
                                 "type": [
@@ -4175,17 +3821,11 @@
                                 ],
                                 "description": "Station elevation above sea level.",
                                 "unit": "m",
-                                "symbol": "m",
-                                "altnames": {
-                                  "json": "Elevation"
-                                }
+                                "symbol": "m"
                               },
                               "reading_time": {
                                 "type": "string",
-                                "description": "Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock).",
-                                "altnames": {
-                                  "json": "ReadingTime"
-                                }
+                                "description": "Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock)."
                               },
                               "air_temperature": {
                                 "type": [
@@ -4194,10 +3834,7 @@
                                 ],
                                 "description": "Air temperature.",
                                 "unit": "Cel",
-                                "symbol": "°C",
-                                "altnames": {
-                                  "json": "AirTemperature"
-                                }
+                                "symbol": "°C"
                               },
                               "relative_humidity": {
                                 "type": [
@@ -4206,10 +3843,7 @@
                                 ],
                                 "description": "Relative humidity percentage. Upstream key is misspelled 'RelativeHumidty'.",
                                 "unit": "%",
-                                "symbol": "%",
-                                "altnames": {
-                                  "json": "RelativeHumidty"
-                                }
+                                "symbol": "%"
                               },
                               "average_wind_speed": {
                                 "type": [
@@ -4218,10 +3852,7 @@
                                 ],
                                 "description": "Average wind speed.",
                                 "unit": "m/s",
-                                "symbol": "m/s",
-                                "altnames": {
-                                  "json": "AverageWindSpeed"
-                                }
+                                "symbol": "m/s"
                               },
                               "average_wind_direction": {
                                 "type": [
@@ -4230,10 +3861,7 @@
                                 ],
                                 "description": "Average wind direction in degrees from true north.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "AverageWindDirection"
-                                }
+                                "symbol": "°"
                               },
                               "wind_gust": {
                                 "type": [
@@ -4242,10 +3870,7 @@
                                 ],
                                 "description": "Peak wind gust speed.",
                                 "unit": "m/s",
-                                "symbol": "m/s",
-                                "altnames": {
-                                  "json": "WindGust"
-                                }
+                                "symbol": "m/s"
                               },
                               "visibility": {
                                 "type": [
@@ -4254,30 +3879,21 @@
                                 ],
                                 "description": "Visibility distance.",
                                 "unit": "m",
-                                "symbol": "m",
-                                "altnames": {
-                                  "json": "Visibility"
-                                }
+                                "symbol": "m"
                               },
                               "precipitation_intensity": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported.",
-                                "altnames": {
-                                  "json": "PrecipitationIntensity"
-                                }
+                                "description": "Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported."
                               },
                               "precipitation_type": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported.",
-                                "altnames": {
-                                  "json": "PrecipitationType"
-                                }
+                                "description": "Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported."
                               },
                               "precipitation_past_1_hour": {
                                 "type": [
@@ -4286,10 +3902,7 @@
                                 ],
                                 "description": "Liquid-equivalent precipitation accumulated in the past 1 hour.",
                                 "unit": "mm",
-                                "symbol": "mm",
-                                "altnames": {
-                                  "json": "PrecipitationPast1Hour"
-                                }
+                                "symbol": "mm"
                               },
                               "precipitation_past_3_hours": {
                                 "type": [
@@ -4298,10 +3911,7 @@
                                 ],
                                 "description": "Liquid-equivalent precipitation accumulated in the past 3 hours.",
                                 "unit": "mm",
-                                "symbol": "mm",
-                                "altnames": {
-                                  "json": "PrecipitationPast3Hours"
-                                }
+                                "symbol": "mm"
                               },
                               "precipitation_past_6_hours": {
                                 "type": [
@@ -4310,10 +3920,7 @@
                                 ],
                                 "description": "Liquid-equivalent precipitation accumulated in the past 6 hours.",
                                 "unit": "mm",
-                                "symbol": "mm",
-                                "altnames": {
-                                  "json": "PrecipitationPast6Hours"
-                                }
+                                "symbol": "mm"
                               },
                               "precipitation_past_12_hours": {
                                 "type": [
@@ -4322,10 +3929,7 @@
                                 ],
                                 "description": "Liquid-equivalent precipitation accumulated in the past 12 hours.",
                                 "unit": "mm",
-                                "symbol": "mm",
-                                "altnames": {
-                                  "json": "PrecipitationPast12Hours"
-                                }
+                                "symbol": "mm"
                               },
                               "precipitation_past_24_hours": {
                                 "type": [
@@ -4334,10 +3938,7 @@
                                 ],
                                 "description": "Liquid-equivalent precipitation accumulated in the past 24 hours.",
                                 "unit": "mm",
-                                "symbol": "mm",
-                                "altnames": {
-                                  "json": "PrecipitationPast24Hours"
-                                }
+                                "symbol": "mm"
                               },
                               "precipitation_accumulation": {
                                 "type": [
@@ -4346,10 +3947,7 @@
                                 ],
                                 "description": "Cumulative precipitation accumulation reported by the gauge, or null.",
                                 "unit": "mm",
-                                "symbol": "mm",
-                                "altnames": {
-                                  "json": "PrecipitationAccumulation"
-                                }
+                                "symbol": "mm"
                               },
                               "barometric_pressure": {
                                 "type": [
@@ -4358,10 +3956,7 @@
                                 ],
                                 "description": "Barometric pressure, or null when the station has no pressure sensor.",
                                 "unit": "hPa",
-                                "symbol": "hPa",
-                                "altnames": {
-                                  "json": "BarometricPressure"
-                                }
+                                "symbol": "hPa"
                               },
                               "snow_depth": {
                                 "type": [
@@ -4370,10 +3965,7 @@
                                 ],
                                 "description": "Measured snow depth, or null when the station has no snow sensor.",
                                 "unit": "cm",
-                                "symbol": "cm",
-                                "altnames": {
-                                  "json": "SnowDepth"
-                                }
+                                "symbol": "cm"
                               },
                               "surface_measurements": {
                                 "type": "array",
@@ -4384,10 +3976,7 @@
                                   "properties": {
                                     "sensor_id": {
                                       "type": "int32",
-                                      "description": "Surface sensor identifier within the station.",
-                                      "altnames": {
-                                        "json": "SensorId"
-                                      }
+                                      "description": "Surface sensor identifier within the station."
                                     },
                                     "surface_temperature": {
                                       "type": [
@@ -4396,10 +3985,7 @@
                                       ],
                                       "description": "Road surface temperature.",
                                       "unit": "Cel",
-                                      "symbol": "°C",
-                                      "altnames": {
-                                        "json": "SurfaceTemperature"
-                                      }
+                                      "symbol": "°C"
                                     },
                                     "road_freezing_temperature": {
                                       "type": [
@@ -4408,20 +3994,14 @@
                                       ],
                                       "description": "Temperature at which the road surface is expected to freeze, accounting for residual de-icer.",
                                       "unit": "Cel",
-                                      "symbol": "°C",
-                                      "altnames": {
-                                        "json": "RoadFreezingTemperature"
-                                      }
+                                      "symbol": "°C"
                                     },
                                     "road_surface_condition": {
                                       "type": [
                                         "int32",
                                         "null"
                                       ],
-                                      "description": "Coded road surface condition as an opaque integer from the upstream Scanweb RoadSurfaceCondition enumeration (commonly dry, wet, snow, or ice); WSDOT does not publish the full code dictionary, so the value is passed through unmodified.",
-                                      "altnames": {
-                                        "json": "RoadSurfaceCondition"
-                                      }
+                                      "description": "Coded road surface condition as an opaque integer from the upstream Scanweb RoadSurfaceCondition enumeration (commonly dry, wet, snow, or ice); WSDOT does not publish the full code dictionary, so the value is passed through unmodified."
                                     }
                                   },
                                   "required": [
@@ -4431,10 +4011,7 @@
                                     "road_surface_condition"
                                   ]
                                 },
-                                "description": "Per-sensor road surface measurements (temperature, freezing point, surface condition).",
-                                "altnames": {
-                                  "json": "SurfaceMeasurements"
-                                }
+                                "description": "Per-sensor road surface measurements (temperature, freezing point, surface condition)."
                               },
                               "sub_surface_measurements": {
                                 "type": "array",
@@ -4445,10 +4022,7 @@
                                   "properties": {
                                     "sensor_id": {
                                       "type": "int32",
-                                      "description": "Sub-surface sensor identifier within the station.",
-                                      "altnames": {
-                                        "json": "SensorId"
-                                      }
+                                      "description": "Sub-surface sensor identifier within the station."
                                     },
                                     "sub_surface_temperature": {
                                       "type": [
@@ -4457,10 +4031,7 @@
                                       ],
                                       "description": "Sub-surface (below pavement) temperature.",
                                       "unit": "Cel",
-                                      "symbol": "°C",
-                                      "altnames": {
-                                        "json": "SubSurfaceTemperature"
-                                      }
+                                      "symbol": "°C"
                                     }
                                   },
                                   "required": [
@@ -4468,10 +4039,7 @@
                                     "sub_surface_temperature"
                                   ]
                                 },
-                                "description": "Per-sensor sub-surface (in-pavement) temperature measurements.",
-                                "altnames": {
-                                  "json": "SubSurfaceMeasurements"
-                                }
+                                "description": "Per-sensor sub-surface (in-pavement) temperature measurements."
                               }
                             },
                             "required": [
@@ -4542,30 +4110,21 @@
                             "properties": {
                               "alert_id": {
                                 "type": "string",
-                                "description": "WSDOT alert identifier (stable for the life of the alert).",
-                                "altnames": {
-                                  "json": "AlertID"
-                                }
+                                "description": "WSDOT alert identifier (stable for the life of the alert)."
                               },
                               "county": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "County in which the alert is located.",
-                                "altnames": {
-                                  "json": "County"
-                                }
+                                "description": "County in which the alert is located."
                               },
                               "region": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "WSDOT region responsible for the alert.",
-                                "altnames": {
-                                  "json": "Region"
-                                }
+                                "description": "WSDOT region responsible for the alert."
                               },
                               "priority": {
                                 "type": [
@@ -4573,9 +4132,6 @@
                                   "null"
                                 ],
                                 "description": "Alert priority (Highest, High, Medium, Low, Lowest).",
-                                "altnames": {
-                                  "json": "Priority"
-                                },
                                 "enum": [
                                   "Highest",
                                   "High",
@@ -4589,10 +4145,7 @@
                                   "string",
                                   "null"
                                 ],
-                                "description": "Category of the event (e.g. Collision, Construction, Special Event, Weather).",
-                                "altnames": {
-                                  "json": "EventCategory"
-                                }
+                                "description": "Category of the event (e.g. Collision, Construction, Special Event, Weather)."
                               },
                               "event_status": {
                                 "type": [
@@ -4600,9 +4153,6 @@
                                   "null"
                                 ],
                                 "description": "Current status of the event (Open or Closed).",
-                                "altnames": {
-                                  "json": "EventStatus"
-                                },
                                 "enum": [
                                   "Open",
                                   "Closed"
@@ -4613,80 +4163,56 @@
                                   "string",
                                   "null"
                                 ],
-                                "description": "Short human-readable headline for the alert.",
-                                "altnames": {
-                                  "json": "HeadlineDescription"
-                                }
+                                "description": "Short human-readable headline for the alert."
                               },
                               "extended_description": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Longer human-readable description with full details.",
-                                "altnames": {
-                                  "json": "ExtendedDescription"
-                                }
+                                "description": "Longer human-readable description with full details."
                               },
                               "start_time": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Alert start time as an ISO 8601 UTC timestamp.",
-                                "altnames": {
-                                  "json": "StartTime"
-                                }
+                                "description": "Alert start time as an ISO 8601 UTC timestamp."
                               },
                               "end_time": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Alert end time as an ISO 8601 UTC timestamp, or null if open-ended.",
-                                "altnames": {
-                                  "json": "EndTime"
-                                }
+                                "description": "Alert end time as an ISO 8601 UTC timestamp, or null if open-ended."
                               },
                               "last_updated_time": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Time the alert was last updated, as an ISO 8601 UTC timestamp.",
-                                "altnames": {
-                                  "json": "LastUpdatedTime"
-                                }
+                                "description": "Time the alert was last updated, as an ISO 8601 UTC timestamp."
                               },
                               "start_description": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Description of the start roadway location.",
-                                "altnames": {
-                                  "json": "Description"
-                                }
+                                "description": "Description of the start roadway location."
                               },
                               "start_direction": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Travel direction at the start location (e.g. B, N, S, E, W).",
-                                "altnames": {
-                                  "json": "Direction"
-                                }
+                                "description": "Travel direction at the start location (e.g. B, N, S, E, W)."
                               },
                               "start_road_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Road name/route designation at the start location.",
-                                "altnames": {
-                                  "json": "RoadName"
-                                }
+                                "description": "Road name/route designation at the start location."
                               },
                               "start_milepost": {
                                 "type": [
@@ -4695,10 +4221,7 @@
                                 ],
                                 "description": "Milepost of the start location.",
                                 "unit": "mi",
-                                "symbol": "mi",
-                                "altnames": {
-                                  "json": "MilePost"
-                                }
+                                "symbol": "mi"
                               },
                               "start_latitude": {
                                 "type": [
@@ -4707,10 +4230,7 @@
                                 ],
                                 "description": "Latitude of the start location in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "start_longitude": {
                                 "type": [
@@ -4719,40 +4239,28 @@
                                 ],
                                 "description": "Longitude of the start location in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               },
                               "end_description": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Description of the end roadway location.",
-                                "altnames": {
-                                  "json": "Description"
-                                }
+                                "description": "Description of the end roadway location."
                               },
                               "end_direction": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Travel direction at the end location.",
-                                "altnames": {
-                                  "json": "Direction"
-                                }
+                                "description": "Travel direction at the end location."
                               },
                               "end_road_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Road name/route designation at the end location.",
-                                "altnames": {
-                                  "json": "RoadName"
-                                }
+                                "description": "Road name/route designation at the end location."
                               },
                               "end_milepost": {
                                 "type": [
@@ -4761,10 +4269,7 @@
                                 ],
                                 "description": "Milepost of the end location.",
                                 "unit": "mi",
-                                "symbol": "mi",
-                                "altnames": {
-                                  "json": "MilePost"
-                                }
+                                "symbol": "mi"
                               },
                               "end_latitude": {
                                 "type": [
@@ -4773,10 +4278,7 @@
                                 ],
                                 "description": "Latitude of the end location in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "end_longitude": {
                                 "type": [
@@ -4785,10 +4287,7 @@
                                 ],
                                 "description": "Longitude of the end location in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               }
                             },
                             "required": [
@@ -4858,57 +4357,39 @@
                             "properties": {
                               "camera_id": {
                                 "type": "string",
-                                "description": "WSDOT camera identifier (stable).",
-                                "altnames": {
-                                  "json": "CameraID"
-                                }
+                                "description": "WSDOT camera identifier (stable)."
                               },
                               "title": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Human-readable camera title.",
-                                "altnames": {
-                                  "json": "Title"
-                                }
+                                "description": "Human-readable camera title."
                               },
                               "description": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Optional camera description.",
-                                "altnames": {
-                                  "json": "Description"
-                                }
+                                "description": "Optional camera description."
                               },
                               "camera_owner": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Organization that owns/operates the camera.",
-                                "altnames": {
-                                  "json": "CameraOwner"
-                                }
+                                "description": "Organization that owns/operates the camera."
                               },
                               "owner_url": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "URL with more information from the camera owner.",
-                                "altnames": {
-                                  "json": "OwnerURL"
-                                }
+                                "description": "URL with more information from the camera owner."
                               },
                               "image_url": {
                                 "type": "string",
-                                "description": "Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand.",
-                                "altnames": {
-                                  "json": "ImageURL"
-                                }
+                                "description": "Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand."
                               },
                               "image_width": {
                                 "type": [
@@ -4917,10 +4398,7 @@
                                 ],
                                 "description": "Width of the camera image.",
                                 "unit": "px",
-                                "symbol": "px",
-                                "altnames": {
-                                  "json": "ImageWidth"
-                                }
+                                "symbol": "px"
                               },
                               "image_height": {
                                 "type": [
@@ -4929,37 +4407,25 @@
                                 ],
                                 "description": "Height of the camera image.",
                                 "unit": "px",
-                                "symbol": "px",
-                                "altnames": {
-                                  "json": "ImageHeight"
-                                }
+                                "symbol": "px"
                               },
                               "is_active": {
                                 "type": "boolean",
-                                "description": "Whether the camera is currently active.",
-                                "altnames": {
-                                  "json": "IsActive"
-                                }
+                                "description": "Whether the camera is currently active."
                               },
                               "region": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "WSDOT region (or area code) for the camera.",
-                                "altnames": {
-                                  "json": "Region"
-                                }
+                                "description": "WSDOT region (or area code) for the camera."
                               },
                               "sort_order": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "WSDOT display sort order.",
-                                "altnames": {
-                                  "json": "SortOrder"
-                                }
+                                "description": "WSDOT display sort order."
                               },
                               "display_latitude": {
                                 "type": [
@@ -4968,10 +4434,7 @@
                                 ],
                                 "description": "Latitude used for map display, in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "DisplayLatitude"
-                                }
+                                "symbol": "°"
                               },
                               "display_longitude": {
                                 "type": [
@@ -4980,40 +4443,28 @@
                                 ],
                                 "description": "Longitude used for map display, in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "DisplayLongitude"
-                                }
+                                "symbol": "°"
                               },
                               "location_description": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Description of the camera roadway location.",
-                                "altnames": {
-                                  "json": "Description"
-                                }
+                                "description": "Description of the camera roadway location."
                               },
                               "location_direction": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Travel direction the camera faces.",
-                                "altnames": {
-                                  "json": "Direction"
-                                }
+                                "description": "Travel direction the camera faces."
                               },
                               "location_road_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Road name/route designation at the camera location.",
-                                "altnames": {
-                                  "json": "RoadName"
-                                }
+                                "description": "Road name/route designation at the camera location."
                               },
                               "location_milepost": {
                                 "type": [
@@ -5022,10 +4473,7 @@
                                 ],
                                 "description": "Milepost of the camera location.",
                                 "unit": "mi",
-                                "symbol": "mi",
-                                "altnames": {
-                                  "json": "MilePost"
-                                }
+                                "symbol": "mi"
                               },
                               "location_latitude": {
                                 "type": [
@@ -5034,10 +4482,7 @@
                                 ],
                                 "description": "Latitude of the camera location in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "location_longitude": {
                                 "type": [
@@ -5046,10 +4491,7 @@
                                 ],
                                 "description": "Longitude of the camera location in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               }
                             },
                             "required": [
@@ -5115,60 +4557,42 @@
                             "properties": {
                               "crossing_location_id": {
                                 "type": "string",
-                                "description": "Stable crossing location identifier (CrossingLocationId).",
-                                "altnames": {
-                                  "json": "CrossingLocationId"
-                                }
+                                "description": "Stable crossing location identifier (CrossingLocationId)."
                               },
                               "bridge_number": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "WSDOT bridge number of the structure.",
-                                "altnames": {
-                                  "json": "BridgeNumber"
-                                }
+                                "description": "WSDOT bridge number of the structure."
                               },
                               "state_route_id": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "State route identifier the structure crosses, or null.",
-                                "altnames": {
-                                  "json": "StateRouteID"
-                                }
+                                "description": "State route identifier the structure crosses, or null."
                               },
                               "state_structure_id": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Statewide structure identifier.",
-                                "altnames": {
-                                  "json": "StateStructureId"
-                                }
+                                "description": "Statewide structure identifier."
                               },
                               "crossing_description": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Human-readable description of the crossing.",
-                                "altnames": {
-                                  "json": "CrossingDescription"
-                                }
+                                "description": "Human-readable description of the crossing."
                               },
                               "inventory_direction": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Inventory direction of the structure, or null.",
-                                "altnames": {
-                                  "json": "InventoryDirection"
-                                }
+                                "description": "Inventory direction of the structure, or null."
                               },
                               "srmp": {
                                 "type": [
@@ -5177,20 +4601,14 @@
                                 ],
                                 "description": "State route milepost of the crossing.",
                                 "unit": "mi",
-                                "symbol": "mi",
-                                "altnames": {
-                                  "json": "SRMP"
-                                }
+                                "symbol": "mi"
                               },
                               "srmp_ahead_back_indicator": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Ahead/Back indicator disambiguating the milepost, or null.",
-                                "altnames": {
-                                  "json": "SRMPAheadBackIndicator"
-                                }
+                                "description": "Ahead/Back indicator disambiguating the milepost, or null."
                               },
                               "latitude": {
                                 "type": [
@@ -5199,10 +4617,7 @@
                                 ],
                                 "description": "Latitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Latitude"
-                                }
+                                "symbol": "°"
                               },
                               "longitude": {
                                 "type": [
@@ -5211,10 +4626,7 @@
                                 ],
                                 "description": "Longitude in WGS84.",
                                 "unit": "deg",
-                                "symbol": "°",
-                                "altnames": {
-                                  "json": "Longitude"
-                                }
+                                "symbol": "°"
                               },
                               "vertical_clearance_maximum_inches": {
                                 "type": [
@@ -5223,20 +4635,14 @@
                                 ],
                                 "description": "Maximum vertical clearance, in inches.",
                                 "unit": "in",
-                                "symbol": "in",
-                                "altnames": {
-                                  "json": "VerticalClearanceMaximumInches"
-                                }
+                                "symbol": "in"
                               },
                               "vertical_clearance_maximum_feet_inch": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in').",
-                                "altnames": {
-                                  "json": "VerticalClearanceMaximumFeetInch"
-                                }
+                                "description": "Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in')."
                               },
                               "vertical_clearance_minimum_inches": {
                                 "type": [
@@ -5245,70 +4651,49 @@
                                 ],
                                 "description": "Minimum vertical clearance, in inches.",
                                 "unit": "in",
-                                "symbol": "in",
-                                "altnames": {
-                                  "json": "VerticalClearanceMinimumInches"
-                                }
+                                "symbol": "in"
                               },
                               "vertical_clearance_minimum_feet_inch": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Minimum vertical clearance as a feet-and-inches display string.",
-                                "altnames": {
-                                  "json": "VerticalClearanceMinimumFeetInch"
-                                }
+                                "description": "Minimum vertical clearance as a feet-and-inches display string."
                               },
                               "control_entity_guid": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "GUID of the controlling entity record.",
-                                "altnames": {
-                                  "json": "ControlEntityGuid"
-                                }
+                                "description": "GUID of the controlling entity record."
                               },
                               "crossing_record_guid": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "GUID of the crossing record.",
-                                "altnames": {
-                                  "json": "CrossingRecordGuid"
-                                }
+                                "description": "GUID of the crossing record."
                               },
                               "location_guid": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "GUID of the location record.",
-                                "altnames": {
-                                  "json": "LocationGuid"
-                                }
+                                "description": "GUID of the location record."
                               },
                               "route_date": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Effective route date as an ISO 8601 UTC timestamp.",
-                                "altnames": {
-                                  "json": "RouteDate"
-                                }
+                                "description": "Effective route date as an ISO 8601 UTC timestamp."
                               },
                               "api_last_update": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp.",
-                                "altnames": {
-                                  "json": "APILastUpdate"
-                                }
+                                "description": "Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp."
                               }
                             },
                             "required": [
@@ -5374,60 +4759,42 @@
                             "properties": {
                               "terminal_id": {
                                 "type": "string",
-                                "description": "Washington State Ferries terminal identifier (stable).",
-                                "altnames": {
-                                  "json": "TerminalID"
-                                }
+                                "description": "Washington State Ferries terminal identifier (stable)."
                               },
                               "terminal_subject_id": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "WSF terminal subject identifier.",
-                                "altnames": {
-                                  "json": "TerminalSubjectID"
-                                }
+                                "description": "WSF terminal subject identifier."
                               },
                               "region_id": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "WSF region identifier.",
-                                "altnames": {
-                                  "json": "RegionID"
-                                }
+                                "description": "WSF region identifier."
                               },
                               "terminal_name": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Terminal name.",
-                                "altnames": {
-                                  "json": "TerminalName"
-                                }
+                                "description": "Terminal name."
                               },
                               "terminal_abbrev": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Terminal abbreviation code.",
-                                "altnames": {
-                                  "json": "TerminalAbbrev"
-                                }
+                                "description": "Terminal abbreviation code."
                               },
                               "sort_seq": {
                                 "type": [
                                   "int32",
                                   "null"
                                 ],
-                                "description": "WSF display sort sequence.",
-                                "altnames": {
-                                  "json": "SortSeq"
-                                }
+                                "description": "WSF display sort sequence."
                               },
                               "departing_spaces": {
                                 "type": "array",
@@ -5441,47 +4808,32 @@
                                         "string",
                                         "null"
                                       ],
-                                      "description": "Scheduled departure time as an ISO 8601 UTC timestamp.",
-                                      "altnames": {
-                                        "json": "Departure"
-                                      }
+                                      "description": "Scheduled departure time as an ISO 8601 UTC timestamp."
                                     },
                                     "is_cancelled": {
                                       "type": "boolean",
-                                      "description": "Whether this departure has been cancelled.",
-                                      "altnames": {
-                                        "json": "IsCancelled"
-                                      }
+                                      "description": "Whether this departure has been cancelled."
                                     },
                                     "vessel_id": {
                                       "type": [
                                         "int32",
                                         "null"
                                       ],
-                                      "description": "Vessel identifier assigned to the departure.",
-                                      "altnames": {
-                                        "json": "VesselID"
-                                      }
+                                      "description": "Vessel identifier assigned to the departure."
                                     },
                                     "vessel_name": {
                                       "type": [
                                         "string",
                                         "null"
                                       ],
-                                      "description": "Vessel name assigned to the departure.",
-                                      "altnames": {
-                                        "json": "VesselName"
-                                      }
+                                      "description": "Vessel name assigned to the departure."
                                     },
                                     "max_space_count": {
                                       "type": [
                                         "int32",
                                         "null"
                                       ],
-                                      "description": "Maximum vehicle space capacity of the vessel for this departure.",
-                                      "altnames": {
-                                        "json": "MaxSpaceCount"
-                                      }
+                                      "description": "Maximum vehicle space capacity of the vessel for this departure."
                                     },
                                     "space_for_arrival_terminals": {
                                       "type": "array",
@@ -5495,114 +4847,78 @@
                                               "int32",
                                               "null"
                                             ],
-                                            "description": "Departing terminal identifier for this space breakdown.",
-                                            "altnames": {
-                                              "json": "TerminalID"
-                                            }
+                                            "description": "Departing terminal identifier for this space breakdown."
                                           },
                                           "terminal_name": {
                                             "type": [
                                               "string",
                                               "null"
                                             ],
-                                            "description": "Human-readable sailing path (departing -> arrival terminals).",
-                                            "altnames": {
-                                              "json": "TerminalName"
-                                            }
+                                            "description": "Human-readable sailing path (departing -> arrival terminals)."
                                           },
                                           "vessel_id": {
                                             "type": [
                                               "int32",
                                               "null"
                                             ],
-                                            "description": "Vessel identifier assigned to the sailing.",
-                                            "altnames": {
-                                              "json": "VesselID"
-                                            }
+                                            "description": "Vessel identifier assigned to the sailing."
                                           },
                                           "vessel_name": {
                                             "type": [
                                               "string",
                                               "null"
                                             ],
-                                            "description": "Vessel name assigned to the sailing.",
-                                            "altnames": {
-                                              "json": "VesselName"
-                                            }
+                                            "description": "Vessel name assigned to the sailing."
                                           },
                                           "display_reservable_space": {
                                             "type": "boolean",
-                                            "description": "Whether reservable space should be displayed for this arrival terminal.",
-                                            "altnames": {
-                                              "json": "DisplayReservableSpace"
-                                            }
+                                            "description": "Whether reservable space should be displayed for this arrival terminal."
                                           },
                                           "reservable_space_count": {
                                             "type": [
                                               "int32",
                                               "null"
                                             ],
-                                            "description": "Number of reservable vehicle spaces remaining, or null when not displayed/available.",
-                                            "altnames": {
-                                              "json": "ReservableSpaceCount"
-                                            }
+                                            "description": "Number of reservable vehicle spaces remaining, or null when not displayed/available."
                                           },
                                           "reservable_space_hex_color": {
                                             "type": [
                                               "string",
                                               "null"
                                             ],
-                                            "description": "Hex color code WSF uses to render reservable space availability.",
-                                            "altnames": {
-                                              "json": "ReservableSpaceHexColor"
-                                            }
+                                            "description": "Hex color code WSF uses to render reservable space availability."
                                           },
                                           "display_drive_up_space": {
                                             "type": "boolean",
-                                            "description": "Whether drive-up space should be displayed for this arrival terminal.",
-                                            "altnames": {
-                                              "json": "DisplayDriveUpSpace"
-                                            }
+                                            "description": "Whether drive-up space should be displayed for this arrival terminal."
                                           },
                                           "drive_up_space_count": {
                                             "type": [
                                               "int32",
                                               "null"
                                             ],
-                                            "description": "Number of drive-up vehicle spaces remaining, or null when not displayed/available.",
-                                            "altnames": {
-                                              "json": "DriveUpSpaceCount"
-                                            }
+                                            "description": "Number of drive-up vehicle spaces remaining, or null when not displayed/available."
                                           },
                                           "drive_up_space_hex_color": {
                                             "type": [
                                               "string",
                                               "null"
                                             ],
-                                            "description": "Hex color code WSF uses to render drive-up space availability.",
-                                            "altnames": {
-                                              "json": "DriveUpSpaceHexColor"
-                                            }
+                                            "description": "Hex color code WSF uses to render drive-up space availability."
                                           },
                                           "max_space_count": {
                                             "type": [
                                               "int32",
                                               "null"
                                             ],
-                                            "description": "Maximum vehicle space capacity of the vessel for this sailing.",
-                                            "altnames": {
-                                              "json": "MaxSpaceCount"
-                                            }
+                                            "description": "Maximum vehicle space capacity of the vessel for this sailing."
                                           },
                                           "arrival_terminal_ids": {
                                             "type": "array",
                                             "items": {
                                               "type": "int32"
                                             },
-                                            "description": "Arrival terminal identifiers reachable on this sailing.",
-                                            "altnames": {
-                                              "json": "ArrivalTerminalIDs"
-                                            }
+                                            "description": "Arrival terminal identifiers reachable on this sailing."
                                           }
                                         },
                                         "required": [
@@ -5620,10 +4936,7 @@
                                           "arrival_terminal_ids"
                                         ]
                                       },
-                                      "description": "Per-arrival-terminal space breakdown for this departure.",
-                                      "altnames": {
-                                        "json": "SpaceForArrivalTerminals"
-                                      }
+                                      "description": "Per-arrival-terminal space breakdown for this departure."
                                     }
                                   },
                                   "required": [
@@ -5635,30 +4948,21 @@
                                     "space_for_arrival_terminals"
                                   ]
                                 },
-                                "description": "Upcoming departures from this terminal with per-sailing vehicle space availability.",
-                                "altnames": {
-                                  "json": "DepartingSpaces"
-                                }
+                                "description": "Upcoming departures from this terminal with per-sailing vehicle space availability."
                               },
                               "is_no_fare_collected": {
                                 "type": [
                                   "boolean",
                                   "null"
                                 ],
-                                "description": "Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable.",
-                                "altnames": {
-                                  "json": "IsNoFareCollected"
-                                }
+                                "description": "Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable."
                               },
                               "no_fare_collected_msg": {
                                 "type": [
                                   "string",
                                   "null"
                                 ],
-                                "description": "Message explaining the no-fare-collected status, or null.",
-                                "altnames": {
-                                  "json": "NoFareCollectedMsg"
-                                }
+                                "description": "Message explaining the no-fare-collected status, or null."
                               }
                             },
                             "required": [

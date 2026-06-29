@@ -250,154 +250,142 @@
                 "properties": {
                   "operator_ref": {
                     "type": "string",
-                    "altnames": {
-                      "xml": ["OperatorRef"]
-                    },
                     "description": "Operator identifier from `MonitoredVehicleJourney/OperatorRef`. The exact coding scheme depends on the configured provider, but the value remains the stable operator identity used for reference records, CloudEvents subjects, Kafka keys, MQTT topic segments, and AMQP routing properties."
                   },
                   "vehicle_ref": {
                     "type": "string",
-                    "altnames": {
-                      "xml": ["VehicleRef"]
-                    },
                     "description": "Operator-scoped vehicle identifier from `MonitoredVehicleJourney/VehicleRef`. Usually the fleet number or run identifier configured in the operator AVL system. Combined with `operator_ref` it forms the stable vehicle identity for CloudEvents subjects and transport routing."
                   },
                   "line_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["LineRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Service or route identifier from `MonitoredVehicleJourney/LineRef`. Providers use this value to align the monitored vehicle journey with published line or trip definitions. Null when the source omits a line identifier for the monitored journey."
                   },
                   "direction_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["DirectionRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Direction label from `MonitoredVehicleJourney/DirectionRef`, such as `inbound` or `outbound`. Providers use this together with line and dated journey references to align live positions with the scheduled journey pattern."
                   },
                   "published_line_name": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["PublishedLineName"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Public-facing route label from `MonitoredVehicleJourney/PublishedLineName`, for example `T12`. This is the human-readable service number or line name shown to passengers."
                   },
                   "origin_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["OriginRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stop reference from `MonitoredVehicleJourney/OriginRef` naming the first advertised stop of the monitored journey. Null when the provider omits the origin stop code."
                   },
                   "origin_name": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["OriginName"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable stop name from `MonitoredVehicleJourney/OriginName` for the first advertised stop of the monitored journey."
                   },
                   "destination_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["DestinationRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stop reference from `MonitoredVehicleJourney/DestinationRef` naming the last advertised stop of the monitored journey."
                   },
                   "destination_name": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["DestinationName"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable stop name from `MonitoredVehicleJourney/DestinationName` for the final advertised destination of the monitored journey."
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "unit": "deg",
                     "symbol": "°",
-                    "altnames": {
-                      "xml": ["VehicleLocation/Longitude"]
-                    },
                     "description": "WGS84 longitude from `MonitoredVehicleJourney/VehicleLocation/Longitude` expressed in decimal degrees. Positive values are east of Greenwich. Null when the AVL feed does not provide a usable vehicle location.",
                     "minimum": -180,
                     "maximum": 180
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "unit": "deg",
                     "symbol": "°",
-                    "altnames": {
-                      "xml": ["VehicleLocation/Latitude"]
-                    },
                     "description": "WGS84 latitude from `MonitoredVehicleJourney/VehicleLocation/Latitude` expressed in decimal degrees. Positive values are north of the equator. Null when the AVL feed does not provide a usable vehicle location.",
                     "minimum": -90,
                     "maximum": 90
                   },
                   "bearing": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "unit": "deg",
                     "symbol": "°",
-                    "altnames": {
-                      "xml": ["Bearing"]
-                    },
                     "description": "Vehicle heading from `MonitoredVehicleJourney/Bearing` in whole degrees clockwise from true north. Null when the AVL producer omits heading information.",
                     "minimum": 0,
                     "maximum": 360
                   },
                   "recorded_at_time": {
                     "type": "datetime",
-                    "altnames": {
-                      "xml": ["RecordedAtTime"]
-                    },
                     "description": "Timestamp from `VehicleActivity/RecordedAtTime` stating when the AVL system recorded this vehicle activity snapshot. Encoded as an ISO 8601 / RFC 3339 date-time string with an explicit UTC offset."
                   },
                   "valid_until_time": {
-                    "type": ["datetime", "null"],
-                    "altnames": {
-                      "xml": ["ValidUntilTime"]
-                    },
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Expiry timestamp from `VehicleActivity/ValidUntilTime` after which consumers should treat the vehicle activity as stale if it has not been refreshed by a newer message."
                   },
                   "block_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["BlockRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Block or duty identifier from `MonitoredVehicleJourney/BlockRef` describing the operational vehicle block used by the operator scheduling system."
                   },
                   "vehicle_journey_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["VehicleJourneyRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Vehicle journey identifier from `MonitoredVehicleJourney/VehicleJourneyRef` used within the operator AVL system to refer to the monitored trip instance."
                   },
                   "origin_aimed_departure_time": {
-                    "type": ["datetime", "null"],
-                    "altnames": {
-                      "xml": ["OriginAimedDepartureTime"]
-                    },
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Scheduled departure time from `MonitoredVehicleJourney/OriginAimedDepartureTime` for the origin stop of the monitored journey, encoded as an ISO 8601 / RFC 3339 date-time string."
                   },
                   "data_frame_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["DataFrameRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Service day identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DataFrameRef`. Providers typically use this value to pair the live journey with the scheduled service-day context."
                   },
                   "dated_vehicle_journey_ref": {
-                    "type": ["string", "null"],
-                    "altnames": {
-                      "xml": ["DatedVehicleJourneyRef"]
-                    },
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Dated journey identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DatedVehicleJourneyRef`. This value disambiguates the scheduled journey instance within the service day defined by `data_frame_ref`."
                   },
                   "item_identifier": {
                     "type": "string",
-                    "altnames": {
-                      "xml": ["ItemIdentifier"]
-                    },
                     "description": "Unique `VehicleActivity/ItemIdentifier` value assigned by the upstream SIRI payload. The bridge uses this field for deduplication so repeated snapshots of the same unchanged vehicle activity are not re-emitted."
                   }
                 },
@@ -447,9 +435,6 @@
                 "properties": {
                   "operator_ref": {
                     "type": "string",
-                    "altnames": {
-                      "xml": ["OperatorRef"]
-                    },
                     "description": "Operator identifier from `MonitoredVehicleJourney/OperatorRef`. This is the stable identity of the operator reference event and the prefix of every vehicle subject emitted by the source."
                   }
                 },

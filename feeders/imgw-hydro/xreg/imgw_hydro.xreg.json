@@ -219,16 +219,10 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:pl": "id_stacji"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
                     "type": "string",
-                    "altnames": {
-                      "lang:pl": "stacja"
-                    },
                     "description": "Human-readable name of the monitoring station."
                   },
                   "river": {
@@ -236,9 +230,6 @@
                       "string",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "rzeka"
-                    },
                     "description": "Provider-supplied river value for this record."
                   },
                   "voivodeship": {
@@ -246,9 +237,6 @@
                       "string",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "wojewodztwo"
-                    },
                     "description": "Provider-supplied voivodeship value for this record."
                   },
                   "longitude": {
@@ -266,7 +254,10 @@
                     "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro."
                   }
                 },
@@ -299,16 +290,10 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:pl": "id_stacji"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
                     "type": "string",
-                    "altnames": {
-                      "lang:pl": "stacja"
-                    },
                     "description": "Human-readable name of the monitoring station."
                   },
                   "river": {
@@ -316,9 +301,6 @@
                       "string",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "rzeka"
-                    },
                     "description": "Provider-supplied river value for this record."
                   },
                   "voivodeship": {
@@ -326,23 +308,14 @@
                       "string",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "wojewodztwo"
-                    },
                     "description": "Provider-supplied voivodeship value for this record."
                   },
                   "water_level": {
                     "type": "double",
-                    "altnames": {
-                      "lang:pl": "stan_wody"
-                    },
                     "description": "Current water level reported for the station."
                   },
                   "water_level_timestamp": {
                     "type": "datetime",
-                    "altnames": {
-                      "lang:pl": "stan_wody_data_pomiaru"
-                    },
                     "description": "Time associated with the water-level measurement."
                   },
                   "water_temperature": {
@@ -350,9 +323,6 @@
                       "double",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "temperatura_wody"
-                    },
                     "description": "Current water temperature reported for the station."
                   },
                   "water_temperature_timestamp": {
@@ -360,9 +330,6 @@
                       "datetime",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "temperatura_wody_data_pomiaru"
-                    },
                     "description": "Time associated with the water-temperature measurement."
                   },
                   "discharge": {
@@ -370,9 +337,6 @@
                       "double",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "przeplyw"
-                    },
                     "description": "Current streamflow or discharge reported for the station."
                   },
                   "discharge_timestamp": {
@@ -380,9 +344,6 @@
                       "datetime",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "przeplyw_data"
-                    },
                     "description": "Time associated with the discharge measurement."
                   },
                   "ice_phenomenon_code": {
@@ -390,9 +351,6 @@
                       "string",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "zjawisko_lodowe"
-                    },
                     "description": "Provider code identifying the ice phenomenon."
                   },
                   "overgrowth_code": {
@@ -400,13 +358,13 @@
                       "string",
                       "null"
                     ],
-                    "altnames": {
-                      "lang:pl": "zjawisko_zarastania"
-                    },
                     "description": "Provider code identifying the overgrowth."
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro."
                   }
                 },

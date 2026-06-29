@@ -266,9 +266,6 @@
                                 "string",
                                 "null"
                               ],
-                              "altnames": {
-                                "json": "uuid"
-                              },
                               "description": "Stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. Sourced from the upstream `uuid` field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic `{station_id}` segment, and the AMQP message subject for every event emitted by this source."
                             },
                             "number": {
@@ -378,9 +375,6 @@
                           "properties": {
                             "station_id": {
                               "type": "string",
-                              "altnames": {
-                                "json": "uuid"
-                              },
                               "description": "Stable UUID of the gauge this reading was taken at. References the `station_id` of the corresponding Station reference event. Used as the CloudEvents `subject` and the Kafka partition key so all readings for a given gauge land on the same partition / topic key."
                             },
                             "timestamp": {

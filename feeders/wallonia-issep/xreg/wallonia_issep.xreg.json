@@ -210,10 +210,7 @@
                   "configuration_id": {
                     "type": "string",
                     "pattern": "^[0-9]+$",
-                    "description": "Stable numeric identifier of the sensor configuration from the upstream id_configuration field. Converted to string because it serves as the CloudEvents subject and Kafka key.",
-                    "altnames": {
-                      "issep": "id_configuration"
-                    }
+                    "description": "Stable numeric identifier of the sensor configuration from the upstream id_configuration field. Converted to string because it serves as the CloudEvents subject and Kafka key."
                   },
                   "province": {
                     "type": "string",
@@ -251,10 +248,7 @@
                   "configuration_id": {
                     "type": "string",
                     "pattern": "^[0-9]+$",
-                    "description": "Stable numeric sensor configuration identifier from id_configuration. Matches the CloudEvents subject and Kafka key.",
-                    "altnames": {
-                      "issep": "id_configuration"
-                    }
+                    "description": "Stable numeric sensor configuration identifier from id_configuration. Matches the CloudEvents subject and Kafka key."
                   },
                   "province": {
                     "type": "string",

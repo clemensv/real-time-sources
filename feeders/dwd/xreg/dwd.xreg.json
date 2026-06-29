@@ -1183,9 +1183,6 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "station_name": {
@@ -1244,23 +1241,14 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "MESS_DATUM"
-                    },
                     "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
-                    "altnames": {
-                      "lang:de": "QN"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "pressure_station_level": {
@@ -1269,9 +1257,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "PP_10"
-                    },
                     "description": "Reference details for a station, monitoring site, or reporting area in the DWD Weather source."
                   },
                   "air_temperature_2m": {
@@ -1280,9 +1265,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "TT_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_5cm": {
@@ -1291,9 +1273,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "TM5_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "relative_humidity": {
@@ -1302,9 +1281,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "RF_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "dew_point_temperature": {
@@ -1313,9 +1289,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "TD_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
@@ -1354,23 +1327,14 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "MESS_DATUM"
-                    },
                     "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
-                    "altnames": {
-                      "lang:de": "QN"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "precipitation_height": {
@@ -1379,9 +1343,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "RWS_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "precipitation_indicator": {
@@ -1390,9 +1351,6 @@
                       "int32"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "RWS_IND_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
@@ -1431,23 +1389,14 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "MESS_DATUM"
-                    },
                     "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
-                    "altnames": {
-                      "lang:de": "QN"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed": {
@@ -1456,9 +1405,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "FF_10"
-                    },
                     "description": "Wind speed reported by the station."
                   },
                   "wind_direction": {
@@ -1467,9 +1413,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "DD_10"
-                    },
                     "description": "Wind direction reported by the station."
                   },
                   "state": {
@@ -1508,23 +1451,14 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "MESS_DATUM"
-                    },
                     "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
-                    "altnames": {
-                      "lang:de": "QN"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "global_radiation": {
@@ -1533,9 +1467,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "GS_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "sunshine_duration": {
@@ -1544,9 +1475,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "SD_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "diffuse_radiation": {
@@ -1555,9 +1483,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "DS_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "longwave_radiation": {
@@ -1566,9 +1491,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "LS_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
@@ -1608,23 +1530,14 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "MESS_DATUM"
-                    },
                     "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
-                    "altnames": {
-                      "lang:de": "QN"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "parameter": {
@@ -1774,23 +1687,14 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "MESS_DATUM"
-                    },
                     "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
-                    "altnames": {
-                      "lang:de": "QN"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed_maximum": {
@@ -1799,9 +1703,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "FX_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed_minimum": {
@@ -1810,9 +1711,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "FNX_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_direction_at_maximum": {
@@ -1821,9 +1719,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "DX_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
@@ -1862,23 +1757,14 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "STATIONS_ID"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
-                    "altnames": {
-                      "lang:de": "MESS_DATUM"
-                    },
                     "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
-                    "altnames": {
-                      "lang:de": "QN"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_maximum_2m": {
@@ -1887,9 +1773,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "TX_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_minimum_5cm": {
@@ -1898,9 +1781,6 @@
                       "double"
                     ],
                     "default": null,
-                    "altnames": {
-                      "lang:de": "TN_10"
-                    },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {

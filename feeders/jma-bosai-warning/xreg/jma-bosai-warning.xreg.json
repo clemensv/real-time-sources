@@ -261,10 +261,7 @@
                   "office_code": {
                     "type": "string",
                     "description": "Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events.",
-                    "pattern": "^[0-9]{6}$",
-                    "altnames": {
-                      "jma-bosai": "offices key"
-                    }
+                    "pattern": "^[0-9]{6}$"
                   },
                   "area_code": {
                     "type": "string",
@@ -390,18 +387,12 @@
                   "office_code": {
                     "type": "string",
                     "description": "Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component.",
-                    "pattern": "^[0-9]{6}$",
-                    "altnames": {
-                      "jma-bosai": "targetArea"
-                    }
+                    "pattern": "^[0-9]{6}$"
                   },
                   "area_code": {
                     "type": "string",
                     "description": "JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry.",
-                    "pattern": "^[0-9]{6,7}$",
-                    "altnames": {
-                      "jma-bosai": "timeSeries[].areas[].code"
-                    }
+                    "pattern": "^[0-9]{6,7}$"
                   },
                   "event": {
                     "name": "WeatherWarningEventEnum",
@@ -420,27 +411,18 @@
                   },
                   "report_datetime": {
                     "type": "datetime",
-                    "description": "JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset.",
-                    "altnames": {
-                      "jma-bosai": "reportDatetime"
-                    }
+                    "description": "JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset."
                   },
                   "report_datetime_local": {
                     "type": "datetime",
-                    "description": "Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00).",
-                    "altnames": {
-                      "jma-bosai": "reportDatetime"
-                    }
+                    "description": "Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00)."
                   },
                   "headline_text": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Japanese free-text headline from headlineText summarizing areas and hazards requiring attention. Null is emitted when JMA omits the headline.",
-                    "altnames": {
-                      "jma-bosai": "headlineText"
-                    }
+                    "description": "Japanese free-text headline from headlineText summarizing areas and hazards requiring attention. Null is emitted when JMA omits the headline."
                   },
                   "warnings": {
                     "type": "array",
@@ -517,9 +499,6 @@
                               "38": "Emergency storm surge warning",
                               "W": "Advisory or warning aggregate"
                             }
-                          },
-                          "altnames": {
-                            "jma-bosai": "warnings[].code"
                           },
                           "pattern": "^(03|04|05|06|07|08|10|12|13|14|15|16|17|18|19|20|21|22|23|24|25|32|33|35|36|37|38|W)$"
                         },
@@ -605,9 +584,6 @@
                     "items": {
                       "type": "datetime",
                       "description": "Payload for an emergency or hazard event from the Japan Meteorological Agency. It carries weather warnings and advisories for Japanese weather-warning areas."
-                    },
-                    "altnames": {
-                      "jma-bosai": "timeSeries[].timeDefines"
                     }
                   }
                 },
@@ -652,18 +628,12 @@
                   "event_id": {
                     "type": "string",
                     "description": "Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component.",
-                    "pattern": "^[0-9]{14}$",
-                    "altnames": {
-                      "jma-bosai": "eid"
-                    }
+                    "pattern": "^[0-9]{14}$"
                   },
                   "serial": {
                     "type": "integer",
                     "description": "JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component.",
-                    "minimum": 0,
-                    "altnames": {
-                      "jma-bosai": "ser"
-                    }
+                    "minimum": 0
                   },
                   "info_type": {
                     "type": "string",
@@ -680,9 +650,6 @@
                         "CANCELLED": "取消"
                       }
                     },
-                    "altnames": {
-                      "jma-bosai": "ift"
-                    },
                     "descriptions": {
                       "ISSUED": "Provider value `ISSUED` for this coded alert field.",
                       "CORRECTED": "Provider value `CORRECTED` for this coded alert field.",
@@ -691,17 +658,11 @@
                   },
                   "report_datetime": {
                     "type": "datetime",
-                    "description": "JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC.",
-                    "altnames": {
-                      "jma-bosai": "rdt"
-                    }
+                    "description": "JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC."
                   },
                   "report_datetime_local": {
                     "type": "datetime",
-                    "description": "Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset.",
-                    "altnames": {
-                      "jma-bosai": "rdt"
-                    }
+                    "description": "Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset."
                   },
                   "title_jp": {
                     "type": "string",
@@ -713,17 +674,11 @@
                   },
                   "bulletin_type": {
                     "type": "string",
-                    "description": "JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52.",
-                    "altnames": {
-                      "jma-bosai": "json"
-                    }
+                    "description": "JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52."
                   },
                   "detail_url": {
                     "type": "uri",
-                    "description": "Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.",
-                    "altnames": {
-                      "jma-bosai": "json"
-                    }
+                    "description": "Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json."
                   },
                   "affected_coastal_regions": {
                     "type": "array",

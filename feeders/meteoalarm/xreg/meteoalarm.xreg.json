@@ -224,9 +224,6 @@
                       "Ack",
                       "Error"
                     ],
-                    "altnames": {
-                      "json": "msgType"
-                    },
                     "descriptions": {
                       "Alert": "Provider value `Alert` for this coded alert field.",
                       "Update": "Provider value `Update` for this coded alert field.",

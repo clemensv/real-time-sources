@@ -343,10 +343,6 @@
                       "Cancel": "CAP 1.2 `Cancel` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.",
                       "Ack": "CAP 1.2 `Ack` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.",
                       "Error": "CAP 1.2 `Error` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error."
-                    },
-                    "altnames": {
-                      "xml": "msgType",
-                      "json": "messageType"
                     }
                   },
                   "source": {
@@ -398,11 +394,7 @@
                       "properties": {
                         "value_name": {
                           "type": "string",
-                          "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
-                          "altnames": {
-                            "xml": "valueName",
-                            "json": "valueName"
-                          }
+                          "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
                         },
                         "value": {
                           "type": "string",
@@ -520,10 +512,6 @@
                               "AllClear": "CAP 1.2 responseType `AllClear` value describing a recommended protective action.",
                               "None": "CAP 1.2 responseType `None` value describing a recommended protective action."
                             }
-                          },
-                          "altnames": {
-                            "xml": "responseType",
-                            "json": "responseType"
                           }
                         },
                         "urgency": {
@@ -601,21 +589,13 @@
                             "properties": {
                               "value_name": {
                                 "type": "string",
-                                "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
-                                "altnames": {
-                                  "xml": "valueName",
-                                  "json": "valueName"
-                                }
+                                "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
                               },
                               "value": {
                                 "type": "string",
                                 "description": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
                               }
                             }
-                          },
-                          "altnames": {
-                            "xml": "eventCode",
-                            "json": "eventCode"
                           }
                         },
                         "effective": {
@@ -644,11 +624,7 @@
                             "null",
                             "string"
                           ],
-                          "description": "CAP senderName: human-readable issuing organization name such as National Weather Service or Deutscher Wetterdienst.",
-                          "altnames": {
-                            "xml": "senderName",
-                            "json": "senderName"
-                          }
+                          "description": "CAP senderName: human-readable issuing organization name such as National Weather Service or Deutscher Wetterdienst."
                         },
                         "headline": {
                           "type": [
@@ -699,11 +675,7 @@
                             "properties": {
                               "value_name": {
                                 "type": "string",
-                                "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
-                                "altnames": {
-                                  "xml": "valueName",
-                                  "json": "valueName"
-                                }
+                                "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
                               },
                               "value": {
                                 "type": "string",
@@ -725,22 +697,14 @@
                                   "null",
                                   "string"
                                 ],
-                                "description": "CAP resourceDesc: human-readable description of the resource. Null when omitted by the sender.",
-                                "altnames": {
-                                  "xml": "resourceDesc",
-                                  "json": "resourceDesc"
-                                }
+                                "description": "CAP resourceDesc: human-readable description of the resource. Null when omitted by the sender."
                               },
                               "mime_type": {
                                 "type": [
                                   "null",
                                   "string"
                                 ],
-                                "description": "CAP mimeType: media type of the resource such as image/png or application/pdf. Null when omitted.",
-                                "altnames": {
-                                  "xml": "mimeType",
-                                  "json": "mimeType"
-                                }
+                                "description": "CAP mimeType: media type of the resource such as image/png or application/pdf. Null when omitted."
                               },
                               "size": {
                                 "type": [
@@ -769,11 +733,7 @@
                                   "null",
                                   "binary"
                                 ],
-                                "description": "CAP derefUri: base64-encoded inline resource payload. Preserved as text and null when omitted; consumers should decode according to mime_type.",
-                                "altnames": {
-                                  "xml": "derefUri",
-                                  "json": "derefUri"
-                                }
+                                "description": "CAP derefUri: base64-encoded inline resource payload. Preserved as text and null when omitted; consumers should decode according to mime_type."
                               },
                               "digest": {
                                 "type": [
@@ -802,11 +762,7 @@
                                   "null",
                                   "string"
                                 ],
-                                "description": "CAP areaDesc: text description of the affected area, often a county, forecast zone, MeteoAlarm region, or DWD commune list. Null only for malformed upstream records.",
-                                "altnames": {
-                                  "xml": "areaDesc",
-                                  "json": "areaDesc"
-                                }
+                                "description": "CAP areaDesc: text description of the affected area, often a county, forecast zone, MeteoAlarm region, or DWD commune list. Null only for malformed upstream records."
                               },
                               "polygon": {
                                 "type": "array",
@@ -836,11 +792,7 @@
                                   "properties": {
                                     "value_name": {
                                       "type": "string",
-                                      "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII.",
-                                      "altnames": {
-                                        "xml": "valueName",
-                                        "json": "valueName"
-                                      }
+                                      "description": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
                                     },
                                     "value": {
                                       "type": "string",

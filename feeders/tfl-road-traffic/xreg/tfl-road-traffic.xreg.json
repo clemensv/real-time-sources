@@ -566,37 +566,25 @@
                 "properties": {
                   "road_id": {
                     "type": "string",
-                    "description": "Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key.",
-                    "altnames": {
-                      "upstream": "id"
-                    }
+                    "description": "Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key."
                   },
                   "display_name": {
                     "type": "string",
-                    "description": "Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'.",
-                    "altnames": {
-                      "upstream": "displayName"
-                    }
+                    "description": "Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'."
                   },
                   "status_severity": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'.",
-                    "altnames": {
-                      "upstream": "statusSeverity"
-                    }
+                    "description": "Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'."
                   },
                   "status_severity_description": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'.",
-                    "altnames": {
-                      "upstream": "statusSeverityDescription"
-                    }
+                    "description": "Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'."
                   },
                   "bounds": {
                     "type": [
@@ -624,20 +612,14 @@
                       "datetime",
                       "null"
                     ],
-                    "description": "Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response.",
-                    "altnames": {
-                      "upstream": "statusAggregationStartDate"
-                    }
+                    "description": "Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response."
                   },
                   "status_aggregation_end_date": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response.",
-                    "altnames": {
-                      "upstream": "statusAggregationEndDate"
-                    }
+                    "description": "End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response."
                   }
                 },
                 "$uses": [
@@ -667,37 +649,25 @@
                 "properties": {
                   "road_id": {
                     "type": "string",
-                    "description": "Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key.",
-                    "altnames": {
-                      "upstream": "id"
-                    }
+                    "description": "Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key."
                   },
                   "display_name": {
                     "type": "string",
-                    "description": "Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'.",
-                    "altnames": {
-                      "upstream": "displayName"
-                    }
+                    "description": "Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'."
                   },
                   "status_severity": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'.",
-                    "altnames": {
-                      "upstream": "statusSeverity"
-                    }
+                    "description": "Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'."
                   },
                   "status_severity_description": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'.",
-                    "altnames": {
-                      "upstream": "statusSeverityDescription"
-                    }
+                    "description": "Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'."
                   },
                   "bounds": {
                     "type": [
@@ -725,20 +695,14 @@
                       "datetime",
                       "null"
                     ],
-                    "description": "Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response.",
-                    "altnames": {
-                      "upstream": "statusAggregationStartDate"
-                    }
+                    "description": "Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response."
                   },
                   "status_aggregation_end_date": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response.",
-                    "altnames": {
-                      "upstream": "statusAggregationEndDate"
-                    }
+                    "description": "End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response."
                   }
                 },
                 "$uses": [
@@ -798,20 +762,14 @@
                           "string",
                           "null"
                         ],
-                        "description": "Source system identifier for this street record. Corresponds to 'sourceSystemId' in the upstream streets entry.",
-                        "altnames": {
-                          "upstream": "sourceSystemId"
-                        }
+                        "description": "Source system identifier for this street record. Corresponds to 'sourceSystemId' in the upstream streets entry."
                       },
                       "source_system_key": {
                         "type": [
                           "string",
                           "null"
                         ],
-                        "description": "Source system key for this street record. Corresponds to 'sourceSystemKey' in the upstream streets entry.",
-                        "altnames": {
-                          "upstream": "sourceSystemKey"
-                        }
+                        "description": "Source system key for this street record. Corresponds to 'sourceSystemKey' in the upstream streets entry."
                       }
                     }
                   },
@@ -843,10 +801,7 @@
                   },
                   "disruption_id": {
                     "type": "string",
-                    "description": "Unique identifier for the disruption assigned by the TfL Traffic Information Management System (TIMS). Corresponds to 'id' in the upstream response. Format: 'TIMS-NNNNN' or similar TIMS prefix.",
-                    "altnames": {
-                      "upstream": "id"
-                    }
+                    "description": "Unique identifier for the disruption assigned by the TfL Traffic Information Management System (TIMS). Corresponds to 'id' in the upstream response. Format: 'TIMS-NNNNN' or similar TIMS prefix."
                   },
                   "category": {
                     "type": [
@@ -860,10 +815,7 @@
                       "string",
                       "null"
                     ],
-                    "description": "More detailed sub-category of the disruption. Corresponds to 'subCategory' in the upstream response. Examples: 'TfL planned works', 'Utility works', 'Incident', 'Traffic signal failure'.",
-                    "altnames": {
-                      "upstream": "subCategory"
-                    }
+                    "description": "More detailed sub-category of the disruption. Corresponds to 'subCategory' in the upstream response. Examples: 'TfL planned works', 'Utility works', 'Incident', 'Traffic signal failure'."
                   },
                   "severity": {
                     "type": "string",
@@ -902,20 +854,14 @@
                       "string",
                       "null"
                     ],
-                    "description": "Latest operational update text for this disruption. Corresponds to 'currentUpdate' in the upstream response. Updated by TfL operators as the situation evolves.",
-                    "altnames": {
-                      "upstream": "currentUpdate"
-                    }
+                    "description": "Latest operational update text for this disruption. Corresponds to 'currentUpdate' in the upstream response. Updated by TfL operators as the situation evolves."
                   },
                   "current_update_datetime": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Timestamp when the current update text was last modified. Corresponds to 'currentUpdateDateTime' in the upstream response.",
-                    "altnames": {
-                      "upstream": "currentUpdateDateTime"
-                    }
+                    "description": "Timestamp when the current update text was last modified. Corresponds to 'currentUpdateDateTime' in the upstream response."
                   },
                   "corridor_ids": {
                     "type": [
@@ -924,50 +870,35 @@
                       },
                       "null"
                     ],
-                    "description": "Array of road corridor identifiers affected by this disruption. Corresponds to 'corridorIds' in the upstream response. Examples: ['a2', 'a12']. May be empty or null for disruptions not associated with a specific named corridor.",
-                    "altnames": {
-                      "upstream": "corridorIds"
-                    }
+                    "description": "Array of road corridor identifiers affected by this disruption. Corresponds to 'corridorIds' in the upstream response. Examples: ['a2', 'a12']. May be empty or null for disruptions not associated with a specific named corridor."
                   },
                   "start_datetime": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Scheduled or actual start date and time of the disruption. Corresponds to 'startDateTime' in the upstream response.",
-                    "altnames": {
-                      "upstream": "startDateTime"
-                    }
+                    "description": "Scheduled or actual start date and time of the disruption. Corresponds to 'startDateTime' in the upstream response."
                   },
                   "end_datetime": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Scheduled or actual end date and time of the disruption. Corresponds to 'endDateTime' in the upstream response. May be null for open-ended incidents.",
-                    "altnames": {
-                      "upstream": "endDateTime"
-                    }
+                    "description": "Scheduled or actual end date and time of the disruption. Corresponds to 'endDateTime' in the upstream response. May be null for open-ended incidents."
                   },
                   "last_modified_time": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Timestamp when this disruption record was last modified in the TfL system. Corresponds to 'lastModifiedTime' in the upstream response. Used for deduplication: disruptions are re-emitted only when this value changes.",
-                    "altnames": {
-                      "upstream": "lastModifiedTime"
-                    }
+                    "description": "Timestamp when this disruption record was last modified in the TfL system. Corresponds to 'lastModifiedTime' in the upstream response. Used for deduplication: disruptions are re-emitted only when this value changes."
                   },
                   "level_of_interest": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "TfL classification of the level of public interest for this disruption. Corresponds to 'levelOfInterest' in the upstream response. Examples: 'Low', 'Medium', 'High'.",
-                    "altnames": {
-                      "upstream": "levelOfInterest"
-                    }
+                    "description": "TfL classification of the level of public interest for this disruption. Corresponds to 'levelOfInterest' in the upstream response. Examples: 'Low', 'Medium', 'High'."
                   },
                   "location": {
                     "type": [
@@ -981,20 +912,14 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether the disruption timing or details are provisional and subject to change. Corresponds to 'isProvisional' in the upstream response.",
-                    "altnames": {
-                      "upstream": "isProvisional"
-                    }
+                    "description": "Whether the disruption timing or details are provisional and subject to change. Corresponds to 'isProvisional' in the upstream response."
                   },
                   "has_closures": {
                     "type": [
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether this disruption includes full or partial road closures. Corresponds to 'hasClosures' in the upstream response.",
-                    "altnames": {
-                      "upstream": "hasClosures"
-                    }
+                    "description": "Whether this disruption includes full or partial road closures. Corresponds to 'hasClosures' in the upstream response."
                   },
                   "streets": {
                     "type": [
@@ -1031,10 +956,7 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether this disruption is currently active. Corresponds to 'isActive' in the upstream response.",
-                    "altnames": {
-                      "upstream": "isActive"
-                    }
+                    "description": "Whether this disruption is currently active. Corresponds to 'isActive' in the upstream response."
                   }
                 },
                 "$uses": [

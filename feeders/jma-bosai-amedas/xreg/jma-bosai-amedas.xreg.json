@@ -224,23 +224,14 @@
                             },
                             "kj_name": {
                               "type": "string",
-                              "altnames": {
-                                "lang:ja-Kanji": "kjName"
-                              },
                               "description": "Japanese kanji station name from the JMA AMeDAS station table (kjName), used by the Bosai web application for Japanese display labels."
                             },
                             "kana": {
                               "type": "string",
-                              "altnames": {
-                                "lang:ja-Kana": "knName"
-                              },
                               "description": "Japanese kana station reading from the JMA AMeDAS station table (knName in live payloads, kana in older examples), used by the Bosai web application for phonetic Japanese display."
                             },
                             "en_name": {
                               "type": "string",
-                              "altnames": {
-                                "json": "enName"
-                              },
                               "description": "English station name from the JMA AMeDAS station table."
                             },
                             "latitude": {
@@ -249,10 +240,7 @@
                               "description": "Station latitude in WGS84 decimal degrees. The JMA station table publishes latitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60.",
                               "minimum": -90,
                               "maximum": 90,
-                              "symbol": "°",
-                              "altnames": {
-                                "jma-bosai": "lat"
-                              }
+                              "symbol": "°"
                             },
                             "longitude": {
                               "type": "double",
@@ -260,17 +248,11 @@
                               "description": "Station longitude in WGS84 decimal degrees. The JMA station table publishes longitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60.",
                               "minimum": -180,
                               "maximum": 180,
-                              "symbol": "°",
-                              "altnames": {
-                                "jma-bosai": "lon"
-                              }
+                              "symbol": "°"
                             },
                             "altitude_m": {
                               "type": "double",
                               "unit": "meter",
-                              "altnames": {
-                                "json": "alt"
-                              },
                               "description": "Station elevation above sea level in meters from the JMA station table alt field."
                             },
                             "station_type": {
@@ -297,9 +279,6 @@
                             },
                             "elems_bitmask": {
                               "type": "string",
-                              "altnames": {
-                                "json": "elems"
-                              },
                               "description": "JMA Bosai AMeDAS element bitmask string from the station table. Each non-zero character indicates that the corresponding station capability is enabled in the Bosai web application."
                             },
                             "enabled_measurements": {
@@ -446,10 +425,7 @@
                                 "null"
                               ],
                               "description": "Sea-level adjusted pressure (normalPressure in the Bosai payload) where available, expressed in hectopascals.",
-                              "unit": "hectopascal",
-                              "altnames": {
-                                "jma-bosai": "normalPressure"
-                              }
+                              "unit": "hectopascal"
                             },
                             "normal_pressure_qc_flag": {
                               "type": [
@@ -464,10 +440,7 @@
                                 "null"
                               ],
                               "description": "Wind speed averaged over the ten minutes before observation time, expressed in meters per second. JMA documents wind speed as the speed of the wind over the preceding ten minutes.",
-                              "unit": "meter_per_second",
-                              "altnames": {
-                                "jma-bosai": "wind"
-                              }
+                              "unit": "meter_per_second"
                             },
                             "wind_speed_qc_flag": {
                               "type": [
@@ -483,9 +456,6 @@
                               ],
                               "description": "Wind direction from which the wind blows, converted by the bridge from JMA 16-direction codes to degrees clockwise from true north.",
                               "unit": "degree",
-                              "altnames": {
-                                "jma-bosai": "windDirection"
-                              },
                               "minimum": 0,
                               "exclusiveMaximum": 360
                             },
@@ -502,10 +472,7 @@
                                 "null"
                               ],
                               "description": "Maximum instantaneous wind speed (gust) for the observation interval from the JMA Bosai per-station point payload, expressed in meters per second. The bridge enriches map observations with this value only for configured point-detail stations.",
-                              "unit": "meter_per_second",
-                              "altnames": {
-                                "jma-bosai": "gust"
-                              }
+                              "unit": "meter_per_second"
                             },
                             "wind_gust_qc_flag": {
                               "type": [
@@ -522,20 +489,14 @@
                               "description": "Direction from which the maximum instantaneous wind gust blew, converted by the bridge from JMA 16-direction codes in gustDirection to degrees clockwise from true north. The field is present only when point-detail enrichment is configured and JMA publishes a gust direction.",
                               "unit": "degree",
                               "minimum": 0,
-                              "exclusiveMaximum": 360,
-                              "altnames": {
-                                "jma-bosai": "gustDirection"
-                              }
+                              "exclusiveMaximum": 360
                             },
                             "wind_gust_time": {
                               "type": [
                                 "datetime",
                                 "null"
                               ],
-                              "description": "UTC RFC3339 timestamp for the maximum instantaneous wind gust time from the JMA Bosai per-station gustTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
-                              "altnames": {
-                                "jma-bosai": "gustTime"
-                              }
+                              "description": "UTC RFC3339 timestamp for the maximum instantaneous wind gust time from the JMA Bosai per-station gustTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC."
                             },
                             "max_temp": {
                               "type": [
@@ -543,20 +504,14 @@
                                 "null"
                               ],
                               "description": "Maximum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations.",
-                              "unit": "celsius",
-                              "altnames": {
-                                "jma-bosai": "maxTemp"
-                              }
+                              "unit": "celsius"
                             },
                             "max_temp_time": {
                               "type": [
                                 "datetime",
                                 "null"
                               ],
-                              "description": "UTC RFC3339 timestamp for the maximum air temperature time from the JMA Bosai per-station maxTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
-                              "altnames": {
-                                "jma-bosai": "maxTempTime"
-                              }
+                              "description": "UTC RFC3339 timestamp for the maximum air temperature time from the JMA Bosai per-station maxTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC."
                             },
                             "min_temp": {
                               "type": [
@@ -564,20 +519,14 @@
                                 "null"
                               ],
                               "description": "Minimum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations.",
-                              "unit": "celsius",
-                              "altnames": {
-                                "jma-bosai": "minTemp"
-                              }
+                              "unit": "celsius"
                             },
                             "min_temp_time": {
                               "type": [
                                 "datetime",
                                 "null"
                               ],
-                              "description": "UTC RFC3339 timestamp for the minimum air temperature time from the JMA Bosai per-station minTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
-                              "altnames": {
-                                "jma-bosai": "minTempTime"
-                              }
+                              "description": "UTC RFC3339 timestamp for the minimum air temperature time from the JMA Bosai per-station minTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC."
                             },
                             "precipitation10m": {
                               "type": [

@@ -272,10 +272,7 @@
                                   "double",
                                   "null"
                                 ],
-                                "description": "Finnish Air Quality Index 1-hour average from the AQINDEX_PT1H_avg parameter. Null when FMI reports the parameter as missing or not available.",
-                                "altnames": {
-                                  "json": "AQINDEX_PT1H_avg"
-                                }
+                                "description": "Finnish Air Quality Index 1-hour average from the AQINDEX_PT1H_avg parameter. Null when FMI reports the parameter as missing or not available."
                               },
                               "pm10_ug_m3": {
                                 "type": [
@@ -283,10 +280,7 @@
                                   "null"
                                 ],
                                 "description": "PM10 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM10_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "PM10_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "pm2_5_ug_m3": {
                                 "type": [
@@ -294,10 +288,7 @@
                                   "null"
                                 ],
                                 "description": "PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM25_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "PM25_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "no2_ug_m3": {
                                 "type": [
@@ -305,10 +296,7 @@
                                   "null"
                                 ],
                                 "description": "Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter from the NO2_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "NO2_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "o3_ug_m3": {
                                 "type": [
@@ -316,10 +304,7 @@
                                   "null"
                                 ],
                                 "description": "Ozone concentration 1-hour average in micrograms per cubic meter from the O3_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "O3_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "so2_ug_m3": {
                                 "type": [
@@ -327,10 +312,7 @@
                                   "null"
                                 ],
                                 "description": "Sulfur dioxide concentration 1-hour average in micrograms per cubic meter from the SO2_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "SO2_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "co_mg_m3": {
                                 "type": [
@@ -338,10 +320,7 @@
                                   "null"
                                 ],
                                 "description": "Carbon monoxide concentration 1-hour average in milligrams per cubic meter from the CO_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "mg/m³",
-                                "altnames": {
-                                  "json": "CO_PT1H_avg"
-                                }
+                                "unit": "mg/m³"
                               }
                             },
                             "required": [
@@ -453,10 +432,7 @@
                                   "double",
                                   "null"
                                 ],
-                                "description": "Finnish Air Quality Index 1-hour average from the AQINDEX_PT1H_avg parameter. Null when FMI reports the parameter as missing or not available.",
-                                "altnames": {
-                                  "json": "AQINDEX_PT1H_avg"
-                                }
+                                "description": "Finnish Air Quality Index 1-hour average from the AQINDEX_PT1H_avg parameter. Null when FMI reports the parameter as missing or not available."
                               },
                               "pm10_ug_m3": {
                                 "type": [
@@ -464,10 +440,7 @@
                                   "null"
                                 ],
                                 "description": "PM10 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM10_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "PM10_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "pm2_5_ug_m3": {
                                 "type": [
@@ -475,10 +448,7 @@
                                   "null"
                                 ],
                                 "description": "PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM25_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "PM25_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "no2_ug_m3": {
                                 "type": [
@@ -486,10 +456,7 @@
                                   "null"
                                 ],
                                 "description": "Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter from the NO2_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "NO2_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "o3_ug_m3": {
                                 "type": [
@@ -497,10 +464,7 @@
                                   "null"
                                 ],
                                 "description": "Ozone concentration 1-hour average in micrograms per cubic meter from the O3_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "O3_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "so2_ug_m3": {
                                 "type": [
@@ -508,10 +472,7 @@
                                   "null"
                                 ],
                                 "description": "Sulfur dioxide concentration 1-hour average in micrograms per cubic meter from the SO2_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "µg/m³",
-                                "altnames": {
-                                  "json": "SO2_PT1H_avg"
-                                }
+                                "unit": "µg/m³"
                               },
                               "co_mg_m3": {
                                 "type": [
@@ -519,10 +480,7 @@
                                   "null"
                                 ],
                                 "description": "Carbon monoxide concentration 1-hour average in milligrams per cubic meter from the CO_PT1H_avg parameter. Null when the value is missing.",
-                                "unit": "mg/m³",
-                                "altnames": {
-                                  "json": "CO_PT1H_avg"
-                                }
+                                "unit": "mg/m³"
                               }
                             },
                             "required": [

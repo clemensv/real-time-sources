@@ -2082,10 +2082,7 @@
                       },
                       "null"
                     ],
-                    "description": "Description lines from the Autobahn API description array.",
-                    "altnames": {
-                      "autobahn-api": "description"
-                    }
+                    "description": "Description lines from the Autobahn API description array."
                   },
                   "future": {
                     "type": [
@@ -2102,10 +2099,7 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether the Autobahn API marks the affected road segment as blocked.",
-                    "altnames": {
-                      "autobahn-api": "isBlocked"
-                    }
+                    "description": "Whether the Autobahn API marks the affected road segment as blocked."
                   },
                   "icon": {
                     "type": [
@@ -2122,20 +2116,14 @@
                       "integer",
                       "null"
                     ],
-                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the affected segment.",
-                    "altnames": {
-                      "autobahn-api": "startLcPosition"
-                    }
+                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the affected segment."
                   },
                   "start_timestamp": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "startTimestamp value from the Autobahn API when the item includes a scheduled or known start time.",
-                    "altnames": {
-                      "autobahn-api": "startTimestamp"
-                    }
+                    "description": "startTimestamp value from the Autobahn API when the item includes a scheduled or known start time."
                   },
                   "extent": {
                     "type": [
@@ -2164,10 +2152,7 @@
                     ],
                     "minimum": -90,
                     "maximum": 90,
-                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.lat"
-                    }
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "coordinate_lon": {
                     "type": [
@@ -2176,40 +2161,28 @@
                     ],
                     "minimum": -180,
                     "maximum": 180,
-                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.long"
-                    }
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "geometry_json": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Serialized Autobahn API geometry object for the affected road segment.",
-                    "altnames": {
-                      "autobahn-api": "geometry"
-                    }
+                    "description": "Serialized Autobahn API geometry object for the affected road segment."
                   },
                   "impact_lower": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Lower bound from the Autobahn API impact object.",
-                    "altnames": {
-                      "autobahn-api": "impact.lower"
-                    }
+                    "description": "Lower bound from the Autobahn API impact object."
                   },
                   "impact_upper": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Upper bound from the Autobahn API impact object.",
-                    "altnames": {
-                      "autobahn-api": "impact.upper"
-                    }
+                    "description": "Upper bound from the Autobahn API impact object."
                   },
                   "impact_symbols": {
                     "type": [
@@ -2218,20 +2191,14 @@
                       },
                       "null"
                     ],
-                    "description": "Impact symbols from the Autobahn API impact.symbols array.",
-                    "altnames": {
-                      "autobahn-api": "impact.symbols"
-                    }
+                    "description": "Impact symbols from the Autobahn API impact.symbols array."
                   },
                   "route_recommendation_json": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available.",
-                    "altnames": {
-                      "autobahn-api": "routeRecommendation"
-                    }
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available."
                   },
                   "footer_lines": {
                     "type": [
@@ -2240,10 +2207,7 @@
                       },
                       "null"
                     ],
-                    "description": "Footer lines from the Autobahn API footer array.",
-                    "altnames": {
-                      "autobahn-api": "footer"
-                    }
+                    "description": "Footer lines from the Autobahn API footer array."
                   }
                 },
                 "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
@@ -2347,10 +2311,7 @@
                       },
                       "null"
                     ],
-                    "description": "Description lines from the Autobahn API description array.",
-                    "altnames": {
-                      "autobahn-api": "description"
-                    }
+                    "description": "Description lines from the Autobahn API description array."
                   },
                   "future": {
                     "type": [
@@ -2367,10 +2328,7 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether the Autobahn API marks the warning segment as blocked.",
-                    "altnames": {
-                      "autobahn-api": "isBlocked"
-                    }
+                    "description": "Whether the Autobahn API marks the warning segment as blocked."
                   },
                   "icon": {
                     "type": [
@@ -2387,20 +2345,14 @@
                       "integer",
                       "null"
                     ],
-                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the warning segment.",
-                    "altnames": {
-                      "autobahn-api": "startLcPosition"
-                    }
+                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the warning segment."
                   },
                   "start_timestamp": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "startTimestamp value from the Autobahn API when the warning includes a scheduled or known start time.",
-                    "altnames": {
-                      "autobahn-api": "startTimestamp"
-                    }
+                    "description": "startTimestamp value from the Autobahn API when the warning includes a scheduled or known start time."
                   },
                   "extent": {
                     "type": [
@@ -2429,10 +2381,7 @@
                     ],
                     "minimum": -90,
                     "maximum": 90,
-                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.lat"
-                    }
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "coordinate_lon": {
                     "type": [
@@ -2441,40 +2390,28 @@
                     ],
                     "minimum": -180,
                     "maximum": 180,
-                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.long"
-                    }
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "geometry_json": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Serialized Autobahn API geometry object for the affected road segment.",
-                    "altnames": {
-                      "autobahn-api": "geometry"
-                    }
+                    "description": "Serialized Autobahn API geometry object for the affected road segment."
                   },
                   "impact_lower": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Lower bound from the Autobahn API impact object.",
-                    "altnames": {
-                      "autobahn-api": "impact.lower"
-                    }
+                    "description": "Lower bound from the Autobahn API impact object."
                   },
                   "impact_upper": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Upper bound from the Autobahn API impact object.",
-                    "altnames": {
-                      "autobahn-api": "impact.upper"
-                    }
+                    "description": "Upper bound from the Autobahn API impact object."
                   },
                   "impact_symbols": {
                     "type": [
@@ -2483,20 +2420,14 @@
                       },
                       "null"
                     ],
-                    "description": "Impact symbols from the Autobahn API impact.symbols array.",
-                    "altnames": {
-                      "autobahn-api": "impact.symbols"
-                    }
+                    "description": "Impact symbols from the Autobahn API impact.symbols array."
                   },
                   "route_recommendation_json": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available.",
-                    "altnames": {
-                      "autobahn-api": "routeRecommendation"
-                    }
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available."
                   },
                   "footer_lines": {
                     "type": [
@@ -2505,10 +2436,7 @@
                       },
                       "null"
                     ],
-                    "description": "Footer lines from the Autobahn API footer array.",
-                    "altnames": {
-                      "autobahn-api": "footer"
-                    }
+                    "description": "Footer lines from the Autobahn API footer array."
                   },
                   "delay_minutes": {
                     "type": [
@@ -2517,10 +2445,7 @@
                     ],
                     "minimum": 0,
                     "unit": "min",
-                    "description": "delayTimeValue from the Autobahn warning item, expressed in minutes.",
-                    "altnames": {
-                      "autobahn-api": "delayTimeValue"
-                    }
+                    "description": "delayTimeValue from the Autobahn warning item, expressed in minutes."
                   },
                   "average_speed_kmh": {
                     "type": [
@@ -2529,30 +2454,21 @@
                     ],
                     "minimum": 0,
                     "unit": "km/h",
-                    "description": "averageSpeed from the Autobahn warning item, expressed in kilometers per hour.",
-                    "altnames": {
-                      "autobahn-api": "averageSpeed"
-                    }
+                    "description": "averageSpeed from the Autobahn warning item, expressed in kilometers per hour."
                   },
                   "abnormal_traffic_type": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "abnormalTrafficType code from the Autobahn warning item.",
-                    "altnames": {
-                      "autobahn-api": "abnormalTrafficType"
-                    }
+                    "description": "abnormalTrafficType code from the Autobahn warning item."
                   },
                   "source_name": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "source value from the Autobahn warning item that identifies the origin of the warning.",
-                    "altnames": {
-                      "autobahn-api": "source"
-                    }
+                    "description": "source value from the Autobahn warning item that identifies the origin of the warning."
                   }
                 },
                 "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
@@ -2657,10 +2573,7 @@
                       },
                       "null"
                     ],
-                    "description": "Description lines from the Autobahn API description array.",
-                    "altnames": {
-                      "autobahn-api": "description"
-                    }
+                    "description": "Description lines from the Autobahn API description array."
                   },
                   "future": {
                     "type": [
@@ -2677,10 +2590,7 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether the Autobahn API marks the parking site as blocked.",
-                    "altnames": {
-                      "autobahn-api": "isBlocked"
-                    }
+                    "description": "Whether the Autobahn API marks the parking site as blocked."
                   },
                   "icon": {
                     "type": [
@@ -2697,10 +2607,7 @@
                       "integer",
                       "null"
                     ],
-                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the parking site location.",
-                    "altnames": {
-                      "autobahn-api": "startLcPosition"
-                    }
+                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the parking site location."
                   },
                   "extent": {
                     "type": [
@@ -2729,10 +2636,7 @@
                     ],
                     "minimum": -90,
                     "maximum": 90,
-                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.lat"
-                    }
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "coordinate_lon": {
                     "type": [
@@ -2741,20 +2645,14 @@
                     ],
                     "minimum": -180,
                     "maximum": 180,
-                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.long"
-                    }
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "route_recommendation_json": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the parking location.",
-                    "altnames": {
-                      "autobahn-api": "routeRecommendation"
-                    }
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the parking location."
                   },
                   "footer_lines": {
                     "type": [
@@ -2763,10 +2661,7 @@
                       },
                       "null"
                     ],
-                    "description": "Footer lines from the Autobahn API footer array.",
-                    "altnames": {
-                      "autobahn-api": "footer"
-                    }
+                    "description": "Footer lines from the Autobahn API footer array."
                   },
                   "amenity_descriptions": {
                     "type": [
@@ -2775,10 +2670,7 @@
                       },
                       "null"
                     ],
-                    "description": "Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities.",
-                    "altnames": {
-                      "autobahn-api": "lorryParkingFeatureIcons[].description"
-                    }
+                    "description": "Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities."
                   },
                   "car_space_count": {
                     "type": [
@@ -2900,10 +2792,7 @@
                       },
                       "null"
                     ],
-                    "description": "Description lines from the Autobahn API description array.",
-                    "altnames": {
-                      "autobahn-api": "description"
-                    }
+                    "description": "Description lines from the Autobahn API description array."
                   },
                   "future": {
                     "type": [
@@ -2920,10 +2809,7 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether the Autobahn API marks the charging station site as blocked.",
-                    "altnames": {
-                      "autobahn-api": "isBlocked"
-                    }
+                    "description": "Whether the Autobahn API marks the charging station site as blocked."
                   },
                   "icon": {
                     "type": [
@@ -2962,10 +2848,7 @@
                     ],
                     "minimum": -90,
                     "maximum": 90,
-                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.lat"
-                    }
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "coordinate_lon": {
                     "type": [
@@ -2974,10 +2857,7 @@
                     ],
                     "minimum": -180,
                     "maximum": 180,
-                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.long"
-                    }
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "address_line": {
                     "type": [
@@ -3006,10 +2886,7 @@
                       "string",
                       "null"
                     ],
-                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the charging station site.",
-                    "altnames": {
-                      "autobahn-api": "routeRecommendation"
-                    }
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the charging station site."
                   },
                   "footer_lines": {
                     "type": [
@@ -3018,10 +2895,7 @@
                       },
                       "null"
                     ],
-                    "description": "Footer lines from the Autobahn API footer array.",
-                    "altnames": {
-                      "autobahn-api": "footer"
-                    }
+                    "description": "Footer lines from the Autobahn API footer array."
                   }
                 },
                 "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
@@ -3125,10 +2999,7 @@
                       },
                       "null"
                     ],
-                    "description": "Description lines from the Autobahn API description array.",
-                    "altnames": {
-                      "autobahn-api": "description"
-                    }
+                    "description": "Description lines from the Autobahn API description array."
                   },
                   "future": {
                     "type": [
@@ -3145,10 +3016,7 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Whether the Autobahn API marks the webcam location as blocked.",
-                    "altnames": {
-                      "autobahn-api": "isBlocked"
-                    }
+                    "description": "Whether the Autobahn API marks the webcam location as blocked."
                   },
                   "icon": {
                     "type": [
@@ -3187,10 +3055,7 @@
                     ],
                     "minimum": -90,
                     "maximum": 90,
-                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.lat"
-                    }
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "coordinate_lon": {
                     "type": [
@@ -3199,20 +3064,14 @@
                     ],
                     "minimum": -180,
                     "maximum": 180,
-                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
-                    "altnames": {
-                      "autobahn-api": "coordinate.long"
-                    }
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point."
                   },
                   "route_recommendation_json": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the webcam location.",
-                    "altnames": {
-                      "autobahn-api": "routeRecommendation"
-                    }
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the webcam location."
                   },
                   "footer_lines": {
                     "type": [
@@ -3221,40 +3080,28 @@
                       },
                       "null"
                     ],
-                    "description": "Footer lines from the Autobahn API footer array.",
-                    "altnames": {
-                      "autobahn-api": "footer"
-                    }
+                    "description": "Footer lines from the Autobahn API footer array."
                   },
                   "operator_name": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "operator value from the Autobahn API webcam item.",
-                    "altnames": {
-                      "autobahn-api": "operator"
-                    }
+                    "description": "operator value from the Autobahn API webcam item."
                   },
                   "image_url": {
                     "type": [
                       "uri",
                       "null"
                     ],
-                    "description": "imageurl value from the Autobahn API webcam item for the still image.",
-                    "altnames": {
-                      "autobahn-api": "imageurl"
-                    }
+                    "description": "imageurl value from the Autobahn API webcam item for the still image."
                   },
                   "stream_url": {
                     "type": [
                       "uri",
                       "null"
                     ],
-                    "description": "linkurl value from the Autobahn API webcam item for the linked stream or detail page.",
-                    "altnames": {
-                      "autobahn-api": "linkurl"
-                    }
+                    "description": "linkurl value from the Autobahn API webcam item for the linked stream or detail page."
                   }
                 },
                 "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",

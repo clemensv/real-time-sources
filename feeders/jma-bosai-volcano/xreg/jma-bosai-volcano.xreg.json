@@ -276,17 +276,11 @@
                   },
                   "name_jp": {
                     "type": "string",
-                    "description": "Japanese volcano name from the JMA Bosai volcano catalog. This is a display label and is not used as the stable identity because JMA warning records key volcanoes by code.",
-                    "altnames": {
-                      "json": "nameJp"
-                    }
+                    "description": "Japanese volcano name from the JMA Bosai volcano catalog. This is a display label and is not used as the stable identity because JMA warning records key volcanoes by code."
                   },
                   "name_en": {
                     "type": "string",
-                    "description": "English volcano name from the JMA Bosai volcano catalog, used as a display label for international consumers.",
-                    "altnames": {
-                      "json": "nameEn"
-                    }
+                    "description": "English volcano name from the JMA Bosai volcano catalog, used as a display label for international consumers."
                   },
                   "latitude": {
                     "type": "double",
@@ -366,17 +360,11 @@
                   },
                   "event_id": {
                     "type": "string",
-                    "description": "JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano.",
-                    "altnames": {
-                      "json": "eventId"
-                    }
+                    "description": "JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano."
                   },
                   "report_datetime": {
                     "type": "datetime",
-                    "description": "Report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp. This is the normalized time used for cross-region analytics.",
-                    "altnames": {
-                      "json": "reportDatetime"
-                    }
+                    "description": "Report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp. This is the normalized time used for cross-region analytics."
                   },
                   "report_datetime_local": {
                     "type": "datetime",
@@ -384,27 +372,18 @@
                   },
                   "alert_level_code": {
                     "type": "string",
-                    "description": "Raw JMA volcanic warning code as published in the `code` field of warning.json, emitted verbatim as a string. JMA's volcanic warning codes form an OPEN, upstream-controlled vocabulary that changes with volcanic activity, so this field is intentionally not constrained to a closed enum; consumers should treat any unlisted code as a valid JMA code and rely on the sibling `alert_level_name` field for the human-readable label JMA publishes alongside each code. Known codes observed in the live feed and JMA eruption-alert-level guidance: `02` = Crater-area warning (火口周辺警報); `03` = Eruption warning for surrounding sea area (噴火警報（周辺海域）); `04` = Eruption forecast, warning lifted (噴火予報：警報解除); `11` = Active volcano, pay attention (活動火山であることに留意); `12` = Crater area restriction (火口周辺規制); `13` = Mountain access restriction (入山規制); `22` = Crater vicinity danger (火口周辺危険); `23` = Mountain access danger (入山危険); `36` = Surrounding waters warning for submarine or island volcanoes (周辺海域警戒); `43` = Crater-area warning, entry restrictions (火口周辺警報：入山規制等); `44` = Eruption warning for surrounding sea area, sea-area warning (噴火警報（周辺海域）：周辺海域警戒); `45` = Active volcano, pay attention (活火山であることに留意); `49` = Crater-area warning, caution around the crater (火口周辺警報：火口周辺警戒). Labels for codes 11/12/13 are from JMA eruption-alert-level guidance; the remaining labels are taken from the live warning.json item `name` fields, which the Bosai JSON feed publishes directly.",
-                    "altnames": {
-                      "json": "code"
-                    }
+                    "description": "Raw JMA volcanic warning code as published in the `code` field of warning.json, emitted verbatim as a string. JMA's volcanic warning codes form an OPEN, upstream-controlled vocabulary that changes with volcanic activity, so this field is intentionally not constrained to a closed enum; consumers should treat any unlisted code as a valid JMA code and rely on the sibling `alert_level_name` field for the human-readable label JMA publishes alongside each code. Known codes observed in the live feed and JMA eruption-alert-level guidance: `02` = Crater-area warning (火口周辺警報); `03` = Eruption warning for surrounding sea area (噴火警報（周辺海域）); `04` = Eruption forecast, warning lifted (噴火予報：警報解除); `11` = Active volcano, pay attention (活動火山であることに留意); `12` = Crater area restriction (火口周辺規制); `13` = Mountain access restriction (入山規制); `22` = Crater vicinity danger (火口周辺危険); `23` = Mountain access danger (入山危険); `36` = Surrounding waters warning for submarine or island volcanoes (周辺海域警戒); `43` = Crater-area warning, entry restrictions (火口周辺警報：入山規制等); `44` = Eruption warning for surrounding sea area, sea-area warning (噴火警報（周辺海域）：周辺海域警戒); `45` = Active volcano, pay attention (活火山であることに留意); `49` = Crater-area warning, caution around the crater (火口周辺警報：火口周辺警戒). Labels for codes 11/12/13 are from JMA eruption-alert-level guidance; the remaining labels are taken from the live warning.json item `name` fields, which the Bosai JSON feed publishes directly."
                   },
                   "alert_level_name": {
                     "type": "string",
-                    "description": "Japanese alert level or warning label from the target-volcano item, such as レベル３（入山規制）. JMA uses this text to communicate the public-facing warning level or restriction phrase.",
-                    "altnames": {
-                      "json": "name"
-                    }
+                    "description": "Japanese alert level or warning label from the target-volcano item, such as レベル３（入山規制）. JMA uses this text to communicate the public-facing warning level or restriction phrase."
                   },
                   "previous_level_code": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Previous JMA alert level or warning code from lastCode when the warning feed provides one. It allows consumers to determine whether the current report raised, lowered, continued, or newly issued a level.",
-                    "altnames": {
-                      "json": "lastCode"
-                    }
+                    "description": "Previous JMA alert level or warning code from lastCode when the warning feed provides one. It allows consumers to determine whether the current report raised, lowered, continued, or newly issued a level."
                   },
                   "condition": {
                     "type": "string",
@@ -441,10 +420,7 @@
                   },
                   "info_type_jp": {
                     "type": "string",
-                    "description": "Japanese volcanoInfos type label from the JMA feed. For emitted warning events the bridge uses the target-volcano section, normally 噴火警報・予報（対象火山）, because that section carries the stable volcano code identity.",
-                    "altnames": {
-                      "json": "type"
-                    }
+                    "description": "Japanese volcanoInfos type label from the JMA feed. For emitted warning events the bridge uses the target-volcano section, normally 噴火警報・予報（対象火山）, because that section carries the stable volcano code identity."
                   },
                   "area_codes": {
                     "type": "array",
@@ -509,17 +485,11 @@
                   },
                   "event_id": {
                     "type": "string",
-                    "description": "JMA eventId from the Bosai eruption record. The bridge combines this identifier with reportDatetime for deduplication of eruption observations.",
-                    "altnames": {
-                      "json": "eventId"
-                    }
+                    "description": "JMA eventId from the Bosai eruption record. The bridge combines this identifier with reportDatetime for deduplication of eruption observations."
                   },
                   "report_datetime": {
                     "type": "datetime",
-                    "description": "Eruption report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp.",
-                    "altnames": {
-                      "json": "reportDatetime"
-                    }
+                    "description": "Eruption report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp."
                   },
                   "report_datetime_local": {
                     "type": "datetime",
@@ -640,10 +610,7 @@
                       "string",
                       "null"
                     ],
-                    "description": "Japanese volcanoInfos section type from eruption.json when supplied by JMA. It identifies the official section in which the eruption observation was published.",
-                    "altnames": {
-                      "json": "type"
-                    }
+                    "description": "Japanese volcanoInfos section type from eruption.json when supplied by JMA. It identifies the official section in which the eruption observation was published."
                   },
                   "area_codes": {
                     "type": "array",
