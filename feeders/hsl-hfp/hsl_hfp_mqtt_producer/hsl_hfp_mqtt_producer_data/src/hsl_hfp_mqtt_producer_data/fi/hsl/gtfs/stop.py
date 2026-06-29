@@ -179,18 +179,18 @@ class Stop:
             An instance of the dataclass.
         """
         return cls(
-            stop_id='xzembylcuqdoyrpvytrt',
-            stop_code='cvdknmeqpfuxhyzfranv',
-            stop_name='kkmuofikyzhgsbsrfyyt',
-            stop_desc='iyntrzlipevushihkifh',
-            stop_lat=float(64.6024312869733),
-            stop_lon=float(36.39409409680461),
-            zone_id='ugxfpvfstjiuphoxoyem',
-            stop_url='chpqxgovfdgvdznftqhg',
-            location_type=int(62),
-            parent_station='zztgmnbszzhqgnbasnkf',
-            platform_code='ljglttbddtonpwygaiwm',
-            wheelchair_boarding=int(25),
-            vehicle_type=int(53),
-            digistop_id='sbupxtjmrjytnzvrpbip'
+            stop_id='erauhdzyovqownfcjzer',
+            stop_code='lsyncfbnxcxkqkuaylhj',
+            stop_name='uobwqmcirnuwhbivgdla',
+            stop_desc='bcxuowvqffnftctlhdsq',
+            stop_lat=float(68.44865499396307),
+            stop_lon=float(87.70979632615085),
+            zone_id='lmevrmghblrozkwewnql',
+            stop_url='ubezwsvpttwohtamphak',
+            location_type=int(86),
+            parent_station='mlzvuuqjxjlkwzbucxin',
+            platform_code='ordjnemehlcoevnjcphz',
+            wheelchair_boarding=int(3),
+            vehicle_type=int(78),
+            digistop_id='dkwzlicdmhosfqhgyfzg'
         )
