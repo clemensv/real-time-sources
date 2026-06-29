@@ -168,6 +168,10 @@
     "homepage": "https://www.aqhi.gov.hk/",
     "api_docs": "https://www.aqhi.gov.hk/en/aqhi/statistics-of-aqhi.html"
   },
+  "hsl-hfp": {
+    "homepage": "https://www.hsl.fi/en/hsl/open-data",
+    "api_docs": "https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/high-frequency-positioning/"
+  },
   "hubeau-hydrometrie": {
     "homepage": "https://hubeau.eaufrance.fr/",
     "api_docs": "https://hubeau.eaufrance.fr/page/api-hydrometrie"
