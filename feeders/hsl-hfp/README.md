@@ -31,6 +31,7 @@
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/hsl-hfp.kql) &nbsp;·&nbsp;
+[🗺️ **Fabric Map**](fabric/README.md) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.hsl.fi/en/hsl/open-data)
 
 </td></tr></table>
@@ -162,7 +163,7 @@ The portal buttons wrap the underlying scripts and ARM templates documented belo
 
 ### Deploying into Microsoft Fabric
 
-HSL HFP targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/).
+HSL HFP targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/), and the bundled [**Fabric Map**](fabric/README.md) visualizes the live fleet on a basemap — ~1,700 vehicles colored by transport mode, the HSL stop network, and optional punctuality, density, and traffic-signal-priority overlays.
 
 Use the deploy button on the [project portal](https://clemensv.github.io/real-time-sources#hsl-hfp) to launch the Fabric ACI hosting model — it walks you through Fabric workspace selection and follow-up steps.
 
@@ -178,7 +179,7 @@ tools/deploy-fabric/deploy-fabric-aci.ps1 `
   -Location <azure-region>
 ```
 
-The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence. As a final step it runs the [`fabric/`](fabric/README.md) post-deploy hook, which creates the **`hsl-hfp-map`** Map item and wires its live vehicle, stop, punctuality, density, and signal-priority layers.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#hsl-hfp/fabric-aci)
 
@@ -334,6 +335,7 @@ hsl-hfp/
 ├── hsl_hfp_mqtt_producer/          # xRegistry-generated MQTT producer
 ├── hsl_hfp_amqp_producer/          # xRegistry-generated AMQP producer
 ├── kql/hsl-hfp.kql                 # Eventhouse table + update policies
+├── fabric/                         # Fabric Map post-deploy hook + layer wiring
 ├── Dockerfile.kafka                # builds the Kafka feeder image
 ├── Dockerfile.mqtt                 # builds the MQTT feeder image
 ├── Dockerfile.amqp                 # builds the AMQP feeder image
@@ -348,6 +350,7 @@ hsl-hfp/
 📑 <a href="EVENTS.md">EVENTS.md</a> &nbsp;·&nbsp;
 🐳 <a href="CONTAINER.md">CONTAINER.md</a> &nbsp;·&nbsp;
 🗄️ <a href="kql/hsl-hfp.kql">KQL schema</a> &nbsp;·&nbsp;
+🗺️ <a href="fabric/README.md">Fabric Map</a> &nbsp;·&nbsp;
 ↗ <a href="https://www.hsl.fi/en/hsl/open-data">HSL open data</a> &nbsp;·&nbsp;
 📖 <a href="https://digitransit.fi/en/developers/apis/5-realtime-api/vehicle-positions/high-frequency-positioning/">HFP docs</a>
 </sub>
