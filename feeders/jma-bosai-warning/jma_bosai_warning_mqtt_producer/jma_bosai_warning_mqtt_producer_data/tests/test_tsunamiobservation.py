@@ -30,10 +30,10 @@ class Test_TsunamiObservation(unittest.TestCase):
         Create instance of TsunamiObservation for testing
         """
         instance = TsunamiObservation(
-            station_code='sbmlgycikspndzhmjods',
-            station_name_jp='maggxptltmjuerjmxdfi',
-            station_name_en='jugaiurwwydpkeljpvrh',
-            observed_max_wave_height_m=float(99.63782041314644),
+            station_code='ikldrhkppztkbrodpqnv',
+            station_name_jp='ujtjelcynsboqraeqbad',
+            station_name_en='erppkkgfishgvhxhfwkq',
+            observed_max_wave_height_m=float(54.7131331795862),
             observed_at=datetime.datetime.now(datetime.timezone.utc),
             observed_at_local=datetime.datetime.now(datetime.timezone.utc),
             arrival_status=ArrivalStatusenum.ESTIMATED
@@ -45,7 +45,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'sbmlgycikspndzhmjods'
+        test_value = 'ikldrhkppztkbrodpqnv'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -53,7 +53,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test station_name_jp property
         """
-        test_value = 'maggxptltmjuerjmxdfi'
+        test_value = 'ujtjelcynsboqraeqbad'
         self.instance.station_name_jp = test_value
         self.assertEqual(self.instance.station_name_jp, test_value)
     
@@ -61,7 +61,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test station_name_en property
         """
-        test_value = 'jugaiurwwydpkeljpvrh'
+        test_value = 'erppkkgfishgvhxhfwkq'
         self.instance.station_name_en = test_value
         self.assertEqual(self.instance.station_name_en, test_value)
     
@@ -69,7 +69,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test observed_max_wave_height_m property
         """
-        test_value = float(99.63782041314644)
+        test_value = float(54.7131331795862)
         self.instance.observed_max_wave_height_m = test_value
         self.assertEqual(self.instance.observed_max_wave_height_m, test_value)
     

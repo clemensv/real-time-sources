@@ -155,6 +155,6 @@ class ValuePair:
             An instance of the dataclass.
         """
         return cls(
-            value_name='jlxrxzmclhevcrkclpcw',
-            value='yiplstmbgmvgvtwdidbf'
+            value_name='whggmwnpmkuhirlrdfdk',
+            value='ivykjtfpjbsgpsgkswum'
         )

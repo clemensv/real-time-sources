@@ -100,6 +100,8 @@ class TidewaterPrediction:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,11 +169,11 @@ class TidewaterPrediction:
             An instance of the dataclass.
         """
         return cls(
-            prediction_id='otzedljjxfjbaxvpeziw',
-            station_id='txmhrjbpngikmwmehqag',
-            prediction_type='eczkovylgfahxbieworu',
+            prediction_id='hrjtpjusnysvjqypxmgj',
+            station_id='lqunwftdppqneagzdwdn',
+            prediction_type='nxzvcncigpynzaxsihrn',
             prediction_time=datetime.datetime.now(datetime.timezone.utc),
-            value=float(43.11594157629882),
-            latitude=float(49.913547880461806),
-            longitude=float(57.17726489929991)
+            value=float(28.980312934901143),
+            latitude=float(19.399985771444996),
+            longitude=float(25.675236262262313)
         )

@@ -1,4 +1,4 @@
-# JMA Bosai AMeDAS feeder Events
+# JMA Bosai AMeDAS Events
 
 MQTT 5 variant of jma-bosai-amedas events with UNS topic routing.
 

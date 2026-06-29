@@ -163,10 +163,10 @@ class CapResource:
             An instance of the dataclass.
         """
         return cls(
-            resource_desc='iodrijghesrfhwzpiggv',
-            mime_type='wtblfjagllcilnnqywvi',
-            size=int(96),
-            uri='byptlrdnawmhhqekilde',
+            resource_desc='yqeeeqzztdqbqyzkzpzz',
+            mime_type='zgipxbretovwhsnkusuo',
+            size=int(76),
+            uri='cjwjoyeipxckiysvhlse',
             deref_uri=b"test_bytes",
-            digest='bkgkcejfulipmbgkialj'
+            digest='dhethloxpxfxletrtgxg'
         )

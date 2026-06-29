@@ -1,4 +1,4 @@
-# iRail feeder Events
+# iRail Events
 
 iRail publishes train departure, arrival, and connection updates from the Belgian iRail train data API for Belgian railway stations, vehicles, and connections. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -264,3 +264,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
 - iRail API: <https://docs.irail.be/>
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

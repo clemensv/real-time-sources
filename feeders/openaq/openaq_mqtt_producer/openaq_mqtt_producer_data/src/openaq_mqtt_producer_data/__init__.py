@@ -1,3 +1,3 @@
-from .org import ParameterNameenum, Sensor, Location, Measurement
+from .org import ParameterNameenum, Sensor, Measurement, Location
 
-__all__ = ["ParameterNameenum", "Sensor", "Location", "Measurement"]
+__all__ = ["ParameterNameenum", "Sensor", "Measurement", "Location"]

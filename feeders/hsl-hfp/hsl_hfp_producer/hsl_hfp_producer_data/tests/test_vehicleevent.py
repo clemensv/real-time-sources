@@ -29,44 +29,44 @@ class Test_VehicleEvent(unittest.TestCase):
         Create instance of VehicleEvent for testing
         """
         instance = VehicleEvent(
-            oper=int(0),
-            veh=int(89),
-            tst='tzjeyhbsmjkvjknwfmqd',
-            tsi=int(93),
-            operator_id='ouwtgexsxecdxbtkddef',
-            vehicle_number='jjlmgnvzyqkvvllxtuey',
+            oper=int(24),
+            veh=int(11),
+            tst='hlmehwgkavvhwwvhregr',
+            tsi=int(69),
+            operator_id='vribfxwnamkokzvgpbrt',
+            vehicle_number='cgshlveqaxqvncvsyglj',
             temporal_type=None,
             transport_mode=None,
-            route_id='afbkspedzhsaxorfutxx',
-            direction_id='jycppnlyvhqmhonqstux',
-            headsign='vcolfsrvwgnotgfxqove',
-            start_time='bqrwjleigsctmvkbganl',
-            next_stop='dvvroenilrvorfjmwumw',
-            geohash_level='snqnqreyvsftmhmdgmve',
-            geohash='drzdmdbgwwtjyzvhihma',
-            desi='tkovgkgabxujwubrlgyu',
-            dir='lovpeedxcmqexttesotx',
-            dl=int(58),
-            oday='xgiwvblpzxccqsitehvx',
-            jrn=int(80),
-            line=int(85),
-            start='ecdusaqspuffiydkqtea',
-            stop=int(16),
-            route='fmrzdrwaxtksnwoyopic',
-            occu=int(89),
-            seq=int(35),
-            label='rcwdtnzawndegkakdwfh',
-            spd=float(46.431856018369125),
-            hdg=int(8),
-            lat=float(54.49963878940319),
-            long=float(23.512878912246105),
-            acc=float(57.26142028112352),
-            odo=int(78),
-            drst=int(38),
-            loc='wrzgnheozfoefmwrbdns',
-            ttarr='lhwlvhfaakahtulceyrl',
-            ttdep='tskfocvkadlotclyjtwp',
-            dr_type=int(81)
+            route_id='hophkjlzhfzegtqlylex',
+            direction_id='kzehillqgzthcfdfmbuz',
+            headsign='unenmansdkrwrjhoneyg',
+            start_time='cjgigycebkopbspirvfa',
+            next_stop='aefpoodvaruqfihepvjz',
+            geohash_level='xhouavzkagpnwjietsxx',
+            geohash='qktrjcpjypvygabuuyth',
+            desi='izhkzqeazgwvwfvmgreg',
+            dir='ixncyerinlerrbptfntw',
+            dl=int(0),
+            oday='vckfsjjwkogzmzyuumdt',
+            jrn=int(27),
+            line=int(64),
+            start='tycilpnnagjmkpmtokje',
+            stop=int(75),
+            route='opryylbuzbmhfgrpfgal',
+            occu=int(37),
+            seq=int(85),
+            label='xkckrrkarhcuvwykmivk',
+            spd=float(73.37552376730343),
+            hdg=int(37),
+            lat=float(26.404013986871),
+            long=float(4.246519925309322),
+            acc=float(62.273490250697016),
+            odo=int(20),
+            drst=int(93),
+            loc='rtincqvrmhgonwpvrwer',
+            ttarr='okuukbwidyllvinnllsf',
+            ttdep='yusmpwozgrfkvzxbdcho',
+            dr_type=int(53)
         )
         return instance
 
@@ -75,7 +75,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test oper property
         """
-        test_value = int(0)
+        test_value = int(24)
         self.instance.oper = test_value
         self.assertEqual(self.instance.oper, test_value)
     
@@ -83,7 +83,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test veh property
         """
-        test_value = int(89)
+        test_value = int(11)
         self.instance.veh = test_value
         self.assertEqual(self.instance.veh, test_value)
     
@@ -91,7 +91,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test tst property
         """
-        test_value = 'tzjeyhbsmjkvjknwfmqd'
+        test_value = 'hlmehwgkavvhwwvhregr'
         self.instance.tst = test_value
         self.assertEqual(self.instance.tst, test_value)
     
@@ -99,7 +99,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test tsi property
         """
-        test_value = int(93)
+        test_value = int(69)
         self.instance.tsi = test_value
         self.assertEqual(self.instance.tsi, test_value)
     
@@ -107,7 +107,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = 'ouwtgexsxecdxbtkddef'
+        test_value = 'vribfxwnamkokzvgpbrt'
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     
@@ -115,7 +115,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test vehicle_number property
         """
-        test_value = 'jjlmgnvzyqkvvllxtuey'
+        test_value = 'cgshlveqaxqvncvsyglj'
         self.instance.vehicle_number = test_value
         self.assertEqual(self.instance.vehicle_number, test_value)
     
@@ -139,7 +139,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'afbkspedzhsaxorfutxx'
+        test_value = 'hophkjlzhfzegtqlylex'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -147,7 +147,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test direction_id property
         """
-        test_value = 'jycppnlyvhqmhonqstux'
+        test_value = 'kzehillqgzthcfdfmbuz'
         self.instance.direction_id = test_value
         self.assertEqual(self.instance.direction_id, test_value)
     
@@ -155,7 +155,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test headsign property
         """
-        test_value = 'vcolfsrvwgnotgfxqove'
+        test_value = 'unenmansdkrwrjhoneyg'
         self.instance.headsign = test_value
         self.assertEqual(self.instance.headsign, test_value)
     
@@ -163,7 +163,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'bqrwjleigsctmvkbganl'
+        test_value = 'cjgigycebkopbspirvfa'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -171,7 +171,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test next_stop property
         """
-        test_value = 'dvvroenilrvorfjmwumw'
+        test_value = 'aefpoodvaruqfihepvjz'
         self.instance.next_stop = test_value
         self.assertEqual(self.instance.next_stop, test_value)
     
@@ -179,7 +179,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test geohash_level property
         """
-        test_value = 'snqnqreyvsftmhmdgmve'
+        test_value = 'xhouavzkagpnwjietsxx'
         self.instance.geohash_level = test_value
         self.assertEqual(self.instance.geohash_level, test_value)
     
@@ -187,7 +187,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test geohash property
         """
-        test_value = 'drzdmdbgwwtjyzvhihma'
+        test_value = 'qktrjcpjypvygabuuyth'
         self.instance.geohash = test_value
         self.assertEqual(self.instance.geohash, test_value)
     
@@ -195,7 +195,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test desi property
         """
-        test_value = 'tkovgkgabxujwubrlgyu'
+        test_value = 'izhkzqeazgwvwfvmgreg'
         self.instance.desi = test_value
         self.assertEqual(self.instance.desi, test_value)
     
@@ -203,7 +203,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test dir property
         """
-        test_value = 'lovpeedxcmqexttesotx'
+        test_value = 'ixncyerinlerrbptfntw'
         self.instance.dir = test_value
         self.assertEqual(self.instance.dir, test_value)
     
@@ -211,7 +211,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test dl property
         """
-        test_value = int(58)
+        test_value = int(0)
         self.instance.dl = test_value
         self.assertEqual(self.instance.dl, test_value)
     
@@ -219,7 +219,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test oday property
         """
-        test_value = 'xgiwvblpzxccqsitehvx'
+        test_value = 'vckfsjjwkogzmzyuumdt'
         self.instance.oday = test_value
         self.assertEqual(self.instance.oday, test_value)
     
@@ -227,7 +227,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test jrn property
         """
-        test_value = int(80)
+        test_value = int(27)
         self.instance.jrn = test_value
         self.assertEqual(self.instance.jrn, test_value)
     
@@ -235,7 +235,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test line property
         """
-        test_value = int(85)
+        test_value = int(64)
         self.instance.line = test_value
         self.assertEqual(self.instance.line, test_value)
     
@@ -243,7 +243,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test start property
         """
-        test_value = 'ecdusaqspuffiydkqtea'
+        test_value = 'tycilpnnagjmkpmtokje'
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -251,7 +251,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test stop property
         """
-        test_value = int(16)
+        test_value = int(75)
         self.instance.stop = test_value
         self.assertEqual(self.instance.stop, test_value)
     
@@ -259,7 +259,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test route property
         """
-        test_value = 'fmrzdrwaxtksnwoyopic'
+        test_value = 'opryylbuzbmhfgrpfgal'
         self.instance.route = test_value
         self.assertEqual(self.instance.route, test_value)
     
@@ -267,7 +267,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test occu property
         """
-        test_value = int(89)
+        test_value = int(37)
         self.instance.occu = test_value
         self.assertEqual(self.instance.occu, test_value)
     
@@ -275,7 +275,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test seq property
         """
-        test_value = int(35)
+        test_value = int(85)
         self.instance.seq = test_value
         self.assertEqual(self.instance.seq, test_value)
     
@@ -283,7 +283,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test label property
         """
-        test_value = 'rcwdtnzawndegkakdwfh'
+        test_value = 'xkckrrkarhcuvwykmivk'
         self.instance.label = test_value
         self.assertEqual(self.instance.label, test_value)
     
@@ -291,7 +291,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test spd property
         """
-        test_value = float(46.431856018369125)
+        test_value = float(73.37552376730343)
         self.instance.spd = test_value
         self.assertEqual(self.instance.spd, test_value)
     
@@ -299,7 +299,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test hdg property
         """
-        test_value = int(8)
+        test_value = int(37)
         self.instance.hdg = test_value
         self.assertEqual(self.instance.hdg, test_value)
     
@@ -307,7 +307,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(54.49963878940319)
+        test_value = float(26.404013986871)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -315,7 +315,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test long property
         """
-        test_value = float(23.512878912246105)
+        test_value = float(4.246519925309322)
         self.instance.long = test_value
         self.assertEqual(self.instance.long, test_value)
     
@@ -323,7 +323,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test acc property
         """
-        test_value = float(57.26142028112352)
+        test_value = float(62.273490250697016)
         self.instance.acc = test_value
         self.assertEqual(self.instance.acc, test_value)
     
@@ -331,7 +331,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test odo property
         """
-        test_value = int(78)
+        test_value = int(20)
         self.instance.odo = test_value
         self.assertEqual(self.instance.odo, test_value)
     
@@ -339,7 +339,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test drst property
         """
-        test_value = int(38)
+        test_value = int(93)
         self.instance.drst = test_value
         self.assertEqual(self.instance.drst, test_value)
     
@@ -347,7 +347,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test loc property
         """
-        test_value = 'wrzgnheozfoefmwrbdns'
+        test_value = 'rtincqvrmhgonwpvrwer'
         self.instance.loc = test_value
         self.assertEqual(self.instance.loc, test_value)
     
@@ -355,7 +355,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test ttarr property
         """
-        test_value = 'lhwlvhfaakahtulceyrl'
+        test_value = 'okuukbwidyllvinnllsf'
         self.instance.ttarr = test_value
         self.assertEqual(self.instance.ttarr, test_value)
     
@@ -363,7 +363,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test ttdep property
         """
-        test_value = 'tskfocvkadlotclyjtwp'
+        test_value = 'yusmpwozgrfkvzxbdcho'
         self.instance.ttdep = test_value
         self.assertEqual(self.instance.ttdep, test_value)
     
@@ -371,7 +371,7 @@ class Test_VehicleEvent(unittest.TestCase):
         """
         Test dr_type property
         """
-        test_value = int(81)
+        test_value = int(53)
         self.instance.dr_type = test_value
         self.assertEqual(self.instance.dr_type, test_value)
     

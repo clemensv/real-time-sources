@@ -1,3 +1,3 @@
-from .jma import StationTypeenum, StationEventEnum, Station, ObservationEventEnum, Observation
+from .jma import ObservationEventEnum, Observation, StationTypeenum, StationEventEnum, Station
 
-__all__ = ["StationTypeenum", "StationEventEnum", "Station", "ObservationEventEnum", "Observation"]
+__all__ = ["ObservationEventEnum", "Observation", "StationTypeenum", "StationEventEnum", "Station"]

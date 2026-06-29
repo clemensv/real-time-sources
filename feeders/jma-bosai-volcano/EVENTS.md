@@ -1,4 +1,4 @@
-# JMA Bosai Volcano feeder Events
+# JMA Bosai Volcano Events
 
 JMA Bosai Volcano publishes volcano warnings and eruption notices from the Japan Meteorological Agency for Japanese volcano warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-volcano`, key `jp.jma.volcano/{volcano_code}` |
 | `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}`; application properties prefecture `{prefecture}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}` |
 
 #### Payload
 
@@ -136,7 +136,7 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-volcano`, key `jp.jma.volcano/{volcano_code}` |
 | `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}`; application properties prefecture `{prefecture}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}` |
 
 #### Payload
 
@@ -210,7 +210,7 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-volcano`, key `jp.jma.volcano/{volcano_code}` |
 | `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}`; application properties prefecture `{prefecture}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}` |
 
 #### Payload
 
@@ -305,3 +305,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/jma-bosai-volcano.xreg.json`](xreg/jma-bosai-volcano.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -179,17 +179,17 @@ class Timeseries:
             An instance of the dataclass.
         """
         return cls(
-            kiwis_id='bubbnqpeiyhxkrzifafp',
-            base_url='ccikmhxlymocbfjqgrjt',
-            ts_id='kvqhpydyjddkshlizrlh',
-            ts_name='ajfaaryzinfoibujvdsw',
-            ts_shortname='zgwpsmpgmlizccoaifka',
-            station_id='yqwgrfbgyiviluoutzsx',
-            station_name='sswawnlebnhnczndyohl',
-            parametertype_name='xmiyjrjixwzafftmlojt',
-            stationparameter_name='buzibgruoiguljlxkrnh',
-            unit_name='qfkjymdxegldpdeyszuy',
-            unit_symbol='bcmlgfuvhsyounmwathd',
+            kiwis_id='wmbxbesdsmizwsvluiuv',
+            base_url='rwadzayqeyzerkdvafyp',
+            ts_id='kctiatoxrvrokuvnaflt',
+            ts_name='fmvmcszaasratsomjiwc',
+            ts_shortname='lxcftsfftucjvquzdiag',
+            station_id='ktwxcvcstiezklohxhty',
+            station_name='aphwdgieaglzbuaqinfz',
+            parametertype_name='wwtbduvvgliafulqfvmx',
+            stationparameter_name='hvknsvtakoeemrjiooxp',
+            unit_name='qalxgdrzxzayurfgrqce',
+            unit_symbol='vfnukxiykhckvqyovyzi',
             coverage_from=datetime.datetime.now(datetime.timezone.utc),
             coverage_to=datetime.datetime.now(datetime.timezone.utc)
         )

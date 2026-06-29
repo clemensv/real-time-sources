@@ -54,30 +54,30 @@
    [___subject]: string
 );
 
-.alter table [MetObsStation] docstring "{\"description\": \"A meteorological observation station owned and operated by (or on behalf of) DMI. See https://opendatadocs.dmi.govcloud.dk/en/Data/Meteorological_Observation_Data for the canonical field list. Identity is stable per stationId; metadata is slowly-changing via validFrom/validTo.\"}";
+.alter table [MetObsStation] docstring @"{""description"": ""A meteorological observation station owned and operated by (or on behalf of) DMI. See https://opendatadocs.dmi.govcloud.dk/en/Data/Meteorological_Observation_Data for the canonical field list. Identity is stable per stationId; metadata is slowly-changing via validFrom/validTo.""}";
 
 .alter table [MetObsStation] column-docstrings (
-   [station_id]: "{\"description\": \"Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject.\"}",
-   [wmo_station_id]: "{\"description\": \"World Meteorological Organization (WMO) station identifier when registered with WMO.\"}",
-   [wmo_country_code]: "{\"description\": \"WMO country code as an integer string (e.g. '06' for Denmark).\"}",
-   [name]: "{\"description\": \"Human-readable station name.\"}",
-   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code: 'DNK' (Denmark), 'GRL' (Greenland), 'FRO' (Faroe Islands).\"}",
-   [owner]: "{\"description\": \"Organisation that owns/operates the station (typically 'DMI').\"}",
-   [region_id]: "{\"description\": \"DMI region identifier within the country.\"}",
-   [type]: "{\"description\": \"Station type as classified by DMI (e.g. 'Synop', 'PluvioSync').\"}",
-   [status]: "{\"description\": \"Operational status (e.g. 'Active', 'Inactive').\"}",
-   [parameter_id]: "{\"description\": \"List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).\", \"altnames\": {\"json\": \"parameterId\"}}}",
-   [latitude]: "{\"description\": \"Station latitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[1].\"}",
-   [longitude]: "{\"description\": \"Station longitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[0].\"}",
-   [station_height]: "{\"description\": \"Height of the station above mean sea level.\"}",
-   [barometer_height]: "{\"description\": \"Height of the barometer above mean sea level.\"}",
-   [anemometer_height]: "{\"description\": \"Height of the anemometer above ground level.\"}",
-   [valid_from]: "{\"description\": \"Timestamp from which this station-metadata version is valid.\"}",
-   [valid_to]: "{\"description\": \"Timestamp after which this station-metadata version is no longer valid; null while current.\"}",
-   [operation_from]: "{\"description\": \"Timestamp from which the station began operating.\"}",
-   [operation_to]: "{\"description\": \"Timestamp at which the station stopped operating; null while operational.\"}",
-   [created]: "{\"description\": \"Timestamp when this metadata row was created by DMI.\"}",
-   [updated]: "{\"description\": \"Timestamp when this metadata row was last updated by DMI.\"}",
+   [station_id]: @"{""description"": ""Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject.""}",
+   [wmo_station_id]: @"{""description"": ""World Meteorological Organization (WMO) station identifier when registered with WMO.""}",
+   [wmo_country_code]: @"{""description"": ""WMO country code as an integer string (e.g. '06' for Denmark).""}",
+   [name]: @"{""description"": ""Human-readable station name.""}",
+   [country]: @"{""description"": ""ISO 3166-1 alpha-3 country code: 'DNK' (Denmark), 'GRL' (Greenland), 'FRO' (Faroe Islands).""}",
+   [owner]: @"{""description"": ""Organisation that owns/operates the station (typically 'DMI').""}",
+   [region_id]: @"{""description"": ""DMI region identifier within the country.""}",
+   [type]: @"{""description"": ""Station type as classified by DMI (e.g. 'Synop', 'PluvioSync').""}",
+   [status]: @"{""description"": ""Operational status (e.g. 'Active', 'Inactive').""}",
+   [parameter_id]: @"{""description"": ""List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity'])."", ""schema"": {""type"": ""array"", ""items"": {""type"": ""string""}, ""description"": ""List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).""}}",
+   [latitude]: @"{""description"": ""Station latitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[1].""}",
+   [longitude]: @"{""description"": ""Station longitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[0].""}",
+   [station_height]: @"{""description"": ""Height of the station above mean sea level.""}",
+   [barometer_height]: @"{""description"": ""Height of the barometer above mean sea level.""}",
+   [anemometer_height]: @"{""description"": ""Height of the anemometer above ground level.""}",
+   [valid_from]: @"{""description"": ""Timestamp from which this station-metadata version is valid.""}",
+   [valid_to]: @"{""description"": ""Timestamp after which this station-metadata version is no longer valid; null while current.""}",
+   [operation_from]: @"{""description"": ""Timestamp from which the station began operating.""}",
+   [operation_to]: @"{""description"": ""Timestamp at which the station stopped operating; null while operational.""}",
+   [created]: @"{""description"": ""Timestamp when this metadata row was created by DMI.""}",
+   [updated]: @"{""description"": ""Timestamp when this metadata row was last updated by DMI.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -113,7 +113,7 @@
   {"column": "operation_from", "path": "$.operation_from"},
   {"column": "operation_to", "path": "$.operation_to"},
   {"column": "created", "path": "$.created"},
-  {"column": "updated", "path": "$.updated"},
+  {"column": "updated", "path": "$.updated"}
 ]
 ```
 
@@ -145,7 +145,7 @@
   {"column": "operation_from", "path": "$.data.operation_from"},
   {"column": "operation_to", "path": "$.data.operation_to"},
   {"column": "created", "path": "$.data.created"},
-  {"column": "updated", "path": "$.data.updated"},
+  {"column": "updated", "path": "$.data.updated"}
 ]
 ```
 
@@ -162,7 +162,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.metObs.MetObsStation') | project['station_id'] = tostring(data.['station_id']),['wmo_station_id'] = tostring(data.['wmo_station_id']),['wmo_country_code'] = tostring(data.['wmo_country_code']),['name'] = tostring(data.['name']),['country'] = tostring(data.['country']),['owner'] = tostring(data.['owner']),['region_id'] = tostring(data.['region_id']),['type'] = tostring(data.['type']),['status'] = tostring(data.['status']),['parameter_id'] = todynamic(data.['parameter_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['station_height'] = toreal(data.['station_height']),['barometer_height'] = toreal(data.['barometer_height']),['anemometer_height'] = toreal(data.['anemometer_height']),['valid_from'] = todatetime(data.['valid_from']),['valid_to'] = todatetime(data.['valid_to']),['operation_from'] = todatetime(data.['operation_from']),['operation_to'] = todatetime(data.['operation_to']),['created'] = todatetime(data.['created']),['updated'] = todatetime(data.['updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -181,16 +181,16 @@
    [___subject]: string
 );
 
-.alter table [MetObsObservation] docstring "{\"description\": \"A single meteorological observation: one parameter, one station, one timestamp. Units are SI: degC, hPa, m/s, %, m, mm, degrees. wind_dir=0 means calm (not north).\"}";
+.alter table [MetObsObservation] docstring @"{""description"": ""A single meteorological observation: one parameter, one station, one timestamp. Units are SI: degC, hPa, m/s, %, m, mm, degrees. wind_dir=0 means calm (not north).""}";
 
 .alter table [MetObsObservation] column-docstrings (
-   [observation_id]: "{\"description\": \"DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency.\"}",
-   [station_id]: "{\"description\": \"Reporting station identifier (foreign key to Station).\"}",
-   [parameter_id]: "{\"description\": \"DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').\"}",
-   [observed]: "{\"description\": \"Timestamp at which the value was observed (UTC, ISO 8601).\"}",
-   [value]: "{\"description\": \"Numeric measurement value. Units depend on parameter_id (see DMI documentation).\"}",
-   [latitude]: "{\"description\": \"Station latitude (decimal degrees, WGS84) at observation time.\"}",
-   [longitude]: "{\"description\": \"Station longitude (decimal degrees, WGS84) at observation time.\"}",
+   [observation_id]: @"{""description"": ""DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency.""}",
+   [station_id]: @"{""description"": ""Reporting station identifier (foreign key to Station).""}",
+   [parameter_id]: @"{""description"": ""DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').""}",
+   [observed]: @"{""description"": ""Timestamp at which the value was observed (UTC, ISO 8601).""}",
+   [value]: @"{""description"": ""Numeric measurement value. Units depend on parameter_id (see DMI documentation).""}",
+   [latitude]: @"{""description"": ""Station latitude (decimal degrees, WGS84) at observation time.""}",
+   [longitude]: @"{""description"": ""Station longitude (decimal degrees, WGS84) at observation time.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -212,7 +212,7 @@
   {"column": "observed", "path": "$.observed"},
   {"column": "value", "path": "$.value"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -230,7 +230,7 @@
   {"column": "observed", "path": "$.data.observed"},
   {"column": "value", "path": "$.data.value"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -247,7 +247,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.metObs.MetObsObservation') | project['observation_id'] = tostring(data.['observation_id']),['station_id'] = tostring(data.['station_id']),['parameter_id'] = tostring(data.['parameter_id']),['observed'] = todatetime(data.['observed']),['value'] = toreal(data.['value']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -274,20 +274,20 @@
    [___subject]: string
 );
 
-.alter table [OceanStation] docstring "{\"description\": \"An oceanographic observation station (typically a tide gauge). Owners include DMI and Kystdirektoratet (Danish Coastal Authority). See https://opendatadocs.dmi.govcloud.dk/en/Data/Oceanographic_Observation_Data.\"}";
+.alter table [OceanStation] docstring @"{""description"": ""An oceanographic observation station (typically a tide gauge). Owners include DMI and Kystdirektoratet (Danish Coastal Authority). See https://opendatadocs.dmi.govcloud.dk/en/Data/Oceanographic_Observation_Data.""}";
 
 .alter table [OceanStation] column-docstrings (
-   [station_id]: "{\"description\": \"Stable DMI ocean station identifier.\"}",
-   [name]: "{\"description\": \"Human-readable station name.\"}",
-   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code (DNK, GRL, FRO).\"}",
-   [owner]: "{\"description\": \"Operating agency (e.g. 'DMI', 'Kystdirektoratet').\"}",
-   [type]: "{\"description\": \"Station type (e.g. 'Tide-gauge-primary').\"}",
-   [status]: "{\"description\": \"Operational status.\"}",
-   [parameter_id]: "{\"description\": \"Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).\", \"altnames\": {\"json\": \"parameterId\"}}}",
-   [latitude]: "{\"description\": \"Station latitude (decimal degrees, WGS84).\"}",
-   [longitude]: "{\"description\": \"Station longitude (decimal degrees, WGS84).\"}",
-   [valid_from]: "{\"description\": \"Metadata-validity start.\"}",
-   [valid_to]: "{\"description\": \"Metadata-validity end.\"}",
+   [station_id]: @"{""description"": ""Stable DMI ocean station identifier.""}",
+   [name]: @"{""description"": ""Human-readable station name.""}",
+   [country]: @"{""description"": ""ISO 3166-1 alpha-3 country code (DNK, GRL, FRO).""}",
+   [owner]: @"{""description"": ""Operating agency (e.g. 'DMI', 'Kystdirektoratet').""}",
+   [type]: @"{""description"": ""Station type (e.g. 'Tide-gauge-primary').""}",
+   [status]: @"{""description"": ""Operational status.""}",
+   [parameter_id]: @"{""description"": ""Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw})."", ""schema"": {""type"": ""array"", ""items"": {""type"": ""string""}, ""description"": ""Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).""}}",
+   [latitude]: @"{""description"": ""Station latitude (decimal degrees, WGS84).""}",
+   [longitude]: @"{""description"": ""Station longitude (decimal degrees, WGS84).""}",
+   [valid_from]: @"{""description"": ""Metadata-validity start.""}",
+   [valid_to]: @"{""description"": ""Metadata-validity end.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -317,7 +317,7 @@
   {"column": "operation_from", "path": "$.operation_from"},
   {"column": "operation_to", "path": "$.operation_to"},
   {"column": "created", "path": "$.created"},
-  {"column": "updated", "path": "$.updated"},
+  {"column": "updated", "path": "$.updated"}
 ]
 ```
 
@@ -343,7 +343,7 @@
   {"column": "operation_from", "path": "$.data.operation_from"},
   {"column": "operation_to", "path": "$.data.operation_to"},
   {"column": "created", "path": "$.data.created"},
-  {"column": "updated", "path": "$.data.updated"},
+  {"column": "updated", "path": "$.data.updated"}
 ]
 ```
 
@@ -360,7 +360,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.OceanStation') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['country'] = tostring(data.['country']),['owner'] = tostring(data.['owner']),['type'] = tostring(data.['type']),['status'] = tostring(data.['status']),['parameter_id'] = todynamic(data.['parameter_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['valid_from'] = todatetime(data.['valid_from']),['valid_to'] = todatetime(data.['valid_to']),['operation_from'] = todatetime(data.['operation_from']),['operation_to'] = todatetime(data.['operation_to']),['created'] = todatetime(data.['created']),['updated'] = todatetime(data.['updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -380,15 +380,15 @@
    [___subject]: string
 );
 
-.alter table [TidewaterStation] docstring "{\"description\": \"A station or virtual grid point at which DMI publishes tidewater (sea-level) predictions. The catalog includes both physical tide gauges and prediction-only points.\"}";
+.alter table [TidewaterStation] docstring @"{""description"": ""A station or virtual grid point at which DMI publishes tidewater (sea-level) predictions. The catalog includes both physical tide gauges and prediction-only points.""}";
 
 .alter table [TidewaterStation] column-docstrings (
-   [station_id]: "{\"description\": \"Stable identifier of the tidewater prediction station/grid-point.\"}",
-   [name]: "{\"description\": \"Human-readable station name where available.\"}",
-   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code.\"}",
-   [owner]: "{\"description\": \"Operating agency.\"}",
-   [latitude]: "{\"description\": \"Prediction-point latitude (decimal degrees, WGS84).\"}",
-   [longitude]: "{\"description\": \"Prediction-point longitude (decimal degrees, WGS84).\"}",
+   [station_id]: @"{""description"": ""Stable identifier of the tidewater prediction station/grid-point.""}",
+   [name]: @"{""description"": ""Human-readable station name where available.""}",
+   [country]: @"{""description"": ""ISO 3166-1 alpha-3 country code.""}",
+   [owner]: @"{""description"": ""Operating agency.""}",
+   [latitude]: @"{""description"": ""Prediction-point latitude (decimal degrees, WGS84).""}",
+   [longitude]: @"{""description"": ""Prediction-point longitude (decimal degrees, WGS84).""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -411,7 +411,7 @@
   {"column": "latitude", "path": "$.latitude"},
   {"column": "longitude", "path": "$.longitude"},
   {"column": "valid_from", "path": "$.valid_from"},
-  {"column": "valid_to", "path": "$.valid_to"},
+  {"column": "valid_to", "path": "$.valid_to"}
 ]
 ```
 
@@ -430,7 +430,7 @@
   {"column": "latitude", "path": "$.data.latitude"},
   {"column": "longitude", "path": "$.data.longitude"},
   {"column": "valid_from", "path": "$.data.valid_from"},
-  {"column": "valid_to", "path": "$.data.valid_to"},
+  {"column": "valid_to", "path": "$.data.valid_to"}
 ]
 ```
 
@@ -447,7 +447,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.TidewaterStation') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['country'] = tostring(data.['country']),['owner'] = tostring(data.['owner']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['valid_from'] = todatetime(data.['valid_from']),['valid_to'] = todatetime(data.['valid_to']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -466,12 +466,12 @@
    [___subject]: string
 );
 
-.alter table [OceanObservation] docstring "{\"description\": \"A single oceanographic measurement. parameter_id is one of: sealev_dvr (sea level vs DVR90 datum, cm; preferred since 1997), sealev_ln (sea level vs local zero, cm; preferred before 1997), sea_reg (sea-level registration by Kystdirektoratet, cm), tw (water temperature, deg C; indicative).\"}";
+.alter table [OceanObservation] docstring @"{""description"": ""A single oceanographic measurement. parameter_id is one of: sealev_dvr (sea level vs DVR90 datum, cm; preferred since 1997), sealev_ln (sea level vs local zero, cm; preferred before 1997), sea_reg (sea-level registration by Kystdirektoratet, cm), tw (water temperature, deg C; indicative).""}";
 
 .alter table [OceanObservation] column-docstrings (
-   [observation_id]: "{\"description\": \"DMI-assigned row identifier (not stable across re-ingestions).\"}",
-   [parameter_id]: "{\"description\": \"One of sealev_dvr, sealev_ln, sea_reg, tw.\"}",
-   [value]: "{\"description\": \"Numeric value. cm for sealev_*/sea_reg, deg C for tw.\"}",
+   [observation_id]: @"{""description"": ""DMI-assigned row identifier (not stable across re-ingestions).""}",
+   [parameter_id]: @"{""description"": ""DMI oceanographic parameter identifier: sealev_dvr (sea level relative to DVR90 datum, cm), sealev_ln (sea level relative to local zero, cm), sea_reg (sea-level registration by Kystdirektoratet, cm), or tw (water temperature, deg C).""}",
+   [value]: @"{""description"": ""Numeric value. cm for sealev_*/sea_reg, deg C for tw.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -493,7 +493,7 @@
   {"column": "observed", "path": "$.observed"},
   {"column": "value", "path": "$.value"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -511,7 +511,7 @@
   {"column": "observed", "path": "$.data.observed"},
   {"column": "value", "path": "$.data.value"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -528,7 +528,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.OceanObservation') | project['observation_id'] = tostring(data.['observation_id']),['station_id'] = tostring(data.['station_id']),['parameter_id'] = tostring(data.['parameter_id']),['observed'] = todatetime(data.['observed']),['value'] = toreal(data.['value']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -547,13 +547,13 @@
    [___subject]: string
 );
 
-.alter table [TidewaterPrediction] docstring "{\"description\": \"A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. Predictions are issued every model cycle and span ~30 days at 10-minute granularity.\"}";
+.alter table [TidewaterPrediction] docstring @"{""description"": ""A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. Predictions are issued every model cycle and span ~30 days at 10-minute granularity.""}";
 
 .alter table [TidewaterPrediction] column-docstrings (
-   [prediction_id]: "{\"description\": \"DMI-assigned row identifier.\"}",
-   [prediction_type]: "{\"description\": \"Granularity of the prediction series (typically '10minutes').\"}",
-   [prediction_time]: "{\"description\": \"Target time for which the value is predicted.\"}",
-   [value]: "{\"description\": \"Predicted sea level (cm vs DVR90 unless otherwise noted).\"}",
+   [prediction_id]: @"{""description"": ""DMI-assigned row identifier.""}",
+   [prediction_type]: @"{""description"": ""Granularity of the prediction series (typically '10minutes').""}",
+   [prediction_time]: @"{""description"": ""Target time for which the value is predicted.""}",
+   [value]: @"{""description"": ""Predicted sea level (cm vs DVR90 unless otherwise noted).""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -575,7 +575,7 @@
   {"column": "prediction_time", "path": "$.prediction_time"},
   {"column": "value", "path": "$.value"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -593,7 +593,7 @@
   {"column": "prediction_time", "path": "$.data.prediction_time"},
   {"column": "value", "path": "$.data.value"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -610,7 +610,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.TidewaterPrediction') | project['prediction_id'] = tostring(data.['prediction_id']),['station_id'] = tostring(data.['station_id']),['prediction_type'] = tostring(data.['prediction_type']),['prediction_time'] = todatetime(data.['prediction_time']),['value'] = toreal(data.['value']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -630,13 +630,13 @@
    [___subject]: string
 );
 
-.alter table [LightningSensor] docstring "{\"description\": \"A DMI lightning detection sensor site. Six DMI-owned sensors cover Denmark; third-party sensors that contribute to triangulation are not catalogued here but their IDs appear in Strike.sensors.\"}";
+.alter table [LightningSensor] docstring @"{""description"": ""A DMI lightning detection sensor site. Six DMI-owned sensors cover Denmark; third-party sensors that contribute to triangulation are not catalogued here but their IDs appear in Strike.sensors.""}";
 
 .alter table [LightningSensor] column-docstrings (
-   [sensor_id]: "{\"description\": \"Stable sensor identifier (1..6 for DMI-owned sensors).\"}",
-   [name]: "{\"description\": \"Human-readable sensor site name.\"}",
-   [owner]: "{\"description\": \"Operating agency (typically 'DMI').\"}",
-   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code (typically 'DNK').\"}",
+   [sensor_id]: @"{""description"": ""Stable sensor identifier (1..6 for DMI-owned sensors).""}",
+   [name]: @"{""description"": ""Human-readable sensor site name.""}",
+   [owner]: @"{""description"": ""Operating agency (typically 'DMI').""}",
+   [country]: @"{""description"": ""ISO 3166-1 alpha-3 country code (typically 'DNK').""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -659,7 +659,7 @@
   {"column": "latitude", "path": "$.latitude"},
   {"column": "longitude", "path": "$.longitude"},
   {"column": "active_from", "path": "$.active_from"},
-  {"column": "active_to", "path": "$.active_to"},
+  {"column": "active_to", "path": "$.active_to"}
 ]
 ```
 
@@ -678,7 +678,7 @@
   {"column": "latitude", "path": "$.data.latitude"},
   {"column": "longitude", "path": "$.data.longitude"},
   {"column": "active_from", "path": "$.data.active_from"},
-  {"column": "active_to", "path": "$.data.active_to"},
+  {"column": "active_to", "path": "$.data.active_to"}
 ]
 ```
 
@@ -695,7 +695,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.lightning.LightningSensor') | project['sensor_id'] = tostring(data.['sensor_id']),['name'] = tostring(data.['name']),['owner'] = tostring(data.['owner']),['country'] = tostring(data.['country']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['active_from'] = todatetime(data.['active_from']),['active_to'] = todatetime(data.['active_to']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -716,18 +716,18 @@
    [___subject]: string
 );
 
-.alter table [LightningStrike] docstring "{\"description\": \"A single triangulated lightning strike. See https://opendatadocs.dmi.govcloud.dk/en/Data/Lightning_Data. observed timestamps have microsecond precision; location accuracy is approximately +/- 500-2000 m.\"}";
+.alter table [LightningStrike] docstring @"{""description"": ""A single triangulated lightning strike. See https://opendatadocs.dmi.govcloud.dk/en/Data/Lightning_Data. observed timestamps have microsecond precision; location accuracy is approximately +/- 500-2000 m.""}";
 
 .alter table [LightningStrike] column-docstrings (
-   [strike_id]: "{\"description\": \"Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03').\"}",
-   [observed]: "{\"description\": \"Strike timestamp (UTC, microsecond precision).\"}",
-   [created]: "{\"description\": \"Timestamp when DMI ingested the strike.\"}",
-   [type]: "{\"description\": \"Strike type code.\"}",
-   [amp]: "{\"description\": \"Signed peak current.\"}",
-   [strokes]: "{\"description\": \"Number of return strokes.\"}",
-   [sensors]: "{\"description\": \"Comma-separated list of sensor IDs that contributed to triangulation (may include third-party sensors not in the Sensor catalog).\"}",
-   [latitude]: "{\"description\": \"Strike latitude (decimal degrees, WGS84).\"}",
-   [longitude]: "{\"description\": \"Strike longitude (decimal degrees, WGS84).\"}",
+   [strike_id]: @"{""description"": ""Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03').""}",
+   [observed]: @"{""description"": ""Strike timestamp (UTC, microsecond precision).""}",
+   [created]: @"{""description"": ""Timestamp when DMI ingested the strike.""}",
+   [type]: @"{""description"": ""Strike type code published by the DMI lightning API: 0 = cloud-to-ground negative (CG-), 1 = cloud-to-ground positive (CG+), and 2 = cloud-to-cloud (CC).""}",
+   [amp]: @"{""description"": ""Signed peak current.""}",
+   [strokes]: @"{""description"": ""Number of return strokes.""}",
+   [sensors]: @"{""description"": ""Comma-separated list of sensor IDs that contributed to triangulation (may include third-party sensors not in the Sensor catalog).""}",
+   [latitude]: @"{""description"": ""Strike latitude (decimal degrees, WGS84).""}",
+   [longitude]: @"{""description"": ""Strike longitude (decimal degrees, WGS84).""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -751,7 +751,7 @@
   {"column": "strokes", "path": "$.strokes"},
   {"column": "sensors", "path": "$.sensors"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -771,7 +771,7 @@
   {"column": "strokes", "path": "$.data.strokes"},
   {"column": "sensors", "path": "$.data.sensors"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -788,7 +788,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.lightning.LightningStrike') | project['strike_id'] = tostring(data.['strike_id']),['observed'] = todatetime(data.['observed']),['created'] = todatetime(data.['created']),['type'] = toint(data.['type']),['amp'] = toreal(data.['amp']),['strokes'] = toint(data.['strokes']),['sensors'] = tostring(data.['sensors']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

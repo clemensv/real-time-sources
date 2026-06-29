@@ -1,4 +1,4 @@
-# JMA Bosai Quake feeder Events
+# JMA Bosai Quake Events
 
 JMA Bosai Earthquake publishes earthquake reports and intensity updates from the Japan Meteorological Agency for Japanese earthquake report areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -210,3 +210,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/jma-bosai-quake.xreg.json`](xreg/jma-bosai-quake.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

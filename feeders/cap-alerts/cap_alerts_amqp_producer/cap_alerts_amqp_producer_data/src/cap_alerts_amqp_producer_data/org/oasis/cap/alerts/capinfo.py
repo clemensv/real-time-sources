@@ -12,14 +12,14 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.urgencyenum import UrgencyEnum
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.capresource import CapResource
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.responsetypelistenum import ResponseTypelistenum
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.categorylistenum import CategoryListEnum
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.capresource import CapResource
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.caparea import CapArea
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.urgencyenum import UrgencyEnum
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
 import datetime
 
 
@@ -205,26 +205,26 @@ class CapInfo:
             An instance of the dataclass.
         """
         return cls(
-            language='rtlxyecjdqirmucefbpc',
+            language='rdqshdjmclvdvrrbhywl',
             category=[CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo],
-            event='epmkafdiurykjgcuvnfo',
-            response_type=[ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter],
+            event='pzitcfqxlwsihdwyjrcn',
+            response_type=[ResponseTypelistenum.Shelter],
             urgency=UrgencyEnum.Immediate,
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
-            audience='vxttwtnagihmjsamlepd',
-            event_code=[None, None, None],
+            audience='fvahywncdwyytwrygrez',
+            event_code=[None, None],
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            sender_name='atoeymjtidhnpecmaevd',
-            headline='vajevlbkmpndapzilfxn',
-            description='wapjfjrruegtdugyzcmd',
-            instruction='vcvfoyyiqfarnnfehsvf',
-            web='svcsggflbaueoxgqazlq',
-            contact='xoelufbvxtrwqfozmbkl',
+            sender_name='fkfnddclkwkrwzxyntkn',
+            headline='qtohvahcnokltlgyexya',
+            description='yjzhoeutpvbwegxvbrjb',
+            instruction='bpgnuxvgyiprexvkuyda',
+            web='wocopaorsbibqkaopdzy',
+            contact='idmusipgerpeljsyszmy',
             parameter=[None, None, None, None, None],
-            resource=[None, None],
-            area=[None, None],
+            resource=[None],
+            area=[None, None, None],
             ends=datetime.datetime.now(datetime.timezone.utc)
         )

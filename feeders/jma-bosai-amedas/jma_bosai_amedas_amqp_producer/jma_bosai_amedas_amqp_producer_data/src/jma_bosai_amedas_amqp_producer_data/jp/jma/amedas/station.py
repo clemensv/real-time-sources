@@ -177,16 +177,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='dkpjeldkbgwekvgjntdl',
-            kj_name='ewhndkscsvakxpeyznul',
-            kana='hcluqeejxxmatnhwzcvf',
-            en_name='hukmrpmiyjqgifpudhbi',
-            latitude=float(44.32343959279335),
-            longitude=float(29.24034534772275),
-            altitude_m=float(12.55328726680698),
+            station_code='biypzfgcrvvuftqzvmxh',
+            kj_name='kqyyunwwiotlpzjpnags',
+            kana='dnrtmhcjarfwgigapqlz',
+            en_name='wrnrfsibzgpwxvqkaxqw',
+            latitude=float(29.2148068313961),
+            longitude=float(66.60328232263677),
+            altitude_m=float(63.12984249475504),
             station_type=StationTypeenum.A,
-            elems_bitmask='qpqlumxbbifghjppwcgq',
-            enabled_measurements=['kprevcwgkyneqphwomki', 'tdbifbhkewilambnjhdl', 'jwthfwdcqshgqpbgpjrw', 'cfmplnqtpkxvskzsavxl'],
-            prefecture='nimkzkdqcjfsylqdywjf',
+            elems_bitmask='csgdznwpbqaqnxxnqawf',
+            enabled_measurements=['aizlbzmoqymxqcnlkhaf', 'wyolubhimadgbkoduxtl', 'fgjqhfkallksphnojipj', 'eusoxevqgytlmcieqgpt', 'dvzfrhlkaesfigcpeihi'],
+            prefecture='oqeaobhotmmdravtbnxj',
             event=StationEventEnum.info
         )

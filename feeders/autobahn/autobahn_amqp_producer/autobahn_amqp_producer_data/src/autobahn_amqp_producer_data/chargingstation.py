@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -195,24 +195,24 @@ class ChargingStation:
             An instance of the dataclass.
         """
         return cls(
-            identifier='teoysaqqrieyzniaxpop',
-            road='nubwzzwyyibwsxsyqjvy',
-            road_ids=['kzzehsltetauxktcwqrv', 'rfkbinkaqvmnjemgkkej', 'wagxdjeprxzjdzujbzrr'],
+            identifier='uysvboukscxfaplkhoyw',
+            road='oobfxnfpwlmvwdqechyq',
+            road_ids=['uhnvpiedaanbujklosri', 'ozezpikutbjflklulogg', 'tlwsnvwzqisueffphkkq', 'ztbvwthrgzugpkedxyrt'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='wdmcvfltlcncsvxjveef',
-            subtitle='whonjjrszrxudwygmnbp',
+            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
+            title='kfhhqhiitwppfeijntkr',
+            subtitle='zuwnjimjhjblijbyypam',
             description_lines=None,
-            future=True,
-            is_blocked=False,
-            icon='mkrypulxpnurklyfdaoz',
-            extent='zbzttioybgamdkbjcxyk',
-            point='xnkrbxpqqfccjuzxcfyu',
-            coordinate_lat=float(24.123316870259938),
-            coordinate_lon=float(38.50606149940678),
-            address_line='xlfgccaniutxxshxmvig',
-            charging_point_count=int(94),
-            charging_points_json='dowrjbzcbcxsdupozbld',
-            route_recommendation_json='cjagdlcdjeipzsflqpag',
+            future=False,
+            is_blocked=True,
+            icon='sqbyjtuhwkjazdgolkfs',
+            extent='mjfcgxvhhcaifibqqbtl',
+            point='hdeuxxynllxnndjuuhvg',
+            coordinate_lat=float(19.311812371457414),
+            coordinate_lon=float(12.729354810053174),
+            address_line='ygmguoauxtxvpxfqrpbg',
+            charging_point_count=int(44),
+            charging_points_json='wtwohtbxppeyzrbwubis',
+            route_recommendation_json='phzdftwculdqmpxvajtm',
             footer_lines=None
         )

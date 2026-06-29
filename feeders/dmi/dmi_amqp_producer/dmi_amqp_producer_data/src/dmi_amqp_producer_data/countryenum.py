@@ -3,7 +3,7 @@ from enum import Enum
 
 class CountryEnum(Enum):
     """
-    ISO 3166-1 alpha-3 country code.
+    ISO 3166-1 alpha-3 country code (typically 'DNK').
     """
     DNK = 'DNK'
     GRL = 'GRL'

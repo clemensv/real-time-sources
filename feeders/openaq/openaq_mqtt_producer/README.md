@@ -160,7 +160,11 @@ org_openaq_mqtt_location_async:  Callable[[PartitionContext, EventData, CloudEve
 
 make test
 
-```Asynchronous handler hook for `org.openaq.mqtt.Location`:
+```Asynchronous handler hook for `org.openaq.mqtt.Location`: Reference catalog metadata for one OpenAQ monitoring
+location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84
+coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation
+dates. Emitted before measurement events and refreshed periodically so consumers can interpret measurements without
+separately calling OpenAQ.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -306,7 +310,10 @@ org_openaq_mqtt_sensor_async:  Callable[[PartitionContext, EventData, CloudEvent
 
 make test
 
-```Asynchronous handler hook for `org.openaq.mqtt.Sensor`:
+```Asynchronous handler hook for `org.openaq.mqtt.Sensor`: Reference catalog metadata for one OpenAQ sensor from API v3
+`GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
+OpenAQ exposes it.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

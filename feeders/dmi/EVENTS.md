@@ -1,6 +1,6 @@
 # DMI Events
 
-<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
+Danmarks Meteorologiske Institut (DMI) open-data triad: meteorological observations (metObs), oceanographic observations + tidewater predictions (oceanObs), and triangulated lightning strikes (lightningData). All payloads ride a single Kafka topic 'dmi' multiplexed by ce_type. The MQTT endpoint carries metObs + oceanObs only as retained QoS-1 last-known-value (LKV) topics; lightning is excluded from MQTT because per-strike events do not fit LKV semantics.
 
 ## At a glance
 
@@ -376,7 +376,7 @@ A single oceanographic observation. Parameters are sealev_dvr (sea level vs DVR9
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}/{parameter_id}`. `{station_id}` is a payload field with the same name; `{parameter_id}` is one of sealev_dvr, sealev_ln, sea_reg, tw. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}/{parameter_id}`. `{station_id}` is a payload field with the same name; `{parameter_id}` is DMI oceanographic parameter identifier: sealev_dvr (sea level relative to DVR90 datum, cm), sealev_ln (sea level relative to local zero, cm), sea_reg (sea-level registration by Kystdirektoratet, cm), or tw (water temperature, deg C). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -392,17 +392,11 @@ Each event identifies the real-world resource with `{station_id}/{parameter_id}`
 
 - **`observation_id`** (string or null, optional): DMI-assigned row identifier (not stable across re-ingestions).
 - **`station_id`** (string, required): No description provided.
-- **`parameter_id`** (enum, required): One of sealev_dvr, sealev_ln, sea_reg, tw.
+- **`parameter_id`** (string, required): DMI oceanographic parameter identifier: sealev_dvr (sea level relative to DVR90 datum, cm), sealev_ln (sea level relative to local zero, cm), sea_reg (sea-level registration by Kystdirektoratet, cm), or tw (water temperature, deg C).
 - **`observed`** (datetime, required): No description provided.
 - **`value`** (double, required): Numeric value. cm for sealev_*/sea_reg, deg C for tw.
 - **`latitude`** (double or null, optional, deg): No description provided. Constraints: minimum `-90`, maximum `90`.
 - **`longitude`** (double or null, optional, deg): No description provided. Constraints: minimum `-180`, maximum `180`.
-##### `parameter_id` values
-
-- `sealev_dvr`
-- `sealev_ln`
-- `sea_reg`
-- `tw`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -411,7 +405,7 @@ Synthetic example values are generated deterministically from the schema: consta
 {
   "observation_id": "string",
   "station_id": "string",
-  "parameter_id": "sealev_dvr",
+  "parameter_id": "string",
   "observed": "2024-01-01T00:00:00Z",
   "value": 0,
   "latitude": 0,
@@ -557,7 +551,7 @@ Each event identifies the real-world resource with `{strike_id}`. `{strike_id}` 
 - **`strike_id`** (string, required): Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03').
 - **`observed`** (datetime, required): Strike timestamp (UTC, microsecond precision).
 - **`created`** (datetime or null, optional): Timestamp when DMI ingested the strike.
-- **`type`** (integer, required): Strike type code.
+- **`type`** (integer, required): Strike type code published by the DMI lightning API: 0 = cloud-to-ground negative (CG-), 1 = cloud-to-ground positive (CG+), and 2 = cloud-to-cloud (CC).
 - **`amp`** (double or null, optional, kA): Signed peak current.
 - **`strokes`** (integer or null, optional): Number of return strokes. Constraints: minimum `1`.
 - **`sensors`** (string or null, optional): Comma-separated list of sensor IDs that contributed to triangulation (may include third-party sensors not in the Sensor catalog).
@@ -611,5 +605,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
 - Danish Meteorological Institute Open Data
-API: <https://opendatadocs.dmi.govcloud.dk/>
-- https://dmiapi.govcloud.dk/: <https://dmiapi.govcloud.dk/>
+API: <https://opendataapi.dmi.dk/>

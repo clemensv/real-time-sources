@@ -1,4 +1,4 @@
-# German Waters Bridge Events
+# German Waters Events
 
 German Waters publishes water level and discharge observations from German state open data portals for German state water monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -8,7 +8,7 @@ German Waters publishes water level and discharge observations from German state
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
-- **Operations:** The checked-in guide documents a default polling interval of 900 seconds.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `german-waters`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/de/wsv/german-waters/{water_body}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/german-waters`, message subject `{station_id}`; application properties water_body `{water_body}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/german-waters`, message subject `{station_id}` |
 
 #### Payload
 
@@ -88,17 +88,17 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_name`** (string, required): Human-readable name of the monitoring station.
 - **`water_body`** (string, required): Provider-supplied water body value for this record.
 - **`state`** (string, optional): State, province, or region containing the station.
-- **`region`** (string, optional): Provider-supplied region value for this record.
+- **`region`** (string or null, optional): Provider-supplied region value for this record.
 - **`provider`** (string, required): Provider-supplied provider value for this record.
 - **`latitude`** (double, optional): Latitude of the station in WGS 84 coordinates.
 - **`longitude`** (double, optional): Longitude of the station in WGS 84 coordinates.
-- **`river_km`** (double, optional): Provider-supplied river km value for this record.
-- **`altitude`** (double, optional): Provider-supplied altitude value for this record.
-- **`station_type`** (string, optional): Provider-supplied station type value for this record.
-- **`warn_level_cm`** (double, optional): Provider-supplied warn level cm value for this record.
-- **`alarm_level_cm`** (double, optional): Provider-supplied alarm level cm value for this record.
-- **`warn_level_m3s`** (double, optional): Provider-supplied warn level m3s value for this record.
-- **`alarm_level_m3s`** (double, optional): Provider-supplied alarm level m3s value for this record.
+- **`river_km`** (double or null, optional): Provider-supplied river km value for this record.
+- **`altitude`** (double or null, optional): Provider-supplied altitude value for this record.
+- **`station_type`** (string or null, optional): Provider-supplied station type value for this record.
+- **`warn_level_cm`** (double or null, optional): Provider-supplied warn level cm value for this record.
+- **`alarm_level_cm`** (double or null, optional): Provider-supplied alarm level cm value for this record.
+- **`warn_level_m3s`** (double or null, optional): Provider-supplied warn level m3s value for this record.
+- **`alarm_level_m3s`** (double or null, optional): Provider-supplied alarm level m3s value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -145,7 +145,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `german-waters`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/de/wsv/german-waters/{water_body}/{station_id}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/german-waters`, message subject `{station_id}`; application properties water_body `{water_body}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/german-waters`, message subject `{station_id}` |
 
 #### Payload
 
@@ -203,7 +203,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The checked-in guide documents a default polling interval of 900 seconds.
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 - Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
@@ -213,3 +212,5 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/german_waters.xreg.json`](xreg/german_waters.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
+- Azure Service Bus emulator: <https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator>

@@ -192,17 +192,17 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            location_id=int(73),
-            sensor_id=int(23),
-            country_iso='mtcyywxavwgptxhhewgj',
-            parameter_id=int(22),
+            location_id=int(91),
+            sensor_id=int(31),
+            country_iso='lkckuflydojvgsvupshj',
+            parameter_id=int(13),
             parameter_name=ParameterNameenum.pm25,
-            parameter_units='mzypjkgecjipajsivpag',
+            parameter_units='alyspfbpfyhxflxdjnyb',
             datetime=datetime.datetime.now(datetime.timezone.utc),
-            value=float(25.008825481301866),
-            latitude=float(88.30865272586435),
-            longitude=float(97.32407217119521),
-            is_valid=False,
+            value=float(50.45690905392384),
+            latitude=float(85.75601195581339),
+            longitude=float(93.61173264841818),
+            is_valid=True,
             has_flags=False,
             poll_time=datetime.datetime.now(datetime.timezone.utc)
         )

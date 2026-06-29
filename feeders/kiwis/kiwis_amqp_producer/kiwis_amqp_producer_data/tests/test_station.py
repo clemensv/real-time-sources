@@ -28,15 +28,15 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            kiwis_id='umgeftqqbyxktjqjrppz',
-            base_url='ondtmdjgnfvtudnllugo',
-            station_id='zzsjuoqxnhwpfuomdbmp',
-            station_no='xmqrwoqynjeyzhmaaeva',
-            station_name='chxjzkmjjhgmcjwhgzag',
-            latitude=float(3.4831362492394713),
-            longitude=float(93.22511660601135),
-            river_name='yxfgkpxcorchbgfmonvi',
-            catchment_name='hmmnhigldbxfxbnpbijv'
+            kiwis_id='naaixbazbmhcrtnzsyrn',
+            base_url='pfxsbjgijezzdqigkcsb',
+            station_id='ubtezmhqfcfvunmmqift',
+            station_no='jyvzqkmxaiwqhurvofho',
+            station_name='hlxvopuwmqerhffdxflf',
+            latitude=float(16.413536623979084),
+            longitude=float(59.49127413117979),
+            river_name='iwszuybqtzfdtsqhnqhw',
+            catchment_name='emhxzvytdrvfkjqcvulj'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_Station(unittest.TestCase):
         """
         Test kiwis_id property
         """
-        test_value = 'umgeftqqbyxktjqjrppz'
+        test_value = 'naaixbazbmhcrtnzsyrn'
         self.instance.kiwis_id = test_value
         self.assertEqual(self.instance.kiwis_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_Station(unittest.TestCase):
         """
         Test base_url property
         """
-        test_value = 'ondtmdjgnfvtudnllugo'
+        test_value = 'pfxsbjgijezzdqigkcsb'
         self.instance.base_url = test_value
         self.assertEqual(self.instance.base_url, test_value)
     
@@ -61,7 +61,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'zzsjuoqxnhwpfuomdbmp'
+        test_value = 'ubtezmhqfcfvunmmqift'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -69,7 +69,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_no property
         """
-        test_value = 'xmqrwoqynjeyzhmaaeva'
+        test_value = 'jyvzqkmxaiwqhurvofho'
         self.instance.station_no = test_value
         self.assertEqual(self.instance.station_no, test_value)
     
@@ -77,7 +77,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'chxjzkmjjhgmcjwhgzag'
+        test_value = 'hlxvopuwmqerhffdxflf'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -85,7 +85,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(3.4831362492394713)
+        test_value = float(16.413536623979084)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(93.22511660601135)
+        test_value = float(59.49127413117979)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -101,7 +101,7 @@ class Test_Station(unittest.TestCase):
         """
         Test river_name property
         """
-        test_value = 'yxfgkpxcorchbgfmonvi'
+        test_value = 'iwszuybqtzfdtsqhnqhw'
         self.instance.river_name = test_value
         self.assertEqual(self.instance.river_name, test_value)
     
@@ -109,7 +109,7 @@ class Test_Station(unittest.TestCase):
         """
         Test catchment_name property
         """
-        test_value = 'hmmnhigldbxfxbnpbijv'
+        test_value = 'emhxzvytdrvfkjqcvulj'
         self.instance.catchment_name = test_value
         self.assertEqual(self.instance.catchment_name, test_value)
     

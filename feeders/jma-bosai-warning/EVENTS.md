@@ -1,4 +1,4 @@
-# JMA Bosai Warning feeder Events
+# JMA Bosai Warning & Tsunami Events
 
 JMA Bosai Warnings publishes weather warnings and advisories from the Japan Meteorological Agency for Japanese weather-warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -323,3 +323,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/jma-bosai-warning.xreg.json`](xreg/jma-bosai-warning.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

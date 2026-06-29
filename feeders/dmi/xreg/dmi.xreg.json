@@ -1065,21 +1065,7 @@
                   },
                   "parameter_id": {
                     "type": "string",
-                    "description": "One of sealev_dvr, sealev_ln, sea_reg, tw.",
-                    "altenums": {
-                      "descriptions": {
-                        "sealev_dvr": "Sea level relative to DVR90 datum (cm)",
-                        "sealev_ln": "Sea level relative to local zero (cm)",
-                        "sea_reg": "Sea level registration by Kystdirektoratet (cm)",
-                        "tw": "Water temperature (deg C)"
-                      }
-                    },
-                    "enum": [
-                      "sealev_dvr",
-                      "sealev_ln",
-                      "sea_reg",
-                      "tw"
-                    ]
+                    "description": "DMI oceanographic parameter identifier: sealev_dvr (sea level relative to DVR90 datum, cm), sealev_ln (sea level relative to local zero, cm), sea_reg (sea-level registration by Kystdirektoratet, cm), or tw (water temperature, deg C)."
                   },
                   "observed": {
                     "type": "datetime"
@@ -1315,14 +1301,7 @@
                   },
                   "type": {
                     "type": "integer",
-                    "description": "Strike type code.",
-                    "altenums": {
-                      "descriptions": {
-                        "0": "Cloud-to-ground negative (CG-)",
-                        "1": "Cloud-to-ground positive (CG+)",
-                        "2": "Cloud-to-cloud (CC)"
-                      }
-                    }
+                    "description": "Strike type code published by the DMI lightning API: 0 = cloud-to-ground negative (CG-), 1 = cloud-to-ground positive (CG+), and 2 = cloud-to-cloud (CC)."
                   },
                   "amp": {
                     "type": [

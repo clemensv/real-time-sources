@@ -39,15 +39,15 @@
    [___subject]: string
 );
 
-.alter table ['be.irail.Station'] docstring "{\"description\": \"Metadata for a Belgian railway station in the NMBS/SNCB (Nationale Maatschappij der Belgische Spoorwegen / Soci\\u00e9t\\u00e9 Nationale des Chemins de fer Belges) network. Station identifiers follow the UIC (Union Internationale des Chemins de fer) numbering scheme with a Belgian country prefix of 0088. The iRail API provides these as nine-digit codes prefixed with 'BE.NMBS.'.\"}";
+.alter table ['be.irail.Station'] docstring @"{""description"": ""Metadata for a Belgian railway station in the NMBS/SNCB network as provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has a unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.""}";
 
 .alter table ['be.irail.Station'] column-docstrings (
-   [station_id]: "{\"description\": \"Nine-digit UIC-derived numeric station identifier assigned by NMBS. Extracted from the iRail id field by stripping the 'BE.NMBS.' prefix. Example: '008814001' for Brussels-South (Bruxelles-Midi / Brussel-Zuid).\"}",
-   [name]: "{\"description\": \"Default display name of the station in the requested language. Example: 'Brussels-South'.\"}",
-   [standard_name]: "{\"description\": \"Consistent official station name that does not vary by language, typically using the primary local name. Example: 'Bruxelles-Midi / Brussel-Zuid'.\"}",
-   [longitude]: "{\"description\": \"Longitude of the station in WGS84 decimal degrees. Sourced from the iRail locationX field.\"}",
-   [latitude]: "{\"description\": \"Latitude of the station in WGS84 decimal degrees. Sourced from the iRail locationY field.\"}",
-   [uri]: "{\"description\": \"Stable linked-data URI identifying this station in the iRail namespace. Example: 'http://irail.be/stations/NMBS/008814001'.\"}",
+   [station_id]: @"{""description"": ""Nine-digit UIC-derived numeric station identifier assigned by NMBS. Extracted from the iRail id field by stripping the 'BE.NMBS.' prefix. Example: '008814001' for Brussels-South (Bruxelles-Midi / Brussel-Zuid).""}",
+   [name]: @"{""description"": ""Default display name of the station in the requested language. Example: 'Brussels-South'.""}",
+   [standard_name]: @"{""description"": ""Consistent official station name that does not vary by language, typically using the primary local name. Example: 'Bruxelles-Midi / Brussel-Zuid'.""}",
+   [longitude]: @"{""description"": ""Longitude of the station in WGS84 decimal degrees. Sourced from the iRail locationX field.""}",
+   [latitude]: @"{""description"": ""Latitude of the station in WGS84 decimal degrees. Sourced from the iRail locationY field.""}",
+   [uri]: @"{""description"": ""Stable linked-data URI identifying this station in the iRail namespace. Example: 'http://irail.be/stations/NMBS/008814001'.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -68,7 +68,7 @@
   {"column": "standard_name", "path": "$.standard_name"},
   {"column": "longitude", "path": "$.longitude"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "uri", "path": "$.uri"},
+  {"column": "uri", "path": "$.uri"}
 ]
 ```
 
@@ -85,7 +85,7 @@
   {"column": "standard_name", "path": "$.data.standard_name"},
   {"column": "longitude", "path": "$.data.longitude"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "uri", "path": "$.data.uri"},
+  {"column": "uri", "path": "$.data.uri"}
 ]
 ```
 
@@ -102,7 +102,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.irail.Station') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['standard_name'] = tostring(data.['standard_name']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['uri'] = tostring(data.['uri']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -119,14 +119,14 @@
    [___subject]: string
 );
 
-.alter table ['be.irail.StationBoard'] docstring "{\"description\": \"Real-time departure board for a Belgian railway station. Contains all currently visible departures from the station as returned by the iRail liveboard API. The board reflects the current state of the departure display at the station, including delays, cancellations, and platform assignments. Typically shows the next 30-50 departures within a rolling time window.\"}";
+.alter table ['be.irail.StationBoard'] docstring @"{""description"": ""A real-time departure board snapshot for a Belgian railway station from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event replaces the previous board state for the same station.""}";
 
 .alter table ['be.irail.StationBoard'] column-docstrings (
-   [station_id]: "{\"description\": \"Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema.\"}",
-   [station_name]: "{\"description\": \"Display name of the station this board belongs to.\"}",
-   [retrieved_at]: "{\"description\": \"ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field.\"}",
-   [departure_count]: "{\"description\": \"Number of departures in this board snapshot. Matches the length of the departures array.\"}",
-   [departures]: "{\"description\": \"Array of departure entries currently shown on the station's departure board. Each entry represents a train service scheduled to depart from this station, enriched with real-time delay and cancellation information.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/be/irail/Departure\"}, \"description\": \"Array of departure entries currently shown on the station's departure board. Each entry represents a train service scheduled to depart from this station, enriched with real-time delay and cancellation information.\"}}",
+   [station_id]: @"{""description"": ""Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema.""}",
+   [station_name]: @"{""description"": ""Display name of the station this board belongs to.""}",
+   [retrieved_at]: @"{""description"": ""ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field.""}",
+   [departure_count]: @"{""description"": ""Number of departures in this board snapshot. Matches the length of the departures array.""}",
+   [departures]: @"{""description"": ""Array of departure entries currently shown on the station's departure board. Each entry represents a train service scheduled to depart from this station, enriched with real-time delay and cancellation information."", ""schema"": {""type"": ""array"", ""items"": {""$ref"": ""#/definitions/be/irail/Departure""}, ""description"": ""Array of departure entries currently shown on the station's departure board. Each entry represents a train service scheduled to depart from this station, enriched with real-time delay and cancellation information.""}}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -146,7 +146,7 @@
   {"column": "station_name", "path": "$.station_name"},
   {"column": "retrieved_at", "path": "$.retrieved_at"},
   {"column": "departure_count", "path": "$.departure_count"},
-  {"column": "departures", "path": "$.departures"},
+  {"column": "departures", "path": "$.departures"}
 ]
 ```
 
@@ -162,7 +162,7 @@
   {"column": "station_name", "path": "$.data.station_name"},
   {"column": "retrieved_at", "path": "$.data.retrieved_at"},
   {"column": "departure_count", "path": "$.data.departure_count"},
-  {"column": "departures", "path": "$.data.departures"},
+  {"column": "departures", "path": "$.data.departures"}
 ]
 ```
 
@@ -179,7 +179,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.irail.StationBoard') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['retrieved_at'] = tostring(data.['retrieved_at']),['departure_count'] = toint(data.['departure_count']),['departures'] = todynamic(data.['departures']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -196,14 +196,14 @@
    [___subject]: string
 );
 
-.alter table ['be.irail.ArrivalBoard'] docstring "{\"description\": \"Real-time arrival board for a Belgian railway station. Contains all currently visible arrivals at the station as returned by the iRail liveboard API with arrdep=arrival. The board reflects the current state of the arrival display at the station, including delays, cancellations, and platform assignments.\"}";
+.alter table ['be.irail.ArrivalBoard'] docstring @"{""description"": ""A real-time arrival board snapshot for a Belgian railway station from the iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event replaces the previous arrival-board state for the same station.""}";
 
 .alter table ['be.irail.ArrivalBoard'] column-docstrings (
-   [station_id]: "{\"description\": \"Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema.\"}",
-   [station_name]: "{\"description\": \"Display name of the station this board belongs to.\"}",
-   [retrieved_at]: "{\"description\": \"ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field.\"}",
-   [arrival_count]: "{\"description\": \"Number of arrivals in this board snapshot. Matches the length of the arrivals array.\"}",
-   [arrivals]: "{\"description\": \"Array of arrival entries currently shown on the station's arrival board. Each entry represents a train service scheduled to arrive at this station, enriched with real-time delay and cancellation information.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/be/irail/Arrival\"}, \"description\": \"Array of arrival entries currently shown on the station's arrival board. Each entry represents a train service scheduled to arrive at this station, enriched with real-time delay and cancellation information.\"}}",
+   [station_id]: @"{""description"": ""Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema.""}",
+   [station_name]: @"{""description"": ""Display name of the station this board belongs to.""}",
+   [retrieved_at]: @"{""description"": ""ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field.""}",
+   [arrival_count]: @"{""description"": ""Number of arrivals in this board snapshot. Matches the length of the arrivals array.""}",
+   [arrivals]: @"{""description"": ""Array of arrival entries currently shown on the station's arrival board. Each entry represents a train service scheduled to arrive at this station, enriched with real-time delay and cancellation information."", ""schema"": {""type"": ""array"", ""items"": {""$ref"": ""#/definitions/be/irail/Arrival""}, ""description"": ""Array of arrival entries currently shown on the station's arrival board. Each entry represents a train service scheduled to arrive at this station, enriched with real-time delay and cancellation information.""}}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -223,7 +223,7 @@
   {"column": "station_name", "path": "$.station_name"},
   {"column": "retrieved_at", "path": "$.retrieved_at"},
   {"column": "arrival_count", "path": "$.arrival_count"},
-  {"column": "arrivals", "path": "$.arrivals"},
+  {"column": "arrivals", "path": "$.arrivals"}
 ]
 ```
 
@@ -239,7 +239,7 @@
   {"column": "station_name", "path": "$.data.station_name"},
   {"column": "retrieved_at", "path": "$.data.retrieved_at"},
   {"column": "arrival_count", "path": "$.data.arrival_count"},
-  {"column": "arrivals", "path": "$.data.arrivals"},
+  {"column": "arrivals", "path": "$.data.arrivals"}
 ]
 ```
 
@@ -256,7 +256,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.irail.ArrivalBoard') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['retrieved_at'] = tostring(data.['retrieved_at']),['arrival_count'] = toint(data.['arrival_count']),['arrivals'] = todynamic(data.['arrivals']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

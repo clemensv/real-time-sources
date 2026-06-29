@@ -175,15 +175,15 @@ class TimeseriesValue:
             An instance of the dataclass.
         """
         return cls(
-            kiwis_id='ovlkapuwwzcsqxpfcmra',
-            base_url='uirbyrzzojkbrwncvmda',
-            ts_id='soejozufqdkuhefxjsox',
-            station_id='fwiuodbwjcmbaffzeuol',
+            kiwis_id='cszcumhxhxpmuimckpye',
+            base_url='trnbeacmfzxwjcnxxcvm',
+            ts_id='ohpbeodlqalxrypfxqcy',
+            station_id='gjsqwpyjsljovzgqubis',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(42.25480705651674),
-            quality_code=int(44),
-            unit_name='pyhfpoyucbdedropqzen',
-            unit_symbol='gppebymkqwppnpiobryj',
-            parametertype_name='tlaayzmsjiicftanmohc',
-            stationparameter_name='jlhiwgyugcmxkzxqpaqk'
+            value=float(48.384842238038296),
+            quality_code=int(91),
+            unit_name='lzqzdtphrmqvctjwzpvw',
+            unit_symbol='wcuiagkttpvxkvhmborh',
+            parametertype_name='sjxymxexcoieijimqkxx',
+            stationparameter_name='gekslnrvavaroquotmwm'
         )

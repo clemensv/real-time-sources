@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -197,25 +197,25 @@ class ParkingLorry:
             An instance of the dataclass.
         """
         return cls(
-            identifier='fnlgofvjmawozhlatdvr',
-            road='pcnlofkvlcxjzohrgaui',
-            road_ids=['yayvlxuhtaftokfctwsk', 'jcqcxjssjxdoiwycvdnn', 'jszwzgubdhmigxfflgnv'],
+            identifier='pttjiopnomegpeddwpru',
+            road='yuutozvizswijfgupxrj',
+            road_ids=['jltbepcczbycvqhlfzqi'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='cjlecmcerfwubfzqidpq',
-            subtitle='gkkckqjzmldugjxaopqj',
+            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
+            title='cqyifmzyifcjdkjpqtcz',
+            subtitle='iqgxwtwmapnybssqdosd',
             description_lines=None,
             future=False,
             is_blocked=True,
-            icon='iljfnzwnakmjhlqxotvk',
-            start_lc_position=int(56),
-            extent='iczlkatmutelqkwgatzn',
-            point='rloytnsoveattudeuyzu',
-            coordinate_lat=float(9.474335264746259),
-            coordinate_lon=float(20.453171744195487),
-            route_recommendation_json='grmxplrpyvgyqruypopr',
+            icon='xewvbnbpvibedtcedsmd',
+            start_lc_position=int(98),
+            extent='jmjccpiirnlpawdrusdi',
+            point='emrlfyqdlwpxspdghyil',
+            coordinate_lat=float(16.976082636694823),
+            coordinate_lon=float(94.83049160250555),
+            route_recommendation_json='wjgmzxtkurtgthzweakr',
             footer_lines=None,
             amenity_descriptions=None,
-            car_space_count=int(1),
-            lorry_space_count=int(27)
+            car_space_count=int(40),
+            lorry_space_count=int(4)
         )

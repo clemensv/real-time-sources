@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table ['uk.gov.tfl.road.RoadCorridor'] (
+.create-merge table [RoadCorridor] (
    [road_id]: string,
    [display_name]: string,
    [status_severity]: string,
@@ -42,18 +42,18 @@
    [___subject]: string
 );
 
-.alter table ['uk.gov.tfl.road.RoadCorridor'] docstring "{\"description\": \"Reference record for a TfL managed road corridor fetched from GET /Road.\"}";
+.alter table [RoadCorridor] docstring @"{""description"": ""Reference record for a TfL managed road corridor fetched from GET /Road.""}";
 
-.alter table ['uk.gov.tfl.road.RoadCorridor'] column-docstrings (
-   [road_id]: "{\"description\": \"Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key.\"}",
-   [display_name]: "{\"description\": \"Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'.\"}",
-   [status_severity]: "{\"description\": \"Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'.\"}",
-   [status_severity_description]: "{\"description\": \"Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'.\"}",
-   [bounds]: "{\"description\": \"Bounding box for the road corridor as a JSON array string. Corresponds to 'bounds' in the upstream response. Format: '[[lon_sw,lat_sw],[lon_ne,lat_ne]]' in WGS84 decimal degrees.\"}",
-   [envelope]: "{\"description\": \"GeoJSON envelope polygon for the road corridor geometry. Corresponds to 'envelope' in the upstream response.\"}",
-   [url]: "{\"description\": \"URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response.\"}",
-   [status_aggregation_start_date]: "{\"description\": \"Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response.\"}",
-   [status_aggregation_end_date]: "{\"description\": \"End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response.\"}",
+.alter table [RoadCorridor] column-docstrings (
+   [road_id]: @"{""description"": ""Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key.""}",
+   [display_name]: @"{""description"": ""Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'.""}",
+   [status_severity]: @"{""description"": ""Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'.""}",
+   [status_severity_description]: @"{""description"": ""Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'.""}",
+   [bounds]: @"{""description"": ""Bounding box for the road corridor as a JSON array string. Corresponds to 'bounds' in the upstream response. Format: '[[lon_sw,lat_sw],[lon_ne,lat_ne]]' in WGS84 decimal degrees.""}",
+   [envelope]: @"{""description"": ""GeoJSON envelope polygon for the road corridor geometry. Corresponds to 'envelope' in the upstream response.""}",
+   [url]: @"{""description"": ""URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response.""}",
+   [status_aggregation_start_date]: @"{""description"": ""Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response.""}",
+   [status_aggregation_end_date]: @"{""description"": ""End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -61,7 +61,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['uk.gov.tfl.road.RoadCorridor'] ingestion json mapping "uk.gov.tfl.road.RoadCorridor_json_flat"
+.create-or-alter table [RoadCorridor] ingestion json mapping "RoadCorridor_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -77,11 +77,11 @@
   {"column": "envelope", "path": "$.envelope"},
   {"column": "url", "path": "$.url"},
   {"column": "status_aggregation_start_date", "path": "$.status_aggregation_start_date"},
-  {"column": "status_aggregation_end_date", "path": "$.status_aggregation_end_date"},
+  {"column": "status_aggregation_end_date", "path": "$.status_aggregation_end_date"}
 ]
 ```
 
-.create-or-alter table ['uk.gov.tfl.road.RoadCorridor'] ingestion json mapping "uk.gov.tfl.road.RoadCorridor_json_ce_structured"
+.create-or-alter table [RoadCorridor] ingestion json mapping "RoadCorridor_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,28 +97,28 @@
   {"column": "envelope", "path": "$.data.envelope"},
   {"column": "url", "path": "$.data.url"},
   {"column": "status_aggregation_start_date", "path": "$.data.status_aggregation_start_date"},
-  {"column": "status_aggregation_end_date", "path": "$.data.status_aggregation_end_date"},
+  {"column": "status_aggregation_end_date", "path": "$.data.status_aggregation_end_date"}
 ]
 ```
 
-.drop materialized-view ['uk.gov.tfl.road.RoadCorridorLatest'] ifexists;
+.drop materialized-view RoadCorridorLatest ifexists;
 
-.create materialized-view with (backfill=true) ['uk.gov.tfl.road.RoadCorridorLatest'] on table ['uk.gov.tfl.road.RoadCorridor'] {
-    ['uk.gov.tfl.road.RoadCorridor'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) RoadCorridorLatest on table RoadCorridor {
+    RoadCorridor | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['uk.gov.tfl.road.RoadCorridor'] policy update
+.alter table [RoadCorridor] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.gov.tfl.road.RoadCorridor') | project['road_id'] = tostring(data.['road_id']),['display_name'] = tostring(data.['display_name']),['status_severity'] = tostring(data.['status_severity']),['status_severity_description'] = tostring(data.['status_severity_description']),['bounds'] = tostring(data.['bounds']),['envelope'] = tostring(data.['envelope']),['url'] = tostring(data.['url']),['status_aggregation_start_date'] = todatetime(data.['status_aggregation_start_date']),['status_aggregation_end_date'] = todatetime(data.['status_aggregation_end_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['uk.gov.tfl.road.RoadStatus'] (
+.create-merge table [RoadStatus] (
    [road_id]: string,
    [display_name]: string,
    [status_severity]: string,
@@ -135,18 +135,18 @@
    [___subject]: string
 );
 
-.alter table ['uk.gov.tfl.road.RoadStatus'] docstring "{\"description\": \"Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status.\"}";
+.alter table [RoadStatus] docstring @"{""description"": ""Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status.""}";
 
-.alter table ['uk.gov.tfl.road.RoadStatus'] column-docstrings (
-   [road_id]: "{\"description\": \"Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key.\"}",
-   [display_name]: "{\"description\": \"Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'.\"}",
-   [status_severity]: "{\"description\": \"Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'.\"}",
-   [status_severity_description]: "{\"description\": \"Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'.\"}",
-   [bounds]: "{\"description\": \"Bounding box for the road corridor as a JSON array string. Corresponds to 'bounds' in the upstream response. Format: '[[lon_sw,lat_sw],[lon_ne,lat_ne]]' in WGS84 decimal degrees.\"}",
-   [envelope]: "{\"description\": \"GeoJSON envelope polygon for the road corridor geometry. Corresponds to 'envelope' in the upstream response.\"}",
-   [url]: "{\"description\": \"URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response.\"}",
-   [status_aggregation_start_date]: "{\"description\": \"Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response.\"}",
-   [status_aggregation_end_date]: "{\"description\": \"End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response.\"}",
+.alter table [RoadStatus] column-docstrings (
+   [road_id]: @"{""description"": ""Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key.""}",
+   [display_name]: @"{""description"": ""Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'.""}",
+   [status_severity]: @"{""description"": ""Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'.""}",
+   [status_severity_description]: @"{""description"": ""Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'.""}",
+   [bounds]: @"{""description"": ""Bounding box for the road corridor as a JSON array string. Corresponds to 'bounds' in the upstream response. Format: '[[lon_sw,lat_sw],[lon_ne,lat_ne]]' in WGS84 decimal degrees.""}",
+   [envelope]: @"{""description"": ""GeoJSON envelope polygon for the road corridor geometry. Corresponds to 'envelope' in the upstream response.""}",
+   [url]: @"{""description"": ""URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response.""}",
+   [status_aggregation_start_date]: @"{""description"": ""Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response.""}",
+   [status_aggregation_end_date]: @"{""description"": ""End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -154,7 +154,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['uk.gov.tfl.road.RoadStatus'] ingestion json mapping "uk.gov.tfl.road.RoadStatus_json_flat"
+.create-or-alter table [RoadStatus] ingestion json mapping "RoadStatus_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -170,11 +170,11 @@
   {"column": "envelope", "path": "$.envelope"},
   {"column": "url", "path": "$.url"},
   {"column": "status_aggregation_start_date", "path": "$.status_aggregation_start_date"},
-  {"column": "status_aggregation_end_date", "path": "$.status_aggregation_end_date"},
+  {"column": "status_aggregation_end_date", "path": "$.status_aggregation_end_date"}
 ]
 ```
 
-.create-or-alter table ['uk.gov.tfl.road.RoadStatus'] ingestion json mapping "uk.gov.tfl.road.RoadStatus_json_ce_structured"
+.create-or-alter table [RoadStatus] ingestion json mapping "RoadStatus_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -190,28 +190,28 @@
   {"column": "envelope", "path": "$.data.envelope"},
   {"column": "url", "path": "$.data.url"},
   {"column": "status_aggregation_start_date", "path": "$.data.status_aggregation_start_date"},
-  {"column": "status_aggregation_end_date", "path": "$.data.status_aggregation_end_date"},
+  {"column": "status_aggregation_end_date", "path": "$.data.status_aggregation_end_date"}
 ]
 ```
 
-.drop materialized-view ['uk.gov.tfl.road.RoadStatusLatest'] ifexists;
+.drop materialized-view RoadStatusLatest ifexists;
 
-.create materialized-view with (backfill=true) ['uk.gov.tfl.road.RoadStatusLatest'] on table ['uk.gov.tfl.road.RoadStatus'] {
-    ['uk.gov.tfl.road.RoadStatus'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) RoadStatusLatest on table RoadStatus {
+    RoadStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['uk.gov.tfl.road.RoadStatus'] policy update
+.alter table [RoadStatus] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.gov.tfl.road.RoadStatus') | project['road_id'] = tostring(data.['road_id']),['display_name'] = tostring(data.['display_name']),['status_severity'] = tostring(data.['status_severity']),['status_severity_description'] = tostring(data.['status_severity_description']),['bounds'] = tostring(data.['bounds']),['envelope'] = tostring(data.['envelope']),['url'] = tostring(data.['url']),['status_aggregation_start_date'] = todatetime(data.['status_aggregation_start_date']),['status_aggregation_end_date'] = todatetime(data.['status_aggregation_end_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['uk.gov.tfl.road.RoadDisruption'] (
+.create-merge table [RoadDisruption] (
    [road_id]: string,
    [disruption_id]: string,
    [category]: string,
@@ -243,33 +243,33 @@
    [___subject]: string
 );
 
-.alter table ['uk.gov.tfl.road.RoadDisruption'] docstring "{\"description\": \"Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.\"}";
+.alter table [RoadDisruption] docstring @"{""description"": ""Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.""}";
 
-.alter table ['uk.gov.tfl.road.RoadDisruption'] column-docstrings (
-   [road_id]: "{\"description\": \"Primary affected TfL road corridor identifier used by MQTT/UNS topics. Derived from the first upstream corridorIds entry when present, otherwise 'unknown'.\"}",
-   [disruption_id]: "{\"description\": \"Unique identifier for the disruption assigned by the TfL Traffic Information Management System (TIMS). Corresponds to 'id' in the upstream response. Format: 'TIMS-NNNNN' or similar TIMS prefix.\"}",
-   [category]: "{\"description\": \"Top-level category of the disruption. Corresponds to 'category' in the upstream response. Common values: 'RealTime' for live incidents, 'PlannedWork' for scheduled roadworks.\"}",
-   [sub_category]: "{\"description\": \"More detailed sub-category of the disruption. Corresponds to 'subCategory' in the upstream response. Examples: 'TfL planned works', 'Utility works', 'Incident', 'Traffic signal failure'.\"}",
-   [severity]: "{\"description\": \"Normalized TfL-native severity for MQTT partitioning. Values: serious, severe, moderate, minor, information, closure. Upstream values are normalized to lowercase-kebab.\"}",
-   [ordinal]: "{\"description\": \"Ordinal rank of this disruption used for ordering within a severity level. Corresponds to 'ordinal' in the upstream response.\"}",
-   [url]: "{\"description\": \"URL to the TfL Unified API detail page for this disruption. Corresponds to 'url' in the upstream response.\"}",
-   [point]: "{\"description\": \"Representative point location of the disruption as a WKT or coordinate string. Corresponds to 'point' in the upstream response.\"}",
-   [comments]: "{\"description\": \"Free-text comments describing the disruption context. Corresponds to 'comments' in the upstream response. May include street names, junction descriptions, or operational notes.\"}",
-   [current_update]: "{\"description\": \"Latest operational update text for this disruption. Corresponds to 'currentUpdate' in the upstream response. Updated by TfL operators as the situation evolves.\"}",
-   [current_update_datetime]: "{\"description\": \"Timestamp when the current update text was last modified. Corresponds to 'currentUpdateDateTime' in the upstream response.\"}",
-   [corridor_ids]: "{\"description\": \"Array of road corridor identifiers affected by this disruption. Corresponds to 'corridorIds' in the upstream response. Examples: ['a2', 'a12']. May be empty or null for disruptions not associated with a specific named corridor.\"}",
-   [start_datetime]: "{\"description\": \"Scheduled or actual start date and time of the disruption. Corresponds to 'startDateTime' in the upstream response.\"}",
-   [end_datetime]: "{\"description\": \"Scheduled or actual end date and time of the disruption. Corresponds to 'endDateTime' in the upstream response. May be null for open-ended incidents.\"}",
-   [last_modified_time]: "{\"description\": \"Timestamp when this disruption record was last modified in the TfL system. Corresponds to 'lastModifiedTime' in the upstream response. Used for deduplication: disruptions are re-emitted only when this value changes.\"}",
-   [level_of_interest]: "{\"description\": \"TfL classification of the level of public interest for this disruption. Corresponds to 'levelOfInterest' in the upstream response. Examples: 'Low', 'Medium', 'High'.\"}",
-   [location]: "{\"description\": \"Free-text textual description of the disruption location. Corresponds to 'location' in the upstream response.\"}",
-   [is_provisional]: "{\"description\": \"Whether the disruption timing or details are provisional and subject to change. Corresponds to 'isProvisional' in the upstream response.\"}",
-   [has_closures]: "{\"description\": \"Whether this disruption includes full or partial road closures. Corresponds to 'hasClosures' in the upstream response.\"}",
-   [streets]: "{\"description\": \"Array of street segments affected by this disruption. Corresponds to 'streets' in the upstream response. Each entry describes an individual street with its closure type, affected directions, and geometry.\"}",
-   [geography]: "{\"description\": \"GeoJSON geometry of the disruption area as a JSON string. Corresponds to 'geography' in the upstream response. May be a Point, LineString, or Polygon representing the spatial extent of the disruption.\"}",
-   [geometry]: "{\"description\": \"Secondary geometry field from the TfL database as a JSON string. Corresponds to 'geometry' in the upstream response. May contain database geometry in an alternate representation.\"}",
-   [status]: "{\"description\": \"Current lifecycle status of the disruption. Corresponds to 'status' in the upstream response.\"}",
-   [is_active]: "{\"description\": \"Whether this disruption is currently active. Corresponds to 'isActive' in the upstream response.\"}",
+.alter table [RoadDisruption] column-docstrings (
+   [road_id]: @"{""description"": ""Primary affected TfL road corridor identifier used by MQTT/UNS topics. Derived from the first upstream corridorIds entry when present, otherwise 'unknown'.""}",
+   [disruption_id]: @"{""description"": ""Unique identifier for the disruption assigned by the TfL Traffic Information Management System (TIMS). Corresponds to 'id' in the upstream response. Format: 'TIMS-NNNNN' or similar TIMS prefix.""}",
+   [category]: @"{""description"": ""Top-level category of the disruption. Corresponds to 'category' in the upstream response. Common values: 'RealTime' for live incidents, 'PlannedWork' for scheduled roadworks.""}",
+   [sub_category]: @"{""description"": ""More detailed sub-category of the disruption. Corresponds to 'subCategory' in the upstream response. Examples: 'TfL planned works', 'Utility works', 'Incident', 'Traffic signal failure'.""}",
+   [severity]: @"{""description"": ""Normalized TfL-native severity for MQTT partitioning. Values: serious, severe, moderate, minor, information, closure. Upstream values are normalized to lowercase-kebab.""}",
+   [ordinal]: @"{""description"": ""Ordinal rank of this disruption used for ordering within a severity level. Corresponds to 'ordinal' in the upstream response.""}",
+   [url]: @"{""description"": ""URL to the TfL Unified API detail page for this disruption. Corresponds to 'url' in the upstream response.""}",
+   [point]: @"{""description"": ""Representative point location of the disruption as a WKT or coordinate string. Corresponds to 'point' in the upstream response.""}",
+   [comments]: @"{""description"": ""Free-text comments describing the disruption context. Corresponds to 'comments' in the upstream response. May include street names, junction descriptions, or operational notes.""}",
+   [current_update]: @"{""description"": ""Latest operational update text for this disruption. Corresponds to 'currentUpdate' in the upstream response. Updated by TfL operators as the situation evolves.""}",
+   [current_update_datetime]: @"{""description"": ""Timestamp when the current update text was last modified. Corresponds to 'currentUpdateDateTime' in the upstream response.""}",
+   [corridor_ids]: @"{""description"": ""Array of road corridor identifiers affected by this disruption. Corresponds to 'corridorIds' in the upstream response. Examples: ['a2', 'a12']. May be empty or null for disruptions not associated with a specific named corridor.""}",
+   [start_datetime]: @"{""description"": ""Scheduled or actual start date and time of the disruption. Corresponds to 'startDateTime' in the upstream response.""}",
+   [end_datetime]: @"{""description"": ""Scheduled or actual end date and time of the disruption. Corresponds to 'endDateTime' in the upstream response. May be null for open-ended incidents.""}",
+   [last_modified_time]: @"{""description"": ""Timestamp when this disruption record was last modified in the TfL system. Corresponds to 'lastModifiedTime' in the upstream response. Used for deduplication: disruptions are re-emitted only when this value changes.""}",
+   [level_of_interest]: @"{""description"": ""TfL classification of the level of public interest for this disruption. Corresponds to 'levelOfInterest' in the upstream response. Examples: 'Low', 'Medium', 'High'.""}",
+   [location]: @"{""description"": ""Free-text textual description of the disruption location. Corresponds to 'location' in the upstream response.""}",
+   [is_provisional]: @"{""description"": ""Whether the disruption timing or details are provisional and subject to change. Corresponds to 'isProvisional' in the upstream response.""}",
+   [has_closures]: @"{""description"": ""Whether this disruption includes full or partial road closures. Corresponds to 'hasClosures' in the upstream response.""}",
+   [streets]: @"{""description"": ""Array of street segments affected by this disruption. Corresponds to 'streets' in the upstream response. Each entry describes an individual street with its closure type, affected directions, and geometry.""}",
+   [geography]: @"{""description"": ""GeoJSON geometry of the disruption area as a JSON string. Corresponds to 'geography' in the upstream response. May be a Point, LineString, or Polygon representing the spatial extent of the disruption.""}",
+   [geometry]: @"{""description"": ""Secondary geometry field from the TfL database as a JSON string. Corresponds to 'geometry' in the upstream response. May contain database geometry in an alternate representation.""}",
+   [status]: @"{""description"": ""Current lifecycle status of the disruption. Corresponds to 'status' in the upstream response.""}",
+   [is_active]: @"{""description"": ""Whether this disruption is currently active. Corresponds to 'isActive' in the upstream response.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -277,7 +277,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['uk.gov.tfl.road.RoadDisruption'] ingestion json mapping "uk.gov.tfl.road.RoadDisruption_json_flat"
+.create-or-alter table [RoadDisruption] ingestion json mapping "RoadDisruption_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -308,11 +308,11 @@
   {"column": "geography", "path": "$.geography"},
   {"column": "geometry", "path": "$.geometry"},
   {"column": "status", "path": "$.status"},
-  {"column": "is_active", "path": "$.is_active"},
+  {"column": "is_active", "path": "$.is_active"}
 ]
 ```
 
-.create-or-alter table ['uk.gov.tfl.road.RoadDisruption'] ingestion json mapping "uk.gov.tfl.road.RoadDisruption_json_ce_structured"
+.create-or-alter table [RoadDisruption] ingestion json mapping "RoadDisruption_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -343,24 +343,24 @@
   {"column": "geography", "path": "$.data.geography"},
   {"column": "geometry", "path": "$.data.geometry"},
   {"column": "status", "path": "$.data.status"},
-  {"column": "is_active", "path": "$.data.is_active"},
+  {"column": "is_active", "path": "$.data.is_active"}
 ]
 ```
 
-.drop materialized-view ['uk.gov.tfl.road.RoadDisruptionLatest'] ifexists;
+.drop materialized-view RoadDisruptionLatest ifexists;
 
-.create materialized-view with (backfill=true) ['uk.gov.tfl.road.RoadDisruptionLatest'] on table ['uk.gov.tfl.road.RoadDisruption'] {
-    ['uk.gov.tfl.road.RoadDisruption'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) RoadDisruptionLatest on table RoadDisruption {
+    RoadDisruption | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['uk.gov.tfl.road.RoadDisruption'] policy update
+.alter table [RoadDisruption] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.gov.tfl.road.RoadDisruption') | project['road_id'] = tostring(data.['road_id']),['disruption_id'] = tostring(data.['disruption_id']),['category'] = tostring(data.['category']),['sub_category'] = tostring(data.['sub_category']),['severity'] = tostring(data.['severity']),['ordinal'] = toint(data.['ordinal']),['url'] = tostring(data.['url']),['point'] = tostring(data.['point']),['comments'] = tostring(data.['comments']),['current_update'] = tostring(data.['current_update']),['current_update_datetime'] = todatetime(data.['current_update_datetime']),['corridor_ids'] = todynamic(data.['corridor_ids']),['start_datetime'] = todatetime(data.['start_datetime']),['end_datetime'] = todatetime(data.['end_datetime']),['last_modified_time'] = todatetime(data.['last_modified_time']),['level_of_interest'] = tostring(data.['level_of_interest']),['location'] = tostring(data.['location']),['is_provisional'] = tobool(data.['is_provisional']),['has_closures'] = tobool(data.['has_closures']),['streets'] = todynamic(data.['streets']),['geography'] = tostring(data.['geography']),['geometry'] = tostring(data.['geometry']),['status'] = tostring(data.['status']),['is_active'] = tobool(data.['is_active']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

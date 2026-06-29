@@ -29,52 +29,52 @@ class Test_TrafficLightEvent(unittest.TestCase):
         Create instance of TrafficLightEvent for testing
         """
         instance = TrafficLightEvent(
-            oper=int(26),
-            veh=int(97),
-            tst='vhkwceicrnherwzaacen',
-            tsi=int(43),
-            operator_id='ethgryefllxxwdguirbe',
-            vehicle_number='fredizlusnspjscbovot',
+            oper=int(46),
+            veh=int(34),
+            tst='xijcrqcfbtzmsfhxukft',
+            tsi=int(82),
+            operator_id='dvqaznladenbczlxsadb',
+            vehicle_number='sddixrvzxfevafvgngqn',
             temporal_type=None,
             transport_mode=None,
-            route_id='xdjrszeznlrekjbkggcm',
-            direction_id='skkwywreigvrllkqobnm',
-            headsign='fpvbyckqykapmaiwxpks',
-            start_time='ouapwakdrdzspcnexxym',
-            next_stop='oskiqovxgzjhtsirulpa',
-            geohash_level='kclibsibyukvwfszaclp',
-            geohash='nqzhrugiqtaeftjdckrq',
-            desi='qssdiujbpmdhwtneenwm',
-            dir='zbdmmagptmcknkztkubq',
-            dl=int(19),
-            oday='tlhfigknpgollvwgvphc',
-            jrn=int(83),
-            line=int(5),
-            start='qrioyrosjnwsabmoilku',
+            route_id='zdenckkjnozquccdszdw',
+            direction_id='evxkhabkkhtpjjwxbbto',
+            headsign='tuyuaxikeydxndpvcqas',
+            start_time='lmijmexhkomzzlrcbyvi',
+            next_stop='xykahhgccrpfbiyoqrkk',
+            geohash_level='lysgjoipfqlzbadoyahj',
+            geohash='eohrygvsdjftkhzwomud',
+            desi='zshqkaxukgvbaozhedfw',
+            dir='brqygnwywugyvpmtzupt',
+            dl=int(60),
+            oday='yckltwoltctjmfqqoqpi',
+            jrn=int(43),
+            line=int(36),
+            start='cneniaatuzlmolmyqbqw',
             stop=int(0),
-            route='sjnkitqdpmcgtilpkzpo',
-            occu=int(60),
-            spd=float(54.13089753606868),
-            hdg=int(63),
-            lat=float(30.05591929715834),
-            long=float(38.27013990159547),
-            acc=float(22.301494124758015),
-            odo=int(63),
-            drst=int(31),
-            loc='iwaecfnqwibsdifuavbu',
-            tlp_requestid=int(73),
+            route='qwreecfaojbxzpblbjyv',
+            occu=int(3),
+            spd=float(28.27276119829869),
+            hdg=int(97),
+            lat=float(48.870370267656305),
+            long=float(22.987549376761173),
+            acc=float(12.534776125312074),
+            odo=int(7),
+            drst=int(74),
+            loc='hjzjbcktergdadlvfxvg',
+            tlp_requestid=int(16),
             tlp_requesttype=None,
             tlp_prioritylevel=None,
             tlp_reason=None,
-            tlp_att_seq=int(0),
+            tlp_att_seq=int(26),
             tlp_decision=None,
             sid=int(21),
-            signal_groupid=int(91),
-            tlp_signalgroupnbr=int(75),
-            tlp_line_configid=int(2),
-            tlp_point_configid=int(22),
-            tlp_frequency=int(43),
-            tlp_protocol='gxxaqzztbfveqlayytvx'
+            signal_groupid=int(5),
+            tlp_signalgroupnbr=int(1),
+            tlp_line_configid=int(12),
+            tlp_point_configid=int(42),
+            tlp_frequency=int(74),
+            tlp_protocol='bkydmaxqzitruuafhpdq'
         )
         return instance
 
@@ -83,7 +83,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test oper property
         """
-        test_value = int(26)
+        test_value = int(46)
         self.instance.oper = test_value
         self.assertEqual(self.instance.oper, test_value)
     
@@ -91,7 +91,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test veh property
         """
-        test_value = int(97)
+        test_value = int(34)
         self.instance.veh = test_value
         self.assertEqual(self.instance.veh, test_value)
     
@@ -99,7 +99,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tst property
         """
-        test_value = 'vhkwceicrnherwzaacen'
+        test_value = 'xijcrqcfbtzmsfhxukft'
         self.instance.tst = test_value
         self.assertEqual(self.instance.tst, test_value)
     
@@ -107,7 +107,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tsi property
         """
-        test_value = int(43)
+        test_value = int(82)
         self.instance.tsi = test_value
         self.assertEqual(self.instance.tsi, test_value)
     
@@ -115,7 +115,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = 'ethgryefllxxwdguirbe'
+        test_value = 'dvqaznladenbczlxsadb'
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     
@@ -123,7 +123,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test vehicle_number property
         """
-        test_value = 'fredizlusnspjscbovot'
+        test_value = 'sddixrvzxfevafvgngqn'
         self.instance.vehicle_number = test_value
         self.assertEqual(self.instance.vehicle_number, test_value)
     
@@ -147,7 +147,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'xdjrszeznlrekjbkggcm'
+        test_value = 'zdenckkjnozquccdszdw'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -155,7 +155,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test direction_id property
         """
-        test_value = 'skkwywreigvrllkqobnm'
+        test_value = 'evxkhabkkhtpjjwxbbto'
         self.instance.direction_id = test_value
         self.assertEqual(self.instance.direction_id, test_value)
     
@@ -163,7 +163,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test headsign property
         """
-        test_value = 'fpvbyckqykapmaiwxpks'
+        test_value = 'tuyuaxikeydxndpvcqas'
         self.instance.headsign = test_value
         self.assertEqual(self.instance.headsign, test_value)
     
@@ -171,7 +171,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'ouapwakdrdzspcnexxym'
+        test_value = 'lmijmexhkomzzlrcbyvi'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -179,7 +179,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test next_stop property
         """
-        test_value = 'oskiqovxgzjhtsirulpa'
+        test_value = 'xykahhgccrpfbiyoqrkk'
         self.instance.next_stop = test_value
         self.assertEqual(self.instance.next_stop, test_value)
     
@@ -187,7 +187,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test geohash_level property
         """
-        test_value = 'kclibsibyukvwfszaclp'
+        test_value = 'lysgjoipfqlzbadoyahj'
         self.instance.geohash_level = test_value
         self.assertEqual(self.instance.geohash_level, test_value)
     
@@ -195,7 +195,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test geohash property
         """
-        test_value = 'nqzhrugiqtaeftjdckrq'
+        test_value = 'eohrygvsdjftkhzwomud'
         self.instance.geohash = test_value
         self.assertEqual(self.instance.geohash, test_value)
     
@@ -203,7 +203,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test desi property
         """
-        test_value = 'qssdiujbpmdhwtneenwm'
+        test_value = 'zshqkaxukgvbaozhedfw'
         self.instance.desi = test_value
         self.assertEqual(self.instance.desi, test_value)
     
@@ -211,7 +211,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test dir property
         """
-        test_value = 'zbdmmagptmcknkztkubq'
+        test_value = 'brqygnwywugyvpmtzupt'
         self.instance.dir = test_value
         self.assertEqual(self.instance.dir, test_value)
     
@@ -219,7 +219,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test dl property
         """
-        test_value = int(19)
+        test_value = int(60)
         self.instance.dl = test_value
         self.assertEqual(self.instance.dl, test_value)
     
@@ -227,7 +227,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test oday property
         """
-        test_value = 'tlhfigknpgollvwgvphc'
+        test_value = 'yckltwoltctjmfqqoqpi'
         self.instance.oday = test_value
         self.assertEqual(self.instance.oday, test_value)
     
@@ -235,7 +235,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test jrn property
         """
-        test_value = int(83)
+        test_value = int(43)
         self.instance.jrn = test_value
         self.assertEqual(self.instance.jrn, test_value)
     
@@ -243,7 +243,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test line property
         """
-        test_value = int(5)
+        test_value = int(36)
         self.instance.line = test_value
         self.assertEqual(self.instance.line, test_value)
     
@@ -251,7 +251,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test start property
         """
-        test_value = 'qrioyrosjnwsabmoilku'
+        test_value = 'cneniaatuzlmolmyqbqw'
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -267,7 +267,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test route property
         """
-        test_value = 'sjnkitqdpmcgtilpkzpo'
+        test_value = 'qwreecfaojbxzpblbjyv'
         self.instance.route = test_value
         self.assertEqual(self.instance.route, test_value)
     
@@ -275,7 +275,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test occu property
         """
-        test_value = int(60)
+        test_value = int(3)
         self.instance.occu = test_value
         self.assertEqual(self.instance.occu, test_value)
     
@@ -283,7 +283,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test spd property
         """
-        test_value = float(54.13089753606868)
+        test_value = float(28.27276119829869)
         self.instance.spd = test_value
         self.assertEqual(self.instance.spd, test_value)
     
@@ -291,7 +291,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test hdg property
         """
-        test_value = int(63)
+        test_value = int(97)
         self.instance.hdg = test_value
         self.assertEqual(self.instance.hdg, test_value)
     
@@ -299,7 +299,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(30.05591929715834)
+        test_value = float(48.870370267656305)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -307,7 +307,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test long property
         """
-        test_value = float(38.27013990159547)
+        test_value = float(22.987549376761173)
         self.instance.long = test_value
         self.assertEqual(self.instance.long, test_value)
     
@@ -315,7 +315,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test acc property
         """
-        test_value = float(22.301494124758015)
+        test_value = float(12.534776125312074)
         self.instance.acc = test_value
         self.assertEqual(self.instance.acc, test_value)
     
@@ -323,7 +323,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test odo property
         """
-        test_value = int(63)
+        test_value = int(7)
         self.instance.odo = test_value
         self.assertEqual(self.instance.odo, test_value)
     
@@ -331,7 +331,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test drst property
         """
-        test_value = int(31)
+        test_value = int(74)
         self.instance.drst = test_value
         self.assertEqual(self.instance.drst, test_value)
     
@@ -339,7 +339,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test loc property
         """
-        test_value = 'iwaecfnqwibsdifuavbu'
+        test_value = 'hjzjbcktergdadlvfxvg'
         self.instance.loc = test_value
         self.assertEqual(self.instance.loc, test_value)
     
@@ -347,7 +347,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tlp_requestid property
         """
-        test_value = int(73)
+        test_value = int(16)
         self.instance.tlp_requestid = test_value
         self.assertEqual(self.instance.tlp_requestid, test_value)
     
@@ -379,7 +379,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tlp_att_seq property
         """
-        test_value = int(0)
+        test_value = int(26)
         self.instance.tlp_att_seq = test_value
         self.assertEqual(self.instance.tlp_att_seq, test_value)
     
@@ -403,7 +403,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test signal_groupid property
         """
-        test_value = int(91)
+        test_value = int(5)
         self.instance.signal_groupid = test_value
         self.assertEqual(self.instance.signal_groupid, test_value)
     
@@ -411,7 +411,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tlp_signalgroupnbr property
         """
-        test_value = int(75)
+        test_value = int(1)
         self.instance.tlp_signalgroupnbr = test_value
         self.assertEqual(self.instance.tlp_signalgroupnbr, test_value)
     
@@ -419,7 +419,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tlp_line_configid property
         """
-        test_value = int(2)
+        test_value = int(12)
         self.instance.tlp_line_configid = test_value
         self.assertEqual(self.instance.tlp_line_configid, test_value)
     
@@ -427,7 +427,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tlp_point_configid property
         """
-        test_value = int(22)
+        test_value = int(42)
         self.instance.tlp_point_configid = test_value
         self.assertEqual(self.instance.tlp_point_configid, test_value)
     
@@ -435,7 +435,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tlp_frequency property
         """
-        test_value = int(43)
+        test_value = int(74)
         self.instance.tlp_frequency = test_value
         self.assertEqual(self.instance.tlp_frequency, test_value)
     
@@ -443,7 +443,7 @@ class Test_TrafficLightEvent(unittest.TestCase):
         """
         Test tlp_protocol property
         """
-        test_value = 'gxxaqzztbfveqlayytvx'
+        test_value = 'bkydmaxqzitruuafhpdq'
         self.instance.tlp_protocol = test_value
         self.assertEqual(self.instance.tlp_protocol, test_value)
     

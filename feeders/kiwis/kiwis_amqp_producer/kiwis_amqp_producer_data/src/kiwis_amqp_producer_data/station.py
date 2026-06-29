@@ -169,13 +169,13 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            kiwis_id='umgeftqqbyxktjqjrppz',
-            base_url='ondtmdjgnfvtudnllugo',
-            station_id='zzsjuoqxnhwpfuomdbmp',
-            station_no='xmqrwoqynjeyzhmaaeva',
-            station_name='chxjzkmjjhgmcjwhgzag',
-            latitude=float(3.4831362492394713),
-            longitude=float(93.22511660601135),
-            river_name='yxfgkpxcorchbgfmonvi',
-            catchment_name='hmmnhigldbxfxbnpbijv'
+            kiwis_id='naaixbazbmhcrtnzsyrn',
+            base_url='pfxsbjgijezzdqigkcsb',
+            station_id='ubtezmhqfcfvunmmqift',
+            station_no='jyvzqkmxaiwqhurvofho',
+            station_name='hlxvopuwmqerhffdxflf',
+            latitude=float(16.413536623979084),
+            longitude=float(59.49127413117979),
+            river_name='iwszuybqtzfdtsqhnqhw',
+            catchment_name='emhxzvytdrvfkjqcvulj'
         )

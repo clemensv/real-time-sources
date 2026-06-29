@@ -1,3 +1,3 @@
-from .fi import DriverBlockEvent, TemporalTypeEnum, TransportModeEnum, TrafficLightEvent, TlpDecisionEnum, TlpPriorityLevelEnum, TlpReasonEnum, TlpRequestTypeEnum, VehicleEvent
+from .fi import VehicleEvent, TemporalTypeEnum, TransportModeEnum, TrafficLightEvent, TlpDecisionEnum, TlpPriorityLevelEnum, TlpReasonEnum, TlpRequestTypeEnum, DriverBlockEvent
 
-__all__ = ["DriverBlockEvent", "TemporalTypeEnum", "TransportModeEnum", "TrafficLightEvent", "TlpDecisionEnum", "TlpPriorityLevelEnum", "TlpReasonEnum", "TlpRequestTypeEnum", "VehicleEvent"]
+__all__ = ["VehicleEvent", "TemporalTypeEnum", "TransportModeEnum", "TrafficLightEvent", "TlpDecisionEnum", "TlpPriorityLevelEnum", "TlpReasonEnum", "TlpRequestTypeEnum", "DriverBlockEvent"]

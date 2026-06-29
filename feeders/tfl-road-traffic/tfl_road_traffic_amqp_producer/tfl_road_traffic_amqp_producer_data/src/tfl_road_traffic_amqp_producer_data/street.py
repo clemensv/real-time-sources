@@ -161,9 +161,9 @@ class Street:
             An instance of the dataclass.
         """
         return cls(
-            name='obwynkhewlfsuhdusejo',
-            closure='mjlscwqmlupdxbbnkltw',
-            directions='tiqraiosmueyrtzmwjth',
-            source_system_id='yhrrwsouvegmtycbjjab',
-            source_system_key='vhjbtmxirblyhttxwjxn'
+            name='epnfxplzwrhssyxlgftq',
+            closure='elzdpnbwzniltomfqgea',
+            directions='nrpymbkljkzswmkosrgm',
+            source_system_id='pvgatlzknsjiolbrsmwo',
+            source_system_key='dfdhjzbdpjobbsatnwho'
         )

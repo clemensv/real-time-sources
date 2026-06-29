@@ -1,6 +1,6 @@
-# WSDOT event reference
+# WSDOT Events
 
-This document defines the CloudEvents contract emitted by the WSDOT Traveler Information feeder. For the project overview see [README.md](README.md); for the published container images and their environment-variable matrix see [CONTAINER.md](CONTAINER.md).
+WSDOT publishes traffic, travel, bridge, toll, pass, ferry, and border-wait updates from Washington State Department of Transportation for Washington road, bridge, pass, ferry, and border resources. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -835,8 +835,20 @@ Synthetic example values are generated deterministically from the schema: consta
   "precipitation_accumulation": 0,
   "barometric_pressure": 0,
   "snow_depth": 0,
-  "surface_measurements": null,
-  "sub_surface_measurements": null
+  "surface_measurements": [
+    {
+      "sensor_id": 0,
+      "surface_temperature": 0,
+      "road_freezing_temperature": 0,
+      "road_surface_condition": 0
+    }
+  ],
+  "sub_surface_measurements": [
+    {
+      "sensor_id": 0,
+      "sub_surface_temperature": 0
+    }
+  ]
 }
 ```
 
@@ -1133,7 +1145,33 @@ Synthetic example values are generated deterministically from the schema: consta
   "terminal_name": "string",
   "terminal_abbrev": "string",
   "sort_seq": 0,
-  "departing_spaces": null,
+  "departing_spaces": [
+    {
+      "departure": "string",
+      "is_cancelled": false,
+      "vessel_id": 0,
+      "vessel_name": "string",
+      "max_space_count": 0,
+      "space_for_arrival_terminals": [
+        {
+          "terminal_id": 0,
+          "terminal_name": "string",
+          "vessel_id": 0,
+          "vessel_name": "string",
+          "display_reservable_space": false,
+          "reservable_space_count": 0,
+          "reservable_space_hex_color": "string",
+          "display_drive_up_space": false,
+          "drive_up_space_count": 0,
+          "drive_up_space_hex_color": "string",
+          "max_space_count": 0,
+          "arrival_terminal_ids": [
+            0
+          ]
+        }
+      ]
+    }
+  ],
   "is_no_fare_collected": false,
   "no_fare_collected_msg": "string"
 }

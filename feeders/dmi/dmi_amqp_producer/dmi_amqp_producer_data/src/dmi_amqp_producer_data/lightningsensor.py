@@ -103,6 +103,8 @@ class LightningSensor:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -170,12 +172,12 @@ class LightningSensor:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='sdajpuchvqplbrojfaih',
-            name='bxuedwyxiogxggrnnhea',
-            owner='kvtjkomubgolymhkyglr',
+            sensor_id='njcgoravnstmfnetogia',
+            name='zejjcybtyxsryonlccfs',
+            owner='btnzbxsuiitnqzguzcrw',
             country=CountryEnum.DNK,
-            latitude=float(79.50603306720858),
-            longitude=float(46.47912934856922),
+            latitude=float(41.408844436977056),
+            longitude=float(92.53020537817676),
             active_from=datetime.datetime.now(datetime.timezone.utc),
             active_to=datetime.datetime.now(datetime.timezone.utc)
         )

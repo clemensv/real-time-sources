@@ -1,4 +1,4 @@
-# BfS ODL feeder Events
+# BfS ODL Events
 
 MQTT/5.0 transport variants of the BfS ODL CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under radiation/de/bfs/bfs-odl/{state}/{station_id}/... The {state} placeholder is derived from the station's AGS-based Kennziffer (first two digits map to a German Bundesland) and normalized to lowercase kebab-case before publishing.
 
@@ -141,16 +141,16 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 #### Payload
 
-`Dose Rate Measurement` payloads are JSON object. Required fields: `station_id`, `state`, `start_measure`, `end_measure`, `value`, `value_cosmic`, `value_terrestrial`, `validated`, `nuclide`.
+`Dose Rate Measurement` payloads are JSON object. Required fields: `station_id`, `state`, `nuclide`.
 
 - **`station_id`** (string, required): Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema.
 - **`state`** (string, required): German federal state (Bundesland) derived from the station Kennziffer. Propagated from station catalog so subscribers can route by state without a catalog join. Used as the {state} segment of the MQTT/UNS topic.
-- **`start_measure`** (string, required): Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'.
-- **`end_measure`** (string, required): End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'.
-- **`value`** (double or null, required, uSv/h (µSv/h)): Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval.
-- **`value_cosmic`** (double or null, required, uSv/h (µSv/h)): Cosmic radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Estimated from the station's altitude using a standard model. Null when the BfS system has not yet computed the decomposition for this measurement.
-- **`value_terrestrial`** (double or null, required, uSv/h (µSv/h)): Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available.
-- **`validated`** (int32, required): Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated.
+- **`start_measure`** (string or null, optional): Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'.
+- **`end_measure`** (string or null, optional): End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'.
+- **`value`** (double or null, optional, uSv/h (µSv/h)): Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval.
+- **`value_cosmic`** (double or null, optional, uSv/h (µSv/h)): Cosmic radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Estimated from the station's altitude using a standard model. Null when the BfS system has not yet computed the decomposition for this measurement.
+- **`value_terrestrial`** (double or null, optional, uSv/h (µSv/h)): Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available.
+- **`validated`** (int32 or null, optional): Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated.
 - **`nuclide`** (string, required): Nuclide identifier describing the type of radiation measured. For standard ODL probes this is always 'Gamma-ODL-Brutto' (gross gamma ambient dose rate).
 #### Example payload
 
@@ -198,3 +198,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/bfs_odl.xreg.json`](xreg/bfs_odl.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

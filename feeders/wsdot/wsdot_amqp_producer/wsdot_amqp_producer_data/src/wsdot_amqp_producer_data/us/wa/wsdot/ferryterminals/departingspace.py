@@ -164,10 +164,10 @@ class DepartingSpace:
             An instance of the dataclass.
         """
         return cls(
-            departure='lcurjlckhsznguyzgunt',
-            is_cancelled=True,
-            vessel_id=int(15),
-            vessel_name='zmigwryvoxptubliulvc',
-            max_space_count=int(27),
-            space_for_arrival_terminals=[None, None, None]
+            departure='typrefuyapidafcxujcl',
+            is_cancelled=False,
+            vessel_id=int(33),
+            vessel_name='ylyzbtedefhisonqcgud',
+            max_space_count=int(30),
+            space_for_arrival_terminals=[None]
         )

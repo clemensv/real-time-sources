@@ -192,8 +192,8 @@ Awaitable[None]]
 Asynchronous handler hook for `org.openaq.Location`: Reference catalog metadata for one OpenAQ monitoring location from
 API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates,
 country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates.
-Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling
-OpenAQ.
+Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately
+calling OpenAQ.
 
 ## Generated Producer Classes
 
@@ -534,7 +534,8 @@ async def send_org_openaq_location(
 Send a single `org.openaq.Location` message. Reference catalog metadata for one OpenAQ monitoring location from API v3
 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country,
 ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before
-telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ.Args:
+measurement events and refreshed periodically so consumers can interpret measurements without separately calling
+OpenAQ.Args:
 
 - `record`: The Kafka record.
 
@@ -716,7 +717,7 @@ Awaitable[None]]
 
 Asynchronous handler hook for `org.openaq.Sensor`: Reference catalog metadata for one OpenAQ sensor from API v3 `GET
 /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
-carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
 OpenAQ exposes it.
 
 ## Generated Producer Classes
@@ -1381,7 +1382,7 @@ async def send_org_openaq_sensor(
 
 Send a single `org.openaq.Sensor` message. Reference catalog metadata for one OpenAQ sensor from API v3 `GET
 /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
-carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
 OpenAQ exposes it.Args:
 
 - `record`: The Kafka record.
@@ -1668,7 +1669,11 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `org.openaq.kafka.Location`:
+Asynchronous handler hook for `org.openaq.kafka.Location`: Reference catalog metadata for one OpenAQ monitoring location
+from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates,
+country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates.
+Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately
+calling OpenAQ.
 
 ## Generated Producer Classes
 
@@ -2006,7 +2011,11 @@ async def send_org_openaq_kafka_location(
 
 
 
-Send a single `org.openaq.kafka.Location` message.Args:
+Send a single `org.openaq.kafka.Location` message. Reference catalog metadata for one OpenAQ monitoring location from
+API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates,
+country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates.
+Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately
+calling OpenAQ.Args:
 
 - `record`: The Kafka record.
 
@@ -2208,7 +2217,10 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `org.openaq.kafka.Sensor`:
+Asynchronous handler hook for `org.openaq.kafka.Sensor`: Reference catalog metadata for one OpenAQ sensor from API v3
+`GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
+OpenAQ exposes it.
 
 ## Generated Producer Classes
 
@@ -2878,7 +2890,10 @@ async def send_org_openaq_kafka_sensor(
 
 
 
-Send a single `org.openaq.kafka.Sensor` message.Args:
+Send a single `org.openaq.kafka.Sensor` message. Reference catalog metadata for one OpenAQ sensor from API v3 `GET
+/v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
+OpenAQ exposes it.Args:
 
 - `record`: The Kafka record.
 
@@ -3208,7 +3223,11 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `org.openaq.mqtt.Location`:
+Asynchronous handler hook for `org.openaq.mqtt.Location`: Reference catalog metadata for one OpenAQ monitoring location
+from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates,
+country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates.
+Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately
+calling OpenAQ.
 
 ## Generated Producer Classes
 
@@ -3546,7 +3565,11 @@ async def send_org_openaq_mqtt_location(
 
 
 
-Send a single `org.openaq.mqtt.Location` message.Args:
+Send a single `org.openaq.mqtt.Location` message. Reference catalog metadata for one OpenAQ monitoring location from API
+v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country,
+ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before
+measurement events and refreshed periodically so consumers can interpret measurements without separately calling
+OpenAQ.Args:
 
 - `record`: The Kafka record.
 
@@ -3726,7 +3749,10 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `org.openaq.mqtt.Sensor`:
+Asynchronous handler hook for `org.openaq.mqtt.Sensor`: Reference catalog metadata for one OpenAQ sensor from API v3
+`GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
+OpenAQ exposes it.
 
 ## Generated Producer Classes
 
@@ -4388,7 +4414,10 @@ async def send_org_openaq_mqtt_sensor(
 
 
 
-Send a single `org.openaq.mqtt.Sensor` message.Args:
+Send a single `org.openaq.mqtt.Sensor` message. Reference catalog metadata for one OpenAQ sensor from API v3 `GET
+/v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
+OpenAQ exposes it.Args:
 
 - `record`: The Kafka record.
 
@@ -4674,7 +4703,11 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `org.openaq.amqp.Location`:
+Asynchronous handler hook for `org.openaq.amqp.Location`: Reference catalog metadata for one OpenAQ monitoring location
+from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates,
+country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates.
+Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately
+calling OpenAQ.
 
 ## Generated Producer Classes
 
@@ -5012,7 +5045,11 @@ async def send_org_openaq_amqp_location(
 
 
 
-Send a single `org.openaq.amqp.Location` message.Args:
+Send a single `org.openaq.amqp.Location` message. Reference catalog metadata for one OpenAQ monitoring location from API
+v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country,
+ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before
+measurement events and refreshed periodically so consumers can interpret measurements without separately calling
+OpenAQ.Args:
 
 - `record`: The Kafka record.
 
@@ -5192,7 +5229,10 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `org.openaq.amqp.Sensor`:
+Asynchronous handler hook for `org.openaq.amqp.Sensor`: Reference catalog metadata for one OpenAQ sensor from API v3
+`GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
+OpenAQ exposes it.
 
 ## Generated Producer Classes
 
@@ -5854,7 +5894,10 @@ async def send_org_openaq_amqp_sensor(
 
 
 
-Send a single `org.openaq.amqp.Sensor` message.Args:
+Send a single `org.openaq.amqp.Sensor` message. Reference catalog metadata for one OpenAQ sensor from API v3 `GET
+/v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location,
+carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when
+OpenAQ exposes it.Args:
 
 - `record`: The Kafka record.
 

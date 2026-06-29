@@ -1,4 +1,4 @@
-# RWS Waterwebservices feeder Events
+# RWS Waterwebservices Events
 
 RWS Waterwebservices publishes water level observations from Rijkswaterstaat for Dutch water monitoring locations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -186,3 +186,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/rws_waterwebservices.xreg.json`](xreg/rws_waterwebservices.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

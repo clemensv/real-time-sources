@@ -159,6 +159,10 @@ The producer constructor accepts:
 
 
 ##### `send_location()`
+Reference catalog metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical
+or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile
+flags, license attribution, and first/last observation dates. Emitted before measurement events and refreshed
+periodically so consumers can interpret measurements without separately calling OpenAQ.
 
 **Parameters:**
 - `data` (Location): The message data object
@@ -231,6 +235,9 @@ The producer constructor accepts:
 
 
 ##### `send_sensor()`
+Reference catalog metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor
+represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name,
+parameter id/name/units, date coverage, and most recent value metadata when OpenAQ exposes it.
 
 **Parameters:**
 - `data` (Sensor): The message data object

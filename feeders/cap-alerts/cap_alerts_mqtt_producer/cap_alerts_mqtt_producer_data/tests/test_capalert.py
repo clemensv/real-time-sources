@@ -9,10 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.capalert import CapAlert
-from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.scopeenum import ScopeEnum
-from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.msgtypeenum import MsgTypeenum
 from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.capinfo import CapInfo
 from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
+from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.msgtypeenum import MsgTypeenum
+from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.scopeenum import ScopeEnum
 from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.statusenum import StatusEnum
 import datetime
 
@@ -34,33 +34,33 @@ class Test_CapAlert(unittest.TestCase):
         Create instance of CapAlert for testing
         """
         instance = CapAlert(
-            cap_source_id='plydacszfvlzjzdphpbs',
-            identifier='ewyieqkwyhncmntsjtcv',
-            sender='dhqjnhjozjbygszpkvro',
+            cap_source_id='lehjadbpcecsfqqdooxy',
+            identifier='rwuifyragitgsgkvbbln',
+            sender='dkubzzfjkqrckaljhppx',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
-            source='dekozwzvlyykykhqimtd',
+            source='hsykwkmdgmbksarjhzjo',
             scope=ScopeEnum.Public,
-            restriction='rdzdpaawaxlnaoumxpek',
-            addresses=['xevejdnnpzazqbbpahtu', 'usfydxpqeoszwynqwnfu', 'yhomelbzyamzrptywpkz', 'erkbuwacnvwmussfwxdb'],
-            code=[None, None, None],
-            note='bikhgzbwwwuyjqzvwatg',
-            references=['yrlldoqvywnmdoespvrk'],
-            incidents=['dpbtphjyviaunptcvfis', 'zdfllgmrcedmaczzgkxo', 'ucszubidypoirxcbtvla'],
-            info=[None],
-            provider_url='obnioibfggldbrgpmuuu',
-            raw_cap_xml='ibkkmkridmbandsjmada',
-            area_desc='hgagshkabdergftoywlx',
-            same_codes=['dxkuxerboowxfxavootf', 'aezjpfrxgyvujxqpfglj', 'ixplpklfhzzbxgigscbt', 'xcylucpioutfqtpklaqi', 'eyqmhpgrxfptsdilpcws'],
-            ugc_codes=['mreanfwlouyjzglugaxx', 'qenjitmiqgvcadbjkiwm', 'cuchgscsmunoukwdwhsc'],
-            vtec=['oszohafagphtcovwwsze', 'bzektgmyvyqmbvnhfcbk', 'wqqggtgrobqxkrnjzguj', 'bksopyzsfbfatxequtbu', 'nybftbxwmobcwnxdpgdm'],
-            awareness_level='uubagghrjbxcajivcqfa',
-            awareness_type='mwzfrtxrfvuuoutslcol',
-            event_type='qfxyzseqoahggqdgwzow',
-            state='fxzpifcidyznkacgdnuq',
-            affected_zones=['fqeodcbebxmxyahwzedh', 'yvoftpjyqthruunoxkms'],
-            raw_source_json='pteqplcpkgpgrvbhblmm'
+            restriction='jxjsnfxbrveuzmxrzlcg',
+            addresses=['qtnpuofzvjdrzvbsajuf', 'ydklfltgiqyphoarowvr', 'wqumqhfpophdplnugkxa', 'kgnjamdzezdwqdqqklll'],
+            code=[None, None],
+            note='jddwrhigfgdbjjhwknpm',
+            references=['dhjdtqdstocpyvmmykqd', 'saodrncumzkkzmjmlrhc', 'kjohtyqpibqzieduyhhb', 'cdmmnviyqmjclgpwocjj'],
+            incidents=['mdxuubsyvhzfltidmild'],
+            info=[None, None],
+            provider_url='edvfzcpltxczyvubjztm',
+            raw_cap_xml='wydzzqrbqwevrqjtfohl',
+            area_desc='flirpejqnuityrfbtrnh',
+            same_codes=['wruvishevgkpymjislva', 'dhpqybaczwfujfarpuul', 'rpakafehoivzvdfcmrnx', 'uhtptjqigvifgelwlcbt'],
+            ugc_codes=['zjrsfngrfnqwqsesjwxe', 'uhodhswmbqsoultwrubf', 'ejolpyqzalbtgemrnbkk', 'jbnbbdapxyjwahlgrffv', 'glxlwjurtzsbfljjepsp'],
+            vtec=['pqkufdjslyywzxxhrtdi'],
+            awareness_level='wmgumqiwgpwtjsoatcun',
+            awareness_type='vnisylyilxorfaulurmu',
+            event_type='ibyubqlbsepwscjgylok',
+            state='qwfjbojkgbagyruwiksr',
+            affected_zones=['bjtfvpkpaymfoxsketnr'],
+            raw_source_json='dtnkmhrfvrbpxidkcuan'
         )
         return instance
 
@@ -69,7 +69,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test cap_source_id property
         """
-        test_value = 'plydacszfvlzjzdphpbs'
+        test_value = 'lehjadbpcecsfqqdooxy'
         self.instance.cap_source_id = test_value
         self.assertEqual(self.instance.cap_source_id, test_value)
     
@@ -77,7 +77,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'ewyieqkwyhncmntsjtcv'
+        test_value = 'rwuifyragitgsgkvbbln'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -85,7 +85,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test sender property
         """
-        test_value = 'dhqjnhjozjbygszpkvro'
+        test_value = 'dkubzzfjkqrckaljhppx'
         self.instance.sender = test_value
         self.assertEqual(self.instance.sender, test_value)
     
@@ -117,7 +117,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test source property
         """
-        test_value = 'dekozwzvlyykykhqimtd'
+        test_value = 'hsykwkmdgmbksarjhzjo'
         self.instance.source = test_value
         self.assertEqual(self.instance.source, test_value)
     
@@ -133,7 +133,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test restriction property
         """
-        test_value = 'rdzdpaawaxlnaoumxpek'
+        test_value = 'jxjsnfxbrveuzmxrzlcg'
         self.instance.restriction = test_value
         self.assertEqual(self.instance.restriction, test_value)
     
@@ -141,7 +141,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test addresses property
         """
-        test_value = ['xevejdnnpzazqbbpahtu', 'usfydxpqeoszwynqwnfu', 'yhomelbzyamzrptywpkz', 'erkbuwacnvwmussfwxdb']
+        test_value = ['qtnpuofzvjdrzvbsajuf', 'ydklfltgiqyphoarowvr', 'wqumqhfpophdplnugkxa', 'kgnjamdzezdwqdqqklll']
         self.instance.addresses = test_value
         self.assertEqual(self.instance.addresses, test_value)
     
@@ -149,7 +149,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test code property
         """
-        test_value = [None, None, None]
+        test_value = [None, None]
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -157,7 +157,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test note property
         """
-        test_value = 'bikhgzbwwwuyjqzvwatg'
+        test_value = 'jddwrhigfgdbjjhwknpm'
         self.instance.note = test_value
         self.assertEqual(self.instance.note, test_value)
     
@@ -165,7 +165,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test references property
         """
-        test_value = ['yrlldoqvywnmdoespvrk']
+        test_value = ['dhjdtqdstocpyvmmykqd', 'saodrncumzkkzmjmlrhc', 'kjohtyqpibqzieduyhhb', 'cdmmnviyqmjclgpwocjj']
         self.instance.references = test_value
         self.assertEqual(self.instance.references, test_value)
     
@@ -173,7 +173,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test incidents property
         """
-        test_value = ['dpbtphjyviaunptcvfis', 'zdfllgmrcedmaczzgkxo', 'ucszubidypoirxcbtvla']
+        test_value = ['mdxuubsyvhzfltidmild']
         self.instance.incidents = test_value
         self.assertEqual(self.instance.incidents, test_value)
     
@@ -181,7 +181,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test info property
         """
-        test_value = [None]
+        test_value = [None, None]
         self.instance.info = test_value
         self.assertEqual(self.instance.info, test_value)
     
@@ -189,7 +189,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test provider_url property
         """
-        test_value = 'obnioibfggldbrgpmuuu'
+        test_value = 'edvfzcpltxczyvubjztm'
         self.instance.provider_url = test_value
         self.assertEqual(self.instance.provider_url, test_value)
     
@@ -197,7 +197,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test raw_cap_xml property
         """
-        test_value = 'ibkkmkridmbandsjmada'
+        test_value = 'wydzzqrbqwevrqjtfohl'
         self.instance.raw_cap_xml = test_value
         self.assertEqual(self.instance.raw_cap_xml, test_value)
     
@@ -205,7 +205,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test area_desc property
         """
-        test_value = 'hgagshkabdergftoywlx'
+        test_value = 'flirpejqnuityrfbtrnh'
         self.instance.area_desc = test_value
         self.assertEqual(self.instance.area_desc, test_value)
     
@@ -213,7 +213,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test same_codes property
         """
-        test_value = ['dxkuxerboowxfxavootf', 'aezjpfrxgyvujxqpfglj', 'ixplpklfhzzbxgigscbt', 'xcylucpioutfqtpklaqi', 'eyqmhpgrxfptsdilpcws']
+        test_value = ['wruvishevgkpymjislva', 'dhpqybaczwfujfarpuul', 'rpakafehoivzvdfcmrnx', 'uhtptjqigvifgelwlcbt']
         self.instance.same_codes = test_value
         self.assertEqual(self.instance.same_codes, test_value)
     
@@ -221,7 +221,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test ugc_codes property
         """
-        test_value = ['mreanfwlouyjzglugaxx', 'qenjitmiqgvcadbjkiwm', 'cuchgscsmunoukwdwhsc']
+        test_value = ['zjrsfngrfnqwqsesjwxe', 'uhodhswmbqsoultwrubf', 'ejolpyqzalbtgemrnbkk', 'jbnbbdapxyjwahlgrffv', 'glxlwjurtzsbfljjepsp']
         self.instance.ugc_codes = test_value
         self.assertEqual(self.instance.ugc_codes, test_value)
     
@@ -229,7 +229,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test vtec property
         """
-        test_value = ['oszohafagphtcovwwsze', 'bzektgmyvyqmbvnhfcbk', 'wqqggtgrobqxkrnjzguj', 'bksopyzsfbfatxequtbu', 'nybftbxwmobcwnxdpgdm']
+        test_value = ['pqkufdjslyywzxxhrtdi']
         self.instance.vtec = test_value
         self.assertEqual(self.instance.vtec, test_value)
     
@@ -237,7 +237,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test awareness_level property
         """
-        test_value = 'uubagghrjbxcajivcqfa'
+        test_value = 'wmgumqiwgpwtjsoatcun'
         self.instance.awareness_level = test_value
         self.assertEqual(self.instance.awareness_level, test_value)
     
@@ -245,7 +245,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test awareness_type property
         """
-        test_value = 'mwzfrtxrfvuuoutslcol'
+        test_value = 'vnisylyilxorfaulurmu'
         self.instance.awareness_type = test_value
         self.assertEqual(self.instance.awareness_type, test_value)
     
@@ -253,7 +253,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'qfxyzseqoahggqdgwzow'
+        test_value = 'ibyubqlbsepwscjgylok'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     
@@ -261,7 +261,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'fxzpifcidyznkacgdnuq'
+        test_value = 'qwfjbojkgbagyruwiksr'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -269,7 +269,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test affected_zones property
         """
-        test_value = ['fqeodcbebxmxyahwzedh', 'yvoftpjyqthruunoxkms']
+        test_value = ['bjtfvpkpaymfoxsketnr']
         self.instance.affected_zones = test_value
         self.assertEqual(self.instance.affected_zones, test_value)
     
@@ -277,7 +277,7 @@ class Test_CapAlert(unittest.TestCase):
         """
         Test raw_source_json property
         """
-        test_value = 'pteqplcpkgpgrvbhblmm'
+        test_value = 'dtnkmhrfvrbpxidkcuan'
         self.instance.raw_source_json = test_value
         self.assertEqual(self.instance.raw_source_json, test_value)
     

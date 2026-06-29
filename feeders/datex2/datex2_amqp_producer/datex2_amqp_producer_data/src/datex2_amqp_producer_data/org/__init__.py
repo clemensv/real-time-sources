@@ -1,3 +1,3 @@
-from .datex2 import MeasurementSite, TrafficMeasurement, SituationRecord
+from .datex2 import SituationRecord, MeasurementSite, TrafficMeasurement
 
-__all__ = ["MeasurementSite", "TrafficMeasurement", "SituationRecord"]
+__all__ = ["SituationRecord", "MeasurementSite", "TrafficMeasurement"]

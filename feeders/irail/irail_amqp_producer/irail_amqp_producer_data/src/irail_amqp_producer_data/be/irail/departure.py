@@ -182,19 +182,19 @@ class Departure:
             An instance of the dataclass.
         """
         return cls(
-            destination_station_id='iogwagxfdsqzjxsoshap',
-            destination_name='uuktdwyxlhorxnwxoznu',
-            scheduled_time='hiofisadbezypszznuvb',
-            delay_seconds=int(23),
-            is_canceled=False,
-            has_left=False,
+            destination_station_id='vxnqroxadedlvibiakjq',
+            destination_name='mkusmzqtzawuwerwextf',
+            scheduled_time='xexcjvefniuujdoxgrea',
+            delay_seconds=int(96),
+            is_canceled=True,
+            has_left=True,
             is_extra_stop=False,
-            vehicle_id='aoqyrccmpqnxfildjspl',
-            vehicle_short_name='owunxdbfypnpifuebncz',
-            vehicle_type='jdzxfjzxhrxulxieyntu',
-            vehicle_number='zclxknvklxeeogyrnkak',
-            platform='rqdimsryacfqofmdrmzs',
+            vehicle_id='ogvakscbripqelqtbeni',
+            vehicle_short_name='tfihyxoruudmljrirsdc',
+            vehicle_type='nnerulhnotfutdoelayj',
+            vehicle_number='jwugclckopoxbjsaxmrd',
+            platform='kubsqzduqwwecdvtwegw',
             is_normal_platform=True,
             occupancy=OccupancyEnum.low,
-            departure_connection_uri='txznuclikuuwrzjtopcu'
+            departure_connection_uri='uygfxbgktjpxpvtmywco'
         )

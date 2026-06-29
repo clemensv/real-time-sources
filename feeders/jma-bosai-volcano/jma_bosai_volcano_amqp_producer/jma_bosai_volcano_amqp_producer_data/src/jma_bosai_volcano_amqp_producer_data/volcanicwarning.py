@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_amqp_producer_data.volcanicwarningeventenum import VolcanicWarningEventEnum
 from jma_bosai_volcano_amqp_producer_data.conditionenum import ConditionEnum
+from jma_bosai_volcano_amqp_producer_data.volcanicwarningeventenum import VolcanicWarningEventEnum
 import datetime
 
 
@@ -179,16 +179,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='jzawrzivshlpvwnwbbxb',
-            event_id='fexftznnicqnrpyjlvdd',
+            volcano_code='cfnezmtkvskarwcotxfw',
+            event_id='ahyykbzdqkmzwheghgbc',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            alert_level_code='kyomzkpjxhpnezvlizhd',
-            alert_level_name='pqfrssxuwklctfpevhup',
-            previous_level_code='eizdwjmkvktxfaghukgs',
+            alert_level_code='mppuumertnissneugwys',
+            alert_level_name='hprxtnfyxivcvwgwvtqd',
+            previous_level_code='rhtiikjdrmpmkeljltch',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='thnyrbegnxeiilosxmry',
-            area_codes=['rugqamexvkqmhuwfmwre', 'gtwuhpylyjgbylmgthsi'],
-            prefecture='xsswsxrczjdydnlwlxzd',
+            info_type_jp='xqtfpqxhfqrwergsvjzh',
+            area_codes=['xrupunzorwxpfnazreby', 'uyesfruhsuyiobmcwkal', 'ziqneeogvtnaqpxohpkv'],
+            prefecture='ojxbwqbfxzkrwfzmmymr',
             event=VolcanicWarningEventEnum.warning
         )

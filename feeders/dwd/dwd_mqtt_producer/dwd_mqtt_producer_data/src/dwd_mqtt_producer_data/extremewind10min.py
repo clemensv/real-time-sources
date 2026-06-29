@@ -165,11 +165,11 @@ class ExtremeWind10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='wacrckscwhqrrcwmoxpg',
-            timestamp='qytvozeavltogvdcseeo',
-            quality_level=int(43),
-            wind_speed_maximum=float(17.420304616238013),
-            wind_speed_minimum=float(34.64764075461487),
-            wind_direction_at_maximum=float(72.18899552441073),
-            state='jgfpwqudjsafmnagowow'
+            station_id='uyouxxbawkpuevxucadc',
+            timestamp='wkfmosecpxruuqvfskfw',
+            quality_level=int(41),
+            wind_speed_maximum=float(47.06998945854487),
+            wind_speed_minimum=float(97.3067417652041),
+            wind_direction_at_maximum=float(36.321551338218924),
+            state='vkzlvccqwddlsxqknlju'
         )

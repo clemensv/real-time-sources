@@ -12,14 +12,14 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.capresource import CapResource
 from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.urgencyenum import UrgencyEnum
-from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.caparea import CapArea
-from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
-from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.responsetypelistenum import ResponseTypelistenum
-from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
 from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.categorylistenum import CategoryListEnum
+from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
+from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.responsetypelistenum import ResponseTypelistenum
 from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
+from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
+from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.capresource import CapResource
+from cap_alerts_mqtt_producer_data.org.oasis.cap.alerts.caparea import CapArea
 import datetime
 
 
@@ -205,26 +205,26 @@ class CapInfo:
             An instance of the dataclass.
         """
         return cls(
-            language='xphrgsxxfvvmgzcwqser',
-            category=[CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo],
-            event='ozwxxaumzziqzwthmeqq',
-            response_type=[ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter],
+            language='ioozoirigkeeyevxswld',
+            category=[CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo],
+            event='itkfbzskiiktjvtuqusa',
+            response_type=[ResponseTypelistenum.Shelter],
             urgency=UrgencyEnum.Immediate,
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
-            audience='uiqjusqjidodoisooxxh',
-            event_code=[None, None, None, None],
+            audience='vkqunkxwtidmzzqlyewu',
+            event_code=[None, None, None, None, None],
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            sender_name='yzeetmixsaglmunqjaks',
-            headline='slruugtdnqjbxiymhptc',
-            description='ivitkjxnxwmbadtbjfcv',
-            instruction='gzxnnmfymbhqqlagqfqd',
-            web='znzmitwcovolkfcknimh',
-            contact='fdoaxzmxztmtkfvechph',
-            parameter=[None, None, None],
-            resource=[None, None],
-            area=[None],
+            sender_name='sbgtefjindaridiwggww',
+            headline='dzwxseaemtuvzicocbmg',
+            description='spuxmehiscqwhntdxlun',
+            instruction='ovuxpvcurbztbmcmjjyj',
+            web='lfyxxszndpgtxcfsoqqs',
+            contact='fdzysjvmaznleagsofvb',
+            parameter=[None, None],
+            resource=[None],
+            area=[None, None],
             ends=datetime.datetime.now(datetime.timezone.utc)
         )

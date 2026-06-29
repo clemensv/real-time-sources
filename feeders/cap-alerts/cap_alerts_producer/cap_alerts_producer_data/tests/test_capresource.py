@@ -28,12 +28,12 @@ class Test_CapResource(unittest.TestCase):
         Create instance of CapResource for testing
         """
         instance = CapResource(
-            resource_desc='iodrijghesrfhwzpiggv',
-            mime_type='wtblfjagllcilnnqywvi',
-            size=int(96),
-            uri='byptlrdnawmhhqekilde',
+            resource_desc='yqeeeqzztdqbqyzkzpzz',
+            mime_type='zgipxbretovwhsnkusuo',
+            size=int(76),
+            uri='cjwjoyeipxckiysvhlse',
             deref_uri=b"test_bytes",
-            digest='bkgkcejfulipmbgkialj'
+            digest='dhethloxpxfxletrtgxg'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_CapResource(unittest.TestCase):
         """
         Test resource_desc property
         """
-        test_value = 'iodrijghesrfhwzpiggv'
+        test_value = 'yqeeeqzztdqbqyzkzpzz'
         self.instance.resource_desc = test_value
         self.assertEqual(self.instance.resource_desc, test_value)
     
@@ -50,7 +50,7 @@ class Test_CapResource(unittest.TestCase):
         """
         Test mime_type property
         """
-        test_value = 'wtblfjagllcilnnqywvi'
+        test_value = 'zgipxbretovwhsnkusuo'
         self.instance.mime_type = test_value
         self.assertEqual(self.instance.mime_type, test_value)
     
@@ -58,7 +58,7 @@ class Test_CapResource(unittest.TestCase):
         """
         Test size property
         """
-        test_value = int(96)
+        test_value = int(76)
         self.instance.size = test_value
         self.assertEqual(self.instance.size, test_value)
     
@@ -66,7 +66,7 @@ class Test_CapResource(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'byptlrdnawmhhqekilde'
+        test_value = 'cjwjoyeipxckiysvhlse'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -82,7 +82,7 @@ class Test_CapResource(unittest.TestCase):
         """
         Test digest property
         """
-        test_value = 'bkgkcejfulipmbgkialj'
+        test_value = 'dhethloxpxfxletrtgxg'
         self.instance.digest = test_value
         self.assertEqual(self.instance.digest, test_value)
     

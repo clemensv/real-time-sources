@@ -12,14 +12,14 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from cap_alerts_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
 from cap_alerts_producer_data.org.oasis.cap.alerts.caparea import CapArea
-from cap_alerts_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
-from cap_alerts_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
-from cap_alerts_producer_data.org.oasis.cap.alerts.categorylistenum import CategoryListEnum
 from cap_alerts_producer_data.org.oasis.cap.alerts.capresource import CapResource
 from cap_alerts_producer_data.org.oasis.cap.alerts.responsetypelistenum import ResponseTypelistenum
+from cap_alerts_producer_data.org.oasis.cap.alerts.categorylistenum import CategoryListEnum
 from cap_alerts_producer_data.org.oasis.cap.alerts.urgencyenum import UrgencyEnum
+from cap_alerts_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
+from cap_alerts_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
+from cap_alerts_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
 import datetime
 
 
@@ -205,26 +205,26 @@ class CapInfo:
             An instance of the dataclass.
         """
         return cls(
-            language='blqqxcxywctwnwfrtkfi',
-            category=[CategoryListEnum.Geo, CategoryListEnum.Geo],
-            event='yqbmfeeytvhnjhrhjtlt',
-            response_type=[ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter],
+            language='lgvufdzjmkfqbzlbjkqz',
+            category=[CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo],
+            event='pbdlheqsaelzbfsnofgk',
+            response_type=[ResponseTypelistenum.Shelter],
             urgency=UrgencyEnum.Immediate,
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
-            audience='fcoblzeayeedhmtbfvbw',
+            audience='utcwxzsderiyupsepcxq',
             event_code=[None, None],
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            sender_name='xrpvqgybvifkxrchjahk',
-            headline='verinvpinowumhhttywc',
-            description='glyhbymwxjeqxflvhrxz',
-            instruction='zgoeunjndowbpelinecy',
-            web='ofkigksfydgvqpfsmuuq',
-            contact='ainkagpdzrvjxpahyxep',
-            parameter=[None, None, None, None, None],
-            resource=[None, None, None, None],
+            sender_name='trcimhqpnwuyhiemvfzi',
+            headline='qtiunzcxokpewglwuogo',
+            description='xbganiuegbwszcvjllmg',
+            instruction='dfrgvcoxdrwwviunraiq',
+            web='fvqbogcxqolwyfcrbvye',
+            contact='sburnsnmzqgjwocdbfca',
+            parameter=[None, None, None],
+            resource=[None, None, None, None, None],
             area=[None, None, None],
             ends=datetime.datetime.now(datetime.timezone.utc)
         )

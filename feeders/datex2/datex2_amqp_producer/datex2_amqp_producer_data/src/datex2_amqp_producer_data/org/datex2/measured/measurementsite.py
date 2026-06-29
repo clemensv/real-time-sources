@@ -179,18 +179,18 @@ class MeasurementSite:
             An instance of the dataclass.
         """
         return cls(
-            supplier_id='uqojcgwuazxuyoqihtxq',
-            measurement_site_id='hballkzxwefzdqdtmuzw',
-            feed_url='wkxilbymblztuszhdyrl',
-            country_code='mnbaynqpupiageyuigen',
-            operator_id='qupqgtqsrtakbrasmmvn',
-            name='zipfbcuqxzdczcakssop',
-            measurement_site_type='gpcaspbkcgvhdzwtgoik',
-            period_seconds=int(69),
-            latitude=float(74.30130780784818),
-            longitude=float(87.58011633373486),
-            road_number='kqozozgudafrufttttdj',
-            carriageway='dgvaxxjhinykpkuimlxs',
-            lane='bfzzqhuvxuujkyyrmgsn',
-            specific_measurements='mhfmbweddkqlckuujjqi'
+            supplier_id='wqqqhdnmrimprnexbtui',
+            measurement_site_id='sxdwfdmwixnepkjawrqa',
+            feed_url='gkfoperybxbwsiccfxrz',
+            country_code='whhqnbsqsslrryiywfqr',
+            operator_id='ylngtwkqkgzzzxszkoba',
+            name='xagitwgwzkatvsnuadnm',
+            measurement_site_type='boofndgxhhbsaslbgdsp',
+            period_seconds=int(78),
+            latitude=float(12.209552354450736),
+            longitude=float(52.6375017526093),
+            road_number='ihauxmxeynwturnbqdqh',
+            carriageway='zwswizhaqijdakiarinp',
+            lane='euzabzuysqpkinudnhwi',
+            specific_measurements='bptpjcwreukwvmwshqit'
         )

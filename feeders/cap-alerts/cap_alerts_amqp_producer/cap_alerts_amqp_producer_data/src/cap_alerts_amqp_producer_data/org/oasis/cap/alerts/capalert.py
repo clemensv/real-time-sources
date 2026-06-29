@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.statusenum import StatusEnum
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.msgtypeenum import MsgTypeenum
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.scopeenum import ScopeEnum
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.msgtypeenum import MsgTypeenum
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.capinfo import CapInfo
 import datetime
 
@@ -212,31 +212,31 @@ class CapAlert:
             An instance of the dataclass.
         """
         return cls(
-            cap_source_id='mhtnfmwsczyacucbhwla',
-            identifier='nwehcdlwhqptvffvuokr',
-            sender='afhrqosfugcdjqtnktyk',
+            cap_source_id='lfdojxppxvdyurakgzig',
+            identifier='rzfkycwyrfgluatvjvge',
+            sender='lejokzsldarfvawgyyir',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
-            source='fmrfnfuoejzvdmfotifz',
+            source='glrlhsgnblwsuxzeuxhq',
             scope=ScopeEnum.Public,
-            restriction='erwyyunyezvctmrsmpca',
-            addresses=['akrzebgwthvsultoduhx', 'mcxsoiototvinpqxpfjw', 'bfhcgtxqzentkdayocbe', 'pwwakvzqzgezhehcgrwh', 'lqgsevpyhpvnjjzawvlo'],
-            code=[None, None, None, None],
-            note='wchievnyhywkfkvebari',
-            references=['cqhosmnytgwhwgmodjve', 'baohxwfcmrzxagbrxnhj'],
-            incidents=['jdrcfsewbpuluxhkxgmo', 'zerklzevkpozpnfnteld'],
+            restriction='psnkdcckqftgfqqpetlr',
+            addresses=['izzyfqrvonybgiwyuodz', 'uhcbnodfcxancleldmdm', 'lqfhblmuohjxcunqvbav', 'iuafkbinaxmldrckvtnr', 'utdsidniuoqzflkevsnl'],
+            code=[None, None, None, None, None],
+            note='wyezfckwyjwrydjciqsm',
+            references=['tbdlmcscdalhoajnfvph', 'ugkijwhktwfuwrlileqf', 'zwtohaomiyzjtxbkaeiw'],
+            incidents=['ulcgqwhzlcwjqoxrcmdb', 'nihtthmdonhnizqdifyc', 'qpwjxcjjlgeacbeqofgx', 'svxkbiaapbtsvmwdrkak', 'gugtgjyufxgsaksjbabl'],
             info=[None, None],
-            provider_url='jssusuqxrtgdmttfzobw',
-            raw_cap_xml='mjfaoxwsqoyprkhguccv',
-            area_desc='jaisiriiobowxxepyjkn',
-            same_codes=['ncmglllrtzxeteosvruv', 'mnjqpntndngwedmqtlcc'],
-            ugc_codes=['uuczyhwaflktwnctvoxx'],
-            vtec=['dcmfgqgyxsxrjutfjfmp', 'fhvwmpnefofsrdhwkzgl', 'qqrhpgrtzeibsxbrllia', 'cdmktcmqmhcbydggdsyx', 'hfipmypbddurqadcpsse'],
-            awareness_level='oqolatlovqzrvlosacpn',
-            awareness_type='upaeuhdtsqgvedsyqbjk',
-            event_type='vzrfmcsupcvbyjysvcit',
-            state='tupbhtikpsylnobfaflr',
-            affected_zones=['poeihseddplducrwnyhk', 'vokslotukhggxbmnadyu', 'vxrotffrtdskqhkeznni', 'pxjnpufxsyculxbjakbh'],
-            raw_source_json='xnrxrpgiizbggtvypjta'
+            provider_url='lupgwmftclgjeelspmlj',
+            raw_cap_xml='torpjvopbtejmxqarxwk',
+            area_desc='xjznoyypjsojpsvsvaxz',
+            same_codes=['ceiyizxkupgzqxuxvyma'],
+            ugc_codes=['vhvmhfnnghysnlszducj', 'xwjynmhljengbvkwwytb', 'cquesbhvcaxmgizggogd', 'ozpehaugfrvqhztovtqi'],
+            vtec=['tgfspoijekykqqtihxws'],
+            awareness_level='hzjgoqkoqjzurtzwferh',
+            awareness_type='jyloxqzvydbmdvsdjvcw',
+            event_type='yitqofdtidbijsnhnthd',
+            state='nmabrgkpmespxmsgkmtz',
+            affected_zones=['wtrpnzjlliztovqdtqij', 'gfzgwjnioutstacuuqhh', 'fdukfmvmwpgtutpyuguh', 'xzzyqyuoctiftkrtooyh'],
+            raw_source_json='dkbbbpooghrdrgsbmktv'
         )

@@ -1,3 +1,4 @@
+from .capzone import CapZone
 from .statusenum import StatusEnum
 from .msgtypeenum import MsgTypeenum
 from .scopeenum import ScopeEnum
@@ -11,6 +12,5 @@ from .capresource import CapResource
 from .caparea import CapArea
 from .capinfo import CapInfo
 from .capalert import CapAlert
-from .capzone import CapZone
 
-__all__ = ["StatusEnum", "MsgTypeenum", "ScopeEnum", "ValuePair", "CategoryListEnum", "ResponseTypelistenum", "UrgencyEnum", "SeverityEnum", "CertaintyEnum", "CapResource", "CapArea", "CapInfo", "CapAlert", "CapZone"]
+__all__ = ["CapZone", "StatusEnum", "MsgTypeenum", "ScopeEnum", "ValuePair", "CategoryListEnum", "ResponseTypelistenum", "UrgencyEnum", "SeverityEnum", "CertaintyEnum", "CapResource", "CapArea", "CapInfo", "CapAlert"]

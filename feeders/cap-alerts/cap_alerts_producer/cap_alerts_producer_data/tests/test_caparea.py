@@ -29,12 +29,12 @@ class Test_CapArea(unittest.TestCase):
         Create instance of CapArea for testing
         """
         instance = CapArea(
-            area_desc='nlwuxfzdlfgqvcevarod',
-            polygon=['fyyqrvvgingfoqttziqm', 'hmkfngbiarqqxyoqmvxq', 'uoytexmqzhztijpbwqzt'],
-            circle=['qqneqbdcfbviqtpjwbbd'],
+            area_desc='fdjzlmqwvzqkfjfubmji',
+            polygon=['qtwqdhhogaoetimcegdr'],
+            circle=['xgvbnvdbqhjngwkkdxah', 'hmfdaajmfimapznbtdxx', 'lsoleecapjgalwwqhfds', 'tomuecncoanyfjrtwfne'],
             geocode=[None],
-            altitude=float(81.1638348383263),
-            ceiling=float(51.19031213039209)
+            altitude=float(28.591706066515744),
+            ceiling=float(85.08199401880616)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test area_desc property
         """
-        test_value = 'nlwuxfzdlfgqvcevarod'
+        test_value = 'fdjzlmqwvzqkfjfubmji'
         self.instance.area_desc = test_value
         self.assertEqual(self.instance.area_desc, test_value)
     
@@ -51,7 +51,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test polygon property
         """
-        test_value = ['fyyqrvvgingfoqttziqm', 'hmkfngbiarqqxyoqmvxq', 'uoytexmqzhztijpbwqzt']
+        test_value = ['qtwqdhhogaoetimcegdr']
         self.instance.polygon = test_value
         self.assertEqual(self.instance.polygon, test_value)
     
@@ -59,7 +59,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test circle property
         """
-        test_value = ['qqneqbdcfbviqtpjwbbd']
+        test_value = ['xgvbnvdbqhjngwkkdxah', 'hmfdaajmfimapznbtdxx', 'lsoleecapjgalwwqhfds', 'tomuecncoanyfjrtwfne']
         self.instance.circle = test_value
         self.assertEqual(self.instance.circle, test_value)
     
@@ -75,7 +75,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = float(81.1638348383263)
+        test_value = float(28.591706066515744)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test ceiling property
         """
-        test_value = float(51.19031213039209)
+        test_value = float(85.08199401880616)
         self.instance.ceiling = test_value
         self.assertEqual(self.instance.ceiling, test_value)
     

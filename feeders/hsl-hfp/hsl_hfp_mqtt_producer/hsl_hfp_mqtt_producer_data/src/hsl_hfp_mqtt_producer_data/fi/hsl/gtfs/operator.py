@@ -92,8 +92,6 @@ class Operator:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
-            if isinstance(result, str):
-                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,8 +159,8 @@ class Operator:
             An instance of the dataclass.
         """
         return cls(
-            operator_id='xjhkilvmotvqjcedczng',
-            operator_number=int(9),
-            name='snmpndapembdrcnasdlh',
-            note='arndkzrhtcmttrwdvmvb'
+            operator_id='rgejnzslqihbnukckqlm',
+            operator_number=int(93),
+            name='hyelmorhorumqcwwpopo',
+            note='sblvqtfuboevcesjizwj'
         )

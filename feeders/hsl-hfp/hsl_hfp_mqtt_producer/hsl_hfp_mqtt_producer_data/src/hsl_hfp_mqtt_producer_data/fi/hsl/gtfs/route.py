@@ -98,8 +98,6 @@ class Route:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
-            if isinstance(result, str):
-                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,11 +165,11 @@ class Route:
             An instance of the dataclass.
         """
         return cls(
-            route_id='zekgwcitcwkdejxkeiqk',
-            agency_id='ecwtasbrxbfliihwvrra',
-            route_short_name='gfdrfruyzzfctzowcdvs',
-            route_long_name='aqcvmhumuosnwsvyarvd',
-            route_desc='pihlgchijvvqeywfqfny',
-            route_type=int(87),
-            route_url='hlfacsxoqgspspnhujac'
+            route_id='aduwksxnxcwfrzuzxdlg',
+            agency_id='xcoudsnpdztazmdcasjr',
+            route_short_name='vagyyunrxyqwvwdwsqag',
+            route_long_name='hjdmjhzshlbffxncsluj',
+            route_desc='ymaofjuocsdioojjgdyo',
+            route_type=int(40),
+            route_url='jjghhpdirzblhmvlnkol'
         )

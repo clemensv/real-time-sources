@@ -145,7 +145,7 @@ def _build_ocean_observation(raw: Dict[str, Any]) -> OceanObservation:
     return OceanObservation(
         observation_id=_opt_str(raw.get("id") or raw.get("observationId")),
         station_id=str(raw.get("stationId") or ""),
-        parameter_id=ParameterIdenum(str(raw.get("parameterId") or "")),
+        parameter_id=str(raw.get("parameterId") or ""),
         observed=datetime.fromisoformat(str(raw.get("observed") or "")),
         value=float(raw.get("value") or 0.0),
         latitude=_opt_float(raw.get("latitude")),

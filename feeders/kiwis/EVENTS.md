@@ -1,6 +1,6 @@
 # KiWIS Events
 
-CloudEvents emitted by the generalized KiWIS hydrological feeder.
+Transport-neutral KiWIS station catalog events keyed by `{kiwis_id}/{station_id}`. Stations are emitted at startup and periodically refreshed before value telemetry so consumers can interpret timeseries in temporal context.
 
 ## At a glance
 

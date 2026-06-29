@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from pegelonline_producer_data.de.wsv.pegelonline.currentmeasurement import CurrentMeasurement
-from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 from pegelonline_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
+from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 from pegelonline_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
 import datetime
 
@@ -32,9 +32,9 @@ class Test_CurrentMeasurement(unittest.TestCase):
         Create instance of CurrentMeasurement for testing
         """
         instance = CurrentMeasurement(
-            station_id='zybflscyisxzdanephij',
+            station_id='jgohqputnqnisbthlquo',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(8.49554474299814),
+            value=float(52.36954011950667),
             stateMnwMhw=StateMnwMhwEnum.low,
             stateNswHsw=StateNswHswEnum.normal,
             trend=TrendEnum.VALUE_NEG_1
@@ -46,7 +46,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'zybflscyisxzdanephij'
+        test_value = 'jgohqputnqnisbthlquo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(8.49554474299814)
+        test_value = float(52.36954011950667)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     

@@ -181,18 +181,18 @@ class EstimatedCall:
             An instance of the dataclass.
         """
         return cls(
-            stop_point_ref='vdbhyrkbpricljludaqq',
-            order=int(12),
-            stop_point_name='vtdyczipachonyxinmul',
+            stop_point_ref='eooyjjppnxqmqdjwlwue',
+            order=int(99),
+            stop_point_name='krllocbmhpudxnqxumvj',
             aimed_arrival_time=datetime.datetime.now(datetime.timezone.utc),
             expected_arrival_time=datetime.datetime.now(datetime.timezone.utc),
             aimed_departure_time=datetime.datetime.now(datetime.timezone.utc),
             expected_departure_time=datetime.datetime.now(datetime.timezone.utc),
-            arrival_status='kqwrkwrrcuwqhxjqsjjo',
-            departure_status='vondchitwvomobuyrwbm',
-            departure_platform_name='hncsmvinjvsplwtzneys',
-            arrival_boarding_activity='rjdtgiibotaaanpveyhi',
-            departure_boarding_activity='djnblaeymmswisntxwok',
-            is_cancellation=False,
+            arrival_status='ylpyukicstpulbsqatwx',
+            departure_status='kkelzomzgalcwoffnwjk',
+            departure_platform_name='ekccymxbblvhsbhgztxs',
+            arrival_boarding_activity='zshpknnswqldxhcjvegt',
+            departure_boarding_activity='sorvbeqmmeaogpomxgyz',
+            is_cancellation=True,
             is_extra_stop=True
         )

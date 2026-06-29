@@ -1,14 +1,14 @@
-# NWS CAP Weather Alerts Bridge Events
+# NWS CAP Alerts Events
 
 NWS Alerts publishes CAP weather watches, warnings, advisories, and updates from the U.S. National Weather Service for U.S. weather alert areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
-- **Event types:** 1 documented event type (11 transport bindings in the manifest).
+- **Event types:** 1 documented event type (6 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{alert_id}` identifies the resource each event is about.
-- **Operations:** The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -77,12 +77,12 @@ Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `nws-alerts`, key `{alert_id}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/nws-alerts`, message subject `{alert_id}` |
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/nws-alerts`, message subject `{alert_id}`; application properties state `{state}`, event_type `{event_type}` |
 
 #### Payload
 
@@ -211,6 +211,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
@@ -218,3 +219,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/nws-alerts.xreg.json`](xreg/nws-alerts.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -30,19 +30,19 @@ class Test_PtSituationElement(unittest.TestCase):
         Create instance of PtSituationElement for testing
         """
         instance = PtSituationElement(
-            situation_number='ftsdpctdegqajplxffuq',
-            version='mjuszpxyszmcuoaxjdev',
+            situation_number='vhptwsutarjpatfjcvcm',
+            version='razfgdgprphnjanoqjbc',
             creation_time=datetime.datetime.now(datetime.timezone.utc),
-            source_type='qomwumieiijkydvwcbhq',
-            source_name='ulaiizfposwwgddqabyw',
-            progress='fcxbriyqaemwtcuusmuz',
-            severity='vhkistpqdpeaymtoxcgt',
-            keywords='oqurmppnjowopebaaezd',
-            summary='bslunbpdkdueyyztkgmh',
-            description='itpyknmkhnqdhczybefu',
-            affects_line_refs=['bvkglvmyjiojqrnszhae', 'rzfsbgdafrtdkoundtjz', 'wxdseioqidoyfqnlmcux', 'cdejbciangutssojmnef'],
-            affects_stop_point_refs=['qeshldqueakbsenkcjmu', 'mxdffjyicrtjwcprmmbe', 'gkvfcaffqyhehdnxvclq', 'weyrzahypkszleybvnqx'],
-            validity_periods=[None, None]
+            source_type='wbuylhcqiumzrekvtanj',
+            source_name='dwqgutttnjjldudchtll',
+            progress='eqqynpoegumuhvepgkoh',
+            severity='uzpvgowpcokagskenuxd',
+            keywords='cipebmyiericxxcowhht',
+            summary='qcwakqreuhgtixqsqlfk',
+            description='rxvyeliurssbmfphhuhs',
+            affects_line_refs=['dozvfdxpsyrxwmkejhbl'],
+            affects_stop_point_refs=['smcojxhynacdfsgkaaxf', 'pdlgxnbbfxpveemeuzbu', 'ixtmeevvadzmsnexizcp'],
+            validity_periods=[None, None, None, None, None]
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test situation_number property
         """
-        test_value = 'ftsdpctdegqajplxffuq'
+        test_value = 'vhptwsutarjpatfjcvcm'
         self.instance.situation_number = test_value
         self.assertEqual(self.instance.situation_number, test_value)
     
@@ -59,7 +59,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test version property
         """
-        test_value = 'mjuszpxyszmcuoaxjdev'
+        test_value = 'razfgdgprphnjanoqjbc'
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -75,7 +75,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test source_type property
         """
-        test_value = 'qomwumieiijkydvwcbhq'
+        test_value = 'wbuylhcqiumzrekvtanj'
         self.instance.source_type = test_value
         self.assertEqual(self.instance.source_type, test_value)
     
@@ -83,7 +83,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test source_name property
         """
-        test_value = 'ulaiizfposwwgddqabyw'
+        test_value = 'dwqgutttnjjldudchtll'
         self.instance.source_name = test_value
         self.assertEqual(self.instance.source_name, test_value)
     
@@ -91,7 +91,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test progress property
         """
-        test_value = 'fcxbriyqaemwtcuusmuz'
+        test_value = 'eqqynpoegumuhvepgkoh'
         self.instance.progress = test_value
         self.assertEqual(self.instance.progress, test_value)
     
@@ -99,7 +99,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'vhkistpqdpeaymtoxcgt'
+        test_value = 'uzpvgowpcokagskenuxd'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -107,7 +107,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test keywords property
         """
-        test_value = 'oqurmppnjowopebaaezd'
+        test_value = 'cipebmyiericxxcowhht'
         self.instance.keywords = test_value
         self.assertEqual(self.instance.keywords, test_value)
     
@@ -115,7 +115,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test summary property
         """
-        test_value = 'bslunbpdkdueyyztkgmh'
+        test_value = 'qcwakqreuhgtixqsqlfk'
         self.instance.summary = test_value
         self.assertEqual(self.instance.summary, test_value)
     
@@ -123,7 +123,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'itpyknmkhnqdhczybefu'
+        test_value = 'rxvyeliurssbmfphhuhs'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -131,7 +131,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test affects_line_refs property
         """
-        test_value = ['bvkglvmyjiojqrnszhae', 'rzfsbgdafrtdkoundtjz', 'wxdseioqidoyfqnlmcux', 'cdejbciangutssojmnef']
+        test_value = ['dozvfdxpsyrxwmkejhbl']
         self.instance.affects_line_refs = test_value
         self.assertEqual(self.instance.affects_line_refs, test_value)
     
@@ -139,7 +139,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test affects_stop_point_refs property
         """
-        test_value = ['qeshldqueakbsenkcjmu', 'mxdffjyicrtjwcprmmbe', 'gkvfcaffqyhehdnxvclq', 'weyrzahypkszleybvnqx']
+        test_value = ['smcojxhynacdfsgkaaxf', 'pdlgxnbbfxpveemeuzbu', 'ixtmeevvadzmsnexizcp']
         self.instance.affects_stop_point_refs = test_value
         self.assertEqual(self.instance.affects_stop_point_refs, test_value)
     
@@ -147,7 +147,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test validity_periods property
         """
-        test_value = [None, None]
+        test_value = [None, None, None, None, None]
         self.instance.validity_periods = test_value
         self.assertEqual(self.instance.validity_periods, test_value)
     

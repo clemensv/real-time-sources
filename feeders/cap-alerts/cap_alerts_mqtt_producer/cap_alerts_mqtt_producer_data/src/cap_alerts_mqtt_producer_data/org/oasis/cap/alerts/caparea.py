@@ -164,10 +164,10 @@ class CapArea:
             An instance of the dataclass.
         """
         return cls(
-            area_desc='aamqzlnwlkxnuermhjwn',
-            polygon=['twbdlyhqaxvwwhxhrndp', 'luomczqrnemsgnnwldan', 'gvzsrfvdgznhnrhravqx', 'jpvdbnkrviczvftujeml', 'tzvavkricsmcuavnxpsm'],
-            circle=['ldmoncjjcnbudekwkbao', 'ojpnxtdoybmsqorrpjkv', 'ejkzjslclltpxcyrosjg', 'labylweplspbceiywjwe', 'rtlvjdmrozifsgfyaexo'],
-            geocode=[None],
-            altitude=float(12.485898452712918),
-            ceiling=float(55.649941923260684)
+            area_desc='swuybtnmnxbwxscdpska',
+            polygon=['ftltcxbeoicmljprgzxn', 'yxdpqjexzrykzqhzpyta', 'bcdyhzlohvemcdkvpgzp'],
+            circle=['ghwnxexgmkckchnzcgxg', 'nvpvkhniuhzlvkvojrif', 'xngmtuqppjtfsbduxhuv', 'wsbheuztqsontoxhufgs', 'jfgfqwcskzmdtrrsrnaa'],
+            geocode=[None, None, None, None, None],
+            altitude=float(28.225979699201442),
+            ceiling=float(75.76161053110691)
         )

@@ -29,21 +29,21 @@ class Test_Earthquake(unittest.TestCase):
         Create instance of Earthquake for testing
         """
         instance = Earthquake(
-            event_id='apjlrjwhdppbgwdtrnzq',
+            event_id='ykvnhajdalgsqxyqkpbt',
             time=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(82.51995768000879),
-            longitude=float(54.70425003414312),
-            depth_km=float(64.63124301386162),
-            author='iecvduooftdnhfmyfggk',
-            catalog='lrlocbwvgcojnmniqqhb',
-            contributor='wrpxcwgvlsajzcwgecns',
-            contributor_id='pawibkrqizbwsadfjkrt',
-            magnitude_type='rpbvokeyvzoisibbyjdy',
-            magnitude=float(70.98133305220406),
-            magnitude_author='tsbypfalasgxepxmafms',
-            event_location_name='hlpqebguetzysxuvheei',
-            event_type='vnqxfhgfxnisuvzsfnzk',
-            node_url='ktwqttlypccivudwfggh'
+            latitude=float(66.11807762866847),
+            longitude=float(93.14356276056824),
+            depth_km=float(26.9027439448001),
+            author='dqwhiiniagdjsyberybh',
+            catalog='yaqdnkcacgfxnbopcuoo',
+            contributor='yawxaxsfjrrctdgoxjos',
+            contributor_id='kndqvhouavtutdrdjvnu',
+            magnitude_type='hargdrpvvoiymdtdqrwp',
+            magnitude=float(49.53183493320995),
+            magnitude_author='cauadmtxeqwxcbdluyqx',
+            event_location_name='dwsiszahxopcxhptncck',
+            event_type='mapdzkucixqvapzhvlcn',
+            node_url='sydjwifytbodzzeyyapi'
         )
         return instance
 
@@ -52,7 +52,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'apjlrjwhdppbgwdtrnzq'
+        test_value = 'ykvnhajdalgsqxyqkpbt'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -68,7 +68,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(82.51995768000879)
+        test_value = float(66.11807762866847)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -76,7 +76,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(54.70425003414312)
+        test_value = float(93.14356276056824)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -84,7 +84,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test depth_km property
         """
-        test_value = float(64.63124301386162)
+        test_value = float(26.9027439448001)
         self.instance.depth_km = test_value
         self.assertEqual(self.instance.depth_km, test_value)
     
@@ -92,7 +92,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test author property
         """
-        test_value = 'iecvduooftdnhfmyfggk'
+        test_value = 'dqwhiiniagdjsyberybh'
         self.instance.author = test_value
         self.assertEqual(self.instance.author, test_value)
     
@@ -100,7 +100,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test catalog property
         """
-        test_value = 'lrlocbwvgcojnmniqqhb'
+        test_value = 'yaqdnkcacgfxnbopcuoo'
         self.instance.catalog = test_value
         self.assertEqual(self.instance.catalog, test_value)
     
@@ -108,7 +108,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test contributor property
         """
-        test_value = 'wrpxcwgvlsajzcwgecns'
+        test_value = 'yawxaxsfjrrctdgoxjos'
         self.instance.contributor = test_value
         self.assertEqual(self.instance.contributor, test_value)
     
@@ -116,7 +116,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test contributor_id property
         """
-        test_value = 'pawibkrqizbwsadfjkrt'
+        test_value = 'kndqvhouavtutdrdjvnu'
         self.instance.contributor_id = test_value
         self.assertEqual(self.instance.contributor_id, test_value)
     
@@ -124,7 +124,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test magnitude_type property
         """
-        test_value = 'rpbvokeyvzoisibbyjdy'
+        test_value = 'hargdrpvvoiymdtdqrwp'
         self.instance.magnitude_type = test_value
         self.assertEqual(self.instance.magnitude_type, test_value)
     
@@ -132,7 +132,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test magnitude property
         """
-        test_value = float(70.98133305220406)
+        test_value = float(49.53183493320995)
         self.instance.magnitude = test_value
         self.assertEqual(self.instance.magnitude, test_value)
     
@@ -140,7 +140,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test magnitude_author property
         """
-        test_value = 'tsbypfalasgxepxmafms'
+        test_value = 'cauadmtxeqwxcbdluyqx'
         self.instance.magnitude_author = test_value
         self.assertEqual(self.instance.magnitude_author, test_value)
     
@@ -148,7 +148,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test event_location_name property
         """
-        test_value = 'hlpqebguetzysxuvheei'
+        test_value = 'dwsiszahxopcxhptncck'
         self.instance.event_location_name = test_value
         self.assertEqual(self.instance.event_location_name, test_value)
     
@@ -156,7 +156,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'vnqxfhgfxnisuvzsfnzk'
+        test_value = 'mapdzkucixqvapzhvlcn'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     
@@ -164,7 +164,7 @@ class Test_Earthquake(unittest.TestCase):
         """
         Test node_url property
         """
-        test_value = 'ktwqttlypccivudwfggh'
+        test_value = 'sydjwifytbodzzeyyapi'
         self.instance.node_url = test_value
         self.assertEqual(self.instance.node_url, test_value)
     

@@ -51,6 +51,7 @@
    [area_desc]: string,
    [geocodes]: string,
    [language]: string,
+   [awareness_type_raw]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -58,34 +59,35 @@
    [___subject]: string
 );
 
-.alter table [WeatherWarning] docstring "{\"description\": \"A severe weather warning from the EUMETNET Meteoalarm system. Contains CAP-structured alert data with awareness level and type, geographic area with EMMA/NUTS geocodes, and multilingual info blocks.\"}";
+.alter table [WeatherWarning] docstring @"{""description"": ""A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.""}";
 
 .alter table [WeatherWarning] column-docstrings (
-   [identifier]: "{\"description\": \"The unique CAP alert identifier assigned by the issuing national meteorological service.\"}",
-   [sender]: "{\"description\": \"The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de').\"}",
-   [sent]: "{\"description\": \"The date and time when the warning was issued, in ISO-8601 format.\"}",
-   [status]: "{\"description\": \"The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.\"}",
-   [msg_type]: "{\"description\": \"The CAP message type indicating the nature of the alert.\"}",
-   [scope]: "{\"description\": \"The CAP scope of the alert. Typically 'Public' for weather warnings.\"}",
-   [country]: "{\"description\": \"The country where the warning applies, derived from the feed name (e.g., 'germany', 'france').\"}",
-   [event]: "{\"description\": \"The weather event description, typically in the national language of the issuing service (e.g., 'STURMB\\u00d6EN', 'Thunderstorm').\"}",
-   [category]: "{\"description\": \"The CAP alert category. 'Met' for meteorological warnings.\"}",
-   [severity]: "{\"description\": \"The CAP severity level indicating the intensity of the weather event.\"}",
-   [urgency]: "{\"description\": \"The CAP urgency level indicating the time-frame for protective action.\"}",
-   [certainty]: "{\"description\": \"The CAP certainty level indicating the confidence in the forecast.\"}",
-   [headline]: "{\"description\": \"A brief human-readable headline summarizing the warning, often in the national language.\"}",
-   [description]: "{\"description\": \"A detailed description of the weather warning, often in the national language.\"}",
-   [instruction]: "{\"description\": \"Recommended protective actions for the public.\"}",
-   [effective]: "{\"description\": \"The date and time when the warning becomes effective, in ISO-8601 format.\"}",
-   [onset]: "{\"description\": \"The expected date and time of onset of the weather event, in ISO-8601 format.\"}",
-   [expires]: "{\"description\": \"The date and time when the warning expires, in ISO-8601 format.\"}",
-   [web]: "{\"description\": \"A URL to the full warning details on the issuing service's website.\"}",
-   [contact]: "{\"description\": \"Contact information for the issuing meteorological service.\"}",
-   [awareness_level]: "{\"description\": \"The Meteoalarm awareness level as a string combining the numeric level and color, e.g., '2; yellow; Moderate'. Values range from '1; green' (no significant weather) to '4; red' (very dangerous).\"}",
-   [awareness_type]: "{\"description\": \"The Meteoalarm awareness type code identifying the hazard, e.g., '1; Wind', '2; Snow/Ice', '3; Thunderstorm', '4; Fog', '5; Extreme high temperature', '6; Extreme low temperature', '7; Coastal Event', '8; Forestfire', '9; Avalanches', '10; Rain', '11; Flooding', '12; Rain-Flood', '13; Coastalevent'.\"}",
-   [area_desc]: "{\"description\": \"A textual description of the affected geographic area.\"}",
-   [geocodes]: "{\"description\": \"A semicolon-separated list of geocode values (EMMA_ID or WARNCELLID) identifying the specific warning zones.\"}",
-   [language]: "{\"description\": \"The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB').\"}",
+   [identifier]: @"{""description"": ""The unique CAP alert identifier assigned by the issuing national meteorological service.""}",
+   [sender]: @"{""description"": ""The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de').""}",
+   [sent]: @"{""description"": ""The date and time when the warning was issued, in ISO-8601 format.""}",
+   [status]: @"{""description"": ""The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.""}",
+   [msg_type]: @"{""description"": ""The CAP message type indicating the nature of the alert.""}",
+   [scope]: @"{""description"": ""The CAP scope of the alert. Typically 'Public' for weather warnings.""}",
+   [country]: @"{""description"": ""Country feed slug where the warning applies (for example germany or france). Matches the {country} MQTT topic axis.""}",
+   [event]: @"{""description"": ""The weather event description, typically in the national language of the issuing service (e.g., 'STURMB\u00d6EN', 'Thunderstorm').""}",
+   [category]: @"{""description"": ""The CAP alert category. 'Met' for meteorological warnings.""}",
+   [severity]: @"{""description"": ""Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing.""}",
+   [urgency]: @"{""description"": ""The CAP urgency level indicating the time-frame for protective action.""}",
+   [certainty]: @"{""description"": ""The CAP certainty level indicating the confidence in the forecast.""}",
+   [headline]: @"{""description"": ""A brief human-readable headline summarizing the warning, often in the national language.""}",
+   [description]: @"{""description"": ""A detailed description of the weather warning, often in the national language.""}",
+   [instruction]: @"{""description"": ""Recommended protective actions for the public.""}",
+   [effective]: @"{""description"": ""The date and time when the warning becomes effective, in ISO-8601 format.""}",
+   [onset]: @"{""description"": ""The expected date and time of onset of the weather event, in ISO-8601 format.""}",
+   [expires]: @"{""description"": ""The date and time when the warning expires, in ISO-8601 format.""}",
+   [web]: @"{""description"": ""A URL to the full warning details on the issuing service's website.""}",
+   [contact]: @"{""description"": ""Contact information for the issuing meteorological service.""}",
+   [awareness_level]: @"{""description"": ""The Meteoalarm awareness level as a string combining the numeric level and color, e.g., '2; yellow; Moderate'. Values range from '1; green' (no significant weather) to '4; red' (very dangerous).""}",
+   [awareness_type]: @"{""description"": ""Meteoalarm awareness type label normalized to lowercase kebab-case for MQTT topic routing (for example wind, snow-ice, thunderstorm, flooding). Matches the {awareness_type} MQTT topic axis.""}",
+   [area_desc]: @"{""description"": ""A textual description of the affected geographic area.""}",
+   [geocodes]: @"{""description"": ""A semicolon-separated list of geocode values (EMMA_ID or WARNCELLID) identifying the specific warning zones.""}",
+   [language]: @"{""description"": ""The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB').""}",
+   [awareness_type_raw]: @"{""description"": ""Raw Meteoalarm awareness_type parameter value as provided by CAP, for example \""2; Snow/Ice\"".""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -126,6 +128,7 @@
   {"column": "area_desc", "path": "$.area_desc"},
   {"column": "geocodes", "path": "$.geocodes"},
   {"column": "language", "path": "$.language"},
+  {"column": "awareness_type_raw", "path": "$.awareness_type_raw"}
 ]
 ```
 
@@ -162,6 +165,7 @@
   {"column": "area_desc", "path": "$.data.area_desc"},
   {"column": "geocodes", "path": "$.data.geocodes"},
   {"column": "language", "path": "$.data.language"},
+  {"column": "awareness_type_raw", "path": "$.data.awareness_type_raw"}
 ]
 ```
 
@@ -176,9 +180,9 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Meteoalarm.WeatherWarning') | project['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = todatetime(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['scope'] = tostring(data.['scope']),['country'] = tostring(data.['country']),['event'] = tostring(data.['event']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['instruction'] = tostring(data.['instruction']),['effective'] = todatetime(data.['effective']),['onset'] = todatetime(data.['onset']),['expires'] = todatetime(data.['expires']),['web'] = tostring(data.['web']),['contact'] = tostring(data.['contact']),['awareness_level'] = tostring(data.['awareness_level']),['awareness_type'] = tostring(data.['awareness_type']),['area_desc'] = tostring(data.['area_desc']),['geocodes'] = tostring(data.['geocodes']),['language'] = tostring(data.['language']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Meteoalarm.WeatherWarning') | project['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = todatetime(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['scope'] = tostring(data.['scope']),['country'] = tostring(data.['country']),['event'] = tostring(data.['event']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['instruction'] = tostring(data.['instruction']),['effective'] = todatetime(data.['effective']),['onset'] = todatetime(data.['onset']),['expires'] = todatetime(data.['expires']),['web'] = tostring(data.['web']),['contact'] = tostring(data.['contact']),['awareness_level'] = tostring(data.['awareness_level']),['awareness_type'] = tostring(data.['awareness_type']),['area_desc'] = tostring(data.['area_desc']),['geocodes'] = tostring(data.['geocodes']),['language'] = tostring(data.['language']),['awareness_type_raw'] = tostring(data.['awareness_type_raw']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

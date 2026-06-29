@@ -1,6 +1,6 @@
 # FDSN Seismology Events
 
-This document describes the CloudEvents emitted by the FDSN Seismology feeder.
+Federated FDSN event-service bridge over eight pre-configured earthquake nodes (EMSC, GFZ, INGV, ETHZ/SED, RESIF, IPGP, NIEP, USGS). Upstream surface reviewed from the FDSN Event WADL plus live node probes: query (kept, telemetry), catalogs (dropped as duplicate index metadata), contributors (dropped as duplicate contributor listings), version (dropped as operational metadata), and application.wadl (dropped as static service description). The feeder emits node reference records and earthquake telemetry on a single topic family.
 
 ## At a glance
 

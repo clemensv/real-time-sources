@@ -1,4 +1,4 @@
-# GeoSphere Austria feeder Events
+# GeoSphere Austria Events
 
 GeoSphere Austria Weather publishes weather observations from GeoSphere Austria for Austrian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -70,7 +70,7 @@ Reference data for a GeoSphere Austria TAWES automatic weather station, includin
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable GeoSphere Austria station identifier used as the Kafka key and CloudEvents subject. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -78,13 +78,13 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `geosphere-austria-tawes`, key `{station_id}` |
 | `MQTT/5.0` | topic `weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/geosphere-austria`, message subject `{station_id}`; application properties bundesland `{bundesland}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/geosphere-austria`, message subject `{station_id}` |
 
 #### Payload
 
 `Weather Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `latitude`, `longitude`, `altitude`, `state`.
 
-- **`station_id`** (string, required): Stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata. Constraints: pattern `^[0-9]+$`.
+- **`station_id`** (string, required): Stable GeoSphere Austria station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata.
 - **`station_name`** (string, required): Station name from the GeoSphere metadata, for example 'WIEN HOHE WARTE' or 'INNSBRUCK FLUGHAFEN'. Mapped from the upstream 'name' field.
 - **`latitude`** (double, required, degree (°)): WGS84 latitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lat' field.
 - **`longitude`** (double, required, degree (°)): WGS84 longitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lon' field.
@@ -129,7 +129,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `geosphere-austria-tawes`, key `{station_id}` |
 | `MQTT/5.0` | topic `weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/geosphere-austria`, message subject `{station_id}`; application properties bundesland `{bundesland}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/geosphere-austria`, message subject `{station_id}` |
 
 #### Payload
 
@@ -194,3 +194,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/geosphere-austria.xreg.json`](xreg/geosphere-austria.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

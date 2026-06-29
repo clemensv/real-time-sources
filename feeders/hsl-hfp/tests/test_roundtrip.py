@@ -1,12 +1,9 @@
-"""Verbatim round-trip contract test.
+"""HFP payload mapping contract test.
 
-The user directive for this feeder is *keep the upstream HFP payload structure
-verbatim and wrap it in a CloudEvent*. This test proves the realized contract:
-a representative HFP payload, run through the mapper and the generated data
-class serializer, comes back byte-for-byte equal on every key the upstream
-sent -- including the hyphenated wire keys and the raw enum tokens -- with the
-single documented deviation that absent optional fields materialize as explicit
-JSON ``null``.
+The HSL bridge preserves upstream scalar values and maps non-Python HFP keys
+such as ``tlp-requestid`` to stable schema property names such as
+``tlp_requestid``. Codegen must not emit alternate JSON names for those fields:
+the downstream CloudEvent wire contract is the xRegistry property name.
 """
 
 from __future__ import annotations
@@ -95,9 +92,10 @@ DA_PAYLOAD = {
 
 def _assert_present_keys_preserved(payload: dict, serialized: dict) -> None:
     for key, value in payload.items():
-        assert key in serialized, f"wire key {key!r} dropped"
-        assert serialized[key] == value, (
-            f"value for {key!r} changed: {serialized[key]!r} != {value!r}"
+        wire_key = key.replace("-", "_")
+        assert wire_key in serialized, f"wire key {wire_key!r} dropped"
+        assert serialized[wire_key] == value, (
+            f"value for {wire_key!r} changed: {serialized[wire_key]!r} != {value!r}"
         )
 
 
@@ -116,15 +114,15 @@ class TestVerbatimRoundtrip:
         serialized = _roundtrip(
             TrafficLightEvent, traffic_light_event_kwargs(TLR_PAYLOAD, {}))
         _assert_present_keys_preserved(TLR_PAYLOAD, serialized)
-        # Spot-check the sanitized->wire remap explicitly.
-        assert serialized["tlp-requestid"] == 5
-        assert serialized["signal-groupid"] == 3
+        # Spot-check the upstream->schema remap explicitly.
+        assert serialized["tlp_requestid"] == 5
+        assert serialized["signal_groupid"] == 3
 
     def test_da_payload_preserved(self):
         serialized = _roundtrip(
             DriverBlockEvent, driver_block_event_kwargs(DA_PAYLOAD, {}))
         _assert_present_keys_preserved(DA_PAYLOAD, serialized)
-        assert serialized["dr-type"] == 1
+        assert serialized["dr_type"] == 1
 
 
 # Parsed HFP topic levels (see hfp_source.parse_topic). These become real schema

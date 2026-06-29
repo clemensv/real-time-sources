@@ -158,7 +158,7 @@ class AffectedCity:
             An instance of the dataclass.
         """
         return cls(
-            prefecture_code='swbpzaqfcxwlxtqntgrm',
-            city_code='jsgyjkqldbueoppuolxs',
+            prefecture_code='yskrzlzaqwxmpqrvktmd',
+            city_code='zlrmycflnobmvyjkrusi',
             max_intensity=MaxIntensityenum.VALUE_1
         )

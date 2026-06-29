@@ -25,13 +25,16 @@
 ]
 ```
 
-.create-merge table ['JP.JMA.BosaiWarning.Office'] (
+.create-merge table [Office] (
    [office_code]: string,
    [area_code]: string,
    [name_jp]: string,
    [name_en]: string,
    [parent_office_code]: string,
    [office_type]: string,
+   [prefecture]: string,
+   [severity]: string,
+   [event]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -39,15 +42,18 @@
    [___subject]: string
 );
 
-.alter table ['JP.JMA.BosaiWarning.Office'] docstring "{\"description\": \"JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.\"}";
+.alter table [Office] docstring @"{""description"": ""JMA Bosai warning office reference data from area.json offices.""}";
 
-.alter table ['JP.JMA.BosaiWarning.Office'] column-docstrings (
-   [office_code]: "{\"description\": \"Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events.\"}",
-   [area_code]: "{\"description\": \"Six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry.\"}",
-   [name_jp]: "{\"description\": \"Japanese office or warning-region name from area.json offices[].name, such as \\u6771\\u4eac\\u90fd or \\u5b97\\u8c37\\u5730\\u65b9.\"}",
-   [name_en]: "{\"description\": \"English office or warning-region name from area.json offices[].enName, such as Tokyo or Soya.\"}",
-   [parent_office_code]: "{\"description\": \"Parent JMA regional center code from area.json offices[].parent. Null is emitted only if the upstream catalog omits a parent.\"}",
-   [office_type]: "{\"description\": \"Normalized office class. PREFECTURE is used for standard prefectural offices, SUBREGION for Hokkaido/Okinawa-style regional warning offices, and OFFICE for other JMA issuing-office catalog entries.\"}",
+.alter table [Office] column-docstrings (
+   [office_code]: @"{""description"": ""Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events.""}",
+   [area_code]: @"{""description"": ""Six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry.""}",
+   [name_jp]: @"{""description"": ""Japanese office or warning-region name from area.json offices[].name, such as \u6771\u4eac\u90fd or \u5b97\u8c37\u5730\u65b9.""}",
+   [name_en]: @"{""description"": ""English office or warning-region name from area.json offices[].enName, such as Tokyo or Soya.""}",
+   [parent_office_code]: @"{""description"": ""Parent JMA regional center code from area.json offices[].parent. Null is emitted only if the upstream catalog omits a parent.""}",
+   [office_type]: @"{""description"": ""Normalized office class. PREFECTURE is used for standard prefectural offices, SUBREGION for Hokkaido/Okinawa-style regional warning offices, and OFFICE for other JMA issuing-office catalog entries.""}",
+   [prefecture]: @"{""description"": ""ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name.""}",
+   [severity]: @"{""description"": ""Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for \u6ce8\u610f\u5831-level notices and cancellations, warning for \u8b66\u5831-level warnings, and emergency for \u7279\u5225\u8b66\u5831/special-warning category codes.""}",
+   [event]: @"{""description"": ""Fixed MQTT topic event segment for retained office reference records.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -55,7 +61,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['JP.JMA.BosaiWarning.Office'] ingestion json mapping "JP.JMA.BosaiWarning.Office_json_flat"
+.create-or-alter table [Office] ingestion json mapping "Office_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -69,10 +75,13 @@
   {"column": "name_en", "path": "$.name_en"},
   {"column": "parent_office_code", "path": "$.parent_office_code"},
   {"column": "office_type", "path": "$.office_type"},
+  {"column": "prefecture", "path": "$.prefecture"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "event", "path": "$.event"}
 ]
 ```
 
-.create-or-alter table ['JP.JMA.BosaiWarning.Office'] ingestion json mapping "JP.JMA.BosaiWarning.Office_json_ce_structured"
+.create-or-alter table [Office] ingestion json mapping "Office_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -86,32 +95,38 @@
   {"column": "name_en", "path": "$.data.name_en"},
   {"column": "parent_office_code", "path": "$.data.parent_office_code"},
   {"column": "office_type", "path": "$.data.office_type"},
+  {"column": "prefecture", "path": "$.data.prefecture"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "event", "path": "$.data.event"}
 ]
 ```
 
-.drop materialized-view ['JP.JMA.BosaiWarning.OfficeLatest'] ifexists;
+.drop materialized-view OfficeLatest ifexists;
 
-.create materialized-view with (backfill=true) ['JP.JMA.BosaiWarning.OfficeLatest'] on table ['JP.JMA.BosaiWarning.Office'] {
-    ['JP.JMA.BosaiWarning.Office'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) OfficeLatest on table Office {
+    Office | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['JP.JMA.BosaiWarning.Office'] policy update
+.alter table [Office] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Warning.Office') | project['office_code'] = tostring(data.['office_code']),['area_code'] = tostring(data.['area_code']),['name_jp'] = tostring(data.['name_jp']),['name_en'] = tostring(data.['name_en']),['parent_office_code'] = tostring(data.['parent_office_code']),['office_type'] = tostring(data.['office_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Warning.Office') | project['office_code'] = tostring(data.['office_code']),['area_code'] = tostring(data.['area_code']),['name_jp'] = tostring(data.['name_jp']),['name_en'] = tostring(data.['name_en']),['parent_office_code'] = tostring(data.['parent_office_code']),['office_type'] = tostring(data.['office_type']),['prefecture'] = tostring(data.['prefecture']),['severity'] = tostring(data.['severity']),['event'] = tostring(data.['event']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['JP.JMA.BosaiWarning.WeatherWarning'] (
+.create-merge table [WeatherWarning] (
+   [prefecture]: string,
+   [severity]: string,
    [office_code]: string,
    [area_code]: string,
+   [event]: string,
    [area_name]: string,
-   [report_datetime]: string,
-   [report_datetime_local]: string,
+   [report_datetime]: datetime,
+   [report_datetime_local]: datetime,
    [headline_text]: string,
    [warnings]: dynamic,
    [time_defines]: dynamic,
@@ -122,17 +137,20 @@
    [___subject]: string
 );
 
-.alter table ['JP.JMA.BosaiWarning.WeatherWarning'] docstring "{\"description\": \"JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.\"}";
+.alter table [WeatherWarning] docstring @"{""description"": ""JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.""}";
 
-.alter table ['JP.JMA.BosaiWarning.WeatherWarning'] column-docstrings (
-   [office_code]: "{\"description\": \"Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component.\"}",
-   [area_code]: "{\"description\": \"JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry.\"}",
-   [area_name]: "{\"description\": \"Japanese inner forecast-area name from the warning payload when present or from area.json class catalogs when the payload only carries a code.\"}",
-   [report_datetime]: "{\"description\": \"JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset.\"}",
-   [report_datetime_local]: "{\"description\": \"Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00).\"}",
-   [headline_text]: "{\"description\": \"Japanese free-text headline from headlineText summarizing areas and hazards requiring attention. Null is emitted when JMA omits the headline.\"}",
-   [warnings]: "{\"description\": \"All JMA warning/advisory items published for the inner area in this bulletin. WarningItem is intentionally defined inline to avoid duplicate schema definitions during Avro and producer generation.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
-   [time_defines]: "{\"description\": \"Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.\", \"schema\": {\"type\": \"array\", \"description\": \"Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.\", \"items\": {\"type\": \"string\", \"format\": \"date-time\"}, \"altnames\": {\"jma-bosai\": \"timeSeries[].timeDefines\"}}}",
+.alter table [WeatherWarning] column-docstrings (
+   [prefecture]: @"{""description"": ""ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name.""}",
+   [severity]: @"{""description"": ""Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for \u6ce8\u610f\u5831-level notices and cancellations, warning for \u8b66\u5831-level warnings, and emergency for \u7279\u5225\u8b66\u5831/special-warning category codes.""}",
+   [office_code]: @"{""description"": ""Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component.""}",
+   [area_code]: @"{""description"": ""JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry.""}",
+   [event]: @"{""description"": ""Fixed MQTT topic event segment for JMA Bosai weather warning state records.""}",
+   [area_name]: @"{""description"": ""Japanese inner forecast-area name from the warning payload when present or from area.json class catalogs when the payload only carries a code.""}",
+   [report_datetime]: @"{""description"": ""JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset.""}",
+   [report_datetime_local]: @"{""description"": ""Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00).""}",
+   [headline_text]: @"{""description"": ""Japanese free-text headline from headlineText summarizing areas and hazards requiring attention. Null is emitted when JMA omits the headline.""}",
+   [warnings]: @"{""description"": ""All JMA warning/advisory items published for the inner area in this bulletin. WarningItem is intentionally defined inline to avoid duplicate schema definitions during Avro and producer generation."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [time_defines]: @"{""description"": ""Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block."", ""schema"": {""type"": ""array"", ""description"": ""Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block."", ""items"": {""type"": ""datetime"", ""description"": ""Payload for an emergency or hazard event from the Japan Meteorological Agency. It carries weather warnings and advisories for Japanese weather-warning areas.""}}}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -140,7 +158,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['JP.JMA.BosaiWarning.WeatherWarning'] ingestion json mapping "JP.JMA.BosaiWarning.WeatherWarning_json_flat"
+.create-or-alter table [WeatherWarning] ingestion json mapping "WeatherWarning_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -148,18 +166,21 @@
   {"column": "___id", "path": "$.id"},
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
+  {"column": "prefecture", "path": "$.prefecture"},
+  {"column": "severity", "path": "$.severity"},
   {"column": "office_code", "path": "$.office_code"},
   {"column": "area_code", "path": "$.area_code"},
+  {"column": "event", "path": "$.event"},
   {"column": "area_name", "path": "$.area_name"},
   {"column": "report_datetime", "path": "$.report_datetime"},
   {"column": "report_datetime_local", "path": "$.report_datetime_local"},
   {"column": "headline_text", "path": "$.headline_text"},
   {"column": "warnings", "path": "$.warnings"},
-  {"column": "time_defines", "path": "$.time_defines"},
+  {"column": "time_defines", "path": "$.time_defines"}
 ]
 ```
 
-.create-or-alter table ['JP.JMA.BosaiWarning.WeatherWarning'] ingestion json mapping "JP.JMA.BosaiWarning.WeatherWarning_json_ce_structured"
+.create-or-alter table [WeatherWarning] ingestion json mapping "WeatherWarning_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -167,46 +188,51 @@
   {"column": "___id", "path": "$.id"},
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
+  {"column": "prefecture", "path": "$.data.prefecture"},
+  {"column": "severity", "path": "$.data.severity"},
   {"column": "office_code", "path": "$.data.office_code"},
   {"column": "area_code", "path": "$.data.area_code"},
+  {"column": "event", "path": "$.data.event"},
   {"column": "area_name", "path": "$.data.area_name"},
   {"column": "report_datetime", "path": "$.data.report_datetime"},
   {"column": "report_datetime_local", "path": "$.data.report_datetime_local"},
   {"column": "headline_text", "path": "$.data.headline_text"},
   {"column": "warnings", "path": "$.data.warnings"},
-  {"column": "time_defines", "path": "$.data.time_defines"},
+  {"column": "time_defines", "path": "$.data.time_defines"}
 ]
 ```
 
-.drop materialized-view ['JP.JMA.BosaiWarning.WeatherWarningLatest'] ifexists;
+.drop materialized-view WeatherWarningLatest ifexists;
 
-.create materialized-view with (backfill=true) ['JP.JMA.BosaiWarning.WeatherWarningLatest'] on table ['JP.JMA.BosaiWarning.WeatherWarning'] {
-    ['JP.JMA.BosaiWarning.WeatherWarning'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) WeatherWarningLatest on table WeatherWarning {
+    WeatherWarning | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['JP.JMA.BosaiWarning.WeatherWarning'] policy update
+.alter table [WeatherWarning] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Warning.WeatherWarning') | project['office_code'] = tostring(data.['office_code']),['area_code'] = tostring(data.['area_code']),['area_name'] = tostring(data.['area_name']),['report_datetime'] = tostring(data.['report_datetime']),['report_datetime_local'] = tostring(data.['report_datetime_local']),['headline_text'] = tostring(data.['headline_text']),['warnings'] = todynamic(data.['warnings']),['time_defines'] = todynamic(data.['time_defines']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Warning.WeatherWarning') | project['prefecture'] = tostring(data.['prefecture']),['severity'] = tostring(data.['severity']),['office_code'] = tostring(data.['office_code']),['area_code'] = tostring(data.['area_code']),['event'] = tostring(data.['event']),['area_name'] = tostring(data.['area_name']),['report_datetime'] = todatetime(data.['report_datetime']),['report_datetime_local'] = todatetime(data.['report_datetime_local']),['headline_text'] = tostring(data.['headline_text']),['warnings'] = todynamic(data.['warnings']),['time_defines'] = todynamic(data.['time_defines']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['JP.JMA.BosaiWarning.TsunamiAlert'] (
+.create-merge table [TsunamiAlert] (
    [event_id]: string,
    [serial]: int,
    [info_type]: string,
-   [report_datetime]: string,
-   [report_datetime_local]: string,
+   [report_datetime]: datetime,
+   [report_datetime_local]: datetime,
    [title_jp]: string,
    [title_en]: string,
    [bulletin_type]: string,
    [detail_url]: string,
    [affected_coastal_regions]: dynamic,
    [observations]: dynamic,
+   [prefecture]: string,
+   [severity]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -214,20 +240,22 @@
    [___subject]: string
 );
 
-.alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] docstring "{\"description\": \"Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.\"}";
+.alter table [TsunamiAlert] docstring @"{""description"": ""JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.""}";
 
-.alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] column-docstrings (
-   [event_id]: "{\"description\": \"Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component.\"}",
-   [serial]: "{\"description\": \"JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component.\"}",
-   [info_type]: "{\"description\": \"Normalized information type derived from JMA ift text: ISSUED for \\u767a\\u8868, CORRECTED for \\u8a02\\u6b63, and CANCELLED for \\u53d6\\u6d88.\"}",
-   [report_datetime]: "{\"description\": \"JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC.\"}",
-   [report_datetime_local]: "{\"description\": \"Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset.\"}",
-   [title_jp]: "{\"description\": \"Japanese JMA tsunami bulletin title copied from list.json ttl.\"}",
-   [title_en]: "{\"description\": \"English tsunami title generated from the known JMA title class when no English list title is present.\"}",
-   [bulletin_type]: "{\"description\": \"JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52.\"}",
-   [detail_url]: "{\"description\": \"Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.\"}",
-   [affected_coastal_regions]: "{\"description\": \"Coastal forecast regions and expected wave/arrival data parsed from VTSE41 tsunami detail bulletins. AffectedCoastalRegion is defined inline to avoid duplicate schema definitions during Avro and producer generation.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
-   [observations]: "{\"description\": \"Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+.alter table [TsunamiAlert] column-docstrings (
+   [event_id]: @"{""description"": ""Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component.""}",
+   [serial]: @"{""description"": ""JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component.""}",
+   [info_type]: @"{""description"": ""Normalized information type derived from JMA ift text: ISSUED for \u767a\u8868, CORRECTED for \u8a02\u6b63, and CANCELLED for \u53d6\u6d88.""}",
+   [report_datetime]: @"{""description"": ""JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC.""}",
+   [report_datetime_local]: @"{""description"": ""Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset.""}",
+   [title_jp]: @"{""description"": ""Japanese JMA tsunami bulletin title copied from list.json ttl.""}",
+   [title_en]: @"{""description"": ""English tsunami title generated from the known JMA title class when no English list title is present.""}",
+   [bulletin_type]: @"{""description"": ""JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52.""}",
+   [detail_url]: @"{""description"": ""Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.""}",
+   [affected_coastal_regions]: @"{""description"": ""Coastal forecast regions and expected wave/arrival data parsed from VTSE41 tsunami detail bulletins. AffectedCoastalRegion is defined inline to avoid duplicate schema definitions during Avro and producer generation."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [observations]: @"{""description"": ""Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [prefecture]: @"{""description"": ""ASCII-safe Japan region routing axis for tsunami MQTT/AMQP topics.""}",
+   [severity]: @"{""description"": ""Japan-native tsunami warning severity axis: advisory, warning, or emergency.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -235,7 +263,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] ingestion json mapping "JP.JMA.BosaiWarning.TsunamiAlert_json_flat"
+.create-or-alter table [TsunamiAlert] ingestion json mapping "TsunamiAlert_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -254,10 +282,12 @@
   {"column": "detail_url", "path": "$.detail_url"},
   {"column": "affected_coastal_regions", "path": "$.affected_coastal_regions"},
   {"column": "observations", "path": "$.observations"},
+  {"column": "prefecture", "path": "$.prefecture"},
+  {"column": "severity", "path": "$.severity"}
 ]
 ```
 
-.create-or-alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] ingestion json mapping "JP.JMA.BosaiWarning.TsunamiAlert_json_ce_structured"
+.create-or-alter table [TsunamiAlert] ingestion json mapping "TsunamiAlert_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -276,23 +306,25 @@
   {"column": "detail_url", "path": "$.data.detail_url"},
   {"column": "affected_coastal_regions", "path": "$.data.affected_coastal_regions"},
   {"column": "observations", "path": "$.data.observations"},
+  {"column": "prefecture", "path": "$.data.prefecture"},
+  {"column": "severity", "path": "$.data.severity"}
 ]
 ```
 
-.drop materialized-view ['JP.JMA.BosaiWarning.TsunamiAlertLatest'] ifexists;
+.drop materialized-view TsunamiAlertLatest ifexists;
 
-.create materialized-view with (backfill=true) ['JP.JMA.BosaiWarning.TsunamiAlertLatest'] on table ['JP.JMA.BosaiWarning.TsunamiAlert'] {
-    ['JP.JMA.BosaiWarning.TsunamiAlert'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) TsunamiAlertLatest on table TsunamiAlert {
+    TsunamiAlert | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] policy update
+.alter table [TsunamiAlert] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Tsunami.TsunamiAlert') | project['event_id'] = tostring(data.['event_id']),['serial'] = toint(data.['serial']),['info_type'] = tostring(data.['info_type']),['report_datetime'] = tostring(data.['report_datetime']),['report_datetime_local'] = tostring(data.['report_datetime_local']),['title_jp'] = tostring(data.['title_jp']),['title_en'] = tostring(data.['title_en']),['bulletin_type'] = tostring(data.['bulletin_type']),['detail_url'] = tostring(data.['detail_url']),['affected_coastal_regions'] = todynamic(data.['affected_coastal_regions']),['observations'] = todynamic(data.['observations']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Tsunami.TsunamiAlert') | project['event_id'] = tostring(data.['event_id']),['serial'] = toint(data.['serial']),['info_type'] = tostring(data.['info_type']),['report_datetime'] = todatetime(data.['report_datetime']),['report_datetime_local'] = todatetime(data.['report_datetime_local']),['title_jp'] = tostring(data.['title_jp']),['title_en'] = tostring(data.['title_en']),['bulletin_type'] = tostring(data.['bulletin_type']),['detail_url'] = tostring(data.['detail_url']),['affected_coastal_regions'] = todynamic(data.['affected_coastal_regions']),['observations'] = todynamic(data.['observations']),['prefecture'] = tostring(data.['prefecture']),['severity'] = tostring(data.['severity']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

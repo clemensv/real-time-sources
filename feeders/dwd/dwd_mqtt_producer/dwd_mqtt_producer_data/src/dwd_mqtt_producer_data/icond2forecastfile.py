@@ -181,17 +181,17 @@ class IconD2ForecastFile:
             An instance of the dataclass.
         """
         return cls(
-            file_url='vcweylsokfxkbopwhrxn',
-            model='qkcpeukrdwwafehdetch',
-            file_name='wnjcuafbqrhjcodcfliz',
-            run='qgzwhakfvivupkmcgdgd',
-            forecast_hour=int(36),
-            parameter='fayxnsdkygzzbjihytik',
-            level_type='gnonjpmsxccrtpwbsrek',
-            level='vfmrethiurabstvladmr',
-            modified='vgwotdxohnstjmywvlux',
-            size_bytes=int(22),
-            state='scvcpcqwmrptbdqccamk',
-            variable='guckpdgxfagtfdydhlfa',
-            file_id='rohdznokzavhbmsevhuy'
+            file_url='nmebbzmmmgctkacboiuy',
+            model='oexqjiucbxocsfetoxph',
+            file_name='cbabeulztemcxyljaoae',
+            run='guteiiekenayfpusnffv',
+            forecast_hour=int(58),
+            parameter='xlzqragfegouovjtcybu',
+            level_type='pmltbsndbqdiwscbihui',
+            level='ibwvvbkihvralutpojor',
+            modified='pfzazfgfkxtwmnwcxkji',
+            size_bytes=int(23),
+            state='nthfjlpvrmoqujxolnaj',
+            variable='parwnqzurfkqxommzbvf',
+            file_id='airzbpcxfjqweosxqver'
         )

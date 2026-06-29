@@ -159,8 +159,8 @@ class SurfaceMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(67),
-            surface_temperature=float(60.901525671123515),
-            road_freezing_temperature=float(25.79574894120924),
-            road_surface_condition=int(78)
+            sensor_id=int(45),
+            surface_temperature=float(57.370146349407406),
+            road_freezing_temperature=float(67.4827382403138),
+            road_surface_condition=int(29)
         )

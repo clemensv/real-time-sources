@@ -1,4 +1,4 @@
-# Autobahn feeder Events
+# Autobahn Events
 
 Autobahn publishes road traffic incidents, closures, webcams, and travel information from Germany's Autobahn GmbH traffic APIs for German motorway segments, roadworks, closures, and traffic messages. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/appeared`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -176,7 +176,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/updated`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -274,7 +274,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/resolved`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -372,7 +372,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/appeared`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -470,7 +470,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/updated`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -568,7 +568,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/resolved`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -666,7 +666,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/warning/{identifier}/appeared`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -768,7 +768,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/warning/{identifier}/updated`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -870,7 +870,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/warning/{identifier}/resolved`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -972,7 +972,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/closure/{identifier}/appeared`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1070,7 +1070,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/closure/{identifier}/updated`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1168,7 +1168,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/closure/{identifier}/resolved`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1266,7 +1266,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/appeared`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1364,7 +1364,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/updated`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1462,7 +1462,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/resolved`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1560,7 +1560,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/appeared`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1658,7 +1658,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/updated`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1756,7 +1756,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/resolved`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1854,7 +1854,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/appeared`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -1944,7 +1944,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/updated`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2034,7 +2034,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/resolved`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2124,7 +2124,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/appeared`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2211,7 +2211,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/updated`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2298,7 +2298,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/resolved`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2385,7 +2385,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/appeared`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2472,7 +2472,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/updated`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2559,7 +2559,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/resolved`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2646,7 +2646,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/appeared`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2732,7 +2732,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/updated`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2818,7 +2818,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `autobahn`, key `{identifier}` |
 | `MQTT/5.0` | topic `traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/resolved`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}`; application properties road `{road}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/autobahn`, message subject `{identifier}` |
 
 #### Payload
 
@@ -2911,3 +2911,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
 - German Autobahn APIs: <https://verkehr.autobahn.de/o/autobahn>
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

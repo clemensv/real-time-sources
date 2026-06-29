@@ -159,8 +159,8 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            timeseries_id='gxeoicnrolwkpdbsdpct',
-            timestamp='utkgxbuhzlhcwvuesuob',
-            value=float(56.056239683557365),
-            uom='xomyhacelvacosvoadou'
+            timeseries_id='luavyswhklaotxyzcoti',
+            timestamp='yxzvoklfcdlsskhgisqq',
+            value=float(65.8914875008946),
+            uom='hylxpnffvtwnkryycflx'
         )

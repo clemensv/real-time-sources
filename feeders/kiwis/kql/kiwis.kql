@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table ['org.kiwis.Station'] (
+.create-merge table [Station] (
    [kiwis_id]: string,
    [base_url]: string,
    [station_id]: string,
@@ -42,9 +42,9 @@
    [___subject]: string
 );
 
-.alter table ['org.kiwis.Station'] docstring @"{""description"": ""Reference station payload from KiWIS getStationList with stable identifiers, optional location, river, and catchment context.""}";
+.alter table [Station] docstring @"{""description"": ""Reference station payload from KiWIS getStationList with stable identifiers, optional location, river, and catchment context.""}";
 
-.alter table ['org.kiwis.Station'] column-docstrings (
+.alter table [Station] column-docstrings (
    [kiwis_id]: @"{""description"": ""Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource.""}",
    [base_url]: @"{""description"": ""Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance.""}",
    [station_id]: @"{""description"": ""Stable KiWIS station_id returned by getStationList. This is the station identity within one KiWIS datasource and forms the station event subject with kiwis_id.""}",
@@ -61,7 +61,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['org.kiwis.Station'] ingestion json mapping "org.kiwis.Station_json_flat"
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -81,7 +81,7 @@
 ]
 ```
 
-.create-or-alter table ['org.kiwis.Station'] ingestion json mapping "org.kiwis.Station_json_ce_structured"
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -101,13 +101,13 @@
 ]
 ```
 
-.drop materialized-view ['org.kiwis.StationLatest'] ifexists;
+.drop materialized-view StationLatest ifexists;
 
-.create materialized-view with (backfill=true) ['org.kiwis.StationLatest'] on table ['org.kiwis.Station'] {
-    ['org.kiwis.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['org.kiwis.Station'] policy update
+.alter table [Station] policy update
 ```
 [{
   "IsEnabled": true,
@@ -118,7 +118,7 @@
 }]
 ```
 
-.create-merge table ['org.kiwis.Timeseries'] (
+.create-merge table [Timeseries] (
    [kiwis_id]: string,
    [base_url]: string,
    [ts_id]: string,
@@ -139,9 +139,9 @@
    [___subject]: string
 );
 
-.alter table ['org.kiwis.Timeseries'] docstring @"{""description"": ""Reference timeseries payload from KiWIS getTimeseriesList with station linkage, parameter labels, units, and coverage.""}";
+.alter table [Timeseries] docstring @"{""description"": ""Reference timeseries payload from KiWIS getTimeseriesList with station linkage, parameter labels, units, and coverage.""}";
 
-.alter table ['org.kiwis.Timeseries'] column-docstrings (
+.alter table [Timeseries] column-docstrings (
    [kiwis_id]: @"{""description"": ""Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource.""}",
    [base_url]: @"{""description"": ""Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance.""}",
    [ts_id]: @"{""description"": ""Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events.""}",
@@ -162,7 +162,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['org.kiwis.Timeseries'] ingestion json mapping "org.kiwis.Timeseries_json_flat"
+.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -186,7 +186,7 @@
 ]
 ```
 
-.create-or-alter table ['org.kiwis.Timeseries'] ingestion json mapping "org.kiwis.Timeseries_json_ce_structured"
+.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -210,13 +210,13 @@
 ]
 ```
 
-.drop materialized-view ['org.kiwis.TimeseriesLatest'] ifexists;
+.drop materialized-view TimeseriesLatest ifexists;
 
-.create materialized-view with (backfill=true) ['org.kiwis.TimeseriesLatest'] on table ['org.kiwis.Timeseries'] {
-    ['org.kiwis.Timeseries'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) TimeseriesLatest on table Timeseries {
+    Timeseries | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['org.kiwis.Timeseries'] policy update
+.alter table [Timeseries] policy update
 ```
 [{
   "IsEnabled": true,
@@ -227,7 +227,7 @@
 }]
 ```
 
-.create-merge table ['org.kiwis.TimeseriesValue'] (
+.create-merge table [TimeseriesValue] (
    [kiwis_id]: string,
    [base_url]: string,
    [ts_id]: string,
@@ -246,9 +246,9 @@
    [___subject]: string
 );
 
-.alter table ['org.kiwis.TimeseriesValue'] docstring @"{""description"": ""Telemetry payload for one KiWIS getTimeseriesValues row with value, quality code, and unit metadata copied from the timeseries catalog.""}";
+.alter table [TimeseriesValue] docstring @"{""description"": ""Telemetry payload for one KiWIS getTimeseriesValues row with value, quality code, and unit metadata copied from the timeseries catalog.""}";
 
-.alter table ['org.kiwis.TimeseriesValue'] column-docstrings (
+.alter table [TimeseriesValue] column-docstrings (
    [kiwis_id]: @"{""description"": ""Configuration-assigned identifier for the KiWIS endpoint/datasource. It qualifies upstream identifiers because station_id and ts_id are unique only within a KiWIS datasource.""}",
    [base_url]: @"{""description"": ""Base KiWIS queryServices URL used as the CloudEvents source and as provenance for records from this instance.""}",
    [ts_id]: @"{""description"": ""Stable KiWIS timeseries identifier returned by getTimeseriesList. It is globally unique within a KiWIS datasource and forms the key for metadata and value events.""}",
@@ -267,7 +267,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['org.kiwis.TimeseriesValue'] ingestion json mapping "org.kiwis.TimeseriesValue_json_flat"
+.create-or-alter table [TimeseriesValue] ingestion json mapping "TimeseriesValue_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -289,7 +289,7 @@
 ]
 ```
 
-.create-or-alter table ['org.kiwis.TimeseriesValue'] ingestion json mapping "org.kiwis.TimeseriesValue_json_ce_structured"
+.create-or-alter table [TimeseriesValue] ingestion json mapping "TimeseriesValue_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -311,14 +311,13 @@
 ]
 ```
 
-.drop materialized-view ['org.kiwis.TimeseriesValueLatest'] ifexists;
+.drop materialized-view TimeseriesValueLatest ifexists;
 
-.create materialized-view with (backfill=true) ['org.kiwis.TimeseriesValueLatest'] on table ['org.kiwis.TimeseriesValue'] {
-    ['org.kiwis.TimeseriesValue']
-    | summarize arg_max(timestamp, *) by kiwis_id, ts_id
+.create materialized-view with (backfill=true) TimeseriesValueLatest on table TimeseriesValue {
+    TimeseriesValue | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['org.kiwis.TimeseriesValue'] policy update
+.alter table [TimeseriesValue] policy update
 ```
 [{
   "IsEnabled": true,
@@ -328,5 +327,4 @@
   "PropagateIngestionProperties": true
 }]
 ```
-
 

@@ -29,17 +29,17 @@ class Test_TimeseriesValue(unittest.TestCase):
         Create instance of TimeseriesValue for testing
         """
         instance = TimeseriesValue(
-            kiwis_id='dtjlcksjhinbcgtcxfls',
-            base_url='dtjslgclctkmgiiwffyj',
-            ts_id='hhboemeowjwrbxxozuhv',
-            station_id='cmwvjmrofpqetngwxuiu',
+            kiwis_id='ybdwqfzfuizbawyzndmk',
+            base_url='grkiduzaweuusmhaqhhp',
+            ts_id='nixzxuerjyqbmhldxxcy',
+            station_id='yoafruyflrvoxfjarwew',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(23.140730480884397),
-            quality_code=int(98),
-            unit_name='qmpqymdxoxnsgsnerlcl',
-            unit_symbol='psvtptjhurpcapbhxahz',
-            parametertype_name='brkddcogziwxsaypnqxy',
-            stationparameter_name='eyrqlqozwtbdexdvzjcd'
+            value=float(44.94933998139119),
+            quality_code=int(62),
+            unit_name='lohjsxrlxsirlqzksgnt',
+            unit_symbol='epmngubdoukbaqlphysw',
+            parametertype_name='jrhnbqlqdixeraphgxvy',
+            stationparameter_name='qaybkvgknahmwmganert'
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test kiwis_id property
         """
-        test_value = 'dtjlcksjhinbcgtcxfls'
+        test_value = 'ybdwqfzfuizbawyzndmk'
         self.instance.kiwis_id = test_value
         self.assertEqual(self.instance.kiwis_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test base_url property
         """
-        test_value = 'dtjslgclctkmgiiwffyj'
+        test_value = 'grkiduzaweuusmhaqhhp'
         self.instance.base_url = test_value
         self.assertEqual(self.instance.base_url, test_value)
     
@@ -64,7 +64,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test ts_id property
         """
-        test_value = 'hhboemeowjwrbxxozuhv'
+        test_value = 'nixzxuerjyqbmhldxxcy'
         self.instance.ts_id = test_value
         self.assertEqual(self.instance.ts_id, test_value)
     
@@ -72,7 +72,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'cmwvjmrofpqetngwxuiu'
+        test_value = 'yoafruyflrvoxfjarwew'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -88,7 +88,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(23.140730480884397)
+        test_value = float(44.94933998139119)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -96,7 +96,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test quality_code property
         """
-        test_value = int(98)
+        test_value = int(62)
         self.instance.quality_code = test_value
         self.assertEqual(self.instance.quality_code, test_value)
     
@@ -104,7 +104,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test unit_name property
         """
-        test_value = 'qmpqymdxoxnsgsnerlcl'
+        test_value = 'lohjsxrlxsirlqzksgnt'
         self.instance.unit_name = test_value
         self.assertEqual(self.instance.unit_name, test_value)
     
@@ -112,7 +112,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test unit_symbol property
         """
-        test_value = 'psvtptjhurpcapbhxahz'
+        test_value = 'epmngubdoukbaqlphysw'
         self.instance.unit_symbol = test_value
         self.assertEqual(self.instance.unit_symbol, test_value)
     
@@ -120,7 +120,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test parametertype_name property
         """
-        test_value = 'brkddcogziwxsaypnqxy'
+        test_value = 'jrhnbqlqdixeraphgxvy'
         self.instance.parametertype_name = test_value
         self.assertEqual(self.instance.parametertype_name, test_value)
     
@@ -128,7 +128,7 @@ class Test_TimeseriesValue(unittest.TestCase):
         """
         Test stationparameter_name property
         """
-        test_value = 'eyrqlqozwtbdexdvzjcd'
+        test_value = 'qaybkvgknahmwmganert'
         self.instance.stationparameter_name = test_value
         self.assertEqual(self.instance.stationparameter_name, test_value)
     

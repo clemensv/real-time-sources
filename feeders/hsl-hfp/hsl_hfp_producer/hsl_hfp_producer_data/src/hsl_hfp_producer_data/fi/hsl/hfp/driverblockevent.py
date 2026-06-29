@@ -135,8 +135,6 @@ class DriverBlockEvent:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
-            if isinstance(result, str):
-                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -204,29 +202,29 @@ class DriverBlockEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(20),
-            veh=int(18),
-            tst='vbqcconqrwzuubcwrebi',
-            tsi=int(51),
-            operator_id='mvaelhixtbtkcpcnxopk',
-            vehicle_number='lwlikoehtlnhafambirp',
+            oper=int(94),
+            veh=int(76),
+            tst='oryvphomercrennzbgne',
+            tsi=int(15),
+            operator_id='gfcqudehcttrqnqwuvpi',
+            vehicle_number='gonvztbrlghizoqziqdf',
             temporal_type=None,
             transport_mode=None,
-            route_id='kdjldexwgysztgcqdaas',
-            direction_id='azdroxjxdmygdwnfgujg',
-            headsign='rjrkofselrqpyszvhbgu',
-            start_time='eprerovofawkbuhrftvl',
-            next_stop='vbouyddnwcufrfdtwwto',
-            geohash_level='vxhyrjbrfumqyrxcldyl',
-            geohash='bqaorzvxtqjglcxvrdxv',
-            spd=float(68.20606869559019),
-            hdg=int(63),
-            lat=float(43.99374542078645),
-            long=float(87.55603230806166),
-            acc=float(99.83074602832141),
-            odo=int(84),
-            drst=int(52),
-            loc='tagpaylshmjqvcrbkqqm',
-            oday='fwhcnamdgpbyvewamzuo',
-            dr_type=int(100)
+            route_id='fbekhrocdewgwlgtaudk',
+            direction_id='wjkebhoysuhnjmbjwujh',
+            headsign='gvjehonqjccdaidywztf',
+            start_time='xntnmktuwpijelkvydwa',
+            next_stop='mnaktvpprkjyubrbyxqo',
+            geohash_level='aocigxhhvbhsdcdqkqpf',
+            geohash='jzdfcxvccoelodvjbuxj',
+            spd=float(71.01643916756463),
+            hdg=int(13),
+            lat=float(85.22828935667177),
+            long=float(13.588025610858134),
+            acc=float(18.882659364705713),
+            odo=int(65),
+            drst=int(35),
+            loc='ogesvoomlbxffpysrjft',
+            oday='ruprsclozczfyeonaxwc',
+            dr_type=int(59)
         )

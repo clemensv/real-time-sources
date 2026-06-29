@@ -1,3 +1,3 @@
-from .airquality import Station, Observation
+from .airquality import Observation, Station
 
-__all__ = ["Station", "Observation"]
+__all__ = ["Observation", "Station"]

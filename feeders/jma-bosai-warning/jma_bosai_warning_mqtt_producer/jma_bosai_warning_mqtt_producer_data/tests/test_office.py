@@ -9,9 +9,9 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_mqtt_producer_data.office import Office
-from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_mqtt_producer_data.officetypeenum import OfficeTypeenum
 from jma_bosai_warning_mqtt_producer_data.officeeventenum import OfficeEventEnum
+from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 
 
 class Test_Office(unittest.TestCase):
@@ -31,14 +31,14 @@ class Test_Office(unittest.TestCase):
         Create instance of Office for testing
         """
         instance = Office(
-            office_code='zqhheaqfqbtsmnwxhcgd',
-            area_code='kdmyumlwaonwsilolvgj',
-            name_jp='btcxfateczzqjaisziws',
-            name_en='ezqvytarhmygytxsjwbz',
-            parent_office_code='qekrpovoflhqtkgzezch',
+            office_code='qgjzaumyjbufcjqwpdlk',
+            area_code='wgyxrffhokpnuovrbhzo',
+            name_jp='dtkptrqvnulfpmvwptna',
+            name_en='vbrlnxkiaguuhaunnfom',
+            parent_office_code='mhdbheflxoylwyvkywzv',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='yvignhwsqrbszrtqinnh',
-            severity=SeverityEnum.info,
+            prefecture='jzwdxdnesgskcahqhqqn',
+            severity=SeverityEnum.advisory,
             event=OfficeEventEnum.info
         )
         return instance
@@ -48,7 +48,7 @@ class Test_Office(unittest.TestCase):
         """
         Test office_code property
         """
-        test_value = 'zqhheaqfqbtsmnwxhcgd'
+        test_value = 'qgjzaumyjbufcjqwpdlk'
         self.instance.office_code = test_value
         self.assertEqual(self.instance.office_code, test_value)
     
@@ -56,7 +56,7 @@ class Test_Office(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'kdmyumlwaonwsilolvgj'
+        test_value = 'wgyxrffhokpnuovrbhzo'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -64,7 +64,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_jp property
         """
-        test_value = 'btcxfateczzqjaisziws'
+        test_value = 'dtkptrqvnulfpmvwptna'
         self.instance.name_jp = test_value
         self.assertEqual(self.instance.name_jp, test_value)
     
@@ -72,7 +72,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'ezqvytarhmygytxsjwbz'
+        test_value = 'vbrlnxkiaguuhaunnfom'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     
@@ -80,7 +80,7 @@ class Test_Office(unittest.TestCase):
         """
         Test parent_office_code property
         """
-        test_value = 'qekrpovoflhqtkgzezch'
+        test_value = 'mhdbheflxoylwyvkywzv'
         self.instance.parent_office_code = test_value
         self.assertEqual(self.instance.parent_office_code, test_value)
     
@@ -96,7 +96,7 @@ class Test_Office(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'yvignhwsqrbszrtqinnh'
+        test_value = 'jzwdxdnesgskcahqhqqn'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -104,7 +104,7 @@ class Test_Office(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = SeverityEnum.info
+        test_value = SeverityEnum.advisory
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
