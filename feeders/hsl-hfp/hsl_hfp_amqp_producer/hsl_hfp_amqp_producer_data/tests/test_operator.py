@@ -28,10 +28,10 @@ class Test_Operator(unittest.TestCase):
         Create instance of Operator for testing
         """
         instance = Operator(
-            operator_id='irnyjpucyzzqtshpedii',
-            operator_number=int(83),
-            name='hyijnaawgqhzaaaqprre',
-            note='esiwkdldshtpspugcbha'
+            operator_id='ckiwpgzngvjggfevnjmc',
+            operator_number=int(10),
+            name='tsrmvarfvyhsxmxyyhjl',
+            note='fscmquskeeomppyftkrc'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = 'irnyjpucyzzqtshpedii'
+        test_value = 'ckiwpgzngvjggfevnjmc'
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test operator_number property
         """
-        test_value = int(83)
+        test_value = int(10)
         self.instance.operator_number = test_value
         self.assertEqual(self.instance.operator_number, test_value)
     
@@ -56,7 +56,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'hyijnaawgqhzaaaqprre'
+        test_value = 'tsrmvarfvyhsxmxyyhjl'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -64,7 +64,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test note property
         """
-        test_value = 'esiwkdldshtpspugcbha'
+        test_value = 'fscmquskeeomppyftkrc'
         self.instance.note = test_value
         self.assertEqual(self.instance.note, test_value)
     

@@ -27,8 +27,8 @@ class DriverBlockEvent:
         tsi (int)
         operator_id (str)
         vehicle_number (str)
-        temporal_type (Any)
-        transport_mode (Any)
+        temporal_type (typing.Optional[Any])
+        transport_mode (typing.Optional[Any])
         route_id (typing.Optional[str])
         direction_id (typing.Optional[str])
         headsign (typing.Optional[str])
@@ -55,8 +55,8 @@ class DriverBlockEvent:
     tsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tsi"))
     operator_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operator_id"))
     vehicle_number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vehicle_number"))
-    temporal_type: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temporal_type"))
-    transport_mode: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transport_mode"))
+    temporal_type: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temporal_type"))
+    transport_mode: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transport_mode"))
     route_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_id"))
     direction_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="direction_id"))
     headsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="headsign"))
@@ -208,29 +208,29 @@ class DriverBlockEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(52),
-            veh=int(19),
-            tst='jhbjvoipidvcmfcyaghb',
+            oper=int(87),
+            veh=int(71),
+            tst='zrjrgkutfluoqmckhamy',
             tsi=int(56),
-            operator_id='tddrxpdbewcrcuwewuni',
-            vehicle_number='rcpflzumzrmqqiknebqu',
+            operator_id='hhlosgcbszuwdchfjaiv',
+            vehicle_number='srrwpuigbzhkwysworpv',
             temporal_type=None,
             transport_mode=None,
-            route_id='axjtsaibmttzwcrlonjp',
-            direction_id='vduxcnslwojohqwfnuau',
-            headsign='mymnbrepvyrwabiykdox',
-            start_time='avznlwiwrphckhcjznvb',
-            next_stop='ozyccicwqoflsipzuwof',
-            geohash_level='iueqmfeukdfrsmzimqhv',
-            geohash='nyjmorlqutplfoxqmwpv',
-            spd=float(25.510032991899322),
-            hdg=int(13),
-            lat=float(45.65718446749458),
-            long=float(51.98674165084181),
-            acc=float(87.53372021646445),
-            odo=int(26),
-            drst=int(85),
-            loc='qdpbhhgjgcvvlbwhfsce',
-            oday='cdwgniglapzirzlifmlp',
-            dr_type=int(12)
+            route_id='urntecuebogsgyhqrcro',
+            direction_id='ekkiknbpiqgpuwfioexd',
+            headsign='gjwfddnrqwfrfwrjinec',
+            start_time='fqgyaowgebraxpobmlxb',
+            next_stop='xjwpngnwrijhpskdrxuy',
+            geohash_level='sxgfelakjgrqrysxioeg',
+            geohash='vnlwmubddicvroweetwe',
+            spd=float(85.41655963300046),
+            hdg=int(35),
+            lat=float(9.939962666912837),
+            long=float(54.598379794735486),
+            acc=float(36.91139308982455),
+            odo=int(70),
+            drst=int(37),
+            loc='cqaekffxcbhedtahttje',
+            oday='vjlkeecekpbkrpvenlbc',
+            dr_type=int(16)
         )

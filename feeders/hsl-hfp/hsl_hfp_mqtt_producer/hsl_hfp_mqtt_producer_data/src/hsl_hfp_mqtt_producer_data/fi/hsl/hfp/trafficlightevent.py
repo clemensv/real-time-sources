@@ -27,8 +27,8 @@ class TrafficLightEvent:
         tsi (int)
         operator_id (str)
         vehicle_number (str)
-        temporal_type (Any)
-        transport_mode (Any)
+        temporal_type (typing.Optional[Any])
+        transport_mode (typing.Optional[Any])
         route_id (typing.Optional[str])
         direction_id (typing.Optional[str])
         headsign (typing.Optional[str])
@@ -76,8 +76,8 @@ class TrafficLightEvent:
     tsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tsi"))
     operator_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operator_id"))
     vehicle_number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vehicle_number"))
-    temporal_type: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temporal_type"))
-    transport_mode: Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transport_mode"))
+    temporal_type: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temporal_type"))
+    transport_mode: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transport_mode"))
     route_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_id"))
     direction_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="direction_id"))
     headsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="headsign"))
@@ -316,50 +316,50 @@ class TrafficLightEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(66),
-            veh=int(62),
-            tst='uakbboooejgflalxorwg',
-            tsi=int(27),
-            operator_id='scbkgcgwceywmgxdwdrw',
-            vehicle_number='acvjpwndffzsidxarjhl',
+            oper=int(53),
+            veh=int(22),
+            tst='fhubtodecrdnzxlkmrao',
+            tsi=int(30),
+            operator_id='orimbllpcxzsziuirpzd',
+            vehicle_number='bzyecmicciyrutcqlvif',
             temporal_type=None,
             transport_mode=None,
-            route_id='dloztojzrmccymdjafqd',
-            direction_id='vmnsmemxfwyjfclpquqn',
-            headsign='uttlifjrpejzdlbpceev',
-            start_time='sxjhjgzxoeanssdxedbb',
-            next_stop='frsegmzvuejydkhqxovt',
-            geohash_level='ufhokfkirpbtzblbssut',
-            geohash='abtvdovpxdqlscwxgzbi',
-            desi='miernqnuqvccjtqbagct',
-            dir='pkgvalrgfsmkomargnpi',
-            dl=int(51),
-            oday='notdckzcjltbihckxmxu',
-            jrn=int(91),
-            line=int(77),
-            start='eeipbfmfrojjnhusoakw',
-            stop=int(77),
-            route='gzavfeexuzplezhtxtyh',
-            occu=int(87),
-            spd=float(61.16315073586212),
-            hdg=int(29),
-            lat=float(20.00682558589525),
-            long=float(44.0537676933875),
-            acc=float(77.91662962571269),
-            odo=int(34),
-            drst=int(72),
-            loc='bxsqbnhxayteyroddpru',
-            tlp_requestid=int(99),
+            route_id='lgflcgrhrkmsyxkbkwmu',
+            direction_id='wedzddzufbfrjyechszq',
+            headsign='qhdesmkmqaxpelblnsjp',
+            start_time='muezelqwvtzcvovxydon',
+            next_stop='wbolcdqohgoxacakimpf',
+            geohash_level='tusmlberkuoathfyyypy',
+            geohash='cfacpidwgqbrdyaweqcb',
+            desi='ytutlrcodhmpyvjdfmms',
+            dir='rzsgrddwytjepnhmagfs',
+            dl=int(70),
+            oday='chojlypphtweoavrouuq',
+            jrn=int(52),
+            line=int(26),
+            start='ysghokvjsjjxrsinbfwb',
+            stop=int(89),
+            route='ftklosznkmcoavuejztc',
+            occu=int(28),
+            spd=float(91.96704877353169),
+            hdg=int(27),
+            lat=float(4.47318934895693),
+            long=float(21.217661962155297),
+            acc=float(6.460214075935311),
+            odo=int(93),
+            drst=int(70),
+            loc='reuswxvywnempjxweafh',
+            tlp_requestid=int(77),
             tlp_requesttype=None,
             tlp_prioritylevel=None,
             tlp_reason=None,
-            tlp_att_seq=int(33),
+            tlp_att_seq=int(44),
             tlp_decision=None,
-            sid=int(11),
-            signal_groupid=int(23),
-            tlp_signalgroupnbr=int(66),
-            tlp_line_configid=int(17),
-            tlp_point_configid=int(28),
-            tlp_frequency=int(29),
-            tlp_protocol='qqqcpayhffuthdxzcllc'
+            sid=int(72),
+            signal_groupid=int(25),
+            tlp_signalgroupnbr=int(58),
+            tlp_line_configid=int(89),
+            tlp_point_configid=int(63),
+            tlp_frequency=int(94),
+            tlp_protocol='wgduynpabxcxhobsjhok'
         )

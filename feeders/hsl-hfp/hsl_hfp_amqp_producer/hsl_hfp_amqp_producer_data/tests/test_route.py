@@ -28,13 +28,13 @@ class Test_Route(unittest.TestCase):
         Create instance of Route for testing
         """
         instance = Route(
-            route_id='sbqcdwkkrtizumbtqgyh',
-            agency_id='ysoexotpdckdnwqflnab',
-            route_short_name='kfhzeosuorvygjafvcad',
-            route_long_name='uywdtoyrhgvbdwtbzxur',
-            route_desc='rnwwqqzwxjpmdubjjwxv',
-            route_type=int(35),
-            route_url='smnbqzcugyqwhjhkfdyr'
+            route_id='pmpbfuynxzedplmyamjn',
+            agency_id='wnynygpukhigaoufleef',
+            route_short_name='qadindqurrabnhbzckbh',
+            route_long_name='kaakipjmgwdxtllafdiq',
+            route_desc='nxdeawikvgpjpwdllfsv',
+            route_type=int(68),
+            route_url='cioanoprsbbwqeoalhxu'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Route(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'sbqcdwkkrtizumbtqgyh'
+        test_value = 'pmpbfuynxzedplmyamjn'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Route(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'ysoexotpdckdnwqflnab'
+        test_value = 'wnynygpukhigaoufleef'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_Route(unittest.TestCase):
         """
         Test route_short_name property
         """
-        test_value = 'kfhzeosuorvygjafvcad'
+        test_value = 'qadindqurrabnhbzckbh'
         self.instance.route_short_name = test_value
         self.assertEqual(self.instance.route_short_name, test_value)
     
@@ -67,7 +67,7 @@ class Test_Route(unittest.TestCase):
         """
         Test route_long_name property
         """
-        test_value = 'uywdtoyrhgvbdwtbzxur'
+        test_value = 'kaakipjmgwdxtllafdiq'
         self.instance.route_long_name = test_value
         self.assertEqual(self.instance.route_long_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_Route(unittest.TestCase):
         """
         Test route_desc property
         """
-        test_value = 'rnwwqqzwxjpmdubjjwxv'
+        test_value = 'nxdeawikvgpjpwdllfsv'
         self.instance.route_desc = test_value
         self.assertEqual(self.instance.route_desc, test_value)
     
@@ -83,7 +83,7 @@ class Test_Route(unittest.TestCase):
         """
         Test route_type property
         """
-        test_value = int(35)
+        test_value = int(68)
         self.instance.route_type = test_value
         self.assertEqual(self.instance.route_type, test_value)
     
@@ -91,7 +91,7 @@ class Test_Route(unittest.TestCase):
         """
         Test route_url property
         """
-        test_value = 'smnbqzcugyqwhjhkfdyr'
+        test_value = 'cioanoprsbbwqeoalhxu'
         self.instance.route_url = test_value
         self.assertEqual(self.instance.route_url, test_value)
     

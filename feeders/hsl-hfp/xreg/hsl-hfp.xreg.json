@@ -1952,6 +1952,8 @@
                                 "null",
                                 "int32"
                               ],
+                              "unit": "s",
+                              "symbol": "s",
                               "description": "Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`."
                             },
                             "oday": {
@@ -2027,6 +2029,8 @@
                                 "null",
                                 "double"
                               ],
+                              "unit": "m/s",
+                              "symbol": "m/s",
                               "description": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field."
                             },
                             "hdg": {
@@ -2036,6 +2040,8 @@
                               ],
                               "minimum": 0,
                               "maximum": 360,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field."
                             },
                             "lat": {
@@ -2045,6 +2051,8 @@
                               ],
                               "minimum": -90,
                               "maximum": 90,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field."
                             },
                             "long": {
@@ -2054,6 +2062,8 @@
                               ],
                               "minimum": -180,
                               "maximum": 180,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`)."
                             },
                             "acc": {
@@ -2061,6 +2071,8 @@
                                 "null",
                                 "double"
                               ],
+                              "unit": "m/s2",
+                              "symbol": "m/s²",
                               "description": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field."
                             },
                             "odo": {
@@ -2068,6 +2080,8 @@
                                 "null",
                                 "int32"
                               ],
+                              "unit": "m",
+                              "symbol": "m",
                               "description": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field."
                             },
                             "drst": {
@@ -2121,9 +2135,7 @@
                             "tst",
                             "tsi",
                             "operator_id",
-                            "vehicle_number",
-                            "temporal_type",
-                            "transport_mode"
+                            "vehicle_number"
                           ]
                         },
                         "TemporalTypeEnum": {
@@ -2290,6 +2302,8 @@
                                 "null",
                                 "int32"
                               ],
+                              "unit": "s",
+                              "symbol": "s",
                               "description": "Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`."
                             },
                             "oday": {
@@ -2350,6 +2364,8 @@
                                 "null",
                                 "double"
                               ],
+                              "unit": "m/s",
+                              "symbol": "m/s",
                               "description": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field."
                             },
                             "hdg": {
@@ -2359,6 +2375,8 @@
                               ],
                               "minimum": 0,
                               "maximum": 360,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field."
                             },
                             "lat": {
@@ -2368,6 +2386,8 @@
                               ],
                               "minimum": -90,
                               "maximum": 90,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field."
                             },
                             "long": {
@@ -2377,6 +2397,8 @@
                               ],
                               "minimum": -180,
                               "maximum": 180,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`)."
                             },
                             "acc": {
@@ -2384,6 +2406,8 @@
                                 "null",
                                 "double"
                               ],
+                              "unit": "m/s2",
+                              "symbol": "m/s²",
                               "description": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field."
                             },
                             "odo": {
@@ -2391,6 +2415,8 @@
                                 "null",
                                 "int32"
                               ],
+                              "unit": "m",
+                              "symbol": "m",
                               "description": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field."
                             },
                             "drst": {
@@ -2554,9 +2580,7 @@
                             "tst",
                             "tsi",
                             "operator_id",
-                            "vehicle_number",
-                            "temporal_type",
-                            "transport_mode"
+                            "vehicle_number"
                           ]
                         },
                         "TemporalTypeEnum": {
@@ -2750,6 +2774,8 @@
                                 "null",
                                 "double"
                               ],
+                              "unit": "m/s",
+                              "symbol": "m/s",
                               "description": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field."
                             },
                             "hdg": {
@@ -2759,6 +2785,8 @@
                               ],
                               "minimum": 0,
                               "maximum": 360,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field."
                             },
                             "lat": {
@@ -2768,6 +2796,8 @@
                               ],
                               "minimum": -90,
                               "maximum": 90,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field."
                             },
                             "long": {
@@ -2777,6 +2807,8 @@
                               ],
                               "minimum": -180,
                               "maximum": 180,
+                              "unit": "deg",
+                              "symbol": "°",
                               "description": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`)."
                             },
                             "acc": {
@@ -2784,6 +2816,8 @@
                                 "null",
                                 "double"
                               ],
+                              "unit": "m/s2",
+                              "symbol": "m/s²",
                               "description": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field."
                             },
                             "odo": {
@@ -2791,6 +2825,8 @@
                                 "null",
                                 "int32"
                               ],
+                              "unit": "m",
+                              "symbol": "m",
                               "description": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field."
                             },
                             "drst": {
@@ -2836,9 +2872,7 @@
                             "tst",
                             "tsi",
                             "operator_id",
-                            "vehicle_number",
-                            "temporal_type",
-                            "transport_mode"
+                            "vehicle_number"
                           ]
                         },
                         "TemporalTypeEnum": {
