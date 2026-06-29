@@ -1,15 +1,22 @@
-# Pegelonline Events
+<!-- xreg-generator:hand-maintained — hand-polished beyond tools/printdoc.py output (README/CONTAINER link-triangle, CloudEvents envelope tables, deterministic-payload NOTE). tools/generate-events-md.ps1 skips this file. To refresh from the manifest: remove this line, regenerate, then re-apply the hand sections. -->
+# PegelOnline event reference
 
-PegelOnline publishes water level measurements for rivers, canals, and estuaries from Germany's Federal Waterways and Shipping Administration (WSV) for federally administered German inland and coastal gauges. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
+This document defines the CloudEvents contract emitted by the PegelOnline feeder. For the project overview see [README.md](README.md); for the published container images and their environment-variable matrix see [CONTAINER.md](CONTAINER.md).
+
+PegelOnline publishes water-level measurements for rivers, canals, and estuaries from Germany's Federal Waterways and Shipping Administration (WSV) for federally administered German inland and coastal gauges. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types (8 transport bindings in the manifest).
-- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
-- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
-- **Identity:** `{station_id}` identifies the resource each event is about.
-- **Operations:** The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
+- **Event types:** 2 documented event types (`Station`, `CurrentMeasurement`), delivered across 3 transports.
+- **Transports:** Kafka, MQTT 5.0, AMQP 1.0.
+- **Reference vs telemetry:** 1 reference/catalog event type (`Station`) and 1 telemetry event type (`CurrentMeasurement`).
+- **Identity:** `{station_id}` identifies the resource each event is about. The CloudEvents `subject` carries it; transports mirror it into routing fields.
+- **CloudEvents `source`:** the upstream REST URL the record was fetched from — `https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{shortname}` for `Station` events and `https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{station_id}/W/currentmeasurement.json` for `CurrentMeasurement` events.
+- **Operations:** the feeder polls every 60 seconds by default.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
+
+> [!NOTE]
+> **About example payloads.** Every example payload below is generated deterministically from the schema: constants, defaults, and documented examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`. Real payloads carry realistic UUIDs, station numbers, and metric values — the deterministic shape is for shape verification, not for sample data.
 
 ## Quick start — how to consume
 
@@ -21,11 +28,17 @@ Subscribe to `pegelonline`. The record key is `{station_id}`. In plain language,
 
 ```python
 from confluent_kafka import Consumer
-c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+
+c = Consumer({
+    'bootstrap.servers': 'localhost:9092',
+    'group.id': 'events-demo',
+    'auto.offset.reset': 'earliest',
+})
 c.subscribe(['pegelonline'])
 while True:
-    m=c.poll(1.0)
-    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+    m = c.poll(1.0)
+    if m and not m.error():
+        print(m.key(), dict(m.headers() or []), m.value())
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
@@ -35,10 +48,16 @@ Connect to `mqtt://localhost:1883` and subscribe to `hydro/de/wsv/pegelonline/+/
 
 ```python
 import paho.mqtt.client as mqtt
-c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
-c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
-c.connect('localhost',1883)
-c.subscribe(('hydro/de/wsv/pegelonline/+/+/info', 1))
+
+c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message = lambda c, u, m: print(
+    m.topic, getattr(m.properties, 'UserProperty', None), m.payload
+)
+c.connect('localhost', 1883)
+c.subscribe([
+    ('hydro/de/wsv/pegelonline/+/+/info', 1),
+    ('hydro/de/wsv/pegelonline/+/+/water-level', 1),
+])
 c.loop_forever()
 ```
 
@@ -50,9 +69,19 @@ Attach a link with `role=receiver` whose **source** is `pegelonline`. The source
 ```python
 from proton.handlers import MessagingHandler
 from proton.reactor import Container
+
+
 class H(MessagingHandler):
-    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/pegelonline')
-    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+    def on_start(self, e):
+        # Connect to the broker and attach a receiver whose source terminus
+        # is the node name `pegelonline` (not the connection URL).
+        conn = e.container.connect('amqps://<user>:<password>@<broker-host>:5671')
+        e.container.create_receiver(conn, 'pegelonline')
+
+    def on_message(self, e):
+        print(e.message.subject, e.message.properties, e.message.body)
+
+
 Container(H()).run()
 ```
 
@@ -66,43 +95,50 @@ CloudEvents type: `de.wsv.pegelonline.Station`
 
 #### What it tells you
 
-A reference record for one federally administered German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. WSV PegelOnline gauge installation.
+A reference record for one federally administered German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a stable UUID assigned by WSV to identify the gauge installation; it persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### CloudEvents envelope
+
+| Attribute | Value |
+| --- | --- |
+| `type` | `de.wsv.pegelonline.Station` |
+| `source` | `https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{shortname}` — the upstream REST URL the record was fetched from |
+| `subject` | `{station_id}` — the stable UUID of the gauge |
+| `datacontenttype` | `application/json` |
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `pegelonline`, key `{station_id}` |
-| `MQTT/5.0` | topic `hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/pegelonline`, message subject `{station_id}` |
+| Kafka | topic `pegelonline`, key `{station_id}` |
+| MQTT 5.0 | topic `hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info`, retain `true`, QoS `1` |
+| AMQP 1.0 | source terminus (node name) `pegelonline`, message `subject` `{station_id}`, application property `water_shortname` carrying `{water_shortname}` |
 
 #### Payload
 
 `Station` payloads are JSON object. Required fields: `station_id`, `number`, `shortname`, `longname`, `agency`, `longitude`, `latitude`, `water`.
 
-- **`station_id`** (string or null, required): Stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. Sourced from the upstream `uuid` field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic `{station_id}` segment, and the AMQP message subject for every event emitted by this source.
-- **`number`** (string or null, required): Official PegelOnline station number. Carries multiple agency-scoped numbering schemes within the same field: WSV Pegelmessstellennummer (6–8 digits) for German federal gauges; partner-agency identifiers such as Austrian via-donau station numbers (4–5 digits), small Regierungspräsidium-IDs for Bodensee gauges (3-digit numbers e.g. '906' KONSTANZ), and German state-agency IDs (e.g. Ruhrverband 13-digit Messstellennummer). Numeric-only across all observed providers; length is provider-specific. National / agency-scoped identifier — not globally unique across data providers; prefer `station_id` (UUID) for cross-system joins. Constraints: pattern `^[0-9]+$`.
-- **`shortname`** (string or null, required): Operator-assigned display label for the gauge (≤40 characters). May differ from the town name when multiple gauges share a town. Mutable — do not use as a routing key or stable identifier.
-- **`longname`** (string or null, required): Canonical gauge name as used in WSV publications (≤255 characters). Mutable — do not use as a routing key.
-- **`km`** (double or null, optional): Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Ohře gauge LOUNY at km -61.4 of the Elbe/Ohře system). **Optional**: absent or null for tidal / coastal gauges (Küstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km.
-- **`agency`** (string or null, required): Free-form name of the Wasserstraßen- und Schifffahrtsamt (WSA) operating the gauge — e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream `agency` field. Provided so downstream consumers can attribute observations to the operating authority; not a stable identifier and not suitable as a routing key.
+- **`station_id`** (string, required): Stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. Sourced from the upstream `uuid` field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic `{station_id}` segment, and the AMQP message subject for every event emitted by this source.
+- **`number`** (string, required): Official PegelOnline station number. Carries multiple agency-scoped numbering schemes within the same field: WSV Pegelmessstellennummer (6–8 digits) for German federal gauges; partner-agency identifiers such as Austrian via-donau station numbers (4–5 digits), small Regierungspräsidium-IDs for Bodensee gauges (3-digit numbers e.g. '906' KONSTANZ), and German state-agency IDs (e.g. Ruhrverband 13-digit Messstellennummer). Numeric-only across all observed providers; length is provider-specific. National / agency-scoped identifier — not globally unique across data providers; prefer `station_id` (UUID) for cross-system joins. Constraints: pattern `^[0-9]+$`.
+- **`shortname`** (string, required): Operator-assigned display label for the gauge (≤40 characters). May differ from the town name when multiple gauges share a town. Mutable — do not use as a routing key or stable identifier.
+- **`longname`** (string, required): Canonical gauge name as used in WSV publications (≤255 characters). Mutable — do not use as a routing key.
+- **`km`** (null or double, optional, km): Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Ohře gauge LOUNY at km -61.4 of the Elbe/Ohře system). **Optional**: absent or null for tidal / coastal gauges (Küstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km.
+- **`agency`** (string, required): Free-form name of the Wasserstraßen- und Schifffahrtsamt (WSA) operating the gauge — e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream `agency` field. Provided so downstream consumers can attribute observations to the operating authority; not a stable identifier and not suitable as a routing key.
 - **`longitude`** (double, required, deg (°)): WGS84 decimal-degree longitude of the gauge installation; positive east of the prime meridian. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `longitude` field. Constraints: minimum `-180`, maximum `180`.
 - **`latitude`** (double, required, deg (°)): WGS84 decimal-degree latitude of the gauge installation; positive north of the equator. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `latitude` field. Constraints: minimum `-90`, maximum `90`.
-- **`water`** (object, required): Federal waterway the gauge measures. See the nested Water schema for routing semantics. See [Water](#payload-de-wsv-pegelonline-station-water).
+- **`water`** (object, required): Federal waterway the gauge measures. See the nested Water schema for routing semantics. See [Water](#water).
+
 ##### Water
-<a id="payload-de-wsv-pegelonline-station-water"></a>
 
 Federal waterway / water body the gauge measures, as returned in the nested `water` object of `GET /stations.json` on the PegelOnline REST API v2. Acts as the routing hierarchy for the MQTT Unified Namespace topology.
 
-- **`shortname`** (string or null, required): Lowercase routing token for the waterway as published by WSV — e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII-normalization for non-ASCII characters such as 'ß' → 'ss' or umlauts) as the `{water_shortname}` template variable on the MQTT topic and the AMQP application property. Sourced from the upstream `water.shortname` key. Maximum 40 characters.
-- **`longname`** (string or null, required): Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream `water.longname` key. Maximum 255 characters.
+- **`shortname`** (string, required): Lowercase routing token for the waterway as published by WSV — e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII-normalization for non-ASCII characters such as 'ß' → 'ss' or umlauts) as the `{water_shortname}` template variable on the MQTT topic and the AMQP application property. Sourced from the upstream `water.shortname` key. Maximum 40 characters.
+- **`longname`** (string, required): Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream `water.longname` key. Maximum 255 characters.
 #### Example payload
-
-Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
 {
@@ -131,19 +167,29 @@ CloudEvents type: `de.wsv.pegelonline.CurrentMeasurement`
 
 #### What it tells you
 
-A current measurement from Germany's Federal Waterways and Shipping Administration (WSV) for one monitoring site. It carries water level measurements for rivers, canals, and estuaries when the upstream feed reports a new or refreshed value. Latest 15-minute water-level reading for one WSV PegelOnline gauge.
+A current measurement from Germany's Federal Waterways and Shipping Administration (WSV) for one monitoring site. It carries water-level readings for rivers, canals, and estuaries when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable UUID of the gauge this reading was taken at. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a stable UUID of the gauge this reading was taken at. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### CloudEvents envelope
+
+| Attribute | Value |
+| --- | --- |
+| `type` | `de.wsv.pegelonline.CurrentMeasurement` |
+| `source` | `https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{station_id}/W/currentmeasurement.json` — the upstream REST URL the reading was fetched from |
+| `subject` | `{station_id}` — the stable UUID of the gauge |
+| `time` | the upstream measurement timestamp (preserves the Europe/Berlin offset; see the `timestamp` field below) |
+| `datacontenttype` | `application/json` |
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `pegelonline`, key `{station_id}` |
-| `MQTT/5.0` | topic `hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/pegelonline`, message subject `{station_id}` |
+| Kafka | topic `pegelonline`, key `{station_id}` |
+| MQTT 5.0 | topic `hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level`, retain `true`, QoS `1` |
+| AMQP 1.0 | source terminus (node name) `pegelonline`, message `subject` `{station_id}`, application property `water_shortname` carrying `{water_shortname}` |
 
 #### Payload
 
@@ -154,7 +200,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`value`** (double, required, cm): Water-level reading on the W (water-level) timeseries, in centimetres above the gauge's Pegelnullpunkt (PNP — a geodetically fixed datum specific to each gauge, see https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Typical operational range is 0–1500 cm; flood events at major Rhine gauges can exceed 1000 cm. Negative readings are valid at gauges whose normal pool is below PNP (e.g. tidal Elbe at low water). Unit: cm. Constraints: minimum `-1000`, maximum `2500`.
 - **`stateMnwMhw`** (enum, optional): Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values, as computed by the upstream feed. Omitted by upstream when the gauge has no MNW/MHW reference series configured (treat absence as 'unknown').
 - **`stateNswHsw`** (enum, optional): Categorical classification of the current water level against the highest navigable water level (HSW) reference for the reach, as computed by the upstream feed. Drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Note: upstream never emits 'low' on this series — HSW is an upper bound only. Omitted by upstream when the gauge has no HSW reference (treat absence as 'unknown').
-- **`trend`** (int8 or null, optional): Short-term trend of the water level relative to the previous reading, as classified by the upstream feed. First-class signal for flood-monitoring dashboards. Sourced from the upstream `trend` field; omitted when upstream cannot compute a trend (e.g. first reading after a gap).
+- **`trend`** (integer or null, optional): Short-term trend of the water level relative to the previous reading, as classified by the upstream feed. First-class signal for flood-monitoring dashboards. Sourced from the upstream `trend` field; omitted when upstream cannot compute a trend (e.g. first reading after a gap). Allowed values: `-1` (falling), `0` (steady), `1` (rising); see the `trend` values table below.
 ##### `stateMnwMhw` values
 
 - `low` — Below the gauge's mean low water (MNW) reference
@@ -177,8 +223,6 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - `1` — Rising — current value is above the previous reading
 #### Example payload
 
-Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
-
 ```json
 {
   "station_id": "string",
@@ -196,7 +240,7 @@ This is telemetry/event data. Treat each event as a current observation or state
 
 ## Conventions
 
-CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+CloudEvents is the envelope around each JSON payload. It supplies metadata: `specversion` (`1.0`), `type` (the kind of event — for this source, `de.wsv.pegelonline.Station` or `de.wsv.pegelonline.CurrentMeasurement`), `source` (the upstream REST URL the record was fetched from — see each event's CloudEvents envelope table above), `id` (the unique event occurrence identifier), `time` (the upstream measurement timestamp, with Europe/Berlin offset preserved), and `subject` (the resource the event is about — always the `{station_id}` UUID for this source). The unique event occurrence is identified by the CloudEvents tuple `(source, id)`. This repository convention mirrors the routing identity (`{station_id}`) into transport-native fields where available: Kafka message key, MQTT topic identity segments, and AMQP message `subject`. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link source terminus (`pegelonline`) identifies the stream as a whole, not an individual station.
 
 Transport bindings carry CloudEvents metadata differently:
 
@@ -211,16 +255,22 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
-- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- The feeder polls upstream every 60 seconds by default (`POLLING_INTERVAL`).
+- The upstream API supports ETags; the bridge skips polling cycles whose responses are unchanged.
+- The bridge keeps a dedupe state file (`STATE_FILE`) so repeated upstream records are not republished as new events. **Mount a host volume into the container path** to keep dedupe state across restarts — see [CONTAINER.md](CONTAINER.md#image-contract).
+- The MQTT variant publishes with QoS 1 and `retain=true` on every leaf topic, so a fresh subscriber receives a Last-Known-Value snapshot per matching topic.
+- `Station` events are emitted at startup as reference data and refreshed periodically; `CurrentMeasurement` events are emitted whenever the upstream feed reports a new value.
+- Delivery semantics across all three transports are **at-least-once with idempotency key `(source, id)`** from the CloudEvents envelope. Consumers should dedupe on that tuple if exactly-once semantics are required.
+- Expected event rate is roughly 1,200 stations × 1 reading/minute ≈ **20 events/s** at steady state, plus a one-off `Station` burst at startup and on each periodic refresh.
+
+> [!NOTE]
+> **DST and timestamps.** PegelOnline publishes timestamps in Europe/Berlin local time. The CloudEvents `time` attribute and the `timestamp` field both preserve the explicit UTC offset, which shifts between `+01:00` (CET) and `+02:00` (CEST) twice a year. Preserve the offset when storing.
 
 ## References
 
 - xRegistry manifest: [`xreg/pegelonline.xreg.json`](xreg/pegelonline.xreg.json)
-- Source README: [`README.md`](README.md)
+- Source overview: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- WSV PegelOnline: <https://www.pegelonline.wsv.de/>
-- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
-- Azure Service Bus emulator: <https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator>
+- [WSV PegelOnline portal](https://www.pegelonline.wsv.de/)
+- [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview)
+- [Azure Service Bus emulator](https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator)

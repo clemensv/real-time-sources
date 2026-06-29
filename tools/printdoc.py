@@ -463,7 +463,7 @@ def extract_references(ctx: Ctx) -> list[str]:
 # Schema and manifest helpers
 
 def resolve_message_chain(msg: Json, groups: Json) -> tuple[Json,list[str]]:
-    merged=dict(msg); chain=[]; ref=msg.get("basemessageuri")
+    merged=dict(msg); chain=[]; ref=msg.get("basemessageuri") or msg.get("basemessage")
     if isinstance(ref,str):
         base=resolve_base(ref,groups)
         if base:

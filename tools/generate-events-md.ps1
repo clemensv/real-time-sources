@@ -2,11 +2,11 @@
 .SYNOPSIS
     Regenerates source EVENTS.md files from xRegistry manifests.
 .DESCRIPTION
-    Discovery is repo-driven: every top-level <source>\xreg\*.xreg.json manifest
+    Discovery is repo-driven: every feeders\<source>\xreg\*.xreg.json manifest
     is picked up automatically. To add a source, commit the xRegistry manifest;
-    this script derives title/description metadata and writes <source>\EVENTS.md.
+    this script derives title/description metadata and writes feeders\<source>\EVENTS.md.
 .PARAMETER Source
-    Optional top-level source folder id to regenerate.
+    Optional source folder id (under feeders\) to regenerate.
 .PARAMETER Check
     Regenerate into a repository-local scratch directory and fail when committed
     EVENTS.md differs. Intended as a future CI gate.
@@ -17,8 +17,19 @@ param([string]$Source, [switch]$Check)
 $ErrorActionPreference = 'Continue'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptDir
+$FeedersRoot = Join-Path $RepoRoot 'feeders'
 $PrintDoc = Join-Path $ScriptDir 'printdoc.py'
 $ScratchDir = Join-Path $RepoRoot '.events-md-check'
+
+# Hand-maintenance guard: a few EVENTS.md files are hand-polished beyond what
+# printdoc.py emits (e.g. README/CONTAINER link-triangle, CloudEvents envelope
+# tables, the deterministic-payload NOTE). Regenerating them would silently
+# discard that work, so honour an opt-out sentinel: a file that declares
+# 'xreg-generator:hand-maintained' is skipped in both generate and -Check modes.
+function Test-Protected([string]$Path) {
+    if (-not (Test-Path $Path)) { return $false }
+    return [bool](Select-String -Path $Path -Pattern 'xreg-generator:hand-maintained' -SimpleMatch -Quiet)
+}
 
 function Humanize([string]$Value) {
     (($Value -split '[-_\s]+' | Where-Object { $_ }) | ForEach-Object { $_.Substring(0,1).ToUpperInvariant() + $(if ($_.Length -gt 1) { $_.Substring(1) } else { '' }) }) -join ' '
@@ -55,11 +66,8 @@ function Read-XregInfo([string]$Manifest) {
     return $r
 }
 function Get-Entries {
-    $excluded=@('.git','.github','tools','ghpages','docs','tests','node_modules','.events-md-check')
-    $feedersDir=Join-Path $RepoRoot 'feeders'
-    $roots=@(Get-ChildItem $RepoRoot -Directory)
-    if (Test-Path $feedersDir) { $roots += Get-ChildItem $feedersDir -Directory }
-    $roots | Where-Object { $excluded -notcontains $_.Name -and ((-not $Source) -or $_.Name -eq $Source) } | ForEach-Object {
+    $excluded=@('.git','.github','tools','ghpages','docs','tests','node_modules','.events-md-check','_poller_core')
+    Get-ChildItem $FeedersRoot -Directory | Where-Object { $excluded -notcontains $_.Name -and ((-not $Source) -or $_.Name -eq $Source) } | ForEach-Object {
         $dir=$_; $xreg=Join-Path $dir.FullName 'xreg'; if (-not (Test-Path $xreg)) { return }
         Get-ChildItem $xreg -Filter '*.xreg.json' -File | ForEach-Object {
             $xi=Read-XregInfo $_.FullName; $ri=Read-ReadmeInfo $dir.FullName; $human=Humanize $dir.Name
@@ -72,11 +80,15 @@ function Get-Entries {
     }
 }
 $entries=@(Get-Entries | Sort-Object Source, Manifest)
-if ($Source -and -not $entries.Count) { Write-Error "No top-level source with xRegistry manifest found for '$Source'."; exit 2 }
-if (-not $entries.Count) { Write-Error 'No top-level xRegistry manifests found.'; exit 2 }
+if ($Source -and -not $entries.Count) { Write-Error "No source with xRegistry manifest found under feeders/ for '$Source'."; exit 2 }
+if (-not $entries.Count) { Write-Error 'No xRegistry manifests found under feeders/.'; exit 2 }
 if ($Check) { if (Test-Path $ScratchDir) { Remove-Item $ScratchDir -Recurse -Force }; New-Item $ScratchDir -ItemType Directory -Force | Out-Null }
-$fail=@(); $stale=@()
+$fail=@(); $stale=@(); $protected=@()
 foreach ($e in $entries) {
+    if (Test-Protected $e.Output) {
+        Write-Host "Skipping $($e.Source): EVENTS.md is hand-maintained (sentinel present); not regenerating."
+        $protected += $e.Source; continue
+    }
     $target = if ($Check) { Join-Path $ScratchDir "$($e.Source).EVENTS.md" } else { $e.Output }
     Write-Host "Generating $($e.Source): $($e.Manifest) -> $target"
     $old=$env:PRINTDOC_SUPPRESS_COMPAT_NOTICE; $env:PRINTDOC_SUPPRESS_COMPAT_NOTICE='1'
@@ -93,4 +105,5 @@ if ($Check -and (Test-Path $ScratchDir)) { Remove-Item $ScratchDir -Recurse -For
 if ($fail.Count) { Write-Error "EVENTS.md generation failed for: $($fail -join ', ')" }
 if ($stale.Count) { Write-Error "Stale EVENTS.md files: $($stale -join ', ')" }
 if ($fail.Count -or $stale.Count) { exit 1 }
+if ($protected.Count) { Write-Host "Protected (hand-maintained, skipped): $($protected -join ', ')" }
 Write-Host "Processed $($entries.Count) xRegistry manifest(s)."
