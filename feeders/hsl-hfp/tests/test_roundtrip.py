@@ -92,10 +92,11 @@ DA_PAYLOAD = {
 
 def _assert_present_keys_preserved(payload: dict, serialized: dict) -> None:
     for key, value in payload.items():
-        wire_key = key.replace("-", "_")
-        assert wire_key in serialized, f"wire key {wire_key!r} dropped"
-        assert serialized[wire_key] == value, (
-            f"value for {wire_key!r} changed: {serialized[wire_key]!r} != {value!r}"
+        # avrotize 3.6.0 honors altnames: the wire key is the verbatim upstream
+        # key (hyphenated), even though the dataclass attribute is underscored.
+        assert key in serialized, f"wire key {key!r} dropped"
+        assert serialized[key] == value, (
+            f"value for {key!r} changed: {serialized[key]!r} != {value!r}"
         )
 
 
@@ -114,15 +115,15 @@ class TestVerbatimRoundtrip:
         serialized = _roundtrip(
             TrafficLightEvent, traffic_light_event_kwargs(TLR_PAYLOAD, {}))
         _assert_present_keys_preserved(TLR_PAYLOAD, serialized)
-        # Spot-check the upstream->schema remap explicitly.
-        assert serialized["tlp_requestid"] == 5
-        assert serialized["signal_groupid"] == 3
+        # Spot-check the upstream verbatim keys explicitly (hyphenated on the wire).
+        assert serialized["tlp-requestid"] == 5
+        assert serialized["signal-groupid"] == 3
 
     def test_da_payload_preserved(self):
         serialized = _roundtrip(
             DriverBlockEvent, driver_block_event_kwargs(DA_PAYLOAD, {}))
         _assert_present_keys_preserved(DA_PAYLOAD, serialized)
-        assert serialized["dr_type"] == 1
+        assert serialized["dr-type"] == 1
 
 
 # Parsed HFP topic levels (see hfp_source.parse_topic). These become real schema
