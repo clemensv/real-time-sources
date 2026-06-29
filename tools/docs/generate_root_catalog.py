@@ -76,7 +76,7 @@ FLAG_BY_ID = {
     "laqn-london": "gb", "sensor-community": "un", "wallonia-issep": "be",
     "eaws-albina": "at", "gdacs": "un", "ptwc-tsunami": "un",
     "seattle-911": "us", "usgs-earthquakes": "us", "aisstream": "un",
-    "digitraffic-maritime": "fi", "kystverket-ais": "no", "mode-s": "un",
+    "digitraffic-maritime": "fi", "hsl-hfp": "fi", "kystverket-ais": "no", "mode-s": "un",
     "vatsim": "un", "gtfs": "un", "madrid-traffic": "es",
     "nextbus": "us", "paris-bicycle-counters": "fr",
     "seattle-street-closures": "us", "tfl-road-traffic": "gb",
