@@ -250,6 +250,64 @@ function Set-KqlEventTypes {
     return [System.Text.RegularExpressions.Regex]::Replace($KqlContent, $pattern, $eventTypeExpression, 1)
 }
 
+function Get-JsonAltNameMap {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$SchemaObject
+    )
+
+    $map = @{}
+    $rootProperty = $SchemaObject.PSObject.Properties['$root']
+    if (-not $rootProperty -or [string]::IsNullOrWhiteSpace([string]$rootProperty.Value)) {
+        return $map
+    }
+
+    $rootDefinition = Resolve-JsonPointer -Document $SchemaObject -Pointer ([string]$rootProperty.Value)
+    if (-not $rootDefinition.PSObject.Properties["properties"]) {
+        return $map
+    }
+
+    foreach ($property in $rootDefinition.properties.PSObject.Properties) {
+        $propertySchema = $property.Value
+        $altNames = $propertySchema.PSObject.Properties["altnames"]
+        if (-not $altNames) {
+            continue
+        }
+
+        $jsonAltName = $altNames.Value.PSObject.Properties["json"]
+        if (-not $jsonAltName) {
+            continue
+        }
+
+        $jsonName = [string]$jsonAltName.Value
+        if (-not [string]::IsNullOrWhiteSpace($jsonName) -and $jsonName -ne $property.Name) {
+            $map[$property.Name] = $jsonName
+        }
+    }
+
+    return $map
+}
+
+function Set-KqlJsonAltNames {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$KqlContent,
+
+        [Parameter(Mandatory = $true)]
+        [hashtable]$JsonAltNames
+    )
+
+    foreach ($entry in $JsonAltNames.GetEnumerator()) {
+        $propertyName = [string]$entry.Key
+        $jsonName = [string]$entry.Value
+        $KqlContent = $KqlContent.Replace('$.' + $propertyName, '$.' + $jsonName)
+        $KqlContent = $KqlContent.Replace('$.data.' + $propertyName, '$.data.' + $jsonName)
+        $KqlContent = $KqlContent.Replace("data.['$propertyName']", "data.['$jsonName']")
+    }
+
+    return $KqlContent
+}
+
 function Split-KqlChunks {
     param(
         [Parameter(Mandatory = $true)]
@@ -446,6 +504,10 @@ try {
             $recordType
         }
         $kqlContent = Set-KqlEventTypes -KqlContent $kqlContent -EventTypes $schemaEventTypes[$schemaUri].ToArray() -RecordType $recordType
+        $jsonAltNames = Get-JsonAltNameMap -SchemaObject $schemaObject
+        if ($jsonAltNames.Count -gt 0) {
+            $kqlContent = Set-KqlJsonAltNames -KqlContent $kqlContent -JsonAltNames $jsonAltNames
+        }
         $kqlContent | Set-Content -Path $kqlPartFile -Encoding UTF8
 
         $generatedPartFiles.Add($kqlPartFile)

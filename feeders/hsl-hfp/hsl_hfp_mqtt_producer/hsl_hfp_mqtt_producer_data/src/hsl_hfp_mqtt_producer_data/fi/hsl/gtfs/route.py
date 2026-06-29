@@ -165,11 +165,11 @@ class Route:
             An instance of the dataclass.
         """
         return cls(
-            route_id='aduwksxnxcwfrzuzxdlg',
-            agency_id='xcoudsnpdztazmdcasjr',
-            route_short_name='vagyyunrxyqwvwdwsqag',
-            route_long_name='hjdmjhzshlbffxncsluj',
-            route_desc='ymaofjuocsdioojjgdyo',
-            route_type=int(40),
-            route_url='jjghhpdirzblhmvlnkol'
+            route_id='tvfjeohrknueorvktipr',
+            agency_id='ggjshbxhtnzebodcjavw',
+            route_short_name='cvpjozukkcavlovzrwlv',
+            route_long_name='cnltvwxhjlwezyngdreh',
+            route_desc='srbzmhlkcjgxorwajmhy',
+            route_type=int(86),
+            route_url='abaebmakybgtxskpnbvr'
         )

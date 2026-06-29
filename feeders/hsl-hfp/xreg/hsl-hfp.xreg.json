@@ -2109,7 +2109,10 @@
                               ],
                               "minimum": 0,
                               "maximum": 1,
-                              "description": "Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field."
+                              "description": "Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field.",
+                              "altnames": {
+                                "json": "dr-type"
+                              }
                             }
                           },
                           "required": [
@@ -2413,7 +2416,10 @@
                               ],
                               "minimum": 0,
                               "maximum": 255,
-                              "description": "Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field."
+                              "description": "Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field.",
+                              "altnames": {
+                                "json": "tlp-requestid"
+                              }
                             },
                             "tlp_requesttype": {
                               "type": [
@@ -2422,7 +2428,10 @@
                                   "$ref": "#/definitions/fi/hsl/hfp/TlpRequestTypeEnum"
                                 }
                               ],
-                              "description": "Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field."
+                              "description": "Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field.",
+                              "altnames": {
+                                "json": "tlp-requesttype"
+                              }
                             },
                             "tlp_prioritylevel": {
                               "type": [
@@ -2431,7 +2440,10 @@
                                   "$ref": "#/definitions/fi/hsl/hfp/TlpPriorityLevelEnum"
                                 }
                               ],
-                              "description": "Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field."
+                              "description": "Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field.",
+                              "altnames": {
+                                "json": "tlp-prioritylevel"
+                              }
                             },
                             "tlp_reason": {
                               "type": [
@@ -2440,7 +2452,10 @@
                                   "$ref": "#/definitions/fi/hsl/hfp/TlpReasonEnum"
                                 }
                               ],
-                              "description": "Reason for *not* sending a traffic-light priority request. One of `GLOBAL`, `AHEAD`, `LINE` or `PRIOEXEP`. Populated on `tlr`. Sourced from the HFP payload `tlp-reason` field."
+                              "description": "Reason for *not* sending a traffic-light priority request. One of `GLOBAL`, `AHEAD`, `LINE` or `PRIOEXEP`. Populated on `tlr`. Sourced from the HFP payload `tlp-reason` field.",
+                              "altnames": {
+                                "json": "tlp-reason"
+                              }
                             },
                             "tlp_att_seq": {
                               "type": [
@@ -2448,7 +2463,10 @@
                                 "int32"
                               ],
                               "minimum": 0,
-                              "description": "Traffic-light priority request attempt sequence number. Populated on `tlr`. Sourced from the HFP payload `tlp-att-seq` field."
+                              "description": "Traffic-light priority request attempt sequence number. Populated on `tlr`. Sourced from the HFP payload `tlp-att-seq` field.",
+                              "altnames": {
+                                "json": "tlp-att-seq"
+                              }
                             },
                             "tlp_decision": {
                               "type": [
@@ -2457,7 +2475,10 @@
                                   "$ref": "#/definitions/fi/hsl/hfp/TlpDecisionEnum"
                                 }
                               ],
-                              "description": "Response decision for the traffic-light priority request. One of `ACK` or `NAK`. Populated on `tla` (the response). Sourced from the HFP payload `tlp-decision` field."
+                              "description": "Response decision for the traffic-light priority request. One of `ACK` or `NAK`. Populated on `tla` (the response). Sourced from the HFP payload `tlp-decision` field.",
+                              "altnames": {
+                                "json": "tlp-decision"
+                              }
                             },
                             "sid": {
                               "type": [
@@ -2471,42 +2492,60 @@
                                 "null",
                                 "int32"
                               ],
-                              "description": "Signal-group ID (a group of traffic lights at a junction). Populated on `tlr`. Sourced from the HFP payload `signal-groupid` field."
+                              "description": "Signal-group ID (a group of traffic lights at a junction). Populated on `tlr`. Sourced from the HFP payload `signal-groupid` field.",
+                              "altnames": {
+                                "json": "signal-groupid"
+                              }
                             },
                             "tlp_signalgroupnbr": {
                               "type": [
                                 "null",
                                 "int32"
                               ],
-                              "description": "ID of the specific traffic light within the signal group; may be negative. Populated on `tlr`. Sourced from the HFP payload `tlp-signalgroupnbr` field."
+                              "description": "ID of the specific traffic light within the signal group; may be negative. Populated on `tlr`. Sourced from the HFP payload `tlp-signalgroupnbr` field.",
+                              "altnames": {
+                                "json": "tlp-signalgroupnbr"
+                              }
                             },
                             "tlp_line_configid": {
                               "type": [
                                 "null",
                                 "int32"
                               ],
-                              "description": "ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field."
+                              "description": "ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field.",
+                              "altnames": {
+                                "json": "tlp-line-configid"
+                              }
                             },
                             "tlp_point_configid": {
                               "type": [
                                 "null",
                                 "int32"
                               ],
-                              "description": "Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field."
+                              "description": "Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field.",
+                              "altnames": {
+                                "json": "tlp-point-configid"
+                              }
                             },
                             "tlp_frequency": {
                               "type": [
                                 "null",
                                 "int32"
                               ],
-                              "description": "Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field."
+                              "description": "Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field.",
+                              "altnames": {
+                                "json": "tlp-frequency"
+                              }
                             },
                             "tlp_protocol": {
                               "type": [
                                 "null",
                                 "string"
                               ],
-                              "description": "Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field."
+                              "description": "Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.",
+                              "altnames": {
+                                "json": "tlp-protocol"
+                              }
                             }
                           },
                           "required": [
@@ -2785,7 +2824,10 @@
                               ],
                               "minimum": 0,
                               "maximum": 1,
-                              "description": "Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field."
+                              "description": "Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field.",
+                              "altnames": {
+                                "json": "dr-type"
+                              }
                             }
                           },
                           "required": [

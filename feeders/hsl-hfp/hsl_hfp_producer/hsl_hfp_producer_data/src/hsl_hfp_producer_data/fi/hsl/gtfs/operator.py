@@ -159,8 +159,8 @@ class Operator:
             An instance of the dataclass.
         """
         return cls(
-            operator_id='mmacruwtrubzmpxwiizg',
-            operator_number=int(85),
-            name='uqaedpkycwztjngwburf',
-            note='ylrwhqpnoilrisihtjvu'
+            operator_id='gxagyajncjrcvrtsjzfz',
+            operator_number=int(22),
+            name='ndagrpqdolacvqfpkafv',
+            note='thtywsspzrbbscqtvzcw'
         )

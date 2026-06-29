@@ -103,19 +103,19 @@ class TrafficLightEvent:
     odo: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="odo"))
     drst: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="drst"))
     loc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
-    tlp_requestid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_requestid"))
-    tlp_requesttype: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_requesttype"))
-    tlp_prioritylevel: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_prioritylevel"))
-    tlp_reason: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_reason"))
-    tlp_att_seq: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_att_seq"))
-    tlp_decision: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_decision"))
+    tlp_requestid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-requestid"))
+    tlp_requesttype: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-requesttype"))
+    tlp_prioritylevel: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-prioritylevel"))
+    tlp_reason: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-reason"))
+    tlp_att_seq: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-att-seq"))
+    tlp_decision: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-decision"))
     sid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sid"))
-    signal_groupid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="signal_groupid"))
-    tlp_signalgroupnbr: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_signalgroupnbr"))
-    tlp_line_configid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_line_configid"))
-    tlp_point_configid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_point_configid"))
-    tlp_frequency: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_frequency"))
-    tlp_protocol: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp_protocol"))
+    signal_groupid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="signal-groupid"))
+    tlp_signalgroupnbr: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-signalgroupnbr"))
+    tlp_line_configid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-line-configid"))
+    tlp_point_configid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-point-configid"))
+    tlp_frequency: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-frequency"))
+    tlp_protocol: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-protocol"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TrafficLightEvent':
@@ -128,6 +128,30 @@ class TrafficLightEvent:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'tlp-requestid' in data:
+            data['tlp_requestid'] = data.pop('tlp-requestid')
+        if 'tlp-requesttype' in data:
+            data['tlp_requesttype'] = data.pop('tlp-requesttype')
+        if 'tlp-prioritylevel' in data:
+            data['tlp_prioritylevel'] = data.pop('tlp-prioritylevel')
+        if 'tlp-reason' in data:
+            data['tlp_reason'] = data.pop('tlp-reason')
+        if 'tlp-att-seq' in data:
+            data['tlp_att_seq'] = data.pop('tlp-att-seq')
+        if 'tlp-decision' in data:
+            data['tlp_decision'] = data.pop('tlp-decision')
+        if 'signal-groupid' in data:
+            data['signal_groupid'] = data.pop('signal-groupid')
+        if 'tlp-signalgroupnbr' in data:
+            data['tlp_signalgroupnbr'] = data.pop('tlp-signalgroupnbr')
+        if 'tlp-line-configid' in data:
+            data['tlp_line_configid'] = data.pop('tlp-line-configid')
+        if 'tlp-point-configid' in data:
+            data['tlp_point_configid'] = data.pop('tlp-point-configid')
+        if 'tlp-frequency' in data:
+            data['tlp_frequency'] = data.pop('tlp-frequency')
+        if 'tlp-protocol' in data:
+            data['tlp_protocol'] = data.pop('tlp-protocol')
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -138,6 +162,30 @@ class TrafficLightEvent:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'tlp_requestid' in asdict_result:
+            asdict_result['tlp-requestid'] = asdict_result.pop('tlp_requestid')
+        if 'tlp_requesttype' in asdict_result:
+            asdict_result['tlp-requesttype'] = asdict_result.pop('tlp_requesttype')
+        if 'tlp_prioritylevel' in asdict_result:
+            asdict_result['tlp-prioritylevel'] = asdict_result.pop('tlp_prioritylevel')
+        if 'tlp_reason' in asdict_result:
+            asdict_result['tlp-reason'] = asdict_result.pop('tlp_reason')
+        if 'tlp_att_seq' in asdict_result:
+            asdict_result['tlp-att-seq'] = asdict_result.pop('tlp_att_seq')
+        if 'tlp_decision' in asdict_result:
+            asdict_result['tlp-decision'] = asdict_result.pop('tlp_decision')
+        if 'signal_groupid' in asdict_result:
+            asdict_result['signal-groupid'] = asdict_result.pop('signal_groupid')
+        if 'tlp_signalgroupnbr' in asdict_result:
+            asdict_result['tlp-signalgroupnbr'] = asdict_result.pop('tlp_signalgroupnbr')
+        if 'tlp_line_configid' in asdict_result:
+            asdict_result['tlp-line-configid'] = asdict_result.pop('tlp_line_configid')
+        if 'tlp_point_configid' in asdict_result:
+            asdict_result['tlp-point-configid'] = asdict_result.pop('tlp_point_configid')
+        if 'tlp_frequency' in asdict_result:
+            asdict_result['tlp-frequency'] = asdict_result.pop('tlp_frequency')
+        if 'tlp_protocol' in asdict_result:
+            asdict_result['tlp-protocol'] = asdict_result.pop('tlp_protocol')
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -230,6 +278,30 @@ class TrafficLightEvent:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
+                if 'tlp-requestid' in _record:
+                    _record['tlp_requestid'] = _record.pop('tlp-requestid')
+                if 'tlp-requesttype' in _record:
+                    _record['tlp_requesttype'] = _record.pop('tlp-requesttype')
+                if 'tlp-prioritylevel' in _record:
+                    _record['tlp_prioritylevel'] = _record.pop('tlp-prioritylevel')
+                if 'tlp-reason' in _record:
+                    _record['tlp_reason'] = _record.pop('tlp-reason')
+                if 'tlp-att-seq' in _record:
+                    _record['tlp_att_seq'] = _record.pop('tlp-att-seq')
+                if 'tlp-decision' in _record:
+                    _record['tlp_decision'] = _record.pop('tlp-decision')
+                if 'signal-groupid' in _record:
+                    _record['signal_groupid'] = _record.pop('signal-groupid')
+                if 'tlp-signalgroupnbr' in _record:
+                    _record['tlp_signalgroupnbr'] = _record.pop('tlp-signalgroupnbr')
+                if 'tlp-line-configid' in _record:
+                    _record['tlp_line_configid'] = _record.pop('tlp-line-configid')
+                if 'tlp-point-configid' in _record:
+                    _record['tlp_point_configid'] = _record.pop('tlp-point-configid')
+                if 'tlp-frequency' in _record:
+                    _record['tlp_frequency'] = _record.pop('tlp-frequency')
+                if 'tlp-protocol' in _record:
+                    _record['tlp_protocol'] = _record.pop('tlp-protocol')
                 return TrafficLightEvent.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
@@ -244,50 +316,50 @@ class TrafficLightEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(78),
-            veh=int(32),
-            tst='wckmnbbbvdapmbfbcyrf',
-            tsi=int(11),
-            operator_id='zvxzwtkrgyoutpyqzsvc',
-            vehicle_number='xszjgnmgcvhwiaiqhcgl',
+            oper=int(68),
+            veh=int(97),
+            tst='xpaluvhnsfurtfscngiy',
+            tsi=int(75),
+            operator_id='topsdseqwpuzotarxjta',
+            vehicle_number='ffmuwduxxsvbbdkrpuse',
             temporal_type=None,
             transport_mode=None,
-            route_id='idfdmrdfbqloytwttsyj',
-            direction_id='aqtwnmpbfyzdxpricoll',
-            headsign='lqgacuqhuxvfelhkdhvw',
-            start_time='vvdkcunyejlzpdmqtipf',
-            next_stop='uzonfolsxdtzkvklijxv',
-            geohash_level='suqmevydbdsgddscbncb',
-            geohash='fzvdehlhljertdfzaeer',
-            desi='pdwnitmqwqwffhownibc',
-            dir='byybagsxghxmdvzszoip',
-            dl=int(12),
-            oday='ighwqfmmdcbsdgtgvcrr',
-            jrn=int(24),
-            line=int(16),
-            start='hgwtoccscrtegnhhgpym',
-            stop=int(16),
-            route='jiskfobkbvcjzdybsdpp',
-            occu=int(62),
-            spd=float(85.09381588637743),
-            hdg=int(7),
-            lat=float(36.97998241319041),
-            long=float(4.878617651520445),
-            acc=float(7.821331527244968),
-            odo=int(87),
-            drst=int(68),
-            loc='jjdqujtzajmyhogxprxk',
-            tlp_requestid=int(25),
+            route_id='sttgbckbkikfvhuruqph',
+            direction_id='lcbqyvbdhzuhwshrcytb',
+            headsign='wnmiynbcoyhjbgquzhmm',
+            start_time='dtacvgxhsgburerxcupf',
+            next_stop='gpxowxyhgdhvmgagachn',
+            geohash_level='ltzgcjyfvfilllesyfax',
+            geohash='nxhbnaxtyjwxgymwjcpr',
+            desi='jgulalcclamwjumcxysj',
+            dir='jwxzkpcnbxylvcmtngvu',
+            dl=int(24),
+            oday='dcebvumkoxxhgsjromqn',
+            jrn=int(88),
+            line=int(62),
+            start='nrtdztntevchbphtccjd',
+            stop=int(62),
+            route='qmazigtdiceokaramnoo',
+            occu=int(66),
+            spd=float(24.03610280464491),
+            hdg=int(20),
+            lat=float(66.75583269749166),
+            long=float(85.40482386419066),
+            acc=float(58.408101633150245),
+            odo=int(49),
+            drst=int(52),
+            loc='rnnvmqvdqkhmxhbsiiqn',
+            tlp_requestid=int(29),
             tlp_requesttype=None,
             tlp_prioritylevel=None,
             tlp_reason=None,
-            tlp_att_seq=int(51),
+            tlp_att_seq=int(38),
             tlp_decision=None,
-            sid=int(83),
-            signal_groupid=int(78),
-            tlp_signalgroupnbr=int(10),
-            tlp_line_configid=int(5),
-            tlp_point_configid=int(7),
-            tlp_frequency=int(15),
-            tlp_protocol='bzudbqagyrddljjfauql'
+            sid=int(65),
+            signal_groupid=int(50),
+            tlp_signalgroupnbr=int(12),
+            tlp_line_configid=int(2),
+            tlp_point_configid=int(21),
+            tlp_frequency=int(89),
+            tlp_protocol='liqzfexidxsqifqoibge'
         )

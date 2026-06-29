@@ -1,5 +1,5 @@
-from .stop import Stop
 from .operator import Operator
 from .route import Route
+from .stop import Stop
 
-__all__ = ["Stop", "Operator", "Route"]
+__all__ = ["Operator", "Route", "Stop"]

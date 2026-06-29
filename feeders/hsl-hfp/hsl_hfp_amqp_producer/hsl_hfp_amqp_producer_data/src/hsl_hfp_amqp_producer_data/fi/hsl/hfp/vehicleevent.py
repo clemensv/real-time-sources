@@ -99,7 +99,7 @@ class VehicleEvent:
     loc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
     ttarr: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ttarr"))
     ttdep: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ttdep"))
-    dr_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dr_type"))
+    dr_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dr-type"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'VehicleEvent':
@@ -112,6 +112,8 @@ class VehicleEvent:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'dr-type' in data:
+            data['dr_type'] = data.pop('dr-type')
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -122,6 +124,8 @@ class VehicleEvent:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'dr_type' in asdict_result:
+            asdict_result['dr-type'] = asdict_result.pop('dr_type')
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -214,6 +218,8 @@ class VehicleEvent:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
+                if 'dr-type' in _record:
+                    _record['dr_type'] = _record.pop('dr-type')
                 return VehicleEvent.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
@@ -228,42 +234,42 @@ class VehicleEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(9),
-            veh=int(5),
-            tst='ixnwkfwepvwuvvhhhurl',
-            tsi=int(8),
-            operator_id='xxwvshopoakfophowrib',
-            vehicle_number='omolzbbcwwukggzqoloi',
+            oper=int(68),
+            veh=int(52),
+            tst='kcbrajquwbmsjlusieck',
+            tsi=int(16),
+            operator_id='nsxyqkmehdukawnrxnkx',
+            vehicle_number='rundqktjsnkkerzcltab',
             temporal_type=None,
             transport_mode=None,
-            route_id='tnctasopaawwjvpeyqlw',
-            direction_id='jbdhqedokiyhhimyuynh',
-            headsign='wozvezyklrftlfenzlyr',
-            start_time='uczzzehccmuefzbmcoio',
-            next_stop='fnxdhjxpusdwueojmtkm',
-            geohash_level='mxnjpcphmuxarjaxbrib',
-            geohash='lhrmwsnpuidmclgpyqdz',
-            desi='sujeucyixxwylkbhjljd',
-            dir='jthcjfryktlhcmuuhwzx',
-            dl=int(91),
-            oday='iacryxknmixdzagicdhg',
-            jrn=int(27),
-            line=int(51),
-            start='yzgknrzciipakydrhbeg',
-            stop=int(11),
-            route='sazejoosvlcmcsrutrfs',
-            occu=int(32),
-            seq=int(54),
-            label='tjagjiemqkbpodgdfrmh',
-            spd=float(93.33150027719749),
-            hdg=int(4),
-            lat=float(92.94657903753169),
-            long=float(14.68216817909127),
-            acc=float(38.465854401241586),
-            odo=int(28),
-            drst=int(43),
-            loc='chxutruyminwxogzlptl',
-            ttarr='lpzqnwujpjwyncbzfmsw',
-            ttdep='nauvymmdtqwlicxummcm',
-            dr_type=int(24)
+            route_id='kgzgyqesvubmxelmoesx',
+            direction_id='nwdpznvknwqykodrzgrb',
+            headsign='difsaywfzpsfgfvgesmv',
+            start_time='mxkpkrmwrijedthkinyl',
+            next_stop='wgzuvhjetmuuzqadkads',
+            geohash_level='bzdoxxcdnqtiojjevotx',
+            geohash='dhrxwssflowxucyfoxxa',
+            desi='xugwnkbkotomfnwlmaqu',
+            dir='cxduyjhdnueewopkbgfo',
+            dl=int(10),
+            oday='ubfubyglmtnjggmkfehj',
+            jrn=int(84),
+            line=int(13),
+            start='jstoknzroptmcdqhiyzb',
+            stop=int(69),
+            route='unmidpbmvvkdftjiacmt',
+            occu=int(56),
+            seq=int(24),
+            label='akwecfidnerrummtzkzp',
+            spd=float(45.88645886505679),
+            hdg=int(58),
+            lat=float(62.62913060582071),
+            long=float(42.59683646197192),
+            acc=float(14.339880854551712),
+            odo=int(35),
+            drst=int(32),
+            loc='ohovytuupzjgfxmaezoe',
+            ttarr='mklrkqsbgkfyfqzisbab',
+            ttdep='fgokrhksjhfhkwetfmjn',
+            dr_type=int(28)
         )

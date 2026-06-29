@@ -1,4 +1,4 @@
-from .hfp import VehicleEvent, TemporalTypeEnum, TransportModeEnum, DriverBlockEvent, TrafficLightEvent, TlpDecisionEnum, TlpPriorityLevelEnum, TlpReasonEnum, TlpRequestTypeEnum
-from .gtfs import Stop, Operator, Route
+from .gtfs import Operator, Stop, Route
+from .hfp import TrafficLightEvent, TemporalTypeEnum, TlpDecisionEnum, TlpPriorityLevelEnum, TlpReasonEnum, TlpRequestTypeEnum, TransportModeEnum, DriverBlockEvent, VehicleEvent
 
-__all__ = ["VehicleEvent", "TemporalTypeEnum", "TransportModeEnum", "DriverBlockEvent", "TrafficLightEvent", "TlpDecisionEnum", "TlpPriorityLevelEnum", "TlpReasonEnum", "TlpRequestTypeEnum", "Stop", "Operator", "Route"]
+__all__ = ["Operator", "Stop", "Route", "TrafficLightEvent", "TemporalTypeEnum", "TlpDecisionEnum", "TlpPriorityLevelEnum", "TlpReasonEnum", "TlpRequestTypeEnum", "TransportModeEnum", "DriverBlockEvent", "VehicleEvent"]

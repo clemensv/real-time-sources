@@ -15,6 +15,7 @@
 
 . (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
+Push-Location $PSScriptRoot
 
 # 1. Upstream subscriber (novel): generated data classes + topic helpers for
 #    the plain-JSON HFP firehose on mqtt.hsl.fi. The bridge drives a thin paho
@@ -75,3 +76,4 @@ xrcg generate `
     --output hsl_hfp_amqp_producer
 
 Convert-GeneratedPyprojects
+Pop-Location

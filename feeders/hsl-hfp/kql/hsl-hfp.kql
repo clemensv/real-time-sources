@@ -164,7 +164,7 @@
   {"column": "loc", "path": "$.loc"},
   {"column": "ttarr", "path": "$.ttarr"},
   {"column": "ttdep", "path": "$.ttdep"},
-  {"column": "dr_type", "path": "$.dr_type"}
+  {"column": "dr_type", "path": "$.dr-type"}
 ]
 ```
 
@@ -213,7 +213,7 @@
   {"column": "loc", "path": "$.data.loc"},
   {"column": "ttarr", "path": "$.data.ttarr"},
   {"column": "ttdep", "path": "$.data.ttdep"},
-  {"column": "dr_type", "path": "$.data.dr_type"}
+  {"column": "dr_type", "path": "$.data.dr-type"}
 ]
 ```
 
@@ -228,7 +228,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('fi.hsl.hfp.vp', 'fi.hsl.hfp.due', 'fi.hsl.hfp.arr', 'fi.hsl.hfp.dep', 'fi.hsl.hfp.ars', 'fi.hsl.hfp.pde', 'fi.hsl.hfp.pas', 'fi.hsl.hfp.wait', 'fi.hsl.hfp.doo', 'fi.hsl.hfp.doc', 'fi.hsl.hfp.vja', 'fi.hsl.hfp.vjout', 'fi.hsl.hfp.upstream.vp', 'fi.hsl.hfp.upstream.due', 'fi.hsl.hfp.upstream.arr', 'fi.hsl.hfp.upstream.dep', 'fi.hsl.hfp.upstream.ars', 'fi.hsl.hfp.upstream.pde', 'fi.hsl.hfp.upstream.pas', 'fi.hsl.hfp.upstream.wait', 'fi.hsl.hfp.upstream.doo', 'fi.hsl.hfp.upstream.doc', 'fi.hsl.hfp.upstream.vja', 'fi.hsl.hfp.upstream.vjout')) | project['oper'] = toint(data.['oper']),['veh'] = toint(data.['veh']),['tst'] = tostring(data.['tst']),['tsi'] = toint(data.['tsi']),['operator_id'] = tostring(data.['operator_id']),['vehicle_number'] = tostring(data.['vehicle_number']),['temporal_type'] = tostring(data.['temporal_type']),['transport_mode'] = tostring(data.['transport_mode']),['route_id'] = tostring(data.['route_id']),['direction_id'] = tostring(data.['direction_id']),['headsign'] = tostring(data.['headsign']),['start_time'] = tostring(data.['start_time']),['next_stop'] = tostring(data.['next_stop']),['geohash_level'] = tostring(data.['geohash_level']),['geohash'] = tostring(data.['geohash']),['desi'] = tostring(data.['desi']),['dir'] = tostring(data.['dir']),['dl'] = toint(data.['dl']),['oday'] = tostring(data.['oday']),['jrn'] = toint(data.['jrn']),['line'] = toint(data.['line']),['start'] = tostring(data.['start']),['stop'] = toint(data.['stop']),['route'] = tostring(data.['route']),['occu'] = toint(data.['occu']),['seq'] = toint(data.['seq']),['label'] = tostring(data.['label']),['spd'] = toreal(data.['spd']),['hdg'] = toint(data.['hdg']),['lat'] = toreal(data.['lat']),['long'] = toreal(data.['long']),['acc'] = toreal(data.['acc']),['odo'] = toint(data.['odo']),['drst'] = toint(data.['drst']),['loc'] = tostring(data.['loc']),['ttarr'] = tostring(data.['ttarr']),['ttdep'] = tostring(data.['ttdep']),['dr_type'] = toint(data.['dr_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('fi.hsl.hfp.vp', 'fi.hsl.hfp.due', 'fi.hsl.hfp.arr', 'fi.hsl.hfp.dep', 'fi.hsl.hfp.ars', 'fi.hsl.hfp.pde', 'fi.hsl.hfp.pas', 'fi.hsl.hfp.wait', 'fi.hsl.hfp.doo', 'fi.hsl.hfp.doc', 'fi.hsl.hfp.vja', 'fi.hsl.hfp.vjout', 'fi.hsl.hfp.upstream.vp', 'fi.hsl.hfp.upstream.due', 'fi.hsl.hfp.upstream.arr', 'fi.hsl.hfp.upstream.dep', 'fi.hsl.hfp.upstream.ars', 'fi.hsl.hfp.upstream.pde', 'fi.hsl.hfp.upstream.pas', 'fi.hsl.hfp.upstream.wait', 'fi.hsl.hfp.upstream.doo', 'fi.hsl.hfp.upstream.doc', 'fi.hsl.hfp.upstream.vja', 'fi.hsl.hfp.upstream.vjout')) | project['oper'] = toint(data.['oper']),['veh'] = toint(data.['veh']),['tst'] = tostring(data.['tst']),['tsi'] = toint(data.['tsi']),['operator_id'] = tostring(data.['operator_id']),['vehicle_number'] = tostring(data.['vehicle_number']),['temporal_type'] = tostring(data.['temporal_type']),['transport_mode'] = tostring(data.['transport_mode']),['route_id'] = tostring(data.['route_id']),['direction_id'] = tostring(data.['direction_id']),['headsign'] = tostring(data.['headsign']),['start_time'] = tostring(data.['start_time']),['next_stop'] = tostring(data.['next_stop']),['geohash_level'] = tostring(data.['geohash_level']),['geohash'] = tostring(data.['geohash']),['desi'] = tostring(data.['desi']),['dir'] = tostring(data.['dir']),['dl'] = toint(data.['dl']),['oday'] = tostring(data.['oday']),['jrn'] = toint(data.['jrn']),['line'] = toint(data.['line']),['start'] = tostring(data.['start']),['stop'] = toint(data.['stop']),['route'] = tostring(data.['route']),['occu'] = toint(data.['occu']),['seq'] = toint(data.['seq']),['label'] = tostring(data.['label']),['spd'] = toreal(data.['spd']),['hdg'] = toint(data.['hdg']),['lat'] = toreal(data.['lat']),['long'] = toreal(data.['long']),['acc'] = toreal(data.['acc']),['odo'] = toint(data.['odo']),['drst'] = toint(data.['drst']),['loc'] = tostring(data.['loc']),['ttarr'] = tostring(data.['ttarr']),['ttdep'] = tostring(data.['ttdep']),['dr_type'] = toint(data.['dr-type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true
 }]
@@ -385,19 +385,19 @@
   {"column": "odo", "path": "$.odo"},
   {"column": "drst", "path": "$.drst"},
   {"column": "loc", "path": "$.loc"},
-  {"column": "tlp_requestid", "path": "$.tlp_requestid"},
-  {"column": "tlp_requesttype", "path": "$.tlp_requesttype"},
-  {"column": "tlp_prioritylevel", "path": "$.tlp_prioritylevel"},
-  {"column": "tlp_reason", "path": "$.tlp_reason"},
-  {"column": "tlp_att_seq", "path": "$.tlp_att_seq"},
-  {"column": "tlp_decision", "path": "$.tlp_decision"},
+  {"column": "tlp_requestid", "path": "$.tlp-requestid"},
+  {"column": "tlp_requesttype", "path": "$.tlp-requesttype"},
+  {"column": "tlp_prioritylevel", "path": "$.tlp-prioritylevel"},
+  {"column": "tlp_reason", "path": "$.tlp-reason"},
+  {"column": "tlp_att_seq", "path": "$.tlp-att-seq"},
+  {"column": "tlp_decision", "path": "$.tlp-decision"},
   {"column": "sid", "path": "$.sid"},
-  {"column": "signal_groupid", "path": "$.signal_groupid"},
-  {"column": "tlp_signalgroupnbr", "path": "$.tlp_signalgroupnbr"},
-  {"column": "tlp_line_configid", "path": "$.tlp_line_configid"},
-  {"column": "tlp_point_configid", "path": "$.tlp_point_configid"},
-  {"column": "tlp_frequency", "path": "$.tlp_frequency"},
-  {"column": "tlp_protocol", "path": "$.tlp_protocol"}
+  {"column": "signal_groupid", "path": "$.signal-groupid"},
+  {"column": "tlp_signalgroupnbr", "path": "$.tlp-signalgroupnbr"},
+  {"column": "tlp_line_configid", "path": "$.tlp-line-configid"},
+  {"column": "tlp_point_configid", "path": "$.tlp-point-configid"},
+  {"column": "tlp_frequency", "path": "$.tlp-frequency"},
+  {"column": "tlp_protocol", "path": "$.tlp-protocol"}
 ]
 ```
 
@@ -442,19 +442,19 @@
   {"column": "odo", "path": "$.data.odo"},
   {"column": "drst", "path": "$.data.drst"},
   {"column": "loc", "path": "$.data.loc"},
-  {"column": "tlp_requestid", "path": "$.data.tlp_requestid"},
-  {"column": "tlp_requesttype", "path": "$.data.tlp_requesttype"},
-  {"column": "tlp_prioritylevel", "path": "$.data.tlp_prioritylevel"},
-  {"column": "tlp_reason", "path": "$.data.tlp_reason"},
-  {"column": "tlp_att_seq", "path": "$.data.tlp_att_seq"},
-  {"column": "tlp_decision", "path": "$.data.tlp_decision"},
+  {"column": "tlp_requestid", "path": "$.data.tlp-requestid"},
+  {"column": "tlp_requesttype", "path": "$.data.tlp-requesttype"},
+  {"column": "tlp_prioritylevel", "path": "$.data.tlp-prioritylevel"},
+  {"column": "tlp_reason", "path": "$.data.tlp-reason"},
+  {"column": "tlp_att_seq", "path": "$.data.tlp-att-seq"},
+  {"column": "tlp_decision", "path": "$.data.tlp-decision"},
   {"column": "sid", "path": "$.data.sid"},
-  {"column": "signal_groupid", "path": "$.data.signal_groupid"},
-  {"column": "tlp_signalgroupnbr", "path": "$.data.tlp_signalgroupnbr"},
-  {"column": "tlp_line_configid", "path": "$.data.tlp_line_configid"},
-  {"column": "tlp_point_configid", "path": "$.data.tlp_point_configid"},
-  {"column": "tlp_frequency", "path": "$.data.tlp_frequency"},
-  {"column": "tlp_protocol", "path": "$.data.tlp_protocol"}
+  {"column": "signal_groupid", "path": "$.data.signal-groupid"},
+  {"column": "tlp_signalgroupnbr", "path": "$.data.tlp-signalgroupnbr"},
+  {"column": "tlp_line_configid", "path": "$.data.tlp-line-configid"},
+  {"column": "tlp_point_configid", "path": "$.data.tlp-point-configid"},
+  {"column": "tlp_frequency", "path": "$.data.tlp-frequency"},
+  {"column": "tlp_protocol", "path": "$.data.tlp-protocol"}
 ]
 ```
 
@@ -469,7 +469,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('fi.hsl.hfp.tlr', 'fi.hsl.hfp.tla', 'fi.hsl.hfp.upstream.tlr', 'fi.hsl.hfp.upstream.tla')) | project['oper'] = toint(data.['oper']),['veh'] = toint(data.['veh']),['tst'] = tostring(data.['tst']),['tsi'] = toint(data.['tsi']),['operator_id'] = tostring(data.['operator_id']),['vehicle_number'] = tostring(data.['vehicle_number']),['temporal_type'] = tostring(data.['temporal_type']),['transport_mode'] = tostring(data.['transport_mode']),['route_id'] = tostring(data.['route_id']),['direction_id'] = tostring(data.['direction_id']),['headsign'] = tostring(data.['headsign']),['start_time'] = tostring(data.['start_time']),['next_stop'] = tostring(data.['next_stop']),['geohash_level'] = tostring(data.['geohash_level']),['geohash'] = tostring(data.['geohash']),['desi'] = tostring(data.['desi']),['dir'] = tostring(data.['dir']),['dl'] = toint(data.['dl']),['oday'] = tostring(data.['oday']),['jrn'] = toint(data.['jrn']),['line'] = toint(data.['line']),['start'] = tostring(data.['start']),['stop'] = toint(data.['stop']),['route'] = tostring(data.['route']),['occu'] = toint(data.['occu']),['spd'] = toreal(data.['spd']),['hdg'] = toint(data.['hdg']),['lat'] = toreal(data.['lat']),['long'] = toreal(data.['long']),['acc'] = toreal(data.['acc']),['odo'] = toint(data.['odo']),['drst'] = toint(data.['drst']),['loc'] = tostring(data.['loc']),['tlp_requestid'] = toint(data.['tlp_requestid']),['tlp_requesttype'] = tostring(data.['tlp_requesttype']),['tlp_prioritylevel'] = tostring(data.['tlp_prioritylevel']),['tlp_reason'] = tostring(data.['tlp_reason']),['tlp_att_seq'] = toint(data.['tlp_att_seq']),['tlp_decision'] = tostring(data.['tlp_decision']),['sid'] = toint(data.['sid']),['signal_groupid'] = toint(data.['signal_groupid']),['tlp_signalgroupnbr'] = toint(data.['tlp_signalgroupnbr']),['tlp_line_configid'] = toint(data.['tlp_line_configid']),['tlp_point_configid'] = toint(data.['tlp_point_configid']),['tlp_frequency'] = toint(data.['tlp_frequency']),['tlp_protocol'] = tostring(data.['tlp_protocol']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('fi.hsl.hfp.tlr', 'fi.hsl.hfp.tla', 'fi.hsl.hfp.upstream.tlr', 'fi.hsl.hfp.upstream.tla')) | project['oper'] = toint(data.['oper']),['veh'] = toint(data.['veh']),['tst'] = tostring(data.['tst']),['tsi'] = toint(data.['tsi']),['operator_id'] = tostring(data.['operator_id']),['vehicle_number'] = tostring(data.['vehicle_number']),['temporal_type'] = tostring(data.['temporal_type']),['transport_mode'] = tostring(data.['transport_mode']),['route_id'] = tostring(data.['route_id']),['direction_id'] = tostring(data.['direction_id']),['headsign'] = tostring(data.['headsign']),['start_time'] = tostring(data.['start_time']),['next_stop'] = tostring(data.['next_stop']),['geohash_level'] = tostring(data.['geohash_level']),['geohash'] = tostring(data.['geohash']),['desi'] = tostring(data.['desi']),['dir'] = tostring(data.['dir']),['dl'] = toint(data.['dl']),['oday'] = tostring(data.['oday']),['jrn'] = toint(data.['jrn']),['line'] = toint(data.['line']),['start'] = tostring(data.['start']),['stop'] = toint(data.['stop']),['route'] = tostring(data.['route']),['occu'] = toint(data.['occu']),['spd'] = toreal(data.['spd']),['hdg'] = toint(data.['hdg']),['lat'] = toreal(data.['lat']),['long'] = toreal(data.['long']),['acc'] = toreal(data.['acc']),['odo'] = toint(data.['odo']),['drst'] = toint(data.['drst']),['loc'] = tostring(data.['loc']),['tlp_requestid'] = toint(data.['tlp-requestid']),['tlp_requesttype'] = tostring(data.['tlp-requesttype']),['tlp_prioritylevel'] = tostring(data.['tlp-prioritylevel']),['tlp_reason'] = tostring(data.['tlp-reason']),['tlp_att_seq'] = toint(data.['tlp-att-seq']),['tlp_decision'] = tostring(data.['tlp-decision']),['sid'] = toint(data.['sid']),['signal_groupid'] = toint(data.['signal-groupid']),['tlp_signalgroupnbr'] = toint(data.['tlp-signalgroupnbr']),['tlp_line_configid'] = toint(data.['tlp-line-configid']),['tlp_point_configid'] = toint(data.['tlp-point-configid']),['tlp_frequency'] = toint(data.['tlp-frequency']),['tlp_protocol'] = tostring(data.['tlp-protocol']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true
 }]
@@ -575,7 +575,7 @@
   {"column": "drst", "path": "$.drst"},
   {"column": "loc", "path": "$.loc"},
   {"column": "oday", "path": "$.oday"},
-  {"column": "dr_type", "path": "$.dr_type"}
+  {"column": "dr_type", "path": "$.dr-type"}
 ]
 ```
 
@@ -611,7 +611,7 @@
   {"column": "drst", "path": "$.data.drst"},
   {"column": "loc", "path": "$.data.loc"},
   {"column": "oday", "path": "$.data.oday"},
-  {"column": "dr_type", "path": "$.data.dr_type"}
+  {"column": "dr_type", "path": "$.data.dr-type"}
 ]
 ```
 
@@ -626,7 +626,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('fi.hsl.hfp.da', 'fi.hsl.hfp.dout', 'fi.hsl.hfp.ba', 'fi.hsl.hfp.bout', 'fi.hsl.hfp.upstream.da', 'fi.hsl.hfp.upstream.dout', 'fi.hsl.hfp.upstream.ba', 'fi.hsl.hfp.upstream.bout')) | project['oper'] = toint(data.['oper']),['veh'] = toint(data.['veh']),['tst'] = tostring(data.['tst']),['tsi'] = toint(data.['tsi']),['operator_id'] = tostring(data.['operator_id']),['vehicle_number'] = tostring(data.['vehicle_number']),['temporal_type'] = tostring(data.['temporal_type']),['transport_mode'] = tostring(data.['transport_mode']),['route_id'] = tostring(data.['route_id']),['direction_id'] = tostring(data.['direction_id']),['headsign'] = tostring(data.['headsign']),['start_time'] = tostring(data.['start_time']),['next_stop'] = tostring(data.['next_stop']),['geohash_level'] = tostring(data.['geohash_level']),['geohash'] = tostring(data.['geohash']),['spd'] = toreal(data.['spd']),['hdg'] = toint(data.['hdg']),['lat'] = toreal(data.['lat']),['long'] = toreal(data.['long']),['acc'] = toreal(data.['acc']),['odo'] = toint(data.['odo']),['drst'] = toint(data.['drst']),['loc'] = tostring(data.['loc']),['oday'] = tostring(data.['oday']),['dr_type'] = toint(data.['dr_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('fi.hsl.hfp.da', 'fi.hsl.hfp.dout', 'fi.hsl.hfp.ba', 'fi.hsl.hfp.bout', 'fi.hsl.hfp.upstream.da', 'fi.hsl.hfp.upstream.dout', 'fi.hsl.hfp.upstream.ba', 'fi.hsl.hfp.upstream.bout')) | project['oper'] = toint(data.['oper']),['veh'] = toint(data.['veh']),['tst'] = tostring(data.['tst']),['tsi'] = toint(data.['tsi']),['operator_id'] = tostring(data.['operator_id']),['vehicle_number'] = tostring(data.['vehicle_number']),['temporal_type'] = tostring(data.['temporal_type']),['transport_mode'] = tostring(data.['transport_mode']),['route_id'] = tostring(data.['route_id']),['direction_id'] = tostring(data.['direction_id']),['headsign'] = tostring(data.['headsign']),['start_time'] = tostring(data.['start_time']),['next_stop'] = tostring(data.['next_stop']),['geohash_level'] = tostring(data.['geohash_level']),['geohash'] = tostring(data.['geohash']),['spd'] = toreal(data.['spd']),['hdg'] = toint(data.['hdg']),['lat'] = toreal(data.['lat']),['long'] = toreal(data.['long']),['acc'] = toreal(data.['acc']),['odo'] = toint(data.['odo']),['drst'] = toint(data.['drst']),['loc'] = tostring(data.['loc']),['oday'] = tostring(data.['oday']),['dr_type'] = toint(data.['dr-type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true
 }]
