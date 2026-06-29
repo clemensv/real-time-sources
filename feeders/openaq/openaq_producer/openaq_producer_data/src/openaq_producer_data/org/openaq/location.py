@@ -201,22 +201,22 @@ class Location:
             An instance of the dataclass.
         """
         return cls(
-            location_id=int(15),
-            name='koqrxbhwzjjwiakrizkt',
-            locality='cwpnlalrhgplodmjnyvf',
-            timezone='kxcrlydygngyiijlvtvs',
-            country_iso='xptebqjxrhrekhfbrcee',
-            country_name='voocgfhyibgscpomykth',
-            owner_id=int(81),
-            owner_name='xlwtoyysrzbwohqnakqn',
-            provider_id=int(59),
-            provider_name='zzcddaqwnqtcjnrrjajd',
-            is_mobile=True,
-            is_monitor=False,
-            latitude=float(22.564077837523467),
-            longitude=float(74.70415498878317),
+            location_id=int(35),
+            name='nxyfptmvfpwoviuhrqyw',
+            locality='okldlyvbgqhplnfhxume',
+            timezone='iugepbwsrhtfnqmxwmam',
+            country_iso='pekzyucpusponkjdwkez',
+            country_name='jgtobqoqyyrhxefoakus',
+            owner_id=int(69),
+            owner_name='yyymbclsjqadlpjhkrci',
+            provider_id=int(72),
+            provider_name='gtozbhknkmrcrjcdjxnw',
+            is_mobile=False,
+            is_monitor=True,
+            latitude=float(73.93926747561108),
+            longitude=float(76.02705086550195),
             datetime_first=datetime.datetime.now(datetime.timezone.utc),
             datetime_last=datetime.datetime.now(datetime.timezone.utc),
-            license='qdsqfnbywrobqxgpnmzn',
-            sensor_count=int(67)
+            license='ssaywrtkbspajmxtlyuf',
+            sensor_count=int(8)
         )

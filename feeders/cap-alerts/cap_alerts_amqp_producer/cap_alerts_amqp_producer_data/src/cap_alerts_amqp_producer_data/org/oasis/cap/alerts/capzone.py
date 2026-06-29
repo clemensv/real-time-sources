@@ -169,13 +169,13 @@ class CapZone:
             An instance of the dataclass.
         """
         return cls(
-            cap_source_id='suzmxvdyibzdofojvosb',
-            zone_id='mpfwlwehqedvfgdfpkfo',
-            name='pcmyftqocxwooivcoasl',
-            zone_type='wywemrusxtwuglbnahaq',
-            state='brdjsklpyxftbvlvjvob',
-            forecast_office='ektwwqdtepylqughfrhi',
-            time_zones=['wqrornvqeaiuddvzvifh', 'rkntggyytwhtyulncxek', 'siallozafbqmtxwwhajg', 'ayajexzgoymtojsrfdjx', 'hbxouassvmozgadfxena'],
-            geometry='wrviroacvmrujirhwrmi',
-            provider_url='qggpanrkhfohzgvqkjwc'
+            cap_source_id='xnzhkvvjrtvlhsmlpdyl',
+            zone_id='nimznxpbfflfkiwdwbha',
+            name='tjrtmzoxqfiajvfqknyb',
+            zone_type='ajibdaogyopneqepysue',
+            state='ykdxuevsysmemyutryhr',
+            forecast_office='odcnmrtwxrrpvxajuknp',
+            time_zones=['pulfzijyqdfojwgqabgt', 'piimftofrdrljrmzhqmr', 'rmpfvizugxhomonddnke', 'jcromqixrtdpnddffhvc', 'ndcieciibraraajtrgpe'],
+            geometry='jfavjyzeaejvutzjunmr',
+            provider_url='bfkcruvvmleervxuajvw'
         )

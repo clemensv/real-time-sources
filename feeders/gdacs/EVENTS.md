@@ -1,4 +1,4 @@
-# GDACS — Global Disaster Alert and Coordination System Events
+# GDACS Events
 
 GDACS publishes disaster alerts and impact updates from the Global Disaster Alert and Coordination System for global natural-hazard events. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{event_type}/{event_id}`. `{
 | --- | --- |
 | `KAFKA` | topic `gdacs`, key `{event_type}/{event_id}` |
 | `MQTT/5.0` | topic `alerts/intl/gdacs/gdacs/{event_type}/{alert_color}/{country}/{event_id}/alert`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/gdacs`, message subject `{event_type}/{event_id}`; application properties event_type `{event_type}`, event_id `{event_id}`, alert_color `{alert_color}`, country `{country}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/gdacs`, message subject `{event_type}/{event_id}` |
 
 #### Payload
 
@@ -200,3 +200,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/gdacs.xreg.json`](xreg/gdacs.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

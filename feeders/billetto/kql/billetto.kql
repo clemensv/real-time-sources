@@ -53,29 +53,29 @@
    [___subject]: string
 );
 
-.alter table [Event] docstring "{\"description\": \"A public ticketed event from the Billetto platform. Each record represents a single upcoming or ongoing public event with schedule, venue, organizer, pricing, and availability information.\"}";
+.alter table [Event] docstring @"{""description"": ""A public ticketed event from the Billetto platform. Each record represents a single upcoming or ongoing public event with schedule, venue, organizer, pricing, and availability information.""}";
 
 .alter table [Event] column-docstrings (
-   [event_id]: "{\"description\": \"Unique numeric identifier for the event on the Billetto platform, assigned at event creation. Used as the Kafka key and CloudEvents subject for stable event identity across polls.\"}",
-   [title]: "{\"description\": \"Event title as set by the organizer.\"}",
-   [description]: "{\"description\": \"Full event description in HTML format as provided by the organizer. May be null if not set.\"}",
-   [startdate]: "{\"description\": \"Event start date and time in ISO 8601 format (e.g. '2026-06-15T19:00:00'). Used as the CloudEvents time attribute.\"}",
-   [enddate]: "{\"description\": \"Event end date and time in ISO 8601 format. Null when no end time is specified by the organizer.\"}",
-   [url]: "{\"description\": \"Canonical URL of the event page on the Billetto platform.\"}",
-   [image_link]: "{\"description\": \"URL of the cover image for the event as uploaded by the organizer.\"}",
-   [status]: "{\"description\": \"Event lifecycle status as reported by the Billetto platform. Common values include 'published', 'cancelled', and 'postponed'.\"}",
-   [location_city]: "{\"description\": \"City where the event is held, from the event location object.\"}",
-   [location_name]: "{\"description\": \"Venue name where the event is held, from the event location object.\"}",
-   [location_address]: "{\"description\": \"Street address of the event venue, from the event location object.\"}",
-   [location_zip_code]: "{\"description\": \"Postal code of the event venue, from the event location object.\"}",
-   [location_country_code]: "{\"description\": \"ISO 3166-1 alpha-2 country code of the event venue (e.g. 'DK' for Denmark, 'GB' for Great Britain, 'DE' for Germany). From the event location object.\"}",
-   [location_latitude]: "{\"description\": \"WGS 84 latitude of the event venue in decimal degrees. From the event location object.\"}",
-   [location_longitude]: "{\"description\": \"WGS 84 longitude of the event venue in decimal degrees. From the event location object.\"}",
-   [organiser_id]: "{\"description\": \"Unique numeric identifier for the event organizer on the Billetto platform. From the event organiser object.\"}",
-   [organiser_name]: "{\"description\": \"Display name of the event organizer as registered on the Billetto platform. From the event organiser object.\"}",
-   [minimum_price_amount_in_cents]: "{\"description\": \"Minimum ticket price across all available ticket types, expressed in the smallest currency unit (e.g. pence for GBP, \\u00f8re for DKK, cent for EUR). Zero indicates a free event. From the event minimum_price object.\"}",
-   [minimum_price_currency]: "{\"description\": \"ISO 4217 currency code for the minimum ticket price (e.g. 'GBP', 'DKK', 'EUR', 'NOK', 'SEK'). From the event minimum_price object.\"}",
-   [availability]: "{\"description\": \"Ticket availability status for the event. 'available' means tickets are currently on sale. 'sold_out' means all tickets have been sold. 'unavailable' means ticket sales are not yet open or have closed. Null when not determinable from the API response.\"}",
+   [event_id]: @"{""description"": ""Unique numeric identifier for the event on the Billetto platform, assigned at event creation. Used as the Kafka key and CloudEvents subject for stable event identity across polls.""}",
+   [title]: @"{""description"": ""Event title as set by the organizer.""}",
+   [description]: @"{""description"": ""Full event description in HTML format as provided by the organizer. May be null if not set.""}",
+   [startdate]: @"{""description"": ""Event start date and time in ISO 8601 format (e.g. '2026-06-15T19:00:00'). Used as the CloudEvents time attribute.""}",
+   [enddate]: @"{""description"": ""Event end date and time in ISO 8601 format. Null when no end time is specified by the organizer.""}",
+   [url]: @"{""description"": ""Canonical URL of the event page on the Billetto platform.""}",
+   [image_link]: @"{""description"": ""URL of the cover image for the event as uploaded by the organizer.""}",
+   [status]: @"{""description"": ""Event lifecycle status as reported by the Billetto platform. Common values include 'published', 'cancelled', and 'postponed'.""}",
+   [location_city]: @"{""description"": ""City where the event is held, from the event location object.""}",
+   [location_name]: @"{""description"": ""Venue name where the event is held, from the event location object.""}",
+   [location_address]: @"{""description"": ""Street address of the event venue, from the event location object.""}",
+   [location_zip_code]: @"{""description"": ""Postal code of the event venue, from the event location object.""}",
+   [location_country_code]: @"{""description"": ""ISO 3166-1 alpha-2 country code of the event venue (e.g. 'DK' for Denmark, 'GB' for Great Britain, 'DE' for Germany). From the event location object.""}",
+   [location_latitude]: @"{""description"": ""WGS 84 latitude of the event venue in decimal degrees. From the event location object.""}",
+   [location_longitude]: @"{""description"": ""WGS 84 longitude of the event venue in decimal degrees. From the event location object.""}",
+   [organiser_id]: @"{""description"": ""Unique numeric identifier for the event organizer on the Billetto platform. From the event organiser object.""}",
+   [organiser_name]: @"{""description"": ""Display name of the event organizer as registered on the Billetto platform. From the event organiser object.""}",
+   [minimum_price_amount_in_cents]: @"{""description"": ""Minimum ticket price across all available ticket types, expressed in the smallest currency unit (e.g. pence for GBP, \u00f8re for DKK, cent for EUR). Zero indicates a free event. From the event minimum_price object.""}",
+   [minimum_price_currency]: @"{""description"": ""ISO 4217 currency code for the minimum ticket price (e.g. 'GBP', 'DKK', 'EUR', 'NOK', 'SEK'). From the event minimum_price object.""}",
+   [availability]: @"{""description"": ""Ticket availability status for the event. 'available' means tickets are currently on sale. 'sold_out' means all tickets have been sold. 'unavailable' means ticket sales are not yet open or have closed. Null when not determinable from the API response.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -110,7 +110,7 @@
   {"column": "organiser_name", "path": "$.organiser_name"},
   {"column": "minimum_price_amount_in_cents", "path": "$.minimum_price_amount_in_cents"},
   {"column": "minimum_price_currency", "path": "$.minimum_price_currency"},
-  {"column": "availability", "path": "$.availability"},
+  {"column": "availability", "path": "$.availability"}
 ]
 ```
 
@@ -141,7 +141,7 @@
   {"column": "organiser_name", "path": "$.data.organiser_name"},
   {"column": "minimum_price_amount_in_cents", "path": "$.data.minimum_price_amount_in_cents"},
   {"column": "minimum_price_currency", "path": "$.data.minimum_price_currency"},
-  {"column": "availability", "path": "$.data.availability"},
+  {"column": "availability", "path": "$.data.availability"}
 ]
 ```
 
@@ -158,7 +158,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Billetto.Events.Event') | project['event_id'] = toint(data.['event_id']),['title'] = tostring(data.['title']),['description'] = tostring(data.['description']),['startdate'] = tostring(data.['startdate']),['enddate'] = tostring(data.['enddate']),['url'] = tostring(data.['url']),['image_link'] = tostring(data.['image_link']),['status'] = tostring(data.['status']),['location_city'] = tostring(data.['location_city']),['location_name'] = tostring(data.['location_name']),['location_address'] = tostring(data.['location_address']),['location_zip_code'] = tostring(data.['location_zip_code']),['location_country_code'] = tostring(data.['location_country_code']),['location_latitude'] = toreal(data.['location_latitude']),['location_longitude'] = toreal(data.['location_longitude']),['organiser_id'] = toint(data.['organiser_id']),['organiser_name'] = tostring(data.['organiser_name']),['minimum_price_amount_in_cents'] = toint(data.['minimum_price_amount_in_cents']),['minimum_price_currency'] = tostring(data.['minimum_price_currency']),['availability'] = tostring(data.['availability']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

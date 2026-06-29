@@ -137,10 +137,10 @@
 ]
 ```
 
-.create-or-alter materialized-view with (backfill=true) ['org.openaq.LocationLatest'] on table ['org.openaq.Location']
-{
-    ['org.openaq.Location']
-    | summarize arg_max(___time, *) by location_id
+.drop materialized-view ['org.openaq.LocationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.openaq.LocationLatest'] on table ['org.openaq.Location'] {
+    ['org.openaq.Location'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
 .alter table ['org.openaq.Location'] policy update
@@ -250,10 +250,10 @@
 ]
 ```
 
-.create-or-alter materialized-view with (backfill=true) ['org.openaq.SensorLatest'] on table ['org.openaq.Sensor']
-{
-    ['org.openaq.Sensor']
-    | summarize arg_max(___time, *) by location_id, sensor_id
+.drop materialized-view ['org.openaq.SensorLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.openaq.SensorLatest'] on table ['org.openaq.Sensor'] {
+    ['org.openaq.Sensor'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
 .alter table ['org.openaq.Sensor'] policy update
@@ -301,8 +301,8 @@
    [value]: @"{""description"": ""Measured concentration or meteorological value from OpenAQ `value`. Unit is carried in `parameter_units`; common air pollutant units include \u00b5g/m\u00b3 for pm25, pm10, o3, no2, so2, co, and bc, with ppm/ppb appearing for some providers. Null values are preserved when upstream flags a record without a numeric value. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
    [latitude]: @"{""description"": ""WGS 84 latitude attached to the measurement from `coordinates.latitude`; unit degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
    [longitude]: @"{""description"": ""WGS 84 longitude attached to the measurement from `coordinates.longitude`; unit degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
-   [is_valid]: @"{""description"": ""Boolean validity flag derived from OpenAQ `flagInfo.hasFlags`: false when flags are present, true when no flags are present, null when flag info is unavailable. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
-   [has_flags]: @"{""description"": ""OpenAQ flag summary from `flagInfo.hasFlags`, indicating quality or processing flags associated with the measurement. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [is_valid]: @"{""description"": ""Boolean validity summary derived from OpenAQ `flagInfo.hasFlags` when the `/v3/locations/{locations_id}/latest` payload includes that optional extension: false when flags are present, true when no flags are present, null when the latest endpoint omits flag info. Definitive historical flag detail is available from OpenAQ flag/measurement endpoints outside this real-time latest-feed scope. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [has_flags]: @"{""description"": ""OpenAQ flag summary from `flagInfo.hasFlags` when the `/v3/locations/{locations_id}/latest` payload includes that optional extension; null when the latest endpoint omits flag metadata. Full flag windows are intentionally out of scope for the real-time latest poller. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
    [poll_time]: @"{""description"": ""UTC time when the bridge fetched and emitted this latest measurement. This supports latency monitoring and replay diagnostics; it is not an upstream observation time. Source: bridge runtime.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
@@ -359,10 +359,10 @@
 ]
 ```
 
-.create-or-alter materialized-view with (backfill=true) ['org.openaq.MeasurementLatest'] on table ['org.openaq.Measurement']
-{
-    ['org.openaq.Measurement']
-    | summarize arg_max(datetime, *) by location_id, sensor_id
+.drop materialized-view ['org.openaq.MeasurementLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.openaq.MeasurementLatest'] on table ['org.openaq.Measurement'] {
+    ['org.openaq.Measurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
 .alter table ['org.openaq.Measurement'] policy update

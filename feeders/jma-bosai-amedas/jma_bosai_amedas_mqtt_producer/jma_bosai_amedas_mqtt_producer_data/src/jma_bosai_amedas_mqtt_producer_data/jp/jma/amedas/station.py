@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_amedas_mqtt_producer_data.jp.jma.amedas.stationeventenum import StationEventEnum
 from jma_bosai_amedas_mqtt_producer_data.jp.jma.amedas.stationtypeenum import StationTypeenum
+from jma_bosai_amedas_mqtt_producer_data.jp.jma.amedas.stationeventenum import StationEventEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -177,16 +177,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='uwwcklrczrikudvacaus',
-            kj_name='sbqcovvyjioedbegamee',
-            kana='owaswasymryhtdkijetg',
-            en_name='albjdoroqalgvgdwlnde',
-            latitude=float(2.9081348740074398),
-            longitude=float(87.62608614863498),
-            altitude_m=float(75.85360056095784),
+            station_code='ctqmoriokctyiiqgrdwx',
+            kj_name='lonogzecdvcqwmpesmkc',
+            kana='adbbmvtoqbiaougszeib',
+            en_name='vbkenrpvbmxbnnphcbpi',
+            latitude=float(32.60464317934265),
+            longitude=float(70.43416300838001),
+            altitude_m=float(6.48974841697828),
             station_type=StationTypeenum.A,
-            elems_bitmask='wnwvatbgjpghzhuxxkdp',
-            enabled_measurements=['ztfbvkrhgmsxwykldpdm'],
-            prefecture='cnxhrmzztnbawcqapwpf',
+            elems_bitmask='ybugkevvgquneigpmbch',
+            enabled_measurements=['agbfndfdyvbcbnmffrgj', 'ktknhtttvosmsoectnrm', 'gjkzfwlwhptxdrishsth'],
+            prefecture='rkifodmeypaqsosyxhed',
             event=StationEventEnum.info
         )

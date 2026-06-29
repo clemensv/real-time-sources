@@ -1,4 +1,4 @@
-# IMGW Hydro feeder Events
+# IMGW Hydro Events
 
 IMGW-PIB Hydrological Data publishes water level and discharge observations from the Polish Institute of Meteorology and Water Management (IMGW-PIB) for Polish hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `imgw-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/pl/imgw/imgw-hydro/{basin}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/imgw-hydro`, message subject `{station_id}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/imgw-hydro`, message subject `{station_id}` |
 
 #### Payload
 
@@ -90,7 +90,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`voivodeship`** (string or null, optional): Provider-supplied voivodeship value for this record.
 - **`longitude`** (double or null, optional): Longitude of the station in WGS 84 coordinates.
 - **`latitude`** (double or null, optional): Latitude of the station in WGS 84 coordinates.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -129,7 +129,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `imgw-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/pl/imgw/imgw-hydro/{basin}/{station_id}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/imgw-hydro`, message subject `{station_id}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/imgw-hydro`, message subject `{station_id}` |
 
 #### Payload
 
@@ -147,7 +147,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`discharge_timestamp`** (datetime or null, optional): Time associated with the discharge measurement.
 - **`ice_phenomenon_code`** (string or null, optional): Provider code identifying the ice phenomenon.
 - **`overgrowth_code`** (string or null, optional): Provider code identifying the overgrowth.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -198,3 +198,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/imgw_hydro.xreg.json`](xreg/imgw_hydro.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

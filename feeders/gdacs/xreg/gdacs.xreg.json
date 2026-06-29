@@ -199,9 +199,6 @@
                       "FF",
                       "DR"
                     ],
-                    "altnames": {
-                      "xml": "gdacs:eventtype"
-                    },
                     "descriptions": {
                       "EQ": "Provider value `EQ` for this coded alert field.",
                       "TC": "Provider value `TC` for this coded alert field.",
@@ -213,17 +210,11 @@
                   },
                   "event_id": {
                     "type": "string",
-                    "description": "The unique numeric identifier assigned to the disaster event by GDACS, stable across all episodes and updates for the same event.",
-                    "altnames": {
-                      "xml": "gdacs:eventid"
-                    }
+                    "description": "The unique numeric identifier assigned to the disaster event by GDACS, stable across all episodes and updates for the same event."
                   },
                   "episode_id": {
                     "type": "string",
-                    "description": "The unique numeric identifier for a specific episode within an event. Events such as tropical cyclones may have multiple episodes as they evolve over time.",
-                    "altnames": {
-                      "xml": "gdacs:episodeid"
-                    }
+                    "description": "The unique numeric identifier for a specific episode within an event. Events such as tropical cyclones may have multiple episodes as they evolve over time."
                   },
                   "alert_level": {
                     "type": "string",
@@ -233,9 +224,6 @@
                       "Orange",
                       "Red"
                     ],
-                    "altnames": {
-                      "xml": "gdacs:alertlevel"
-                    },
                     "descriptions": {
                       "Green": "Provider value `Green` for this coded alert field.",
                       "Orange": "Provider value `Orange` for this coded alert field.",
@@ -244,31 +232,19 @@
                   },
                   "alert_score": {
                     "type": "double",
-                    "description": "A numeric score (0.0–3.0) representing the overall alert severity. Higher values indicate greater expected impact. Derived from severity, population exposure, and vulnerability.",
-                    "altnames": {
-                      "xml": "gdacs:alertscore"
-                    }
+                    "description": "A numeric score (0.0–3.0) representing the overall alert severity. Higher values indicate greater expected impact. Derived from severity, population exposure, and vulnerability."
                   },
                   "episode_alert_level": {
                     "type": "string",
-                    "description": "The GDACS alert level specific to this episode, which may differ from the overall event alert level as conditions evolve.",
-                    "altnames": {
-                      "xml": "gdacs:episodealertlevel"
-                    }
+                    "description": "The GDACS alert level specific to this episode, which may differ from the overall event alert level as conditions evolve."
                   },
                   "episode_alert_score": {
                     "type": "double",
-                    "description": "A numeric score (0.0–3.0) representing the alert severity for this specific episode.",
-                    "altnames": {
-                      "xml": "gdacs:episodealertscore"
-                    }
+                    "description": "A numeric score (0.0–3.0) representing the alert severity for this specific episode."
                   },
                   "event_name": {
                     "type": "string",
-                    "description": "The human-readable name assigned to the event by GDACS, such as a cyclone name or descriptive location label.",
-                    "altnames": {
-                      "xml": "gdacs:eventname"
-                    }
+                    "description": "The human-readable name assigned to the event by GDACS, such as a cyclone name or descriptive location label."
                   },
                   "severity_value": {
                     "type": "double",
@@ -284,45 +260,27 @@
                   },
                   "country": {
                     "type": "string",
-                    "description": "Affected country name or normalized unknown sentinel when GDACS omits the country. Matches the {country} MQTT topic axis.",
-                    "altnames": {
-                      "xml": "gdacs:country"
-                    }
+                    "description": "Affected country name or normalized unknown sentinel when GDACS omits the country. Matches the {country} MQTT topic axis."
                   },
                   "iso3": {
                     "type": "string",
-                    "description": "The ISO 3166-1 alpha-3 country code(s) for the affected country or countries.",
-                    "altnames": {
-                      "xml": "gdacs:iso3"
-                    }
+                    "description": "The ISO 3166-1 alpha-3 country code(s) for the affected country or countries."
                   },
                   "latitude": {
                     "type": "double",
-                    "description": "The latitude of the disaster event epicenter or centroid in decimal degrees (WGS84).",
-                    "altnames": {
-                      "xml": "geo:lat"
-                    }
+                    "description": "The latitude of the disaster event epicenter or centroid in decimal degrees (WGS84)."
                   },
                   "longitude": {
                     "type": "double",
-                    "description": "The longitude of the disaster event epicenter or centroid in decimal degrees (WGS84).",
-                    "altnames": {
-                      "xml": "geo:long"
-                    }
+                    "description": "The longitude of the disaster event epicenter or centroid in decimal degrees (WGS84)."
                   },
                   "from_date": {
                     "type": "datetime",
-                    "description": "The date and time when the disaster event was first detected or began, in ISO-8601 format.",
-                    "altnames": {
-                      "xml": "gdacs:fromdate"
-                    }
+                    "description": "The date and time when the disaster event was first detected or began, in ISO-8601 format."
                   },
                   "to_date": {
                     "type": "datetime",
-                    "description": "The date and time when the disaster event ended or was last observed, in ISO-8601 format. May be absent for ongoing events.",
-                    "altnames": {
-                      "xml": "gdacs:todate"
-                    }
+                    "description": "The date and time when the disaster event ended or was last observed, in ISO-8601 format. May be absent for ongoing events."
                   },
                   "population_value": {
                     "type": "double",
@@ -334,10 +292,7 @@
                   },
                   "vulnerability": {
                     "type": "double",
-                    "description": "A GDACS-calculated vulnerability score (0.0–3.0) that reflects the affected region's capacity to cope with the disaster, factoring in infrastructure, governance, and socioeconomic conditions.",
-                    "altnames": {
-                      "xml": "gdacs:vulnerability"
-                    }
+                    "description": "A GDACS-calculated vulnerability score (0.0–3.0) that reflects the affected region's capacity to cope with the disaster, factoring in infrastructure, governance, and socioeconomic conditions."
                   },
                   "bbox_min_lon": {
                     "type": "double",
@@ -357,17 +312,11 @@
                   },
                   "is_current": {
                     "type": "boolean",
-                    "description": "Whether this disaster event is currently ongoing according to GDACS. True if the event is still active, false if it has concluded.",
-                    "altnames": {
-                      "xml": "gdacs:iscurrent"
-                    }
+                    "description": "Whether this disaster event is currently ongoing according to GDACS. True if the event is still active, false if it has concluded."
                   },
                   "version": {
                     "type": "int32",
-                    "description": "The version number of this event record in GDACS. Incremented each time the event data is updated or revised.",
-                    "altnames": {
-                      "xml": "gdacs:version"
-                    }
+                    "description": "The version number of this event record in GDACS. Incremented each time the event data is updated or revised."
                   },
                   "description": {
                     "type": "string",

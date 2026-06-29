@@ -155,6 +155,6 @@ class SubSurfaceMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(52),
-            sub_surface_temperature=float(89.63431370329651)
+            sensor_id=int(100),
+            sub_surface_temperature=float(83.2338073784657)
         )

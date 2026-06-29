@@ -28,15 +28,15 @@ class Test_CapZone(unittest.TestCase):
         Create instance of CapZone for testing
         """
         instance = CapZone(
-            cap_source_id='suzmxvdyibzdofojvosb',
-            zone_id='mpfwlwehqedvfgdfpkfo',
-            name='pcmyftqocxwooivcoasl',
-            zone_type='wywemrusxtwuglbnahaq',
-            state='brdjsklpyxftbvlvjvob',
-            forecast_office='ektwwqdtepylqughfrhi',
-            time_zones=['wqrornvqeaiuddvzvifh', 'rkntggyytwhtyulncxek', 'siallozafbqmtxwwhajg', 'ayajexzgoymtojsrfdjx', 'hbxouassvmozgadfxena'],
-            geometry='wrviroacvmrujirhwrmi',
-            provider_url='qggpanrkhfohzgvqkjwc'
+            cap_source_id='xnzhkvvjrtvlhsmlpdyl',
+            zone_id='nimznxpbfflfkiwdwbha',
+            name='tjrtmzoxqfiajvfqknyb',
+            zone_type='ajibdaogyopneqepysue',
+            state='ykdxuevsysmemyutryhr',
+            forecast_office='odcnmrtwxrrpvxajuknp',
+            time_zones=['pulfzijyqdfojwgqabgt', 'piimftofrdrljrmzhqmr', 'rmpfvizugxhomonddnke', 'jcromqixrtdpnddffhvc', 'ndcieciibraraajtrgpe'],
+            geometry='jfavjyzeaejvutzjunmr',
+            provider_url='bfkcruvvmleervxuajvw'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test cap_source_id property
         """
-        test_value = 'suzmxvdyibzdofojvosb'
+        test_value = 'xnzhkvvjrtvlhsmlpdyl'
         self.instance.cap_source_id = test_value
         self.assertEqual(self.instance.cap_source_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test zone_id property
         """
-        test_value = 'mpfwlwehqedvfgdfpkfo'
+        test_value = 'nimznxpbfflfkiwdwbha'
         self.instance.zone_id = test_value
         self.assertEqual(self.instance.zone_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'pcmyftqocxwooivcoasl'
+        test_value = 'tjrtmzoxqfiajvfqknyb'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -69,7 +69,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test zone_type property
         """
-        test_value = 'wywemrusxtwuglbnahaq'
+        test_value = 'ajibdaogyopneqepysue'
         self.instance.zone_type = test_value
         self.assertEqual(self.instance.zone_type, test_value)
     
@@ -77,7 +77,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'brdjsklpyxftbvlvjvob'
+        test_value = 'ykdxuevsysmemyutryhr'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -85,7 +85,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test forecast_office property
         """
-        test_value = 'ektwwqdtepylqughfrhi'
+        test_value = 'odcnmrtwxrrpvxajuknp'
         self.instance.forecast_office = test_value
         self.assertEqual(self.instance.forecast_office, test_value)
     
@@ -93,7 +93,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test time_zones property
         """
-        test_value = ['wqrornvqeaiuddvzvifh', 'rkntggyytwhtyulncxek', 'siallozafbqmtxwwhajg', 'ayajexzgoymtojsrfdjx', 'hbxouassvmozgadfxena']
+        test_value = ['pulfzijyqdfojwgqabgt', 'piimftofrdrljrmzhqmr', 'rmpfvizugxhomonddnke', 'jcromqixrtdpnddffhvc', 'ndcieciibraraajtrgpe']
         self.instance.time_zones = test_value
         self.assertEqual(self.instance.time_zones, test_value)
     
@@ -101,7 +101,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test geometry property
         """
-        test_value = 'wrviroacvmrujirhwrmi'
+        test_value = 'jfavjyzeaejvutzjunmr'
         self.instance.geometry = test_value
         self.assertEqual(self.instance.geometry, test_value)
     
@@ -109,7 +109,7 @@ class Test_CapZone(unittest.TestCase):
         """
         Test provider_url property
         """
-        test_value = 'qggpanrkhfohzgvqkjwc'
+        test_value = 'bfkcruvvmleervxuajvw'
         self.instance.provider_url = test_value
         self.assertEqual(self.instance.provider_url, test_value)
     

@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_mqtt_producer_data.volcaniceruptioneventenum import VolcanicEruptionEventEnum
 from jma_bosai_volcano_mqtt_producer_data.eruptiontypeenum import EruptionTypeenum
+from jma_bosai_volcano_mqtt_producer_data.volcaniceruptioneventenum import VolcanicEruptionEventEnum
 import datetime
 
 
@@ -195,24 +195,24 @@ class VolcanicEruption:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='yfjnhtxbhhqlxrmverhd',
-            event_id='ojvrjwdklboubpydycsu',
+            volcano_code='fhljmmggkfzeweoouvmd',
+            event_id='ywffxsnncwazkoejxauj',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_type=EruptionTypeenum.ERUPTION,
-            crater_name='yycfgpknklubfwvhzjeh',
-            colored_plume_height_m=float(73.01170383892484),
-            white_plume_height_m=float(39.24171468115457),
-            maximum_plume_height_since_start_m=float(10.053745138583881),
-            plume_direction='ynmoeziwfhegrbbzlckn',
-            ash_dispersal_direction='wtasfnrlipxboxrqqxxh',
-            pyroclastic_flow_observed=False,
-            plume_amount_jp='mxsdyfxfxssqurttkfoo',
-            description='stejcblzusubrwzvvpkf',
-            info_type_jp='nrctbscczztxdmjqgbdr',
-            area_codes=['pzxujxahzyalmfnusgii'],
-            prefecture='xsuaqolplzuobdeoidgw',
+            crater_name='zjwqlpxpbhyknvgscwoj',
+            colored_plume_height_m=float(47.06343471973771),
+            white_plume_height_m=float(74.5503583770729),
+            maximum_plume_height_since_start_m=float(2.7228675756659437),
+            plume_direction='mtjujoczaezdhhspdnse',
+            ash_dispersal_direction='cmalpalhawpbjnkhasuk',
+            pyroclastic_flow_observed=True,
+            plume_amount_jp='xcosldzdidcieytlwqvv',
+            description='mpycmennyrxzuopdtbnt',
+            info_type_jp='srbklsuxekujizksoqeh',
+            area_codes=['vidireqtnpkfsbkunmeb'],
+            prefecture='rzpqhftdnquwzxfbbwzk',
             event=VolcanicEruptionEventEnum.eruption
         )

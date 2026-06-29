@@ -29,24 +29,24 @@ class Test_TrafficMeasurement(unittest.TestCase):
         Create instance of TrafficMeasurement for testing
         """
         instance = TrafficMeasurement(
-            supplier_id='fwkwfvozucumntzipbuc',
-            measurement_site_id='dtgbbocodbnqomrexelf',
-            feed_url='gxbtweyaitxdmfzxkxsv',
+            supplier_id='lpmjfxoouahapwydtbhs',
+            measurement_site_id='svixxipxbxlfpkzopwwd',
+            feed_url='rwnbonxbuqnncbyktvzb',
             measurement_time=datetime.datetime.now(datetime.timezone.utc),
-            measurement_time_key='btvlkkmsilcyjuvackzy',
-            country_code='yswbooazkgbhfjoholnc',
-            operator_id='qunmzforvehgqqnhyzdd',
-            road_number='ukhiefbgdztudzoqenxd',
-            average_speed_kmh=float(7.717115140742925),
-            vehicle_flow_rate_veh_per_hour=int(73),
-            occupancy_percent=float(97.52586706533033),
-            travel_time_seconds=float(72.15613017257813),
-            free_flow_travel_time_seconds=float(70.63696440280862),
-            input_value_count=int(72),
-            quality_status='gyfcrvwvpyvxyemymajl',
-            vehicle_type='whsxhthhfvtdgrgbxaon',
-            lane='netsuquikotsanyknxty',
-            raw_measurements='udkdsclxinyzonbfwgqj'
+            measurement_time_key='earnnlbtaqyhgqqyqbea',
+            country_code='ymlbbwwflrbijzhyrezh',
+            operator_id='swjxsmenieocmyxpwiju',
+            road_number='xhnqyopmqiaxadxkfbli',
+            average_speed_kmh=float(45.31792954490861),
+            vehicle_flow_rate_veh_per_hour=int(85),
+            occupancy_percent=float(19.373540974175896),
+            travel_time_seconds=float(3.4216000526043566),
+            free_flow_travel_time_seconds=float(90.2290435266105),
+            input_value_count=int(68),
+            quality_status='ntgjppwsoisaxbwfpctw',
+            vehicle_type='qmglljpgktwxspimwzdv',
+            lane='kcgrhndggicoqmftdutn',
+            raw_measurements='qwhgykmihszxfpqckmlc'
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test supplier_id property
         """
-        test_value = 'fwkwfvozucumntzipbuc'
+        test_value = 'lpmjfxoouahapwydtbhs'
         self.instance.supplier_id = test_value
         self.assertEqual(self.instance.supplier_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test measurement_site_id property
         """
-        test_value = 'dtgbbocodbnqomrexelf'
+        test_value = 'svixxipxbxlfpkzopwwd'
         self.instance.measurement_site_id = test_value
         self.assertEqual(self.instance.measurement_site_id, test_value)
     
@@ -71,7 +71,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test feed_url property
         """
-        test_value = 'gxbtweyaitxdmfzxkxsv'
+        test_value = 'rwnbonxbuqnncbyktvzb'
         self.instance.feed_url = test_value
         self.assertEqual(self.instance.feed_url, test_value)
     
@@ -87,7 +87,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test measurement_time_key property
         """
-        test_value = 'btvlkkmsilcyjuvackzy'
+        test_value = 'earnnlbtaqyhgqqyqbea'
         self.instance.measurement_time_key = test_value
         self.assertEqual(self.instance.measurement_time_key, test_value)
     
@@ -95,7 +95,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test country_code property
         """
-        test_value = 'yswbooazkgbhfjoholnc'
+        test_value = 'ymlbbwwflrbijzhyrezh'
         self.instance.country_code = test_value
         self.assertEqual(self.instance.country_code, test_value)
     
@@ -103,7 +103,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = 'qunmzforvehgqqnhyzdd'
+        test_value = 'swjxsmenieocmyxpwiju'
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     
@@ -111,7 +111,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test road_number property
         """
-        test_value = 'ukhiefbgdztudzoqenxd'
+        test_value = 'xhnqyopmqiaxadxkfbli'
         self.instance.road_number = test_value
         self.assertEqual(self.instance.road_number, test_value)
     
@@ -119,7 +119,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test average_speed_kmh property
         """
-        test_value = float(7.717115140742925)
+        test_value = float(45.31792954490861)
         self.instance.average_speed_kmh = test_value
         self.assertEqual(self.instance.average_speed_kmh, test_value)
     
@@ -127,7 +127,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test vehicle_flow_rate_veh_per_hour property
         """
-        test_value = int(73)
+        test_value = int(85)
         self.instance.vehicle_flow_rate_veh_per_hour = test_value
         self.assertEqual(self.instance.vehicle_flow_rate_veh_per_hour, test_value)
     
@@ -135,7 +135,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test occupancy_percent property
         """
-        test_value = float(97.52586706533033)
+        test_value = float(19.373540974175896)
         self.instance.occupancy_percent = test_value
         self.assertEqual(self.instance.occupancy_percent, test_value)
     
@@ -143,7 +143,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test travel_time_seconds property
         """
-        test_value = float(72.15613017257813)
+        test_value = float(3.4216000526043566)
         self.instance.travel_time_seconds = test_value
         self.assertEqual(self.instance.travel_time_seconds, test_value)
     
@@ -151,7 +151,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test free_flow_travel_time_seconds property
         """
-        test_value = float(70.63696440280862)
+        test_value = float(90.2290435266105)
         self.instance.free_flow_travel_time_seconds = test_value
         self.assertEqual(self.instance.free_flow_travel_time_seconds, test_value)
     
@@ -159,7 +159,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test input_value_count property
         """
-        test_value = int(72)
+        test_value = int(68)
         self.instance.input_value_count = test_value
         self.assertEqual(self.instance.input_value_count, test_value)
     
@@ -167,7 +167,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test quality_status property
         """
-        test_value = 'gyfcrvwvpyvxyemymajl'
+        test_value = 'ntgjppwsoisaxbwfpctw'
         self.instance.quality_status = test_value
         self.assertEqual(self.instance.quality_status, test_value)
     
@@ -175,7 +175,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test vehicle_type property
         """
-        test_value = 'whsxhthhfvtdgrgbxaon'
+        test_value = 'qmglljpgktwxspimwzdv'
         self.instance.vehicle_type = test_value
         self.assertEqual(self.instance.vehicle_type, test_value)
     
@@ -183,7 +183,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test lane property
         """
-        test_value = 'netsuquikotsanyknxty'
+        test_value = 'kcgrhndggicoqmftdutn'
         self.instance.lane = test_value
         self.assertEqual(self.instance.lane, test_value)
     
@@ -191,7 +191,7 @@ class Test_TrafficMeasurement(unittest.TestCase):
         """
         Test raw_measurements property
         """
-        test_value = 'udkdsclxinyzonbfwgqj'
+        test_value = 'qwhgykmihszxfpqckmlc'
         self.instance.raw_measurements = test_value
         self.assertEqual(self.instance.raw_measurements, test_value)
     

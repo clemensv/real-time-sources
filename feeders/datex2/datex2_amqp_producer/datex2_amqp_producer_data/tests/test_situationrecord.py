@@ -29,31 +29,31 @@ class Test_SituationRecord(unittest.TestCase):
         Create instance of SituationRecord for testing
         """
         instance = SituationRecord(
-            supplier_id='djorrlueujjiryxsvxov',
-            situation_id='xbocfngzwvqvgqlhiuqk',
-            situation_record_id='bthynfhsbsysxsykeddc',
-            feed_url='rnltjphnepkplpdgnsda',
-            version='uojnrrzaoatzcbzuhrhx',
-            record_type='bzpykmwqaticzizknpgb',
-            severity='scylwbkmxeunyshtykjl',
-            probability='coxecydcttfrsbiebnfc',
-            validity_status='oymftiybrizwoskuibvk',
+            supplier_id='vhgaltqqrfxwmtgpucdb',
+            situation_id='sbrfkdxhbptwfitsoboy',
+            situation_record_id='nvdgkvibgcerzbbmohby',
+            feed_url='ffwacneclgszaddqppze',
+            version='klfmwbsvimiorayruoxj',
+            record_type='wdyrmaibfpcivxdezird',
+            severity='jfsdumzdlqpjbawwamuw',
+            probability='mqmqconrcockkeaamoyj',
+            validity_status='qsddvofvczkqiaqkrbwy',
             creation_time=datetime.datetime.now(datetime.timezone.utc),
             observation_time=datetime.datetime.now(datetime.timezone.utc),
             overall_start_time=datetime.datetime.now(datetime.timezone.utc),
             overall_end_time=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(0.06640851116668234),
-            longitude=float(4.022663560267336),
-            road_number='ykrspdlxpestwgyutkbt',
-            direction='cubwsasfifjswyhzioun',
-            location_description='dvthagzwqpejqejhijbp',
-            description='bnhtotuqwkjbadqdyiez',
-            source_name='erhssxzetuhqjyhmaxps',
-            cause='dfarhspgikwhcninxgef',
-            management_type='gmkmgleykwndhehxgngd',
-            raw_record='diplponnzffcqnnqogww',
-            country_code='xrgzhthqxiouibungrfl',
-            operator_id='oufjefhiofnkcdvcweco'
+            latitude=float(99.37088295333513),
+            longitude=float(69.36371982284996),
+            road_number='iugzpnjqilsootbfmicr',
+            direction='xlztuxoupnrqcetnjuwa',
+            location_description='wqfcrggplpzigskoizha',
+            description='cmgmuygyoxvduadqitpo',
+            source_name='siygzbbmuxauulxylxst',
+            cause='azqdxtmqhbvxmzjhejvz',
+            management_type='fiquqgznqyfmsjhwdziu',
+            raw_record='dvnnbpjmbnxzttlgmlct',
+            country_code='gqgvkrwmtyrpafvcgnts',
+            operator_id='amacawahpayasavlahpa'
         )
         return instance
 
@@ -62,7 +62,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test supplier_id property
         """
-        test_value = 'djorrlueujjiryxsvxov'
+        test_value = 'vhgaltqqrfxwmtgpucdb'
         self.instance.supplier_id = test_value
         self.assertEqual(self.instance.supplier_id, test_value)
     
@@ -70,7 +70,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test situation_id property
         """
-        test_value = 'xbocfngzwvqvgqlhiuqk'
+        test_value = 'sbrfkdxhbptwfitsoboy'
         self.instance.situation_id = test_value
         self.assertEqual(self.instance.situation_id, test_value)
     
@@ -78,7 +78,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test situation_record_id property
         """
-        test_value = 'bthynfhsbsysxsykeddc'
+        test_value = 'nvdgkvibgcerzbbmohby'
         self.instance.situation_record_id = test_value
         self.assertEqual(self.instance.situation_record_id, test_value)
     
@@ -86,7 +86,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test feed_url property
         """
-        test_value = 'rnltjphnepkplpdgnsda'
+        test_value = 'ffwacneclgszaddqppze'
         self.instance.feed_url = test_value
         self.assertEqual(self.instance.feed_url, test_value)
     
@@ -94,7 +94,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test version property
         """
-        test_value = 'uojnrrzaoatzcbzuhrhx'
+        test_value = 'klfmwbsvimiorayruoxj'
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -102,7 +102,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test record_type property
         """
-        test_value = 'bzpykmwqaticzizknpgb'
+        test_value = 'wdyrmaibfpcivxdezird'
         self.instance.record_type = test_value
         self.assertEqual(self.instance.record_type, test_value)
     
@@ -110,7 +110,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'scylwbkmxeunyshtykjl'
+        test_value = 'jfsdumzdlqpjbawwamuw'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -118,7 +118,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test probability property
         """
-        test_value = 'coxecydcttfrsbiebnfc'
+        test_value = 'mqmqconrcockkeaamoyj'
         self.instance.probability = test_value
         self.assertEqual(self.instance.probability, test_value)
     
@@ -126,7 +126,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test validity_status property
         """
-        test_value = 'oymftiybrizwoskuibvk'
+        test_value = 'qsddvofvczkqiaqkrbwy'
         self.instance.validity_status = test_value
         self.assertEqual(self.instance.validity_status, test_value)
     
@@ -166,7 +166,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(0.06640851116668234)
+        test_value = float(99.37088295333513)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -174,7 +174,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(4.022663560267336)
+        test_value = float(69.36371982284996)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -182,7 +182,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test road_number property
         """
-        test_value = 'ykrspdlxpestwgyutkbt'
+        test_value = 'iugzpnjqilsootbfmicr'
         self.instance.road_number = test_value
         self.assertEqual(self.instance.road_number, test_value)
     
@@ -190,7 +190,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test direction property
         """
-        test_value = 'cubwsasfifjswyhzioun'
+        test_value = 'xlztuxoupnrqcetnjuwa'
         self.instance.direction = test_value
         self.assertEqual(self.instance.direction, test_value)
     
@@ -198,7 +198,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'dvthagzwqpejqejhijbp'
+        test_value = 'wqfcrggplpzigskoizha'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     
@@ -206,7 +206,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'bnhtotuqwkjbadqdyiez'
+        test_value = 'cmgmuygyoxvduadqitpo'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -214,7 +214,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test source_name property
         """
-        test_value = 'erhssxzetuhqjyhmaxps'
+        test_value = 'siygzbbmuxauulxylxst'
         self.instance.source_name = test_value
         self.assertEqual(self.instance.source_name, test_value)
     
@@ -222,7 +222,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test cause property
         """
-        test_value = 'dfarhspgikwhcninxgef'
+        test_value = 'azqdxtmqhbvxmzjhejvz'
         self.instance.cause = test_value
         self.assertEqual(self.instance.cause, test_value)
     
@@ -230,7 +230,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test management_type property
         """
-        test_value = 'gmkmgleykwndhehxgngd'
+        test_value = 'fiquqgznqyfmsjhwdziu'
         self.instance.management_type = test_value
         self.assertEqual(self.instance.management_type, test_value)
     
@@ -238,7 +238,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test raw_record property
         """
-        test_value = 'diplponnzffcqnnqogww'
+        test_value = 'dvnnbpjmbnxzttlgmlct'
         self.instance.raw_record = test_value
         self.assertEqual(self.instance.raw_record, test_value)
     
@@ -246,7 +246,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test country_code property
         """
-        test_value = 'xrgzhthqxiouibungrfl'
+        test_value = 'gqgvkrwmtyrpafvcgnts'
         self.instance.country_code = test_value
         self.assertEqual(self.instance.country_code, test_value)
     
@@ -254,7 +254,7 @@ class Test_SituationRecord(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = 'oufjefhiofnkcdvcweco'
+        test_value = 'amacawahpayasavlahpa'
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     

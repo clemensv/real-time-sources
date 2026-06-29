@@ -243,7 +243,10 @@ function Set-KqlEventTypes {
         "type in (" + ($quotedTypes -join ", ") + ")"
     }
 
-    $pattern = "type\s*==\s*'" + [System.Text.RegularExpressions.Regex]::Escape($RecordType) + "'"
+    # avrotize may qualify the predicate with a namespace it derives from the
+    # schema $id even when the schema entry has no `namespace` key, so match an
+    # optional dotted prefix and replace whatever token it emitted.
+    $pattern = "type\s*==\s*'(?:[^']*\.)?" + [System.Text.RegularExpressions.Regex]::Escape($RecordType) + "'"
     return [System.Text.RegularExpressions.Regex]::Replace($KqlContent, $pattern, $eventTypeExpression, 1)
 }
 
@@ -442,7 +445,7 @@ try {
         else {
             $recordType
         }
-        $kqlContent = Set-KqlEventTypes -KqlContent $kqlContent -EventTypes $schemaEventTypes[$schemaUri].ToArray() -RecordType $emittedRecordToken
+        $kqlContent = Set-KqlEventTypes -KqlContent $kqlContent -EventTypes $schemaEventTypes[$schemaUri].ToArray() -RecordType $recordType
         $kqlContent | Set-Content -Path $kqlPartFile -Encoding UTF8
 
         $generatedPartFiles.Add($kqlPartFile)

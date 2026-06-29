@@ -16,17 +16,17 @@ class Test_DisplayTypeenum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = DisplayTypeenum.PARKING
+        self.instance = DisplayTypeenum.WARNING
 
     @staticmethod
     def create_instance():
         """
         Create instance of DisplayTypeenum
         """
-        return DisplayTypeenum.PARKING
+        return DisplayTypeenum.WARNING
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(DisplayTypeenum.PARKING.value, 'PARKING')
+        self.assertEqual(DisplayTypeenum.WARNING.value, 'WARNING')

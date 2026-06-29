@@ -28,36 +28,36 @@ class Test_PollenForecast(unittest.TestCase):
         Create instance of PollenForecast for testing
         """
         instance = PollenForecast(
-            region_id='zqquhauudvsitqbnmlzb',
-            region_name='cnidzsuvlxesebvritle',
-            last_update='ggrqcgtalhnpqljjlyry',
-            next_update='cxhcosfdeadidgkssyji',
-            sender='beszqvgzkseptwuynntg',
-            hazel_today='vkcrhqlksylgitmkgyae',
-            hazel_tomorrow='tdegcygsfdsmlxonpllr',
-            hazel_dayafter_to='fmmmknneajnkwspowjev',
-            alder_today='swnpaszxedssmkhrkcxt',
-            alder_tomorrow='icsauskvvakeofzputya',
-            alder_dayafter_to='poxhxuhxwlfsxxeuajxu',
-            birch_today='ogvmzymomderkffyzrea',
-            birch_tomorrow='emndsrwcnsjlpwoujwsm',
-            birch_dayafter_to='gkmowjxblhoimpijjwql',
-            ash_today='siblqxnqzocnhxjffaqf',
-            ash_tomorrow='bixiisduthuhblkvnfjp',
-            ash_dayafter_to='aquevzcjwiwzvakpqxzj',
-            grasses_today='efghtzzyeezpytcqhupy',
-            grasses_tomorrow='iiogpwsvknclisosfmvg',
-            grasses_dayafter_to='vpihgythchgzcnhxrssi',
-            rye_today='iyqorwxlzfkqxlxfckmj',
-            rye_tomorrow='viuecmiejshhxdwvshgu',
-            rye_dayafter_to='dfftfmzwizkfgeekxxjp',
-            mugwort_today='zibcpioutbcvfeglryxp',
-            mugwort_tomorrow='ntrvjrthybmhvhtdaxxn',
-            mugwort_dayafter_to='mdrjyrlxrcwswacmbuqg',
-            ragweed_today='szynkzqaoymscckthrjl',
-            ragweed_tomorrow='bweurxyilnffffvrfpjk',
-            ragweed_dayafter_to='dnnerbprsqslclmstgrn',
-            pollen_type='wqinmlqzybgyujyzhspi'
+            region_id='guugmhgpyyqmvlpftdnb',
+            region_name='ottqsdezejaxgflgaskz',
+            last_update='jbgsvzipauksoznmktod',
+            next_update='jzannjvbuqtxnlukizyi',
+            sender='xnlscukybsaumlaugcfg',
+            hazel_today='bpnizhburtnrwtgdlsvk',
+            hazel_tomorrow='kpstmaoyukivqrjobczr',
+            hazel_dayafter_to='zidovwfogzeloyhkrqzw',
+            alder_today='xabnmrcvkxetvgakoflw',
+            alder_tomorrow='oxqhlztplkompkanuthx',
+            alder_dayafter_to='wzmhbrvhuzjhbowxkhis',
+            birch_today='lnwpsazeismzlecpeinf',
+            birch_tomorrow='swaqsihbcezvlrjaktzv',
+            birch_dayafter_to='rnehsdsisdoqexsqqacp',
+            ash_today='eqipsxnbetejblicupxd',
+            ash_tomorrow='enunvohopkpnvsjtvkqv',
+            ash_dayafter_to='mkcvoxvsvogpbydknarh',
+            grasses_today='kzyethddxtvwqtchxhqw',
+            grasses_tomorrow='ywrfggycnoyvzjpumkcf',
+            grasses_dayafter_to='mytzfscdbegmwkojyajd',
+            rye_today='vucivtbqhowztfvsuqhd',
+            rye_tomorrow='uswahrfbvumszvguokjr',
+            rye_dayafter_to='xkrhtsrqbixrsrzfmgea',
+            mugwort_today='ukeakfuyrogezlvxyded',
+            mugwort_tomorrow='fzojawirhqkcnizipqet',
+            mugwort_dayafter_to='twipbwztgccyvfioljjv',
+            ragweed_today='lzxcksdvdvvktzbpeedw',
+            ragweed_tomorrow='laqnwhwtwvxgspmvydmh',
+            ragweed_dayafter_to='wypzzzchnjsorhhobrzk',
+            pollen_type='wmnbdjjdqyuofawjxpad'
         )
         return instance
 
@@ -66,7 +66,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = 'zqquhauudvsitqbnmlzb'
+        test_value = 'guugmhgpyyqmvlpftdnb'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -74,7 +74,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test region_name property
         """
-        test_value = 'cnidzsuvlxesebvritle'
+        test_value = 'ottqsdezejaxgflgaskz'
         self.instance.region_name = test_value
         self.assertEqual(self.instance.region_name, test_value)
     
@@ -82,7 +82,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test last_update property
         """
-        test_value = 'ggrqcgtalhnpqljjlyry'
+        test_value = 'jbgsvzipauksoznmktod'
         self.instance.last_update = test_value
         self.assertEqual(self.instance.last_update, test_value)
     
@@ -90,7 +90,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test next_update property
         """
-        test_value = 'cxhcosfdeadidgkssyji'
+        test_value = 'jzannjvbuqtxnlukizyi'
         self.instance.next_update = test_value
         self.assertEqual(self.instance.next_update, test_value)
     
@@ -98,7 +98,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test sender property
         """
-        test_value = 'beszqvgzkseptwuynntg'
+        test_value = 'xnlscukybsaumlaugcfg'
         self.instance.sender = test_value
         self.assertEqual(self.instance.sender, test_value)
     
@@ -106,7 +106,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test hazel_today property
         """
-        test_value = 'vkcrhqlksylgitmkgyae'
+        test_value = 'bpnizhburtnrwtgdlsvk'
         self.instance.hazel_today = test_value
         self.assertEqual(self.instance.hazel_today, test_value)
     
@@ -114,7 +114,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test hazel_tomorrow property
         """
-        test_value = 'tdegcygsfdsmlxonpllr'
+        test_value = 'kpstmaoyukivqrjobczr'
         self.instance.hazel_tomorrow = test_value
         self.assertEqual(self.instance.hazel_tomorrow, test_value)
     
@@ -122,7 +122,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test hazel_dayafter_to property
         """
-        test_value = 'fmmmknneajnkwspowjev'
+        test_value = 'zidovwfogzeloyhkrqzw'
         self.instance.hazel_dayafter_to = test_value
         self.assertEqual(self.instance.hazel_dayafter_to, test_value)
     
@@ -130,7 +130,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test alder_today property
         """
-        test_value = 'swnpaszxedssmkhrkcxt'
+        test_value = 'xabnmrcvkxetvgakoflw'
         self.instance.alder_today = test_value
         self.assertEqual(self.instance.alder_today, test_value)
     
@@ -138,7 +138,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test alder_tomorrow property
         """
-        test_value = 'icsauskvvakeofzputya'
+        test_value = 'oxqhlztplkompkanuthx'
         self.instance.alder_tomorrow = test_value
         self.assertEqual(self.instance.alder_tomorrow, test_value)
     
@@ -146,7 +146,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test alder_dayafter_to property
         """
-        test_value = 'poxhxuhxwlfsxxeuajxu'
+        test_value = 'wzmhbrvhuzjhbowxkhis'
         self.instance.alder_dayafter_to = test_value
         self.assertEqual(self.instance.alder_dayafter_to, test_value)
     
@@ -154,7 +154,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test birch_today property
         """
-        test_value = 'ogvmzymomderkffyzrea'
+        test_value = 'lnwpsazeismzlecpeinf'
         self.instance.birch_today = test_value
         self.assertEqual(self.instance.birch_today, test_value)
     
@@ -162,7 +162,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test birch_tomorrow property
         """
-        test_value = 'emndsrwcnsjlpwoujwsm'
+        test_value = 'swaqsihbcezvlrjaktzv'
         self.instance.birch_tomorrow = test_value
         self.assertEqual(self.instance.birch_tomorrow, test_value)
     
@@ -170,7 +170,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test birch_dayafter_to property
         """
-        test_value = 'gkmowjxblhoimpijjwql'
+        test_value = 'rnehsdsisdoqexsqqacp'
         self.instance.birch_dayafter_to = test_value
         self.assertEqual(self.instance.birch_dayafter_to, test_value)
     
@@ -178,7 +178,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test ash_today property
         """
-        test_value = 'siblqxnqzocnhxjffaqf'
+        test_value = 'eqipsxnbetejblicupxd'
         self.instance.ash_today = test_value
         self.assertEqual(self.instance.ash_today, test_value)
     
@@ -186,7 +186,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test ash_tomorrow property
         """
-        test_value = 'bixiisduthuhblkvnfjp'
+        test_value = 'enunvohopkpnvsjtvkqv'
         self.instance.ash_tomorrow = test_value
         self.assertEqual(self.instance.ash_tomorrow, test_value)
     
@@ -194,7 +194,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test ash_dayafter_to property
         """
-        test_value = 'aquevzcjwiwzvakpqxzj'
+        test_value = 'mkcvoxvsvogpbydknarh'
         self.instance.ash_dayafter_to = test_value
         self.assertEqual(self.instance.ash_dayafter_to, test_value)
     
@@ -202,7 +202,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test grasses_today property
         """
-        test_value = 'efghtzzyeezpytcqhupy'
+        test_value = 'kzyethddxtvwqtchxhqw'
         self.instance.grasses_today = test_value
         self.assertEqual(self.instance.grasses_today, test_value)
     
@@ -210,7 +210,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test grasses_tomorrow property
         """
-        test_value = 'iiogpwsvknclisosfmvg'
+        test_value = 'ywrfggycnoyvzjpumkcf'
         self.instance.grasses_tomorrow = test_value
         self.assertEqual(self.instance.grasses_tomorrow, test_value)
     
@@ -218,7 +218,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test grasses_dayafter_to property
         """
-        test_value = 'vpihgythchgzcnhxrssi'
+        test_value = 'mytzfscdbegmwkojyajd'
         self.instance.grasses_dayafter_to = test_value
         self.assertEqual(self.instance.grasses_dayafter_to, test_value)
     
@@ -226,7 +226,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test rye_today property
         """
-        test_value = 'iyqorwxlzfkqxlxfckmj'
+        test_value = 'vucivtbqhowztfvsuqhd'
         self.instance.rye_today = test_value
         self.assertEqual(self.instance.rye_today, test_value)
     
@@ -234,7 +234,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test rye_tomorrow property
         """
-        test_value = 'viuecmiejshhxdwvshgu'
+        test_value = 'uswahrfbvumszvguokjr'
         self.instance.rye_tomorrow = test_value
         self.assertEqual(self.instance.rye_tomorrow, test_value)
     
@@ -242,7 +242,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test rye_dayafter_to property
         """
-        test_value = 'dfftfmzwizkfgeekxxjp'
+        test_value = 'xkrhtsrqbixrsrzfmgea'
         self.instance.rye_dayafter_to = test_value
         self.assertEqual(self.instance.rye_dayafter_to, test_value)
     
@@ -250,7 +250,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test mugwort_today property
         """
-        test_value = 'zibcpioutbcvfeglryxp'
+        test_value = 'ukeakfuyrogezlvxyded'
         self.instance.mugwort_today = test_value
         self.assertEqual(self.instance.mugwort_today, test_value)
     
@@ -258,7 +258,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test mugwort_tomorrow property
         """
-        test_value = 'ntrvjrthybmhvhtdaxxn'
+        test_value = 'fzojawirhqkcnizipqet'
         self.instance.mugwort_tomorrow = test_value
         self.assertEqual(self.instance.mugwort_tomorrow, test_value)
     
@@ -266,7 +266,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test mugwort_dayafter_to property
         """
-        test_value = 'mdrjyrlxrcwswacmbuqg'
+        test_value = 'twipbwztgccyvfioljjv'
         self.instance.mugwort_dayafter_to = test_value
         self.assertEqual(self.instance.mugwort_dayafter_to, test_value)
     
@@ -274,7 +274,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test ragweed_today property
         """
-        test_value = 'szynkzqaoymscckthrjl'
+        test_value = 'lzxcksdvdvvktzbpeedw'
         self.instance.ragweed_today = test_value
         self.assertEqual(self.instance.ragweed_today, test_value)
     
@@ -282,7 +282,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test ragweed_tomorrow property
         """
-        test_value = 'bweurxyilnffffvrfpjk'
+        test_value = 'laqnwhwtwvxgspmvydmh'
         self.instance.ragweed_tomorrow = test_value
         self.assertEqual(self.instance.ragweed_tomorrow, test_value)
     
@@ -290,7 +290,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test ragweed_dayafter_to property
         """
-        test_value = 'dnnerbprsqslclmstgrn'
+        test_value = 'wypzzzchnjsorhhobrzk'
         self.instance.ragweed_dayafter_to = test_value
         self.assertEqual(self.instance.ragweed_dayafter_to, test_value)
     
@@ -298,7 +298,7 @@ class Test_PollenForecast(unittest.TestCase):
         """
         Test pollen_type property
         """
-        test_value = 'wqinmlqzybgyujyzhspi'
+        test_value = 'wmnbdjjdqyuofawjxpad'
         self.instance.pollen_type = test_value
         self.assertEqual(self.instance.pollen_type, test_value)
     

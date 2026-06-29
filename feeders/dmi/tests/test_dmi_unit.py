@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 from typing import Any, Dict
 from unittest import mock
 
@@ -204,7 +205,7 @@ def test_build_met_station_minimal():
     assert s.name == "Roskilde"
     assert s.parameter_id == ["temp_dry", "wind_speed"]
     assert s.latitude == 55.65
-    assert s.valid_from == "2020-01-01T00:00:00Z"
+    assert s.valid_from == datetime(2020, 1, 1, tzinfo=timezone.utc)
 
 
 def test_build_met_observation():
@@ -217,7 +218,7 @@ def test_build_met_observation():
     }
     o = _build_met_observation(raw)
     assert o.station_id == "06180"
-    assert o.parameter_id == "temp_dry"
+    assert o.parameter_id.value == "temp_dry"
     assert o.value == 1.5
 
 
@@ -249,7 +250,7 @@ def test_build_lightning_sensor():
            "latitude": 55.1, "longitude": 14.9}
     s = _build_lightning_sensor(raw)
     assert s.sensor_id == "DK_BOR"
-    assert s.country == "DNK"
+    assert s.country.value == "DNK"
 
 
 def test_build_lightning_strike_sensors_is_string():

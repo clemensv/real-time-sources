@@ -153,5 +153,5 @@ class Operator:
             An instance of the dataclass.
         """
         return cls(
-            operator_ref='rikvavgabgjqvdxijyez'
+            operator_ref='iraxlinkvhdlmgqupyam'
         )

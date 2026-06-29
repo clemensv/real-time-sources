@@ -12,11 +12,11 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from cap_alerts_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
-from cap_alerts_producer_data.org.oasis.cap.alerts.statusenum import StatusEnum
-from cap_alerts_producer_data.org.oasis.cap.alerts.capinfo import CapInfo
 from cap_alerts_producer_data.org.oasis.cap.alerts.msgtypeenum import MsgTypeenum
 from cap_alerts_producer_data.org.oasis.cap.alerts.scopeenum import ScopeEnum
+from cap_alerts_producer_data.org.oasis.cap.alerts.statusenum import StatusEnum
+from cap_alerts_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
+from cap_alerts_producer_data.org.oasis.cap.alerts.capinfo import CapInfo
 import datetime
 
 
@@ -212,31 +212,31 @@ class CapAlert:
             An instance of the dataclass.
         """
         return cls(
-            cap_source_id='snktxsmqemiyyhiylxpp',
-            identifier='cbralldtnhzknhwtqkme',
-            sender='qfersdyrnpituibjeydw',
+            cap_source_id='etijihwvadbchcrdvfap',
+            identifier='hmznqtpiunhbufgjzmlx',
+            sender='ypaillysiywyllixmjva',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
-            source='occpogiwpggdcdfbudda',
+            source='zmwqdlznrwvzqekbbzkg',
             scope=ScopeEnum.Public,
-            restriction='umvoewuthjgtjtogvixy',
-            addresses=['vdsebyhdehmivjrjhyvo', 'hvdjnzchglvuijkvvvfp', 'wyztlfovpdmexlfoolvt', 'illntvtcltgspjqjijtb', 'sksmvmecnoyhhabkflhl'],
-            code=[None],
-            note='rghapqfjwtuzuyulbofy',
-            references=['hrblwlbeuyvykyjknwlj'],
-            incidents=['flwrrjnadkhcgcvclfqv', 'ggvezgacfgyjlvimxnqg', 'qyatbdpyleocdqlwtxir', 'futncqodvuechbaariqs', 'ectfeahwydgupdnuwrqg'],
-            info=[None, None, None, None, None],
-            provider_url='ueuzkkmrlffqnufmlftd',
-            raw_cap_xml='gwmlniojczgjcqpvihht',
-            area_desc='yjcqnzlosozxizbfehzo',
-            same_codes=['qdnfomrrvzlryrxiwrde', 'eptxljgyggttqgnlmfia', 'jpbxeillgrhiydnkvoyl', 'hwtqntiadymshrocblhr'],
-            ugc_codes=['uixbzeznugyvqfwtqxyp', 'hebegruhgcwpsmqpwarh', 'ksuniahgqicodtvzfcqx', 'sbeszwjlgszwrpuoatbv'],
-            vtec=['mlpjhngjghhefdznaqmp', 'islksewvdhwgbhkqeyle', 'lwvorfjcamznyocvslrs', 'rpclgxamjfgetofxsmmd', 'zwxrihwkyuzejqbujcnz'],
-            awareness_level='danbbjlnxssccsfzkjnb',
-            awareness_type='tvitalpziaqetpbnrucz',
-            event_type='nqyudpghogrnlkogryrx',
-            state='mikoqlammbyrcaclgzrv',
-            affected_zones=['riiumfzqmkatcwlmwsjm', 'vvifvhijtictiwociomr', 'muvqolzvyiqeaupgblpa', 'uehggiorhdgqauhpqmkr'],
-            raw_source_json='iktgunfjlqfrdppgysab'
+            restriction='oslxmfnfytxerzmusxfa',
+            addresses=['vsthyghrzlesvoxgdswo', 'gevqndfgaozibhhanuhy', 'zbnawuynasankzsefyad', 'mgvlkzmmrevjgchzavyn'],
+            code=[None, None, None, None],
+            note='badphdqnartdgcdrbdif',
+            references=['czvpnfembcnbcggzizmo', 'bixtjeahphzwxyotzhky', 'lpwyfmgvgpwckjlxbjln', 'bglitttgobuvgrdrkimw'],
+            incidents=['ulpvwpgyjdwctzfyhfqc', 'wnmwebfohdgljwcrwaky', 'pkcokpncimivjitxtblq', 'lyzxgrrccamadzqarhoc', 'gmykrxrnbxswolqnmyba'],
+            info=[None, None, None],
+            provider_url='wuvwnzwpxakkqqihgerw',
+            raw_cap_xml='ztkvonnijdvgmwffjolp',
+            area_desc='jrlyvqjxakmajgjslvgg',
+            same_codes=['hdxtbrndwhornvjpjple', 'tppnxowwwvoqoqqxzwfx', 'owqeopdxdqacanprfatl', 'evamxufjfdxjqslasnbs', 'qapqplhuxbytreflzfqh'],
+            ugc_codes=['wdeanuuhcxzdzhbxdngc', 'jjaxjepddcrgqzkiflms'],
+            vtec=['plytyrwcsjzapindnoer', 'eqrnuzuudpsmyxpogxos', 'pudmmosrkykrptgppxiy'],
+            awareness_level='rjzcwmgamwtgmlyiukkb',
+            awareness_type='aqqwufpmwpdaguqlaoyc',
+            event_type='gihbuztjeyrmdplbzrsc',
+            state='hihkboclbvxdjnaefqgv',
+            affected_zones=['ygufypdiyouvrhwgpjto', 'ordittuzlfsgmnbogcbt'],
+            raw_source_json='ulangmuzuvaablhrkbom'
         )

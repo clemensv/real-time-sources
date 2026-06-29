@@ -163,10 +163,10 @@ class ExtremeTemperature10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='skupapcyrtiwiomceacs',
-            timestamp='dvpuljqqshisljwavqqk',
-            quality_level=int(30),
-            air_temperature_maximum_2m=float(71.82544517670448),
-            air_temperature_minimum_5cm=float(15.490366509935004),
-            state='prjxcfcycwjjseaiuxex'
+            station_id='fvhzxlfsqamdfmyutauj',
+            timestamp='egrhapedeycybzqksezo',
+            quality_level=int(67),
+            air_temperature_maximum_2m=float(62.14336510461214),
+            air_temperature_minimum_5cm=float(5.415354427382302),
+            state='xzchmfielfqcxvjsygxb'
         )

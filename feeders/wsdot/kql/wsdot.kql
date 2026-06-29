@@ -42,18 +42,18 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] docstring "{\"description\": \"Metadata for a traffic flow sensor station in the Washington State DOT network. WSDOT deploys approximately 1,400 inductive loop sensors embedded in highway pavement across four geographic regions.\"}";
+.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] docstring @"{""description"": ""Metadata for a traffic flow sensor station in the Washington State DOT network. WSDOT deploys approximately 1,400 inductive loop sensors embedded in highway pavement across four geographic regions.""}";
 
 .alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] column-docstrings (
-   [flow_data_id]: "{\"description\": \"Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.\"}",
-   [station_name]: "{\"description\": \"Descriptive name of the flow sensor station.\"}",
-   [region]: "{\"description\": \"WSDOT geographic coverage region.\"}",
-   [description]: "{\"description\": \"Location description. Null if not provided.\"}",
-   [road_name]: "{\"description\": \"Road designation where the sensor is installed.\"}",
-   [direction]: "{\"description\": \"Direction of travel monitored. Examples: NB, SB, EB, WB.\"}",
-   [milepost]: "{\"description\": \"Milepost marker along the roadway.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84 decimal degrees.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84 decimal degrees.\"}",
+   [flow_data_id]: @"{""description"": ""Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.""}",
+   [station_name]: @"{""description"": ""Descriptive name of the flow sensor station.""}",
+   [region]: @"{""description"": ""WSDOT geographic coverage region.""}",
+   [description]: @"{""description"": ""Location description. Null if not provided.""}",
+   [road_name]: @"{""description"": ""Road designation where the sensor is installed.""}",
+   [direction]: @"{""description"": ""Direction of travel monitored. Examples: NB, SB, EB, WB.""}",
+   [milepost]: @"{""description"": ""Milepost marker along the roadway.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84 decimal degrees.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84 decimal degrees.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -77,7 +77,7 @@
   {"column": "direction", "path": "$.direction"},
   {"column": "milepost", "path": "$.milepost"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -97,7 +97,7 @@
   {"column": "direction", "path": "$.data.direction"},
   {"column": "milepost", "path": "$.data.milepost"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -114,7 +114,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traffic.TrafficFlowStation') | project['flow_data_id'] = tostring(data.['flow_data_id']),['station_name'] = tostring(data.['station_name']),['region'] = tostring(data.['region']),['description'] = tostring(data.['description']),['road_name'] = tostring(data.['road_name']),['direction'] = tostring(data.['direction']),['milepost'] = toreal(data.['milepost']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -131,14 +131,14 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] docstring "{\"description\": \"A traffic flow reading from a WSDOT sensor station. Updated approximately every 90 seconds, each reading reports the current Level of Service.\"}";
+.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] docstring @"{""description"": ""A traffic flow reading from a WSDOT sensor station. Updated approximately every 90 seconds, each reading reports the current Level of Service.""}";
 
 .alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] column-docstrings (
-   [flow_data_id]: "{\"description\": \"Sensor station identifier, stringified from upstream FlowDataID.\"}",
-   [station_name]: "{\"description\": \"Station name.\"}",
-   [region]: "{\"description\": \"WSDOT region.\"}",
-   [flow_reading]: "{\"description\": \"Current traffic Level of Service. Converted from upstream FlowReadingValue byte.\"}",
-   [reading_time]: "{\"description\": \"ISO 8601 UTC timestamp of the reading.\"}",
+   [flow_data_id]: @"{""description"": ""Sensor station identifier, stringified from upstream FlowDataID.""}",
+   [station_name]: @"{""description"": ""Station name.""}",
+   [region]: @"{""description"": ""WSDOT region.""}",
+   [flow_reading]: @"{""description"": ""Current traffic Level of Service. Converted from upstream FlowReadingValue byte.""}",
+   [reading_time]: @"{""description"": ""ISO 8601 UTC timestamp of the reading.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -158,7 +158,7 @@
   {"column": "station_name", "path": "$.station_name"},
   {"column": "region", "path": "$.region"},
   {"column": "flow_reading", "path": "$.flow_reading"},
-  {"column": "reading_time", "path": "$.reading_time"},
+  {"column": "reading_time", "path": "$.reading_time"}
 ]
 ```
 
@@ -174,7 +174,7 @@
   {"column": "station_name", "path": "$.data.station_name"},
   {"column": "region", "path": "$.data.region"},
   {"column": "flow_reading", "path": "$.data.flow_reading"},
-  {"column": "reading_time", "path": "$.data.reading_time"},
+  {"column": "reading_time", "path": "$.data.reading_time"}
 ]
 ```
 
@@ -191,7 +191,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traffic.TrafficFlowReading') | project['flow_data_id'] = tostring(data.['flow_data_id']),['station_name'] = tostring(data.['station_name']),['region'] = tostring(data.['region']),['flow_reading'] = tostring(data.['flow_reading']),['reading_time'] = tostring(data.['reading_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -222,28 +222,28 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] docstring "{\"description\": \"A named travel time route monitored by WSDOT. Each route has fixed start and end points on Washington State highways with historical average and current real-time travel times.\"}";
+.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] docstring @"{""description"": ""A named travel time route monitored by WSDOT. Each route has fixed start and end points on Washington State highways with historical average and current real-time travel times.""}";
 
 .alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] column-docstrings (
-   [travel_time_id]: "{\"description\": \"Unique route identifier, stringified from upstream TravelTimeID.\"}",
-   [name]: "{\"description\": \"Short route segment name.\"}",
-   [description]: "{\"description\": \"Longer description including lane type.\"}",
-   [distance]: "{\"description\": \"Route distance in miles.\"}",
-   [average_time]: "{\"description\": \"Historical average travel time in minutes.\"}",
-   [current_time]: "{\"description\": \"Current real-time travel time in minutes.\"}",
-   [time_updated]: "{\"description\": \"ISO 8601 UTC timestamp of last update.\"}",
-   [start_description]: "{\"description\": \"Start point description.\"}",
-   [start_road_name]: "{\"description\": \"Road at start point.\"}",
-   [start_direction]: "{\"description\": \"Direction at start point.\"}",
-   [start_milepost]: "{\"description\": \"Milepost at start.\"}",
-   [start_latitude]: "{\"description\": \"Start latitude in WGS84.\"}",
-   [start_longitude]: "{\"description\": \"Start longitude in WGS84.\"}",
-   [end_description]: "{\"description\": \"End point description.\"}",
-   [end_road_name]: "{\"description\": \"Road at end point.\"}",
-   [end_direction]: "{\"description\": \"Direction at end point.\"}",
-   [end_milepost]: "{\"description\": \"Milepost at end.\"}",
-   [end_latitude]: "{\"description\": \"End latitude in WGS84.\"}",
-   [end_longitude]: "{\"description\": \"End longitude in WGS84.\"}",
+   [travel_time_id]: @"{""description"": ""Unique route identifier, stringified from upstream TravelTimeID.""}",
+   [name]: @"{""description"": ""Short route segment name.""}",
+   [description]: @"{""description"": ""Longer description including lane type.""}",
+   [distance]: @"{""description"": ""Route distance in miles.""}",
+   [average_time]: @"{""description"": ""Historical average travel time in minutes.""}",
+   [current_time]: @"{""description"": ""Current real-time travel time in minutes.""}",
+   [time_updated]: @"{""description"": ""ISO 8601 UTC timestamp of last update.""}",
+   [start_description]: @"{""description"": ""Start point description.""}",
+   [start_road_name]: @"{""description"": ""Road at start point.""}",
+   [start_direction]: @"{""description"": ""Direction at start point.""}",
+   [start_milepost]: @"{""description"": ""Milepost at start.""}",
+   [start_latitude]: @"{""description"": ""Start latitude in WGS84.""}",
+   [start_longitude]: @"{""description"": ""Start longitude in WGS84.""}",
+   [end_description]: @"{""description"": ""End point description.""}",
+   [end_road_name]: @"{""description"": ""Road at end point.""}",
+   [end_direction]: @"{""description"": ""Direction at end point.""}",
+   [end_milepost]: @"{""description"": ""Milepost at end.""}",
+   [end_latitude]: @"{""description"": ""End latitude in WGS84.""}",
+   [end_longitude]: @"{""description"": ""End longitude in WGS84.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -277,7 +277,7 @@
   {"column": "end_direction", "path": "$.end_direction"},
   {"column": "end_milepost", "path": "$.end_milepost"},
   {"column": "end_latitude", "path": "$.end_latitude"},
-  {"column": "end_longitude", "path": "$.end_longitude"},
+  {"column": "end_longitude", "path": "$.end_longitude"}
 ]
 ```
 
@@ -307,7 +307,7 @@
   {"column": "end_direction", "path": "$.data.end_direction"},
   {"column": "end_milepost", "path": "$.data.end_milepost"},
   {"column": "end_latitude", "path": "$.data.end_latitude"},
-  {"column": "end_longitude", "path": "$.data.end_longitude"},
+  {"column": "end_longitude", "path": "$.data.end_longitude"}
 ]
 ```
 
@@ -324,7 +324,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traveltimes.TravelTimeRoute') | project['travel_time_id'] = tostring(data.['travel_time_id']),['name'] = tostring(data.['name']),['description'] = tostring(data.['description']),['distance'] = toreal(data.['distance']),['average_time'] = toint(data.['average_time']),['current_time'] = toint(data.['current_time']),['time_updated'] = tostring(data.['time_updated']),['start_description'] = tostring(data.['start_description']),['start_road_name'] = tostring(data.['start_road_name']),['start_direction'] = tostring(data.['start_direction']),['start_milepost'] = toreal(data.['start_milepost']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['end_description'] = tostring(data.['end_description']),['end_road_name'] = tostring(data.['end_road_name']),['end_direction'] = tostring(data.['end_direction']),['end_milepost'] = toreal(data.['end_milepost']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -350,23 +350,23 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] docstring "{\"description\": \"Current conditions at a Washington State mountain pass including temperature, weather, road conditions, travel advisories, and directional restrictions.\"}";
+.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] docstring @"{""description"": ""Current conditions at a Washington State mountain pass including temperature, weather, road conditions, travel advisories, and directional restrictions.""}";
 
 .alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] column-docstrings (
-   [mountain_pass_id]: "{\"description\": \"Unique pass identifier, stringified from upstream MountainPassId.\"}",
-   [mountain_pass_name]: "{\"description\": \"Pass name with highway designation.\"}",
-   [elevation_in_feet]: "{\"description\": \"Summit elevation in feet above sea level.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
-   [temperature_in_fahrenheit]: "{\"description\": \"Temperature at the summit in Fahrenheit. Null if not reporting.\"}",
-   [weather_condition]: "{\"description\": \"Current weather condition text. Examples: Clear, Rain, Snow, Fog.\"}",
-   [road_condition]: "{\"description\": \"Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice.\"}",
-   [travel_advisory_active]: "{\"description\": \"True if a travel advisory is in effect.\"}",
-   [restriction_one_direction]: "{\"description\": \"Direction for first restriction.\"}",
-   [restriction_one_text]: "{\"description\": \"First restriction text.\"}",
-   [restriction_two_direction]: "{\"description\": \"Direction for second restriction.\"}",
-   [restriction_two_text]: "{\"description\": \"Second restriction text.\"}",
-   [date_updated]: "{\"description\": \"ISO 8601 UTC timestamp of last update.\"}",
+   [mountain_pass_id]: @"{""description"": ""Unique pass identifier, stringified from upstream MountainPassId.""}",
+   [mountain_pass_name]: @"{""description"": ""Pass name with highway designation.""}",
+   [elevation_in_feet]: @"{""description"": ""Summit elevation in feet above sea level.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
+   [temperature_in_fahrenheit]: @"{""description"": ""Temperature at the summit in Fahrenheit. Null if not reporting.""}",
+   [weather_condition]: @"{""description"": ""Current weather condition text. Examples: Clear, Rain, Snow, Fog.""}",
+   [road_condition]: @"{""description"": ""Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice.""}",
+   [travel_advisory_active]: @"{""description"": ""True if a travel advisory is in effect.""}",
+   [restriction_one_direction]: @"{""description"": ""Direction for first restriction.""}",
+   [restriction_one_text]: @"{""description"": ""First restriction text.""}",
+   [restriction_two_direction]: @"{""description"": ""Direction for second restriction.""}",
+   [restriction_two_text]: @"{""description"": ""Second restriction text.""}",
+   [date_updated]: @"{""description"": ""ISO 8601 UTC timestamp of last update.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -395,7 +395,7 @@
   {"column": "restriction_one_text", "path": "$.restriction_one_text"},
   {"column": "restriction_two_direction", "path": "$.restriction_two_direction"},
   {"column": "restriction_two_text", "path": "$.restriction_two_text"},
-  {"column": "date_updated", "path": "$.date_updated"},
+  {"column": "date_updated", "path": "$.date_updated"}
 ]
 ```
 
@@ -420,7 +420,7 @@
   {"column": "restriction_one_text", "path": "$.data.restriction_one_text"},
   {"column": "restriction_two_direction", "path": "$.data.restriction_two_direction"},
   {"column": "restriction_two_text", "path": "$.data.restriction_two_text"},
-  {"column": "date_updated", "path": "$.data.date_updated"},
+  {"column": "date_updated", "path": "$.data.date_updated"}
 ]
 ```
 
@@ -437,7 +437,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.mountainpass.MountainPassCondition') | project['mountain_pass_id'] = tostring(data.['mountain_pass_id']),['mountain_pass_name'] = tostring(data.['mountain_pass_name']),['elevation_in_feet'] = toint(data.['elevation_in_feet']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['temperature_in_fahrenheit'] = toint(data.['temperature_in_fahrenheit']),['weather_condition'] = tostring(data.['weather_condition']),['road_condition'] = tostring(data.['road_condition']),['travel_advisory_active'] = tobool(data.['travel_advisory_active']),['restriction_one_direction'] = tostring(data.['restriction_one_direction']),['restriction_one_text'] = tostring(data.['restriction_one_text']),['restriction_two_direction'] = tostring(data.['restriction_two_direction']),['restriction_two_text'] = tostring(data.['restriction_two_text']),['date_updated'] = tostring(data.['date_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -453,13 +453,13 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.weather.WeatherStation'] docstring "{\"description\": \"Metadata for a WSDOT road weather information system (RWIS) station. WSDOT operates approximately 134 stations across Washington State highways.\"}";
+.alter table ['us.wa.wsdot.weather.WeatherStation'] docstring @"{""description"": ""Metadata for a WSDOT road weather information system (RWIS) station. WSDOT operates approximately 134 stations across Washington State highways.""}";
 
 .alter table ['us.wa.wsdot.weather.WeatherStation'] column-docstrings (
-   [station_id]: "{\"description\": \"Station identifier from upstream StationID. The WeatherStation reference event is synthesized from the current-readings payload (the legacy WeatherStations endpoint was decommissioned), so this is the same numeric station identifier carried by WeatherReading.\"}",
-   [station_name]: "{\"description\": \"Station name with highway and milepost.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [station_id]: @"{""description"": ""Station identifier from upstream StationID. The WeatherStation reference event is synthesized from the current-readings payload (the legacy WeatherStations endpoint was decommissioned), so this is the same numeric station identifier carried by WeatherReading.""}",
+   [station_name]: @"{""description"": ""Station name with highway and milepost.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -478,7 +478,7 @@
   {"column": "station_id", "path": "$.station_id"},
   {"column": "station_name", "path": "$.station_name"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -493,7 +493,7 @@
   {"column": "station_id", "path": "$.data.station_id"},
   {"column": "station_name", "path": "$.data.station_name"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -510,7 +510,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.weather.WeatherStation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -537,24 +537,24 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.weather.WeatherReading'] docstring "{\"description\": \"A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage.\"}";
+.alter table ['us.wa.wsdot.weather.WeatherReading'] docstring @"{""description"": ""A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage.""}";
 
 .alter table ['us.wa.wsdot.weather.WeatherReading'] column-docstrings (
-   [station_id]: "{\"description\": \"Station identifier from upstream StationID.\"}",
-   [station_name]: "{\"description\": \"Station name.\"}",
-   [reading_time]: "{\"description\": \"ISO 8601 UTC timestamp.\"}",
-   [temperature_in_fahrenheit]: "{\"description\": \"Air temperature in Fahrenheit.\"}",
-   [precipitation_in_inches]: "{\"description\": \"Precipitation in inches.\"}",
-   [wind_speed_in_mph]: "{\"description\": \"Wind speed in mph.\"}",
-   [wind_gust_speed_in_mph]: "{\"description\": \"Wind gust speed in mph.\"}",
-   [wind_direction]: "{\"description\": \"Wind direction in degrees from true north.\"}",
-   [wind_direction_cardinal]: "{\"description\": \"Wind direction as cardinal abbreviation.\"}",
-   [barometric_pressure]: "{\"description\": \"Barometric pressure in hPa.\"}",
-   [relative_humidity]: "{\"description\": \"Relative humidity percentage.\"}",
-   [visibility]: "{\"description\": \"Visibility distance.\"}",
-   [sky_coverage]: "{\"description\": \"Sky coverage description.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [station_id]: @"{""description"": ""Station identifier from upstream StationID.""}",
+   [station_name]: @"{""description"": ""Station name.""}",
+   [reading_time]: @"{""description"": ""ISO 8601 UTC timestamp.""}",
+   [temperature_in_fahrenheit]: @"{""description"": ""Air temperature in Fahrenheit.""}",
+   [precipitation_in_inches]: @"{""description"": ""Precipitation in inches.""}",
+   [wind_speed_in_mph]: @"{""description"": ""Wind speed in mph.""}",
+   [wind_gust_speed_in_mph]: @"{""description"": ""Wind gust speed in mph.""}",
+   [wind_direction]: @"{""description"": ""Wind direction in degrees from true north.""}",
+   [wind_direction_cardinal]: @"{""description"": ""Wind direction as cardinal abbreviation.""}",
+   [barometric_pressure]: @"{""description"": ""Barometric pressure in hPa.""}",
+   [relative_humidity]: @"{""description"": ""Relative humidity percentage.""}",
+   [visibility]: @"{""description"": ""Visibility distance.""}",
+   [sky_coverage]: @"{""description"": ""Sky coverage description.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -584,7 +584,7 @@
   {"column": "visibility", "path": "$.visibility"},
   {"column": "sky_coverage", "path": "$.sky_coverage"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -610,7 +610,7 @@
   {"column": "visibility", "path": "$.data.visibility"},
   {"column": "sky_coverage", "path": "$.data.sky_coverage"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -627,7 +627,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.weather.WeatherReading') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['reading_time'] = tostring(data.['reading_time']),['temperature_in_fahrenheit'] = toreal(data.['temperature_in_fahrenheit']),['precipitation_in_inches'] = toreal(data.['precipitation_in_inches']),['wind_speed_in_mph'] = toreal(data.['wind_speed_in_mph']),['wind_gust_speed_in_mph'] = toreal(data.['wind_gust_speed_in_mph']),['wind_direction'] = toint(data.['wind_direction']),['wind_direction_cardinal'] = tostring(data.['wind_direction_cardinal']),['barometric_pressure'] = toreal(data.['barometric_pressure']),['relative_humidity'] = toint(data.['relative_humidity']),['visibility'] = toreal(data.['visibility']),['sky_coverage'] = tostring(data.['sky_coverage']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -653,23 +653,23 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.tolls.TollRate'] docstring "{\"description\": \"Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167.\"}";
+.alter table ['us.wa.wsdot.tolls.TollRate'] docstring @"{""description"": ""Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167.""}";
 
 .alter table ['us.wa.wsdot.tolls.TollRate'] column-docstrings (
-   [trip_name]: "{\"description\": \"Tolled route segment identifier.\"}",
-   [state_route]: "{\"description\": \"State route number.\"}",
-   [travel_direction]: "{\"description\": \"Travel direction: N, S, E, W.\"}",
-   [current_toll]: "{\"description\": \"Current toll in cents.\"}",
-   [current_message]: "{\"description\": \"Optional status message.\"}",
-   [time_updated]: "{\"description\": \"ISO 8601 UTC timestamp.\"}",
-   [start_location_name]: "{\"description\": \"Start location name.\"}",
-   [start_latitude]: "{\"description\": \"Start latitude.\"}",
-   [start_longitude]: "{\"description\": \"Start longitude.\"}",
-   [start_milepost]: "{\"description\": \"Start milepost.\"}",
-   [end_location_name]: "{\"description\": \"End location name.\"}",
-   [end_latitude]: "{\"description\": \"End latitude.\"}",
-   [end_longitude]: "{\"description\": \"End longitude.\"}",
-   [end_milepost]: "{\"description\": \"End milepost.\"}",
+   [trip_name]: @"{""description"": ""Tolled route segment identifier.""}",
+   [state_route]: @"{""description"": ""State route number.""}",
+   [travel_direction]: @"{""description"": ""Travel direction: N, S, E, W.""}",
+   [current_toll]: @"{""description"": ""Current toll in cents.""}",
+   [current_message]: @"{""description"": ""Optional status message.""}",
+   [time_updated]: @"{""description"": ""ISO 8601 UTC timestamp.""}",
+   [start_location_name]: @"{""description"": ""Start location name.""}",
+   [start_latitude]: @"{""description"": ""Start latitude.""}",
+   [start_longitude]: @"{""description"": ""Start longitude.""}",
+   [start_milepost]: @"{""description"": ""Start milepost.""}",
+   [end_location_name]: @"{""description"": ""End location name.""}",
+   [end_latitude]: @"{""description"": ""End latitude.""}",
+   [end_longitude]: @"{""description"": ""End longitude.""}",
+   [end_milepost]: @"{""description"": ""End milepost.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -698,7 +698,7 @@
   {"column": "end_location_name", "path": "$.end_location_name"},
   {"column": "end_latitude", "path": "$.end_latitude"},
   {"column": "end_longitude", "path": "$.end_longitude"},
-  {"column": "end_milepost", "path": "$.end_milepost"},
+  {"column": "end_milepost", "path": "$.end_milepost"}
 ]
 ```
 
@@ -723,7 +723,7 @@
   {"column": "end_location_name", "path": "$.data.end_location_name"},
   {"column": "end_latitude", "path": "$.data.end_latitude"},
   {"column": "end_longitude", "path": "$.data.end_longitude"},
-  {"column": "end_milepost", "path": "$.data.end_milepost"},
+  {"column": "end_milepost", "path": "$.data.end_milepost"}
 ]
 ```
 
@@ -740,7 +740,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.tolls.TollRate') | project['trip_name'] = tostring(data.['trip_name']),['state_route'] = tostring(data.['state_route']),['travel_direction'] = tostring(data.['travel_direction']),['current_toll'] = toint(data.['current_toll']),['current_message'] = tostring(data.['current_message']),['time_updated'] = tostring(data.['time_updated']),['start_location_name'] = tostring(data.['start_location_name']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['start_milepost'] = toreal(data.['start_milepost']),['end_location_name'] = tostring(data.['end_location_name']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),['end_milepost'] = toreal(data.['end_milepost']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -775,32 +775,32 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] docstring "{\"description\": \"A commercial vehicle restriction on a Washington State highway bridge or road segment. Restrictions limit vehicle weight, height, length, or width.\"}";
+.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] docstring @"{""description"": ""A commercial vehicle restriction on a Washington State highway bridge or road segment. Restrictions limit vehicle weight, height, length, or width.""}";
 
 .alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] column-docstrings (
-   [state_route_id]: "{\"description\": \"State route identifier, first part of composite key.\"}",
-   [bridge_number]: "{\"description\": \"Bridge or structure number, second part of composite key.\"}",
-   [bridge_name]: "{\"description\": \"Bridge or structure name.\"}",
-   [location_name]: "{\"description\": \"Location relative to landmarks.\"}",
-   [location_description]: "{\"description\": \"Detailed location description.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
-   [state]: "{\"description\": \"State abbreviation, typically WA.\"}",
-   [restriction_type]: "{\"description\": \"Type: BridgeRestriction, RoadRestriction.\"}",
-   [vehicle_type]: "{\"description\": \"Affected vehicle type.\"}",
-   [restriction_weight_in_pounds]: "{\"description\": \"Axle weight limit in pounds.\"}",
-   [maximum_gross_vehicle_weight_in_pounds]: "{\"description\": \"GVW limit in pounds.\"}",
-   [restriction_height_in_inches]: "{\"description\": \"Height limit in inches.\"}",
-   [restriction_width_in_inches]: "{\"description\": \"Width limit in inches.\"}",
-   [restriction_length_in_inches]: "{\"description\": \"Length limit in inches.\"}",
-   [is_permanent_restriction]: "{\"description\": \"True if permanent.\"}",
-   [is_warning]: "{\"description\": \"True if warning only.\"}",
-   [is_detour_available]: "{\"description\": \"True if detour exists.\"}",
-   [is_exceptions_allowed]: "{\"description\": \"True if permits available.\"}",
-   [restriction_comment]: "{\"description\": \"Additional details.\"}",
-   [date_posted]: "{\"description\": \"ISO 8601 UTC date posted.\"}",
-   [date_effective]: "{\"description\": \"ISO 8601 UTC date effective.\"}",
-   [date_expires]: "{\"description\": \"ISO 8601 UTC date expires.\"}",
+   [state_route_id]: @"{""description"": ""State route identifier, first part of composite key.""}",
+   [bridge_number]: @"{""description"": ""Bridge or structure number, second part of composite key.""}",
+   [bridge_name]: @"{""description"": ""Bridge or structure name.""}",
+   [location_name]: @"{""description"": ""Location relative to landmarks.""}",
+   [location_description]: @"{""description"": ""Detailed location description.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
+   [state]: @"{""description"": ""State abbreviation, typically WA.""}",
+   [restriction_type]: @"{""description"": ""Type: BridgeRestriction, RoadRestriction.""}",
+   [vehicle_type]: @"{""description"": ""Affected vehicle type.""}",
+   [restriction_weight_in_pounds]: @"{""description"": ""Axle weight limit in pounds.""}",
+   [maximum_gross_vehicle_weight_in_pounds]: @"{""description"": ""GVW limit in pounds.""}",
+   [restriction_height_in_inches]: @"{""description"": ""Height limit in inches.""}",
+   [restriction_width_in_inches]: @"{""description"": ""Width limit in inches.""}",
+   [restriction_length_in_inches]: @"{""description"": ""Length limit in inches.""}",
+   [is_permanent_restriction]: @"{""description"": ""True if permanent.""}",
+   [is_warning]: @"{""description"": ""True if warning only.""}",
+   [is_detour_available]: @"{""description"": ""True if detour exists.""}",
+   [is_exceptions_allowed]: @"{""description"": ""True if permits available.""}",
+   [restriction_comment]: @"{""description"": ""Additional details.""}",
+   [date_posted]: @"{""description"": ""ISO 8601 UTC date posted.""}",
+   [date_effective]: @"{""description"": ""ISO 8601 UTC date effective.""}",
+   [date_expires]: @"{""description"": ""ISO 8601 UTC date expires.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -838,7 +838,7 @@
   {"column": "restriction_comment", "path": "$.restriction_comment"},
   {"column": "date_posted", "path": "$.date_posted"},
   {"column": "date_effective", "path": "$.date_effective"},
-  {"column": "date_expires", "path": "$.date_expires"},
+  {"column": "date_expires", "path": "$.date_expires"}
 ]
 ```
 
@@ -872,7 +872,7 @@
   {"column": "restriction_comment", "path": "$.data.restriction_comment"},
   {"column": "date_posted", "path": "$.data.date_posted"},
   {"column": "date_effective", "path": "$.data.date_effective"},
-  {"column": "date_expires", "path": "$.data.date_expires"},
+  {"column": "date_expires", "path": "$.data.date_expires"}
 ]
 ```
 
@@ -889,7 +889,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction') | project['state_route_id'] = tostring(data.['state_route_id']),['bridge_number'] = tostring(data.['bridge_number']),['bridge_name'] = tostring(data.['bridge_name']),['location_name'] = tostring(data.['location_name']),['location_description'] = tostring(data.['location_description']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['state'] = tostring(data.['state']),['restriction_type'] = tostring(data.['restriction_type']),['vehicle_type'] = tostring(data.['vehicle_type']),['restriction_weight_in_pounds'] = toint(data.['restriction_weight_in_pounds']),['maximum_gross_vehicle_weight_in_pounds'] = toint(data.['maximum_gross_vehicle_weight_in_pounds']),['restriction_height_in_inches'] = toint(data.['restriction_height_in_inches']),['restriction_width_in_inches'] = toint(data.['restriction_width_in_inches']),['restriction_length_in_inches'] = toint(data.['restriction_length_in_inches']),['is_permanent_restriction'] = tobool(data.['is_permanent_restriction']),['is_warning'] = tobool(data.['is_warning']),['is_detour_available'] = tobool(data.['is_detour_available']),['is_exceptions_allowed'] = tobool(data.['is_exceptions_allowed']),['restriction_comment'] = tostring(data.['restriction_comment']),['date_posted'] = tostring(data.['date_posted']),['date_effective'] = tostring(data.['date_effective']),['date_expires'] = tostring(data.['date_expires']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -908,16 +908,16 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.border.BorderCrossing'] docstring "{\"description\": \"Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes.\"}";
+.alter table ['us.wa.wsdot.border.BorderCrossing'] docstring @"{""description"": ""Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes.""}";
 
 .alter table ['us.wa.wsdot.border.BorderCrossing'] column-docstrings (
-   [crossing_name]: "{\"description\": \"Crossing lane identifier.\"}",
-   [wait_time]: "{\"description\": \"Wait time in minutes.\"}",
-   [time]: "{\"description\": \"ISO 8601 UTC measurement timestamp.\"}",
-   [description]: "{\"description\": \"Lane description.\"}",
-   [road_name]: "{\"description\": \"Road designation.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [crossing_name]: @"{""description"": ""Crossing lane identifier.""}",
+   [wait_time]: @"{""description"": ""Wait time in minutes.""}",
+   [time]: @"{""description"": ""ISO 8601 UTC measurement timestamp.""}",
+   [description]: @"{""description"": ""Lane description.""}",
+   [road_name]: @"{""description"": ""Road designation.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -939,7 +939,7 @@
   {"column": "description", "path": "$.description"},
   {"column": "road_name", "path": "$.road_name"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "longitude", "path": "$.longitude"},
+  {"column": "longitude", "path": "$.longitude"}
 ]
 ```
 
@@ -957,7 +957,7 @@
   {"column": "description", "path": "$.data.description"},
   {"column": "road_name", "path": "$.data.road_name"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
 ]
 ```
 
@@ -974,7 +974,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.border.BorderCrossing') | project['crossing_name'] = tostring(data.['crossing_name']),['wait_time'] = toint(data.['wait_time']),['time'] = tostring(data.['time']),['description'] = tostring(data.['description']),['road_name'] = tostring(data.['road_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -1007,30 +1007,30 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.ferries.VesselLocation'] docstring "{\"description\": \"Real-time location and status of a Washington State Ferries vessel. WSF operates approximately 21 vessels across Puget Sound routes.\"}";
+.alter table ['us.wa.wsdot.ferries.VesselLocation'] docstring @"{""description"": ""Real-time location and status of a Washington State Ferries vessel. WSF operates approximately 21 vessels across Puget Sound routes.""}";
 
 .alter table ['us.wa.wsdot.ferries.VesselLocation'] column-docstrings (
-   [vessel_id]: "{\"description\": \"Vessel identifier, stringified from upstream VesselID.\"}",
-   [vessel_name]: "{\"description\": \"Ferry vessel name.\"}",
-   [mmsi]: "{\"description\": \"Maritime Mobile Service Identity for AIS.\"}",
-   [in_service]: "{\"description\": \"True if in active service.\"}",
-   [at_dock]: "{\"description\": \"True if docked.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
-   [speed]: "{\"description\": \"Speed in knots.\"}",
-   [heading]: "{\"description\": \"Heading in degrees.\"}",
-   [departing_terminal_id]: "{\"description\": \"Departure terminal ID.\"}",
-   [departing_terminal_name]: "{\"description\": \"Departure terminal name.\"}",
-   [departing_terminal_abbrev]: "{\"description\": \"Departure terminal abbreviation.\"}",
-   [arriving_terminal_id]: "{\"description\": \"Arrival terminal ID.\"}",
-   [arriving_terminal_name]: "{\"description\": \"Arrival terminal name.\"}",
-   [arriving_terminal_abbrev]: "{\"description\": \"Arrival terminal abbreviation.\"}",
-   [scheduled_departure]: "{\"description\": \"ISO 8601 UTC scheduled departure.\"}",
-   [left_dock]: "{\"description\": \"ISO 8601 UTC actual departure.\"}",
-   [eta]: "{\"description\": \"ISO 8601 UTC estimated arrival.\"}",
-   [eta_basis]: "{\"description\": \"ETA calculation description.\"}",
-   [route_abbreviation]: "{\"description\": \"Current route abbreviation.\"}",
-   [timestamp]: "{\"description\": \"ISO 8601 UTC position timestamp.\"}",
+   [vessel_id]: @"{""description"": ""Vessel identifier, stringified from upstream VesselID.""}",
+   [vessel_name]: @"{""description"": ""Ferry vessel name.""}",
+   [mmsi]: @"{""description"": ""Maritime Mobile Service Identity for AIS.""}",
+   [in_service]: @"{""description"": ""True if in active service.""}",
+   [at_dock]: @"{""description"": ""True if docked.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
+   [speed]: @"{""description"": ""Speed in knots.""}",
+   [heading]: @"{""description"": ""Heading in degrees.""}",
+   [departing_terminal_id]: @"{""description"": ""Departure terminal ID.""}",
+   [departing_terminal_name]: @"{""description"": ""Departure terminal name.""}",
+   [departing_terminal_abbrev]: @"{""description"": ""Departure terminal abbreviation.""}",
+   [arriving_terminal_id]: @"{""description"": ""Arrival terminal ID.""}",
+   [arriving_terminal_name]: @"{""description"": ""Arrival terminal name.""}",
+   [arriving_terminal_abbrev]: @"{""description"": ""Arrival terminal abbreviation.""}",
+   [scheduled_departure]: @"{""description"": ""ISO 8601 UTC scheduled departure.""}",
+   [left_dock]: @"{""description"": ""ISO 8601 UTC actual departure.""}",
+   [eta]: @"{""description"": ""ISO 8601 UTC estimated arrival.""}",
+   [eta_basis]: @"{""description"": ""ETA calculation description.""}",
+   [route_abbreviation]: @"{""description"": ""Current route abbreviation.""}",
+   [timestamp]: @"{""description"": ""ISO 8601 UTC position timestamp.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1066,7 +1066,7 @@
   {"column": "eta", "path": "$.eta"},
   {"column": "eta_basis", "path": "$.eta_basis"},
   {"column": "route_abbreviation", "path": "$.route_abbreviation"},
-  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "timestamp", "path": "$.timestamp"}
 ]
 ```
 
@@ -1098,7 +1098,7 @@
   {"column": "eta", "path": "$.data.eta"},
   {"column": "eta_basis", "path": "$.data.eta_basis"},
   {"column": "route_abbreviation", "path": "$.data.route_abbreviation"},
-  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "timestamp", "path": "$.data.timestamp"}
 ]
 ```
 
@@ -1115,7 +1115,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.ferries.VesselLocation') | project['vessel_id'] = tostring(data.['vessel_id']),['vessel_name'] = tostring(data.['vessel_name']),['mmsi'] = toint(data.['mmsi']),['in_service'] = tobool(data.['in_service']),['at_dock'] = tobool(data.['at_dock']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['speed'] = toreal(data.['speed']),['heading'] = toint(data.['heading']),['departing_terminal_id'] = toint(data.['departing_terminal_id']),['departing_terminal_name'] = tostring(data.['departing_terminal_name']),['departing_terminal_abbrev'] = tostring(data.['departing_terminal_abbrev']),['arriving_terminal_id'] = toint(data.['arriving_terminal_id']),['arriving_terminal_name'] = tostring(data.['arriving_terminal_name']),['arriving_terminal_abbrev'] = tostring(data.['arriving_terminal_abbrev']),['scheduled_departure'] = tostring(data.['scheduled_departure']),['left_dock'] = tostring(data.['left_dock']),['eta'] = tostring(data.['eta']),['eta_basis'] = tostring(data.['eta_basis']),['route_abbreviation'] = tostring(data.['route_abbreviation']),['timestamp'] = tostring(data.['timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -1132,14 +1132,14 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.roadweather.RoadWeatherStation'] docstring "{\"description\": \"Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways.\"}";
+.alter table ['us.wa.wsdot.roadweather.RoadWeatherStation'] docstring @"{""description"": ""Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways.""}";
 
 .alter table ['us.wa.wsdot.roadweather.RoadWeatherStation'] column-docstrings (
-   [station_id]: "{\"description\": \"Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key.\"}",
-   [station_name]: "{\"description\": \"Station name (unique across the Scanweb network).\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
-   [elevation]: "{\"description\": \"Station elevation above sea level.\"}",
+   [station_id]: @"{""description"": ""Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key.""}",
+   [station_name]: @"{""description"": ""Station name (unique across the Scanweb network).""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
+   [elevation]: @"{""description"": ""Station elevation above sea level.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1159,7 +1159,7 @@
   {"column": "station_name", "path": "$.station_name"},
   {"column": "latitude", "path": "$.latitude"},
   {"column": "longitude", "path": "$.longitude"},
-  {"column": "elevation", "path": "$.elevation"},
+  {"column": "elevation", "path": "$.elevation"}
 ]
 ```
 
@@ -1175,7 +1175,7 @@
   {"column": "station_name", "path": "$.data.station_name"},
   {"column": "latitude", "path": "$.data.latitude"},
   {"column": "longitude", "path": "$.data.longitude"},
-  {"column": "elevation", "path": "$.data.elevation"},
+  {"column": "elevation", "path": "$.data.elevation"}
 ]
 ```
 
@@ -1192,7 +1192,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.roadweather.RoadWeatherStation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toint(data.['elevation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -1228,33 +1228,33 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.roadweather.RoadWeatherReading'] docstring "{\"description\": \"A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements.\"}";
+.alter table ['us.wa.wsdot.roadweather.RoadWeatherReading'] docstring @"{""description"": ""A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements.""}";
 
 .alter table ['us.wa.wsdot.roadweather.RoadWeatherReading'] column-docstrings (
-   [station_id]: "{\"description\": \"Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank).\"}",
-   [station_name]: "{\"description\": \"Station name.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
-   [elevation]: "{\"description\": \"Station elevation above sea level.\"}",
-   [reading_time]: "{\"description\": \"Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock).\"}",
-   [air_temperature]: "{\"description\": \"Air temperature.\"}",
-   [relative_humidity]: "{\"description\": \"Relative humidity percentage. Upstream key is misspelled 'RelativeHumidty'.\"}",
-   [average_wind_speed]: "{\"description\": \"Average wind speed.\"}",
-   [average_wind_direction]: "{\"description\": \"Average wind direction in degrees from true north.\"}",
-   [wind_gust]: "{\"description\": \"Peak wind gust speed.\"}",
-   [visibility]: "{\"description\": \"Visibility distance.\"}",
-   [precipitation_intensity]: "{\"description\": \"Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported.\"}",
-   [precipitation_type]: "{\"description\": \"Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported.\"}",
-   [precipitation_past_1_hour]: "{\"description\": \"Liquid-equivalent precipitation accumulated in the past 1 hour.\"}",
-   [precipitation_past_3_hours]: "{\"description\": \"Liquid-equivalent precipitation accumulated in the past 3 hours.\"}",
-   [precipitation_past_6_hours]: "{\"description\": \"Liquid-equivalent precipitation accumulated in the past 6 hours.\"}",
-   [precipitation_past_12_hours]: "{\"description\": \"Liquid-equivalent precipitation accumulated in the past 12 hours.\"}",
-   [precipitation_past_24_hours]: "{\"description\": \"Liquid-equivalent precipitation accumulated in the past 24 hours.\"}",
-   [precipitation_accumulation]: "{\"description\": \"Cumulative precipitation accumulation reported by the gauge, or null.\"}",
-   [barometric_pressure]: "{\"description\": \"Barometric pressure, or null when the station has no pressure sensor.\"}",
-   [snow_depth]: "{\"description\": \"Measured snow depth, or null when the station has no snow sensor.\"}",
-   [surface_measurements]: "{\"description\": \"Per-sensor road surface measurements (temperature, freezing point, surface condition).\"}",
-   [sub_surface_measurements]: "{\"description\": \"Per-sensor sub-surface (in-pavement) temperature measurements.\"}",
+   [station_id]: @"{""description"": ""Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank).""}",
+   [station_name]: @"{""description"": ""Station name.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
+   [elevation]: @"{""description"": ""Station elevation above sea level.""}",
+   [reading_time]: @"{""description"": ""Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock).""}",
+   [air_temperature]: @"{""description"": ""Air temperature.""}",
+   [relative_humidity]: @"{""description"": ""Relative humidity percentage. Upstream key is misspelled 'RelativeHumidty'.""}",
+   [average_wind_speed]: @"{""description"": ""Average wind speed.""}",
+   [average_wind_direction]: @"{""description"": ""Average wind direction in degrees from true north.""}",
+   [wind_gust]: @"{""description"": ""Peak wind gust speed.""}",
+   [visibility]: @"{""description"": ""Visibility distance.""}",
+   [precipitation_intensity]: @"{""description"": ""Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported.""}",
+   [precipitation_type]: @"{""description"": ""Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported.""}",
+   [precipitation_past_1_hour]: @"{""description"": ""Liquid-equivalent precipitation accumulated in the past 1 hour.""}",
+   [precipitation_past_3_hours]: @"{""description"": ""Liquid-equivalent precipitation accumulated in the past 3 hours.""}",
+   [precipitation_past_6_hours]: @"{""description"": ""Liquid-equivalent precipitation accumulated in the past 6 hours.""}",
+   [precipitation_past_12_hours]: @"{""description"": ""Liquid-equivalent precipitation accumulated in the past 12 hours.""}",
+   [precipitation_past_24_hours]: @"{""description"": ""Liquid-equivalent precipitation accumulated in the past 24 hours.""}",
+   [precipitation_accumulation]: @"{""description"": ""Cumulative precipitation accumulation reported by the gauge, or null.""}",
+   [barometric_pressure]: @"{""description"": ""Barometric pressure, or null when the station has no pressure sensor.""}",
+   [snow_depth]: @"{""description"": ""Measured snow depth, or null when the station has no snow sensor.""}",
+   [surface_measurements]: @"{""description"": ""Per-sensor road surface measurements (temperature, freezing point, surface condition)."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [sub_surface_measurements]: @"{""description"": ""Per-sensor sub-surface (in-pavement) temperature measurements."", ""schema"": {""type"": ""array"", ""items"": {""name"": ""SubSurfaceMeasurement"", ""type"": ""object"", ""description"": ""A single sub-surface (in-pavement) sensor measurement at a Scanweb station."", ""properties"": {""sensor_id"": {""type"": ""int32"", ""description"": ""Sub-surface sensor identifier within the station.""}, ""sub_surface_temperature"": {""type"": ""double"", ""description"": ""Sub-surface (below pavement) temperature."", ""unit"": ""Cel"", ""symbol"": ""\u00b0C""}}, ""required"": [""sensor_id"", ""sub_surface_temperature""]}, ""description"": ""Per-sensor sub-surface (in-pavement) temperature measurements.""}}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1293,7 +1293,7 @@
   {"column": "barometric_pressure", "path": "$.barometric_pressure"},
   {"column": "snow_depth", "path": "$.snow_depth"},
   {"column": "surface_measurements", "path": "$.surface_measurements"},
-  {"column": "sub_surface_measurements", "path": "$.sub_surface_measurements"},
+  {"column": "sub_surface_measurements", "path": "$.sub_surface_measurements"}
 ]
 ```
 
@@ -1328,7 +1328,7 @@
   {"column": "barometric_pressure", "path": "$.data.barometric_pressure"},
   {"column": "snow_depth", "path": "$.data.snow_depth"},
   {"column": "surface_measurements", "path": "$.data.surface_measurements"},
-  {"column": "sub_surface_measurements", "path": "$.data.sub_surface_measurements"},
+  {"column": "sub_surface_measurements", "path": "$.data.sub_surface_measurements"}
 ]
 ```
 
@@ -1345,7 +1345,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.roadweather.RoadWeatherReading') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toint(data.['elevation']),['reading_time'] = tostring(data.['reading_time']),['air_temperature'] = toreal(data.['air_temperature']),['relative_humidity'] = toint(data.['relative_humidity']),['average_wind_speed'] = toreal(data.['average_wind_speed']),['average_wind_direction'] = toint(data.['average_wind_direction']),['wind_gust'] = toreal(data.['wind_gust']),['visibility'] = toint(data.['visibility']),['precipitation_intensity'] = toint(data.['precipitation_intensity']),['precipitation_type'] = toint(data.['precipitation_type']),['precipitation_past_1_hour'] = toreal(data.['precipitation_past_1_hour']),['precipitation_past_3_hours'] = toreal(data.['precipitation_past_3_hours']),['precipitation_past_6_hours'] = toreal(data.['precipitation_past_6_hours']),['precipitation_past_12_hours'] = toreal(data.['precipitation_past_12_hours']),['precipitation_past_24_hours'] = toreal(data.['precipitation_past_24_hours']),['precipitation_accumulation'] = toreal(data.['precipitation_accumulation']),['barometric_pressure'] = toreal(data.['barometric_pressure']),['snow_depth'] = toreal(data.['snow_depth']),['surface_measurements'] = todynamic(data.['surface_measurements']),['sub_surface_measurements'] = todynamic(data.['sub_surface_measurements']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -1380,32 +1380,32 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.alerts.HighwayAlert'] docstring "{\"description\": \"An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network.\"}";
+.alter table ['us.wa.wsdot.alerts.HighwayAlert'] docstring @"{""description"": ""An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network.""}";
 
 .alter table ['us.wa.wsdot.alerts.HighwayAlert'] column-docstrings (
-   [alert_id]: "{\"description\": \"WSDOT alert identifier (stable for the life of the alert).\"}",
-   [county]: "{\"description\": \"County in which the alert is located.\"}",
-   [region]: "{\"description\": \"WSDOT region responsible for the alert.\"}",
-   [priority]: "{\"description\": \"Alert priority (Highest, High, Medium, Low, Lowest).\"}",
-   [event_category]: "{\"description\": \"Category of the event (e.g. Collision, Construction, Special Event, Weather).\"}",
-   [event_status]: "{\"description\": \"Current status of the event (Open or Closed).\"}",
-   [headline_description]: "{\"description\": \"Short human-readable headline for the alert.\"}",
-   [extended_description]: "{\"description\": \"Longer human-readable description with full details.\"}",
-   [start_time]: "{\"description\": \"Alert start time as an ISO 8601 UTC timestamp.\"}",
-   [end_time]: "{\"description\": \"Alert end time as an ISO 8601 UTC timestamp, or null if open-ended.\"}",
-   [last_updated_time]: "{\"description\": \"Time the alert was last updated, as an ISO 8601 UTC timestamp.\"}",
-   [start_description]: "{\"description\": \"Description of the start roadway location.\"}",
-   [start_direction]: "{\"description\": \"Travel direction at the start location (e.g. B, N, S, E, W).\"}",
-   [start_road_name]: "{\"description\": \"Road name/route designation at the start location.\"}",
-   [start_milepost]: "{\"description\": \"Milepost of the start location.\"}",
-   [start_latitude]: "{\"description\": \"Latitude of the start location in WGS84.\"}",
-   [start_longitude]: "{\"description\": \"Longitude of the start location in WGS84.\"}",
-   [end_description]: "{\"description\": \"Description of the end roadway location.\"}",
-   [end_direction]: "{\"description\": \"Travel direction at the end location.\"}",
-   [end_road_name]: "{\"description\": \"Road name/route designation at the end location.\"}",
-   [end_milepost]: "{\"description\": \"Milepost of the end location.\"}",
-   [end_latitude]: "{\"description\": \"Latitude of the end location in WGS84.\"}",
-   [end_longitude]: "{\"description\": \"Longitude of the end location in WGS84.\"}",
+   [alert_id]: @"{""description"": ""WSDOT alert identifier (stable for the life of the alert).""}",
+   [county]: @"{""description"": ""County in which the alert is located.""}",
+   [region]: @"{""description"": ""WSDOT region responsible for the alert.""}",
+   [priority]: @"{""description"": ""Alert priority (Highest, High, Medium, Low, Lowest).""}",
+   [event_category]: @"{""description"": ""Category of the event (e.g. Collision, Construction, Special Event, Weather).""}",
+   [event_status]: @"{""description"": ""Current status of the event (Open or Closed).""}",
+   [headline_description]: @"{""description"": ""Short human-readable headline for the alert.""}",
+   [extended_description]: @"{""description"": ""Longer human-readable description with full details.""}",
+   [start_time]: @"{""description"": ""Alert start time as an ISO 8601 UTC timestamp.""}",
+   [end_time]: @"{""description"": ""Alert end time as an ISO 8601 UTC timestamp, or null if open-ended.""}",
+   [last_updated_time]: @"{""description"": ""Time the alert was last updated, as an ISO 8601 UTC timestamp.""}",
+   [start_description]: @"{""description"": ""Description of the start roadway location.""}",
+   [start_direction]: @"{""description"": ""Travel direction at the start location (e.g. B, N, S, E, W).""}",
+   [start_road_name]: @"{""description"": ""Road name/route designation at the start location.""}",
+   [start_milepost]: @"{""description"": ""Milepost of the start location.""}",
+   [start_latitude]: @"{""description"": ""Latitude of the start location in WGS84.""}",
+   [start_longitude]: @"{""description"": ""Longitude of the start location in WGS84.""}",
+   [end_description]: @"{""description"": ""Description of the end roadway location.""}",
+   [end_direction]: @"{""description"": ""Travel direction at the end location.""}",
+   [end_road_name]: @"{""description"": ""Road name/route designation at the end location.""}",
+   [end_milepost]: @"{""description"": ""Milepost of the end location.""}",
+   [end_latitude]: @"{""description"": ""Latitude of the end location in WGS84.""}",
+   [end_longitude]: @"{""description"": ""Longitude of the end location in WGS84.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1443,7 +1443,7 @@
   {"column": "end_road_name", "path": "$.end_road_name"},
   {"column": "end_milepost", "path": "$.end_milepost"},
   {"column": "end_latitude", "path": "$.end_latitude"},
-  {"column": "end_longitude", "path": "$.end_longitude"},
+  {"column": "end_longitude", "path": "$.end_longitude"}
 ]
 ```
 
@@ -1477,7 +1477,7 @@
   {"column": "end_road_name", "path": "$.data.end_road_name"},
   {"column": "end_milepost", "path": "$.data.end_milepost"},
   {"column": "end_latitude", "path": "$.data.end_latitude"},
-  {"column": "end_longitude", "path": "$.data.end_longitude"},
+  {"column": "end_longitude", "path": "$.data.end_longitude"}
 ]
 ```
 
@@ -1494,7 +1494,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.alerts.HighwayAlert') | project['alert_id'] = tostring(data.['alert_id']),['county'] = tostring(data.['county']),['region'] = tostring(data.['region']),['priority'] = tostring(data.['priority']),['event_category'] = tostring(data.['event_category']),['event_status'] = tostring(data.['event_status']),['headline_description'] = tostring(data.['headline_description']),['extended_description'] = tostring(data.['extended_description']),['start_time'] = tostring(data.['start_time']),['end_time'] = tostring(data.['end_time']),['last_updated_time'] = tostring(data.['last_updated_time']),['start_description'] = tostring(data.['start_description']),['start_direction'] = tostring(data.['start_direction']),['start_road_name'] = tostring(data.['start_road_name']),['start_milepost'] = toreal(data.['start_milepost']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['end_description'] = tostring(data.['end_description']),['end_direction'] = tostring(data.['end_direction']),['end_road_name'] = tostring(data.['end_road_name']),['end_milepost'] = toreal(data.['end_milepost']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -1525,28 +1525,28 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.cameras.HighwayCamera'] docstring "{\"description\": \"Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand.\"}";
+.alter table ['us.wa.wsdot.cameras.HighwayCamera'] docstring @"{""description"": ""Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand.""}";
 
 .alter table ['us.wa.wsdot.cameras.HighwayCamera'] column-docstrings (
-   [camera_id]: "{\"description\": \"WSDOT camera identifier (stable).\"}",
-   [title]: "{\"description\": \"Human-readable camera title.\"}",
-   [description]: "{\"description\": \"Optional camera description.\"}",
-   [camera_owner]: "{\"description\": \"Organization that owns/operates the camera.\"}",
-   [owner_url]: "{\"description\": \"URL with more information from the camera owner.\"}",
-   [image_url]: "{\"description\": \"Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand.\"}",
-   [image_width]: "{\"description\": \"Width of the camera image.\"}",
-   [image_height]: "{\"description\": \"Height of the camera image.\"}",
-   [is_active]: "{\"description\": \"Whether the camera is currently active.\"}",
-   [region]: "{\"description\": \"WSDOT region (or area code) for the camera.\"}",
-   [sort_order]: "{\"description\": \"WSDOT display sort order.\"}",
-   [display_latitude]: "{\"description\": \"Latitude used for map display, in WGS84.\"}",
-   [display_longitude]: "{\"description\": \"Longitude used for map display, in WGS84.\"}",
-   [location_description]: "{\"description\": \"Description of the camera roadway location.\"}",
-   [location_direction]: "{\"description\": \"Travel direction the camera faces.\"}",
-   [location_road_name]: "{\"description\": \"Road name/route designation at the camera location.\"}",
-   [location_milepost]: "{\"description\": \"Milepost of the camera location.\"}",
-   [location_latitude]: "{\"description\": \"Latitude of the camera location in WGS84.\"}",
-   [location_longitude]: "{\"description\": \"Longitude of the camera location in WGS84.\"}",
+   [camera_id]: @"{""description"": ""WSDOT camera identifier (stable).""}",
+   [title]: @"{""description"": ""Human-readable camera title.""}",
+   [description]: @"{""description"": ""Optional camera description.""}",
+   [camera_owner]: @"{""description"": ""Organization that owns/operates the camera.""}",
+   [owner_url]: @"{""description"": ""URL with more information from the camera owner.""}",
+   [image_url]: @"{""description"": ""Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand.""}",
+   [image_width]: @"{""description"": ""Width of the camera image.""}",
+   [image_height]: @"{""description"": ""Height of the camera image.""}",
+   [is_active]: @"{""description"": ""Whether the camera is currently active.""}",
+   [region]: @"{""description"": ""WSDOT region (or area code) for the camera.""}",
+   [sort_order]: @"{""description"": ""WSDOT display sort order.""}",
+   [display_latitude]: @"{""description"": ""Latitude used for map display, in WGS84.""}",
+   [display_longitude]: @"{""description"": ""Longitude used for map display, in WGS84.""}",
+   [location_description]: @"{""description"": ""Description of the camera roadway location.""}",
+   [location_direction]: @"{""description"": ""Travel direction the camera faces.""}",
+   [location_road_name]: @"{""description"": ""Road name/route designation at the camera location.""}",
+   [location_milepost]: @"{""description"": ""Milepost of the camera location.""}",
+   [location_latitude]: @"{""description"": ""Latitude of the camera location in WGS84.""}",
+   [location_longitude]: @"{""description"": ""Longitude of the camera location in WGS84.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1580,7 +1580,7 @@
   {"column": "location_road_name", "path": "$.location_road_name"},
   {"column": "location_milepost", "path": "$.location_milepost"},
   {"column": "location_latitude", "path": "$.location_latitude"},
-  {"column": "location_longitude", "path": "$.location_longitude"},
+  {"column": "location_longitude", "path": "$.location_longitude"}
 ]
 ```
 
@@ -1610,7 +1610,7 @@
   {"column": "location_road_name", "path": "$.data.location_road_name"},
   {"column": "location_milepost", "path": "$.data.location_milepost"},
   {"column": "location_latitude", "path": "$.data.location_latitude"},
-  {"column": "location_longitude", "path": "$.data.location_longitude"},
+  {"column": "location_longitude", "path": "$.data.location_longitude"}
 ]
 ```
 
@@ -1627,7 +1627,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.cameras.HighwayCamera') | project['camera_id'] = tostring(data.['camera_id']),['title'] = tostring(data.['title']),['description'] = tostring(data.['description']),['camera_owner'] = tostring(data.['camera_owner']),['owner_url'] = tostring(data.['owner_url']),['image_url'] = tostring(data.['image_url']),['image_width'] = toint(data.['image_width']),['image_height'] = toint(data.['image_height']),['is_active'] = tobool(data.['is_active']),['region'] = tostring(data.['region']),['sort_order'] = toint(data.['sort_order']),['display_latitude'] = toreal(data.['display_latitude']),['display_longitude'] = toreal(data.['display_longitude']),['location_description'] = tostring(data.['location_description']),['location_direction'] = tostring(data.['location_direction']),['location_road_name'] = tostring(data.['location_road_name']),['location_milepost'] = toreal(data.['location_milepost']),['location_latitude'] = toreal(data.['location_latitude']),['location_longitude'] = toreal(data.['location_longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -1658,28 +1658,28 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.bridgeclearances.BridgeClearance'] docstring "{\"description\": \"Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically.\"}";
+.alter table ['us.wa.wsdot.bridgeclearances.BridgeClearance'] docstring @"{""description"": ""Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically.""}";
 
 .alter table ['us.wa.wsdot.bridgeclearances.BridgeClearance'] column-docstrings (
-   [crossing_location_id]: "{\"description\": \"Stable crossing location identifier (CrossingLocationId).\"}",
-   [bridge_number]: "{\"description\": \"WSDOT bridge number of the structure.\"}",
-   [state_route_id]: "{\"description\": \"State route identifier the structure crosses, or null.\"}",
-   [state_structure_id]: "{\"description\": \"Statewide structure identifier.\"}",
-   [crossing_description]: "{\"description\": \"Human-readable description of the crossing.\"}",
-   [inventory_direction]: "{\"description\": \"Inventory direction of the structure, or null.\"}",
-   [srmp]: "{\"description\": \"State route milepost of the crossing.\"}",
-   [srmp_ahead_back_indicator]: "{\"description\": \"Ahead/Back indicator disambiguating the milepost, or null.\"}",
-   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
-   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
-   [vertical_clearance_maximum_inches]: "{\"description\": \"Maximum vertical clearance, in inches.\"}",
-   [vertical_clearance_maximum_feet_inch]: "{\"description\": \"Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in').\"}",
-   [vertical_clearance_minimum_inches]: "{\"description\": \"Minimum vertical clearance, in inches.\"}",
-   [vertical_clearance_minimum_feet_inch]: "{\"description\": \"Minimum vertical clearance as a feet-and-inches display string.\"}",
-   [control_entity_guid]: "{\"description\": \"GUID of the controlling entity record.\"}",
-   [crossing_record_guid]: "{\"description\": \"GUID of the crossing record.\"}",
-   [location_guid]: "{\"description\": \"GUID of the location record.\"}",
-   [route_date]: "{\"description\": \"Effective route date as an ISO 8601 UTC timestamp.\"}",
-   [api_last_update]: "{\"description\": \"Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp.\"}",
+   [crossing_location_id]: @"{""description"": ""Stable crossing location identifier (CrossingLocationId).""}",
+   [bridge_number]: @"{""description"": ""WSDOT bridge number of the structure.""}",
+   [state_route_id]: @"{""description"": ""State route identifier the structure crosses, or null.""}",
+   [state_structure_id]: @"{""description"": ""Statewide structure identifier.""}",
+   [crossing_description]: @"{""description"": ""Human-readable description of the crossing.""}",
+   [inventory_direction]: @"{""description"": ""Inventory direction of the structure, or null.""}",
+   [srmp]: @"{""description"": ""State route milepost of the crossing.""}",
+   [srmp_ahead_back_indicator]: @"{""description"": ""Ahead/Back indicator disambiguating the milepost, or null.""}",
+   [latitude]: @"{""description"": ""Latitude in WGS84.""}",
+   [longitude]: @"{""description"": ""Longitude in WGS84.""}",
+   [vertical_clearance_maximum_inches]: @"{""description"": ""Maximum vertical clearance, in inches.""}",
+   [vertical_clearance_maximum_feet_inch]: @"{""description"": ""Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in').""}",
+   [vertical_clearance_minimum_inches]: @"{""description"": ""Minimum vertical clearance, in inches.""}",
+   [vertical_clearance_minimum_feet_inch]: @"{""description"": ""Minimum vertical clearance as a feet-and-inches display string.""}",
+   [control_entity_guid]: @"{""description"": ""GUID of the controlling entity record.""}",
+   [crossing_record_guid]: @"{""description"": ""GUID of the crossing record.""}",
+   [location_guid]: @"{""description"": ""GUID of the location record.""}",
+   [route_date]: @"{""description"": ""Effective route date as an ISO 8601 UTC timestamp.""}",
+   [api_last_update]: @"{""description"": ""Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1713,7 +1713,7 @@
   {"column": "crossing_record_guid", "path": "$.crossing_record_guid"},
   {"column": "location_guid", "path": "$.location_guid"},
   {"column": "route_date", "path": "$.route_date"},
-  {"column": "api_last_update", "path": "$.api_last_update"},
+  {"column": "api_last_update", "path": "$.api_last_update"}
 ]
 ```
 
@@ -1743,7 +1743,7 @@
   {"column": "crossing_record_guid", "path": "$.data.crossing_record_guid"},
   {"column": "location_guid", "path": "$.data.location_guid"},
   {"column": "route_date", "path": "$.data.route_date"},
-  {"column": "api_last_update", "path": "$.data.api_last_update"},
+  {"column": "api_last_update", "path": "$.data.api_last_update"}
 ]
 ```
 
@@ -1760,7 +1760,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.bridgeclearances.BridgeClearance') | project['crossing_location_id'] = tostring(data.['crossing_location_id']),['bridge_number'] = tostring(data.['bridge_number']),['state_route_id'] = tostring(data.['state_route_id']),['state_structure_id'] = tostring(data.['state_structure_id']),['crossing_description'] = tostring(data.['crossing_description']),['inventory_direction'] = tostring(data.['inventory_direction']),['srmp'] = toreal(data.['srmp']),['srmp_ahead_back_indicator'] = tostring(data.['srmp_ahead_back_indicator']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['vertical_clearance_maximum_inches'] = toint(data.['vertical_clearance_maximum_inches']),['vertical_clearance_maximum_feet_inch'] = tostring(data.['vertical_clearance_maximum_feet_inch']),['vertical_clearance_minimum_inches'] = toint(data.['vertical_clearance_minimum_inches']),['vertical_clearance_minimum_feet_inch'] = tostring(data.['vertical_clearance_minimum_feet_inch']),['control_entity_guid'] = tostring(data.['control_entity_guid']),['crossing_record_guid'] = tostring(data.['crossing_record_guid']),['location_guid'] = tostring(data.['location_guid']),['route_date'] = tostring(data.['route_date']),['api_last_update'] = tostring(data.['api_last_update']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -1781,18 +1781,18 @@
    [___subject]: string
 );
 
-.alter table ['us.wa.wsdot.ferryterminals.TerminalSailingSpace'] docstring "{\"description\": \"Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal.\"}";
+.alter table ['us.wa.wsdot.ferryterminals.TerminalSailingSpace'] docstring @"{""description"": ""Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal.""}";
 
 .alter table ['us.wa.wsdot.ferryterminals.TerminalSailingSpace'] column-docstrings (
-   [terminal_id]: "{\"description\": \"Washington State Ferries terminal identifier (stable).\"}",
-   [terminal_subject_id]: "{\"description\": \"WSF terminal subject identifier.\"}",
-   [region_id]: "{\"description\": \"WSF region identifier.\"}",
-   [terminal_name]: "{\"description\": \"Terminal name.\"}",
-   [terminal_abbrev]: "{\"description\": \"Terminal abbreviation code.\"}",
-   [sort_seq]: "{\"description\": \"WSF display sort sequence.\"}",
-   [departing_spaces]: "{\"description\": \"Upcoming departures from this terminal with per-sailing vehicle space availability.\"}",
-   [is_no_fare_collected]: "{\"description\": \"Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable.\"}",
-   [no_fare_collected_msg]: "{\"description\": \"Message explaining the no-fare-collected status, or null.\"}",
+   [terminal_id]: @"{""description"": ""Washington State Ferries terminal identifier (stable).""}",
+   [terminal_subject_id]: @"{""description"": ""WSF terminal subject identifier.""}",
+   [region_id]: @"{""description"": ""WSF region identifier.""}",
+   [terminal_name]: @"{""description"": ""Terminal name.""}",
+   [terminal_abbrev]: @"{""description"": ""Terminal abbreviation code.""}",
+   [sort_seq]: @"{""description"": ""WSF display sort sequence.""}",
+   [departing_spaces]: @"{""description"": ""Upcoming departures from this terminal with per-sailing vehicle space availability."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [is_no_fare_collected]: @"{""description"": ""Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable.""}",
+   [no_fare_collected_msg]: @"{""description"": ""Message explaining the no-fare-collected status, or null.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1816,7 +1816,7 @@
   {"column": "sort_seq", "path": "$.sort_seq"},
   {"column": "departing_spaces", "path": "$.departing_spaces"},
   {"column": "is_no_fare_collected", "path": "$.is_no_fare_collected"},
-  {"column": "no_fare_collected_msg", "path": "$.no_fare_collected_msg"},
+  {"column": "no_fare_collected_msg", "path": "$.no_fare_collected_msg"}
 ]
 ```
 
@@ -1836,7 +1836,7 @@
   {"column": "sort_seq", "path": "$.data.sort_seq"},
   {"column": "departing_spaces", "path": "$.data.departing_spaces"},
   {"column": "is_no_fare_collected", "path": "$.data.is_no_fare_collected"},
-  {"column": "no_fare_collected_msg", "path": "$.data.no_fare_collected_msg"},
+  {"column": "no_fare_collected_msg", "path": "$.data.no_fare_collected_msg"}
 ]
 ```
 
@@ -1853,7 +1853,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.ferryterminals.TerminalSailingSpace') | project['terminal_id'] = tostring(data.['terminal_id']),['terminal_subject_id'] = toint(data.['terminal_subject_id']),['region_id'] = toint(data.['region_id']),['terminal_name'] = tostring(data.['terminal_name']),['terminal_abbrev'] = tostring(data.['terminal_abbrev']),['sort_seq'] = toint(data.['sort_seq']),['departing_spaces'] = todynamic(data.['departing_spaces']),['is_no_fare_collected'] = tobool(data.['is_no_fare_collected']),['no_fare_collected_msg'] = tostring(data.['no_fare_collected_msg']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

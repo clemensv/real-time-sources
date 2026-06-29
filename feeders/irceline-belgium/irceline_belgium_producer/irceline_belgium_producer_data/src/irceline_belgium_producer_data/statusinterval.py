@@ -159,8 +159,8 @@ class StatusInterval:
             An instance of the dataclass.
         """
         return cls(
-            lower='hzwdmeehiotakyebqnev',
-            upper='djljkwikofhxbborjzav',
-            name='nltijbeaanqukcmpfrda',
-            color='vplbzebhtfkgcapomgjt'
+            lower='uvnaqybfjmjvqsaqqaji',
+            upper='wfpobwawkizcpqemwgvy',
+            name='kjbjqqrlzdqtqgcpbegc',
+            color='bgjioujlyrkobxwsjxrz'
         )

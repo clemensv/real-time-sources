@@ -320,240 +320,168 @@
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Hasel (hazel) today. Values: '0' (none), '0-1' (none to low), '1' (low), '1-2' (low to medium), '2' (medium), '2-3' (medium to high), '3' (high).",
-                    "altnames": {
-                      "lang:de": "Hasel heute"
-                    }
+                    "description": "Pollen intensity for Hasel (hazel) today. Values: '0' (none), '0-1' (none to low), '1' (low), '1-2' (low to medium), '2' (medium), '2-3' (medium to high), '3' (high)."
                   },
                   "hazel_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Hasel (hazel) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Hasel morgen"
-                    }
+                    "description": "Pollen intensity for Hasel (hazel) tomorrow."
                   },
                   "hazel_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Hasel (hazel) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Hasel übermorgen"
-                    }
+                    "description": "Pollen intensity for Hasel (hazel) the day after tomorrow."
                   },
                   "alder_today": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Erle (alder) today.",
-                    "altnames": {
-                      "lang:de": "Erle heute"
-                    }
+                    "description": "Pollen intensity for Erle (alder) today."
                   },
                   "alder_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Erle (alder) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Erle morgen"
-                    }
+                    "description": "Pollen intensity for Erle (alder) tomorrow."
                   },
                   "alder_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Erle (alder) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Erle übermorgen"
-                    }
+                    "description": "Pollen intensity for Erle (alder) the day after tomorrow."
                   },
                   "birch_today": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Birke (birch) today.",
-                    "altnames": {
-                      "lang:de": "Birke heute"
-                    }
+                    "description": "Pollen intensity for Birke (birch) today."
                   },
                   "birch_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Birke (birch) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Birke morgen"
-                    }
+                    "description": "Pollen intensity for Birke (birch) tomorrow."
                   },
                   "birch_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Birke (birch) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Birke übermorgen"
-                    }
+                    "description": "Pollen intensity for Birke (birch) the day after tomorrow."
                   },
                   "ash_today": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Esche (ash) today.",
-                    "altnames": {
-                      "lang:de": "Esche heute"
-                    }
+                    "description": "Pollen intensity for Esche (ash) today."
                   },
                   "ash_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Esche (ash) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Esche morgen"
-                    }
+                    "description": "Pollen intensity for Esche (ash) tomorrow."
                   },
                   "ash_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Esche (ash) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Esche übermorgen"
-                    }
+                    "description": "Pollen intensity for Esche (ash) the day after tomorrow."
                   },
                   "grasses_today": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Gräser (grasses) today. In the upstream API this field is named 'Graeser'.",
-                    "altnames": {
-                      "lang:de": "Gräser heute"
-                    }
+                    "description": "Pollen intensity for Gräser (grasses) today. In the upstream API this field is named 'Graeser'."
                   },
                   "grasses_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Gräser (grasses) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Gräser morgen"
-                    }
+                    "description": "Pollen intensity for Gräser (grasses) tomorrow."
                   },
                   "grasses_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Gräser (grasses) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Gräser übermorgen"
-                    }
+                    "description": "Pollen intensity for Gräser (grasses) the day after tomorrow."
                   },
                   "rye_today": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Roggen (rye) today.",
-                    "altnames": {
-                      "lang:de": "Roggen heute"
-                    }
+                    "description": "Pollen intensity for Roggen (rye) today."
                   },
                   "rye_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Roggen (rye) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Roggen morgen"
-                    }
+                    "description": "Pollen intensity for Roggen (rye) tomorrow."
                   },
                   "rye_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Roggen (rye) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Roggen übermorgen"
-                    }
+                    "description": "Pollen intensity for Roggen (rye) the day after tomorrow."
                   },
                   "mugwort_today": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Beifuß (mugwort) today. In the upstream API this field is named 'Beifuss'.",
-                    "altnames": {
-                      "lang:de": "Beifuß heute"
-                    }
+                    "description": "Pollen intensity for Beifuß (mugwort) today. In the upstream API this field is named 'Beifuss'."
                   },
                   "mugwort_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Beifuß (mugwort) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Beifuß morgen"
-                    }
+                    "description": "Pollen intensity for Beifuß (mugwort) tomorrow."
                   },
                   "mugwort_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Beifuß (mugwort) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Beifuß übermorgen"
-                    }
+                    "description": "Pollen intensity for Beifuß (mugwort) the day after tomorrow."
                   },
                   "ragweed_today": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Ambrosia (ragweed) today.",
-                    "altnames": {
-                      "lang:de": "Ambrosia heute"
-                    }
+                    "description": "Pollen intensity for Ambrosia (ragweed) today."
                   },
                   "ragweed_tomorrow": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Ambrosia (ragweed) tomorrow.",
-                    "altnames": {
-                      "lang:de": "Ambrosia morgen"
-                    }
+                    "description": "Pollen intensity for Ambrosia (ragweed) tomorrow."
                   },
                   "ragweed_dayafter_to": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Pollen intensity for Ambrosia (ragweed) the day after tomorrow.",
-                    "altnames": {
-                      "lang:de": "Ambrosia übermorgen"
-                    }
+                    "description": "Pollen intensity for Ambrosia (ragweed) the day after tomorrow."
                   },
                   "pollen_type": {
                     "type": [

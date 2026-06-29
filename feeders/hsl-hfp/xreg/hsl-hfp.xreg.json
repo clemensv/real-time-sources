@@ -1,0 +1,3121 @@
+{
+  "description": "HSL High-Frequency Positioning (HFP) — Helsinki Region Transport real-time vehicle telemetry. Each upstream HFP message is wrapped verbatim as a CloudEvent and re-emitted over Kafka, MQTT, and AMQP, alongside GTFS reference data (operators, routes, stops).",
+  "documentation": "https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/",
+  "endpoints": {
+    "fi.hsl.hfp.Upstream": {
+      "usage": [
+        "consumer"
+      ],
+      "protocol": "MQTT/5.0",
+      "protocoloptions": {
+        "deployed": true,
+        "endpoints": [
+          {
+            "uri": "mqtts://mqtt.hsl.fi:8883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.hsl.hfp.upstream"
+      ],
+      "description": "Upstream HSL HFP MQTT broker (mqtt.hsl.fi). Consumed as plain JSON on the `/hfp/v2/journey/#` topic tree; the bridge wraps each message in a CloudEvent and republishes it."
+    },
+    "fi.hsl.hfp.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "hsl-hfp",
+          "key": "{operator_id}/{vehicle_number}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.hsl.hfp"
+      ],
+      "description": "Downstream Kafka / Event Hubs producer for HFP telemetry on the `hsl-hfp` topic, partitioned by vehicle identity `{operator_id}/{vehicle_number}`."
+    },
+    "fi.hsl.gtfs.operator.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "hsl-hfp",
+          "key": "operator/{operator_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.hsl.gtfs.operator"
+      ],
+      "description": "Downstream Kafka / Event Hubs producer for the HSL operator reference catalogue on the `hsl-hfp` topic, keyed by `operator/{operator_id}`."
+    },
+    "fi.hsl.gtfs.route.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "hsl-hfp",
+          "key": "route/{route_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.hsl.gtfs.route"
+      ],
+      "description": "Downstream Kafka / Event Hubs producer for the HSL route reference catalogue on the `hsl-hfp` topic, keyed by `route/{route_id}`."
+    },
+    "fi.hsl.gtfs.stop.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "hsl-hfp",
+          "key": "stop/{stop_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.hsl.gtfs.stop"
+      ],
+      "description": "Downstream Kafka / Event Hubs producer for the HSL stop reference catalogue on the `hsl-hfp` topic, keyed by `stop/{stop_id}`."
+    },
+    "fi.hsl.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.hsl.hfp.mqtt",
+        "#/messagegroups/fi.hsl.gtfs.operator.mqtt",
+        "#/messagegroups/fi.hsl.gtfs.route.mqtt",
+        "#/messagegroups/fi.hsl.gtfs.stop.mqtt"
+      ],
+      "description": "Downstream MQTT 5 producer. Telemetry mirrors the upstream HFP topic tree; reference data is retained on a reference topic tree."
+    },
+    "fi.hsl.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/hsl-hfp"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.hsl.hfp.amqp",
+        "#/messagegroups/fi.hsl.gtfs.operator.amqp",
+        "#/messagegroups/fi.hsl.gtfs.route.amqp",
+        "#/messagegroups/fi.hsl.gtfs.stop.amqp"
+      ],
+      "description": "Downstream AMQP 1.0 producer (Service Bus / Event Hubs / generic brokers)."
+    }
+  },
+  "messagegroups": {
+    "fi.hsl.hfp": {
+      "description": "HSL High-Frequency Positioning (HFP) vehicle telemetry. One CloudEvents type per HFP event type; all types share the vehicle identity (operator/vehicle from the topic) as subject and Kafka key.",
+      "messages": {
+        "fi.hsl.hfp.vp": {
+          "name": "vp",
+          "envelope": "CloudEvents/1.0",
+          "description": "Vehicle position — the ~1 Hz GPS heartbeat of a vehicle on an ongoing public journey.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.vp"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.due": {
+          "name": "due",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle will soon arrive at a stop.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.due"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.arr": {
+          "name": "arr",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle has arrived inside a stop's radius.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.arr"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.dep": {
+          "name": "dep",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle has departed and left a stop's radius.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.dep"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.ars": {
+          "name": "ars",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle has arrived at a stop (stop-position event).",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.ars"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.pde": {
+          "name": "pde",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle is ready to depart from a stop.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.pde"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.pas": {
+          "name": "pas",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle passes through a stop without stopping.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.pas"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.wait": {
+          "name": "wait",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle is waiting at a stop.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.wait"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.doo": {
+          "name": "doo",
+          "envelope": "CloudEvents/1.0",
+          "description": "The doors of the vehicle have been opened.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.doo"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.doc": {
+          "name": "doc",
+          "envelope": "CloudEvents/1.0",
+          "description": "The doors of the vehicle have been closed.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.doc"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.vja": {
+          "name": "vja",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle signs in to a service journey (trip).",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.vja"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.vjout": {
+          "name": "vjout",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle signs off from a service journey after the final stop.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.vjout"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.tlr": {
+          "name": "tlr",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle requests traffic-light priority at a junction.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.tlr"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.tla": {
+          "name": "tla",
+          "envelope": "CloudEvents/1.0",
+          "description": "The vehicle receives a response to a traffic-light priority request.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.tla"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.da": {
+          "name": "da",
+          "envelope": "CloudEvents/1.0",
+          "description": "A driver signs in to the vehicle.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.da"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.dout": {
+          "name": "dout",
+          "envelope": "CloudEvents/1.0",
+          "description": "A driver signs out of the vehicle.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.dout"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.ba": {
+          "name": "ba",
+          "envelope": "CloudEvents/1.0",
+          "description": "A driver selects the block the vehicle will run.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.ba"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.bout": {
+          "name": "bout",
+          "envelope": "CloudEvents/1.0",
+          "description": "A driver signs out from the selected block (usually at a depot).",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.hfp.bout"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_id}/{vehicle_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator": {
+      "description": "HSL operator catalogue entry — the company that owns and operates a vehicle. Keyed by the zero-padded operator id used in the HFP topic tree. Emitted at start-up and on periodic refresh.",
+      "messages": {
+        "fi.hsl.gtfs.operator.Operator": {
+          "name": "Operator",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record describing one HSL transit operator.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.gtfs.Operator"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "operator/{operator_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.gtfs.Operator"
+        }
+      }
+    },
+    "fi.hsl.gtfs.route": {
+      "description": "HSL GTFS route catalogue entry. Keyed by the GTFS `route_id` that appears in the HFP topic and `route` payload field. Emitted at start-up and on periodic refresh.",
+      "messages": {
+        "fi.hsl.gtfs.route.Route": {
+          "name": "Route",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record describing one HSL route.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.gtfs.Route"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "route/{route_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.gtfs.Route"
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop": {
+      "description": "HSL GTFS stop catalogue entry. Keyed by the GTFS `stop_id` that appears in the HFP topic `next_stop` level and `stop` payload field. Emitted at start-up and on periodic refresh.",
+      "messages": {
+        "fi.hsl.gtfs.stop.Stop": {
+          "name": "Stop",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record describing one HSL stop or station.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.hsl.gtfs.Stop"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "stop/{stop_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.gtfs.Stop"
+        }
+      }
+    },
+    "fi.hsl.hfp.mqtt": {
+      "description": "MQTT 5 variant of the HFP telemetry events. Republished on a topic tree that mirrors the upstream HFP topic structure.",
+      "messages": {
+        "fi.hsl.hfp.mqtt.vp": {
+          "name": "vp",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vp",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/vp/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.due": {
+          "name": "due",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.due",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/due/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.arr": {
+          "name": "arr",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.arr",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/arr/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.dep": {
+          "name": "dep",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dep",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/dep/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.ars": {
+          "name": "ars",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ars",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/ars/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.pde": {
+          "name": "pde",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pde",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/pde/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.pas": {
+          "name": "pas",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pas",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/pas/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.wait": {
+          "name": "wait",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.wait",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/wait/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.doo": {
+          "name": "doo",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doo",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/doo/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.doc": {
+          "name": "doc",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doc",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/doc/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.vja": {
+          "name": "vja",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vja",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/vja/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.vjout": {
+          "name": "vjout",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vjout",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/vjout/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.tlr": {
+          "name": "tlr",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tlr",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/tlr/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}/{sid}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.tla": {
+          "name": "tla",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tla",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/tla/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}/{sid}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.da": {
+          "name": "da",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.da",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/da/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.dout": {
+          "name": "dout",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dout",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/dout/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.ba": {
+          "name": "ba",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ba",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/ba/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        },
+        "fi.hsl.hfp.mqtt.bout": {
+          "name": "bout",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.bout",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/journey/{temporal_type}/bout/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          }
+        }
+      }
+    },
+    "fi.hsl.hfp.amqp": {
+      "description": "AMQP 1.0 variant of the HFP telemetry events, with the vehicle identity as subject and routing hints in application-properties.",
+      "messages": {
+        "fi.hsl.hfp.amqp.vp": {
+          "name": "vp",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vp",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "vp",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.due": {
+          "name": "due",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.due",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "due",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.arr": {
+          "name": "arr",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.arr",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "arr",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.dep": {
+          "name": "dep",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dep",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "dep",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.ars": {
+          "name": "ars",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ars",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "ars",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.pde": {
+          "name": "pde",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pde",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "pde",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.pas": {
+          "name": "pas",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pas",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "pas",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.wait": {
+          "name": "wait",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.wait",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "wait",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.doo": {
+          "name": "doo",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doo",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "doo",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.doc": {
+          "name": "doc",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doc",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "doc",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.vja": {
+          "name": "vja",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vja",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "vja",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.vjout": {
+          "name": "vjout",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vjout",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "vjout",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.tlr": {
+          "name": "tlr",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tlr",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "tlr",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.tla": {
+          "name": "tla",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tla",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "tla",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.da": {
+          "name": "da",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.da",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "da",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.dout": {
+          "name": "dout",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dout",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "dout",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.ba": {
+          "name": "ba",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ba",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "ba",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.bout": {
+          "name": "bout",
+          "basemessageuri": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.bout",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_id}/{vehicle_number}",
+                "description": "AMQP message subject — the vehicle identity, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "bout",
+                "description": "HFP event type carried by this message."
+              },
+              "transport_mode": {
+                "type": "uritemplate",
+                "value": "{transport_mode}",
+                "description": "Vehicle transport mode from the HFP topic."
+              },
+              "route_id": {
+                "type": "uritemplate",
+                "value": "{route_id}",
+                "description": "GTFS route id from the HFP topic; routers can filter by route without cracking the body."
+              },
+              "operator_id": {
+                "type": "uritemplate",
+                "value": "{operator_id}",
+                "description": "Owning operator id (zero-padded) from the HFP topic."
+              },
+              "vehicle_number": {
+                "type": "uritemplate",
+                "value": "{vehicle_number}",
+                "description": "Vehicle number (zero-padded) from the HFP topic."
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.mqtt": {
+      "description": "MQTT 5 variant of the HSL operator reference events, retained so late subscribers receive the latest catalogue.",
+      "messages": {
+        "fi.hsl.gtfs.operator.mqtt.Operator": {
+          "name": "Operator",
+          "basemessageuri": "/messagegroups/fi.hsl.gtfs.operator/messages/fi.hsl.gtfs.operator.Operator",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/reference/operator/{operator_id}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.amqp": {
+      "description": "AMQP 1.0 variant of the HSL operator reference events.",
+      "messages": {
+        "fi.hsl.gtfs.operator.amqp.Operator": {
+          "name": "Operator",
+          "basemessageuri": "/messagegroups/fi.hsl.gtfs.operator/messages/fi.hsl.gtfs.operator.Operator",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "operator/{operator_id}",
+                "description": "AMQP message subject — prefixed reference identifier matching the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.mqtt": {
+      "description": "MQTT 5 variant of the HSL route reference events, retained so late subscribers receive the latest catalogue.",
+      "messages": {
+        "fi.hsl.gtfs.route.mqtt.Route": {
+          "name": "Route",
+          "basemessageuri": "/messagegroups/fi.hsl.gtfs.route/messages/fi.hsl.gtfs.route.Route",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/reference/route/{route_id}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.amqp": {
+      "description": "AMQP 1.0 variant of the HSL route reference events.",
+      "messages": {
+        "fi.hsl.gtfs.route.amqp.Route": {
+          "name": "Route",
+          "basemessageuri": "/messagegroups/fi.hsl.gtfs.route/messages/fi.hsl.gtfs.route.Route",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "route/{route_id}",
+                "description": "AMQP message subject — prefixed reference identifier matching the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.mqtt": {
+      "description": "MQTT 5 variant of the HSL stop reference events, retained so late subscribers receive the latest catalogue.",
+      "messages": {
+        "fi.hsl.gtfs.stop.mqtt.Stop": {
+          "name": "Stop",
+          "basemessageuri": "/messagegroups/fi.hsl.gtfs.stop/messages/fi.hsl.gtfs.stop.Stop",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hfp/v2/reference/stop/{stop_id}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.amqp": {
+      "description": "AMQP 1.0 variant of the HSL stop reference events.",
+      "messages": {
+        "fi.hsl.gtfs.stop.amqp.Stop": {
+          "name": "Stop",
+          "basemessageuri": "/messagegroups/fi.hsl.gtfs.stop/messages/fi.hsl.gtfs.stop.Stop",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "stop/{stop_id}",
+                "description": "AMQP message subject — prefixed reference identifier matching the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.hfp.upstream": {
+      "description": "The upstream HSL HFP broker described as an xRegistry MQTT consumer message group — plain JSON payloads keyed by event type, on the verbatim HFP topic tree. Drives generation of the upstream data classes and topic helpers consumed by the bridge.",
+      "messages": {
+        "fi.hsl.hfp.upstream.vp": {
+          "name": "vp",
+          "description": "Upstream HFP `vp` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `VP` key. Vehicle position — the ~1 Hz GPS heartbeat of a vehicle on an ongoing public journey.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/vp/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.due": {
+          "name": "due",
+          "description": "Upstream HFP `due` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `DUE` key. The vehicle will soon arrive at a stop.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/due/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.arr": {
+          "name": "arr",
+          "description": "Upstream HFP `arr` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `ARR` key. The vehicle has arrived inside a stop's radius.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/arr/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.dep": {
+          "name": "dep",
+          "description": "Upstream HFP `dep` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `DEP` key. The vehicle has departed and left a stop's radius.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/dep/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.ars": {
+          "name": "ars",
+          "description": "Upstream HFP `ars` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `ARS` key. The vehicle has arrived at a stop (stop-position event).",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/ars/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.pde": {
+          "name": "pde",
+          "description": "Upstream HFP `pde` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `PDE` key. The vehicle is ready to depart from a stop.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/pde/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.pas": {
+          "name": "pas",
+          "description": "Upstream HFP `pas` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `PAS` key. The vehicle passes through a stop without stopping.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/pas/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.wait": {
+          "name": "wait",
+          "description": "Upstream HFP `wait` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `WAIT` key. The vehicle is waiting at a stop.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/wait/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.doo": {
+          "name": "doo",
+          "description": "Upstream HFP `doo` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `DOO` key. The doors of the vehicle have been opened.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/doo/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.doc": {
+          "name": "doc",
+          "description": "Upstream HFP `doc` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `DOC` key. The doors of the vehicle have been closed.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/doc/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.vja": {
+          "name": "vja",
+          "description": "Upstream HFP `vja` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `VJA` key. The vehicle signs in to a service journey (trip).",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/vja/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.vjout": {
+          "name": "vjout",
+          "description": "Upstream HFP `vjout` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `VJOUT` key. The vehicle signs off from a service journey after the final stop.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/vjout/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.tlr": {
+          "name": "tlr",
+          "description": "Upstream HFP `tlr` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `TLR` key. The vehicle requests traffic-light priority at a junction.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/tlr/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}/{sid}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.upstream.tla": {
+          "name": "tla",
+          "description": "Upstream HFP `tla` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `TLA` key. The vehicle receives a response to a traffic-light priority request.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/tla/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}/{sid}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.upstream.da": {
+          "name": "da",
+          "description": "Upstream HFP `da` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `DA` key. A driver signs in to the vehicle.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/da/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.upstream.dout": {
+          "name": "dout",
+          "description": "Upstream HFP `dout` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `DOUT` key. A driver signs out of the vehicle.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/dout/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.upstream.ba": {
+          "name": "ba",
+          "description": "Upstream HFP `ba` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `BA` key. A driver selects the block the vehicle will run.",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/ba/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.upstream.bout": {
+          "name": "bout",
+          "description": "Upstream HFP `bout` message as published by HSL on `mqtt.hsl.fi` — plain JSON (no CloudEvents envelope), with the event object under the single `BOUT` key. A driver signs out from the selected block (usually at a depot).",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "/hfp/v2/journey/{temporal_type}/bout/{transport_mode}/{operator_id}/{vehicle_number}/{route_id}/{direction_id}/{headsign}/{start_time}/{next_stop}/{geohash_level}/{geohash}",
+            "qos": 0
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "fi.hsl.jstruct": {
+      "schemas": {
+        "fi.hsl.hfp.VehicleEvent": {
+          "name": "VehicleEvent",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/fi/hsl/hfp/VehicleEvent/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "VehicleEvent",
+                "$root": "#/definitions/fi/hsl/hfp/VehicleEvent",
+                "definitions": {
+                  "fi": {
+                    "hsl": {
+                      "hfp": {
+                        "VehicleEvent": {
+                          "name": "VehicleEvent",
+                          "type": "object",
+                          "description": "Telemetry payload shared by the HFP vehicle-position event (`vp`), the stop progress events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`), the door events (`doo`,`doc`) and the service-journey sign events (`vja`,`vjout`). Mirrors the single HFP v2 payload field table verbatim (the upstream defines one payload object whose populated fields depend on the event type, identified by the CloudEvents `type`). All fields except the operator/vehicle/timestamp identity are optional because their presence depends on the event type and on data availability.",
+                          "properties": {
+                            "oper": {
+                              "type": "int32",
+                              "description": "Unique numeric ID of the operator *running* the trip. This MAY differ from the `operator_id` MQTT-topic level (the *owning* operator) when a service is subcontracted to another operator. Carries no leading zeroes. Sourced from the HFP payload `oper` field. Resolve against the operator catalogue (`fi.hsl.gtfs.Operator`)."
+                            },
+                            "veh": {
+                              "type": "int32",
+                              "description": "Vehicle number painted on the side of the vehicle (often next to the front door). Unique only in combination with the operator; different operators may reuse vehicle numbers. Matches the `vehicle_number` topic level without its leading zeroes. Sourced from the HFP payload `veh` field."
+                            },
+                            "tst": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?(Z|[+-]\\d{2}:\\d{2})$",
+                              "description": "UTC timestamp with millisecond precision generated by the vehicle, in ISO 8601 `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`. Sourced from the HFP payload `tst` field. Also surfaced as the CloudEvents `time` attribute."
+                            },
+                            "tsi": {
+                              "type": "int32",
+                              "description": "POSIX/Unix time in whole seconds from the vehicle, equal to `tst` truncated to seconds. Sourced from the HFP payload `tsi` field. Modeled as a 32-bit integer so it round-trips as a JSON number (verbatim with the upstream) rather than the stringified form avrotize emits for 64-bit integers; the value stays within int32 range until 2038-01-19."
+                            },
+                            "operator_id": {
+                              "type": "string",
+                              "pattern": "^[0-9]{4}$",
+                              "description": "Zero-padded 4-digit ID of the *owning* operator, taken from the `operator_id` MQTT-topic level (e.g. `0055`, `0012`). The stable vehicle-owner identifier (unlike the mutable payload `oper`, which is the *running* operator under subcontracting). Forms the first segment of the CloudEvents subject and Kafka key; resolve against `fi.hsl.gtfs.Operator`."
+                            },
+                            "vehicle_number": {
+                              "type": "string",
+                              "pattern": "^[0-9]{4,5}$",
+                              "description": "Zero-padded vehicle number (4-5 digits) taken from the `vehicle_number` MQTT-topic level (e.g. `01216`). Unique only together with `operator_id`; matches the payload `veh` field without its leading zeroes. Forms the second segment of the CloudEvents subject and Kafka key."
+                            },
+                            "temporal_type": {
+                              "type": {
+                                "$ref": "#/definitions/fi/hsl/hfp/TemporalTypeEnum"
+                              },
+                              "description": "Journey temporal type from the MQTT-topic level: `ongoing` (journey in progress) or `upcoming` (journey about to start). The bridge subscribes to both; the `deadrun`/`signoff` trees are not consumed."
+                            },
+                            "transport_mode": {
+                              "type": {
+                                "$ref": "#/definitions/fi/hsl/hfp/TransportModeEnum"
+                              },
+                              "description": "Vehicle transport mode from the MQTT-topic level (`bus`, `tram`, `train`, `ferry`, `metro`, `ubus`, `robot`)."
+                            },
+                            "route_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "GTFS route ID from the `route_id` MQTT-topic level (without the `HSL:` prefix), e.g. `2550`. The topic twin of the payload `route` field; `null` when the topic level is empty. Resolve against `fi.hsl.gtfs.Route`."
+                            },
+                            "direction_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Route direction from the `direction_id` MQTT-topic level, `1` or `2` — the topic twin of the payload `dir` field."
+                            },
+                            "headsign": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Vehicle headsign from the MQTT-topic level — the destination shown on the vehicle, e.g. `Eira`. May be empty on the topic. Free-form text."
+                            },
+                            "start_time": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                              "description": "Scheduled start time of the trip from the `start_time` MQTT-topic level, in `HH:mm` 24-hour local time — the topic twin of the payload `start` field."
+                            },
+                            "next_stop": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Next stop ID from the `next_stop` MQTT-topic level, e.g. `1130106`. The topic carries the literal `EOL` at the end of the line and may be empty, so this is a free-form string (not a numeric stop ID). Resolve numeric values against `fi.hsl.gtfs.Stop`."
+                            },
+                            "geohash_level": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim."
+                            },
+                            "geohash": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim."
+                            },
+                            "desi": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`)."
+                            },
+                            "dir": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Route direction of the trip as a string, either `\"1\"` or `\"2\"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`."
+                            },
+                            "dl": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`."
+                            },
+                            "oday": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                              "description": "Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`."
+                            },
+                            "jrn": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field."
+                            },
+                            "line": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Internal line descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `line` field."
+                            },
+                            "start": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                              "description": "Scheduled start time of the trip — the scheduled departure from the first stop — in `HH:mm` 24-hour local time (not the 30-hour GTFS operating-day clock). Matches the `start_time` topic level. Sourced from the HFP payload `start` field."
+                            },
+                            "stop": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Numeric GTFS stop ID of the stop related to this event (for example the stop the vehicle departed from for a `dep` event, or the stop it currently sits at for a `vp` event). `null` when the event is not related to any stop. Equals `stop_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Stop`. Sourced from the HFP payload `stop` field, which is a JSON number on the wire (the upstream field table mislabels it as a String; live traffic confirms an integer or null)."
+                            },
+                            "route": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "GTFS route ID the vehicle is currently running on. Matches the `route_id` topic level and `route_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Route`. Sourced from the HFP payload `route` field. Not populated on `da`,`dout`,`ba`,`bout`."
+                            },
+                            "occu": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 100,
+                              "description": "Passenger occupancy level on the interval [0, 100]. Currently only Suomenlinna ferries report a measured value; other vehicles emit `0` (space available, accepting passengers) or `100` (full, may not accept passengers). Sourced from the HFP payload `occu` field."
+                            },
+                            "seq": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 1,
+                              "description": "Sequence number of the unit within a multi-unit consist (e.g. coupled metro or train units), starting at 1. Currently only populated for metros. Sourced from the HFP payload `seq` field."
+                            },
+                            "label": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Human-visible label that helps identify the vehicle. Currently only Suomenlinna ferries populate this, with the vessel name. Sourced from the HFP payload `label` field."
+                            },
+                            "spd": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "description": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field."
+                            },
+                            "hdg": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 360,
+                              "description": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field."
+                            },
+                            "lat": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -90,
+                              "maximum": 90,
+                              "description": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field."
+                            },
+                            "long": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -180,
+                              "maximum": 180,
+                              "description": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`)."
+                            },
+                            "acc": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "description": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field."
+                            },
+                            "odo": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field."
+                            },
+                            "drst": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 1,
+                              "description": "Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field."
+                            },
+                            "loc": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field."
+                            },
+                            "ttarr": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?(Z|[+-]\\d{2}:\\d{2})$",
+                              "description": "UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field."
+                            },
+                            "ttdep": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?(Z|[+-]\\d{2}:\\d{2})$",
+                              "description": "UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field."
+                            },
+                            "dr_type": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 1,
+                              "description": "Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field."
+                            }
+                          },
+                          "required": [
+                            "oper",
+                            "veh",
+                            "tst",
+                            "tsi",
+                            "operator_id",
+                            "vehicle_number",
+                            "temporal_type",
+                            "transport_mode"
+                          ]
+                        },
+                        "TemporalTypeEnum": {
+                          "name": "TemporalTypeEnum",
+                          "type": "string",
+                          "enum": [
+                            "ongoing",
+                            "upcoming"
+                          ],
+                          "description": "Journey temporal type: `ongoing` (journey currently in progress) or `upcoming` (journey about to start, within ~30 minutes). From the MQTT-topic `temporal_type` level."
+                        },
+                        "TransportModeEnum": {
+                          "name": "TransportModeEnum",
+                          "type": "string",
+                          "enum": [
+                            "bus",
+                            "tram",
+                            "train",
+                            "ferry",
+                            "metro",
+                            "ubus",
+                            "robot"
+                          ],
+                          "description": "Transport mode of the vehicle: `bus`, `tram`, `train`, `ferry`, `metro`, `ubus` (U-line bus) or `robot` (robot bus). From the MQTT-topic `transport_mode` level."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.TrafficLightEvent": {
+          "name": "TrafficLightEvent",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/fi/hsl/hfp/TrafficLightEvent/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "TrafficLightEvent",
+                "$root": "#/definitions/fi/hsl/hfp/TrafficLightEvent",
+                "definitions": {
+                  "fi": {
+                    "hsl": {
+                      "hfp": {
+                        "TrafficLightEvent": {
+                          "name": "TrafficLightEvent",
+                          "type": "object",
+                          "description": "Telemetry payload for the traffic-light priority events: the request (`tlr`) and the response (`tla`). Carries the vehicle identity, time and position context plus the `tlp-*`, `sid` and `signal-groupid` priority fields. Mirrors the HFP v2 payload field table for these event types.",
+                          "properties": {
+                            "oper": {
+                              "type": "int32",
+                              "description": "Unique numeric ID of the operator *running* the trip. This MAY differ from the `operator_id` MQTT-topic level (the *owning* operator) when a service is subcontracted to another operator. Carries no leading zeroes. Sourced from the HFP payload `oper` field. Resolve against the operator catalogue (`fi.hsl.gtfs.Operator`)."
+                            },
+                            "veh": {
+                              "type": "int32",
+                              "description": "Vehicle number painted on the side of the vehicle (often next to the front door). Unique only in combination with the operator; different operators may reuse vehicle numbers. Matches the `vehicle_number` topic level without its leading zeroes. Sourced from the HFP payload `veh` field."
+                            },
+                            "tst": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?(Z|[+-]\\d{2}:\\d{2})$",
+                              "description": "UTC timestamp with millisecond precision generated by the vehicle, in ISO 8601 `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`. Sourced from the HFP payload `tst` field. Also surfaced as the CloudEvents `time` attribute."
+                            },
+                            "tsi": {
+                              "type": "int32",
+                              "description": "POSIX/Unix time in whole seconds from the vehicle, equal to `tst` truncated to seconds. Sourced from the HFP payload `tsi` field. Modeled as a 32-bit integer so it round-trips as a JSON number (verbatim with the upstream) rather than the stringified form avrotize emits for 64-bit integers; the value stays within int32 range until 2038-01-19."
+                            },
+                            "operator_id": {
+                              "type": "string",
+                              "pattern": "^[0-9]{4}$",
+                              "description": "Zero-padded 4-digit ID of the *owning* operator, taken from the `operator_id` MQTT-topic level (e.g. `0055`, `0012`). The stable vehicle-owner identifier (unlike the mutable payload `oper`, which is the *running* operator under subcontracting). Forms the first segment of the CloudEvents subject and Kafka key; resolve against `fi.hsl.gtfs.Operator`."
+                            },
+                            "vehicle_number": {
+                              "type": "string",
+                              "pattern": "^[0-9]{4,5}$",
+                              "description": "Zero-padded vehicle number (4-5 digits) taken from the `vehicle_number` MQTT-topic level (e.g. `01216`). Unique only together with `operator_id`; matches the payload `veh` field without its leading zeroes. Forms the second segment of the CloudEvents subject and Kafka key."
+                            },
+                            "temporal_type": {
+                              "type": {
+                                "$ref": "#/definitions/fi/hsl/hfp/TemporalTypeEnum"
+                              },
+                              "description": "Journey temporal type from the MQTT-topic level: `ongoing` (journey in progress) or `upcoming` (journey about to start). The bridge subscribes to both; the `deadrun`/`signoff` trees are not consumed."
+                            },
+                            "transport_mode": {
+                              "type": {
+                                "$ref": "#/definitions/fi/hsl/hfp/TransportModeEnum"
+                              },
+                              "description": "Vehicle transport mode from the MQTT-topic level (`bus`, `tram`, `train`, `ferry`, `metro`, `ubus`, `robot`)."
+                            },
+                            "route_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "GTFS route ID from the `route_id` MQTT-topic level (without the `HSL:` prefix), e.g. `2550`. The topic twin of the payload `route` field; `null` when the topic level is empty. Resolve against `fi.hsl.gtfs.Route`."
+                            },
+                            "direction_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Route direction from the `direction_id` MQTT-topic level, `1` or `2` — the topic twin of the payload `dir` field."
+                            },
+                            "headsign": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Vehicle headsign from the MQTT-topic level — the destination shown on the vehicle, e.g. `Eira`. May be empty on the topic. Free-form text."
+                            },
+                            "start_time": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                              "description": "Scheduled start time of the trip from the `start_time` MQTT-topic level, in `HH:mm` 24-hour local time — the topic twin of the payload `start` field."
+                            },
+                            "next_stop": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Next stop ID from the `next_stop` MQTT-topic level, e.g. `1130106`. The topic carries the literal `EOL` at the end of the line and may be empty, so this is a free-form string (not a numeric stop ID). Resolve numeric values against `fi.hsl.gtfs.Stop`."
+                            },
+                            "geohash_level": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim."
+                            },
+                            "geohash": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim."
+                            },
+                            "desi": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`)."
+                            },
+                            "dir": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Route direction of the trip as a string, either `\"1\"` or `\"2\"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`."
+                            },
+                            "dl": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`."
+                            },
+                            "oday": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                              "description": "Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`."
+                            },
+                            "jrn": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field."
+                            },
+                            "line": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Internal line descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `line` field."
+                            },
+                            "start": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                              "description": "Scheduled start time of the trip — the scheduled departure from the first stop — in `HH:mm` 24-hour local time (not the 30-hour GTFS operating-day clock). Matches the `start_time` topic level. Sourced from the HFP payload `start` field."
+                            },
+                            "stop": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Numeric GTFS stop ID of the stop related to this event (for example the stop the vehicle departed from for a `dep` event, or the stop it currently sits at for a `vp` event). `null` when the event is not related to any stop. Equals `stop_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Stop`. Sourced from the HFP payload `stop` field, which is a JSON number on the wire (the upstream field table mislabels it as a String; live traffic confirms an integer or null)."
+                            },
+                            "route": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "GTFS route ID the vehicle is currently running on. Matches the `route_id` topic level and `route_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Route`. Sourced from the HFP payload `route` field. Not populated on `da`,`dout`,`ba`,`bout`."
+                            },
+                            "occu": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 100,
+                              "description": "Passenger occupancy level on the interval [0, 100]. Currently only Suomenlinna ferries report a measured value; other vehicles emit `0` (space available, accepting passengers) or `100` (full, may not accept passengers). Sourced from the HFP payload `occu` field."
+                            },
+                            "spd": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "description": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field."
+                            },
+                            "hdg": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 360,
+                              "description": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field."
+                            },
+                            "lat": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -90,
+                              "maximum": 90,
+                              "description": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field."
+                            },
+                            "long": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -180,
+                              "maximum": 180,
+                              "description": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`)."
+                            },
+                            "acc": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "description": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field."
+                            },
+                            "odo": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field."
+                            },
+                            "drst": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 1,
+                              "description": "Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field."
+                            },
+                            "loc": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field."
+                            },
+                            "tlp_requestid": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 255,
+                              "description": "Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field."
+                            },
+                            "tlp_requesttype": {
+                              "type": [
+                                "null",
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/TlpRequestTypeEnum"
+                                }
+                              ],
+                              "description": "Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field."
+                            },
+                            "tlp_prioritylevel": {
+                              "type": [
+                                "null",
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/TlpPriorityLevelEnum"
+                                }
+                              ],
+                              "description": "Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field."
+                            },
+                            "tlp_reason": {
+                              "type": [
+                                "null",
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/TlpReasonEnum"
+                                }
+                              ],
+                              "description": "Reason for *not* sending a traffic-light priority request. One of `GLOBAL`, `AHEAD`, `LINE` or `PRIOEXEP`. Populated on `tlr`. Sourced from the HFP payload `tlp-reason` field."
+                            },
+                            "tlp_att_seq": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "description": "Traffic-light priority request attempt sequence number. Populated on `tlr`. Sourced from the HFP payload `tlp-att-seq` field."
+                            },
+                            "tlp_decision": {
+                              "type": [
+                                "null",
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/TlpDecisionEnum"
+                                }
+                              ],
+                              "description": "Response decision for the traffic-light priority request. One of `ACK` or `NAK`. Populated on `tla` (the response). Sourced from the HFP payload `tlp-decision` field."
+                            },
+                            "sid": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Junction ID where priority is requested, matching the `sid` topic level. Populated on `tlr` and `tla`. Sourced from the HFP payload `sid` field."
+                            },
+                            "signal_groupid": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Signal-group ID (a group of traffic lights at a junction). Populated on `tlr`. Sourced from the HFP payload `signal-groupid` field."
+                            },
+                            "tlp_signalgroupnbr": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "ID of the specific traffic light within the signal group; may be negative. Populated on `tlr`. Sourced from the HFP payload `tlp-signalgroupnbr` field."
+                            },
+                            "tlp_line_configid": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field."
+                            },
+                            "tlp_point_configid": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field."
+                            },
+                            "tlp_frequency": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field."
+                            },
+                            "tlp_protocol": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field."
+                            }
+                          },
+                          "required": [
+                            "oper",
+                            "veh",
+                            "tst",
+                            "tsi",
+                            "operator_id",
+                            "vehicle_number",
+                            "temporal_type",
+                            "transport_mode"
+                          ]
+                        },
+                        "TemporalTypeEnum": {
+                          "name": "TemporalTypeEnum",
+                          "type": "string",
+                          "enum": [
+                            "ongoing",
+                            "upcoming"
+                          ],
+                          "description": "Journey temporal type: `ongoing` (journey currently in progress) or `upcoming` (journey about to start, within ~30 minutes). From the MQTT-topic `temporal_type` level."
+                        },
+                        "TlpDecisionEnum": {
+                          "name": "TlpDecisionEnum",
+                          "type": "string",
+                          "enum": [
+                            "ACK",
+                            "NAK"
+                          ],
+                          "description": "Response decision for the traffic-light priority request: `ACK` (granted) or `NAK` (denied). From the HFP payload `tlp-decision` field."
+                        },
+                        "TlpPriorityLevelEnum": {
+                          "name": "TlpPriorityLevelEnum",
+                          "type": "string",
+                          "enum": [
+                            "normal",
+                            "high",
+                            "norequest"
+                          ],
+                          "description": "Priority level of the traffic-light priority request: `normal`, `high` or `norequest` (no request sent). From the HFP payload `tlp-prioritylevel` field."
+                        },
+                        "TlpReasonEnum": {
+                          "name": "TlpReasonEnum",
+                          "type": "string",
+                          "enum": [
+                            "GLOBAL",
+                            "AHEAD",
+                            "LINE",
+                            "PRIOEXEP"
+                          ],
+                          "description": "Reason for *not* sending a traffic-light priority request: `GLOBAL`, `AHEAD`, `LINE` or `PRIOEXEP`. From the HFP payload `tlp-reason` field."
+                        },
+                        "TlpRequestTypeEnum": {
+                          "name": "TlpRequestTypeEnum",
+                          "type": "string",
+                          "enum": [
+                            "NORMAL",
+                            "DOOR_CLOSE",
+                            "DOOR_OPEN",
+                            "ADVANCE"
+                          ],
+                          "description": "Type of the traffic-light priority request: `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. From the HFP payload `tlp-requesttype` field."
+                        },
+                        "TransportModeEnum": {
+                          "name": "TransportModeEnum",
+                          "type": "string",
+                          "enum": [
+                            "bus",
+                            "tram",
+                            "train",
+                            "ferry",
+                            "metro",
+                            "ubus",
+                            "robot"
+                          ],
+                          "description": "Transport mode of the vehicle: `bus`, `tram`, `train`, `ferry`, `metro`, `ubus` (U-line bus) or `robot` (robot bus). From the MQTT-topic `transport_mode` level."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.DriverBlockEvent": {
+          "name": "DriverBlockEvent",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/fi/hsl/hfp/DriverBlockEvent/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "DriverBlockEvent",
+                "$root": "#/definitions/fi/hsl/hfp/DriverBlockEvent",
+                "definitions": {
+                  "fi": {
+                    "hsl": {
+                      "hfp": {
+                        "DriverBlockEvent": {
+                          "name": "DriverBlockEvent",
+                          "type": "object",
+                          "description": "Telemetry payload for the low-frequency driver and block sign events: driver sign-in (`da`), driver sign-out (`dout`), block selection (`ba`) and block sign-out (`bout`). These carry a reduced field set — vehicle identity, time, position and driver type — because route, schedule and stop context are not available when the vehicle is not signed on to a public journey.",
+                          "properties": {
+                            "oper": {
+                              "type": "int32",
+                              "description": "Unique numeric ID of the operator *running* the trip. This MAY differ from the `operator_id` MQTT-topic level (the *owning* operator) when a service is subcontracted to another operator. Carries no leading zeroes. Sourced from the HFP payload `oper` field. Resolve against the operator catalogue (`fi.hsl.gtfs.Operator`)."
+                            },
+                            "veh": {
+                              "type": "int32",
+                              "description": "Vehicle number painted on the side of the vehicle (often next to the front door). Unique only in combination with the operator; different operators may reuse vehicle numbers. Matches the `vehicle_number` topic level without its leading zeroes. Sourced from the HFP payload `veh` field."
+                            },
+                            "tst": {
+                              "type": "string",
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?(Z|[+-]\\d{2}:\\d{2})$",
+                              "description": "UTC timestamp with millisecond precision generated by the vehicle, in ISO 8601 `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`. Sourced from the HFP payload `tst` field. Also surfaced as the CloudEvents `time` attribute."
+                            },
+                            "tsi": {
+                              "type": "int32",
+                              "description": "POSIX/Unix time in whole seconds from the vehicle, equal to `tst` truncated to seconds. Sourced from the HFP payload `tsi` field. Modeled as a 32-bit integer so it round-trips as a JSON number (verbatim with the upstream) rather than the stringified form avrotize emits for 64-bit integers; the value stays within int32 range until 2038-01-19."
+                            },
+                            "operator_id": {
+                              "type": "string",
+                              "pattern": "^[0-9]{4}$",
+                              "description": "Zero-padded 4-digit ID of the *owning* operator, taken from the `operator_id` MQTT-topic level (e.g. `0055`, `0012`). The stable vehicle-owner identifier (unlike the mutable payload `oper`, which is the *running* operator under subcontracting). Forms the first segment of the CloudEvents subject and Kafka key; resolve against `fi.hsl.gtfs.Operator`."
+                            },
+                            "vehicle_number": {
+                              "type": "string",
+                              "pattern": "^[0-9]{4,5}$",
+                              "description": "Zero-padded vehicle number (4-5 digits) taken from the `vehicle_number` MQTT-topic level (e.g. `01216`). Unique only together with `operator_id`; matches the payload `veh` field without its leading zeroes. Forms the second segment of the CloudEvents subject and Kafka key."
+                            },
+                            "temporal_type": {
+                              "type": {
+                                "$ref": "#/definitions/fi/hsl/hfp/TemporalTypeEnum"
+                              },
+                              "description": "Journey temporal type from the MQTT-topic level: `ongoing` (journey in progress) or `upcoming` (journey about to start). The bridge subscribes to both; the `deadrun`/`signoff` trees are not consumed."
+                            },
+                            "transport_mode": {
+                              "type": {
+                                "$ref": "#/definitions/fi/hsl/hfp/TransportModeEnum"
+                              },
+                              "description": "Vehicle transport mode from the MQTT-topic level (`bus`, `tram`, `train`, `ferry`, `metro`, `ubus`, `robot`)."
+                            },
+                            "route_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "GTFS route ID from the `route_id` MQTT-topic level (without the `HSL:` prefix), e.g. `2550`. The topic twin of the payload `route` field; `null` when the topic level is empty. Resolve against `fi.hsl.gtfs.Route`."
+                            },
+                            "direction_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Route direction from the `direction_id` MQTT-topic level, `1` or `2` — the topic twin of the payload `dir` field."
+                            },
+                            "headsign": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Vehicle headsign from the MQTT-topic level — the destination shown on the vehicle, e.g. `Eira`. May be empty on the topic. Free-form text."
+                            },
+                            "start_time": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                              "description": "Scheduled start time of the trip from the `start_time` MQTT-topic level, in `HH:mm` 24-hour local time — the topic twin of the payload `start` field."
+                            },
+                            "next_stop": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Next stop ID from the `next_stop` MQTT-topic level, e.g. `1130106`. The topic carries the literal `EOL` at the end of the line and may be empty, so this is a free-form string (not a numeric stop ID). Resolve numeric values against `fi.hsl.gtfs.Stop`."
+                            },
+                            "geohash_level": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim."
+                            },
+                            "geohash": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim."
+                            },
+                            "spd": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "description": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field."
+                            },
+                            "hdg": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 360,
+                              "description": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field."
+                            },
+                            "lat": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -90,
+                              "maximum": 90,
+                              "description": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field."
+                            },
+                            "long": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -180,
+                              "maximum": 180,
+                              "description": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`)."
+                            },
+                            "acc": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "description": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field."
+                            },
+                            "odo": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field."
+                            },
+                            "drst": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 1,
+                              "description": "Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field."
+                            },
+                            "loc": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field."
+                            },
+                            "oday": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                              "description": "Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field."
+                            },
+                            "dr_type": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 1,
+                              "description": "Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field."
+                            }
+                          },
+                          "required": [
+                            "oper",
+                            "veh",
+                            "tst",
+                            "tsi",
+                            "operator_id",
+                            "vehicle_number",
+                            "temporal_type",
+                            "transport_mode"
+                          ]
+                        },
+                        "TemporalTypeEnum": {
+                          "name": "TemporalTypeEnum",
+                          "type": "string",
+                          "enum": [
+                            "ongoing",
+                            "upcoming"
+                          ],
+                          "description": "Journey temporal type: `ongoing` (journey currently in progress) or `upcoming` (journey about to start, within ~30 minutes). From the MQTT-topic `temporal_type` level."
+                        },
+                        "TransportModeEnum": {
+                          "name": "TransportModeEnum",
+                          "type": "string",
+                          "enum": [
+                            "bus",
+                            "tram",
+                            "train",
+                            "ferry",
+                            "metro",
+                            "ubus",
+                            "robot"
+                          ],
+                          "description": "Transport mode of the vehicle: `bus`, `tram`, `train`, `ferry`, `metro`, `ubus` (U-line bus) or `robot` (robot bus). From the MQTT-topic `transport_mode` level."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fi.hsl.gtfs.Operator": {
+          "name": "Operator",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/fi/hsl/gtfs/Operator/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "Operator",
+                "$root": "#/definitions/fi/hsl/gtfs/Operator",
+                "definitions": {
+                  "fi": {
+                    "hsl": {
+                      "gtfs": {
+                        "Operator": {
+                          "name": "Operator",
+                          "type": "object",
+                          "description": "Reference record for one HSL transit operator, derived from the HFP operator catalogue. Emitted at bridge start-up and refreshed periodically so consumers can resolve the `operator_id` topic level and the payload `oper` field to a named operator without an out-of-band lookup.",
+                          "properties": {
+                            "operator_id": {
+                              "type": "string",
+                              "pattern": "^[0-9]{4}$",
+                              "description": "Zero-padded 4-digit ID of the *owning* operator, matching the `operator_id` MQTT-topic level (e.g. `0012`, `0060`). Stable identifier; used as the CloudEvents subject and Kafka key (prefixed `operator/`) for this reference record. Derived from the HSL HFP operator catalogue."
+                            },
+                            "operator_number": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "Numeric operator ID without leading zeroes, matching the HFP payload `oper` field form (e.g. `12`, `60`). Note operator `6` appears only in the payload `oper` field and denotes the same owner as `18`. Derived from the HSL HFP operator catalogue."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Operator (transit company) name as published in the HSL HFP operator catalogue, e.g. `Koiviston Auto Oy`, `Suomenlinnan Liikenne Oy`."
+                            },
+                            "note": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Free-form note from the operator catalogue, e.g. that multiple smaller operators run under a shared operator ID. `null` when there is no note."
+                            }
+                          },
+                          "required": [
+                            "operator_id",
+                            "name"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fi.hsl.gtfs.Route": {
+          "name": "Route",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/fi/hsl/gtfs/Route/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "Route",
+                "$root": "#/definitions/fi/hsl/gtfs/Route",
+                "definitions": {
+                  "fi": {
+                    "hsl": {
+                      "gtfs": {
+                        "Route": {
+                          "name": "Route",
+                          "type": "object",
+                          "description": "Reference record for one HSL route, sourced from the HSL GTFS static `routes.txt`. Emitted at bridge start-up and refreshed periodically so consumers can resolve the HFP `route` field / `route_id` topic level to a named route and transit mode. Shares the vehicle-telemetry Kafka topic so a consumer can build a temporally consistent view of telemetry and the routes it references.",
+                          "properties": {
+                            "route_id": {
+                              "type": "string",
+                              "description": "GTFS route identifier without the `HSL:` prefix, matching the HFP payload `route` field and the `route_id` topic level (e.g. `2550`). Stable identifier; used as the CloudEvents subject and Kafka key (prefixed `route/`). Sourced from `route_id` in the HSL GTFS `routes.txt`."
+                            },
+                            "agency_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Identifier of the agency that operates the route, a foreign key into the GTFS `agency.txt`. Sourced from the `agency_id` field of `routes.txt`."
+                            },
+                            "route_short_name": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Short, public-facing route name shown to riders (e.g. `550`, `H72`); frequently equals the HFP `desi` field. Sourced from the `route_short_name` field of `routes.txt`."
+                            },
+                            "route_long_name": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Full, descriptive route name, e.g. `Itäkeskus(M) - Westendinasema`. Sourced from the `route_long_name` field of `routes.txt`."
+                            },
+                            "route_desc": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Optional human-readable description providing useful information about the route. Sourced from the `route_desc` field of `routes.txt`."
+                            },
+                            "route_type": {
+                              "type": "int32",
+                              "description": "GTFS route type / extended Hierarchical Vehicle Type (HVT) describing the transit mode used on the route. HSL emits both the basic GTFS values — `0` = tram / light rail, `1` = subway / metro, `4` = ferry — and the extended HVT codes — `109` = suburban railway, `700`/`701` = bus, `702` = express bus, `704` = local bus, `900` = funicular. Modeled as an open integer (not a closed enum) because HSL may introduce further HVT codes. Sourced from the `route_type` field of `routes.txt`."
+                            },
+                            "route_url": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "URL of a web page about the route. Sourced from the `route_url` field of `routes.txt`."
+                            }
+                          },
+                          "required": [
+                            "route_id",
+                            "route_type"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fi.hsl.gtfs.Stop": {
+          "name": "Stop",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/fi/hsl/gtfs/Stop/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "Stop",
+                "$root": "#/definitions/fi/hsl/gtfs/Stop",
+                "definitions": {
+                  "fi": {
+                    "hsl": {
+                      "gtfs": {
+                        "Stop": {
+                          "name": "Stop",
+                          "type": "object",
+                          "description": "Reference record for one HSL stop, station or station entrance, sourced from the HSL GTFS static `stops.txt`. Emitted at bridge start-up and refreshed periodically so consumers can resolve the HFP `stop` field / `next_stop` topic level to a named, geolocated stop. Shares the vehicle-telemetry Kafka topic for temporal consistency with the telemetry it contextualises.",
+                          "properties": {
+                            "stop_id": {
+                              "type": "string",
+                              "description": "GTFS stop identifier without the `HSL:` prefix, matching the HFP payload `stop` field and the `next_stop` topic level (e.g. `1130106`). Stable identifier; used as the CloudEvents subject and Kafka key (prefixed `stop/`). Sourced from `stop_id` in the HSL GTFS `stops.txt`."
+                            },
+                            "stop_code": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Short text or number that uniquely identifies the stop for riders (shown on signage and in journey planners), e.g. `H1234`. Sourced from the `stop_code` field of `stops.txt`."
+                            },
+                            "stop_name": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Name of the stop, station, or station entrance as shown to riders, e.g. `Rautatientori`. Sourced from the `stop_name` field of `stops.txt`."
+                            },
+                            "stop_desc": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Description providing useful, quality information about the stop. Sourced from the `stop_desc` field of `stops.txt`."
+                            },
+                            "stop_lat": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -90,
+                              "maximum": 90,
+                              "description": "WGS84 latitude of the stop in decimal degrees (°), on [-90, 90]. Sourced from the `stop_lat` field of `stops.txt`."
+                            },
+                            "stop_lon": {
+                              "type": [
+                                "null",
+                                "double"
+                              ],
+                              "minimum": -180,
+                              "maximum": 180,
+                              "description": "WGS84 longitude of the stop in decimal degrees (°), on [-180, 180]. Sourced from the `stop_lon` field of `stops.txt`."
+                            },
+                            "zone_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "HSL fare zone the stop belongs to, e.g. `A`, `B`, `C`, `D`. Sourced from the `zone_id` field of `stops.txt`."
+                            },
+                            "stop_url": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "URL of a web page about the stop. Sourced from the `stop_url` field of `stops.txt`."
+                            },
+                            "location_type": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 4,
+                              "description": "Type of the location. `0` (or empty) = stop / platform, `1` = station, `2` = station entrance / exit, `3` = generic node, `4` = boarding area. Sourced from the `location_type` field of `stops.txt`."
+                            },
+                            "parent_station": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "`stop_id` of the parent station for a platform, entrance or boarding area. Sourced from the `parent_station` field of `stops.txt`."
+                            },
+                            "platform_code": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Platform identifier for a platform stop (the part that differs between platforms of a station), e.g. `1`, `B`. Sourced from the `platform_code` field of `stops.txt`."
+                            },
+                            "wheelchair_boarding": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "minimum": 0,
+                              "maximum": 2,
+                              "description": "Wheelchair accessibility of boarding at the stop. `0` (or empty) = no information, `1` = some accessible boarding, `2` = no accessible boarding. Sourced from the `wheelchair_boarding` field of `stops.txt`."
+                            },
+                            "vehicle_type": {
+                              "type": [
+                                "null",
+                                "int32"
+                              ],
+                              "description": "HSL extension: the Hierarchical Vehicle Type (extended GTFS route type) of the vehicles that serve this stop, e.g. `0` = tram, `1` = subway, `109` = suburban rail, `700`/`704` = bus, `4` = ferry. Empty when not assigned. Sourced from the non-standard `vehicle_type` field of the HSL `stops.txt`."
+                            },
+                            "digistop_id": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "HSL extension: internal DigiStop identifier for the stop. Sourced from the non-standard `digistop_id` field of the HSL `stops.txt`. `null` when not present."
+                            }
+                          },
+                          "required": [
+                            "stop_id"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

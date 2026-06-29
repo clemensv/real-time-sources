@@ -1,4 +1,4 @@
-# Paris Bicycle Counters feeder Events
+# Paris Bicycle Counters Events
 
 Paris Bicycle Counters publishes bicycle count observations from Paris open-data bicycle counter feeds for Paris bicycle-counting stations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -186,3 +186,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/paris-bicycle-counters.xreg.json`](xreg/paris-bicycle-counters.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

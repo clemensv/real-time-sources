@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table ['JP.JMA.Volcano.Volcano'] (
+.create-merge table [Volcano] (
    [volcano_code]: string,
    [name_jp]: string,
    [name_en]: string,
@@ -42,18 +42,18 @@
    [___subject]: string
 );
 
-.alter table ['JP.JMA.Volcano.Volcano'] docstring "{\"description\": \"JMA Bosai volcano catalog reference data emitted at startup and on monthly refresh.\"}";
+.alter table [Volcano] docstring @"{""description"": ""JMA Bosai volcano catalog reference data emitted at startup and on monthly refresh.""}";
 
-.alter table ['JP.JMA.Volcano.Volcano'] column-docstrings (
-   [volcano_code]: "{\"description\": \"Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.\"}",
-   [name_jp]: "{\"description\": \"Japanese volcano name from the JMA Bosai volcano catalog. This is a display label and is not used as the stable identity because JMA warning records key volcanoes by code.\"}",
-   [name_en]: "{\"description\": \"English volcano name from the JMA Bosai volcano catalog, used as a display label for international consumers.\"}",
-   [latitude]: "{\"description\": \"Latitude of the volcano in WGS84 decimal degrees. The bridge converts JMA degree-and-minute coordinates when present, and otherwise forwards the Bosai catalog decimal latitude.\"}",
-   [longitude]: "{\"description\": \"Longitude of the volcano in WGS84 decimal degrees. The bridge converts JMA degree-and-minute coordinates when present, and otherwise forwards the Bosai catalog decimal longitude.\"}",
-   [elevation_m]: "{\"description\": \"Volcano summit elevation in metres when supplied by the JMA catalog. Some Bosai catalog entries omit elevation, so the field is null in emitted events when JMA does not provide the value.\"}",
-   [level_operation]: "{\"description\": \"True when JMA marks the volcano as operating under the five-level eruption alert system. False means the volcano is represented by binary issued/not-issued volcanic warnings rather than a local five-level evacuation framework.\"}",
-   [prefecture]: "{\"description\": \"ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.\"}",
-   [event]: "{\"description\": \"Fixed topic event segment for Volcano messages.\"}",
+.alter table [Volcano] column-docstrings (
+   [volcano_code]: @"{""description"": ""Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.""}",
+   [name_jp]: @"{""description"": ""Japanese volcano name from the JMA Bosai volcano catalog. This is a display label and is not used as the stable identity because JMA warning records key volcanoes by code.""}",
+   [name_en]: @"{""description"": ""English volcano name from the JMA Bosai volcano catalog, used as a display label for international consumers.""}",
+   [latitude]: @"{""description"": ""Latitude of the volcano in WGS84 decimal degrees. The bridge converts JMA degree-and-minute coordinates when present, and otherwise forwards the Bosai catalog decimal latitude.""}",
+   [longitude]: @"{""description"": ""Longitude of the volcano in WGS84 decimal degrees. The bridge converts JMA degree-and-minute coordinates when present, and otherwise forwards the Bosai catalog decimal longitude.""}",
+   [elevation_m]: @"{""description"": ""Volcano summit elevation in metres when supplied by the JMA catalog. Some Bosai catalog entries omit elevation, so the field is null in emitted events when JMA does not provide the value.""}",
+   [level_operation]: @"{""description"": ""True when JMA marks the volcano as operating under the five-level eruption alert system. False means the volcano is represented by binary issued/not-issued volcanic warnings rather than a local five-level evacuation framework.""}",
+   [prefecture]: @"{""description"": ""ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.""}",
+   [event]: @"{""description"": ""Fixed topic event segment for Volcano messages.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -61,7 +61,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['JP.JMA.Volcano.Volcano'] ingestion json mapping "JP.JMA.Volcano.Volcano_json_flat"
+.create-or-alter table [Volcano] ingestion json mapping "Volcano_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -77,11 +77,11 @@
   {"column": "elevation_m", "path": "$.elevation_m"},
   {"column": "level_operation", "path": "$.level_operation"},
   {"column": "prefecture", "path": "$.prefecture"},
-  {"column": "event", "path": "$.event"},
+  {"column": "event", "path": "$.event"}
 ]
 ```
 
-.create-or-alter table ['JP.JMA.Volcano.Volcano'] ingestion json mapping "JP.JMA.Volcano.Volcano_json_ce_structured"
+.create-or-alter table [Volcano] ingestion json mapping "Volcano_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,28 +97,28 @@
   {"column": "elevation_m", "path": "$.data.elevation_m"},
   {"column": "level_operation", "path": "$.data.level_operation"},
   {"column": "prefecture", "path": "$.data.prefecture"},
-  {"column": "event", "path": "$.data.event"},
+  {"column": "event", "path": "$.data.event"}
 ]
 ```
 
-.drop materialized-view ['JP.JMA.Volcano.VolcanoLatest'] ifexists;
+.drop materialized-view VolcanoLatest ifexists;
 
-.create materialized-view with (backfill=true) ['JP.JMA.Volcano.VolcanoLatest'] on table ['JP.JMA.Volcano.Volcano'] {
-    ['JP.JMA.Volcano.Volcano'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) VolcanoLatest on table Volcano {
+    Volcano | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['JP.JMA.Volcano.Volcano'] policy update
+.alter table [Volcano] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Volcano.Volcano') | project['volcano_code'] = tostring(data.['volcano_code']),['name_jp'] = tostring(data.['name_jp']),['name_en'] = tostring(data.['name_en']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation_m'] = toreal(data.['elevation_m']),['level_operation'] = tobool(data.['level_operation']),['prefecture'] = tostring(data.['prefecture']),['event'] = tostring(data.['event']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['JP.JMA.Volcano.VolcanicWarning'] (
+.create-merge table [VolcanicWarning] (
    [volcano_code]: string,
    [event_id]: string,
    [report_datetime]: datetime,
@@ -138,21 +138,21 @@
    [___subject]: string
 );
 
-.alter table ['JP.JMA.Volcano.VolcanicWarning'] docstring "{\"description\": \"JMA Bosai active volcanic warning or forecast for a target volcano.\"}";
+.alter table [VolcanicWarning] docstring @"{""description"": ""JMA Bosai active volcanic warning or forecast for a target volcano.""}";
 
-.alter table ['JP.JMA.Volcano.VolcanicWarning'] column-docstrings (
-   [volcano_code]: "{\"description\": \"Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.\"}",
-   [event_id]: "{\"description\": \"JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano.\"}",
-   [report_datetime]: "{\"description\": \"Report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp. This is the normalized time used for cross-region analytics.\"}",
-   [report_datetime_local]: "{\"description\": \"Original JMA reportDatetime value in Japan Standard Time as published by the Bosai warning feed. Keeping the local timestamp preserves the official bulletin time shown by JMA.\"}",
-   [alert_level_code]: "{\"description\": \"Raw JMA volcanic warning code as published in the `code` field of warning.json, emitted verbatim as a string. JMA's volcanic warning codes form an OPEN, upstream-controlled vocabulary that changes with volcanic activity, so this field is intentionally not constrained to a closed enum; consumers should treat any unlisted code as a valid JMA code and rely on the sibling `alert_level_name` field for the human-readable label JMA publishes alongside each code. Known codes observed in the live feed and JMA eruption-alert-level guidance: `02` = Crater-area warning (\\u706b\\u53e3\\u5468\\u8fba\\u8b66\\u5831); `03` = Eruption warning for surrounding sea area (\\u5674\\u706b\\u8b66\\u5831\\uff08\\u5468\\u8fba\\u6d77\\u57df\\uff09); `04` = Eruption forecast, warning lifted (\\u5674\\u706b\\u4e88\\u5831\\uff1a\\u8b66\\u5831\\u89e3\\u9664); `11` = Active volcano, pay attention (\\u6d3b\\u52d5\\u706b\\u5c71\\u3067\\u3042\\u308b\\u3053\\u3068\\u306b\\u7559\\u610f); `12` = Crater area restriction (\\u706b\\u53e3\\u5468\\u8fba\\u898f\\u5236); `13` = Mountain access restriction (\\u5165\\u5c71\\u898f\\u5236); `22` = Crater vicinity danger (\\u706b\\u53e3\\u5468\\u8fba\\u5371\\u967a); `23` = Mountain access danger...\"}",
-   [alert_level_name]: "{\"description\": \"Japanese alert level or warning label from the target-volcano item, such as \\u30ec\\u30d9\\u30eb\\uff13\\uff08\\u5165\\u5c71\\u898f\\u5236\\uff09. JMA uses this text to communicate the public-facing warning level or restriction phrase.\"}",
-   [previous_level_code]: "{\"description\": \"Previous JMA alert level or warning code from lastCode when the warning feed provides one. It allows consumers to determine whether the current report raised, lowered, continued, or newly issued a level.\"}",
-   [condition]: "{\"description\": \"Normalized lifecycle condition derived from the Japanese JMA condition text. \\u767a\\u8868 is mapped to ISSUED, \\u5f15\\u4e0a\\u3052 to RAISED, \\u5f15\\u4e0b\\u3052 to LOWERED, \\u7d99\\u7d9a to CONTINUED, \\u5207\\u66ff to SWITCHED, and \\u89e3\\u9664 to CANCELLED so downstream consumers can compare reports without parsing Japanese status labels.\"}",
-   [info_type_jp]: "{\"description\": \"Japanese volcanoInfos type label from the JMA feed. For emitted warning events the bridge uses the target-volcano section, normally \\u5674\\u706b\\u8b66\\u5831\\u30fb\\u4e88\\u5831\\uff08\\u5bfe\\u8c61\\u706b\\u5c71\\uff09, because that section carries the stable volcano code identity.\"}",
-   [area_codes]: "{\"description\": \"List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.\", \"schema\": {\"type\": \"array\", \"description\": \"List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.\", \"items\": {\"type\": \"string\", \"description\": \"Payload for a reference record for an alerting area or region published by the Japan Meteorological Agency. It gives consumers names and identifiers needed to interpret related warnings.\"}}}",
-   [prefecture]: "{\"description\": \"ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.\"}",
-   [event]: "{\"description\": \"Fixed topic event segment for VolcanicWarning messages.\"}",
+.alter table [VolcanicWarning] column-docstrings (
+   [volcano_code]: @"{""description"": ""Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.""}",
+   [event_id]: @"{""description"": ""JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano.""}",
+   [report_datetime]: @"{""description"": ""Report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp. This is the normalized time used for cross-region analytics.""}",
+   [report_datetime_local]: @"{""description"": ""Original JMA reportDatetime value in Japan Standard Time as published by the Bosai warning feed. Keeping the local timestamp preserves the official bulletin time shown by JMA.""}",
+   [alert_level_code]: @"{""description"": ""Raw JMA volcanic warning code as published in the `code` field of warning.json, emitted verbatim as a string. JMA's volcanic warning codes form an OPEN, upstream-controlled vocabulary that changes with volcanic activity, so this field is intentionally not constrained to a closed enum; consumers should treat any unlisted code as a valid JMA code and rely on the sibling `alert_level_name` field for the human-readable label JMA publishes alongside each code. Known codes observed in the live feed and JMA eruption-alert-level guidance: `02` = Crater-area warning (\u706b\u53e3\u5468\u8fba\u8b66\u5831); `03` = Eruption warning for surrounding sea area (\u5674\u706b\u8b66\u5831\uff08\u5468\u8fba\u6d77\u57df\uff09); `04` = Eruption forecast, warning lifted (\u5674\u706b\u4e88\u5831\uff1a\u8b66\u5831\u89e3\u9664); `11` = Active volcano, pay attention (\u6d3b\u52d5\u706b\u5c71\u3067\u3042\u308b\u3053\u3068\u306b\u7559\u610f); `12` = Crater area restriction (\u706b\u53e3\u5468\u8fba\u898f\u5236); `13` = Mountain access restriction (\u5165\u5c71\u898f\u5236); `22` = Crater vicinity danger (\u706b\u53e3\u5468\u8fba\u5371\u967a); `23` = Mountain access danger...""}",
+   [alert_level_name]: @"{""description"": ""Japanese alert level or warning label from the target-volcano item, such as \u30ec\u30d9\u30eb\uff13\uff08\u5165\u5c71\u898f\u5236\uff09. JMA uses this text to communicate the public-facing warning level or restriction phrase.""}",
+   [previous_level_code]: @"{""description"": ""Previous JMA alert level or warning code from lastCode when the warning feed provides one. It allows consumers to determine whether the current report raised, lowered, continued, or newly issued a level.""}",
+   [condition]: @"{""description"": ""Normalized lifecycle condition derived from the Japanese JMA condition text. \u767a\u8868 is mapped to ISSUED, \u5f15\u4e0a\u3052 to RAISED, \u5f15\u4e0b\u3052 to LOWERED, \u7d99\u7d9a to CONTINUED, \u5207\u66ff to SWITCHED, and \u89e3\u9664 to CANCELLED so downstream consumers can compare reports without parsing Japanese status labels.""}",
+   [info_type_jp]: @"{""description"": ""Japanese volcanoInfos type label from the JMA feed. For emitted warning events the bridge uses the target-volcano section, normally \u5674\u706b\u8b66\u5831\u30fb\u4e88\u5831\uff08\u5bfe\u8c61\u706b\u5c71\uff09, because that section carries the stable volcano code identity.""}",
+   [area_codes]: @"{""description"": ""List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information."", ""schema"": {""type"": ""array"", ""description"": ""List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information."", ""items"": {""type"": ""string"", ""description"": ""Payload for a reference record for an alerting area or region published by the Japan Meteorological Agency. It gives consumers names and identifiers needed to interpret related warnings.""}}}",
+   [prefecture]: @"{""description"": ""ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.""}",
+   [event]: @"{""description"": ""Fixed topic event segment for VolcanicWarning messages.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -160,7 +160,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['JP.JMA.Volcano.VolcanicWarning'] ingestion json mapping "JP.JMA.Volcano.VolcanicWarning_json_flat"
+.create-or-alter table [VolcanicWarning] ingestion json mapping "VolcanicWarning_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -179,11 +179,11 @@
   {"column": "info_type_jp", "path": "$.info_type_jp"},
   {"column": "area_codes", "path": "$.area_codes"},
   {"column": "prefecture", "path": "$.prefecture"},
-  {"column": "event", "path": "$.event"},
+  {"column": "event", "path": "$.event"}
 ]
 ```
 
-.create-or-alter table ['JP.JMA.Volcano.VolcanicWarning'] ingestion json mapping "JP.JMA.Volcano.VolcanicWarning_json_ce_structured"
+.create-or-alter table [VolcanicWarning] ingestion json mapping "VolcanicWarning_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -202,28 +202,28 @@
   {"column": "info_type_jp", "path": "$.data.info_type_jp"},
   {"column": "area_codes", "path": "$.data.area_codes"},
   {"column": "prefecture", "path": "$.data.prefecture"},
-  {"column": "event", "path": "$.data.event"},
+  {"column": "event", "path": "$.data.event"}
 ]
 ```
 
-.drop materialized-view ['JP.JMA.Volcano.VolcanicWarningLatest'] ifexists;
+.drop materialized-view VolcanicWarningLatest ifexists;
 
-.create materialized-view with (backfill=true) ['JP.JMA.Volcano.VolcanicWarningLatest'] on table ['JP.JMA.Volcano.VolcanicWarning'] {
-    ['JP.JMA.Volcano.VolcanicWarning'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) VolcanicWarningLatest on table VolcanicWarning {
+    VolcanicWarning | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['JP.JMA.Volcano.VolcanicWarning'] policy update
+.alter table [VolcanicWarning] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Volcano.VolcanicWarning') | project['volcano_code'] = tostring(data.['volcano_code']),['event_id'] = tostring(data.['event_id']),['report_datetime'] = todatetime(data.['report_datetime']),['report_datetime_local'] = todatetime(data.['report_datetime_local']),['alert_level_code'] = tostring(data.['alert_level_code']),['alert_level_name'] = tostring(data.['alert_level_name']),['previous_level_code'] = tostring(data.['previous_level_code']),['condition'] = tostring(data.['condition']),['info_type_jp'] = tostring(data.['info_type_jp']),['area_codes'] = todynamic(data.['area_codes']),['prefecture'] = tostring(data.['prefecture']),['event'] = tostring(data.['event']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['JP.JMA.Volcano.VolcanicEruption'] (
+.create-merge table [VolcanicEruption] (
    [volcano_code]: string,
    [event_id]: string,
    [report_datetime]: datetime,
@@ -251,29 +251,29 @@
    [___subject]: string
 );
 
-.alter table ['JP.JMA.Volcano.VolcanicEruption'] docstring "{\"description\": \"JMA Bosai volcanic eruption observation report for a target volcano.\"}";
+.alter table [VolcanicEruption] docstring @"{""description"": ""JMA Bosai volcanic eruption observation report for a target volcano.""}";
 
-.alter table ['JP.JMA.Volcano.VolcanicEruption'] column-docstrings (
-   [volcano_code]: "{\"description\": \"Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.\"}",
-   [event_id]: "{\"description\": \"JMA eventId from the Bosai eruption record. The bridge combines this identifier with reportDatetime for deduplication of eruption observations.\"}",
-   [report_datetime]: "{\"description\": \"Eruption report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp.\"}",
-   [report_datetime_local]: "{\"description\": \"Original JMA reportDatetime value in Japan Standard Time as published in eruption.json.\"}",
-   [eruption_datetime]: "{\"description\": \"Observed eruption time converted to UTC when the eruption feed contains a structured eruption or observation datetime. The field is null when JMA publishes only report issue time or free text.\"}",
-   [eruption_datetime_local]: "{\"description\": \"Observed eruption time in the original Japan Standard Time representation when present in a JMA eruption item. The field is null when the live payload does not expose a separate occurrence time.\"}",
-   [eruption_type]: "{\"description\": \"Normalized phenomenon name from JMA eruption observation bulletins. JMA documentation says the report carries the phenomenon name, with examples including eruption and continuous-eruption state changes; null means the live JSON item did not expose a recognizable phenomenon name.\"}",
-   [crater_name]: "{\"description\": \"Japanese crater name from the eruption observation report when JMA identifies the crater, such as \\u5357\\u5cb3\\u5c71\\u9802\\u706b\\u53e3 in JMA bulletin examples. Null means the eruption JSON item or text did not include a crater label.\"}",
-   [colored_plume_height_m]: "{\"description\": \"Height in metres of the colored volcanic plume above the crater, corresponding to the \\u6709\\u8272\\u5674\\u7159 field in JMA eruption observation bulletins. Null means no colored-plume height was published or parsed.\"}",
-   [white_plume_height_m]: "{\"description\": \"Height in metres of the white volcanic plume above the crater, corresponding to the \\u767d\\u8272\\u5674\\u7159 field when JMA publishes it. Null means no white-plume height was published or parsed.\"}",
-   [maximum_plume_height_since_start_m]: "{\"description\": \"Maximum plume height in metres above the crater since the eruption began, corresponding to the JMA bulletin field \\u5674\\u706b\\u958b\\u59cb\\u4ee5\\u964d\\u306e\\u6700\\u9ad8\\u5674\\u7159\\u9ad8\\u5ea6. Null means JMA did not publish this field for the observation.\"}",
-   [plume_direction]: "{\"description\": \"Japanese plume flow direction from the JMA \\u6d41\\u5411 field, for example \\u76f4\\u4e0a or \\u6771. Null means the eruption item did not provide a plume direction.\"}",
-   [ash_dispersal_direction]: "{\"description\": \"Direction or area text for ash dispersal when the eruption observation describes ash movement separately from the plume-flow direction. Null means JMA did not publish a separate ash dispersal direction in the parsed item.\"}",
-   [pyroclastic_flow_observed]: "{\"description\": \"True when the eruption observation text states that a pyroclastic flow (\\u706b\\u7815\\u6d41) was observed, false when the text explicitly states no pyroclastic flow, and null when the report does not mention pyroclastic-flow status.\"}",
-   [plume_amount_jp]: "{\"description\": \"Japanese qualitative plume-amount label from JMA bulletin text, such as \\u3084\\u3084\\u591a\\u91cf. Null means the observation did not include a plume-amount label.\"}",
-   [description]: "{\"description\": \"Japanese free-text description assembled from the JMA eruption item fields such as description, text, name, title, or content. This preserves the official observational wording when the eruption feed carries discrete eruption observations.\"}",
-   [info_type_jp]: "{\"description\": \"Japanese volcanoInfos section type from eruption.json when supplied by JMA. It identifies the official section in which the eruption observation was published.\"}",
-   [area_codes]: "{\"description\": \"List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.\", \"schema\": {\"type\": \"array\", \"description\": \"List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.\", \"items\": {\"type\": \"string\", \"description\": \"Payload for a reference record for an alerting area or region published by the Japan Meteorological Agency. It gives consumers names and identifiers needed to interpret related warnings.\"}}}",
-   [prefecture]: "{\"description\": \"ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.\"}",
-   [event]: "{\"description\": \"Fixed topic event segment for VolcanicEruption messages.\"}",
+.alter table [VolcanicEruption] column-docstrings (
+   [volcano_code]: @"{""description"": ""Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.""}",
+   [event_id]: @"{""description"": ""JMA eventId from the Bosai eruption record. The bridge combines this identifier with reportDatetime for deduplication of eruption observations.""}",
+   [report_datetime]: @"{""description"": ""Eruption report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp.""}",
+   [report_datetime_local]: @"{""description"": ""Original JMA reportDatetime value in Japan Standard Time as published in eruption.json.""}",
+   [eruption_datetime]: @"{""description"": ""Observed eruption time converted to UTC when the eruption feed contains a structured eruption or observation datetime. The field is null when JMA publishes only report issue time or free text.""}",
+   [eruption_datetime_local]: @"{""description"": ""Observed eruption time in the original Japan Standard Time representation when present in a JMA eruption item. The field is null when the live payload does not expose a separate occurrence time.""}",
+   [eruption_type]: @"{""description"": ""Normalized phenomenon name from JMA eruption observation bulletins. JMA documentation says the report carries the phenomenon name, with examples including eruption and continuous-eruption state changes; null means the live JSON item did not expose a recognizable phenomenon name.""}",
+   [crater_name]: @"{""description"": ""Japanese crater name from the eruption observation report when JMA identifies the crater, such as \u5357\u5cb3\u5c71\u9802\u706b\u53e3 in JMA bulletin examples. Null means the eruption JSON item or text did not include a crater label.""}",
+   [colored_plume_height_m]: @"{""description"": ""Height in metres of the colored volcanic plume above the crater, corresponding to the \u6709\u8272\u5674\u7159 field in JMA eruption observation bulletins. Null means no colored-plume height was published or parsed.""}",
+   [white_plume_height_m]: @"{""description"": ""Height in metres of the white volcanic plume above the crater, corresponding to the \u767d\u8272\u5674\u7159 field when JMA publishes it. Null means no white-plume height was published or parsed.""}",
+   [maximum_plume_height_since_start_m]: @"{""description"": ""Maximum plume height in metres above the crater since the eruption began, corresponding to the JMA bulletin field \u5674\u706b\u958b\u59cb\u4ee5\u964d\u306e\u6700\u9ad8\u5674\u7159\u9ad8\u5ea6. Null means JMA did not publish this field for the observation.""}",
+   [plume_direction]: @"{""description"": ""Japanese plume flow direction from the JMA \u6d41\u5411 field, for example \u76f4\u4e0a or \u6771. Null means the eruption item did not provide a plume direction.""}",
+   [ash_dispersal_direction]: @"{""description"": ""Direction or area text for ash dispersal when the eruption observation describes ash movement separately from the plume-flow direction. Null means JMA did not publish a separate ash dispersal direction in the parsed item.""}",
+   [pyroclastic_flow_observed]: @"{""description"": ""True when the eruption observation text states that a pyroclastic flow (\u706b\u7815\u6d41) was observed, false when the text explicitly states no pyroclastic flow, and null when the report does not mention pyroclastic-flow status.""}",
+   [plume_amount_jp]: @"{""description"": ""Japanese qualitative plume-amount label from JMA bulletin text, such as \u3084\u3084\u591a\u91cf. Null means the observation did not include a plume-amount label.""}",
+   [description]: @"{""description"": ""Japanese free-text description assembled from the JMA eruption item fields such as description, text, name, title, or content. This preserves the official observational wording when the eruption feed carries discrete eruption observations.""}",
+   [info_type_jp]: @"{""description"": ""Japanese volcanoInfos section type from eruption.json when supplied by JMA. It identifies the official section in which the eruption observation was published.""}",
+   [area_codes]: @"{""description"": ""List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information."", ""schema"": {""type"": ""array"", ""description"": ""List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information."", ""items"": {""type"": ""string"", ""description"": ""Payload for a reference record for an alerting area or region published by the Japan Meteorological Agency. It gives consumers names and identifiers needed to interpret related warnings.""}}}",
+   [prefecture]: @"{""description"": ""ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.""}",
+   [event]: @"{""description"": ""Fixed topic event segment for VolcanicEruption messages.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -281,7 +281,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['JP.JMA.Volcano.VolcanicEruption'] ingestion json mapping "JP.JMA.Volcano.VolcanicEruption_json_flat"
+.create-or-alter table [VolcanicEruption] ingestion json mapping "VolcanicEruption_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -308,11 +308,11 @@
   {"column": "info_type_jp", "path": "$.info_type_jp"},
   {"column": "area_codes", "path": "$.area_codes"},
   {"column": "prefecture", "path": "$.prefecture"},
-  {"column": "event", "path": "$.event"},
+  {"column": "event", "path": "$.event"}
 ]
 ```
 
-.create-or-alter table ['JP.JMA.Volcano.VolcanicEruption'] ingestion json mapping "JP.JMA.Volcano.VolcanicEruption_json_ce_structured"
+.create-or-alter table [VolcanicEruption] ingestion json mapping "VolcanicEruption_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -339,24 +339,24 @@
   {"column": "info_type_jp", "path": "$.data.info_type_jp"},
   {"column": "area_codes", "path": "$.data.area_codes"},
   {"column": "prefecture", "path": "$.data.prefecture"},
-  {"column": "event", "path": "$.data.event"},
+  {"column": "event", "path": "$.data.event"}
 ]
 ```
 
-.drop materialized-view ['JP.JMA.Volcano.VolcanicEruptionLatest'] ifexists;
+.drop materialized-view VolcanicEruptionLatest ifexists;
 
-.create materialized-view with (backfill=true) ['JP.JMA.Volcano.VolcanicEruptionLatest'] on table ['JP.JMA.Volcano.VolcanicEruption'] {
-    ['JP.JMA.Volcano.VolcanicEruption'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) VolcanicEruptionLatest on table VolcanicEruption {
+    VolcanicEruption | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['JP.JMA.Volcano.VolcanicEruption'] policy update
+.alter table [VolcanicEruption] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Volcano.VolcanicEruption') | project['volcano_code'] = tostring(data.['volcano_code']),['event_id'] = tostring(data.['event_id']),['report_datetime'] = todatetime(data.['report_datetime']),['report_datetime_local'] = todatetime(data.['report_datetime_local']),['eruption_datetime'] = todatetime(data.['eruption_datetime']),['eruption_datetime_local'] = todatetime(data.['eruption_datetime_local']),['eruption_type'] = tostring(data.['eruption_type']),['crater_name'] = tostring(data.['crater_name']),['colored_plume_height_m'] = toreal(data.['colored_plume_height_m']),['white_plume_height_m'] = toreal(data.['white_plume_height_m']),['maximum_plume_height_since_start_m'] = toreal(data.['maximum_plume_height_since_start_m']),['plume_direction'] = tostring(data.['plume_direction']),['ash_dispersal_direction'] = tostring(data.['ash_dispersal_direction']),['pyroclastic_flow_observed'] = tobool(data.['pyroclastic_flow_observed']),['plume_amount_jp'] = tostring(data.['plume_amount_jp']),['description'] = tostring(data.['description']),['info_type_jp'] = tostring(data.['info_type_jp']),['area_codes'] = todynamic(data.['area_codes']),['prefecture'] = tostring(data.['prefecture']),['event'] = tostring(data.['event']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

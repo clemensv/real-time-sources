@@ -29,17 +29,17 @@ class Test_WaterLevelObservation(unittest.TestCase):
         Create instance of WaterLevelObservation for testing
         """
         instance = WaterLevelObservation(
-            station_id='zrixxiacxipucqfkvkwn',
-            provider='coilxxvmwghqkcbckbwg',
-            water_body='xsxekevgvbwsjsllerwp',
-            water_level=float(95.59411428729159),
-            water_level_unit='mwpdrvmxivbrenojdwhu',
+            station_id='xkovcmpxowuwbnipybzp',
+            provider='jywphpwyczakcgvojfnj',
+            water_body='owbrgfxzijxbpjxpihdc',
+            water_level=float(26.372183359801838),
+            water_level_unit='wzbwxjbxcupjqyociich',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(39.70672276368239),
-            discharge_unit='kqmqxrlvxmacsdgwoxbz',
+            discharge=float(1.267529844901627),
+            discharge_unit='ilsjjscygoucncueuwuh',
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            trend=int(3),
-            situation=int(16)
+            trend=int(99),
+            situation=int(57)
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'zrixxiacxipucqfkvkwn'
+        test_value = 'xkovcmpxowuwbnipybzp'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test provider property
         """
-        test_value = 'coilxxvmwghqkcbckbwg'
+        test_value = 'jywphpwyczakcgvojfnj'
         self.instance.provider = test_value
         self.assertEqual(self.instance.provider, test_value)
     
@@ -64,7 +64,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_body property
         """
-        test_value = 'xsxekevgvbwsjsllerwp'
+        test_value = 'owbrgfxzijxbpjxpihdc'
         self.instance.water_body = test_value
         self.assertEqual(self.instance.water_body, test_value)
     
@@ -72,7 +72,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level property
         """
-        test_value = float(95.59411428729159)
+        test_value = float(26.372183359801838)
         self.instance.water_level = test_value
         self.assertEqual(self.instance.water_level, test_value)
     
@@ -80,7 +80,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level_unit property
         """
-        test_value = 'mwpdrvmxivbrenojdwhu'
+        test_value = 'wzbwxjbxcupjqyociich'
         self.instance.water_level_unit = test_value
         self.assertEqual(self.instance.water_level_unit, test_value)
     
@@ -96,7 +96,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(39.70672276368239)
+        test_value = float(1.267529844901627)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -104,7 +104,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge_unit property
         """
-        test_value = 'kqmqxrlvxmacsdgwoxbz'
+        test_value = 'ilsjjscygoucncueuwuh'
         self.instance.discharge_unit = test_value
         self.assertEqual(self.instance.discharge_unit, test_value)
     
@@ -120,7 +120,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test trend property
         """
-        test_value = int(3)
+        test_value = int(99)
         self.instance.trend = test_value
         self.assertEqual(self.instance.trend, test_value)
     
@@ -128,7 +128,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test situation property
         """
-        test_value = int(16)
+        test_value = int(57)
         self.instance.situation = test_value
         self.assertEqual(self.instance.situation, test_value)
     

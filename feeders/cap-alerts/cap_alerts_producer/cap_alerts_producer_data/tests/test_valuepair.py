@@ -28,8 +28,8 @@ class Test_ValuePair(unittest.TestCase):
         Create instance of ValuePair for testing
         """
         instance = ValuePair(
-            value_name='jlxrxzmclhevcrkclpcw',
-            value='yiplstmbgmvgvtwdidbf'
+            value_name='whggmwnpmkuhirlrdfdk',
+            value='ivykjtfpjbsgpsgkswum'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_ValuePair(unittest.TestCase):
         """
         Test value_name property
         """
-        test_value = 'jlxrxzmclhevcrkclpcw'
+        test_value = 'whggmwnpmkuhirlrdfdk'
         self.instance.value_name = test_value
         self.assertEqual(self.instance.value_name, test_value)
     
@@ -46,7 +46,7 @@ class Test_ValuePair(unittest.TestCase):
         """
         Test value property
         """
-        test_value = 'yiplstmbgmvgvtwdidbf'
+        test_value = 'ivykjtfpjbsgpsgkswum'
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     

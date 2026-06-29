@@ -1,3 +1,3 @@
-from .fdsn import Node, Earthquake
+from .fdsn import Earthquake, Node
 
-__all__ = ["Node", "Earthquake"]
+__all__ = ["Earthquake", "Node"]

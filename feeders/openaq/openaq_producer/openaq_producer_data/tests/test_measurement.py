@@ -30,17 +30,17 @@ class Test_Measurement(unittest.TestCase):
         Create instance of Measurement for testing
         """
         instance = Measurement(
-            location_id=int(73),
-            sensor_id=int(23),
-            country_iso='mtcyywxavwgptxhhewgj',
-            parameter_id=int(22),
+            location_id=int(91),
+            sensor_id=int(31),
+            country_iso='lkckuflydojvgsvupshj',
+            parameter_id=int(13),
             parameter_name=ParameterNameenum.pm25,
-            parameter_units='mzypjkgecjipajsivpag',
+            parameter_units='alyspfbpfyhxflxdjnyb',
             datetime=datetime.datetime.now(datetime.timezone.utc),
-            value=float(25.008825481301866),
-            latitude=float(88.30865272586435),
-            longitude=float(97.32407217119521),
-            is_valid=False,
+            value=float(50.45690905392384),
+            latitude=float(85.75601195581339),
+            longitude=float(93.61173264841818),
+            is_valid=True,
             has_flags=False,
             poll_time=datetime.datetime.now(datetime.timezone.utc)
         )
@@ -51,7 +51,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test location_id property
         """
-        test_value = int(73)
+        test_value = int(91)
         self.instance.location_id = test_value
         self.assertEqual(self.instance.location_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(23)
+        test_value = int(31)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test country_iso property
         """
-        test_value = 'mtcyywxavwgptxhhewgj'
+        test_value = 'lkckuflydojvgsvupshj'
         self.instance.country_iso = test_value
         self.assertEqual(self.instance.country_iso, test_value)
     
@@ -75,7 +75,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test parameter_id property
         """
-        test_value = int(22)
+        test_value = int(13)
         self.instance.parameter_id = test_value
         self.assertEqual(self.instance.parameter_id, test_value)
     
@@ -91,7 +91,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test parameter_units property
         """
-        test_value = 'mzypjkgecjipajsivpag'
+        test_value = 'alyspfbpfyhxflxdjnyb'
         self.instance.parameter_units = test_value
         self.assertEqual(self.instance.parameter_units, test_value)
     
@@ -107,7 +107,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(25.008825481301866)
+        test_value = float(50.45690905392384)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -115,7 +115,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(88.30865272586435)
+        test_value = float(85.75601195581339)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -123,7 +123,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(97.32407217119521)
+        test_value = float(93.61173264841818)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -131,7 +131,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test is_valid property
         """
-        test_value = False
+        test_value = True
         self.instance.is_valid = test_value
         self.assertEqual(self.instance.is_valid, test_value)
     

@@ -1,4 +1,4 @@
-# Environment Canada feeder Events
+# Environment Canada Events
 
 Environment Canada Weather publishes current weather observations from Environment and Climate Change Canada (ECCC) for Canadian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 | --- | --- |
 | `KAFKA` | topic `environment-canada`, key `{msc_id}` |
 | `MQTT/5.0` | topic `weather/ca/eccc/environment-canada/{province}/{msc_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/environment-canada`, message subject `{msc_id}`; application properties province `{province}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/environment-canada`, message subject `{msc_id}` |
 
 #### Payload
 
@@ -95,7 +95,7 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 - **`latitude`** (double or null, optional, degree (°)): WGS84 latitude of the station in decimal degrees.
 - **`longitude`** (double or null, optional, degree (°)): WGS84 longitude of the station in decimal degrees.
 - **`elevation`** (double or null, optional, m): Station elevation above sea level in meters.
-- **`province`** (string, optional): Normalized routing field 'province' added for MQTT/AMQP subscriber filtering.
+- **`province`** (string or null, optional): Normalized routing field 'province' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -139,7 +139,7 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 | --- | --- |
 | `KAFKA` | topic `environment-canada`, key `{msc_id}` |
 | `MQTT/5.0` | topic `weather/ca/eccc/environment-canada/{province}/{msc_id}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/environment-canada`, message subject `{msc_id}`; application properties province `{province}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/environment-canada`, message subject `{msc_id}` |
 
 #### Payload
 
@@ -167,7 +167,7 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 - **`wind_gust_1hr`** (double or null, optional, km/h): Maximum wind speed at 10m in the past hour from max_wnd_spd_10m_pst1hr.
 - **`precipitation_24hr`** (double or null, optional, mm): Total precipitation in the past 24 hours from pcpn_amt_pst24hrs.
 - **`altimeter_setting`** (double or null, optional, [in_i'Hg] (inHg)): Altimeter setting from the altmetr_setng field. Used in aviation.
-- **`province`** (string, optional): Normalized routing field 'province' added for MQTT/AMQP subscriber filtering.
+- **`province`** (string or null, optional): Normalized routing field 'province' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -228,3 +228,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/environment_canada.xreg.json`](xreg/environment_canada.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -28,7 +28,7 @@ class Test_Operator(unittest.TestCase):
         Create instance of Operator for testing
         """
         instance = Operator(
-            operator_ref='lpvxwfpptogsflrqikzn'
+            operator_ref='cbvdvwbpeulkbpuusgrv'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test operator_ref property
         """
-        test_value = 'lpvxwfpptogsflrqikzn'
+        test_value = 'cbvdvwbpeulkbpuusgrv'
         self.instance.operator_ref = test_value
         self.assertEqual(self.instance.operator_ref, test_value)
     

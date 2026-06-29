@@ -50,6 +50,7 @@
    [area_desc]: string,
    [verwaltungsbereiche]: string,
    [language]: string,
+   [state]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -57,33 +58,34 @@
    [___subject]: string
 );
 
-.alter table [CivilWarning] docstring "{\"description\": \"A civil protection warning from Germany's NINA/BBK system. Contains CAP-structured alert data with multi-language info blocks, BBK event codes, and German administrative area geocodes (Verwaltungsbereiche).\"}";
+.alter table [CivilWarning] docstring @"{""description"": ""A civil protection warning from Germany's NINA/BBK warning system. Aggregates warnings from MOWAS (federal), KATWARN (municipal), BIWAPP (municipal), DWD (weather service), LHP (flood centers), and police services. Each warning follows the CAP (Common Alerting Protocol) structure with multi-language support.""}";
 
 .alter table [CivilWarning] column-docstrings (
-   [warning_id]: "{\"description\": \"The unique warning identifier assigned by the NINA/BBK system (e.g., 'mow.DE-HE-DA-W184-20240723-000').\"}",
-   [provider]: "{\"description\": \"The NINA provider that issued the warning.\"}",
-   [version]: "{\"description\": \"The version number of this warning, incremented with each update.\"}",
-   [sender]: "{\"description\": \"The identifier of the issuing authority (e.g., 'DE-HE-DA-W184').\"}",
-   [sender_name]: "{\"description\": \"The human-readable long name of the issuing authority (e.g., 'Integrierte Leitstelle Stadt Darmstadt').\"}",
-   [sent]: "{\"description\": \"The date and time when the warning was issued, in ISO-8601 format.\"}",
-   [status]: "{\"description\": \"The CAP alert status.\"}",
-   [msg_type]: "{\"description\": \"The CAP message type indicating the nature of the warning.\"}",
-   [scope]: "{\"description\": \"The CAP scope of the warning. Typically 'Public'.\"}",
-   [references]: "{\"description\": \"CAP references to prior related warnings, in the format 'sender,identifier,sent'.\"}",
-   [event]: "{\"description\": \"The event type description (e.g., 'Gefahreninformation', 'Hochwasserinformation').\"}",
-   [event_code]: "{\"description\": \"The BBK event code identifying the hazard type (e.g., 'BBK-EVC-067' for animal disease, 'BBK-EVC-045' for flood).\"}",
-   [category]: "{\"description\": \"The CAP alert category.\"}",
-   [severity]: "{\"description\": \"The CAP severity level.\"}",
-   [urgency]: "{\"description\": \"The CAP urgency level.\"}",
-   [certainty]: "{\"description\": \"The CAP certainty level.\"}",
-   [headline]: "{\"description\": \"A brief human-readable headline summarizing the warning.\"}",
-   [description]: "{\"description\": \"A detailed description of the warning situation.\"}",
-   [instruction]: "{\"description\": \"Recommended protective actions for the public.\"}",
-   [web]: "{\"description\": \"A URL to further information about the warning.\"}",
-   [contact]: "{\"description\": \"Contact information for the issuing authority.\"}",
-   [area_desc]: "{\"description\": \"A textual description of the affected geographic area.\"}",
-   [verwaltungsbereiche]: "{\"description\": \"Comma-separated German administrative area codes (Amtliche Gemeindeschl\\u00fcssel) affected by the warning.\"}",
-   [language]: "{\"description\": \"The language of the info block used to populate this event (e.g., 'de', 'EN').\"}",
+   [warning_id]: @"{""description"": ""The unique warning identifier assigned by the NINA/BBK system (e.g., 'mow.DE-HE-DA-W184-20240723-000').""}",
+   [provider]: @"{""description"": ""The NINA provider that issued the warning (e.g. mowas, katwarn, biwapp, dwd, lhp, police). New providers may be added by BBK at any time.""}",
+   [version]: @"{""description"": ""The version number of this warning, incremented with each update.""}",
+   [sender]: @"{""description"": ""The identifier of the issuing authority (e.g., 'DE-HE-DA-W184').""}",
+   [sender_name]: @"{""description"": ""The human-readable long name of the issuing authority (e.g., 'Integrierte Leitstelle Stadt Darmstadt').""}",
+   [sent]: @"{""description"": ""The date and time when the warning was issued, in ISO-8601 format.""}",
+   [status]: @"{""description"": ""The CAP alert status.""}",
+   [msg_type]: @"{""description"": ""The CAP message type indicating the nature of the warning.""}",
+   [scope]: @"{""description"": ""The CAP scope of the warning. Typically 'Public'.""}",
+   [references]: @"{""description"": ""CAP references to prior related warnings, in the format 'sender,identifier,sent'.""}",
+   [event]: @"{""description"": ""The event type description (e.g., 'Gefahreninformation', 'Hochwasserinformation').""}",
+   [event_code]: @"{""description"": ""The BBK event code identifying the hazard type (e.g., 'BBK-EVC-067' for animal disease, 'BBK-EVC-045' for flood).""}",
+   [category]: @"{""description"": ""The CAP alert category.""}",
+   [severity]: @"{""description"": ""Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing.""}",
+   [urgency]: @"{""description"": ""The CAP urgency level.""}",
+   [certainty]: @"{""description"": ""The CAP certainty level.""}",
+   [headline]: @"{""description"": ""A brief human-readable headline summarizing the warning.""}",
+   [description]: @"{""description"": ""A detailed description of the warning situation.""}",
+   [instruction]: @"{""description"": ""Recommended protective actions for the public.""}",
+   [web]: @"{""description"": ""A URL to further information about the warning.""}",
+   [contact]: @"{""description"": ""Contact information for the issuing authority.""}",
+   [area_desc]: @"{""description"": ""A textual description of the affected geographic area.""}",
+   [verwaltungsbereiche]: @"{""description"": ""Comma-separated German administrative area codes (Amtliche Gemeindeschl\u00fcssel) affected by the warning.""}",
+   [language]: @"{""description"": ""The language of the info block used to populate this event (e.g., 'de', 'EN').""}",
+   [state]: @"{""description"": ""German federal-state slug derived from CAP area administrative codes (warnVerwaltungsbereiche), with sender-code fallback. Matches the {state} MQTT topic axis.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -123,6 +125,7 @@
   {"column": "area_desc", "path": "$.area_desc"},
   {"column": "verwaltungsbereiche", "path": "$.verwaltungsbereiche"},
   {"column": "language", "path": "$.language"},
+  {"column": "state", "path": "$.state"}
 ]
 ```
 
@@ -158,6 +161,7 @@
   {"column": "area_desc", "path": "$.data.area_desc"},
   {"column": "verwaltungsbereiche", "path": "$.data.verwaltungsbereiche"},
   {"column": "language", "path": "$.data.language"},
+  {"column": "state", "path": "$.data.state"}
 ]
 ```
 
@@ -172,9 +176,9 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NINA.CivilWarning') | project['warning_id'] = tostring(data.['warning_id']),['provider'] = tostring(data.['provider']),['version'] = toint(data.['version']),['sender'] = tostring(data.['sender']),['sender_name'] = tostring(data.['sender_name']),['sent'] = todatetime(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['scope'] = tostring(data.['scope']),['references'] = tostring(data.['references']),['event'] = tostring(data.['event']),['event_code'] = tostring(data.['event_code']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['instruction'] = tostring(data.['instruction']),['web'] = tostring(data.['web']),['contact'] = tostring(data.['contact']),['area_desc'] = tostring(data.['area_desc']),['verwaltungsbereiche'] = tostring(data.['verwaltungsbereiche']),['language'] = tostring(data.['language']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NINA.CivilWarning') | project['warning_id'] = tostring(data.['warning_id']),['provider'] = tostring(data.['provider']),['version'] = toint(data.['version']),['sender'] = tostring(data.['sender']),['sender_name'] = tostring(data.['sender_name']),['sent'] = todatetime(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['scope'] = tostring(data.['scope']),['references'] = tostring(data.['references']),['event'] = tostring(data.['event']),['event_code'] = tostring(data.['event_code']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['instruction'] = tostring(data.['instruction']),['web'] = tostring(data.['web']),['contact'] = tostring(data.['contact']),['area_desc'] = tostring(data.['area_desc']),['verwaltungsbereiche'] = tostring(data.['verwaltungsbereiche']),['language'] = tostring(data.['language']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

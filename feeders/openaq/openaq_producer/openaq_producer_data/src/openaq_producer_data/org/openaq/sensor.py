@@ -194,18 +194,18 @@ class Sensor:
             An instance of the dataclass.
         """
         return cls(
-            location_id=int(31),
-            sensor_id=int(52),
-            country_iso='ucnaswihjbdhzouyvurr',
-            sensor_name='reyymvtejtehwdstxwet',
-            parameter_id=int(23),
+            location_id=int(96),
+            sensor_id=int(87),
+            country_iso='nhfszwxewfrypwpomkrl',
+            sensor_name='thxdamhhiryxkdycmzjv',
+            parameter_id=int(64),
             parameter_name=ParameterNameenum.pm25,
-            parameter_units='hifjopmlopcjzgrwxosr',
-            parameter_display_name='zpjnlpwrktjgoyqakyrt',
+            parameter_units='bgmxvmxryagtyvfjprqc',
+            parameter_display_name='ifetuccsoljlxiqistgz',
             datetime_first=datetime.datetime.now(datetime.timezone.utc),
             datetime_last=datetime.datetime.now(datetime.timezone.utc),
-            latest_value=float(97.88445216724048),
+            latest_value=float(0.2081715780052118),
             latest_datetime=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(38.46498494060317),
-            longitude=float(32.53946742146496)
+            latitude=float(23.095128327704884),
+            longitude=float(30.367472933072616)
         )

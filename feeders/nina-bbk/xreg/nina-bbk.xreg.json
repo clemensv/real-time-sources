@@ -241,9 +241,6 @@
                       "Ack",
                       "Error"
                     ],
-                    "altnames": {
-                      "json": "msgType"
-                    },
                     "descriptions": {
                       "Alert": "Provider value `Alert` for this coded alert field.",
                       "Update": "Provider value `Update` for this coded alert field.",
@@ -270,7 +267,10 @@
                     }
                   },
                   "references": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "CAP references to prior related warnings, in the format 'sender,identifier,sent'."
                   },
                   "event": {

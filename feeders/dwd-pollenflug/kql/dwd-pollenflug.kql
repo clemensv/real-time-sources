@@ -1,0 +1,277 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Region] (
+   [region_id]: string,
+   [region_name]: string,
+   [partregion_id]: int,
+   [partregion_name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Region] docstring @"{""description"": ""A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.""}";
+
+.alter table [Region] column-docstrings (
+   [region_id]: @"{""description"": ""Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id.""}",
+   [region_name]: @"{""description"": ""Name of the main geographic region as published by DWD (e.g. 'Schleswig-Holstein und Hamburg', 'Bayern'). Sourced from the 'region_name' field in the DWD API response.""}",
+   [partregion_id]: @"{""description"": ""Numeric identifier of the sub-region within the parent region. Set to -1 by DWD when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_id' field in the DWD API response.""}",
+   [partregion_name]: @"{""description"": ""Name of the sub-region (e.g. 'Inseln und Marschen', 'Geest,Schleswig-Holstein und Hamburg'). Empty string in the DWD response when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_name' field in the DWD API response.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Region] ingestion json mapping "Region_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "region_name", "path": "$.region_name"},
+  {"column": "partregion_id", "path": "$.partregion_id"},
+  {"column": "partregion_name", "path": "$.partregion_name"}
+]
+```
+
+.create-or-alter table [Region] ingestion json mapping "Region_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "region_name", "path": "$.data.region_name"},
+  {"column": "partregion_id", "path": "$.data.partregion_id"},
+  {"column": "partregion_name", "path": "$.data.partregion_name"}
+]
+```
+
+.drop materialized-view RegionLatest ifexists;
+
+.create materialized-view with (backfill=true) RegionLatest on table Region {
+    Region | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Region] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Pollenflug.Region') | project['region_id'] = tostring(data.['region_id']),['region_name'] = tostring(data.['region_name']),['partregion_id'] = toint(data.['partregion_id']),['partregion_name'] = tostring(data.['partregion_name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [PollenForecast] (
+   [region_id]: string,
+   [region_name]: string,
+   [last_update]: string,
+   [next_update]: string,
+   [sender]: string,
+   [hazel_today]: string,
+   [hazel_tomorrow]: string,
+   [hazel_dayafter_to]: string,
+   [alder_today]: string,
+   [alder_tomorrow]: string,
+   [alder_dayafter_to]: string,
+   [birch_today]: string,
+   [birch_tomorrow]: string,
+   [birch_dayafter_to]: string,
+   [ash_today]: string,
+   [ash_tomorrow]: string,
+   [ash_dayafter_to]: string,
+   [grasses_today]: string,
+   [grasses_tomorrow]: string,
+   [grasses_dayafter_to]: string,
+   [rye_today]: string,
+   [rye_tomorrow]: string,
+   [rye_dayafter_to]: string,
+   [mugwort_today]: string,
+   [mugwort_tomorrow]: string,
+   [mugwort_dayafter_to]: string,
+   [ragweed_today]: string,
+   [ragweed_tomorrow]: string,
+   [ragweed_dayafter_to]: string,
+   [pollen_type]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PollenForecast] docstring @"{""description"": ""A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source.""}";
+
+.alter table [PollenForecast] column-docstrings (
+   [region_id]: @"{""description"": ""Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id.""}",
+   [region_name]: @"{""description"": ""Display name of the forecast area. Uses partregion_name when available, otherwise region_name.""}",
+   [last_update]: @"{""description"": ""Timestamp of the last forecast update as published by DWD, e.g. '2025-04-08 11:00 Uhr'. Retained as a string because the upstream format includes the German suffix 'Uhr'.""}",
+   [next_update]: @"{""description"": ""Timestamp of the next expected forecast update as published by DWD, e.g. '2025-04-09 11:00 Uhr'.""}",
+   [sender]: @"{""description"": ""Issuing organization as stated in the DWD API response, typically 'Deutscher Wetterdienst - Medizin-Meteorologie'.""}",
+   [hazel_today]: @"{""description"": ""Pollen intensity for Hasel (hazel) today. Values: '0' (none), '0-1' (none to low), '1' (low), '1-2' (low to medium), '2' (medium), '2-3' (medium to high), '3' (high).""}",
+   [hazel_tomorrow]: @"{""description"": ""Pollen intensity for Hasel (hazel) tomorrow.""}",
+   [hazel_dayafter_to]: @"{""description"": ""Pollen intensity for Hasel (hazel) the day after tomorrow.""}",
+   [alder_today]: @"{""description"": ""Pollen intensity for Erle (alder) today.""}",
+   [alder_tomorrow]: @"{""description"": ""Pollen intensity for Erle (alder) tomorrow.""}",
+   [alder_dayafter_to]: @"{""description"": ""Pollen intensity for Erle (alder) the day after tomorrow.""}",
+   [birch_today]: @"{""description"": ""Pollen intensity for Birke (birch) today.""}",
+   [birch_tomorrow]: @"{""description"": ""Pollen intensity for Birke (birch) tomorrow.""}",
+   [birch_dayafter_to]: @"{""description"": ""Pollen intensity for Birke (birch) the day after tomorrow.""}",
+   [ash_today]: @"{""description"": ""Pollen intensity for Esche (ash) today.""}",
+   [ash_tomorrow]: @"{""description"": ""Pollen intensity for Esche (ash) tomorrow.""}",
+   [ash_dayafter_to]: @"{""description"": ""Pollen intensity for Esche (ash) the day after tomorrow.""}",
+   [grasses_today]: @"{""description"": ""Pollen intensity for Gr\u00e4ser (grasses) today. In the upstream API this field is named 'Graeser'.""}",
+   [grasses_tomorrow]: @"{""description"": ""Pollen intensity for Gr\u00e4ser (grasses) tomorrow.""}",
+   [grasses_dayafter_to]: @"{""description"": ""Pollen intensity for Gr\u00e4ser (grasses) the day after tomorrow.""}",
+   [rye_today]: @"{""description"": ""Pollen intensity for Roggen (rye) today.""}",
+   [rye_tomorrow]: @"{""description"": ""Pollen intensity for Roggen (rye) tomorrow.""}",
+   [rye_dayafter_to]: @"{""description"": ""Pollen intensity for Roggen (rye) the day after tomorrow.""}",
+   [mugwort_today]: @"{""description"": ""Pollen intensity for Beifu\u00df (mugwort) today. In the upstream API this field is named 'Beifuss'.""}",
+   [mugwort_tomorrow]: @"{""description"": ""Pollen intensity for Beifu\u00df (mugwort) tomorrow.""}",
+   [mugwort_dayafter_to]: @"{""description"": ""Pollen intensity for Beifu\u00df (mugwort) the day after tomorrow.""}",
+   [ragweed_today]: @"{""description"": ""Pollen intensity for Ambrosia (ragweed) today.""}",
+   [ragweed_tomorrow]: @"{""description"": ""Pollen intensity for Ambrosia (ragweed) tomorrow.""}",
+   [ragweed_dayafter_to]: @"{""description"": ""Pollen intensity for Ambrosia (ragweed) the day after tomorrow.""}",
+   [pollen_type]: @"{""description"": ""Normalized routing field 'pollen_type' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PollenForecast] ingestion json mapping "PollenForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "region_name", "path": "$.region_name"},
+  {"column": "last_update", "path": "$.last_update"},
+  {"column": "next_update", "path": "$.next_update"},
+  {"column": "sender", "path": "$.sender"},
+  {"column": "hazel_today", "path": "$.hazel_today"},
+  {"column": "hazel_tomorrow", "path": "$.hazel_tomorrow"},
+  {"column": "hazel_dayafter_to", "path": "$.hazel_dayafter_to"},
+  {"column": "alder_today", "path": "$.alder_today"},
+  {"column": "alder_tomorrow", "path": "$.alder_tomorrow"},
+  {"column": "alder_dayafter_to", "path": "$.alder_dayafter_to"},
+  {"column": "birch_today", "path": "$.birch_today"},
+  {"column": "birch_tomorrow", "path": "$.birch_tomorrow"},
+  {"column": "birch_dayafter_to", "path": "$.birch_dayafter_to"},
+  {"column": "ash_today", "path": "$.ash_today"},
+  {"column": "ash_tomorrow", "path": "$.ash_tomorrow"},
+  {"column": "ash_dayafter_to", "path": "$.ash_dayafter_to"},
+  {"column": "grasses_today", "path": "$.grasses_today"},
+  {"column": "grasses_tomorrow", "path": "$.grasses_tomorrow"},
+  {"column": "grasses_dayafter_to", "path": "$.grasses_dayafter_to"},
+  {"column": "rye_today", "path": "$.rye_today"},
+  {"column": "rye_tomorrow", "path": "$.rye_tomorrow"},
+  {"column": "rye_dayafter_to", "path": "$.rye_dayafter_to"},
+  {"column": "mugwort_today", "path": "$.mugwort_today"},
+  {"column": "mugwort_tomorrow", "path": "$.mugwort_tomorrow"},
+  {"column": "mugwort_dayafter_to", "path": "$.mugwort_dayafter_to"},
+  {"column": "ragweed_today", "path": "$.ragweed_today"},
+  {"column": "ragweed_tomorrow", "path": "$.ragweed_tomorrow"},
+  {"column": "ragweed_dayafter_to", "path": "$.ragweed_dayafter_to"},
+  {"column": "pollen_type", "path": "$.pollen_type"}
+]
+```
+
+.create-or-alter table [PollenForecast] ingestion json mapping "PollenForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "region_name", "path": "$.data.region_name"},
+  {"column": "last_update", "path": "$.data.last_update"},
+  {"column": "next_update", "path": "$.data.next_update"},
+  {"column": "sender", "path": "$.data.sender"},
+  {"column": "hazel_today", "path": "$.data.hazel_today"},
+  {"column": "hazel_tomorrow", "path": "$.data.hazel_tomorrow"},
+  {"column": "hazel_dayafter_to", "path": "$.data.hazel_dayafter_to"},
+  {"column": "alder_today", "path": "$.data.alder_today"},
+  {"column": "alder_tomorrow", "path": "$.data.alder_tomorrow"},
+  {"column": "alder_dayafter_to", "path": "$.data.alder_dayafter_to"},
+  {"column": "birch_today", "path": "$.data.birch_today"},
+  {"column": "birch_tomorrow", "path": "$.data.birch_tomorrow"},
+  {"column": "birch_dayafter_to", "path": "$.data.birch_dayafter_to"},
+  {"column": "ash_today", "path": "$.data.ash_today"},
+  {"column": "ash_tomorrow", "path": "$.data.ash_tomorrow"},
+  {"column": "ash_dayafter_to", "path": "$.data.ash_dayafter_to"},
+  {"column": "grasses_today", "path": "$.data.grasses_today"},
+  {"column": "grasses_tomorrow", "path": "$.data.grasses_tomorrow"},
+  {"column": "grasses_dayafter_to", "path": "$.data.grasses_dayafter_to"},
+  {"column": "rye_today", "path": "$.data.rye_today"},
+  {"column": "rye_tomorrow", "path": "$.data.rye_tomorrow"},
+  {"column": "rye_dayafter_to", "path": "$.data.rye_dayafter_to"},
+  {"column": "mugwort_today", "path": "$.data.mugwort_today"},
+  {"column": "mugwort_tomorrow", "path": "$.data.mugwort_tomorrow"},
+  {"column": "mugwort_dayafter_to", "path": "$.data.mugwort_dayafter_to"},
+  {"column": "ragweed_today", "path": "$.data.ragweed_today"},
+  {"column": "ragweed_tomorrow", "path": "$.data.ragweed_tomorrow"},
+  {"column": "ragweed_dayafter_to", "path": "$.data.ragweed_dayafter_to"},
+  {"column": "pollen_type", "path": "$.data.pollen_type"}
+]
+```
+
+.drop materialized-view PollenForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) PollenForecastLatest on table PollenForecast {
+    PollenForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PollenForecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Pollenflug.PollenForecast') | project['region_id'] = tostring(data.['region_id']),['region_name'] = tostring(data.['region_name']),['last_update'] = tostring(data.['last_update']),['next_update'] = tostring(data.['next_update']),['sender'] = tostring(data.['sender']),['hazel_today'] = tostring(data.['hazel_today']),['hazel_tomorrow'] = tostring(data.['hazel_tomorrow']),['hazel_dayafter_to'] = tostring(data.['hazel_dayafter_to']),['alder_today'] = tostring(data.['alder_today']),['alder_tomorrow'] = tostring(data.['alder_tomorrow']),['alder_dayafter_to'] = tostring(data.['alder_dayafter_to']),['birch_today'] = tostring(data.['birch_today']),['birch_tomorrow'] = tostring(data.['birch_tomorrow']),['birch_dayafter_to'] = tostring(data.['birch_dayafter_to']),['ash_today'] = tostring(data.['ash_today']),['ash_tomorrow'] = tostring(data.['ash_tomorrow']),['ash_dayafter_to'] = tostring(data.['ash_dayafter_to']),['grasses_today'] = tostring(data.['grasses_today']),['grasses_tomorrow'] = tostring(data.['grasses_tomorrow']),['grasses_dayafter_to'] = tostring(data.['grasses_dayafter_to']),['rye_today'] = tostring(data.['rye_today']),['rye_tomorrow'] = tostring(data.['rye_tomorrow']),['rye_dayafter_to'] = tostring(data.['rye_dayafter_to']),['mugwort_today'] = tostring(data.['mugwort_today']),['mugwort_tomorrow'] = tostring(data.['mugwort_tomorrow']),['mugwort_dayafter_to'] = tostring(data.['mugwort_dayafter_to']),['ragweed_today'] = tostring(data.['ragweed_today']),['ragweed_tomorrow'] = tostring(data.['ragweed_tomorrow']),['ragweed_dayafter_to'] = tostring(data.['ragweed_dayafter_to']),['pollen_type'] = tostring(data.['pollen_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+

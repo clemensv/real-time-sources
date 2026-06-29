@@ -28,16 +28,16 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            fmisid='ltktlkcybtjvpoefrisk',
-            station_name='dgvwyumoygpknjtptlqn',
-            observation_time='camypisawwczirvkbihq',
-            aqindex=float(13.076808574299648),
-            pm10_ug_m3=float(63.2036574131445),
-            pm2_5_ug_m3=float(36.37953897759548),
-            no2_ug_m3=float(49.608795606787794),
-            o3_ug_m3=float(17.85612443692933),
-            so2_ug_m3=float(38.52339202648232),
-            co_mg_m3=float(29.734035563297777)
+            fmisid='apjycxzyuobeuyfsdzxe',
+            station_name='kwqrutwqrudfzviekcwh',
+            observation_time='xvolrpqlvbnqakzypick',
+            aqindex=float(67.11132549064253),
+            pm10_ug_m3=float(15.133687369567506),
+            pm2_5_ug_m3=float(70.72747234628142),
+            no2_ug_m3=float(74.50750972775816),
+            o3_ug_m3=float(96.91893314806096),
+            so2_ug_m3=float(87.81549945583762),
+            co_mg_m3=float(14.90214973087528)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test fmisid property
         """
-        test_value = 'ltktlkcybtjvpoefrisk'
+        test_value = 'apjycxzyuobeuyfsdzxe'
         self.instance.fmisid = test_value
         self.assertEqual(self.instance.fmisid, test_value)
     
@@ -54,7 +54,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'dgvwyumoygpknjtptlqn'
+        test_value = 'kwqrutwqrudfzviekcwh'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'camypisawwczirvkbihq'
+        test_value = 'xvolrpqlvbnqakzypick'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -70,7 +70,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test aqindex property
         """
-        test_value = float(13.076808574299648)
+        test_value = float(67.11132549064253)
         self.instance.aqindex = test_value
         self.assertEqual(self.instance.aqindex, test_value)
     
@@ -78,7 +78,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm10_ug_m3 property
         """
-        test_value = float(63.2036574131445)
+        test_value = float(15.133687369567506)
         self.instance.pm10_ug_m3 = test_value
         self.assertEqual(self.instance.pm10_ug_m3, test_value)
     
@@ -86,7 +86,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm2_5_ug_m3 property
         """
-        test_value = float(36.37953897759548)
+        test_value = float(70.72747234628142)
         self.instance.pm2_5_ug_m3 = test_value
         self.assertEqual(self.instance.pm2_5_ug_m3, test_value)
     
@@ -94,7 +94,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test no2_ug_m3 property
         """
-        test_value = float(49.608795606787794)
+        test_value = float(74.50750972775816)
         self.instance.no2_ug_m3 = test_value
         self.assertEqual(self.instance.no2_ug_m3, test_value)
     
@@ -102,7 +102,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test o3_ug_m3 property
         """
-        test_value = float(17.85612443692933)
+        test_value = float(96.91893314806096)
         self.instance.o3_ug_m3 = test_value
         self.assertEqual(self.instance.o3_ug_m3, test_value)
     
@@ -110,7 +110,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test so2_ug_m3 property
         """
-        test_value = float(38.52339202648232)
+        test_value = float(87.81549945583762)
         self.instance.so2_ug_m3 = test_value
         self.assertEqual(self.instance.so2_ug_m3, test_value)
     
@@ -118,7 +118,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test co_mg_m3 property
         """
-        test_value = float(29.734035563297777)
+        test_value = float(14.90214973087528)
         self.instance.co_mg_m3 = test_value
         self.assertEqual(self.instance.co_mg_m3, test_value)
     

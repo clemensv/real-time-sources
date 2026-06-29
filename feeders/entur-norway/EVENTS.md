@@ -1,4 +1,4 @@
-# Entur Norway SIRI feeder Events
+# Entur Norway Events
 
 Entur Norway publishes transit realtime updates from Entur public transport feeds for Norwegian public-transport stops, lines, and journeys. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,6 +8,7 @@ Entur Norway publishes transit realtime updates from Entur public transport feed
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
 - **Identity:** `journeys/{operating_day}/{service_journey_id}`, `situations/{situation_number}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -82,7 +83,7 @@ Each event identifies the real-world resource with `journeys/{operating_day}/{se
 `Dated Service Journey` payloads are JSON object. Required fields: `service_journey_id`, `operating_day`, `line_ref`, `operator_ref`.
 
 - **`service_journey_id`** (string, required): NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey within the NeTEx codespace. Example: RUT:ServiceJourney:1-1234.
-- **`operating_day`** (string, required): ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
+- **`operating_day`** (string, required): ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.
 - **`line_ref`** (string, required): NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.
 - **`operator_ref`** (string, required): NeTEx Operator or codespace reference identifying the operator responsible for this journey. Example: RUT.
 - **`direction_ref`** (string or null, optional): Direction reference for this journey leg, e.g. Outbound or Inbound, or a NeTEx DirectionType value.
@@ -136,14 +137,14 @@ Each event identifies the real-world resource with `journeys/{operating_day}/{se
 | --- | --- |
 | `KAFKA` | topic `entur-norway`, key `journeys/{operating_day}/{service_journey_id}` |
 | `MQTT/5.0` | topic `transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/entur-norway`, message subject `journeys/{operating_day}/{service_journey_id}`; application properties operating_day `{operating_day}`, service_journey_id `{service_journey_id}`, operator_ref `{operator_ref}`, line_ref `{line_ref}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/entur-norway`, message subject `journeys/{operating_day}/{service_journey_id}` |
 
 #### Payload
 
 `Estimated Vehicle Journey` payloads are JSON object. Required fields: `service_journey_id`, `operating_day`, `line_ref`, `operator_ref`, `is_cancellation`, `estimated_calls`.
 
 - **`service_journey_id`** (string, required): NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey within the NeTEx codespace. Example: RUT:ServiceJourney:1-1234.
-- **`operating_day`** (string, required): ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
+- **`operating_day`** (string, required): ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.
 - **`line_ref`** (string, required): NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.
 - **`operator_ref`** (string, required): NeTEx Operator or codespace reference identifying the operator responsible for this journey. Example: RUT.
 - **`direction_ref`** (string or null, optional): Direction reference for this journey, e.g. Outbound or Inbound.
@@ -224,14 +225,14 @@ Each event identifies the real-world resource with `journeys/{operating_day}/{se
 | --- | --- |
 | `KAFKA` | topic `entur-norway`, key `journeys/{operating_day}/{service_journey_id}` |
 | `MQTT/5.0` | topic `transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/entur-norway`, message subject `journeys/{operating_day}/{service_journey_id}`; application properties operating_day `{operating_day}`, service_journey_id `{service_journey_id}`, operator_ref `{operator_ref}`, line_ref `{line_ref}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/entur-norway`, message subject `journeys/{operating_day}/{service_journey_id}` |
 
 #### Payload
 
 `Monitored Vehicle Journey` payloads are JSON object. Required fields: `service_journey_id`, `operating_day`, `recorded_at_time`, `line_ref`, `operator_ref`, `monitored`.
 
 - **`service_journey_id`** (string, required): NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey. Example: RUT:ServiceJourney:1-1234.
-- **`operating_day`** (string, required): ISO 8601 calendar date string for the operating day of this journey, from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
+- **`operating_day`** (string, required): ISO 8601 calendar date string for the operating day of this journey, from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.
 - **`recorded_at_time`** (datetime, required): ISO 8601 UTC timestamp from the parent VehicleActivity/RecordedAtTime element indicating when this position was recorded.
 - **`line_ref`** (string, required): NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.
 - **`operator_ref`** (string, required): NeTEx Operator or codespace reference for the operator running this journey. Example: RUT.
@@ -297,7 +298,7 @@ Each event identifies the real-world resource with `situations/{situation_number
 | --- | --- |
 | `KAFKA` | topic `entur-norway`, key `situations/{situation_number}` |
 | `MQTT/5.0` | topic `transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/entur-norway`, message subject `situations/{situation_number}`; application properties situation_number `{situation_number}`, severity `{severity}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/entur-norway`, message subject `situations/{situation_number}` |
 
 #### Payload
 
@@ -368,10 +369,11 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/entur-norway.xreg.json`](xreg/entur-norway.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

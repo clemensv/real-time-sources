@@ -1,6 +1,6 @@
 # OpenAQ generalized air-quality feeder Events
 
-[📑 Events](EVENTS.md) · [🐳 Container](CONTAINER.md) · [↗ OpenAQ API docs](https://docs.openaq.org/)
+Transport-neutral OpenAQ monitoring-location reference events keyed by the stable OpenAQ location id.
 
 ## At a glance
 

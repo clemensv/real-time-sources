@@ -29,12 +29,12 @@ class Test_CapArea(unittest.TestCase):
         Create instance of CapArea for testing
         """
         instance = CapArea(
-            area_desc='aamqzlnwlkxnuermhjwn',
-            polygon=['twbdlyhqaxvwwhxhrndp', 'luomczqrnemsgnnwldan', 'gvzsrfvdgznhnrhravqx', 'jpvdbnkrviczvftujeml', 'tzvavkricsmcuavnxpsm'],
-            circle=['ldmoncjjcnbudekwkbao', 'ojpnxtdoybmsqorrpjkv', 'ejkzjslclltpxcyrosjg', 'labylweplspbceiywjwe', 'rtlvjdmrozifsgfyaexo'],
-            geocode=[None],
-            altitude=float(12.485898452712918),
-            ceiling=float(55.649941923260684)
+            area_desc='swuybtnmnxbwxscdpska',
+            polygon=['ftltcxbeoicmljprgzxn', 'yxdpqjexzrykzqhzpyta', 'bcdyhzlohvemcdkvpgzp'],
+            circle=['ghwnxexgmkckchnzcgxg', 'nvpvkhniuhzlvkvojrif', 'xngmtuqppjtfsbduxhuv', 'wsbheuztqsontoxhufgs', 'jfgfqwcskzmdtrrsrnaa'],
+            geocode=[None, None, None, None, None],
+            altitude=float(28.225979699201442),
+            ceiling=float(75.76161053110691)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test area_desc property
         """
-        test_value = 'aamqzlnwlkxnuermhjwn'
+        test_value = 'swuybtnmnxbwxscdpska'
         self.instance.area_desc = test_value
         self.assertEqual(self.instance.area_desc, test_value)
     
@@ -51,7 +51,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test polygon property
         """
-        test_value = ['twbdlyhqaxvwwhxhrndp', 'luomczqrnemsgnnwldan', 'gvzsrfvdgznhnrhravqx', 'jpvdbnkrviczvftujeml', 'tzvavkricsmcuavnxpsm']
+        test_value = ['ftltcxbeoicmljprgzxn', 'yxdpqjexzrykzqhzpyta', 'bcdyhzlohvemcdkvpgzp']
         self.instance.polygon = test_value
         self.assertEqual(self.instance.polygon, test_value)
     
@@ -59,7 +59,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test circle property
         """
-        test_value = ['ldmoncjjcnbudekwkbao', 'ojpnxtdoybmsqorrpjkv', 'ejkzjslclltpxcyrosjg', 'labylweplspbceiywjwe', 'rtlvjdmrozifsgfyaexo']
+        test_value = ['ghwnxexgmkckchnzcgxg', 'nvpvkhniuhzlvkvojrif', 'xngmtuqppjtfsbduxhuv', 'wsbheuztqsontoxhufgs', 'jfgfqwcskzmdtrrsrnaa']
         self.instance.circle = test_value
         self.assertEqual(self.instance.circle, test_value)
     
@@ -67,7 +67,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test geocode property
         """
-        test_value = [None]
+        test_value = [None, None, None, None, None]
         self.instance.geocode = test_value
         self.assertEqual(self.instance.geocode, test_value)
     
@@ -75,7 +75,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = float(12.485898452712918)
+        test_value = float(28.225979699201442)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_CapArea(unittest.TestCase):
         """
         Test ceiling property
         """
-        test_value = float(55.649941923260684)
+        test_value = float(75.76161053110691)
         self.instance.ceiling = test_value
         self.assertEqual(self.instance.ceiling, test_value)
     

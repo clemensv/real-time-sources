@@ -12,7 +12,6 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from dmi_amqp_producer_data.parameteridenum import ParameterIdenum
 import datetime
 
 
@@ -25,7 +24,7 @@ class OceanObservation:
     Attributes:
         observation_id (typing.Optional[str])
         station_id (str)
-        parameter_id (ParameterIdenum)
+        parameter_id (str)
         observed (datetime.datetime)
         value (float)
         latitude (typing.Optional[float])
@@ -35,7 +34,7 @@ class OceanObservation:
     
     observation_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_id"))
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    parameter_id: ParameterIdenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_id"))
+    parameter_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_id"))
     observed: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
@@ -99,6 +98,8 @@ class OceanObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
             if isinstance(result, str):
                 result = result.encode('utf-8')
 
@@ -168,11 +169,11 @@ class OceanObservation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='munlhusxjzmywujmkpjk',
-            station_id='ufpogtmwbhdydglgzfud',
-            parameter_id=ParameterIdenum.sealev_dvr,
+            observation_id='uaqdliyzhjkzzsrqzdwl',
+            station_id='twhmqadnmygoxqecnicp',
+            parameter_id='jsrpankhechmlpzkcfuq',
             observed=datetime.datetime.now(datetime.timezone.utc),
-            value=float(59.20659487054842),
-            latitude=float(93.80099762867839),
-            longitude=float(74.37689057705373)
+            value=float(27.446488023769188),
+            latitude=float(3.1599857957026467),
+            longitude=float(18.251377655803726)
         )

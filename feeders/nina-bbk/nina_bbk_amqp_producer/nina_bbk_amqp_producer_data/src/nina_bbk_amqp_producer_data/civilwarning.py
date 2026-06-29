@@ -12,13 +12,13 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nina_bbk_amqp_producer_data.severityenum import SeverityEnum
 from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
+from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
+from nina_bbk_amqp_producer_data.severityenum import SeverityEnum
 from nina_bbk_amqp_producer_data.urgencyenum import UrgencyEnum
+from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
 from nina_bbk_amqp_producer_data.statusenum import StatusEnum
 from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
-from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
-from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
 import datetime
 
 
@@ -210,29 +210,29 @@ class CivilWarning:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='kgxhwbarsyagadxmseqn',
-            provider='pqmdzxjqrrrlluntktxq',
-            version=int(82),
-            sender='pdbqmjndakxqsnfqhkov',
-            sender_name='qdjastsovshbtxhrptmo',
+            warning_id='ydsjsaawoicavqkermbc',
+            provider='wsntniswpkuavlaismbw',
+            version=int(41),
+            sender='fvzbzlrjeexgbtnuoayp',
+            sender_name='mymyhagsnqnvpvyihnap',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            references='ovzoqsvvqgugwwssmaor',
-            event='gluusbftwylovziunrsc',
-            event_code='khlhbyvyqvaevyormwrk',
+            references='iyupjopoilgodqhqnrpz',
+            event='bfclphdybujgsbyuhxas',
+            event_code='kzgkzwxwirgevobmjxzz',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='tjcfxpvuflfsewbhjxfj',
-            description='wergilxtznozvjljbuds',
-            instruction='pallqohzrhtsxareazjd',
-            web='pzvvhtnlwpauvojolgzs',
-            contact='oyhkpdqxsrecdtkhgqzj',
-            area_desc='puyofeddxvqszxsqajyb',
-            verwaltungsbereiche='cutcpfghgeifkcttuxge',
-            language='eqskocpeuatmhkdzfmkg',
-            state='lspbuivhlqwojrvybmjn'
+            headline='ngxwfsjcaizagqqbwoxf',
+            description='rujneapxdninfesyfljx',
+            instruction='wbckhxwkaiqaekyecazg',
+            web='cyoeposdqnegxpszdvte',
+            contact='dcfscttxnyipjhggqqcr',
+            area_desc='lbupxdqyffhjobsqlwbj',
+            verwaltungsbereiche='zestgqrmzwdynzhkibus',
+            language='jnzlgagroqusfesszlje',
+            state='fttaoizvkgaekylgtlkk'
         )

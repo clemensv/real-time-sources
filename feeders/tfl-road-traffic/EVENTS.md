@@ -1,4 +1,4 @@
-# TfL Road Traffic feeder Events
+# TfL Road Traffic Events
 
 TfL Road Traffic publishes road disruption and traffic status updates from Transport for London for London roads and disruption areas. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,6 +8,7 @@ TfL Road Traffic publishes road disruption and traffic status updates from Trans
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
 - **Identity:** `roads/{road_id}`, `disruptions/{road_id}/{severity}/{disruption_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -77,7 +78,7 @@ Each event identifies the real-world resource with `roads/{road_id}`. `{road_id}
 | --- | --- |
 | `KAFKA` | topic `tfl-road-traffic`, key `roads/{road_id}` |
 | `MQTT/5.0` | topic `traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/tfl-road-traffic`, message subject `roads/{road_id}`; application properties road_id `{road_id}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/tfl-road-traffic`, message subject `roads/{road_id}` |
 
 #### Payload
 
@@ -132,7 +133,7 @@ Each event identifies the real-world resource with `roads/{road_id}`. `{road_id}
 | --- | --- |
 | `KAFKA` | topic `tfl-road-traffic`, key `roads/{road_id}` |
 | `MQTT/5.0` | topic `traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/tfl-road-traffic`, message subject `roads/{road_id}`; application properties road_id `{road_id}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/tfl-road-traffic`, message subject `roads/{road_id}` |
 
 #### Payload
 
@@ -192,7 +193,7 @@ Each event identifies the real-world resource with `disruptions/{road_id}/{sever
 | `MQTT/5.0` | topic `traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/tfl-road-traffic`, message subject `disruptions/{road_id}/{severity}/{disruption_id}`; application properties road_id `{road_id}`, severity `{severity}`, disruption_id `{disruption_id}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/tfl-road-traffic`, message subject `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Payload
 
@@ -286,10 +287,11 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/tfl-road-traffic.xreg.json`](xreg/tfl-road-traffic.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

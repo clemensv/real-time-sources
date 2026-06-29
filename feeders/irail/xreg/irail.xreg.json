@@ -270,10 +270,7 @@
                         "properties": {
                           "station_id": {
                             "type": "string",
-                            "description": "Nine-digit UIC-derived numeric station identifier assigned by NMBS. Extracted from the iRail id field by stripping the 'BE.NMBS.' prefix. Example: '008814001' for Brussels-South (Bruxelles-Midi / Brussel-Zuid).",
-                            "altnames": {
-                              "json": "id"
-                            }
+                            "description": "Nine-digit UIC-derived numeric station identifier assigned by NMBS. Extracted from the iRail id field by stripping the 'BE.NMBS.' prefix. Example: '008814001' for Brussels-South (Bruxelles-Midi / Brussel-Zuid)."
                           },
                           "name": {
                             "type": "string",
@@ -281,35 +278,23 @@
                           },
                           "standard_name": {
                             "type": "string",
-                            "description": "Consistent official station name that does not vary by language, typically using the primary local name. Example: 'Bruxelles-Midi / Brussel-Zuid'.",
-                            "altnames": {
-                              "json": "standardname"
-                            }
+                            "description": "Consistent official station name that does not vary by language, typically using the primary local name. Example: 'Bruxelles-Midi / Brussel-Zuid'."
                           },
                           "longitude": {
                             "type": "double",
                             "description": "Longitude of the station in WGS84 decimal degrees. Sourced from the iRail locationX field.",
                             "unit": "deg",
-                            "symbol": "°",
-                            "altnames": {
-                              "json": "locationX"
-                            }
+                            "symbol": "°"
                           },
                           "latitude": {
                             "type": "double",
                             "description": "Latitude of the station in WGS84 decimal degrees. Sourced from the iRail locationY field.",
                             "unit": "deg",
-                            "symbol": "°",
-                            "altnames": {
-                              "json": "locationY"
-                            }
+                            "symbol": "°"
                           },
                           "uri": {
                             "type": "string",
-                            "description": "Stable linked-data URI identifying this station in the iRail namespace. Example: 'http://irail.be/stations/NMBS/008814001'.",
-                            "altnames": {
-                              "json": "@id"
-                            }
+                            "description": "Stable linked-data URI identifying this station in the iRail namespace. Example: 'http://irail.be/stations/NMBS/008814001'."
                           }
                         },
                         "required": [

@@ -198,9 +198,6 @@
                   },
                   "name": {
                     "type": "string",
-                    "altnames": {
-                      "lang:nl": "Naam"
-                    },
                     "description": "Human-readable name of the station, site, or location."
                   },
                   "latitude": {
@@ -213,9 +210,6 @@
                   },
                   "coordinate_system": {
                     "type": "string",
-                    "altnames": {
-                      "lang:nl": "Coordinatenstelsel"
-                    },
                     "description": "Provider-supplied coordinate system value for this record."
                   }
                 },
@@ -251,23 +245,14 @@
                   },
                   "location_name": {
                     "type": "string",
-                    "altnames": {
-                      "lang:nl": "Naam"
-                    },
                     "description": "Human-readable name of the location."
                   },
                   "timestamp": {
                     "type": "datetime",
-                    "altnames": {
-                      "lang:nl": "Tijdstip"
-                    },
                     "description": "Time when the provider recorded or published the observation."
                   },
                   "value": {
                     "type": "double",
-                    "altnames": {
-                      "lang:nl": "Waarde_Numeriek"
-                    },
                     "description": "Measured value reported by the upstream provider."
                   },
                   "unit": {
@@ -276,16 +261,10 @@
                   },
                   "quality_code": {
                     "type": "string",
-                    "altnames": {
-                      "lang:nl": "Kwaliteitswaardecode"
-                    },
                     "description": "Provider code identifying the quality."
                   },
                   "status": {
                     "type": "string",
-                    "altnames": {
-                      "lang:nl": "Statuswaarde"
-                    },
                     "description": "Provider status value for the station, measurement, or alert."
                   },
                   "compartment": {

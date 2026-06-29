@@ -1,4 +1,3 @@
-// WORKAROUND(#1413): post-patched generated KQL to remove trailing JSON commas and unsafe telemetry latest view.
 .create-merge table [_cloudevents_dispatch] (
     [specversion]: string,
     [type]: string,
@@ -122,7 +121,9 @@
 ]
 ```
 
-.create-or-alter materialized-view ['org.datex2.measured.MeasurementSiteLatest'] on table ['org.datex2.measured.MeasurementSite'] {
+.drop materialized-view ['org.datex2.measured.MeasurementSiteLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.datex2.measured.MeasurementSiteLatest'] on table ['org.datex2.measured.MeasurementSite'] {
     ['org.datex2.measured.MeasurementSite'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -248,6 +249,12 @@
   {"column": "raw_measurements", "path": "$.data.raw_measurements"}
 ]
 ```
+
+.drop materialized-view ['org.datex2.measured.TrafficMeasurementLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.datex2.measured.TrafficMeasurementLatest'] on table ['org.datex2.measured.TrafficMeasurement'] {
+    ['org.datex2.measured.TrafficMeasurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
 
 .alter table ['org.datex2.measured.TrafficMeasurement'] policy update
 ```
@@ -400,7 +407,9 @@
 ]
 ```
 
-.create-or-alter materialized-view ['org.datex2.situation.SituationRecordLatest'] on table ['org.datex2.situation.SituationRecord'] {
+.drop materialized-view ['org.datex2.situation.SituationRecordLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.datex2.situation.SituationRecordLatest'] on table ['org.datex2.situation.SituationRecord'] {
     ['org.datex2.situation.SituationRecord'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 

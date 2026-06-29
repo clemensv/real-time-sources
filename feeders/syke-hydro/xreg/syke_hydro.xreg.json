@@ -221,37 +221,22 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:fi": "Paikka_Id"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "name": {
                     "type": "string",
-                    "altnames": {
-                      "lang:fi": "Nimi"
-                    },
                     "description": "Human-readable name of the station, site, or location."
                   },
                   "river_name": {
                     "type": "string",
-                    "altnames": {
-                      "lang:fi": "PaaVesalNimi"
-                    },
                     "description": "Name of the river or watercourse observed at the station."
                   },
                   "water_area_name": {
                     "type": "string",
-                    "altnames": {
-                      "lang:fi": "VesalNimi"
-                    },
                     "description": "Human-readable name of the water area."
                   },
                   "municipality": {
                     "type": "string",
-                    "altnames": {
-                      "lang:fi": "KuntaNimi"
-                    },
                     "description": "Provider-supplied municipality value for this record."
                   },
                   "latitude": {
@@ -263,7 +248,10 @@
                     "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin."
                   }
                 },
@@ -293,9 +281,6 @@
                 "properties": {
                   "station_id": {
                     "type": "string",
-                    "altnames": {
-                      "lang:fi": "Paikka_Id"
-                    },
                     "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "water_level": {
@@ -303,10 +288,7 @@
                       "double",
                       "null"
                     ],
-                    "description": "Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.",
-                    "altnames": {
-                      "lang:fi": "Arvo"
-                    }
+                    "description": "Water level reading value in centimetres. Null when the station does not report a water level in the current polling window."
                   },
                   "water_level_unit": {
                     "type": [
@@ -320,20 +302,14 @@
                       "datetime",
                       "null"
                     ],
-                    "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.",
-                    "altnames": {
-                      "lang:fi": "Aika"
-                    }
+                    "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available."
                   },
                   "discharge": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "description": "Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.",
-                    "altnames": {
-                      "lang:fi": "Arvo"
-                    }
+                    "description": "Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge."
                   },
                   "discharge_unit": {
                     "type": [
@@ -347,13 +323,13 @@
                       "datetime",
                       "null"
                     ],
-                    "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.",
-                    "altnames": {
-                      "lang:fi": "Aika"
-                    }
+                    "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available."
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin."
                   }
                 },

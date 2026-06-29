@@ -1,4 +1,4 @@
-# Blitzortung lightning feeder Events
+# Blitzortung Events
 
 MQTT/5.0 non-retained UNS variant of the Blitzortung LightningStroke CloudEvent. Topic carries the source-scoped stroke id plus geohash5 (~5 km) and geohash7 (~150 m) cells so subscribers can wildcard by location at two zoom levels. QoS 0, retain=false — no LKV slot for a firehose.
 

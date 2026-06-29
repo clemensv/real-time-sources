@@ -1,4 +1,4 @@
-# Meteoalarm European Weather Warnings Bridge Events
+# Meteoalarm Events
 
 Meteoalarm publishes official weather warnings from the European Meteoalarm network for European warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -78,18 +78,18 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | --- | --- |
 | `KAFKA` | topic `meteoalarm`, key `{identifier}` |
 | `MQTT/5.0` | topic `alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/meteoalarm`, message subject `{identifier}`; application properties country `{country}`, severity `{severity}`, awareness_type `{awareness_type}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/meteoalarm`, message subject `{identifier}` |
 
 #### Payload
 
-`Weather Warning` payloads are JSON object. Required fields: `identifier`, `sender`, `sent`, `status`, `msg_type`, `scope`, `country`, `event`, `severity`, `urgency`, `certainty`, `awareness_type`, `area_desc`.
+`Weather Warning` payloads are JSON object. Required fields: `identifier`, `sender`, `sent`, `country`, `event`, `severity`, `urgency`, `certainty`, `awareness_type`, `area_desc`.
 
 - **`identifier`** (string, required): The unique CAP alert identifier assigned by the issuing national meteorological service.
-- **`sender`** (string, required): The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de').
-- **`sent`** (datetime, required): The date and time when the warning was issued, in ISO-8601 format.
-- **`status`** (enum, required): The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.
-- **`msg_type`** (enum, required): The CAP message type indicating the nature of the alert.
-- **`scope`** (enum, required): The CAP scope of the alert. Typically 'Public' for weather warnings.
+- **`sender`** (string or null, required): The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de').
+- **`sent`** (datetime or null, required): The date and time when the warning was issued, in ISO-8601 format.
+- **`status`** (string or null, optional): The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.
+- **`msg_type`** (string or null, optional): The CAP message type indicating the nature of the alert.
+- **`scope`** (string or null, optional): The CAP scope of the alert. Typically 'Public' for weather warnings.
 - **`country`** (string, required): Country feed slug where the warning applies (for example germany or france). Matches the {country} MQTT topic axis.
 - **`event`** (string, required): The weather event description, typically in the national language of the issuing service (e.g., 'STURMBÖEN', 'Thunderstorm').
 - **`category`** (enum, optional): The CAP alert category. 'Met' for meteorological warnings.
@@ -228,3 +228,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/meteoalarm.xreg.json`](xreg/meteoalarm.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -1,6 +1,6 @@
 from .parameternameenum import ParameterNameenum
 from .sensor import Sensor
-from .location import Location
 from .measurement import Measurement
+from .location import Location
 
-__all__ = ["ParameterNameenum", "Sensor", "Location", "Measurement"]
+__all__ = ["ParameterNameenum", "Sensor", "Measurement", "Location"]

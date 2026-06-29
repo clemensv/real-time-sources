@@ -312,10 +312,7 @@
                             },
                             "measurement_site_id": {
                               "type": "string",
-                              "description": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites.",
-                              "altnames": {
-                                "datex2": "measurementSiteReference"
-                              }
+                              "description": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites."
                             },
                             "feed_url": {
                               "type": "uri",
@@ -441,10 +438,7 @@
                             },
                             "measurement_site_id": {
                               "type": "string",
-                              "description": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites.",
-                              "altnames": {
-                                "datex2": "measurementSiteReference"
-                              }
+                              "description": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites."
                             },
                             "feed_url": {
                               "type": "uri",
@@ -598,10 +592,7 @@
                             },
                             "situation_record_id": {
                               "type": "string",
-                              "description": "Stable DATEX II situationRecord identifier from situationRecord/@id. It identifies the specific incident, roadwork, obstruction, or network-management record across publication updates.",
-                              "altnames": {
-                                "datex2": "situationRecord"
-                              }
+                              "description": "Stable DATEX II situationRecord identifier from situationRecord/@id. It identifies the specific incident, roadwork, obstruction, or network-management record across publication updates."
                             },
                             "feed_url": {
                               "type": "uri",

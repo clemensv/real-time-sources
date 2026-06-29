@@ -28,11 +28,11 @@ class Test_Node(unittest.TestCase):
         Create instance of Node for testing
         """
         instance = Node(
-            node_id='qvpitwfpakagwupwftrv',
-            name='ahegbeeoczbyklzjzdmi',
-            base_url='pbflqolwtzlnszarbhmy',
-            coverage='qfiwjdeuqjapymetxvbk',
-            country='ibaxoyriffftmemevseh'
+            node_id='kirpkdywydatewssrhfp',
+            name='fkvwvejilrhaiagbpumh',
+            base_url='optpoypzpxjonaxmaoyu',
+            coverage='ktlrymjtrxuvrlirhbzi',
+            country='ummcxkwvceusahulrznp'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Node(unittest.TestCase):
         """
         Test node_id property
         """
-        test_value = 'qvpitwfpakagwupwftrv'
+        test_value = 'kirpkdywydatewssrhfp'
         self.instance.node_id = test_value
         self.assertEqual(self.instance.node_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Node(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'ahegbeeoczbyklzjzdmi'
+        test_value = 'fkvwvejilrhaiagbpumh'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -57,7 +57,7 @@ class Test_Node(unittest.TestCase):
         """
         Test base_url property
         """
-        test_value = 'pbflqolwtzlnszarbhmy'
+        test_value = 'optpoypzpxjonaxmaoyu'
         self.instance.base_url = test_value
         self.assertEqual(self.instance.base_url, test_value)
     
@@ -65,7 +65,7 @@ class Test_Node(unittest.TestCase):
         """
         Test coverage property
         """
-        test_value = 'qfiwjdeuqjapymetxvbk'
+        test_value = 'ktlrymjtrxuvrlirhbzi'
         self.instance.coverage = test_value
         self.assertEqual(self.instance.coverage, test_value)
     
@@ -73,7 +73,7 @@ class Test_Node(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'ibaxoyriffftmemevseh'
+        test_value = 'ummcxkwvceusahulrznp'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     

@@ -164,10 +164,7 @@
                 "properties": {
                   "event_id": {
                     "type": "int32",
-                    "description": "Unique numeric identifier for the event on the Billetto platform, assigned at event creation. Used as the Kafka key and CloudEvents subject for stable event identity across polls.",
-                    "altnames": {
-                      "upstream": "id"
-                    }
+                    "description": "Unique numeric identifier for the event on the Billetto platform, assigned at event creation. Used as the Kafka key and CloudEvents subject for stable event identity across polls."
                   },
                   "title": {
                     "type": "string",
@@ -220,50 +217,35 @@
                       "string",
                       "null"
                     ],
-                    "description": "City where the event is held, from the event location object.",
-                    "altnames": {
-                      "upstream": "location.city"
-                    }
+                    "description": "City where the event is held, from the event location object."
                   },
                   "location_name": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Venue name where the event is held, from the event location object.",
-                    "altnames": {
-                      "upstream": "location.location_name"
-                    }
+                    "description": "Venue name where the event is held, from the event location object."
                   },
                   "location_address": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Street address of the event venue, from the event location object.",
-                    "altnames": {
-                      "upstream": "location.address"
-                    }
+                    "description": "Street address of the event venue, from the event location object."
                   },
                   "location_zip_code": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Postal code of the event venue, from the event location object.",
-                    "altnames": {
-                      "upstream": "location.zip_code"
-                    }
+                    "description": "Postal code of the event venue, from the event location object."
                   },
                   "location_country_code": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "ISO 3166-1 alpha-2 country code of the event venue (e.g. 'DK' for Denmark, 'GB' for Great Britain, 'DE' for Germany). From the event location object.",
-                    "altnames": {
-                      "upstream": "location.country_code"
-                    }
+                    "description": "ISO 3166-1 alpha-2 country code of the event venue (e.g. 'DK' for Denmark, 'GB' for Great Britain, 'DE' for Germany). From the event location object."
                   },
                   "location_latitude": {
                     "type": [
@@ -272,10 +254,7 @@
                     ],
                     "description": "WGS 84 latitude of the event venue in decimal degrees. From the event location object.",
                     "unit": "degree",
-                    "symbol": "°",
-                    "altnames": {
-                      "upstream": "location.latitude"
-                    }
+                    "symbol": "°"
                   },
                   "location_longitude": {
                     "type": [
@@ -284,50 +263,35 @@
                     ],
                     "description": "WGS 84 longitude of the event venue in decimal degrees. From the event location object.",
                     "unit": "degree",
-                    "symbol": "°",
-                    "altnames": {
-                      "upstream": "location.longitude"
-                    }
+                    "symbol": "°"
                   },
                   "organiser_id": {
                     "type": [
                       "int32",
                       "null"
                     ],
-                    "description": "Unique numeric identifier for the event organizer on the Billetto platform. From the event organiser object.",
-                    "altnames": {
-                      "upstream": "organiser.id"
-                    }
+                    "description": "Unique numeric identifier for the event organizer on the Billetto platform. From the event organiser object."
                   },
                   "organiser_name": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Display name of the event organizer as registered on the Billetto platform. From the event organiser object.",
-                    "altnames": {
-                      "upstream": "organiser.name"
-                    }
+                    "description": "Display name of the event organizer as registered on the Billetto platform. From the event organiser object."
                   },
                   "minimum_price_amount_in_cents": {
                     "type": [
                       "int32",
                       "null"
                     ],
-                    "description": "Minimum ticket price across all available ticket types, expressed in the smallest currency unit (e.g. pence for GBP, øre for DKK, cent for EUR). Zero indicates a free event. From the event minimum_price object.",
-                    "altnames": {
-                      "upstream": "minimum_price.amount_in_cents"
-                    }
+                    "description": "Minimum ticket price across all available ticket types, expressed in the smallest currency unit (e.g. pence for GBP, øre for DKK, cent for EUR). Zero indicates a free event. From the event minimum_price object."
                   },
                   "minimum_price_currency": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "ISO 4217 currency code for the minimum ticket price (e.g. 'GBP', 'DKK', 'EUR', 'NOK', 'SEK'). From the event minimum_price object.",
-                    "altnames": {
-                      "upstream": "minimum_price.currency"
-                    }
+                    "description": "ISO 4217 currency code for the minimum ticket price (e.g. 'GBP', 'DKK', 'EUR', 'NOK', 'SEK'). From the event minimum_price object."
                   },
                   "availability": {
                     "type": [

@@ -5,7 +5,9 @@
   "documentation": "Federated FDSN event-service bridge over eight pre-configured earthquake nodes (EMSC, GFZ, INGV, ETHZ/SED, RESIF, IPGP, NIEP, USGS). Upstream surface reviewed from the FDSN Event WADL plus live node probes: query (kept, telemetry), catalogs (dropped as duplicate index metadata), contributors (dropped as duplicate contributor listings), version (dropped as operational metadata), and application.wadl (dropped as static service description). The feeder emits node reference records and earthquake telemetry on a single topic family.",
   "endpoints": {
     "org.fdsn.event.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -25,7 +27,9 @@
       "description": "Kafka producer endpoint for FDSN seismology CloudEvents on the `fdsn-seismology` topic. Each message carries its own stable per-family Kafka key template in the Kafka transport message group."
     },
     "org.fdsn.event.Mqtt": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "MQTT/5.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -45,7 +49,9 @@
       "description": "MQTT 5.0 producer endpoint for FDSN seismology CloudEvents under a seismology/fdsn/... topic tree."
     },
     "org.fdsn.event.Amqp": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "AMQP/1.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -241,24 +247,15 @@
                             "event_id": {
                               "type": "string",
                               "description": "Unique identifier assigned by the contributing institution, e.g. '20260604_0000095' or 'gfz2026kvsq'.",
-                              "altnames": {
-                                "json": ["EventID"]
-                              },
                               "minLength": 1
                             },
                             "time": {
                               "type": "datetime",
-                              "description": "Origin time of the seismic event in ISO 8601 UTC format as reported by the authoritative source.",
-                              "altnames": {
-                                "json": ["Time"]
-                              }
+                              "description": "Origin time of the seismic event in ISO 8601 UTC format as reported by the authoritative source."
                             },
                             "latitude": {
                               "type": "double",
                               "description": "Epicenter latitude in decimal degrees, WGS84 datum, range -90 to 90.",
-                              "altnames": {
-                                "json": ["Latitude"]
-                              },
                               "unit": "degree",
                               "symbol": "°",
                               "minimum": -90,
@@ -267,86 +264,80 @@
                             "longitude": {
                               "type": "double",
                               "description": "Epicenter longitude in decimal degrees, WGS84 datum, range -180 to 180.",
-                              "altnames": {
-                                "json": ["Longitude"]
-                              },
                               "unit": "degree",
                               "symbol": "°",
                               "minimum": -180,
                               "maximum": 180
                             },
                             "depth_km": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Hypocentral depth in kilometers below the Earth's surface; null if unconstrained.",
-                              "altnames": {
-                                "json": ["Depth/km"]
-                              },
                               "unit": "kilometer",
                               "symbol": "km"
                             },
                             "author": {
-                              "type": ["string", "null"],
-                              "description": "Agency or analyst who computed the preferred origin solution, e.g. 'EMSC', 'GFZ', 'SURVEY-INGV'.",
-                              "altnames": {
-                                "json": ["Author"]
-                              }
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Agency or analyst who computed the preferred origin solution, e.g. 'EMSC', 'GFZ', 'SURVEY-INGV'."
                             },
                             "catalog": {
-                              "type": ["string", "null"],
-                              "description": "Name of the event catalog this earthquake belongs to, e.g. 'EMSC-RTS', 'SED'.",
-                              "altnames": {
-                                "json": ["Catalog"]
-                              }
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Name of the event catalog this earthquake belongs to, e.g. 'EMSC-RTS', 'SED'."
                             },
                             "contributor": {
                               "type": "string",
                               "description": "Short code of the institution that contributed this event record to the FDSN node, e.g. 'CSN', 'GFZ', 'EMSC'.",
-                              "altnames": {
-                                "json": ["Contributor"]
-                              },
                               "minLength": 1
                             },
                             "contributor_id": {
-                              "type": ["string", "null"],
-                              "description": "Contributor's internal identifier for this event, may differ from event_id.",
-                              "altnames": {
-                                "json": ["ContributorID"]
-                              }
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Contributor's internal identifier for this event, may differ from event_id."
                             },
                             "magnitude_type": {
-                              "type": ["string", "null"],
-                              "description": "Scale used for the preferred magnitude: 'ML' (local), 'mb' (body-wave), 'Mw' (moment), 'Ms' (surface), 'm' (unspecified).",
-                              "altnames": {
-                                "json": ["MagType"]
-                              }
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Scale used for the preferred magnitude: 'ML' (local), 'mb' (body-wave), 'Mw' (moment), 'Ms' (surface), 'm' (unspecified)."
                             },
                             "magnitude": {
-                              "type": ["double", "null"],
-                              "description": "Preferred magnitude value on the scale indicated by magnitude_type; null if no magnitude computed.",
-                              "altnames": {
-                                "json": ["Magnitude"]
-                              }
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Preferred magnitude value on the scale indicated by magnitude_type; null if no magnitude computed."
                             },
                             "magnitude_author": {
-                              "type": ["string", "null"],
-                              "description": "Agency that computed the preferred magnitude, may differ from the origin author.",
-                              "altnames": {
-                                "json": ["MagAuthor"]
-                              }
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Agency that computed the preferred magnitude, may differ from the origin author."
                             },
                             "event_location_name": {
-                              "type": ["string", "null"],
-                              "description": "Human-readable geographic description of the epicenter region, typically a Flinn-Engdahl region name.",
-                              "altnames": {
-                                "json": ["EventLocationName"]
-                              }
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Human-readable geographic description of the epicenter region, typically a Flinn-Engdahl region name."
                             },
                             "event_type": {
-                              "type": ["string", "null"],
-                              "description": "Seismological event classification: 'earthquake', 'quarry blast', 'explosion', 'induced or triggered event', etc.",
-                              "altnames": {
-                                "json": ["EventType"]
-                              }
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Seismological event classification: 'earthquake', 'quarry blast', 'explosion', 'induced or triggered event', etc."
                             },
                             "node_url": {
                               "type": "uri",
@@ -415,7 +406,10 @@
                               "minLength": 1
                             },
                             "country": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "ISO 3166-1 alpha-2 country code of the operating institution.",
                               "pattern": "^[A-Z]{2}$"
                             }

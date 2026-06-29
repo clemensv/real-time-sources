@@ -188,21 +188,21 @@ class EstimatedVehicleJourney:
             An instance of the dataclass.
         """
         return cls(
-            service_journey_id='loklswfnggxqdezyftpk',
-            operating_day='vapvquicvwyodybndhdb',
-            line_ref='feogeyirqncametwkhqi',
-            operator_ref='dqrrispfpljnuogqohay',
-            direction_ref='fxnkpmbdwuuaqdwpejkh',
-            vehicle_mode='ueojhyfandtazpjvdpqh',
-            published_line_name='fleehuihsfhkpbomffzw',
-            route_ref='udvpedhiuzxnsczkmkpc',
-            origin_name='mjzbhfnorugtcnguovle',
-            destination_name='tjptxfldnckkqcqgkbol',
+            service_journey_id='tgfsmcaewsodbshuamly',
+            operating_day='lirocktymolgkiwezafg',
+            line_ref='lqlkjclgctvvxtyaapnm',
+            operator_ref='hsfycejybztaunxeqetz',
+            direction_ref='cbcsgohwzvupuskatnaw',
+            vehicle_mode='ezvstzxynhztoiyjirag',
+            published_line_name='agjotyxxggoyybbhebjl',
+            route_ref='rfvahwidlfmbhnexnyog',
+            origin_name='gkmbqyzyfwlbctesqhsl',
+            destination_name='ohnnjgoxvzrizpjzdnne',
             is_cancellation=True,
             is_extra_journey=False,
             is_complete_stop_sequence=True,
             monitored=False,
-            data_source='qcaplyqirbihkmlumpth',
+            data_source='wvecgmkjesggzoyqsoya',
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
             estimated_calls=[None]
         )

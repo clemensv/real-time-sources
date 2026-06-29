@@ -1,4 +1,4 @@
-# IRCELINE Belgium feeder Events
+# IRCELINE Belgium Events
 
 IRCELINE Belgium Air Quality publishes pollutant concentration and air-quality measurements from Belgium's IRCELINE interregional environment agency for Belgian air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `irceline-belgium`, key `{station_id}` |
 | `MQTT/5.0` | topic `air-quality/be/irceline/irceline-belgium/{region}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/irceline-belgium`, message subject `{station_id}`; application properties region `{region}`, pollutant `{pollutant}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/irceline-belgium`, message subject `{station_id}` |
 
 #### Payload
 
@@ -123,7 +123,7 @@ Each event identifies the real-world resource with `{timeseries_id}`. `{timeseri
 | --- | --- |
 | `KAFKA` | topic `irceline-belgium`, key `{timeseries_id}` |
 | `MQTT/5.0` | topic `air-quality/be/irceline/irceline-belgium/{region}/{station_id}/{pollutant}/timeseries`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/irceline-belgium`, message subject `{timeseries_id}`; application properties region `{region}`, station_id `{station_id}`, pollutant `{pollutant}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/irceline-belgium`, message subject `{timeseries_id}` |
 
 #### Payload
 
@@ -191,7 +191,7 @@ Each event identifies the real-world resource with `{timeseries_id}`. `{timeseri
 | --- | --- |
 | `KAFKA` | topic `irceline-belgium`, key `{timeseries_id}` |
 | `MQTT/5.0` | topic `air-quality/be/irceline/irceline-belgium/{region}/{station_id}/{pollutant}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/irceline-belgium`, message subject `{timeseries_id}`; application properties region `{region}`, station_id `{station_id}`, pollutant `{pollutant}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/irceline-belgium`, message subject `{timeseries_id}` |
 
 #### Payload
 
@@ -242,3 +242,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/irceline_belgium.xreg.json`](xreg/irceline_belgium.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -1,4 +1,4 @@
-# SYKE Hydro feeder Events
+# SYKE Hydro Events
 
 SYKE Hydrology publishes water level and discharge observations from the Finnish Environment Institute (SYKE) for Finnish hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `syke-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/fi/syke/syke-hydro/{basin}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/syke-hydro`, message subject `{station_id}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/syke-hydro`, message subject `{station_id}` |
 
 #### Payload
 
@@ -91,7 +91,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`municipality`** (string, optional): Provider-supplied municipality value for this record.
 - **`latitude`** (double, required): Latitude of the station in WGS 84 coordinates.
 - **`longitude`** (double, required): Longitude of the station in WGS 84 coordinates.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for syke-hydro.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -131,7 +131,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `syke-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/fi/syke/syke-hydro/{basin}/{station_id}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/syke-hydro`, message subject `{station_id}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/syke-hydro`, message subject `{station_id}` |
 
 #### Payload
 
@@ -144,7 +144,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`discharge`** (double or null, optional): Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.
 - **`discharge_unit`** (string or null, optional): Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null.
 - **`discharge_timestamp`** (datetime or null, optional): RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for syke-hydro.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -190,3 +190,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/syke_hydro.xreg.json`](xreg/syke_hydro.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

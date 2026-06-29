@@ -26,7 +26,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['de.wsv.pegelonline.Station'] (
    [station_id]: string,
    [number]: string,
    [shortname]: string,
@@ -43,17 +43,18 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Schema representing a PEGELONLINE station with location and water body information.\"}";
+.alter table ['de.wsv.pegelonline.Station'] docstring @"{""description"": ""WSV PegelOnline gauge installation. Each instance represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from `GET /stations.json` on the PegelOnline REST API v2 (https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Emitted as reference data at bridge startup and re-emitted periodically.""}";
 
-.alter table [Station] column-docstrings (
-   [station_id]: "{\"description\": \"Unique immutable identifier of the station.\"}",
-   [number]: "{\"description\": \"Station number representing the unique code of the station.\"}",
-   [shortname]: "{\"description\": \"Short name of the station (maximum 40 characters).\"}",
-   [longname]: "{\"description\": \"Full name of the station (maximum 255 characters).\"}",
-   [km]: "{\"description\": \"River kilometer marking of the station location.\"}",
-   [agency]: "{\"description\": \"Waterways and Shipping Office responsible for the station.\"}",
-   [longitude]: "{\"description\": \"Longitude coordinate of the station in WGS84 decimal notation.\"}",
-   [latitude]: "{\"description\": \"Latitude coordinate of the station in WGS84 decimal notation.\"}",
+.alter table ['de.wsv.pegelonline.Station'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. Sourced from the upstream `uuid` field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic `{station_id}` segment, and the AMQP message subject for every event emitted by this source.""}",
+   [number]: @"{""description"": ""Official PegelOnline station number. Carries multiple agency-scoped numbering schemes within the same field: WSV Pegelmessstellennummer (6\u20138 digits) for German federal gauges; partner-agency identifiers such as Austrian via-donau station numbers (4\u20135 digits), small Regierungspr\u00e4sidium-IDs for Bodensee gauges (3-digit numbers e.g. '906' KONSTANZ), and German state-agency IDs (e.g. Ruhrverband 13-digit Messstellennummer). Numeric-only across all observed providers; length is provider-specific. National / agency-scoped identifier \u2014 not globally unique across data providers; prefer `station_id` (UUID) for cross-system joins.""}",
+   [shortname]: @"{""description"": ""Operator-assigned display label for the gauge (\u226440 characters). May differ from the town name when multiple gauges share a town. Mutable \u2014 do not use as a routing key or stable identifier.""}",
+   [longname]: @"{""description"": ""Canonical gauge name as used in WSV publications (\u2264255 characters). Mutable \u2014 do not use as a routing key.""}",
+   [km]: @"{""description"": ""Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Oh\u0159e gauge LOUNY at km -61.4 of the Elbe/Oh\u0159e system). **Optional**: absent or null for tidal / coastal gauges (K\u00fcstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km.""}",
+   [agency]: @"{""description"": ""Free-form name of the Wasserstra\u00dfen- und Schifffahrtsamt (WSA) operating the gauge \u2014 e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream `agency` field. Provided so downstream consumers can attribute observations to the operating authority; not a stable identifier and not suitable as a routing key.""}",
+   [longitude]: @"{""description"": ""WGS84 decimal-degree longitude of the gauge installation; positive east of the prime meridian. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `longitude` field.""}",
+   [latitude]: @"{""description"": ""WGS84 decimal-degree latitude of the gauge installation; positive north of the equator. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `latitude` field.""}",
+   [water]: @"{""description"": ""Federal waterway the gauge measures. See the nested Water schema for routing semantics.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -61,7 +62,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['de.wsv.pegelonline.Station'] ingestion json mapping "de.wsv.pegelonline.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -77,11 +78,11 @@
   {"column": "agency", "path": "$.agency"},
   {"column": "longitude", "path": "$.longitude"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "water", "path": "$.water"},
+  {"column": "water", "path": "$.water"}
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['de.wsv.pegelonline.Station'] ingestion json mapping "de.wsv.pegelonline.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,33 +98,34 @@
   {"column": "agency", "path": "$.data.agency"},
   {"column": "longitude", "path": "$.data.longitude"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "water", "path": "$.data.water"},
+  {"column": "water", "path": "$.data.water"}
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['de.wsv.pegelonline.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.wsv.pegelonline.StationLatest'] on table ['de.wsv.pegelonline.Station'] {
+    ['de.wsv.pegelonline.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['de.wsv.pegelonline.Station'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.wsv.pegelonline.Station') | project['station_id'] = tostring(data.['station_id']),['number'] = tostring(data.['number']),['shortname'] = tostring(data.['shortname']),['longname'] = tostring(data.['longname']),['km'] = toreal(data.['km']),['agency'] = tostring(data.['agency']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['water'] = todynamic(data.['water']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [CurrentMeasurement] (
+.create-merge table ['de.wsv.pegelonline.CurrentMeasurement'] (
    [station_id]: string,
-   [timestamp]: string,
+   [timestamp]: datetime,
    [value]: real,
    [stateMnwMhw]: string,
    [stateNswHsw]: string,
+   [trend]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -131,14 +133,15 @@
    [___subject]: string
 );
 
-.alter table [CurrentMeasurement] docstring "{\"description\": \"Schema representing the current measurement for a PEGELONLINE station.\"}";
+.alter table ['de.wsv.pegelonline.CurrentMeasurement'] docstring @"{""description"": ""Latest 15-minute water-level reading for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Carries only the W (water-level) timeseries; other timeseries (Q discharge, LT water temperature) are not emitted by this source.""}";
 
-.alter table [CurrentMeasurement] column-docstrings (
-   [station_id]: "{\"description\": \"Unique immutable identifier of the station.\"}",
-   [timestamp]: "{\"description\": \"Timestamp of the current measurement encoded in ISO_8601 format.\"}",
-   [value]: "{\"description\": \"Current measured value as a decimal number in the unit defined by the station's timeseries.\"}",
-   [stateMnwMhw]: "{\"description\": \"State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}",
-   [stateNswHsw]: "{\"description\": \"State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}",
+.alter table ['de.wsv.pegelonline.CurrentMeasurement'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable UUID of the gauge this reading was taken at. References the `station_id` of the corresponding Station reference event. Used as the CloudEvents `subject` and the Kafka partition key so all readings for a given gauge land on the same partition / topic key.""}",
+   [timestamp]: @"{""description"": ""Wall-clock time the upstream reading was taken, in ISO 8601 / RFC 3339 with an explicit UTC offset. PegelOnline publishes the value in Europe/Berlin local time, so the offset shifts between `+01:00` (CET) and `+02:00` (CEST) across the DST boundary \u2014 preserve the offset when storing. Sourced from the upstream `timestamp` field.""}",
+   [value]: @"{""description"": ""Water-level reading on the W (water-level) timeseries, in centimetres above the gauge's Pegelnullpunkt (PNP \u2014 a geodetically fixed datum specific to each gauge, see https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Typical operational range is 0\u20131500 cm; flood events at major Rhine gauges can exceed 1000 cm. Negative readings are valid at gauges whose normal pool is below PNP (e.g. tidal Elbe at low water). Unit: cm.""}",
+   [stateMnwMhw]: @"{""description"": ""Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values, as computed by the upstream feed. Omitted by upstream when the gauge has no MNW/MHW reference series configured (treat absence as 'unknown').""}",
+   [stateNswHsw]: @"{""description"": ""Categorical classification of the current water level against the highest navigable water level (HSW) reference for the reach, as computed by the upstream feed. Drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Note: upstream never emits 'low' on this series \u2014 HSW is an upper bound only. Omitted by upstream when the gauge has no HSW reference (treat absence as 'unknown').""}",
+   [trend]: @"{""description"": ""Short-term trend of the water level relative to the previous reading, as classified by the upstream feed. First-class signal for flood-monitoring dashboards. Sourced from the upstream `trend` field; omitted when upstream cannot compute a trend (e.g. first reading after a gap).""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -146,7 +149,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [CurrentMeasurement] ingestion json mapping "CurrentMeasurement_json_flat"
+.create-or-alter table ['de.wsv.pegelonline.CurrentMeasurement'] ingestion json mapping "de.wsv.pegelonline.CurrentMeasurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -159,10 +162,11 @@
   {"column": "value", "path": "$.value"},
   {"column": "stateMnwMhw", "path": "$.stateMnwMhw"},
   {"column": "stateNswHsw", "path": "$.stateNswHsw"},
+  {"column": "trend", "path": "$.trend"}
 ]
 ```
 
-.create-or-alter table [CurrentMeasurement] ingestion json mapping "CurrentMeasurement_json_ce_structured"
+.create-or-alter table ['de.wsv.pegelonline.CurrentMeasurement'] ingestion json mapping "de.wsv.pegelonline.CurrentMeasurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -175,355 +179,24 @@
   {"column": "value", "path": "$.data.value"},
   {"column": "stateMnwMhw", "path": "$.data.stateMnwMhw"},
   {"column": "stateNswHsw", "path": "$.data.stateNswHsw"},
+  {"column": "trend", "path": "$.data.trend"}
 ]
 ```
 
-.drop materialized-view CurrentMeasurementLatest ifexists;
+.drop materialized-view ['de.wsv.pegelonline.CurrentMeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) CurrentMeasurementLatest on table CurrentMeasurement {
-    CurrentMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.wsv.pegelonline.CurrentMeasurementLatest'] on table ['de.wsv.pegelonline.CurrentMeasurement'] {
+    ['de.wsv.pegelonline.CurrentMeasurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [CurrentMeasurement] policy update
+.alter table ['de.wsv.pegelonline.CurrentMeasurement'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.wsv.pegelonline.CurrentMeasurement') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['stateMnwMhw'] = tostring(data.['stateMnwMhw']),['stateNswHsw'] = tostring(data.['stateNswHsw']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.wsv.pegelonline.CurrentMeasurement') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['value'] = toreal(data.['value']),['stateMnwMhw'] = tostring(data.['stateMnwMhw']),['stateNswHsw'] = tostring(data.['stateNswHsw']),['trend'] = tostring(data.['trend']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-// ---------------------------------------------------------------------------
-// Map-friendly enrichment + trend helpers
-// ---------------------------------------------------------------------------
-// Joins the latest measurement per station with the latest Station metadata
-// (lat/lon, names, agency, water body). Consumed by the Fabric Map layers
-// wired by ``pegelonline/fabric/wire_pegelonline_map.py``.
-
-// Static table of per-station river-line segments (one polyline per station,
-// produced from Azure Maps tiles + station-backbone fallback by
-// pegelonline/fabric/build_river_geometries.py). Declared up-front so the
-// map-layer functions can reference it before the data ingest runs.
-.create-merge table RiverSegments
-   (water_shortname:string, water_longname:string, station_id:string,
-    geometry:dynamic, source:string)
-   with (folder = "Map");
-
-.create-or-alter function with (folder = "Map") EnrichedMeasurements() {
-    let stations = StationLatest
-        | project station_id, shortname, longname, agency, longitude, latitude, km,
-                  water_shortname = tostring(water.shortname),
-                  water_longname  = tostring(water.longname);
-    CurrentMeasurementLatest
-    | project station_id, value, stateMnwMhw, stateNswHsw, ___time
-    | join kind=inner stations on station_id
-    | project-away station_id1
-    | where isnotnull(longitude) and isnotnull(latitude)
-          and longitude != 0.0 and latitude != 0.0
-}
-
-// 24-hour trend (rising / steady / falling) computed against the reading
-// closest to 24h ago, with a +/- 1h tolerance window.
-
-.create-or-alter function with (folder = "Map") MeasurementTrend24h() {
-    let now_reads = CurrentMeasurementLatest
-        | project station_id, value_now = value, ___time;
-    let then_reads = CurrentMeasurement
-        | where ___time between (ago(25h) .. ago(23h))
-        | summarize arg_max(___time, value) by station_id
-        | project station_id, value_then = value;
-    EnrichedMeasurements()
-    | join kind=leftouter (now_reads) on station_id
-    | join kind=leftouter (then_reads) on station_id
-    | extend delta_cm = iif(isnull(value_then), real(null), value - value_then)
-    | extend direction = case(
-        isnull(delta_cm),  "unknown",
-        delta_cm >  5.0,   "rising",
-        delta_cm < -5.0,   "falling",
-        "steady")
-    | project-away station_id1, station_id2
-}
-
-// 15-minute time-bucketed history (last 24h) used by the time-slider layer.
-// One row per (station, 15-min bucket) carrying the latest sample of that
-// bucket plus the enriched station metadata.
-
-.create-or-alter function with (folder = "Map") MeasurementHistoryBuckets(window:timespan = 24h) {
-    let stations = StationLatest
-        | project station_id, shortname, longname, agency, longitude, latitude, km,
-                  water_shortname = tostring(water.shortname),
-                  water_longname  = tostring(water.longname);
-    CurrentMeasurement
-    | where ___time > ago(window)
-    | extend bucket = bin(___time, 15m)
-    | summarize arg_max(___time, value, stateMnwMhw, stateNswHsw) by station_id, bucket
-    | extend ['Time (UTC, 15-min)'] = strcat(format_datetime(bucket, 'yyyy-MM-dd HH:mm'), ' UTC')
-    | join kind=inner stations on station_id
-    | project-away station_id1
-    | where isnotnull(longitude) and isnotnull(latitude)
-          and longitude != 0.0 and latitude != 0.0
-}
-
-// Per-river polyline that traces all gauges of a named water body, ordered
-// downstream by river-km. Aggregates worst-of state so the line itself takes
-// on the colour of the most severe gauge along the river. Single-gauge rivers
-// are skipped (no line to draw).
-//
-// Severity scale: very-high(4) > high(3) > normal(2) > low(1) > unknown(0).
-// Worst-of is reported as a string so the map can match against it.
-
-.create-or-alter function with (folder = "Map") RiverBackbones() {
-    let severity = (s:string) {
-        case(
-            s == "very-high", 4,
-            s == "high",      3,
-            s == "normal",    2,
-            s == "low",       1,
-            0)
-    };
-    let ordered = EnrichedMeasurements()
-        | extend sev = severity(stateMnwMhw)
-        | where isnotempty(water_shortname) and isnotnull(km)
-        | order by water_shortname asc, km asc;
-    // Per-river max gap (km, great-circle approx). Sea coasts and umbrella
-    // "water_shortname" groups (OSTSEE, NORDSEE, …) end up with huge gaps
-    // because km values aren't comparable across disjoint sub-bodies — skip
-    // them so the map doesn't render giant diagonal lines.
-    let gaps = ordered
-        | extend prev_lon = case(prev(water_shortname) == water_shortname,
-                                 prev(longitude), real(null)),
-                 prev_lat = case(prev(water_shortname) == water_shortname,
-                                 prev(latitude),  real(null))
-        | extend seg_km = case(isnull(prev_lon), real(0),
-                               sqrt(pow((latitude - prev_lat) * 111.0, 2) +
-                                    pow((longitude - prev_lon) * 111.0 *
-                                        cos(latitude * pi() / 180.0), 2)))
-        | summarize max_seg_km = max(seg_km) by water_shortname;
-    ordered
-    | summarize
-        n_gauges     = count(),
-        worst_sev    = max(sev),
-        avg_value    = avg(value),
-        lons         = make_list(longitude),
-        lats         = make_list(latitude),
-        gauge_names  = make_list(shortname),
-        gauge_values = make_list(value),
-        gauge_states = make_list(stateMnwMhw)
-        by water_shortname, water_longname
-    | join kind=inner gaps on water_shortname
-    | project-away water_shortname1
-    | where n_gauges >= 2 and max_seg_km <= 50.0
-    // Build [[lon,lat],...] pairs as a JSON string and parse_json once —
-    // `make_list(pack_array(lon,lat))` flattens nested dynamics in Kusto.
-    | mv-apply lon = lons to typeof(double), lat = lats to typeof(double) on (
-        extend pair = strcat('[', lon, ',', lat, ']')
-        | summarize pair_strs = make_list(pair)
-      )
-    | extend coords = parse_json(strcat('[', strcat_array(pair_strs, ','), ']'))
-    | extend worst_state = case(
-        worst_sev == 4, "very-high",
-        worst_sev == 3, "high",
-        worst_sev == 2, "normal",
-        worst_sev == 1, "low",
-        "unknown")
-    | extend geometry = bag_pack("type", "LineString", "coordinates", coords)
-    | extend label = strcat(water_longname, "  (", tostring(n_gauges), " gauges)")
-    | project water_shortname, water_longname, label, worst_state, n_gauges,
-              avg_value, geometry
-}
-
-// =====================================================================
-// Per-station segment helpers
-//
-// For the showpiece map, point markers are replaced with river-line
-// segments coloured by the metric at the nearest station. The static
-// ``RiverSegments`` table (one polyline per station, produced by
-// pegelonline/fabric/build_river_geometries.py) is joined with the live
-// metric per station_id.
-//
-// Each helper returns the same shape:
-//   geometry          MultiLineString or LineString
-//   station_id        gauge identifier
-//   water_shortname   waterway shortname
-//   shortname/longname station names (for labels)
-//   stroke_color      hex colour to feed into Fabric Map ``["get","stroke_color"]``
-//   stroke_weight     line thickness (proportional, capped)
-//   label             user-visible text (station + value)
-//
-// Stations with no recent reading still render in neutral grey so the
-// river isn't visually punctured by missing data.
-// =====================================================================
-
-.create-or-alter function with (folder = "Map") CurrentByStation() {
-    let stations = StationLatest
-        | project station_id, shortname, longname, agency, km,
-                  water_shortname = tostring(water.shortname),
-                  water_longname  = tostring(water.longname);
-    CurrentMeasurementLatest
-    | project station_id, value, stateMnwMhw, stateNswHsw, ___time
-    | join kind=inner stations on station_id
-    | project-away station_id1
-}
-
-.create-or-alter function with (folder = "Map") StateSegments() {
-    let metrics = CurrentByStation();
-    RiverSegments
-    | join kind=leftouter metrics on station_id
-    | project-away station_id1, water_shortname1
-    | extend state = coalesce(stateMnwMhw, "unknown")
-    | extend stroke_color = case(
-        state == "very-high", "#d7191c",
-        state == "high",      "#fdae61",
-        state == "normal",    "#1a9850",
-        state == "low",       "#2c7bb6",
-        state == "very-low",  "#08306b",
-        "#7f7f7f")
-    | extend stroke_weight = 5.0
-    | extend label = strcat(coalesce(shortname, "n/a"), "  ",
-                            iif(isnull(value), "no data", strcat(tostring(round(value, 0)), " cm")))
-    | project geometry, station_id, water_shortname, shortname, longname,
-              value, state, stroke_color, stroke_weight, label, ___time
-}
-
-.create-or-alter function with (folder = "Map") NavSegments() {
-    let metrics = CurrentByStation();
-    RiverSegments
-    | join kind=leftouter metrics on station_id
-    | project-away station_id1, water_shortname1
-    | extend nav_state = coalesce(stateNswHsw, "unknown")
-    | extend stroke_color = case(
-        nav_state == "very-high", "#d7191c",
-        nav_state == "high",      "#fdae61",
-        nav_state == "normal",    "#1a9850",
-        nav_state == "low",       "#2c7bb6",
-        nav_state == "very-low",  "#08306b",
-        "#7f7f7f")
-    | extend stroke_weight = 5.0
-    | extend label = strcat(coalesce(shortname, "n/a"), "  ",
-                            iif(isnull(value), "no data", strcat(tostring(round(value, 0)), " cm")))
-    | project geometry, station_id, water_shortname, shortname, longname,
-              value, nav_state, stroke_color, stroke_weight, label, ___time
-}
-
-// Parametrised trend helper, called by Trend1h/3h/6h/24h. Returns river
-// segments coloured by per-station Delta(now, now-window) and labelled with
-// the actual elapsed window (lets us tolerate readings landing a few minutes
-// off from the exact `window`-ago timestamp).
-//
-// Colour convention (deliberately distinct from grey):
-//   extreme-rise   #d7191c  red       -- rate > 3 cm/h sustained
-//   rising         #fdae61  orange    -- rate > 0.25 cm/h
-//   steady         #ffffbf  pale yel. -- |rate| <= 0.25 cm/h
-//   falling        #abd9e9  light blue-- rate < -0.25 cm/h
-//   extreme-fall   #2c7bb6  blue      -- rate < -3 cm/h sustained
-//   unknown        #7f7f7f  grey      -- ONLY when we have no reference reading
-.create-or-alter function with (folder = "Map") TrendBase(window:timespan) {
-    let target_time   = now() - window;
-    let target_hours  = todouble(window / 1h);
-    let tol_low_h     = target_hours * 0.5;
-    let tol_high_h    = max_of(target_hours * 1.5, target_hours + 6.0);
-    // Find per station the reading closest to (now - window) and only use it
-    // if it sits inside the tolerance band, so a 24h window doesn't silently
-    // borrow a 30-min-old reading when retention is too short.
-    let then_reads = CurrentMeasurement
-        | extend dist = abs(datetime_diff('second', ___time, target_time))
-        | summarize arg_min(dist, ___time, value) by station_id
-        | project station_id, value_then = value, time_then = ___time;
-    let trend = CurrentByStation()
-        | join kind=leftouter (then_reads) on station_id
-        | project-away station_id1
-        | extend hours_back = round(todouble(datetime_diff('minute', ___time, time_then)) / 60.0, 2)
-        | extend in_tolerance = isnotnull(hours_back) and hours_back >= tol_low_h and hours_back <= tol_high_h
-        | extend delta_cm = iif(in_tolerance, value - value_then, real(null))
-        | extend rate_cmh = iif(isnull(delta_cm) or hours_back < 0.1, real(null), delta_cm / hours_back)
-        | extend direction = case(
-            isnull(rate_cmh),     "unknown",
-            rate_cmh >   3.0,     "extreme-rise",
-            rate_cmh >   0.25,    "rising",
-            rate_cmh <  -3.0,     "extreme-fall",
-            rate_cmh <  -0.25,    "falling",
-            "steady");
-    RiverSegments
-    | join kind=leftouter trend on station_id
-    | project-away station_id1, water_shortname1
-    | extend direction = coalesce(direction, "unknown")
-    | extend abs_delta = abs(coalesce(delta_cm, real(0)))
-    | extend hours_back = coalesce(hours_back, real(0))
-    // Grey is reserved for "no reference reading available". Every other
-    // state gets a colour from the 5-class diverging RdYlBu palette.
-    | extend stroke_color = case(
-        direction == "extreme-rise", "#d7191c",
-        direction == "rising",       "#fdae61",
-        direction == "steady",       "#ffffbf",
-        direction == "falling",      "#abd9e9",
-        direction == "extreme-fall", "#2c7bb6",
-        "#7f7f7f")
-    // Thicker line where the change is bigger; clamp on a per-window basis
-    // so a 100 cm/24h move and a 100 cm/1h move don't render identically.
-    | extend cap_cm = target_hours * 10.0   // 10 cm/h is "very fast"
-    | extend stroke_weight = 3.5 + 4.5 * iif(abs_delta > cap_cm, 1.0, abs_delta / cap_cm)
-    | extend trend_arrow = case(
-        direction == "extreme-rise", "++",
-        direction == "rising",       "+",
-        direction == "steady",       "=",
-        direction == "falling",      "-",
-        direction == "extreme-fall", "--",
-        "?")
-    | extend window_label = strcat(tostring(toint(round(target_hours, 0))), "h")
-    | extend label = strcat(coalesce(shortname, "n/a"), "  ", trend_arrow, " ",
-        case(isnull(delta_cm),  strcat("no ", window_label, " ref"),
-             direction == "steady", strcat("~ steady (", window_label, ")"),
-             strcat(iif(delta_cm > 0.0, "+", ""), tostring(round(delta_cm, 0)), " cm/", window_label)))
-    | project geometry, station_id, water_shortname, shortname, longname,
-              value, direction, delta_cm, abs_delta, hours_back, stroke_color, stroke_weight, label
-}
-
-.create-or-alter function with (folder = "Map") TrendSegments1h()  { TrendBase(1h)  }
-.create-or-alter function with (folder = "Map") TrendSegments3h()  { TrendBase(3h)  }
-.create-or-alter function with (folder = "Map") TrendSegments6h()  { TrendBase(6h)  }
-.create-or-alter function with (folder = "Map") TrendSegments24h() { TrendBase(24h) }
-// Back-compat alias: existing map layer and tests still call TrendSegments().
-.create-or-alter function with (folder = "Map") TrendSegments()    { TrendBase(24h) }
-
-.create-or-alter function with (folder = "Map") FreshSegments() {
-    let metrics = CurrentByStation();
-    RiverSegments
-    | join kind=leftouter metrics on station_id
-    | project-away station_id1, water_shortname1
-    | extend age_min = iif(isnull(___time), long(-1),
-                           datetime_diff('minute', now(), ___time))
-    | extend freshness = case(
-        age_min < 0,    "no-data",
-        age_min <= 60,  "fresh",
-        age_min <= 180, "stale",
-        age_min <= 720, "old",
-                        "very-old")
-    | extend stroke_color = case(
-        freshness == "fresh",    "#1a9850",
-        freshness == "stale",    "#fdae61",
-        freshness == "old",      "#d7191c",
-        freshness == "very-old", "#7f7f7f",
-                                 "#bdbdbd")
-    | extend stroke_weight = 5.0
-    | extend label = strcat(coalesce(shortname, "n/a"), "  ",
-        iif(age_min < 0, "no data", strcat(tostring(age_min), " min ago")))
-    | project geometry, station_id, water_shortname, shortname, longname,
-              value, freshness, age_min, stroke_color, stroke_weight, label
-}
-
-.create-or-alter function with (folder = "Map") StationLabels() {
-    let coords = StationLatest
-        | project station_id, longitude, latitude;
-    CurrentByStation()
-    | join kind=inner coords on station_id
-    | project-away station_id1
-    | where isnotnull(longitude) and isnotnull(latitude)
-          and longitude != 0.0 and latitude != 0.0
-    | extend state = coalesce(stateMnwMhw, "unknown")
-    | extend label = strcat(shortname, "  ",
-                            iif(isnull(value), "no data", strcat(tostring(round(value, 0)), " cm")))
-    | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(longitude, latitude))
-    | project geometry, station_id, shortname, longname, value, state, water_shortname, label
-}

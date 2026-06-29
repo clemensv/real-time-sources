@@ -381,9 +381,6 @@
                           "location_id": {
                             "type": "int64",
                             "description": "Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
-                            "altnames": {
-                              "json": "id"
-                            },
                             "minimum": "1"
                           },
                           "name": {

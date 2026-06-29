@@ -326,35 +326,23 @@
                   "station_id": {
                     "type": "string",
                     "pattern": "^[0-9]+$",
-                    "description": "Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key.",
-                    "altnames": {
-                      "irceline": "properties.id"
-                    }
+                    "description": "Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key."
                   },
                   "label": {
                     "type": "string",
-                    "description": "Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site.",
-                    "altnames": {
-                      "irceline": "properties.label"
-                    }
+                    "description": "Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site."
                   },
                   "latitude": {
                     "type": "double",
                     "description": "Station latitude in decimal degrees north, derived from the second element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The upstream array follows GeoJSON order [longitude, latitude, elevation].",
                     "unit": "deg",
-                    "symbol": "°",
-                    "altnames": {
-                      "irceline": "geometry.coordinates[1]"
-                    }
+                    "symbol": "°"
                   },
                   "longitude": {
                     "type": "double",
                     "description": "Station longitude in decimal degrees east, derived from the first element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The third element is the literal string 'NaN' in live payloads and is ignored.",
                     "unit": "deg",
-                    "symbol": "°",
-                    "altnames": {
-                      "irceline": "geometry.coordinates[0]"
-                    }
+                    "symbol": "°"
                   }
                 },
                 "$uses": [
@@ -395,32 +383,20 @@
                     "properties": {
                       "lower": {
                         "type": "string",
-                        "description": "Inclusive lower threshold boundary as published in statusIntervals[].lower. IRCELINE publishes the threshold as a string, for example '50.0' or '-10.0'.",
-                        "altnames": {
-                          "irceline": "statusIntervals.lower"
-                        }
+                        "description": "Inclusive lower threshold boundary as published in statusIntervals[].lower. IRCELINE publishes the threshold as a string, for example '50.0' or '-10.0'."
                       },
                       "upper": {
                         "type": "string",
-                        "description": "Exclusive upper threshold boundary as published in statusIntervals[].upper. IRCELINE publishes the threshold as a string, for example '60.0' or '10000.0'.",
-                        "altnames": {
-                          "irceline": "statusIntervals.upper"
-                        }
+                        "description": "Exclusive upper threshold boundary as published in statusIntervals[].upper. IRCELINE publishes the threshold as a string, for example '60.0' or '10000.0'."
                       },
                       "name": {
                         "type": "string",
-                        "description": "Human-readable band label from statusIntervals[].name, such as '51 - 60 PM10' or '101 - MAX PM10'.",
-                        "altnames": {
-                          "irceline": "statusIntervals.name"
-                        }
+                        "description": "Human-readable band label from statusIntervals[].name, such as '51 - 60 PM10' or '101 - MAX PM10'."
                       },
                       "color": {
                         "type": "string",
                         "pattern": "^#[0-9A-Fa-f]{6}$",
-                        "description": "Hex RGB display color from statusIntervals[].color used by the IRCELINE UI to render the threshold band.",
-                        "altnames": {
-                          "irceline": "statusIntervals.color"
-                        }
+                        "description": "Hex RGB display color from statusIntervals[].color used by the IRCELINE UI to render the threshold band."
                       }
                     }
                   },
@@ -447,10 +423,7 @@
                   "timeseries_id": {
                     "type": "string",
                     "pattern": "^[0-9]+$",
-                    "description": "Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events.",
-                    "altnames": {
-                      "irceline": "id"
-                    }
+                    "description": "Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events."
                   },
                   "label": {
                     "type": "string",
@@ -469,17 +442,11 @@
                   "station_id": {
                     "type": "string",
                     "pattern": "^[0-9]+$",
-                    "description": "Numeric station identifier linked to the timeseries, mapped from station.properties.id on the embedded station feature. This is the stable identifier of the monitoring site that hosts the timeseries.",
-                    "altnames": {
-                      "irceline": "station.properties.id"
-                    }
+                    "description": "Numeric station identifier linked to the timeseries, mapped from station.properties.id on the embedded station feature. This is the stable identifier of the monitoring site that hosts the timeseries."
                   },
                   "station_label": {
                     "type": "string",
-                    "description": "Human-readable station label linked to the timeseries, mapped from station.properties.label on the embedded station feature.",
-                    "altnames": {
-                      "irceline": "station.properties.label"
-                    }
+                    "description": "Human-readable station label linked to the timeseries, mapped from station.properties.label on the embedded station feature."
                   },
                   "latitude": {
                     "type": [
@@ -488,10 +455,7 @@
                     ],
                     "description": "Station latitude in decimal degrees north, derived from station.geometry.coordinates[1] when the embedded station feature includes a GeoJSON Point geometry.",
                     "unit": "deg",
-                    "symbol": "°",
-                    "altnames": {
-                      "irceline": "station.geometry.coordinates[1]"
-                    }
+                    "symbol": "°"
                   },
                   "longitude": {
                     "type": [
@@ -500,50 +464,35 @@
                     ],
                     "description": "Station longitude in decimal degrees east, derived from station.geometry.coordinates[0] when the embedded station feature includes a GeoJSON Point geometry.",
                     "unit": "deg",
-                    "symbol": "°",
-                    "altnames": {
-                      "irceline": "station.geometry.coordinates[0]"
-                    }
+                    "symbol": "°"
                   },
                   "phenomenon_id": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Identifier of the measured phenomenon from parameters.phenomenon.id on expanded timeseries metadata, for example '5' for particulate matter under 10 micrometers.",
-                    "altnames": {
-                      "irceline": "parameters.phenomenon.id"
-                    }
+                    "description": "Identifier of the measured phenomenon from parameters.phenomenon.id on expanded timeseries metadata, for example '5' for particulate matter under 10 micrometers."
                   },
                   "phenomenon_label": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Human-readable phenomenon label from parameters.phenomenon.label on expanded timeseries metadata, for example 'Nitrogen dioxide' or 'Ozone'.",
-                    "altnames": {
-                      "irceline": "parameters.phenomenon.label"
-                    }
+                    "description": "Human-readable phenomenon label from parameters.phenomenon.label on expanded timeseries metadata, for example 'Nitrogen dioxide' or 'Ozone'."
                   },
                   "category_id": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Identifier of the IRCELINE category linked to the timeseries from parameters.category.id. In the live API this currently mirrors the phenomenon identifier for air-quality pollutants.",
-                    "altnames": {
-                      "irceline": "parameters.category.id"
-                    }
+                    "description": "Identifier of the IRCELINE category linked to the timeseries from parameters.category.id. In the live API this currently mirrors the phenomenon identifier for air-quality pollutants."
                   },
                   "category_label": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "Human-readable IRCELINE category label from parameters.category.label. In the live API this currently mirrors the phenomenon label for air-quality pollutants.",
-                    "altnames": {
-                      "irceline": "parameters.category.label"
-                    }
+                    "description": "Human-readable IRCELINE category label from parameters.category.label. In the live API this currently mirrors the phenomenon label for air-quality pollutants."
                   },
                   "status_intervals": {
                     "type": [
@@ -552,10 +501,7 @@
                       },
                       "null"
                     ],
-                    "description": "Optional ordered array of status interval bands from the upstream statusIntervals expansion. Each entry describes a lower and upper threshold, a display label, and a color used by IRCELINE for BelAQI-style interpretation of the timeseries values.",
-                    "altnames": {
-                      "irceline": "statusIntervals"
-                    }
+                    "description": "Optional ordered array of status interval bands from the upstream statusIntervals expansion. Each entry describes a lower and upper threshold, a display label, and a color used by IRCELINE for BelAQI-style interpretation of the timeseries values."
                   }
                 },
                 "$uses": [
@@ -590,28 +536,19 @@
                   "timeseries_id": {
                     "type": "string",
                     "pattern": "^[0-9]+$",
-                    "description": "Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key.",
-                    "altnames": {
-                      "irceline": "id"
-                    }
+                    "description": "Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key."
                   },
                   "timestamp": {
                     "type": "string",
                     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{3})?Z$",
-                    "description": "Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'.",
-                    "altnames": {
-                      "irceline": "values.timestamp"
-                    }
+                    "description": "Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'."
                   },
                   "value": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "description": "Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null.",
-                    "altnames": {
-                      "irceline": "values.value"
-                    }
+                    "description": "Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null."
                   },
                   "uom": {
                     "type": "string",

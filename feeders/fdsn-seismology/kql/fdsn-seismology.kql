@@ -48,24 +48,24 @@
    [___subject]: string
 );
 
-.alter table ['org.fdsn.event.Earthquake'] docstring "{\"description\": \"Preferred-origin earthquake event record returned by an FDSN Event web-service node in text format. The record carries origin time, hypocenter, magnitude, provenance, and human-readable region metadata for one seismic event.\"}";
+.alter table ['org.fdsn.event.Earthquake'] docstring @"{""description"": ""Preferred-origin earthquake event record returned by an FDSN Event web-service node in text format. The record carries origin time, hypocenter, magnitude, provenance, and human-readable region metadata for one seismic event.""}";
 
 .alter table ['org.fdsn.event.Earthquake'] column-docstrings (
-   [event_id]: "{\"description\": \"Unique identifier assigned by the contributing institution, e.g. '20260604_0000095' or 'gfz2026kvsq'.\"}",
-   [time]: "{\"description\": \"Origin time of the seismic event in ISO 8601 UTC format as reported by the authoritative source.\"}",
-   [latitude]: "{\"description\": \"Epicenter latitude in decimal degrees, WGS84 datum, range -90 to 90.\"}",
-   [longitude]: "{\"description\": \"Epicenter longitude in decimal degrees, WGS84 datum, range -180 to 180.\"}",
-   [depth_km]: "{\"description\": \"Hypocentral depth in kilometers below the Earth's surface; null if unconstrained.\"}",
-   [author]: "{\"description\": \"Agency or analyst who computed the preferred origin solution, e.g. 'EMSC', 'GFZ', 'SURVEY-INGV'.\"}",
-   [catalog]: "{\"description\": \"Name of the event catalog this earthquake belongs to, e.g. 'EMSC-RTS', 'SED'.\"}",
-   [contributor]: "{\"description\": \"Short code of the institution that contributed this event record to the FDSN node, e.g. 'CSN', 'GFZ', 'EMSC'.\"}",
-   [contributor_id]: "{\"description\": \"Contributor's internal identifier for this event, may differ from event_id.\"}",
-   [magnitude_type]: "{\"description\": \"Scale used for the preferred magnitude: 'ML' (local), 'mb' (body-wave), 'Mw' (moment), 'Ms' (surface), 'm' (unspecified).\"}",
-   [magnitude]: "{\"description\": \"Preferred magnitude value on the scale indicated by magnitude_type; null if no magnitude computed.\"}",
-   [magnitude_author]: "{\"description\": \"Agency that computed the preferred magnitude, may differ from the origin author.\"}",
-   [event_location_name]: "{\"description\": \"Human-readable geographic description of the epicenter region, typically a Flinn-Engdahl region name.\"}",
-   [event_type]: "{\"description\": \"Seismological event classification: 'earthquake', 'quarry blast', 'explosion', 'induced or triggered event', etc.\"}",
-   [node_url]: "{\"description\": \"Base URL of the FDSN node that served this event record, identifying the data source.\"}",
+   [event_id]: @"{""description"": ""Unique identifier assigned by the contributing institution, e.g. '20260604_0000095' or 'gfz2026kvsq'.""}",
+   [time]: @"{""description"": ""Origin time of the seismic event in ISO 8601 UTC format as reported by the authoritative source.""}",
+   [latitude]: @"{""description"": ""Epicenter latitude in decimal degrees, WGS84 datum, range -90 to 90.""}",
+   [longitude]: @"{""description"": ""Epicenter longitude in decimal degrees, WGS84 datum, range -180 to 180.""}",
+   [depth_km]: @"{""description"": ""Hypocentral depth in kilometers below the Earth's surface; null if unconstrained.""}",
+   [author]: @"{""description"": ""Agency or analyst who computed the preferred origin solution, e.g. 'EMSC', 'GFZ', 'SURVEY-INGV'.""}",
+   [catalog]: @"{""description"": ""Name of the event catalog this earthquake belongs to, e.g. 'EMSC-RTS', 'SED'.""}",
+   [contributor]: @"{""description"": ""Short code of the institution that contributed this event record to the FDSN node, e.g. 'CSN', 'GFZ', 'EMSC'.""}",
+   [contributor_id]: @"{""description"": ""Contributor's internal identifier for this event, may differ from event_id.""}",
+   [magnitude_type]: @"{""description"": ""Scale used for the preferred magnitude: 'ML' (local), 'mb' (body-wave), 'Mw' (moment), 'Ms' (surface), 'm' (unspecified).""}",
+   [magnitude]: @"{""description"": ""Preferred magnitude value on the scale indicated by magnitude_type; null if no magnitude computed.""}",
+   [magnitude_author]: @"{""description"": ""Agency that computed the preferred magnitude, may differ from the origin author.""}",
+   [event_location_name]: @"{""description"": ""Human-readable geographic description of the epicenter region, typically a Flinn-Engdahl region name.""}",
+   [event_type]: @"{""description"": ""Seismological event classification: 'earthquake', 'quarry blast', 'explosion', 'induced or triggered event', etc.""}",
+   [node_url]: @"{""description"": ""Base URL of the FDSN node that served this event record, identifying the data source.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -95,7 +95,7 @@
   {"column": "magnitude_author", "path": "$.magnitude_author"},
   {"column": "event_location_name", "path": "$.event_location_name"},
   {"column": "event_type", "path": "$.event_type"},
-  {"column": "node_url", "path": "$.node_url"},
+  {"column": "node_url", "path": "$.node_url"}
 ]
 ```
 
@@ -121,7 +121,7 @@
   {"column": "magnitude_author", "path": "$.data.magnitude_author"},
   {"column": "event_location_name", "path": "$.data.event_location_name"},
   {"column": "event_type", "path": "$.data.event_type"},
-  {"column": "node_url", "path": "$.data.node_url"},
+  {"column": "node_url", "path": "$.data.node_url"}
 ]
 ```
 
@@ -138,7 +138,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.fdsn.event.Earthquake') | project['event_id'] = tostring(data.['event_id']),['time'] = todatetime(data.['time']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['depth_km'] = toreal(data.['depth_km']),['author'] = tostring(data.['author']),['catalog'] = tostring(data.['catalog']),['contributor'] = tostring(data.['contributor']),['contributor_id'] = tostring(data.['contributor_id']),['magnitude_type'] = tostring(data.['magnitude_type']),['magnitude'] = toreal(data.['magnitude']),['magnitude_author'] = tostring(data.['magnitude_author']),['event_location_name'] = tostring(data.['event_location_name']),['event_type'] = tostring(data.['event_type']),['node_url'] = tostring(data.['node_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
@@ -155,14 +155,14 @@
    [___subject]: string
 );
 
-.alter table ['org.fdsn.event.Node'] docstring "{\"description\": \"Reference-data record describing one pre-configured FDSN Event web-service node that the feeder polls for earthquake detections.\"}";
+.alter table ['org.fdsn.event.Node'] docstring @"{""description"": ""Reference-data record describing one pre-configured FDSN Event web-service node that the feeder polls for earthquake detections.""}";
 
 .alter table ['org.fdsn.event.Node'] column-docstrings (
-   [node_id]: "{\"description\": \"Short identifier for the FDSN node, e.g. 'emsc', 'gfz', 'ingv', 'ethz', 'resif'.\"}",
-   [name]: "{\"description\": \"Full institution name operating the FDSN event service.\"}",
-   [base_url]: "{\"description\": \"Base URL for the FDSN event web service endpoint, e.g. 'https://seismicportal.eu/fdsnws/event/1/'.\"}",
-   [coverage]: "{\"description\": \"Geographic or magnitude coverage description, e.g. 'Global aggregator', 'Italy + Mediterranean'.\"}",
-   [country]: "{\"description\": \"ISO 3166-1 alpha-2 country code of the operating institution.\"}",
+   [node_id]: @"{""description"": ""Short identifier for the FDSN node, e.g. 'emsc', 'gfz', 'ingv', 'ethz', 'resif'.""}",
+   [name]: @"{""description"": ""Full institution name operating the FDSN event service.""}",
+   [base_url]: @"{""description"": ""Base URL for the FDSN event web service endpoint, e.g. 'https://seismicportal.eu/fdsnws/event/1/'.""}",
+   [coverage]: @"{""description"": ""Geographic or magnitude coverage description, e.g. 'Global aggregator', 'Italy + Mediterranean'.""}",
+   [country]: @"{""description"": ""ISO 3166-1 alpha-2 country code of the operating institution.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -182,7 +182,7 @@
   {"column": "name", "path": "$.name"},
   {"column": "base_url", "path": "$.base_url"},
   {"column": "coverage", "path": "$.coverage"},
-  {"column": "country", "path": "$.country"},
+  {"column": "country", "path": "$.country"}
 ]
 ```
 
@@ -198,7 +198,7 @@
   {"column": "name", "path": "$.data.name"},
   {"column": "base_url", "path": "$.data.base_url"},
   {"column": "coverage", "path": "$.data.coverage"},
-  {"column": "country", "path": "$.data.country"},
+  {"column": "country", "path": "$.data.country"}
 ]
 ```
 
@@ -215,7 +215,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.fdsn.event.Node') | project['node_id'] = tostring(data.['node_id']),['name'] = tostring(data.['name']),['base_url'] = tostring(data.['base_url']),['coverage'] = tostring(data.['coverage']),['country'] = tostring(data.['country']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

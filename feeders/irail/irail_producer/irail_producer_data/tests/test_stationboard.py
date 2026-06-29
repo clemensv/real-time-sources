@@ -29,11 +29,11 @@ class Test_StationBoard(unittest.TestCase):
         Create instance of StationBoard for testing
         """
         instance = StationBoard(
-            station_id='wssgtylttmashylinwek',
-            station_name='rlsgofshhsbadbambwoh',
-            retrieved_at='kggtrkuojdkojakdtrqi',
-            departure_count=int(22),
-            departures=[None, None]
+            station_id='fttpwhvlspcmlunjmupe',
+            station_name='mkueotftiwzhztajznqz',
+            retrieved_at='guhffhkfyacyrsiiidvx',
+            departure_count=int(56),
+            departures=[None, None, None]
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'wssgtylttmashylinwek'
+        test_value = 'fttpwhvlspcmlunjmupe'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'rlsgofshhsbadbambwoh'
+        test_value = 'mkueotftiwzhztajznqz'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -58,7 +58,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test retrieved_at property
         """
-        test_value = 'kggtrkuojdkojakdtrqi'
+        test_value = 'guhffhkfyacyrsiiidvx'
         self.instance.retrieved_at = test_value
         self.assertEqual(self.instance.retrieved_at, test_value)
     
@@ -66,7 +66,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test departure_count property
         """
-        test_value = int(22)
+        test_value = int(56)
         self.instance.departure_count = test_value
         self.assertEqual(self.instance.departure_count, test_value)
     
@@ -74,7 +74,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test departures property
         """
-        test_value = [None, None]
+        test_value = [None, None, None]
         self.instance.departures = test_value
         self.assertEqual(self.instance.departures, test_value)
     

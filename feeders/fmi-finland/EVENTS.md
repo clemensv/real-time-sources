@@ -1,4 +1,4 @@
-# FMI Finland feeder Events
+# FMI Finland Events
 
 FMI Finland Weather publishes weather observations from the Finnish Meteorological Institute (FMI) for Finnish weather observation stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{fmisid}`. `{fmisid}` is sta
 | --- | --- |
 | `KAFKA` | topic `fmi-finland-airquality`, key `{fmisid}` |
 | `MQTT/5.0` | topic `weather/fi/fmi/fmi-finland/{region}/{fmisid}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/fmi-finland`, message subject `{fmisid}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/fmi-finland`, message subject `{fmisid}` |
 
 #### Payload
 
@@ -125,7 +125,7 @@ Each event identifies the real-world resource with `{fmisid}`. `{fmisid}` is sta
 | --- | --- |
 | `KAFKA` | topic `fmi-finland-airquality`, key `{fmisid}` |
 | `MQTT/5.0` | topic `weather/fi/fmi/fmi-finland/{region}/{fmisid}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/fmi-finland`, message subject `{fmisid}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/fmi-finland`, message subject `{fmisid}` |
 
 #### Payload
 
@@ -188,3 +188,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/fmi-finland.xreg.json`](xreg/fmi-finland.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

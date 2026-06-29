@@ -29,15 +29,15 @@ class Test_LightningStrike(unittest.TestCase):
         Create instance of LightningStrike for testing
         """
         instance = LightningStrike(
-            strike_id='jbkgxncfflcimwqjhmxq',
+            strike_id='irtvprxufhaxhwqbrjcl',
             observed=datetime.datetime.now(datetime.timezone.utc),
             created=datetime.datetime.now(datetime.timezone.utc),
-            type=int(68),
-            amp=float(52.75810146566832),
-            strokes=int(54),
-            sensors='upzijcdqwhomvmbfeyju',
-            latitude=float(98.75597228443453),
-            longitude=float(88.9854572613467)
+            type=int(27),
+            amp=float(49.01369453881463),
+            strokes=int(48),
+            sensors='koywyucnfkknslghgdkk',
+            latitude=float(68.34387943577514),
+            longitude=float(45.06185594767486)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test strike_id property
         """
-        test_value = 'jbkgxncfflcimwqjhmxq'
+        test_value = 'irtvprxufhaxhwqbrjcl'
         self.instance.strike_id = test_value
         self.assertEqual(self.instance.strike_id, test_value)
     
@@ -70,7 +70,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test type property
         """
-        test_value = int(68)
+        test_value = int(27)
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -78,7 +78,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test amp property
         """
-        test_value = float(52.75810146566832)
+        test_value = float(49.01369453881463)
         self.instance.amp = test_value
         self.assertEqual(self.instance.amp, test_value)
     
@@ -86,7 +86,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test strokes property
         """
-        test_value = int(54)
+        test_value = int(48)
         self.instance.strokes = test_value
         self.assertEqual(self.instance.strokes, test_value)
     
@@ -94,7 +94,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test sensors property
         """
-        test_value = 'upzijcdqwhomvmbfeyju'
+        test_value = 'koywyucnfkknslghgdkk'
         self.instance.sensors = test_value
         self.assertEqual(self.instance.sensors, test_value)
     
@@ -102,7 +102,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(98.75597228443453)
+        test_value = float(68.34387943577514)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -110,7 +110,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(88.9854572613467)
+        test_value = float(45.06185594767486)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

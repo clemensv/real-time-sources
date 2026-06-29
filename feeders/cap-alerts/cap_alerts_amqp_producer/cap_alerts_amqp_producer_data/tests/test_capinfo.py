@@ -9,14 +9,14 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.capinfo import CapInfo
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.urgencyenum import UrgencyEnum
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.capresource import CapResource
-from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.responsetypelistenum import ResponseTypelistenum
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.categorylistenum import CategoryListEnum
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.capresource import CapResource
 from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.caparea import CapArea
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.urgencyenum import UrgencyEnum
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.certaintyenum import CertaintyEnum
+from cap_alerts_amqp_producer_data.org.oasis.cap.alerts.severityenum import SeverityEnum
 import datetime
 
 
@@ -37,27 +37,27 @@ class Test_CapInfo(unittest.TestCase):
         Create instance of CapInfo for testing
         """
         instance = CapInfo(
-            language='rtlxyecjdqirmucefbpc',
+            language='rdqshdjmclvdvrrbhywl',
             category=[CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo, CategoryListEnum.Geo],
-            event='epmkafdiurykjgcuvnfo',
-            response_type=[ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter],
+            event='pzitcfqxlwsihdwyjrcn',
+            response_type=[ResponseTypelistenum.Shelter],
             urgency=UrgencyEnum.Immediate,
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
-            audience='vxttwtnagihmjsamlepd',
-            event_code=[None, None, None],
+            audience='fvahywncdwyytwrygrez',
+            event_code=[None, None],
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            sender_name='atoeymjtidhnpecmaevd',
-            headline='vajevlbkmpndapzilfxn',
-            description='wapjfjrruegtdugyzcmd',
-            instruction='vcvfoyyiqfarnnfehsvf',
-            web='svcsggflbaueoxgqazlq',
-            contact='xoelufbvxtrwqfozmbkl',
+            sender_name='fkfnddclkwkrwzxyntkn',
+            headline='qtohvahcnokltlgyexya',
+            description='yjzhoeutpvbwegxvbrjb',
+            instruction='bpgnuxvgyiprexvkuyda',
+            web='wocopaorsbibqkaopdzy',
+            contact='idmusipgerpeljsyszmy',
             parameter=[None, None, None, None, None],
-            resource=[None, None],
-            area=[None, None],
+            resource=[None],
+            area=[None, None, None],
             ends=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
@@ -67,7 +67,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'rtlxyecjdqirmucefbpc'
+        test_value = 'rdqshdjmclvdvrrbhywl'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -83,7 +83,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test event property
         """
-        test_value = 'epmkafdiurykjgcuvnfo'
+        test_value = 'pzitcfqxlwsihdwyjrcn'
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     
@@ -91,7 +91,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test response_type property
         """
-        test_value = [ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter, ResponseTypelistenum.Shelter]
+        test_value = [ResponseTypelistenum.Shelter]
         self.instance.response_type = test_value
         self.assertEqual(self.instance.response_type, test_value)
     
@@ -123,7 +123,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test audience property
         """
-        test_value = 'vxttwtnagihmjsamlepd'
+        test_value = 'fvahywncdwyytwrygrez'
         self.instance.audience = test_value
         self.assertEqual(self.instance.audience, test_value)
     
@@ -131,7 +131,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test event_code property
         """
-        test_value = [None, None, None]
+        test_value = [None, None]
         self.instance.event_code = test_value
         self.assertEqual(self.instance.event_code, test_value)
     
@@ -163,7 +163,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test sender_name property
         """
-        test_value = 'atoeymjtidhnpecmaevd'
+        test_value = 'fkfnddclkwkrwzxyntkn'
         self.instance.sender_name = test_value
         self.assertEqual(self.instance.sender_name, test_value)
     
@@ -171,7 +171,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test headline property
         """
-        test_value = 'vajevlbkmpndapzilfxn'
+        test_value = 'qtohvahcnokltlgyexya'
         self.instance.headline = test_value
         self.assertEqual(self.instance.headline, test_value)
     
@@ -179,7 +179,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'wapjfjrruegtdugyzcmd'
+        test_value = 'yjzhoeutpvbwegxvbrjb'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -187,7 +187,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test instruction property
         """
-        test_value = 'vcvfoyyiqfarnnfehsvf'
+        test_value = 'bpgnuxvgyiprexvkuyda'
         self.instance.instruction = test_value
         self.assertEqual(self.instance.instruction, test_value)
     
@@ -195,7 +195,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test web property
         """
-        test_value = 'svcsggflbaueoxgqazlq'
+        test_value = 'wocopaorsbibqkaopdzy'
         self.instance.web = test_value
         self.assertEqual(self.instance.web, test_value)
     
@@ -203,7 +203,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test contact property
         """
-        test_value = 'xoelufbvxtrwqfozmbkl'
+        test_value = 'idmusipgerpeljsyszmy'
         self.instance.contact = test_value
         self.assertEqual(self.instance.contact, test_value)
     
@@ -219,7 +219,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test resource property
         """
-        test_value = [None, None]
+        test_value = [None]
         self.instance.resource = test_value
         self.assertEqual(self.instance.resource, test_value)
     
@@ -227,7 +227,7 @@ class Test_CapInfo(unittest.TestCase):
         """
         Test area property
         """
-        test_value = [None, None]
+        test_value = [None, None, None]
         self.instance.area = test_value
         self.assertEqual(self.instance.area, test_value)
     

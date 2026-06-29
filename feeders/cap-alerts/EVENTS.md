@@ -336,3 +336,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/cap-alerts.xreg.json`](xreg/cap-alerts.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- ![Deploy Service Bus AMQP: <https://aka.ms/deploytoazurebutton>

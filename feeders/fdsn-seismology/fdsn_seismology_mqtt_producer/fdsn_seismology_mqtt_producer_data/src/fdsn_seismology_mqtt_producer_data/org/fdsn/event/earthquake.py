@@ -183,19 +183,19 @@ class Earthquake:
             An instance of the dataclass.
         """
         return cls(
-            event_id='fdxlsskszosqerivgwyi',
+            event_id='irjttedqdwlcyqccpapl',
             time=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(29.201941695380008),
-            longitude=float(31.750650840029635),
-            depth_km=float(92.93520695994145),
-            author='sicalsixrqoqqfoodphk',
-            catalog='auwljzakckvphgjussno',
-            contributor='trtixwulwzmoawwttrff',
-            contributor_id='tboxpftkhtqbhxsetqyw',
-            magnitude_type='vnjvlecgwyxbrpnjrqbl',
-            magnitude=float(82.30867648150677),
-            magnitude_author='rinmvnbilhljintekcyn',
-            event_location_name='uitkzmletxsqgekposqf',
-            event_type='rzcrfraopujyueezqeow',
-            node_url='jktsbusitzoqwvtapuro'
+            latitude=float(91.43230795262328),
+            longitude=float(67.92107342430795),
+            depth_km=float(12.663922271112526),
+            author='uxwjbcteahhycbkzmxxl',
+            catalog='wczzmcvponssicghzppz',
+            contributor='majrzjnrxgvzetnyvdil',
+            contributor_id='frxaykxsioxcsproipgn',
+            magnitude_type='anlfchpvwrerqmnwqyzf',
+            magnitude=float(66.14911126810006),
+            magnitude_author='xvjybuahythmeqqhuand',
+            event_location_name='xrncpqomtrkjoynxjyfv',
+            event_type='vvgjmszdlaopjkcqqxds',
+            node_url='kqhacovuajvqlrfgmukp'
         )

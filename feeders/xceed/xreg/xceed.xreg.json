@@ -280,20 +280,14 @@
                 "properties": {
                   "event_id": {
                     "type": "string",
-                    "description": "Stable UUID assigned by Xceed to uniquely identify this event across all API versions. Returned as the 'id' field in the /events response. Used as the CloudEvents subject and Kafka key.",
-                    "altnames": {
-                      "json": "id"
-                    }
+                    "description": "Stable UUID assigned by Xceed to uniquely identify this event across all API versions. Returned as the 'id' field in the /events response. Used as the CloudEvents subject and Kafka key."
                   },
                   "legacy_id": {
                     "type": [
                       "int32",
                       "null"
                     ],
-                    "description": "Legacy numeric integer identifier for the event from an earlier Xceed system version. Returned as 'legacyId' in the /events response. May be null for events that were created natively in the current UUID-based system.",
-                    "altnames": {
-                      "json": "legacyId"
-                    }
+                    "description": "Legacy numeric integer identifier for the event from an earlier Xceed system version. Returned as 'legacyId' in the /events response. May be null for events that were created natively in the current UUID-based system."
                   },
                   "name": {
                     "type": "string",
@@ -308,40 +302,28 @@
                   },
                   "starting_time": {
                     "type": "datetime",
-                    "description": "Scheduled start time of the event expressed as a UTC datetime. Derived from the 'startingTime' UNIX epoch seconds integer in the /events response. Represents when the event doors open or the event officially begins.",
-                    "altnames": {
-                      "json": "startingTime"
-                    }
+                    "description": "Scheduled start time of the event expressed as a UTC datetime. Derived from the 'startingTime' UNIX epoch seconds integer in the /events response. Represents when the event doors open or the event officially begins."
                   },
                   "ending_time": {
                     "type": [
                       "datetime",
                       "null"
                     ],
-                    "description": "Scheduled end time of the event expressed as a UTC datetime. Derived from the 'endingTime' UNIX epoch seconds integer in the /events response. May be null if the organiser has not specified an end time.",
-                    "altnames": {
-                      "json": "endingTime"
-                    }
+                    "description": "Scheduled end time of the event expressed as a UTC datetime. Derived from the 'endingTime' UNIX epoch seconds integer in the /events response. May be null if the organiser has not specified an end time."
                   },
                   "cover_url": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "HTTPS URL pointing to the event's main banner or cover image hosted on the Xceed CDN. Returned as 'coverUrl' in the /events response. Suitable for display in listings and detail views. May be null if no image has been uploaded.",
-                    "altnames": {
-                      "json": "coverUrl"
-                    }
+                    "description": "HTTPS URL pointing to the event's main banner or cover image hosted on the Xceed CDN. Returned as 'coverUrl' in the /events response. Suitable for display in listings and detail views. May be null if no image has been uploaded."
                   },
                   "external_sales_url": {
                     "type": [
                       "string",
                       "null"
                     ],
-                    "description": "HTTPS URL pointing to an external ticket vendor or the event organiser's own sales page, when tickets are not sold directly through the Xceed platform. Returned as 'externalSalesUrl' in the /events response. Null when tickets are sold via Xceed admissions.",
-                    "altnames": {
-                      "json": "externalSalesUrl"
-                    }
+                    "description": "HTTPS URL pointing to an external ticket vendor or the event organiser's own sales page, when tickets are not sold directly through the Xceed platform. Returned as 'externalSalesUrl' in the /events response. Null when tickets are sold via Xceed admissions."
                   },
                   "venue_id": {
                     "type": [
@@ -403,17 +385,11 @@
                   },
                   "admission_id": {
                     "type": "string",
-                    "description": "Stable UUID assigned by Xceed to uniquely identify this admission or offer record within its parent event. Returned as the 'id' field of each object inside the bottleService, guestList, or ticket arrays of the GET https://offer.xceed.me/v1/events/:eventId/admissions response. Forms the second segment of the composite Kafka key '{event_id}/{admission_id}'.",
-                    "altnames": {
-                      "json": "id"
-                    }
+                    "description": "Stable UUID assigned by Xceed to uniquely identify this admission or offer record within its parent event. Returned as the 'id' field of each object inside the bottleService, guestList, or ticket arrays of the GET https://offer.xceed.me/v1/events/:eventId/admissions response. Forms the second segment of the composite Kafka key '{event_id}/{admission_id}'."
                   },
                   "admission_type": {
                     "type": "string",
-                    "description": "Normalized Xceed offer kind for this record. Derived from the upstream 'admissionType' field when present, otherwise from the containing array name in the public offer-service response. Typical values include 'ticket', 'guestlist', and 'bottleservice'. This field preserves whether the record represents a standard ticket, a guest-list slot, or a bottle-service/table booking.",
-                    "altnames": {
-                      "json": "admissionType"
-                    }
+                    "description": "Normalized Xceed offer kind for this record. Derived from the upstream 'admissionType' field when present, otherwise from the containing array name in the public offer-service response. Typical values include 'ticket', 'guestlist', and 'bottleservice'. This field preserves whether the record represents a standard ticket, a guest-list slot, or a bottle-service/table booking."
                   },
                   "name": {
                     "type": [
@@ -427,20 +403,14 @@
                       "boolean",
                       "null"
                     ],
-                    "description": "Boolean flag indicating whether this offer is sold out. Derived from the nested 'salesStatus.isSoldOut' field in the public offer-service response, or from a top-level 'isSoldOut' field if Xceed exposes one in future. True means no more units of this offer can be purchased. Null if the sales-state field is absent.",
-                    "altnames": {
-                      "json": "isSoldOut"
-                    }
+                    "description": "Boolean flag indicating whether this offer is sold out. Derived from the nested 'salesStatus.isSoldOut' field in the public offer-service response, or from a top-level 'isSoldOut' field if Xceed exposes one in future. True means no more units of this offer can be purchased. Null if the sales-state field is absent."
                   },
                   "is_sales_closed": {
                     "type": [
                       "boolean",
                       "null"
                     ],
-                    "description": "Boolean flag indicating whether sales for this offer have been closed, either because the sales window expired, the event started, or the organiser manually closed sales. Derived from the nested 'salesStatus.isSalesClosed' field in the public offer-service response, or from a top-level 'isSalesClosed' field if present. Null if the sales-state field is absent.",
-                    "altnames": {
-                      "json": "isSalesClosed"
-                    }
+                    "description": "Boolean flag indicating whether sales for this offer have been closed, either because the sales window expired, the event started, or the organiser manually closed sales. Derived from the nested 'salesStatus.isSalesClosed' field in the public offer-service response, or from a top-level 'isSalesClosed' field if present. Null if the sales-state field is absent."
                   },
                   "price": {
                     "type": [

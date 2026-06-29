@@ -1,3 +1,3 @@
-from .opendata import Station, Observation
+from .opendata import Observation, Station
 
-__all__ = ["Station", "Observation"]
+__all__ = ["Observation", "Station"]

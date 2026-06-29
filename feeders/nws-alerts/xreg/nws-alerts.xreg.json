@@ -184,17 +184,11 @@
                 "properties": {
                   "alert_id": {
                     "type": "string",
-                    "description": "The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert.",
-                    "altnames": {
-                      "json": "id"
-                    }
+                    "description": "The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert."
                   },
                   "area_desc": {
                     "type": "string",
-                    "description": "A textual description of the affected geographic area (e.g., county names).",
-                    "altnames": {
-                      "json": "areaDesc"
-                    }
+                    "description": "A textual description of the affected geographic area (e.g., county names)."
                   },
                   "same_codes": {
                     "type": "string",
@@ -252,9 +246,6 @@
                       "Ack",
                       "Error"
                     ],
-                    "altnames": {
-                      "json": "messageType"
-                    },
                     "descriptions": {
                       "Alert": "Provider value `Alert` for this coded alert field.",
                       "Update": "Provider value `Update` for this coded alert field.",
@@ -331,10 +322,7 @@
                   },
                   "sender_name": {
                     "type": "string",
-                    "description": "The human-readable name of the sender (e.g., 'NWS Tulsa OK').",
-                    "altnames": {
-                      "json": "senderName"
-                    }
+                    "description": "The human-readable name of the sender (e.g., 'NWS Tulsa OK')."
                   },
                   "headline": {
                     "type": "string",

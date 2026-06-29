@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table ['es.madrid.informo.MeasurementPoint'] (
+.create-merge table [MeasurementPoint] (
    [sensor_id]: string,
    [description]: string,
    [element_type]: string,
@@ -40,16 +40,16 @@
    [___subject]: string
 );
 
-.alter table ['es.madrid.informo.MeasurementPoint'] docstring "{\"description\": \"Reference data for a traffic measurement point (sensor) in Madrid's Informo road traffic monitoring system. Each measurement point is installed on a specific road segment and reports traffic intensity, occupancy, and service level readings. This data is relatively static and describes the sensor installation, not the real-time traffic conditions.\"}";
+.alter table [MeasurementPoint] docstring @"{""description"": ""A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.""}";
 
-.alter table ['es.madrid.informo.MeasurementPoint'] column-docstrings (
-   [sensor_id]: "{\"description\": \"Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point.\"}",
-   [description]: "{\"description\": \"Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish.\"}",
-   [element_type]: "{\"description\": \"Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway.\"}",
-   [subarea]: "{\"description\": \"Traffic management zone code for this sensor. Corresponds to 'subarea' in the upstream XML. Used by Madrid's traffic management center for geographic grouping of sensors.\"}",
-   [longitude]: "{\"description\": \"Longitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM easting in 'st_x' in the upstream XML, which uses European comma decimal separators.\"}",
-   [latitude]: "{\"description\": \"Latitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM northing in 'st_y' in the upstream XML, which uses European comma decimal separators.\"}",
-   [saturation_intensity]: "{\"description\": \"Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios.\"}",
+.alter table [MeasurementPoint] column-docstrings (
+   [sensor_id]: @"{""description"": ""Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point.""}",
+   [description]: @"{""description"": ""Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish.""}",
+   [element_type]: @"{""description"": ""Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway.""}",
+   [subarea]: @"{""description"": ""Traffic management zone code for this sensor. Corresponds to 'subarea' in the upstream XML. Used by Madrid's traffic management center for geographic grouping of sensors.""}",
+   [longitude]: @"{""description"": ""Longitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM easting in 'st_x' in the upstream XML, which uses European comma decimal separators.""}",
+   [latitude]: @"{""description"": ""Latitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM northing in 'st_y' in the upstream XML, which uses European comma decimal separators.""}",
+   [saturation_intensity]: @"{""description"": ""Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -57,7 +57,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['es.madrid.informo.MeasurementPoint'] ingestion json mapping "es.madrid.informo.MeasurementPoint_json_flat"
+.create-or-alter table [MeasurementPoint] ingestion json mapping "MeasurementPoint_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -71,11 +71,11 @@
   {"column": "subarea", "path": "$.subarea"},
   {"column": "longitude", "path": "$.longitude"},
   {"column": "latitude", "path": "$.latitude"},
-  {"column": "saturation_intensity", "path": "$.saturation_intensity"},
+  {"column": "saturation_intensity", "path": "$.saturation_intensity"}
 ]
 ```
 
-.create-or-alter table ['es.madrid.informo.MeasurementPoint'] ingestion json mapping "es.madrid.informo.MeasurementPoint_json_ce_structured"
+.create-or-alter table [MeasurementPoint] ingestion json mapping "MeasurementPoint_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,28 +89,28 @@
   {"column": "subarea", "path": "$.data.subarea"},
   {"column": "longitude", "path": "$.data.longitude"},
   {"column": "latitude", "path": "$.data.latitude"},
-  {"column": "saturation_intensity", "path": "$.data.saturation_intensity"},
+  {"column": "saturation_intensity", "path": "$.data.saturation_intensity"}
 ]
 ```
 
-.drop materialized-view ['es.madrid.informo.MeasurementPointLatest'] ifexists;
+.drop materialized-view MeasurementPointLatest ifexists;
 
-.create materialized-view with (backfill=true) ['es.madrid.informo.MeasurementPointLatest'] on table ['es.madrid.informo.MeasurementPoint'] {
-    ['es.madrid.informo.MeasurementPoint'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) MeasurementPointLatest on table MeasurementPoint {
+    MeasurementPoint | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['es.madrid.informo.MeasurementPoint'] policy update
+.alter table [MeasurementPoint] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'es.madrid.informo.MeasurementPoint') | project['sensor_id'] = tostring(data.['sensor_id']),['description'] = tostring(data.['description']),['element_type'] = tostring(data.['element_type']),['subarea'] = tostring(data.['subarea']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['saturation_intensity'] = toint(data.['saturation_intensity']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['es.madrid.informo.TrafficReading'] (
+.create-merge table [TrafficReading] (
    [sensor_id]: string,
    [intensity]: int,
    [occupancy]: int,
@@ -125,16 +125,16 @@
    [___subject]: string
 );
 
-.alter table ['es.madrid.informo.TrafficReading'] docstring "{\"description\": \"Real-time traffic reading from a measurement point in Madrid's Informo road traffic monitoring system. Updated approximately every 5 minutes. Each reading provides the current traffic intensity, road occupancy, load, and service level for a specific sensor on Madrid's road network, including the M-30 ring motorway and urban streets.\"}";
+.alter table [TrafficReading] docstring @"{""description"": ""A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.""}";
 
-.alter table ['es.madrid.informo.TrafficReading'] column-docstrings (
-   [sensor_id]: "{\"description\": \"Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data.\"}",
-   [intensity]: "{\"description\": \"Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode.\"}",
-   [occupancy]: "{\"description\": \"Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100.\"}",
-   [load]: "{\"description\": \"Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100.\"}",
-   [service_level]: "{\"description\": \"Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested.\"}",
-   [error_flag]: "{\"description\": \"Error status flag for this reading. Corresponds to 'error' in the upstream XML. 'N' indicates a normal reading, 'S' or 'Y' indicates the sensor is reporting an error and the data may be unreliable.\"}",
-   [timestamp]: "{\"description\": \"Timestamp of the traffic reading in UTC. Since the upstream XML does not include per-sensor timestamps, this is derived from the poll time rounded to the nearest 5-minute interval, reflecting the upstream update cadence.\"}",
+.alter table [TrafficReading] column-docstrings (
+   [sensor_id]: @"{""description"": ""Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data.""}",
+   [intensity]: @"{""description"": ""Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode.""}",
+   [occupancy]: @"{""description"": ""Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100.""}",
+   [load]: @"{""description"": ""Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100.""}",
+   [service_level]: @"{""description"": ""Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested.""}",
+   [error_flag]: @"{""description"": ""Error status flag for this reading. Corresponds to 'error' in the upstream XML. 'N' indicates a normal reading, 'S' or 'Y' indicates the sensor is reporting an error and the data may be unreliable.""}",
+   [timestamp]: @"{""description"": ""Timestamp of the traffic reading in UTC. Since the upstream XML does not include per-sensor timestamps, this is derived from the poll time rounded to the nearest 5-minute interval, reflecting the upstream update cadence.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -142,7 +142,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['es.madrid.informo.TrafficReading'] ingestion json mapping "es.madrid.informo.TrafficReading_json_flat"
+.create-or-alter table [TrafficReading] ingestion json mapping "TrafficReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -156,11 +156,11 @@
   {"column": "load", "path": "$.load"},
   {"column": "service_level", "path": "$.service_level"},
   {"column": "error_flag", "path": "$.error_flag"},
-  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "timestamp", "path": "$.timestamp"}
 ]
 ```
 
-.create-or-alter table ['es.madrid.informo.TrafficReading'] ingestion json mapping "es.madrid.informo.TrafficReading_json_ce_structured"
+.create-or-alter table [TrafficReading] ingestion json mapping "TrafficReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -174,24 +174,24 @@
   {"column": "load", "path": "$.data.load"},
   {"column": "service_level", "path": "$.data.service_level"},
   {"column": "error_flag", "path": "$.data.error_flag"},
-  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "timestamp", "path": "$.data.timestamp"}
 ]
 ```
 
-.drop materialized-view ['es.madrid.informo.TrafficReadingLatest'] ifexists;
+.drop materialized-view TrafficReadingLatest ifexists;
 
-.create materialized-view with (backfill=true) ['es.madrid.informo.TrafficReadingLatest'] on table ['es.madrid.informo.TrafficReading'] {
-    ['es.madrid.informo.TrafficReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) TrafficReadingLatest on table TrafficReading {
+    TrafficReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['es.madrid.informo.TrafficReading'] policy update
+.alter table [TrafficReading] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'es.madrid.informo.TrafficReading') | project['sensor_id'] = tostring(data.['sensor_id']),['intensity'] = toint(data.['intensity']),['occupancy'] = toint(data.['occupancy']),['load'] = toint(data.['load']),['service_level'] = toint(data.['service_level']),['error_flag'] = tostring(data.['error_flag']),['timestamp'] = todatetime(data.['timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

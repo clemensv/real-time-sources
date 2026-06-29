@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{configuration_id}`. `{confi
 | --- | --- |
 | `KAFKA` | topic `wallonia-issep`, key `{configuration_id}` |
 | `MQTT/5.0` | topic `air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/wallonia-issep`, message subject `{configuration_id}`; application properties province `{province}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/wallonia-issep`, message subject `{configuration_id}` |
 
 #### Payload
 
@@ -119,7 +119,7 @@ Each event identifies the real-world resource with `{configuration_id}`. `{confi
 | --- | --- |
 | `KAFKA` | topic `wallonia-issep`, key `{configuration_id}` |
 | `MQTT/5.0` | topic `air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/wallonia-issep`, message subject `{configuration_id}`; application properties province `{province}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/wallonia-issep`, message subject `{configuration_id}` |
 
 #### Payload
 
@@ -249,3 +249,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/wallonia_issep.xreg.json`](xreg/wallonia_issep.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

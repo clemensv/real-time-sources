@@ -1,0 +1,197 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_code]: string,
+   [name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [coordinate_system]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring @"{""description"": ""Reference details for one monitoring station or site in the RWS Waterwebservices source.""}";
+
+.alter table [Station] column-docstrings (
+   [station_code]: @"{""description"": ""Provider code identifying the station.""}",
+   [name]: @"{""description"": ""Human-readable name of the station, site, or location.""}",
+   [latitude]: @"{""description"": ""Latitude of the station in WGS 84 coordinates.""}",
+   [longitude]: @"{""description"": ""Longitude of the station in WGS 84 coordinates.""}",
+   [coordinate_system]: @"{""description"": ""Provider-supplied coordinate system value for this record.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.station_code"},
+  {"column": "name", "path": "$.name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "coordinate_system", "path": "$.coordinate_system"}
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.data.station_code"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "coordinate_system", "path": "$.data.coordinate_system"}
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.RWS.Waterwebservices.Station') | project['station_code'] = tostring(data.['station_code']),['name'] = tostring(data.['name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['coordinate_system'] = tostring(data.['coordinate_system']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [WaterLevelObservation] (
+   [station_code]: string,
+   [location_name]: string,
+   [timestamp]: datetime,
+   [value]: real,
+   [unit]: string,
+   [quality_code]: string,
+   [status]: string,
+   [compartment]: string,
+   [parameter]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterLevelObservation] docstring @"{""description"": ""Measurement payload for water level observations in the RWS Waterwebservices source.""}";
+
+.alter table [WaterLevelObservation] column-docstrings (
+   [station_code]: @"{""description"": ""Provider code identifying the station.""}",
+   [location_name]: @"{""description"": ""Human-readable name of the location.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the observation.""}",
+   [value]: @"{""description"": ""Measured value reported by the upstream provider.""}",
+   [unit]: @"{""description"": ""Unit used for the measured value.""}",
+   [quality_code]: @"{""description"": ""Provider code identifying the quality.""}",
+   [status]: @"{""description"": ""Provider status value for the station, measurement, or alert.""}",
+   [compartment]: @"{""description"": ""Provider-supplied compartment value for this record.""}",
+   [parameter]: @"{""description"": ""Provider-supplied parameter value for this record.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.station_code"},
+  {"column": "location_name", "path": "$.location_name"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "unit", "path": "$.unit"},
+  {"column": "quality_code", "path": "$.quality_code"},
+  {"column": "status", "path": "$.status"},
+  {"column": "compartment", "path": "$.compartment"},
+  {"column": "parameter", "path": "$.parameter"}
+]
+```
+
+.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.data.station_code"},
+  {"column": "location_name", "path": "$.data.location_name"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "unit", "path": "$.data.unit"},
+  {"column": "quality_code", "path": "$.data.quality_code"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "compartment", "path": "$.data.compartment"},
+  {"column": "parameter", "path": "$.data.parameter"}
+]
+```
+
+.drop materialized-view WaterLevelObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WaterLevelObservationLatest on table WaterLevelObservation {
+    WaterLevelObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterLevelObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.RWS.Waterwebservices.WaterLevelObservation') | project['station_code'] = tostring(data.['station_code']),['location_name'] = tostring(data.['location_name']),['timestamp'] = todatetime(data.['timestamp']),['value'] = toreal(data.['value']),['unit'] = tostring(data.['unit']),['quality_code'] = tostring(data.['quality_code']),['status'] = tostring(data.['status']),['compartment'] = tostring(data.['compartment']),['parameter'] = tostring(data.['parameter']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+

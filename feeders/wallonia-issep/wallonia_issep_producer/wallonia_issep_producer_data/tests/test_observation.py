@@ -28,49 +28,49 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            configuration_id='yddqvdtitosopvqsmemf',
-            province='jwxulooymsqghoymyroo',
-            moment='dchibusvrcgtqanlphoa',
-            co=int(40),
-            no=int(34),
-            no2=int(12),
-            o3no2=int(16),
-            ppbno=float(44.734614817138116),
-            ppbno_statut=int(44),
-            ppbno2=float(7.232074913561581),
-            ppbno2_statut=int(93),
-            ppbo3=float(74.51127606616244),
-            ppbo3_statut=int(21),
-            ugpcmno=float(84.44686506945736),
-            ugpcmno_statut=int(81),
-            ugpcmno2=float(72.99132450163421),
-            ugpcmno2_statut=int(42),
-            ugpcmo3=float(85.32440589530457),
-            ugpcmo3_statut=int(49),
-            bme_t=float(0.36475030340782366),
-            bme_t_statut=int(28),
-            bme_pres=int(43),
-            bme_pres_statut=int(41),
-            bme_rh=float(30.380847360451966),
-            bme_rh_statut=int(72),
-            pm1=float(47.97138726130357),
-            pm1_statut=int(35),
-            pm25=float(17.80467110854662),
-            pm25_statut=int(68),
-            pm4=float(47.735387559005204),
-            pm4_statut=int(18),
-            pm10=float(59.854711330113794),
-            pm10_statut=int(71),
-            vbat=float(94.27714869301175),
-            vbat_statut=int(78),
-            mwh_bat=float(2.431951899230411),
-            mwh_pv=float(62.67861435867768),
-            co_rf=float(6.5313160107893005),
-            no_rf=float(7.214222679055993),
-            no2_rf=float(88.51154031804238),
-            o3no2_rf=float(74.84603810215708),
-            o3_rf=float(84.35992724972756),
-            pm10_rf=float(26.56897316788802)
+            configuration_id='xakzbrewrkwiptrwrpjn',
+            province='jugyuprrgkxkijlpthsn',
+            moment='herjcehovylqwxgxhmzg',
+            co=int(76),
+            no=int(80),
+            no2=int(49),
+            o3no2=int(72),
+            ppbno=float(52.64969667866994),
+            ppbno_statut=int(10),
+            ppbno2=float(71.51104336430745),
+            ppbno2_statut=int(50),
+            ppbo3=float(40.455050102339655),
+            ppbo3_statut=int(68),
+            ugpcmno=float(81.45425151519696),
+            ugpcmno_statut=int(69),
+            ugpcmno2=float(80.1577849376357),
+            ugpcmno2_statut=int(91),
+            ugpcmo3=float(91.72987191284605),
+            ugpcmo3_statut=int(26),
+            bme_t=float(40.983098164816035),
+            bme_t_statut=int(69),
+            bme_pres=int(35),
+            bme_pres_statut=int(100),
+            bme_rh=float(98.36196207249188),
+            bme_rh_statut=int(38),
+            pm1=float(77.7163171438193),
+            pm1_statut=int(81),
+            pm25=float(67.03957309111462),
+            pm25_statut=int(87),
+            pm4=float(26.12133601843636),
+            pm4_statut=int(62),
+            pm10=float(87.12768402939724),
+            pm10_statut=int(68),
+            vbat=float(86.20818188614055),
+            vbat_statut=int(94),
+            mwh_bat=float(13.562347610963421),
+            mwh_pv=float(76.56206203898574),
+            co_rf=float(5.247244104611881),
+            no_rf=float(87.0307633772953),
+            no2_rf=float(18.851085418508816),
+            o3no2_rf=float(86.91146946588508),
+            o3_rf=float(21.757460803844587),
+            pm10_rf=float(40.57455241865049)
         )
         return instance
 
@@ -79,7 +79,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test configuration_id property
         """
-        test_value = 'yddqvdtitosopvqsmemf'
+        test_value = 'xakzbrewrkwiptrwrpjn'
         self.instance.configuration_id = test_value
         self.assertEqual(self.instance.configuration_id, test_value)
     
@@ -87,7 +87,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'jwxulooymsqghoymyroo'
+        test_value = 'jugyuprrgkxkijlpthsn'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -95,7 +95,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test moment property
         """
-        test_value = 'dchibusvrcgtqanlphoa'
+        test_value = 'herjcehovylqwxgxhmzg'
         self.instance.moment = test_value
         self.assertEqual(self.instance.moment, test_value)
     
@@ -103,7 +103,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test co property
         """
-        test_value = int(40)
+        test_value = int(76)
         self.instance.co = test_value
         self.assertEqual(self.instance.co, test_value)
     
@@ -111,7 +111,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test no property
         """
-        test_value = int(34)
+        test_value = int(80)
         self.instance.no = test_value
         self.assertEqual(self.instance.no, test_value)
     
@@ -119,7 +119,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test no2 property
         """
-        test_value = int(12)
+        test_value = int(49)
         self.instance.no2 = test_value
         self.assertEqual(self.instance.no2, test_value)
     
@@ -127,7 +127,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test o3no2 property
         """
-        test_value = int(16)
+        test_value = int(72)
         self.instance.o3no2 = test_value
         self.assertEqual(self.instance.o3no2, test_value)
     
@@ -135,7 +135,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ppbno property
         """
-        test_value = float(44.734614817138116)
+        test_value = float(52.64969667866994)
         self.instance.ppbno = test_value
         self.assertEqual(self.instance.ppbno, test_value)
     
@@ -143,7 +143,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ppbno_statut property
         """
-        test_value = int(44)
+        test_value = int(10)
         self.instance.ppbno_statut = test_value
         self.assertEqual(self.instance.ppbno_statut, test_value)
     
@@ -151,7 +151,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ppbno2 property
         """
-        test_value = float(7.232074913561581)
+        test_value = float(71.51104336430745)
         self.instance.ppbno2 = test_value
         self.assertEqual(self.instance.ppbno2, test_value)
     
@@ -159,7 +159,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ppbno2_statut property
         """
-        test_value = int(93)
+        test_value = int(50)
         self.instance.ppbno2_statut = test_value
         self.assertEqual(self.instance.ppbno2_statut, test_value)
     
@@ -167,7 +167,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ppbo3 property
         """
-        test_value = float(74.51127606616244)
+        test_value = float(40.455050102339655)
         self.instance.ppbo3 = test_value
         self.assertEqual(self.instance.ppbo3, test_value)
     
@@ -175,7 +175,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ppbo3_statut property
         """
-        test_value = int(21)
+        test_value = int(68)
         self.instance.ppbo3_statut = test_value
         self.assertEqual(self.instance.ppbo3_statut, test_value)
     
@@ -183,7 +183,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ugpcmno property
         """
-        test_value = float(84.44686506945736)
+        test_value = float(81.45425151519696)
         self.instance.ugpcmno = test_value
         self.assertEqual(self.instance.ugpcmno, test_value)
     
@@ -191,7 +191,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ugpcmno_statut property
         """
-        test_value = int(81)
+        test_value = int(69)
         self.instance.ugpcmno_statut = test_value
         self.assertEqual(self.instance.ugpcmno_statut, test_value)
     
@@ -199,7 +199,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ugpcmno2 property
         """
-        test_value = float(72.99132450163421)
+        test_value = float(80.1577849376357)
         self.instance.ugpcmno2 = test_value
         self.assertEqual(self.instance.ugpcmno2, test_value)
     
@@ -207,7 +207,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ugpcmno2_statut property
         """
-        test_value = int(42)
+        test_value = int(91)
         self.instance.ugpcmno2_statut = test_value
         self.assertEqual(self.instance.ugpcmno2_statut, test_value)
     
@@ -215,7 +215,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ugpcmo3 property
         """
-        test_value = float(85.32440589530457)
+        test_value = float(91.72987191284605)
         self.instance.ugpcmo3 = test_value
         self.assertEqual(self.instance.ugpcmo3, test_value)
     
@@ -223,7 +223,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test ugpcmo3_statut property
         """
-        test_value = int(49)
+        test_value = int(26)
         self.instance.ugpcmo3_statut = test_value
         self.assertEqual(self.instance.ugpcmo3_statut, test_value)
     
@@ -231,7 +231,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test bme_t property
         """
-        test_value = float(0.36475030340782366)
+        test_value = float(40.983098164816035)
         self.instance.bme_t = test_value
         self.assertEqual(self.instance.bme_t, test_value)
     
@@ -239,7 +239,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test bme_t_statut property
         """
-        test_value = int(28)
+        test_value = int(69)
         self.instance.bme_t_statut = test_value
         self.assertEqual(self.instance.bme_t_statut, test_value)
     
@@ -247,7 +247,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test bme_pres property
         """
-        test_value = int(43)
+        test_value = int(35)
         self.instance.bme_pres = test_value
         self.assertEqual(self.instance.bme_pres, test_value)
     
@@ -255,7 +255,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test bme_pres_statut property
         """
-        test_value = int(41)
+        test_value = int(100)
         self.instance.bme_pres_statut = test_value
         self.assertEqual(self.instance.bme_pres_statut, test_value)
     
@@ -263,7 +263,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test bme_rh property
         """
-        test_value = float(30.380847360451966)
+        test_value = float(98.36196207249188)
         self.instance.bme_rh = test_value
         self.assertEqual(self.instance.bme_rh, test_value)
     
@@ -271,7 +271,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test bme_rh_statut property
         """
-        test_value = int(72)
+        test_value = int(38)
         self.instance.bme_rh_statut = test_value
         self.assertEqual(self.instance.bme_rh_statut, test_value)
     
@@ -279,7 +279,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm1 property
         """
-        test_value = float(47.97138726130357)
+        test_value = float(77.7163171438193)
         self.instance.pm1 = test_value
         self.assertEqual(self.instance.pm1, test_value)
     
@@ -287,7 +287,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm1_statut property
         """
-        test_value = int(35)
+        test_value = int(81)
         self.instance.pm1_statut = test_value
         self.assertEqual(self.instance.pm1_statut, test_value)
     
@@ -295,7 +295,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm25 property
         """
-        test_value = float(17.80467110854662)
+        test_value = float(67.03957309111462)
         self.instance.pm25 = test_value
         self.assertEqual(self.instance.pm25, test_value)
     
@@ -303,7 +303,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm25_statut property
         """
-        test_value = int(68)
+        test_value = int(87)
         self.instance.pm25_statut = test_value
         self.assertEqual(self.instance.pm25_statut, test_value)
     
@@ -311,7 +311,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm4 property
         """
-        test_value = float(47.735387559005204)
+        test_value = float(26.12133601843636)
         self.instance.pm4 = test_value
         self.assertEqual(self.instance.pm4, test_value)
     
@@ -319,7 +319,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm4_statut property
         """
-        test_value = int(18)
+        test_value = int(62)
         self.instance.pm4_statut = test_value
         self.assertEqual(self.instance.pm4_statut, test_value)
     
@@ -327,7 +327,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm10 property
         """
-        test_value = float(59.854711330113794)
+        test_value = float(87.12768402939724)
         self.instance.pm10 = test_value
         self.assertEqual(self.instance.pm10, test_value)
     
@@ -335,7 +335,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm10_statut property
         """
-        test_value = int(71)
+        test_value = int(68)
         self.instance.pm10_statut = test_value
         self.assertEqual(self.instance.pm10_statut, test_value)
     
@@ -343,7 +343,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test vbat property
         """
-        test_value = float(94.27714869301175)
+        test_value = float(86.20818188614055)
         self.instance.vbat = test_value
         self.assertEqual(self.instance.vbat, test_value)
     
@@ -351,7 +351,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test vbat_statut property
         """
-        test_value = int(78)
+        test_value = int(94)
         self.instance.vbat_statut = test_value
         self.assertEqual(self.instance.vbat_statut, test_value)
     
@@ -359,7 +359,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test mwh_bat property
         """
-        test_value = float(2.431951899230411)
+        test_value = float(13.562347610963421)
         self.instance.mwh_bat = test_value
         self.assertEqual(self.instance.mwh_bat, test_value)
     
@@ -367,7 +367,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test mwh_pv property
         """
-        test_value = float(62.67861435867768)
+        test_value = float(76.56206203898574)
         self.instance.mwh_pv = test_value
         self.assertEqual(self.instance.mwh_pv, test_value)
     
@@ -375,7 +375,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test co_rf property
         """
-        test_value = float(6.5313160107893005)
+        test_value = float(5.247244104611881)
         self.instance.co_rf = test_value
         self.assertEqual(self.instance.co_rf, test_value)
     
@@ -383,7 +383,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test no_rf property
         """
-        test_value = float(7.214222679055993)
+        test_value = float(87.0307633772953)
         self.instance.no_rf = test_value
         self.assertEqual(self.instance.no_rf, test_value)
     
@@ -391,7 +391,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test no2_rf property
         """
-        test_value = float(88.51154031804238)
+        test_value = float(18.851085418508816)
         self.instance.no2_rf = test_value
         self.assertEqual(self.instance.no2_rf, test_value)
     
@@ -399,7 +399,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test o3no2_rf property
         """
-        test_value = float(74.84603810215708)
+        test_value = float(86.91146946588508)
         self.instance.o3no2_rf = test_value
         self.assertEqual(self.instance.o3no2_rf, test_value)
     
@@ -407,7 +407,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test o3_rf property
         """
-        test_value = float(84.35992724972756)
+        test_value = float(21.757460803844587)
         self.instance.o3_rf = test_value
         self.assertEqual(self.instance.o3_rf, test_value)
     
@@ -415,7 +415,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test pm10_rf property
         """
-        test_value = float(26.56897316788802)
+        test_value = float(40.57455241865049)
         self.instance.pm10_rf = test_value
         self.assertEqual(self.instance.pm10_rf, test_value)
     

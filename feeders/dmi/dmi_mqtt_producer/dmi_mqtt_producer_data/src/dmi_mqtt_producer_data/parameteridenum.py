@@ -3,12 +3,43 @@ from enum import Enum
 
 class ParameterIdenum(Enum):
     """
-    One of sealev_dvr, sealev_ln, sea_reg, tw.
+    DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').
     """
-    sealev_dvr = 'sealev_dvr'
-    sealev_ln = 'sealev_ln'
-    sea_reg = 'sea_reg'
-    tw = 'tw'
+    temp_dry = 'temp_dry'
+    temp_dew = 'temp_dew'
+    temp_grass = 'temp_grass'
+    temp_soil_10cm = 'temp_soil_10cm'
+    temp_mean_past1h = 'temp_mean_past1h'
+    temp_max_past1h = 'temp_max_past1h'
+    temp_min_past1h = 'temp_min_past1h'
+    humidity = 'humidity'
+    humidity_past1h = 'humidity_past1h'
+    pressure = 'pressure'
+    pressure_at_sea = 'pressure_at_sea'
+    wind_dir = 'wind_dir'
+    wind_dir_past1h = 'wind_dir_past1h'
+    wind_speed = 'wind_speed'
+    wind_speed_past1h = 'wind_speed_past1h'
+    wind_max = 'wind_max'
+    wind_min = 'wind_min'
+    wind_max_per10min_past1h = 'wind_max_per10min_past1h'
+    wind_min_past1h = 'wind_min_past1h'
+    gust_always_past1h = 'gust_always_past1h'
+    precip_past1h = 'precip_past1h'
+    precip_past10min = 'precip_past10min'
+    precip_past24h = 'precip_past24h'
+    snow_depth_man = 'snow_depth_man'
+    snow_cover_man = 'snow_cover_man'
+    visibility = 'visibility'
+    visib_mean_last10min = 'visib_mean_last10min'
+    cloud_cover = 'cloud_cover'
+    cloud_height = 'cloud_height'
+    weather = 'weather'
+    leav_hum_dur_past10min = 'leav_hum_dur_past10min'
+    radia_glob = 'radia_glob'
+    radia_glob_past1h = 'radia_glob_past1h'
+    sun_last10min_glob = 'sun_last10min_glob'
+    sun_last1h_glob = 'sun_last1h_glob'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'ParameterIdenum':

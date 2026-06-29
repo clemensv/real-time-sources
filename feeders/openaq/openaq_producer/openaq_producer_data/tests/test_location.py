@@ -29,24 +29,24 @@ class Test_Location(unittest.TestCase):
         Create instance of Location for testing
         """
         instance = Location(
-            location_id=int(15),
-            name='koqrxbhwzjjwiakrizkt',
-            locality='cwpnlalrhgplodmjnyvf',
-            timezone='kxcrlydygngyiijlvtvs',
-            country_iso='xptebqjxrhrekhfbrcee',
-            country_name='voocgfhyibgscpomykth',
-            owner_id=int(81),
-            owner_name='xlwtoyysrzbwohqnakqn',
-            provider_id=int(59),
-            provider_name='zzcddaqwnqtcjnrrjajd',
-            is_mobile=True,
-            is_monitor=False,
-            latitude=float(22.564077837523467),
-            longitude=float(74.70415498878317),
+            location_id=int(35),
+            name='nxyfptmvfpwoviuhrqyw',
+            locality='okldlyvbgqhplnfhxume',
+            timezone='iugepbwsrhtfnqmxwmam',
+            country_iso='pekzyucpusponkjdwkez',
+            country_name='jgtobqoqyyrhxefoakus',
+            owner_id=int(69),
+            owner_name='yyymbclsjqadlpjhkrci',
+            provider_id=int(72),
+            provider_name='gtozbhknkmrcrjcdjxnw',
+            is_mobile=False,
+            is_monitor=True,
+            latitude=float(73.93926747561108),
+            longitude=float(76.02705086550195),
             datetime_first=datetime.datetime.now(datetime.timezone.utc),
             datetime_last=datetime.datetime.now(datetime.timezone.utc),
-            license='qdsqfnbywrobqxgpnmzn',
-            sensor_count=int(67)
+            license='ssaywrtkbspajmxtlyuf',
+            sensor_count=int(8)
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_Location(unittest.TestCase):
         """
         Test location_id property
         """
-        test_value = int(15)
+        test_value = int(35)
         self.instance.location_id = test_value
         self.assertEqual(self.instance.location_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_Location(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'koqrxbhwzjjwiakrizkt'
+        test_value = 'nxyfptmvfpwoviuhrqyw'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -71,7 +71,7 @@ class Test_Location(unittest.TestCase):
         """
         Test locality property
         """
-        test_value = 'cwpnlalrhgplodmjnyvf'
+        test_value = 'okldlyvbgqhplnfhxume'
         self.instance.locality = test_value
         self.assertEqual(self.instance.locality, test_value)
     
@@ -79,7 +79,7 @@ class Test_Location(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'kxcrlydygngyiijlvtvs'
+        test_value = 'iugepbwsrhtfnqmxwmam'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -87,7 +87,7 @@ class Test_Location(unittest.TestCase):
         """
         Test country_iso property
         """
-        test_value = 'xptebqjxrhrekhfbrcee'
+        test_value = 'pekzyucpusponkjdwkez'
         self.instance.country_iso = test_value
         self.assertEqual(self.instance.country_iso, test_value)
     
@@ -95,7 +95,7 @@ class Test_Location(unittest.TestCase):
         """
         Test country_name property
         """
-        test_value = 'voocgfhyibgscpomykth'
+        test_value = 'jgtobqoqyyrhxefoakus'
         self.instance.country_name = test_value
         self.assertEqual(self.instance.country_name, test_value)
     
@@ -103,7 +103,7 @@ class Test_Location(unittest.TestCase):
         """
         Test owner_id property
         """
-        test_value = int(81)
+        test_value = int(69)
         self.instance.owner_id = test_value
         self.assertEqual(self.instance.owner_id, test_value)
     
@@ -111,7 +111,7 @@ class Test_Location(unittest.TestCase):
         """
         Test owner_name property
         """
-        test_value = 'xlwtoyysrzbwohqnakqn'
+        test_value = 'yyymbclsjqadlpjhkrci'
         self.instance.owner_name = test_value
         self.assertEqual(self.instance.owner_name, test_value)
     
@@ -119,7 +119,7 @@ class Test_Location(unittest.TestCase):
         """
         Test provider_id property
         """
-        test_value = int(59)
+        test_value = int(72)
         self.instance.provider_id = test_value
         self.assertEqual(self.instance.provider_id, test_value)
     
@@ -127,7 +127,7 @@ class Test_Location(unittest.TestCase):
         """
         Test provider_name property
         """
-        test_value = 'zzcddaqwnqtcjnrrjajd'
+        test_value = 'gtozbhknkmrcrjcdjxnw'
         self.instance.provider_name = test_value
         self.assertEqual(self.instance.provider_name, test_value)
     
@@ -135,7 +135,7 @@ class Test_Location(unittest.TestCase):
         """
         Test is_mobile property
         """
-        test_value = True
+        test_value = False
         self.instance.is_mobile = test_value
         self.assertEqual(self.instance.is_mobile, test_value)
     
@@ -143,7 +143,7 @@ class Test_Location(unittest.TestCase):
         """
         Test is_monitor property
         """
-        test_value = False
+        test_value = True
         self.instance.is_monitor = test_value
         self.assertEqual(self.instance.is_monitor, test_value)
     
@@ -151,7 +151,7 @@ class Test_Location(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(22.564077837523467)
+        test_value = float(73.93926747561108)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -159,7 +159,7 @@ class Test_Location(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(74.70415498878317)
+        test_value = float(76.02705086550195)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -183,7 +183,7 @@ class Test_Location(unittest.TestCase):
         """
         Test license property
         """
-        test_value = 'qdsqfnbywrobqxgpnmzn'
+        test_value = 'ssaywrtkbspajmxtlyuf'
         self.instance.license = test_value
         self.assertEqual(self.instance.license, test_value)
     
@@ -191,7 +191,7 @@ class Test_Location(unittest.TestCase):
         """
         Test sensor_count property
         """
-        test_value = int(67)
+        test_value = int(8)
         self.instance.sensor_count = test_value
         self.assertEqual(self.instance.sensor_count, test_value)
     

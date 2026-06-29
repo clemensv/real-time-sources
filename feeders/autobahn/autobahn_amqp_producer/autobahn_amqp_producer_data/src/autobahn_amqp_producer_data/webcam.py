@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -195,24 +195,24 @@ class Webcam:
             An instance of the dataclass.
         """
         return cls(
-            identifier='ghfschmgiryavvndmpgb',
-            road='tjcznxeipylfzcgnugte',
-            road_ids=['yzkcdhwzbzsntmjrmutc', 'veznojsyxwkpebtysihm', 'rdkjqkqhxrapglgvqrsa'],
+            identifier='npllqolpbcygecyulwoz',
+            road='qtiksnupevfemgtokdig',
+            road_ids=['wqykwxtmimqngvwxlynm', 'gozftxqxfeofckyflkpb', 'bqhnfqlgfkysmhifrice', 'fbgyzckbpbqvtointwxu'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='mivlzmlxoxkcaynkivxt',
-            subtitle='enkkioaxzpxgosquzbqn',
+            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
+            title='pmitwvzvglymrydijqho',
+            subtitle='smmzcxmpftijyqcihnim',
             description_lines=None,
-            future=True,
-            is_blocked=False,
-            icon='ouwkcgcgqgdjgghpctio',
-            extent='cudiszgxdvalloqyusfa',
-            point='bmrtcpqbtrzxveqxokyc',
-            coordinate_lat=float(51.45984880835742),
-            coordinate_lon=float(25.431668374935988),
-            route_recommendation_json='gykjiykquapgzpdrrvwr',
+            future=False,
+            is_blocked=True,
+            icon='xolkporritdnnxjftwoa',
+            extent='buzppfbhwmktdgqhpbqw',
+            point='rizrxcosbopgdpmhvsfy',
+            coordinate_lat=float(21.69778877149198),
+            coordinate_lon=float(37.337992252727425),
+            route_recommendation_json='dwuwzemchrmhjioxmwsz',
             footer_lines=None,
-            operator_name='trogbumgscqofdwoikbl',
-            image_url='ugveqgkowtruzajoudrz',
-            stream_url='vnzaldzqolfepjetjtuc'
+            operator_name='zbrglanglpxxpljcxsgq',
+            image_url='fceejuwlpmvazbnmuroj',
+            stream_url='puykpswwramhditfxlym'
         )

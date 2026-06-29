@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table ['de.dwd.cdc.StationMetadata'] (
+.create-merge table [StationMetadata] (
    [station_id]: string,
    [station_name]: string,
    [latitude]: real,
@@ -41,9 +41,25 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.cdc.StationMetadata'] docstring "{\"description\": \"StationMetadata\"}";
+.alter table [StationMetadata] docstring @"{""description"": ""A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.""}";
 
-.create-or-alter table ['de.dwd.cdc.StationMetadata'] ingestion json mapping "de.dwd.cdc.StationMetadata_json_flat"
+.alter table [StationMetadata] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [station_name]: @"{""description"": ""Human-readable name of the station or monitoring site.""}",
+   [latitude]: @"{""description"": ""Latitude of the station or site in WGS 84 coordinates.""}",
+   [longitude]: @"{""description"": ""Longitude of the station or site in WGS 84 coordinates.""}",
+   [elevation]: @"{""description"": ""Elevation of the station above mean sea level or the provider datum.""}",
+   [state]: @"{""description"": ""State, province, or administrative region for the station or area.""}",
+   [from_date]: @"{""description"": ""Start date when the station, product, or metadata record is valid.""}",
+   [to_date]: @"{""description"": ""End date when the station, product, or metadata record is valid, when known.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [StationMetadata] ingestion json mapping "StationMetadata_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -58,11 +74,11 @@
   {"column": "elevation", "path": "$.elevation"},
   {"column": "state", "path": "$.state"},
   {"column": "from_date", "path": "$.from_date"},
-  {"column": "to_date", "path": "$.to_date"},
+  {"column": "to_date", "path": "$.to_date"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.cdc.StationMetadata'] ingestion json mapping "de.dwd.cdc.StationMetadata_json_ce_structured"
+.create-or-alter table [StationMetadata] ingestion json mapping "StationMetadata_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -77,28 +93,28 @@
   {"column": "elevation", "path": "$.data.elevation"},
   {"column": "state", "path": "$.data.state"},
   {"column": "from_date", "path": "$.data.from_date"},
-  {"column": "to_date", "path": "$.data.to_date"},
+  {"column": "to_date", "path": "$.data.to_date"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.cdc.StationMetadataLatest'] ifexists;
+.drop materialized-view StationMetadataLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.cdc.StationMetadataLatest'] on table ['de.dwd.cdc.StationMetadata'] {
-    ['de.dwd.cdc.StationMetadata'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) StationMetadataLatest on table StationMetadata {
+    StationMetadata | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.cdc.StationMetadata'] policy update
+.alter table [StationMetadata] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.StationMetadata') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toreal(data.['elevation']),['state'] = tostring(data.['state']),['from_date'] = tostring(data.['from_date']),['to_date'] = tostring(data.['to_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['de.dwd.cdc.AirTemperature10Min'] (
+.create-merge table [AirTemperature10Min] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
@@ -107,6 +123,7 @@
    [air_temperature_5cm]: real,
    [relative_humidity]: real,
    [dew_point_temperature]: real,
+   [state]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -114,9 +131,26 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.cdc.AirTemperature10Min'] docstring "{\"description\": \"AirTemperature10Min\"}";
+.alter table [AirTemperature10Min] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
 
-.create-or-alter table ['de.dwd.cdc.AirTemperature10Min'] ingestion json mapping "de.dwd.cdc.AirTemperature10Min_json_flat"
+.alter table [AirTemperature10Min] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the value.""}",
+   [quality_level]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [pressure_station_level]: @"{""description"": ""Reference details for a station, monitoring site, or reporting area in the DWD Weather source.""}",
+   [air_temperature_2m]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [air_temperature_5cm]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [relative_humidity]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [dew_point_temperature]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AirTemperature10Min] ingestion json mapping "AirTemperature10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -132,10 +166,11 @@
   {"column": "air_temperature_5cm", "path": "$.air_temperature_5cm"},
   {"column": "relative_humidity", "path": "$.relative_humidity"},
   {"column": "dew_point_temperature", "path": "$.dew_point_temperature"},
+  {"column": "state", "path": "$.state"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.cdc.AirTemperature10Min'] ingestion json mapping "de.dwd.cdc.AirTemperature10Min_json_ce_structured"
+.create-or-alter table [AirTemperature10Min] ingestion json mapping "AirTemperature10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -151,32 +186,34 @@
   {"column": "air_temperature_5cm", "path": "$.data.air_temperature_5cm"},
   {"column": "relative_humidity", "path": "$.data.relative_humidity"},
   {"column": "dew_point_temperature", "path": "$.data.dew_point_temperature"},
+  {"column": "state", "path": "$.data.state"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.cdc.AirTemperature10MinLatest'] ifexists;
+.drop materialized-view AirTemperature10MinLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.cdc.AirTemperature10MinLatest'] on table ['de.dwd.cdc.AirTemperature10Min'] {
-    ['de.dwd.cdc.AirTemperature10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) AirTemperature10MinLatest on table AirTemperature10Min {
+    AirTemperature10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.cdc.AirTemperature10Min'] policy update
+.alter table [AirTemperature10Min] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.AirTemperature10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['pressure_station_level'] = toreal(data.['pressure_station_level']),['air_temperature_2m'] = toreal(data.['air_temperature_2m']),['air_temperature_5cm'] = toreal(data.['air_temperature_5cm']),['relative_humidity'] = toreal(data.['relative_humidity']),['dew_point_temperature'] = toreal(data.['dew_point_temperature']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.AirTemperature10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['pressure_station_level'] = toreal(data.['pressure_station_level']),['air_temperature_2m'] = toreal(data.['air_temperature_2m']),['air_temperature_5cm'] = toreal(data.['air_temperature_5cm']),['relative_humidity'] = toreal(data.['relative_humidity']),['dew_point_temperature'] = toreal(data.['dew_point_temperature']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['de.dwd.cdc.Precipitation10Min'] (
+.create-merge table [Precipitation10Min] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
    [precipitation_height]: real,
    [precipitation_indicator]: int,
+   [state]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -184,9 +221,23 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.cdc.Precipitation10Min'] docstring "{\"description\": \"Precipitation10Min\"}";
+.alter table [Precipitation10Min] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
 
-.create-or-alter table ['de.dwd.cdc.Precipitation10Min'] ingestion json mapping "de.dwd.cdc.Precipitation10Min_json_flat"
+.alter table [Precipitation10Min] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the value.""}",
+   [quality_level]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [precipitation_height]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [precipitation_indicator]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Precipitation10Min] ingestion json mapping "Precipitation10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -199,10 +250,11 @@
   {"column": "quality_level", "path": "$.quality_level"},
   {"column": "precipitation_height", "path": "$.precipitation_height"},
   {"column": "precipitation_indicator", "path": "$.precipitation_indicator"},
+  {"column": "state", "path": "$.state"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.cdc.Precipitation10Min'] ingestion json mapping "de.dwd.cdc.Precipitation10Min_json_ce_structured"
+.create-or-alter table [Precipitation10Min] ingestion json mapping "Precipitation10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -215,32 +267,34 @@
   {"column": "quality_level", "path": "$.data.quality_level"},
   {"column": "precipitation_height", "path": "$.data.precipitation_height"},
   {"column": "precipitation_indicator", "path": "$.data.precipitation_indicator"},
+  {"column": "state", "path": "$.data.state"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.cdc.Precipitation10MinLatest'] ifexists;
+.drop materialized-view Precipitation10MinLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.cdc.Precipitation10MinLatest'] on table ['de.dwd.cdc.Precipitation10Min'] {
-    ['de.dwd.cdc.Precipitation10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) Precipitation10MinLatest on table Precipitation10Min {
+    Precipitation10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.cdc.Precipitation10Min'] policy update
+.alter table [Precipitation10Min] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Precipitation10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['precipitation_height'] = toreal(data.['precipitation_height']),['precipitation_indicator'] = toint(data.['precipitation_indicator']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Precipitation10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['precipitation_height'] = toreal(data.['precipitation_height']),['precipitation_indicator'] = toint(data.['precipitation_indicator']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['de.dwd.cdc.Wind10Min'] (
+.create-merge table [Wind10Min] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
    [wind_speed]: real,
    [wind_direction]: real,
+   [state]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -248,9 +302,23 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.cdc.Wind10Min'] docstring "{\"description\": \"Wind10Min\"}";
+.alter table [Wind10Min] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
 
-.create-or-alter table ['de.dwd.cdc.Wind10Min'] ingestion json mapping "de.dwd.cdc.Wind10Min_json_flat"
+.alter table [Wind10Min] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the value.""}",
+   [quality_level]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [wind_speed]: @"{""description"": ""Wind speed reported by the station.""}",
+   [wind_direction]: @"{""description"": ""Wind direction reported by the station.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Wind10Min] ingestion json mapping "Wind10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -263,10 +331,11 @@
   {"column": "quality_level", "path": "$.quality_level"},
   {"column": "wind_speed", "path": "$.wind_speed"},
   {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "state", "path": "$.state"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.cdc.Wind10Min'] ingestion json mapping "de.dwd.cdc.Wind10Min_json_ce_structured"
+.create-or-alter table [Wind10Min] ingestion json mapping "Wind10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -279,27 +348,28 @@
   {"column": "quality_level", "path": "$.data.quality_level"},
   {"column": "wind_speed", "path": "$.data.wind_speed"},
   {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "state", "path": "$.data.state"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.cdc.Wind10MinLatest'] ifexists;
+.drop materialized-view Wind10MinLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.cdc.Wind10MinLatest'] on table ['de.dwd.cdc.Wind10Min'] {
-    ['de.dwd.cdc.Wind10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) Wind10MinLatest on table Wind10Min {
+    Wind10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.cdc.Wind10Min'] policy update
+.alter table [Wind10Min] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Wind10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['wind_speed'] = toreal(data.['wind_speed']),['wind_direction'] = toreal(data.['wind_direction']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Wind10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['wind_speed'] = toreal(data.['wind_speed']),['wind_direction'] = toreal(data.['wind_direction']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['de.dwd.cdc.Solar10Min'] (
+.create-merge table [Solar10Min] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
@@ -307,6 +377,7 @@
    [sunshine_duration]: real,
    [diffuse_radiation]: real,
    [longwave_radiation]: real,
+   [state]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -314,9 +385,25 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.cdc.Solar10Min'] docstring "{\"description\": \"Solar10Min\"}";
+.alter table [Solar10Min] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
 
-.create-or-alter table ['de.dwd.cdc.Solar10Min'] ingestion json mapping "de.dwd.cdc.Solar10Min_json_flat"
+.alter table [Solar10Min] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the value.""}",
+   [quality_level]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [global_radiation]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [sunshine_duration]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [diffuse_radiation]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [longwave_radiation]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Solar10Min] ingestion json mapping "Solar10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -331,10 +418,11 @@
   {"column": "sunshine_duration", "path": "$.sunshine_duration"},
   {"column": "diffuse_radiation", "path": "$.diffuse_radiation"},
   {"column": "longwave_radiation", "path": "$.longwave_radiation"},
+  {"column": "state", "path": "$.state"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.cdc.Solar10Min'] ingestion json mapping "de.dwd.cdc.Solar10Min_json_ce_structured"
+.create-or-alter table [Solar10Min] ingestion json mapping "Solar10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -349,33 +437,35 @@
   {"column": "sunshine_duration", "path": "$.data.sunshine_duration"},
   {"column": "diffuse_radiation", "path": "$.data.diffuse_radiation"},
   {"column": "longwave_radiation", "path": "$.data.longwave_radiation"},
+  {"column": "state", "path": "$.data.state"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.cdc.Solar10MinLatest'] ifexists;
+.drop materialized-view Solar10MinLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.cdc.Solar10MinLatest'] on table ['de.dwd.cdc.Solar10Min'] {
-    ['de.dwd.cdc.Solar10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) Solar10MinLatest on table Solar10Min {
+    Solar10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.cdc.Solar10Min'] policy update
+.alter table [Solar10Min] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Solar10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['global_radiation'] = toreal(data.['global_radiation']),['sunshine_duration'] = toreal(data.['sunshine_duration']),['diffuse_radiation'] = toreal(data.['diffuse_radiation']),['longwave_radiation'] = toreal(data.['longwave_radiation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Solar10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['global_radiation'] = toreal(data.['global_radiation']),['sunshine_duration'] = toreal(data.['sunshine_duration']),['diffuse_radiation'] = toreal(data.['diffuse_radiation']),['longwave_radiation'] = toreal(data.['longwave_radiation']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['de.dwd.cdc.HourlyObservation'] (
+.create-merge table [HourlyObservation] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
    [parameter]: string,
    [value]: real,
    [unit]: string,
+   [state]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -383,9 +473,24 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.cdc.HourlyObservation'] docstring "{\"description\": \"HourlyObservation\"}";
+.alter table [HourlyObservation] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
 
-.create-or-alter table ['de.dwd.cdc.HourlyObservation'] ingestion json mapping "de.dwd.cdc.HourlyObservation_json_flat"
+.alter table [HourlyObservation] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the value.""}",
+   [quality_level]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [parameter]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [value]: @"{""description"": ""Measured or forecast value reported by the upstream provider.""}",
+   [unit]: @"{""description"": ""Unit used for the reported value.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [HourlyObservation] ingestion json mapping "HourlyObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -399,10 +504,11 @@
   {"column": "parameter", "path": "$.parameter"},
   {"column": "value", "path": "$.value"},
   {"column": "unit", "path": "$.unit"},
+  {"column": "state", "path": "$.state"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.cdc.HourlyObservation'] ingestion json mapping "de.dwd.cdc.HourlyObservation_json_ce_structured"
+.create-or-alter table [HourlyObservation] ingestion json mapping "HourlyObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -416,27 +522,194 @@
   {"column": "parameter", "path": "$.data.parameter"},
   {"column": "value", "path": "$.data.value"},
   {"column": "unit", "path": "$.data.unit"},
+  {"column": "state", "path": "$.data.state"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.cdc.HourlyObservationLatest'] ifexists;
+.drop materialized-view HourlyObservationLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.cdc.HourlyObservationLatest'] on table ['de.dwd.cdc.HourlyObservation'] {
-    ['de.dwd.cdc.HourlyObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) HourlyObservationLatest on table HourlyObservation {
+    HourlyObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.cdc.HourlyObservation'] policy update
+.alter table [HourlyObservation] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.HourlyObservation') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['parameter'] = tostring(data.['parameter']),['value'] = toreal(data.['value']),['unit'] = tostring(data.['unit']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.HourlyObservation') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['parameter'] = tostring(data.['parameter']),['value'] = toreal(data.['value']),['unit'] = tostring(data.['unit']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['de.dwd.weather.Alert'] (
+.create-merge table [ExtremeWind10Min] (
+   [station_id]: string,
+   [timestamp]: string,
+   [quality_level]: int,
+   [wind_speed_maximum]: real,
+   [wind_speed_minimum]: real,
+   [wind_direction_at_maximum]: real,
+   [state]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ExtremeWind10Min] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
+
+.alter table [ExtremeWind10Min] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the value.""}",
+   [quality_level]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [wind_speed_maximum]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [wind_speed_minimum]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [wind_direction_at_maximum]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ExtremeWind10Min] ingestion json mapping "ExtremeWind10Min_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "quality_level", "path": "$.quality_level"},
+  {"column": "wind_speed_maximum", "path": "$.wind_speed_maximum"},
+  {"column": "wind_speed_minimum", "path": "$.wind_speed_minimum"},
+  {"column": "wind_direction_at_maximum", "path": "$.wind_direction_at_maximum"},
+  {"column": "state", "path": "$.state"}
+]
+```
+
+.create-or-alter table [ExtremeWind10Min] ingestion json mapping "ExtremeWind10Min_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "quality_level", "path": "$.data.quality_level"},
+  {"column": "wind_speed_maximum", "path": "$.data.wind_speed_maximum"},
+  {"column": "wind_speed_minimum", "path": "$.data.wind_speed_minimum"},
+  {"column": "wind_direction_at_maximum", "path": "$.data.wind_direction_at_maximum"},
+  {"column": "state", "path": "$.data.state"}
+]
+```
+
+.drop materialized-view ExtremeWind10MinLatest ifexists;
+
+.create materialized-view with (backfill=true) ExtremeWind10MinLatest on table ExtremeWind10Min {
+    ExtremeWind10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ExtremeWind10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.ExtremeWind10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['wind_speed_maximum'] = toreal(data.['wind_speed_maximum']),['wind_speed_minimum'] = toreal(data.['wind_speed_minimum']),['wind_direction_at_maximum'] = toreal(data.['wind_direction_at_maximum']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [ExtremeTemperature10Min] (
+   [station_id]: string,
+   [timestamp]: string,
+   [quality_level]: int,
+   [air_temperature_maximum_2m]: real,
+   [air_temperature_minimum_5cm]: real,
+   [state]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ExtremeTemperature10Min] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
+
+.alter table [ExtremeTemperature10Min] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the station or monitoring site.""}",
+   [timestamp]: @"{""description"": ""Time when the provider recorded or published the value.""}",
+   [quality_level]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [air_temperature_maximum_2m]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [air_temperature_minimum_5cm]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ExtremeTemperature10Min] ingestion json mapping "ExtremeTemperature10Min_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "quality_level", "path": "$.quality_level"},
+  {"column": "air_temperature_maximum_2m", "path": "$.air_temperature_maximum_2m"},
+  {"column": "air_temperature_minimum_5cm", "path": "$.air_temperature_minimum_5cm"},
+  {"column": "state", "path": "$.state"}
+]
+```
+
+.create-or-alter table [ExtremeTemperature10Min] ingestion json mapping "ExtremeTemperature10Min_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "quality_level", "path": "$.data.quality_level"},
+  {"column": "air_temperature_maximum_2m", "path": "$.data.air_temperature_maximum_2m"},
+  {"column": "air_temperature_minimum_5cm", "path": "$.data.air_temperature_minimum_5cm"},
+  {"column": "state", "path": "$.data.state"}
+]
+```
+
+.drop materialized-view ExtremeTemperature10MinLatest ifexists;
+
+.create materialized-view with (backfill=true) ExtremeTemperature10MinLatest on table ExtremeTemperature10Min {
+    ExtremeTemperature10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ExtremeTemperature10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.ExtremeTemperature10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['air_temperature_maximum_2m'] = toreal(data.['air_temperature_maximum_2m']),['air_temperature_minimum_5cm'] = toreal(data.['air_temperature_minimum_5cm']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [Alert] (
    [identifier]: string,
    [sender]: string,
    [sent]: string,
@@ -453,6 +726,7 @@
    [expires]: string,
    [area_desc]: string,
    [geocodes]: string,
+   [state]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -460,9 +734,34 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.weather.Alert'] docstring "{\"description\": \"Alert\"}";
+.alter table [Alert] docstring @"{""description"": ""A weather or environmental alert from Germany's Deutscher Wetterdienst (DWD). It fires when the upstream source publishes or updates a warning that may affect the covered area.""}";
 
-.create-or-alter table ['de.dwd.weather.Alert'] ingestion json mapping "de.dwd.weather.Alert_json_flat"
+.alter table [Alert] column-docstrings (
+   [identifier]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [sender]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [sent]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [status]: @"{""description"": ""Provider status value for the station, product, warning, or measurement.""}",
+   [msg_type]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [severity]: @"{""description"": ""Provider severity level for a warning or alert.""}",
+   [urgency]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [certainty]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [event]: @"{""description"": ""Provider event type, warning type, or product event category.""}",
+   [headline]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [description]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [effective]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [onset]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [expires]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [area_desc]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [geocodes]: @"{""description"": ""Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Alert] ingestion json mapping "Alert_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -486,10 +785,11 @@
   {"column": "expires", "path": "$.expires"},
   {"column": "area_desc", "path": "$.area_desc"},
   {"column": "geocodes", "path": "$.geocodes"},
+  {"column": "state", "path": "$.state"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.weather.Alert'] ingestion json mapping "de.dwd.weather.Alert_json_ce_structured"
+.create-or-alter table [Alert] ingestion json mapping "Alert_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -513,43 +813,33 @@
   {"column": "expires", "path": "$.data.expires"},
   {"column": "area_desc", "path": "$.data.area_desc"},
   {"column": "geocodes", "path": "$.data.geocodes"},
+  {"column": "state", "path": "$.data.state"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.weather.AlertLatest'] ifexists;
+.drop materialized-view AlertLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.weather.AlertLatest'] on table ['de.dwd.weather.Alert'] {
-    ['de.dwd.weather.Alert'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) AlertLatest on table Alert {
+    Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.weather.Alert'] policy update
+.alter table [Alert] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Weather.Alert') | project['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = tostring(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['event'] = tostring(data.['event']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['effective'] = tostring(data.['effective']),['onset'] = tostring(data.['onset']),['expires'] = tostring(data.['expires']),['area_desc'] = tostring(data.['area_desc']),['geocodes'] = tostring(data.['geocodes']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Weather.Alert') | project['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = tostring(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['event'] = tostring(data.['event']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['effective'] = tostring(data.['effective']),['onset'] = tostring(data.['onset']),['expires'] = tostring(data.['expires']),['area_desc'] = tostring(data.['area_desc']),['geocodes'] = tostring(data.['geocodes']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['de.dwd.icond2.Grid'] (
-   [run_id]: string,
-   [run_time]: string,
-   [parameter]: string,
-   [unit]: string,
-   [lead_hour]: int,
-   [valid_time]: string,
-   [produced_at]: string,
-   [source_url]: string,
-   [resolution_deg]: real,
-   [bbox_min_lon]: real,
-   [bbox_min_lat]: real,
-   [bbox_max_lon]: real,
-   [bbox_max_lat]: real,
-   [lats]: dynamic,
-   [lons]: dynamic,
-   [values]: dynamic,
+.create-merge table [RadarProductCatalog] (
+   [product]: string,
+   [file_url]: string,
+   [description]: string,
+   [state]: string,
+   [kind]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -557,25 +847,14 @@
    [___subject]: string
 );
 
-.alter table ['de.dwd.icond2.Grid'] docstring "{\"description\": \"An ICON-D2 forecast grid for one model run, one parameter, and one lead hour. Values are pre-aggregated to a regular 0.1 degree lat/lon grid by area mean over the source ICON triangular cells. The lats/lons/values arrays have the same length and are aligned by index: cell i has coordinates (lats[i], lons[i]) and value values[i].\"}";
+.alter table [RadarProductCatalog] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
 
-.alter table ['de.dwd.icond2.Grid'] column-docstrings (
-   [run_id]: "{\"description\": \"Compact run identifier in the form YYYYMMDDHH (UTC). Used in Kafka subject and source URL.\"}",
-   [run_time]: "{\"description\": \"Model initialization time in ISO 8601 UTC, e.g. 2026-05-18T00:00:00Z.\"}",
-   [parameter]: "{\"description\": \"DWD short name of the ICON-D2 parameter, e.g. t_2m, tot_prec, vmax_10m, clct, cape_ml, dbz_cmax, pmsl, h_snow.\"}",
-   [unit]: "{\"description\": \"Unit of the values array after bridge-side conversion (e.g. degC, mm, m/s, %, J/kg, dBZ, hPa, m).\"}",
-   [lead_hour]: "{\"description\": \"Forecast lead time in hours from run_time. ICON-D2 publishes 0..48 inclusive.\"}",
-   [valid_time]: "{\"description\": \"ISO 8601 UTC datetime to which the forecast applies = run_time + lead_hour hours.\"}",
-   [produced_at]: "{\"description\": \"ISO 8601 UTC datetime at which the bridge emitted this event.\"}",
-   [source_url]: "{\"description\": \"Fully qualified URL of the upstream GRIB2.bz2 file from which this grid was decoded.\"}",
-   [resolution_deg]: "{\"description\": \"Cell side length in degrees of the regular lat/lon aggregation grid (e.g. 0.1).\"}",
-   [bbox_min_lon]: "{\"description\": \"Minimum longitude of the aggregation bounding box.\"}",
-   [bbox_min_lat]: "{\"description\": \"Minimum latitude of the aggregation bounding box.\"}",
-   [bbox_max_lon]: "{\"description\": \"Maximum longitude of the aggregation bounding box.\"}",
-   [bbox_max_lat]: "{\"description\": \"Maximum latitude of the aggregation bounding box.\"}",
-   [lats]: "{\"description\": \"Cell centre latitudes in degrees north, aligned by index with lons[] and values[].\", \"schema\": {\"type\": \"array\", \"description\": \"Cell centre latitudes in degrees north, aligned by index with lons[] and values[].\", \"items\": {\"type\": \"double\", \"unit\": \"degree\", \"symbol\": \"deg\"}}}",
-   [lons]: "{\"description\": \"Cell centre longitudes in degrees east, aligned by index with lats[] and values[].\", \"schema\": {\"type\": \"array\", \"description\": \"Cell centre longitudes in degrees east, aligned by index with lats[] and values[].\", \"items\": {\"type\": \"double\", \"unit\": \"degree\", \"symbol\": \"deg\"}}}",
-   [values]: "{\"description\": \"Parameter values in the unit advertised by `unit`, aligned by index with lats[] and lons[]. Missing cells are omitted from all three arrays.\", \"schema\": {\"type\": \"array\", \"description\": \"Parameter values in the unit advertised by `unit`, aligned by index with lats[] and lons[]. Missing cells are omitted from all three arrays.\", \"items\": {\"type\": \"double\"}}}",
+.alter table [RadarProductCatalog] column-docstrings (
+   [product]: @"{""description"": ""Short identifier of the DWD radar composite product family (for example 'wn', 'rv', 'rs', 'dmax', 'hg', 'hx', 'pg', 'vii', 'hymecng'). Derived from the first-level directory name under https://opendata.dwd.de/weather/radar/composite/. All RadarFileProduct events for files inside this directory carry the same product value.""}",
+   [file_url]: @"{""description"": ""Absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing, so consumers can enumerate current and historical product files without credentials. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/'.""}",
+   [description]: @"{""description"": ""Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [kind]: @"{""description"": ""Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -583,7 +862,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['de.dwd.icond2.Grid'] ingestion json mapping "de.dwd.icond2.Grid_json_flat"
+.create-or-alter table [RadarProductCatalog] ingestion json mapping "RadarProductCatalog_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -591,26 +870,15 @@
   {"column": "___id", "path": "$.id"},
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
-  {"column": "run_id", "path": "$.run_id"},
-  {"column": "run_time", "path": "$.run_time"},
-  {"column": "parameter", "path": "$.parameter"},
-  {"column": "unit", "path": "$.unit"},
-  {"column": "lead_hour", "path": "$.lead_hour"},
-  {"column": "valid_time", "path": "$.valid_time"},
-  {"column": "produced_at", "path": "$.produced_at"},
-  {"column": "source_url", "path": "$.source_url"},
-  {"column": "resolution_deg", "path": "$.resolution_deg"},
-  {"column": "bbox_min_lon", "path": "$.bbox_min_lon"},
-  {"column": "bbox_min_lat", "path": "$.bbox_min_lat"},
-  {"column": "bbox_max_lon", "path": "$.bbox_max_lon"},
-  {"column": "bbox_max_lat", "path": "$.bbox_max_lat"},
-  {"column": "lats", "path": "$.lats"},
-  {"column": "lons", "path": "$.lons"},
-  {"column": "values", "path": "$.values"},
+  {"column": "product", "path": "$.product"},
+  {"column": "file_url", "path": "$.file_url"},
+  {"column": "description", "path": "$.description"},
+  {"column": "state", "path": "$.state"},
+  {"column": "kind", "path": "$.kind"}
 ]
 ```
 
-.create-or-alter table ['de.dwd.icond2.Grid'] ingestion json mapping "de.dwd.icond2.Grid_json_ce_structured"
+.create-or-alter table [RadarProductCatalog] ingestion json mapping "RadarProductCatalog_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -618,39 +886,303 @@
   {"column": "___id", "path": "$.id"},
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
-  {"column": "run_id", "path": "$.data.run_id"},
-  {"column": "run_time", "path": "$.data.run_time"},
-  {"column": "parameter", "path": "$.data.parameter"},
-  {"column": "unit", "path": "$.data.unit"},
-  {"column": "lead_hour", "path": "$.data.lead_hour"},
-  {"column": "valid_time", "path": "$.data.valid_time"},
-  {"column": "produced_at", "path": "$.data.produced_at"},
-  {"column": "source_url", "path": "$.data.source_url"},
-  {"column": "resolution_deg", "path": "$.data.resolution_deg"},
-  {"column": "bbox_min_lon", "path": "$.data.bbox_min_lon"},
-  {"column": "bbox_min_lat", "path": "$.data.bbox_min_lat"},
-  {"column": "bbox_max_lon", "path": "$.data.bbox_max_lon"},
-  {"column": "bbox_max_lat", "path": "$.data.bbox_max_lat"},
-  {"column": "lats", "path": "$.data.lats"},
-  {"column": "lons", "path": "$.data.lons"},
-  {"column": "values", "path": "$.data.values"},
+  {"column": "product", "path": "$.data.product"},
+  {"column": "file_url", "path": "$.data.file_url"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "kind", "path": "$.data.kind"}
 ]
 ```
 
-.drop materialized-view ['de.dwd.icond2.GridLatest'] ifexists;
+.drop materialized-view RadarProductCatalogLatest ifexists;
 
-.create materialized-view with (backfill=true) ['de.dwd.icond2.GridLatest'] on table ['de.dwd.icond2.Grid'] {
-    ['de.dwd.icond2.Grid'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) RadarProductCatalogLatest on table RadarProductCatalog {
+    RadarProductCatalog | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['de.dwd.icond2.Grid'] policy update
+.alter table [RadarProductCatalog] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.IconD2.Grid') | project['run_id'] = tostring(data.['run_id']),['run_time'] = tostring(data.['run_time']),['parameter'] = tostring(data.['parameter']),['unit'] = tostring(data.['unit']),['lead_hour'] = toint(data.['lead_hour']),['valid_time'] = tostring(data.['valid_time']),['produced_at'] = tostring(data.['produced_at']),['source_url'] = tostring(data.['source_url']),['resolution_deg'] = toreal(data.['resolution_deg']),['bbox_min_lon'] = toreal(data.['bbox_min_lon']),['bbox_min_lat'] = toreal(data.['bbox_min_lat']),['bbox_max_lon'] = toreal(data.['bbox_max_lon']),['bbox_max_lat'] = toreal(data.['bbox_max_lat']),['lats'] = todynamic(data.['lats']),['lons'] = todynamic(data.['lons']),['values'] = todynamic(data.['values']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Radar.RadarProductCatalog') | project['product'] = tostring(data.['product']),['file_url'] = tostring(data.['file_url']),['description'] = tostring(data.['description']),['state'] = tostring(data.['state']),['kind'] = tostring(data.['kind']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [RadarFileProduct] (
+   [file_url]: string,
+   [product]: string,
+   [file_name]: string,
+   [modified]: string,
+   [size_bytes]: long,
+   [file_id]: string,
+   [state]: string,
+   [product_type]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RadarFileProduct] docstring @"{""description"": ""A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.""}";
+
+.alter table [RadarFileProduct] column-docstrings (
+   [file_url]: @"{""description"": ""Absolute HTTPS URL of a single DWD radar product file on the DWD Open Data server. The URL is publicly fetchable with an unauthenticated HTTP GET and supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event by performing a plain GET against this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key, which guarantees per-file ordering. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/composite_wn_20260517_2005-hd5'.""}",
+   [product]: @"{""description"": ""Short identifier of the radar product family this file belongs to (for example 'wn', 'rv', 'dmax'); matches the 'product' field of the corresponding RadarProductCatalog event.""}",
+   [file_name]: @"{""description"": ""Bare file name (no directory component) as listed in the DWD Apache directory index. Convenient for parsing the embedded product code and observation timestamp without having to split file_url.""}",
+   [modified]: @"{""description"": ""Upstream Last-Modified timestamp of the file as reported by the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new RadarFileProduct event whenever this value changes for a known file_url, so consumers can use it for change detection and de-duplication.""}",
+   [size_bytes]: @"{""description"": ""File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites).""}",
+   [file_id]: @"{""description"": ""Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [product_type]: @"{""description"": ""Normalized routing field 'product_type' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RadarFileProduct] ingestion json mapping "RadarFileProduct_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "file_url", "path": "$.file_url"},
+  {"column": "product", "path": "$.product"},
+  {"column": "file_name", "path": "$.file_name"},
+  {"column": "modified", "path": "$.modified"},
+  {"column": "size_bytes", "path": "$.size_bytes"},
+  {"column": "file_id", "path": "$.file_id"},
+  {"column": "state", "path": "$.state"},
+  {"column": "product_type", "path": "$.product_type"}
+]
+```
+
+.create-or-alter table [RadarFileProduct] ingestion json mapping "RadarFileProduct_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "file_url", "path": "$.data.file_url"},
+  {"column": "product", "path": "$.data.product"},
+  {"column": "file_name", "path": "$.data.file_name"},
+  {"column": "modified", "path": "$.data.modified"},
+  {"column": "size_bytes", "path": "$.data.size_bytes"},
+  {"column": "file_id", "path": "$.data.file_id"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "product_type", "path": "$.data.product_type"}
+]
+```
+
+.drop materialized-view RadarFileProductLatest ifexists;
+
+.create materialized-view with (backfill=true) RadarFileProductLatest on table RadarFileProduct {
+    RadarFileProduct | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RadarFileProduct] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Radar.RadarFileProduct') | project['file_url'] = tostring(data.['file_url']),['product'] = tostring(data.['product']),['file_name'] = tostring(data.['file_name']),['modified'] = tostring(data.['modified']),['size_bytes'] = tolong(data.['size_bytes']),['file_id'] = tostring(data.['file_id']),['state'] = tostring(data.['state']),['product_type'] = tostring(data.['product_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [ForecastModelCatalog] (
+   [model]: string,
+   [file_url]: string,
+   [description]: string,
+   [state]: string,
+   [kind]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ForecastModelCatalog] docstring @"{""description"": ""A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.""}";
+
+.alter table [ForecastModelCatalog] column-docstrings (
+   [model]: @"{""description"": ""Identifier of the numerical weather prediction (NWP) model. For this bridge release the value is 'icon-d2', referring to the DWD ICON-D2 convection-permitting regional model covering Germany and surrounding areas with ~2 km horizontal resolution and forecast lead times up to 48 hours.""}",
+   [file_url]: @"{""description"": ""Absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing. Run-hour subdirectories (e.g. '00/', '03/', '06/', ...) and per-variable subdirectories live below this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'.""}",
+   [description]: @"{""description"": ""Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [kind]: @"{""description"": ""Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ForecastModelCatalog] ingestion json mapping "ForecastModelCatalog_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "model", "path": "$.model"},
+  {"column": "file_url", "path": "$.file_url"},
+  {"column": "description", "path": "$.description"},
+  {"column": "state", "path": "$.state"},
+  {"column": "kind", "path": "$.kind"}
+]
+```
+
+.create-or-alter table [ForecastModelCatalog] ingestion json mapping "ForecastModelCatalog_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "model", "path": "$.data.model"},
+  {"column": "file_url", "path": "$.data.file_url"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "kind", "path": "$.data.kind"}
+]
+```
+
+.drop materialized-view ForecastModelCatalogLatest ifexists;
+
+.create materialized-view with (backfill=true) ForecastModelCatalogLatest on table ForecastModelCatalog {
+    ForecastModelCatalog | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ForecastModelCatalog] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Forecast.ForecastModelCatalog') | project['model'] = tostring(data.['model']),['file_url'] = tostring(data.['file_url']),['description'] = tostring(data.['description']),['state'] = tostring(data.['state']),['kind'] = tostring(data.['kind']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [IconD2ForecastFile] (
+   [file_url]: string,
+   [model]: string,
+   [file_name]: string,
+   [run]: string,
+   [forecast_hour]: int,
+   [parameter]: string,
+   [level_type]: string,
+   [level]: string,
+   [modified]: string,
+   [size_bytes]: long,
+   [state]: string,
+   [variable]: string,
+   [file_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [IconD2ForecastFile] docstring @"{""description"": ""A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.""}";
+
+.alter table [IconD2ForecastFile] column-docstrings (
+   [file_url]: @"{""description"": ""Absolute HTTPS URL of a single ICON-D2 GRIB2 forecast file on the DWD Open Data server. The file is bzip2-compressed GRIB2 (.grib2.bz2) and can be fetched with an unauthenticated HTTP GET; the server supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event with a plain GET against this URL. Each file holds a single variable at a single vertical level for a single forecast lead hour, which keeps per-file payloads small (typically a few hundred KB compressed). Also used verbatim as the CloudEvents 'subject' and the Kafka partition key. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t/icon-d2_germany_icosahedral_model-level_2026051700_003_10_t.grib2.bz2'.""}",
+   [model]: @"{""description"": ""Identifier of the source forecast model; matches the 'model' field of the corresponding ForecastModelCatalog event. Currently always 'icon-d2'.""}",
+   [file_name]: @"{""description"": ""Bare file name as listed in the DWD Apache directory index, following the DWD convention 'icon-d2_<grid>_<level_type>_<run>_<lead>_<level>_<parameter>.grib2.bz2'. Convenient for parsing without splitting file_url.""}",
+   [run]: @"{""description"": ""Model run cycle in 'YYYYMMDDHH' UTC form, parsed from file_name (e.g. '2026051700' for the 00 UTC run on 2026-05-17). ICON-D2 is run every three hours. Null when the file name does not match the expected pattern (for example time-invariant or auxiliary files).""}",
+   [forecast_hour]: @"{""description"": ""Forecast lead time in whole hours from the start of the run, parsed from file_name. For ICON-D2 this ranges from 0 to 48. Null when the file name does not match the expected pattern.""}",
+   [parameter]: @"{""description"": ""Short ICON-D2 parameter identifier parsed from file_name (for example 't' for temperature, 'u'/'v' for wind components, 'tot_prec' for total precipitation, 'clct' for total cloud cover, 'alb_rad' for shortwave albedo).""}",
+   [level_type]: @"{""description"": ""Vertical level encoding parsed from file_name. Common values are 'single-level' (surface and 2D fields), 'model-level' (native ICON hybrid levels indexed 1..65 from top to bottom), 'pressure-level' (interpolated to fixed pressure surfaces, in hPa), and 'time-invariant' (constant fields such as orography).""}",
+   [level]: @"{""description"": ""Vertical level value token parsed from file_name. The interpretation depends on level_type: model-level uses an integer level index, pressure-level uses pressure in hPa, single-level may carry a short surface tag or be omitted.""}",
+   [modified]: @"{""description"": ""Upstream Last-Modified timestamp from the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new IconD2ForecastFile event whenever this value changes for a known file_url, enabling change detection and de-duplication.""}",
+   [size_bytes]: @"{""description"": ""File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed.""}",
+   [state]: @"{""description"": ""Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.""}",
+   [variable]: @"{""description"": ""Normalized routing field 'variable' added for MQTT/AMQP subscriber filtering.""}",
+   [file_id]: @"{""description"": ""Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [IconD2ForecastFile] ingestion json mapping "IconD2ForecastFile_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "file_url", "path": "$.file_url"},
+  {"column": "model", "path": "$.model"},
+  {"column": "file_name", "path": "$.file_name"},
+  {"column": "run", "path": "$.run"},
+  {"column": "forecast_hour", "path": "$.forecast_hour"},
+  {"column": "parameter", "path": "$.parameter"},
+  {"column": "level_type", "path": "$.level_type"},
+  {"column": "level", "path": "$.level"},
+  {"column": "modified", "path": "$.modified"},
+  {"column": "size_bytes", "path": "$.size_bytes"},
+  {"column": "state", "path": "$.state"},
+  {"column": "variable", "path": "$.variable"},
+  {"column": "file_id", "path": "$.file_id"}
+]
+```
+
+.create-or-alter table [IconD2ForecastFile] ingestion json mapping "IconD2ForecastFile_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "file_url", "path": "$.data.file_url"},
+  {"column": "model", "path": "$.data.model"},
+  {"column": "file_name", "path": "$.data.file_name"},
+  {"column": "run", "path": "$.data.run"},
+  {"column": "forecast_hour", "path": "$.data.forecast_hour"},
+  {"column": "parameter", "path": "$.data.parameter"},
+  {"column": "level_type", "path": "$.data.level_type"},
+  {"column": "level", "path": "$.data.level"},
+  {"column": "modified", "path": "$.data.modified"},
+  {"column": "size_bytes", "path": "$.data.size_bytes"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "variable", "path": "$.data.variable"},
+  {"column": "file_id", "path": "$.data.file_id"}
+]
+```
+
+.drop materialized-view IconD2ForecastFileLatest ifexists;
+
+.create materialized-view with (backfill=true) IconD2ForecastFileLatest on table IconD2ForecastFile {
+    IconD2ForecastFile | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [IconD2ForecastFile] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Forecast.IconD2ForecastFile') | project['file_url'] = tostring(data.['file_url']),['model'] = tostring(data.['model']),['file_name'] = tostring(data.['file_name']),['run'] = tostring(data.['run']),['forecast_hour'] = toint(data.['forecast_hour']),['parameter'] = tostring(data.['parameter']),['level_type'] = tostring(data.['level_type']),['level'] = tostring(data.['level']),['modified'] = tostring(data.['modified']),['size_bytes'] = tolong(data.['size_bytes']),['state'] = tostring(data.['state']),['variable'] = tostring(data.['variable']),['file_id'] = tostring(data.['file_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
 }]
 ```
 

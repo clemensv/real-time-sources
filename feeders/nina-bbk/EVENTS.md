@@ -1,4 +1,4 @@
-# NINA/BBK feeder Events
+# NINA/BBK Events
 
 NINA BBK publishes civil-protection warnings from Germany's Federal Office of Civil Protection and Disaster Assistance (BBK) for German warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -8,6 +8,7 @@ NINA BBK publishes civil-protection warnings from Germany's Federal Office of Ci
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{warning_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -77,22 +78,22 @@ Each event identifies the real-world resource with `{warning_id}`. `{warning_id}
 | --- | --- |
 | `KAFKA` | topic `nina-bbk`, key `{warning_id}` |
 | `MQTT/5.0` | topic `alerts/de/nina/nina-bbk/{state}/{severity}/{warning_id}/warning`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/nina-bbk`, message subject `{warning_id}`; application properties state `{state}`, severity `{severity}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/nina-bbk`, message subject `{warning_id}` |
 
 #### Payload
 
-`Civil Warning` payloads are JSON object. Required fields: `warning_id`, `provider`, `sender`, `sent`, `status`, `msg_type`, `scope`, `event`, `severity`, `urgency`, `certainty`, `state`.
+`Civil Warning` payloads are JSON object. Required fields: `warning_id`, `provider`, `sender`, `sent`, `event`, `severity`, `urgency`, `certainty`, `state`.
 
 - **`warning_id`** (string, required): The unique warning identifier assigned by the NINA/BBK system (e.g., 'mow.DE-HE-DA-W184-20240723-000').
-- **`provider`** (enum, required): The NINA provider that issued the warning.
+- **`provider`** (string, required): The NINA provider that issued the warning (e.g. mowas, katwarn, biwapp, dwd, lhp, police). New providers may be added by BBK at any time.
 - **`version`** (integer, optional): The version number of this warning, incremented with each update.
-- **`sender`** (string, required): The identifier of the issuing authority (e.g., 'DE-HE-DA-W184').
+- **`sender`** (string or null, required): The identifier of the issuing authority (e.g., 'DE-HE-DA-W184').
 - **`sender_name`** (string, optional): The human-readable long name of the issuing authority (e.g., 'Integrierte Leitstelle Stadt Darmstadt').
-- **`sent`** (datetime, required): The date and time when the warning was issued, in ISO-8601 format.
-- **`status`** (enum, required): The CAP alert status.
-- **`msg_type`** (enum, required): The CAP message type indicating the nature of the warning.
-- **`scope`** (enum, required): The CAP scope of the warning. Typically 'Public'.
-- **`references`** (string, optional): CAP references to prior related warnings, in the format 'sender,identifier,sent'.
+- **`sent`** (datetime or null, required): The date and time when the warning was issued, in ISO-8601 format.
+- **`status`** (string or null, optional): The CAP alert status.
+- **`msg_type`** (string or null, optional): The CAP message type indicating the nature of the warning.
+- **`scope`** (string or null, optional): The CAP scope of the warning. Typically 'Public'.
+- **`references`** (string or null, optional): CAP references to prior related warnings, in the format 'sender,identifier,sent'.
 - **`event`** (string, required): The event type description (e.g., 'Gefahreninformation', 'Hochwasserinformation').
 - **`event_code`** (string, optional): The BBK event code identifying the hazard type (e.g., 'BBK-EVC-067' for animal disease, 'BBK-EVC-045' for flood).
 - **`category`** (enum, optional): The CAP alert category.
@@ -108,14 +109,6 @@ Each event identifies the real-world resource with `{warning_id}`. `{warning_id}
 - **`verwaltungsbereiche`** (string, optional): Comma-separated German administrative area codes (Amtliche Gemeindeschlüssel) affected by the warning.
 - **`language`** (string, optional): The language of the info block used to populate this event (e.g., 'de', 'EN').
 - **`state`** (string, required): German federal-state slug derived from CAP area administrative codes (warnVerwaltungsbereiche), with sender-code fallback. Matches the {state} MQTT topic axis.
-##### `provider` values
-
-- `mowas`: Provider value `mowas` for this coded alert field.
-- `katwarn`: Provider value `katwarn` for this coded alert field.
-- `biwapp`: Provider value `biwapp` for this coded alert field.
-- `dwd`: Provider value `dwd` for this coded alert field.
-- `lhp`: Provider value `lhp` for this coded alert field.
-- `police`: Provider value `police` for this coded alert field.
 ##### `status` values
 
 - `Actual`: Provider value `Actual` for this coded alert field.
@@ -177,7 +170,7 @@ Synthetic example values are generated deterministically from the schema: consta
 ```json
 {
   "warning_id": "string",
-  "provider": "mowas",
+  "provider": "string",
   "version": 0,
   "sender": "string",
   "sender_name": "string",
@@ -225,10 +218,11 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/nina-bbk.xreg.json`](xreg/nina-bbk.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

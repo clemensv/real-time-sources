@@ -28,20 +28,20 @@ class Test_MeasurementSite(unittest.TestCase):
         Create instance of MeasurementSite for testing
         """
         instance = MeasurementSite(
-            supplier_id='umuselsfvolhvfrcdfmt',
-            measurement_site_id='imxpgucwjyoigizbadyj',
-            feed_url='hfzusaqotuyngqucinxj',
-            country_code='keaxelqficigmcxrmpcv',
-            operator_id='uonjipnybfnvbmiifdqz',
-            name='sawesdtlntafcdeyaqmf',
-            measurement_site_type='fkmlioipvjlnqvupyqck',
-            period_seconds=int(55),
-            latitude=float(96.23604307589032),
-            longitude=float(42.9071976262399),
-            road_number='xyzutxkqjmicwkzakjvm',
-            carriageway='ajepbgvqfifqrbwgvogp',
-            lane='funehpqscwgxnngyabqu',
-            specific_measurements='bdhgbcztdujrxwumvnud'
+            supplier_id='sbojpkidbuzvskxyrlth',
+            measurement_site_id='ueucoljfjavaqstgeepb',
+            feed_url='mpalmtwjkzwxqydywkya',
+            country_code='wkboiniegteqeujzduzg',
+            operator_id='umixjojbmtqapozskolj',
+            name='tiboxsdyhqvnrssvspzr',
+            measurement_site_type='fbetbsbhohfmkhfaztls',
+            period_seconds=int(21),
+            latitude=float(66.72329537000198),
+            longitude=float(59.04386593733977),
+            road_number='lauixtvwkrfiypbzyvrt',
+            carriageway='fjndbjhgkkawhxynljhi',
+            lane='euxqklmqcgzglfmdhamy',
+            specific_measurements='iqukxtkipjtsddiskjto'
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test supplier_id property
         """
-        test_value = 'umuselsfvolhvfrcdfmt'
+        test_value = 'sbojpkidbuzvskxyrlth'
         self.instance.supplier_id = test_value
         self.assertEqual(self.instance.supplier_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test measurement_site_id property
         """
-        test_value = 'imxpgucwjyoigizbadyj'
+        test_value = 'ueucoljfjavaqstgeepb'
         self.instance.measurement_site_id = test_value
         self.assertEqual(self.instance.measurement_site_id, test_value)
     
@@ -66,7 +66,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test feed_url property
         """
-        test_value = 'hfzusaqotuyngqucinxj'
+        test_value = 'mpalmtwjkzwxqydywkya'
         self.instance.feed_url = test_value
         self.assertEqual(self.instance.feed_url, test_value)
     
@@ -74,7 +74,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test country_code property
         """
-        test_value = 'keaxelqficigmcxrmpcv'
+        test_value = 'wkboiniegteqeujzduzg'
         self.instance.country_code = test_value
         self.assertEqual(self.instance.country_code, test_value)
     
@@ -82,7 +82,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = 'uonjipnybfnvbmiifdqz'
+        test_value = 'umixjojbmtqapozskolj'
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     
@@ -90,7 +90,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'sawesdtlntafcdeyaqmf'
+        test_value = 'tiboxsdyhqvnrssvspzr'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -98,7 +98,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test measurement_site_type property
         """
-        test_value = 'fkmlioipvjlnqvupyqck'
+        test_value = 'fbetbsbhohfmkhfaztls'
         self.instance.measurement_site_type = test_value
         self.assertEqual(self.instance.measurement_site_type, test_value)
     
@@ -106,7 +106,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test period_seconds property
         """
-        test_value = int(55)
+        test_value = int(21)
         self.instance.period_seconds = test_value
         self.assertEqual(self.instance.period_seconds, test_value)
     
@@ -114,7 +114,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(96.23604307589032)
+        test_value = float(66.72329537000198)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -122,7 +122,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(42.9071976262399)
+        test_value = float(59.04386593733977)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -130,7 +130,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test road_number property
         """
-        test_value = 'xyzutxkqjmicwkzakjvm'
+        test_value = 'lauixtvwkrfiypbzyvrt'
         self.instance.road_number = test_value
         self.assertEqual(self.instance.road_number, test_value)
     
@@ -138,7 +138,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test carriageway property
         """
-        test_value = 'ajepbgvqfifqrbwgvogp'
+        test_value = 'fjndbjhgkkawhxynljhi'
         self.instance.carriageway = test_value
         self.assertEqual(self.instance.carriageway, test_value)
     
@@ -146,7 +146,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test lane property
         """
-        test_value = 'funehpqscwgxnngyabqu'
+        test_value = 'euxqklmqcgzglfmdhamy'
         self.instance.lane = test_value
         self.assertEqual(self.instance.lane, test_value)
     
@@ -154,7 +154,7 @@ class Test_MeasurementSite(unittest.TestCase):
         """
         Test specific_measurements property
         """
-        test_value = 'bdhgbcztdujrxwumvnud'
+        test_value = 'iqukxtkipjtsddiskjto'
         self.instance.specific_measurements = test_value
         self.assertEqual(self.instance.specific_measurements, test_value)
     

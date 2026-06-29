@@ -129,6 +129,8 @@ class MetObsStation:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -196,21 +198,21 @@ class MetObsStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='zemvvajsfybpckjfwyiw',
-            wmo_station_id='ehjpqbpfnfnvbrvwvvnf',
-            wmo_country_code='uehzuschmjqgdqrwldsk',
-            name='bnmnbxspjsjakpzmgpgv',
+            station_id='onvpqxbbaxsajuahwoga',
+            wmo_station_id='bedwhvvskesbespxpxwr',
+            wmo_country_code='pxlrvqndtqexmqrqxvam',
+            name='eskwtexummsusywnajll',
             country=CountryEnum.DNK,
-            owner='xtskefcbewozhvraflrb',
-            region_id='yilkmvdobrywwhfordwa',
-            type='klvrbvbxpfwwxhokgxqf',
-            status='logwrhqkkqseastozkzk',
-            parameter_id=['knxcprzqbbjedplgwddh'],
-            latitude=float(33.60130352321592),
-            longitude=float(1.1303208714201651),
-            station_height=float(43.41543982261323),
-            barometer_height=float(64.5719420925078),
-            anemometer_height=float(97.71535333526965),
+            owner='nvenuyvptyyambrulegs',
+            region_id='krnmpbiaxyjqsjeorump',
+            type='ertzxjgtukjaffdpajzg',
+            status='wvesohmoqpxdzvevxfle',
+            parameter_id=['svyfitjlcazxehlnvmmj', 'bwvynqsttqxrwhbpaiap'],
+            latitude=float(73.88538312389565),
+            longitude=float(60.95324521919664),
+            station_height=float(90.18421545336014),
+            barometer_height=float(40.23129302543964),
+            anemometer_height=float(79.96262373015244),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc),
             operation_from=datetime.datetime.now(datetime.timezone.utc),

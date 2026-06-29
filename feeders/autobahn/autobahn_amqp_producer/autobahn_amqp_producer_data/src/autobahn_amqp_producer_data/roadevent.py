@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -201,27 +201,27 @@ class RoadEvent:
             An instance of the dataclass.
         """
         return cls(
-            identifier='flwtusicnoldmtgtpfjy',
-            road='saopsmdnunfwiqsxtipf',
-            road_ids=['wpcsizqlvilcjdwtvqoe', 'advszghsxjhxqisxyflm', 'yoqzjogevydahinsxqfd', 'jvvoeukzkhgjdyztzgrg'],
+            identifier='zkzgvxerygpvnsymeyqj',
+            road='gslvhzbvwbrcwwsvijxr',
+            road_ids=['edfwvuuhptoswkvuupph'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='ozbloyvlxvdlngzrepwr',
-            subtitle='xsjezdrjzmcwxltazqml',
+            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
+            title='dwwccwxasokvdusaywcg',
+            subtitle='dhpaevxekbaqfzayumwa',
             description_lines=None,
-            future=False,
-            is_blocked=True,
-            icon='ysgrxngobavrmeowoycm',
-            start_lc_position=int(2),
+            future=True,
+            is_blocked=False,
+            icon='casitmqirpulstcphmyc',
+            start_lc_position=int(25),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='ueiomkadmovisblmfghl',
-            point='wrwdtfaetbzhpqccjnew',
-            coordinate_lat=float(46.715417381738874),
-            coordinate_lon=float(48.470609572623125),
-            geometry_json='xevfzhourpcxhxmdjxyz',
-            impact_lower='vvewecayglflgenxhfuh',
-            impact_upper='epqtkqynpqzgzzybxmgx',
+            extent='ykuguvgckrfnlbbctshr',
+            point='vslkyuulluebmvgxhrja',
+            coordinate_lat=float(58.52003593889167),
+            coordinate_lon=float(68.42854636700835),
+            geometry_json='dwguttubeptwqtkwjelh',
+            impact_lower='mrrmhknllqdansetlqdy',
+            impact_upper='dqizmtbmkstbjslrkmxz',
             impact_symbols=None,
-            route_recommendation_json='ovcemloaqbthayfigglw',
+            route_recommendation_json='rkjjujyzadnbvcamobdm',
             footer_lines=None
         )
