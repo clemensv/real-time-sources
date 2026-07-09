@@ -100,7 +100,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -118,7 +118,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -135,6 +135,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -157,7 +168,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -175,7 +186,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -226,7 +237,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -244,7 +255,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -261,6 +272,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -283,7 +305,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -301,7 +323,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -352,7 +374,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -370,7 +392,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -387,6 +409,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -409,7 +442,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -427,7 +460,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -478,7 +511,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -496,7 +529,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -513,6 +546,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -535,7 +579,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -553,7 +597,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -604,7 +648,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -622,7 +666,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -639,6 +683,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -661,7 +716,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -679,7 +734,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -730,7 +785,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -748,7 +803,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -765,6 +820,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -787,7 +853,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -805,7 +871,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -856,7 +922,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -874,7 +940,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -891,6 +957,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -913,7 +990,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -931,7 +1008,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -982,7 +1059,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -1000,7 +1077,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -1017,6 +1094,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1039,7 +1127,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -1057,7 +1145,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -1108,7 +1196,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -1126,7 +1214,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -1143,6 +1231,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1165,7 +1264,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -1183,7 +1282,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -1234,7 +1333,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -1252,7 +1351,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -1269,6 +1368,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1291,7 +1401,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -1309,7 +1419,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -1360,7 +1470,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -1378,7 +1488,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -1395,6 +1505,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1417,7 +1538,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -1435,7 +1556,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -1486,7 +1607,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -1504,7 +1625,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -1521,6 +1642,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1543,7 +1675,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -1561,7 +1693,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -1612,7 +1744,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -1628,7 +1760,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`tlp_requestid`** (null or int32, optional): Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field. Constraints: minimum `0`, maximum `255`.
 - **`tlp_requesttype`** (enum, optional): Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field.
 - **`tlp_prioritylevel`** (enum, optional): Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field.
@@ -1641,7 +1773,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`tlp_line_configid`** (null or int32, optional): ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field.
 - **`tlp_point_configid`** (null or int32, optional): Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field.
 - **`tlp_frequency`** (null or int32, optional): Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field.
-- **`tlp_protocol`** (null or string, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
+- **`tlp_protocol`** (enum, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
 ##### `temporal_type` values
 
 - `ongoing`
@@ -1655,6 +1787,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 ##### `tlp_requesttype` values
 
 - `NORMAL`
@@ -1676,6 +1819,10 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 
 - `ACK`
 - `NAK`
+##### `tlp_protocol` values
+
+- `MQTT`
+- `KAR-MQTT`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1698,7 +1845,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -1714,7 +1861,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "tlp_requestid": 0,
   "tlp_requesttype": "NORMAL",
   "tlp_prioritylevel": "normal",
@@ -1727,7 +1874,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "tlp_line_configid": 0,
   "tlp_point_configid": 0,
   "tlp_frequency": 0,
-  "tlp_protocol": "string"
+  "tlp_protocol": "MQTT"
 }
 ```
 
@@ -1775,7 +1922,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -1791,7 +1938,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`tlp_requestid`** (null or int32, optional): Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field. Constraints: minimum `0`, maximum `255`.
 - **`tlp_requesttype`** (enum, optional): Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field.
 - **`tlp_prioritylevel`** (enum, optional): Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field.
@@ -1804,7 +1951,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`tlp_line_configid`** (null or int32, optional): ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field.
 - **`tlp_point_configid`** (null or int32, optional): Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field.
 - **`tlp_frequency`** (null or int32, optional): Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field.
-- **`tlp_protocol`** (null or string, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
+- **`tlp_protocol`** (enum, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
 ##### `temporal_type` values
 
 - `ongoing`
@@ -1818,6 +1965,17 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 ##### `tlp_requesttype` values
 
 - `NORMAL`
@@ -1839,6 +1997,10 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 
 - `ACK`
 - `NAK`
+##### `tlp_protocol` values
+
+- `MQTT`
+- `KAR-MQTT`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1861,7 +2023,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -1877,7 +2039,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "tlp_requestid": 0,
   "tlp_requesttype": "NORMAL",
   "tlp_prioritylevel": "normal",
@@ -1890,7 +2052,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "tlp_line_configid": 0,
   "tlp_point_configid": 0,
   "tlp_frequency": 0,
-  "tlp_protocol": "string"
+  "tlp_protocol": "MQTT"
 }
 ```
 
@@ -1944,7 +2106,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -1960,6 +2122,13 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1988,7 +2157,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
@@ -2044,7 +2213,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -2060,6 +2229,13 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2088,7 +2264,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
@@ -2144,7 +2320,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -2160,6 +2336,13 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2188,7 +2371,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
@@ -2244,7 +2427,7 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -2260,6 +2443,13 @@ Each event identifies the real-world resource with `{operator_id}/{vehicle_numbe
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2288,7 +2478,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
@@ -2497,7 +2687,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -2515,7 +2705,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -2532,6 +2722,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2554,7 +2755,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -2572,7 +2773,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -2621,7 +2822,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -2639,7 +2840,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -2656,6 +2857,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2678,7 +2890,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -2696,7 +2908,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -2745,7 +2957,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -2763,7 +2975,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -2780,6 +2992,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2802,7 +3025,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -2820,7 +3043,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -2869,7 +3092,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -2887,7 +3110,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -2904,6 +3127,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2926,7 +3160,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -2944,7 +3178,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -2993,7 +3227,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3011,7 +3245,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3028,6 +3262,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3050,7 +3295,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3068,7 +3313,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3117,7 +3362,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3135,7 +3380,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3152,6 +3397,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3174,7 +3430,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3192,7 +3448,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3241,7 +3497,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3259,7 +3515,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3276,6 +3532,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3298,7 +3565,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3316,7 +3583,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3365,7 +3632,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3383,7 +3650,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3400,6 +3667,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3422,7 +3700,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3440,7 +3718,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3489,7 +3767,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3507,7 +3785,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3524,6 +3802,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3546,7 +3835,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3564,7 +3853,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3613,7 +3902,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3631,7 +3920,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3648,6 +3937,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3670,7 +3970,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3688,7 +3988,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3737,7 +4037,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3755,7 +4055,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3772,6 +4072,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3794,7 +4105,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3812,7 +4123,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3861,7 +4172,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -3879,7 +4190,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`ttarr`** (null or string, optional): UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`ttdep`** (null or string, optional): UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
@@ -3896,6 +4207,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -3918,7 +4240,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -3936,7 +4258,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "ttarr": "string",
   "ttdep": "string",
   "dr_type": 0
@@ -3985,7 +4307,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -4001,7 +4323,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`tlp_requestid`** (null or int32, optional): Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field. Constraints: minimum `0`, maximum `255`.
 - **`tlp_requesttype`** (enum, optional): Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field.
 - **`tlp_prioritylevel`** (enum, optional): Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field.
@@ -4014,7 +4336,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`tlp_line_configid`** (null or int32, optional): ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field.
 - **`tlp_point_configid`** (null or int32, optional): Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field.
 - **`tlp_frequency`** (null or int32, optional): Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field.
-- **`tlp_protocol`** (null or string, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
+- **`tlp_protocol`** (enum, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
 ##### `temporal_type` values
 
 - `ongoing`
@@ -4028,6 +4350,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 ##### `tlp_requesttype` values
 
 - `NORMAL`
@@ -4049,6 +4382,10 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 - `ACK`
 - `NAK`
+##### `tlp_protocol` values
+
+- `MQTT`
+- `KAR-MQTT`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -4071,7 +4408,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -4087,7 +4424,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "tlp_requestid": 0,
   "tlp_requesttype": "NORMAL",
   "tlp_prioritylevel": "normal",
@@ -4100,7 +4437,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "tlp_line_configid": 0,
   "tlp_point_configid": 0,
   "tlp_frequency": 0,
-  "tlp_protocol": "string"
+  "tlp_protocol": "MQTT"
 }
 ```
 
@@ -4146,7 +4483,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`geohash_level`** (null or string, optional): Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim.
 - **`geohash`** (null or string, optional): Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim.
 - **`desi`** (null or string, optional): Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`).
-- **`dir`** (null or string, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
+- **`dir`** (enum, optional): Route direction of the trip as a string, either `"1"` or `"2"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`dl`** (null or int32, optional, s): Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`jrn`** (null or int32, optional): Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field.
@@ -4162,7 +4499,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`tlp_requestid`** (null or int32, optional): Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field. Constraints: minimum `0`, maximum `255`.
 - **`tlp_requesttype`** (enum, optional): Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field.
 - **`tlp_prioritylevel`** (enum, optional): Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field.
@@ -4175,7 +4512,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`tlp_line_configid`** (null or int32, optional): ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field.
 - **`tlp_point_configid`** (null or int32, optional): Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field.
 - **`tlp_frequency`** (null or int32, optional): Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field.
-- **`tlp_protocol`** (null or string, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
+- **`tlp_protocol`** (enum, optional): Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.
 ##### `temporal_type` values
 
 - `ongoing`
@@ -4189,6 +4526,17 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `dir` values
+
+- `1`
+- `2`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 ##### `tlp_requesttype` values
 
 - `NORMAL`
@@ -4210,6 +4558,10 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 - `ACK`
 - `NAK`
+##### `tlp_protocol` values
+
+- `MQTT`
+- `KAR-MQTT`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -4232,7 +4584,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "geohash_level": "string",
   "geohash": "string",
   "desi": "string",
-  "dir": "string",
+  "dir": "1",
   "dl": 0,
   "oday": "string",
   "jrn": 0,
@@ -4248,7 +4600,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "tlp_requestid": 0,
   "tlp_requesttype": "NORMAL",
   "tlp_prioritylevel": "normal",
@@ -4261,7 +4613,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "tlp_line_configid": 0,
   "tlp_point_configid": 0,
   "tlp_frequency": 0,
-  "tlp_protocol": "string"
+  "tlp_protocol": "MQTT"
 }
 ```
 
@@ -4313,7 +4665,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -4329,6 +4681,13 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -4357,7 +4716,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
@@ -4411,7 +4770,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -4427,6 +4786,13 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -4455,7 +4821,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
@@ -4509,7 +4875,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -4525,6 +4891,13 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -4553,7 +4926,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
@@ -4607,7 +4980,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - **`acc`** (null or double, optional, m/s²): Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field.
 - **`odo`** (null or int32, optional, m): Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field.
 - **`drst`** (null or int32, optional): Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. Constraints: minimum `0`, maximum `1`.
-- **`loc`** (null or string, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
+- **`loc`** (enum, optional): Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field.
 - **`oday`** (null or string, optional): Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. Constraints: pattern `^\d{4}-\d{2}-\d{2}$`.
 - **`dr_type`** (null or int32, optional): Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. Constraints: minimum `0`, maximum `1`.
 ##### `temporal_type` values
@@ -4623,6 +4996,13 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 - `metro`
 - `ubus`
 - `robot`
+##### `loc` values
+
+- `GPS`
+- `ODO`
+- `MAN`
+- `DR`
+- `N/A`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -4651,7 +5031,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "acc": 0,
   "odo": 0,
   "drst": 0,
-  "loc": "string",
+  "loc": "GPS",
   "oday": "string",
   "dr_type": 0
 }
