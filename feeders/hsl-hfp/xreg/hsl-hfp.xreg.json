@@ -1943,7 +1943,9 @@
                             "dir": {
                               "type": [
                                 "null",
-                                "string"
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/DirEnum"
+                                }
                               ],
                               "description": "Route direction of the trip as a string, either `\"1\"` or `\"2\"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`."
                             },
@@ -2089,7 +2091,9 @@
                             "loc": {
                               "type": [
                                 "null",
-                                "string"
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/LocEnum"
+                                }
                               ],
                               "description": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field."
                             },
@@ -2153,6 +2157,27 @@
                             "robot"
                           ],
                           "description": "Transport mode of the vehicle: `bus`, `tram`, `train`, `ferry`, `metro`, `ubus` (U-line bus) or `robot` (robot bus). From the MQTT-topic `transport_mode` level."
+                        },
+                        "LocEnum": {
+                          "name": "LocEnum",
+                          "type": "string",
+                          "enum": [
+                            "GPS",
+                            "ODO",
+                            "MAN",
+                            "DR",
+                            "N/A"
+                          ],
+                          "description": "Source of the reported location: `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). From the HFP payload `loc` field. The `N/A` wire value contains a `/`, so the generated Avro symbol is sanitized to `N_A` while the JSON wire value `N/A` is preserved verbatim."
+                        },
+                        "DirEnum": {
+                          "name": "DirEnum",
+                          "type": "string",
+                          "enum": [
+                            "1",
+                            "2"
+                          ],
+                          "description": "Route direction of the trip as a string, either `1` or `2`. Matches the `direction_id` MQTT-topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). From the HFP payload `dir` field. The digit-leading wire values are sanitized to the Avro symbols `_1`/`_2` while the JSON wire values `1`/`2` are preserved verbatim."
                         }
                       }
                     }
@@ -2286,7 +2311,9 @@
                             "dir": {
                               "type": [
                                 "null",
-                                "string"
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/DirEnum"
+                                }
                               ],
                               "description": "Route direction of the trip as a string, either `\"1\"` or `\"2\"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`."
                             },
@@ -2417,7 +2444,9 @@
                             "loc": {
                               "type": [
                                 "null",
-                                "string"
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/LocEnum"
+                                }
                               ],
                               "description": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field."
                             },
@@ -2552,7 +2581,9 @@
                             "tlp_protocol": {
                               "type": [
                                 "null",
-                                "string"
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/TlpProtocolEnum"
+                                }
                               ],
                               "description": "Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field.",
                               "altnames": {
@@ -2632,6 +2663,36 @@
                             "robot"
                           ],
                           "description": "Transport mode of the vehicle: `bus`, `tram`, `train`, `ferry`, `metro`, `ubus` (U-line bus) or `robot` (robot bus). From the MQTT-topic `transport_mode` level."
+                        },
+                        "LocEnum": {
+                          "name": "LocEnum",
+                          "type": "string",
+                          "enum": [
+                            "GPS",
+                            "ODO",
+                            "MAN",
+                            "DR",
+                            "N/A"
+                          ],
+                          "description": "Source of the reported location: `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). From the HFP payload `loc` field. The `N/A` wire value contains a `/`, so the generated Avro symbol is sanitized to `N_A` while the JSON wire value `N/A` is preserved verbatim."
+                        },
+                        "DirEnum": {
+                          "name": "DirEnum",
+                          "type": "string",
+                          "enum": [
+                            "1",
+                            "2"
+                          ],
+                          "description": "Route direction of the trip as a string, either `1` or `2`. Matches the `direction_id` MQTT-topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). From the HFP payload `dir` field. The digit-leading wire values are sanitized to the Avro symbols `_1`/`_2` while the JSON wire values `1`/`2` are preserved verbatim."
+                        },
+                        "TlpProtocolEnum": {
+                          "name": "TlpProtocolEnum",
+                          "type": "string",
+                          "enum": [
+                            "MQTT",
+                            "KAR-MQTT"
+                          ],
+                          "description": "Protocol used for the traffic-light priority request: `MQTT` or `KAR-MQTT`. Populated on `tlr`. From the HFP payload `tlp-protocol` field. The `-` in `KAR-MQTT` is sanitized to the Avro symbol `KAR_MQTT` while the JSON wire value `KAR-MQTT` is preserved verbatim."
                         }
                       }
                     }
@@ -2821,7 +2882,9 @@
                             "loc": {
                               "type": [
                                 "null",
-                                "string"
+                                {
+                                  "$ref": "#/definitions/fi/hsl/hfp/LocEnum"
+                                }
                               ],
                               "description": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field."
                             },
@@ -2877,6 +2940,18 @@
                             "robot"
                           ],
                           "description": "Transport mode of the vehicle: `bus`, `tram`, `train`, `ferry`, `metro`, `ubus` (U-line bus) or `robot` (robot bus). From the MQTT-topic `transport_mode` level."
+                        },
+                        "LocEnum": {
+                          "name": "LocEnum",
+                          "type": "string",
+                          "enum": [
+                            "GPS",
+                            "ODO",
+                            "MAN",
+                            "DR",
+                            "N/A"
+                          ],
+                          "description": "Source of the reported location: `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). From the HFP payload `loc` field. The `N/A` wire value contains a `/`, so the generated Avro symbol is sanitized to `N_A` while the JSON wire value `N/A` is preserved verbatim."
                         }
                       }
                     }

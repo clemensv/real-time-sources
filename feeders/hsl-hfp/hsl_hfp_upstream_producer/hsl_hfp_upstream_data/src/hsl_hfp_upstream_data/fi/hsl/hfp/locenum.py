@@ -3,7 +3,7 @@ from enum import Enum
 
 class LocEnum(Enum):
     """
-    Source of the reported vehicle location: `GPS` satellite fix; `ODO` computed from the odometer; `MAN` manually set; `DR` dead reckoning (used in tunnels and other GPS-denied locations); `N/A` location unavailable. From the HFP payload `loc` field.
+    Source of the reported location: `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). From the HFP payload `loc` field. The `N/A` wire value contains a `/`, so the generated Avro symbol is sanitized to `N_A` while the JSON wire value `N/A` is preserved verbatim.
     """
     GPS = 'GPS'
     ODO = 'ODO'

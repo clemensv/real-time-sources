@@ -37,7 +37,7 @@ class TrafficLightEvent:
         geohash_level (typing.Optional[str])
         geohash (typing.Optional[str])
         desi (typing.Optional[str])
-        dir (typing.Optional[str])
+        dir (typing.Optional[Any])
         dl (typing.Optional[int])
         oday (typing.Optional[str])
         jrn (typing.Optional[int])
@@ -53,7 +53,7 @@ class TrafficLightEvent:
         acc (typing.Optional[float])
         odo (typing.Optional[int])
         drst (typing.Optional[int])
-        loc (typing.Optional[str])
+        loc (typing.Optional[Any])
         tlp_requestid (typing.Optional[int])
         tlp_requesttype (typing.Optional[Any])
         tlp_prioritylevel (typing.Optional[Any])
@@ -66,7 +66,7 @@ class TrafficLightEvent:
         tlp_line_configid (typing.Optional[int])
         tlp_point_configid (typing.Optional[int])
         tlp_frequency (typing.Optional[int])
-        tlp_protocol (typing.Optional[str])
+        tlp_protocol (typing.Optional[Any])
     """
     
     
@@ -86,7 +86,7 @@ class TrafficLightEvent:
     geohash_level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash_level"))
     geohash: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash"))
     desi: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="desi"))
-    dir: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dir"))
+    dir: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dir"))
     dl: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dl"))
     oday: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="oday"))
     jrn: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="jrn"))
@@ -102,7 +102,7 @@ class TrafficLightEvent:
     acc: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="acc"))
     odo: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="odo"))
     drst: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="drst"))
-    loc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
+    loc: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
     tlp_requestid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-requestid"))
     tlp_requesttype: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-requesttype"))
     tlp_prioritylevel: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-prioritylevel"))
@@ -115,7 +115,7 @@ class TrafficLightEvent:
     tlp_line_configid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-line-configid"))
     tlp_point_configid: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-point-configid"))
     tlp_frequency: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-frequency"))
-    tlp_protocol: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-protocol"))
+    tlp_protocol: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tlp-protocol"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TrafficLightEvent':
@@ -316,50 +316,50 @@ class TrafficLightEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(49),
-            veh=int(98),
-            tst='rjgbsascrgmlumrrymdg',
-            tsi=int(62),
-            operator_id='kyezkfumrfgfpozfwkao',
-            vehicle_number='ufgdscpqozzrvviwawvo',
+            oper=int(73),
+            veh=int(80),
+            tst='ymmwfdhvsltiutynipmr',
+            tsi=int(59),
+            operator_id='wjwticmopuwlcmzqnvvs',
+            vehicle_number='qyhfdjzjfhkqfhfqhkfk',
             temporal_type=None,
             transport_mode=None,
-            route_id='vtrydtuvkmbznanoslrs',
-            direction_id='adgoeqxmxqdahoizamws',
-            headsign='ldlvivrdvcmeyitilpfh',
-            start_time='kltudoroqferxnpufhmv',
-            next_stop='jgxfspngauiliyoqogxc',
-            geohash_level='kfqvtoppjigavnqduqdx',
-            geohash='uzpefvkguogvisugwhff',
-            desi='uuftsojnkcfdaterwtsg',
-            dir='fhmoekqpikytigftygjd',
-            dl=int(57),
-            oday='dhlwpplwwjvrxnjumnqx',
-            jrn=int(48),
-            line=int(5),
-            start='ffuemzucndazjhnlhelb',
-            stop=int(49),
-            route='rmbrygccvpqlzhmgxbey',
-            occu=int(70),
-            spd=float(32.193923080201834),
-            hdg=int(62),
-            lat=float(52.11533703502692),
-            long=float(12.055115798888883),
-            acc=float(14.565083784820665),
-            odo=int(61),
-            drst=int(43),
-            loc='ktagmsldsvxrsatcmwei',
-            tlp_requestid=int(17),
+            route_id='oevqejfnihnhivtunppl',
+            direction_id='bisqsximazsegiyclnth',
+            headsign='kvadhdphpxyabqdtjvwu',
+            start_time='oeivyavxkossvrvwqmjr',
+            next_stop='wfnqrpmvnrqvkpvaizph',
+            geohash_level='ayzgerucjthvslzlljos',
+            geohash='elngpzqjpfjuwtybgoxu',
+            desi='oxogazihnumrbskzvrtd',
+            dir=None,
+            dl=int(15),
+            oday='xaucasvverhxzuyfqjed',
+            jrn=int(79),
+            line=int(62),
+            start='tdyuphwreznmavuxfvcq',
+            stop=int(87),
+            route='fgmhdwpaeucqgxsfkapo',
+            occu=int(14),
+            spd=float(44.036625108439765),
+            hdg=int(58),
+            lat=float(98.9524966578608),
+            long=float(40.21201616838154),
+            acc=float(36.05886398084134),
+            odo=int(98),
+            drst=int(53),
+            loc=None,
+            tlp_requestid=int(37),
             tlp_requesttype=None,
             tlp_prioritylevel=None,
             tlp_reason=None,
-            tlp_att_seq=int(63),
+            tlp_att_seq=int(2),
             tlp_decision=None,
-            sid=int(59),
-            signal_groupid=int(2),
-            tlp_signalgroupnbr=int(65),
-            tlp_line_configid=int(30),
-            tlp_point_configid=int(85),
-            tlp_frequency=int(88),
-            tlp_protocol='cqnjfvbomdmmflciwsul'
+            sid=int(51),
+            signal_groupid=int(95),
+            tlp_signalgroupnbr=int(96),
+            tlp_line_configid=int(65),
+            tlp_point_configid=int(23),
+            tlp_frequency=int(64),
+            tlp_protocol=None
         )

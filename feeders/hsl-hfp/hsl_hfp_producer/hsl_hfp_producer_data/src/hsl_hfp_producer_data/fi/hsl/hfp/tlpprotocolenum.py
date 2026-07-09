@@ -3,7 +3,7 @@ from enum import Enum
 
 class TlpProtocolEnum(Enum):
     """
-    Protocol used for the traffic-light priority request: `MQTT` or `KAR-MQTT`. From the HFP payload `tlp-protocol` field.
+    Protocol used for the traffic-light priority request: `MQTT` or `KAR-MQTT`. Populated on `tlr`. From the HFP payload `tlp-protocol` field. The `-` in `KAR-MQTT` is sanitized to the Avro symbol `KAR_MQTT` while the JSON wire value `KAR-MQTT` is preserved verbatim.
     """
     MQTT = 'MQTT'
     KAR_MINUSMQTT = 'KAR-MQTT'

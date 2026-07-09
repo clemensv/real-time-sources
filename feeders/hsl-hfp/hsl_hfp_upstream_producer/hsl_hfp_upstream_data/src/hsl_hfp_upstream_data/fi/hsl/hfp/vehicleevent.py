@@ -37,7 +37,7 @@ class VehicleEvent:
         geohash_level (typing.Optional[str])
         geohash (typing.Optional[str])
         desi (typing.Optional[str])
-        dir (typing.Optional[str])
+        dir (typing.Optional[Any])
         dl (typing.Optional[int])
         oday (typing.Optional[str])
         jrn (typing.Optional[int])
@@ -55,7 +55,7 @@ class VehicleEvent:
         acc (typing.Optional[float])
         odo (typing.Optional[int])
         drst (typing.Optional[int])
-        loc (typing.Optional[str])
+        loc (typing.Optional[Any])
         ttarr (typing.Optional[str])
         ttdep (typing.Optional[str])
         dr_type (typing.Optional[int])
@@ -78,7 +78,7 @@ class VehicleEvent:
     geohash_level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash_level"))
     geohash: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash"))
     desi: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="desi"))
-    dir: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dir"))
+    dir: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dir"))
     dl: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dl"))
     oday: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="oday"))
     jrn: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="jrn"))
@@ -96,7 +96,7 @@ class VehicleEvent:
     acc: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="acc"))
     odo: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="odo"))
     drst: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="drst"))
-    loc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
+    loc: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
     ttarr: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ttarr"))
     ttdep: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ttdep"))
     dr_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dr-type"))
@@ -234,42 +234,42 @@ class VehicleEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(50),
-            veh=int(74),
-            tst='itkvjrgcnthmgzrkzlcx',
-            tsi=int(75),
-            operator_id='urxgkxqpnadxwsfqbkjp',
-            vehicle_number='vszbgzyowigvorcdlxba',
+            oper=int(42),
+            veh=int(50),
+            tst='nvakfnvxjwtdcibakdak',
+            tsi=int(100),
+            operator_id='jmgrttiwftruvbtlvsab',
+            vehicle_number='lzcohivskxghczvmssua',
             temporal_type=None,
             transport_mode=None,
-            route_id='lheoyvqlgeqnrlngnqkh',
-            direction_id='llzikxxheutusjtebfmu',
-            headsign='saoljrydixyrgffpgpnl',
-            start_time='fbapiwqwekpmjhlvddjs',
-            next_stop='fawtksmeuwmxgonazakg',
-            geohash_level='jmkccdroxiaanbcorfsq',
-            geohash='kleuoplvyhbsglazwjgq',
-            desi='pjcvwofnehyrftwzfaxy',
-            dir='roohpapyaihiwliwxuzr',
-            dl=int(61),
-            oday='evwvlrigkovfhefawvzv',
-            jrn=int(92),
-            line=int(80),
-            start='huonzmkucwtuszpwsoyx',
-            stop=int(33),
-            route='rscbkeeznjuaebbjdoxu',
-            occu=int(68),
-            seq=int(45),
-            label='bzkwfpjxfwdqjabnmgcf',
-            spd=float(41.75429008609826),
-            hdg=int(71),
-            lat=float(80.74093905402421),
-            long=float(19.685298914832728),
-            acc=float(91.80676181448422),
-            odo=int(46),
-            drst=int(44),
-            loc='weogrbxsbpioriuqydvd',
-            ttarr='ujvajrzqlxkouapqjreu',
-            ttdep='knotdlrysfbvnqtvydyj',
-            dr_type=int(64)
+            route_id='folmzrlgemsocfyrmtdx',
+            direction_id='oabjbroqughcgylmcimd',
+            headsign='txiixjvxpgqcfehkyzji',
+            start_time='lwhzxrjrehkoktwxxexo',
+            next_stop='mjwoktvbydnbpstfvzle',
+            geohash_level='exijuzpjckuepookxtph',
+            geohash='fhceozkhgspipobdpwxp',
+            desi='bsrbwcsdtyahessyufjo',
+            dir=None,
+            dl=int(33),
+            oday='xegcvplosiqhcfflouwb',
+            jrn=int(2),
+            line=int(60),
+            start='fbnrnoyjgrvhlrzkpqvo',
+            stop=int(20),
+            route='pktrqdtarfevpokgmrlt',
+            occu=int(95),
+            seq=int(58),
+            label='kpbwvxkmbjsgjhwoclff',
+            spd=float(55.34316544760184),
+            hdg=int(21),
+            lat=float(69.31685460398666),
+            long=float(83.77805587004522),
+            acc=float(86.92633894982635),
+            odo=int(2),
+            drst=int(92),
+            loc=None,
+            ttarr='cdvzhwxuibnmitvfyycz',
+            ttdep='lkthwppadixddpaucejd',
+            dr_type=int(0)
         )
