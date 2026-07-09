@@ -43,7 +43,7 @@ class DriverBlockEvent:
         acc (typing.Optional[float])
         odo (typing.Optional[int])
         drst (typing.Optional[int])
-        loc (typing.Optional[str])
+        loc (typing.Optional[Any])
         oday (typing.Optional[str])
         dr_type (typing.Optional[int])
     """
@@ -71,7 +71,7 @@ class DriverBlockEvent:
     acc: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="acc"))
     odo: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="odo"))
     drst: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="drst"))
-    loc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
+    loc: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="loc"))
     oday: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="oday"))
     dr_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dr-type"))
 
@@ -208,29 +208,29 @@ class DriverBlockEvent:
             An instance of the dataclass.
         """
         return cls(
-            oper=int(12),
-            veh=int(20),
-            tst='sjqntobsiqkrraledupo',
-            tsi=int(26),
-            operator_id='xhexcgspvrbvyqqmsxvn',
-            vehicle_number='utspzwfvszlmzeskwtwo',
+            oper=int(77),
+            veh=int(17),
+            tst='ttukfzkpknqfoszfzfbo',
+            tsi=int(73),
+            operator_id='bjdivkdffexphpmtyprt',
+            vehicle_number='ievkwljpkryunofeamaw',
             temporal_type=None,
             transport_mode=None,
-            route_id='thckzndzaduczsrbdmcx',
-            direction_id='zsbkrvyethqfpccemfzp',
-            headsign='jyhkkcohwikccrhxhoqb',
-            start_time='nninswuajghfgablfxpl',
-            next_stop='mtjuofeyhrgshcfbifvv',
-            geohash_level='ohyfsngtojivtavxfcpg',
-            geohash='uhasjzhglxgmbumfwjyp',
-            spd=float(35.740713143007554),
-            hdg=int(51),
-            lat=float(16.743472321379393),
-            long=float(68.79004944008929),
-            acc=float(1.921939114250304),
-            odo=int(66),
-            drst=int(44),
-            loc='veopohaqlfmdotbhlwdu',
-            oday='gpatndalxqqwuhphxvxs',
-            dr_type=int(8)
+            route_id='fqxgqcrmnupumfhnznmd',
+            direction_id='shgqmswkneslpynfurzn',
+            headsign='lttauhnfcxpsyzypmkwz',
+            start_time='wyoxlgrspwovgtzzmrdh',
+            next_stop='junwqtaexidbsltxkkjp',
+            geohash_level='hejotfvlzntiuvplzcob',
+            geohash='mipjvgopteefyofbyrxf',
+            spd=float(28.469370047938447),
+            hdg=int(7),
+            lat=float(34.63221356963327),
+            long=float(17.287706515652935),
+            acc=float(45.28150973729392),
+            odo=int(45),
+            drst=int(47),
+            loc=None,
+            oday='wgvsmgxhhgslzxprwnce',
+            dr_type=int(60)
         )

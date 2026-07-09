@@ -1,4 +1,35 @@
 $script:RequiredXrcgVersion = '0.11.0'
+# Minimum avrotize the generators MUST resolve. xrcg 0.11.0 depends on
+# `avrotize>=3.6.0` with an open upper bound, so a clean install pulls the
+# latest (>=3.7.0). But a *cached* avrotize 3.6.0 in the active environment
+# would silently regenerate broken artifacts for the enum symbols that only
+# 3.7.0 sanitizes (`N/A` slash, digit-leading `1`/`2`, `KAR-MQTT` hyphen --
+# clemensv/avrotize #382/#383/#385). Enforce the floor explicitly so the
+# generator fails fast instead of emitting invalid Avro/Kusto.
+$script:MinimumAvrotizeVersion = '3.7.0'
+
+function Assert-AvrotizeVersion {
+    param(
+        [string] $MinimumVersion = $script:MinimumAvrotizeVersion
+    )
+
+    $versionOutput = & python -c "import importlib.metadata as m; print(m.version('avrotize'))" 2>$null | Out-String
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($versionOutput)) {
+        throw "avrotize >= $MinimumVersion is required for producer generation, but it is not importable. Install it with 'python -m pip install --upgrade `"avrotize>=$MinimumVersion`"'."
+    }
+
+    $versionMatch = [regex]::Match($versionOutput, '(?<version>\d+\.\d+\.\d+)')
+    if (-not $versionMatch.Success) {
+        throw "Unable to parse the installed avrotize version from: $versionOutput"
+    }
+
+    $installedVersion = $versionMatch.Groups['version'].Value
+    if ([version]$installedVersion -lt [version]$MinimumVersion) {
+        throw "avrotize >= $MinimumVersion is required for producer generation, but the active environment resolves $installedVersion. A cached older avrotize silently emits invalid Avro/Kusto for non-identifier enum symbols. Upgrade with 'python -m pip install --upgrade `"avrotize>=$MinimumVersion`"' and re-run the generator."
+    }
+
+    Write-Host "Using avrotize $installedVersion" -ForegroundColor DarkGray
+}
 
 function Assert-XrcgVersion {
     param(
@@ -26,6 +57,10 @@ function Assert-XrcgVersion {
     }
 
     Write-Host "Using xrcg $installedVersion" -ForegroundColor DarkGray
+
+    # xrcg drives avrotize for Avro/Kusto emission; enforce the avrotize floor
+    # in the same gate so both halves of the codegen toolchain are pinned.
+    Assert-AvrotizeVersion
 }
 
 function Convert-GeneratedPyprojects {

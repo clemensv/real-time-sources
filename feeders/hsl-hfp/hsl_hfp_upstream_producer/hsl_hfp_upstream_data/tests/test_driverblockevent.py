@@ -29,31 +29,31 @@ class Test_DriverBlockEvent(unittest.TestCase):
         Create instance of DriverBlockEvent for testing
         """
         instance = DriverBlockEvent(
-            oper=int(12),
-            veh=int(20),
-            tst='sjqntobsiqkrraledupo',
-            tsi=int(26),
-            operator_id='xhexcgspvrbvyqqmsxvn',
-            vehicle_number='utspzwfvszlmzeskwtwo',
+            oper=int(77),
+            veh=int(17),
+            tst='ttukfzkpknqfoszfzfbo',
+            tsi=int(73),
+            operator_id='bjdivkdffexphpmtyprt',
+            vehicle_number='ievkwljpkryunofeamaw',
             temporal_type=None,
             transport_mode=None,
-            route_id='thckzndzaduczsrbdmcx',
-            direction_id='zsbkrvyethqfpccemfzp',
-            headsign='jyhkkcohwikccrhxhoqb',
-            start_time='nninswuajghfgablfxpl',
-            next_stop='mtjuofeyhrgshcfbifvv',
-            geohash_level='ohyfsngtojivtavxfcpg',
-            geohash='uhasjzhglxgmbumfwjyp',
-            spd=float(35.740713143007554),
-            hdg=int(51),
-            lat=float(16.743472321379393),
-            long=float(68.79004944008929),
-            acc=float(1.921939114250304),
-            odo=int(66),
-            drst=int(44),
-            loc='veopohaqlfmdotbhlwdu',
-            oday='gpatndalxqqwuhphxvxs',
-            dr_type=int(8)
+            route_id='fqxgqcrmnupumfhnznmd',
+            direction_id='shgqmswkneslpynfurzn',
+            headsign='lttauhnfcxpsyzypmkwz',
+            start_time='wyoxlgrspwovgtzzmrdh',
+            next_stop='junwqtaexidbsltxkkjp',
+            geohash_level='hejotfvlzntiuvplzcob',
+            geohash='mipjvgopteefyofbyrxf',
+            spd=float(28.469370047938447),
+            hdg=int(7),
+            lat=float(34.63221356963327),
+            long=float(17.287706515652935),
+            acc=float(45.28150973729392),
+            odo=int(45),
+            drst=int(47),
+            loc=None,
+            oday='wgvsmgxhhgslzxprwnce',
+            dr_type=int(60)
         )
         return instance
 
@@ -62,7 +62,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test oper property
         """
-        test_value = int(12)
+        test_value = int(77)
         self.instance.oper = test_value
         self.assertEqual(self.instance.oper, test_value)
     
@@ -70,7 +70,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test veh property
         """
-        test_value = int(20)
+        test_value = int(17)
         self.instance.veh = test_value
         self.assertEqual(self.instance.veh, test_value)
     
@@ -78,7 +78,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test tst property
         """
-        test_value = 'sjqntobsiqkrraledupo'
+        test_value = 'ttukfzkpknqfoszfzfbo'
         self.instance.tst = test_value
         self.assertEqual(self.instance.tst, test_value)
     
@@ -86,7 +86,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test tsi property
         """
-        test_value = int(26)
+        test_value = int(73)
         self.instance.tsi = test_value
         self.assertEqual(self.instance.tsi, test_value)
     
@@ -94,7 +94,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = 'xhexcgspvrbvyqqmsxvn'
+        test_value = 'bjdivkdffexphpmtyprt'
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     
@@ -102,7 +102,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test vehicle_number property
         """
-        test_value = 'utspzwfvszlmzeskwtwo'
+        test_value = 'ievkwljpkryunofeamaw'
         self.instance.vehicle_number = test_value
         self.assertEqual(self.instance.vehicle_number, test_value)
     
@@ -126,7 +126,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'thckzndzaduczsrbdmcx'
+        test_value = 'fqxgqcrmnupumfhnznmd'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -134,7 +134,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test direction_id property
         """
-        test_value = 'zsbkrvyethqfpccemfzp'
+        test_value = 'shgqmswkneslpynfurzn'
         self.instance.direction_id = test_value
         self.assertEqual(self.instance.direction_id, test_value)
     
@@ -142,7 +142,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test headsign property
         """
-        test_value = 'jyhkkcohwikccrhxhoqb'
+        test_value = 'lttauhnfcxpsyzypmkwz'
         self.instance.headsign = test_value
         self.assertEqual(self.instance.headsign, test_value)
     
@@ -150,7 +150,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'nninswuajghfgablfxpl'
+        test_value = 'wyoxlgrspwovgtzzmrdh'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -158,7 +158,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test next_stop property
         """
-        test_value = 'mtjuofeyhrgshcfbifvv'
+        test_value = 'junwqtaexidbsltxkkjp'
         self.instance.next_stop = test_value
         self.assertEqual(self.instance.next_stop, test_value)
     
@@ -166,7 +166,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test geohash_level property
         """
-        test_value = 'ohyfsngtojivtavxfcpg'
+        test_value = 'hejotfvlzntiuvplzcob'
         self.instance.geohash_level = test_value
         self.assertEqual(self.instance.geohash_level, test_value)
     
@@ -174,7 +174,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test geohash property
         """
-        test_value = 'uhasjzhglxgmbumfwjyp'
+        test_value = 'mipjvgopteefyofbyrxf'
         self.instance.geohash = test_value
         self.assertEqual(self.instance.geohash, test_value)
     
@@ -182,7 +182,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test spd property
         """
-        test_value = float(35.740713143007554)
+        test_value = float(28.469370047938447)
         self.instance.spd = test_value
         self.assertEqual(self.instance.spd, test_value)
     
@@ -190,7 +190,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test hdg property
         """
-        test_value = int(51)
+        test_value = int(7)
         self.instance.hdg = test_value
         self.assertEqual(self.instance.hdg, test_value)
     
@@ -198,7 +198,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(16.743472321379393)
+        test_value = float(34.63221356963327)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -206,7 +206,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test long property
         """
-        test_value = float(68.79004944008929)
+        test_value = float(17.287706515652935)
         self.instance.long = test_value
         self.assertEqual(self.instance.long, test_value)
     
@@ -214,7 +214,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test acc property
         """
-        test_value = float(1.921939114250304)
+        test_value = float(45.28150973729392)
         self.instance.acc = test_value
         self.assertEqual(self.instance.acc, test_value)
     
@@ -222,7 +222,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test odo property
         """
-        test_value = int(66)
+        test_value = int(45)
         self.instance.odo = test_value
         self.assertEqual(self.instance.odo, test_value)
     
@@ -230,7 +230,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test drst property
         """
-        test_value = int(44)
+        test_value = int(47)
         self.instance.drst = test_value
         self.assertEqual(self.instance.drst, test_value)
     
@@ -238,7 +238,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test loc property
         """
-        test_value = 'veopohaqlfmdotbhlwdu'
+        test_value = None
         self.instance.loc = test_value
         self.assertEqual(self.instance.loc, test_value)
     
@@ -246,7 +246,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test oday property
         """
-        test_value = 'gpatndalxqqwuhphxvxs'
+        test_value = 'wgvsmgxhhgslzxprwnce'
         self.instance.oday = test_value
         self.assertEqual(self.instance.oday, test_value)
     
@@ -254,7 +254,7 @@ class Test_DriverBlockEvent(unittest.TestCase):
         """
         Test dr_type property
         """
-        test_value = int(8)
+        test_value = int(60)
         self.instance.dr_type = test_value
         self.assertEqual(self.instance.dr_type, test_value)
     

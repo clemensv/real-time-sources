@@ -1,3 +1,3 @@
-from .hfp import VehicleEvent, TemporalTypeEnum, TransportModeEnum, TrafficLightEvent, TlpDecisionEnum, TlpPriorityLevelEnum, TlpReasonEnum, TlpRequestTypeEnum, DriverBlockEvent
+from .hfp import VehicleEvent, TemporalTypeEnum, TransportModeEnum, LocEnum, DirEnum, DriverBlockEvent, TrafficLightEvent, TlpDecisionEnum, TlpPriorityLevelEnum, TlpReasonEnum, TlpRequestTypeEnum, TlpProtocolEnum
 
-__all__ = ["VehicleEvent", "TemporalTypeEnum", "TransportModeEnum", "TrafficLightEvent", "TlpDecisionEnum", "TlpPriorityLevelEnum", "TlpReasonEnum", "TlpRequestTypeEnum", "DriverBlockEvent"]
+__all__ = ["VehicleEvent", "TemporalTypeEnum", "TransportModeEnum", "LocEnum", "DirEnum", "DriverBlockEvent", "TrafficLightEvent", "TlpDecisionEnum", "TlpPriorityLevelEnum", "TlpReasonEnum", "TlpRequestTypeEnum", "TlpProtocolEnum"]

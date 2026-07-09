@@ -3,7 +3,7 @@ from enum import Enum
 
 class DirEnum(Enum):
     """
-    Route direction of the trip as a string, either `1` or `2`. Relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`).
+    Route direction of the trip as a string, either `1` or `2`. Matches the `direction_id` MQTT-topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). From the HFP payload `dir` field. The digit-leading wire values are sanitized to the Avro symbols `_1`/`_2` while the JSON wire values `1`/`2` are preserved verbatim.
     """
     VALUE_1 = '1'
     VALUE_2 = '2'
