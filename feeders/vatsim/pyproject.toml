@@ -18,7 +18,7 @@ requires-python = ">=3.10,<4.0"
 dependencies = [
     "avro>=1.12.1",
     "cloudevents>=1.10.1,<2.0.0",
-    "confluent-kafka>=2.14.2",
+    "confluent-kafka>=2.15.0",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
 ]
