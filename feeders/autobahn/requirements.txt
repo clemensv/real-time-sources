@@ -1,5 +1,5 @@
 aiohttp>=3.14.1
 avro>=1.12.1
 cloudevents>=2.2.0,<3.0.0
-confluent-kafka>=2.14.2
+confluent-kafka>=2.15.0
 dataclasses-json>=0.6.7
