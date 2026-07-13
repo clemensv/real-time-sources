@@ -1470,7 +1470,14 @@ def _key_segment(value: Any, default: str = "unknown") -> str:
 
 
 def _join_key(*parts: Any) -> str:
-    return "/".join(_key_segment(part) for part in parts)
+    # Join composite key parts with ':' (not '/') so the resulting value occupies
+    # exactly ONE MQTT topic level. The static MQTT topic templates declare a single
+    # '{row_id}' placeholder (e.g. '.../static/routes/{row_id}'), and the realtime
+    # templates likewise use single-segment placeholders ('.../{route_id}/vehicle/
+    # {vehicle_id}'). A '/' separator here would inject extra topic levels
+    # (e.g. '.../static/routes/TRIMET/1'), breaking the single-level '{row_id}'
+    # contract and preventing a '+'-wildcard subscriber from matching the leaf.
+    return ":".join(_key_segment(part) for part in parts)
 
 
 def _alert_route_id(alert: Alert) -> str:

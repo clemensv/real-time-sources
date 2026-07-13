@@ -89,14 +89,23 @@ class GtfsAmqpPublisher:
         self._format_type = getattr(producer, "format_type", "application/json")
 
     def _send_message(self, message: Message) -> None:
+        # Route through the generated producer's internal send helpers so the
+        # Artemis pre-settled-sender flush in _send_via_blocking_sender runs.
+        # Calling the raw ``_sender.send`` directly skips that flush and, for a
+        # pre-settled (AtMostOnce) SASL PLAIN link, leaves every message queued
+        # in the transport buffer -> nothing reaches the broker before close.
+        if getattr(self._producer, "_handler", None) is not None:
+            self._producer._send_via_reactor(message)
+            return
+        blocking_send = getattr(self._producer, "_send_via_blocking_sender", None)
+        if blocking_send is not None:
+            blocking_send(message)
+            return
         sender = getattr(self._producer, "_sender", None)
         if sender is not None:
             sender.send(message)
             return
-        reactor_send = getattr(self._producer, "_send_via_reactor", None)
-        if reactor_send is None:
-            raise RuntimeError("AMQP producer has no usable sender")
-        reactor_send(message)
+        raise RuntimeError("AMQP producer has no usable sender")
 
     def _encode_event(self, event: CloudEvent, content_type: str) -> Message:
         if self._content_mode == "structured":
