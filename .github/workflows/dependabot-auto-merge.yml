@@ -28,7 +28,10 @@ jobs:
 
           INITIAL_DELAY=60      # let sibling pull_request checks register
           INTERVAL=30           # seconds between polls
-          MAX_POLLS=90          # ~45 min ceiling after the initial delay
+          MAX_POLLS=300         # ~150 min ceiling after the initial delay
+                                # (must outlast a queue-saturated fleet-wide
+                                #  docker matrix; the loop exits early as soon
+                                #  as every sibling check has concluded)
 
           echo "Waiting ${INITIAL_DELAY}s for sibling checks to register..."
           sleep "$INITIAL_DELAY"
