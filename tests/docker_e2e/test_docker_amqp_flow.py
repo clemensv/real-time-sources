@@ -784,8 +784,18 @@ class TestFrenchRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
 class TestGTFSAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "gtfs"
     image = "gtfs-amqp"
-    env = {"ONCE_MODE": "true", "AGENCY": "trimet", "GTFS_URLS": "https://developer.trimet.org/schedule/gtfs.zip", "MDB_SOURCE_ID": "868"}
+    # gtfs is uniquely a full-dataset firehose (TriMet static has ~1.5M
+    # stop_times). The AMQP harness only drains the broker AFTER the feeder
+    # exits, so an unbounded publish overflows the 512m-tmpfs Artemis and the
+    # broker aborts the connection (proton framing-error) before the run
+    # completes. Cap the static rows per file so the broker stays within tmpfs
+    # while every reference/telemetry TYPE is still emitted and validated.
+    env = {"ONCE_MODE": "true", "AGENCY": "trimet", "GTFS_URLS": "https://developer.trimet.org/schedule/gtfs.zip", "MDB_SOURCE_ID": "868", "GTFS_STATIC_MAX_ROWS_PER_FILE": "200"}
     expected_types = {'GeneralTransitFeedStatic.Transfers', 'GeneralTransitFeedStatic.FeedInfo', 'GeneralTransitFeedStatic.FareAttributes', 'GeneralTransitFeedStatic.StopAreas', 'GeneralTransitFeedStatic.LocationGroups', 'GeneralTransitFeedStatic.Pathways', 'GeneralTransitFeedStatic.Trips', 'GeneralTransitFeedRealTime.Trip.TripUpdate', 'GeneralTransitFeedStatic.Areas', 'GeneralTransitFeedStatic.LocationGeoJson', 'GeneralTransitFeedStatic.Networks', 'GeneralTransitFeedStatic.Routes', 'GeneralTransitFeedStatic.FareProducts', 'GeneralTransitFeedStatic.StopTimes', 'GeneralTransitFeedStatic.FareTransferRules', 'GeneralTransitFeedStatic.Frequencies', 'GeneralTransitFeedStatic.RouteNetworks', 'GeneralTransitFeedRealTime.Alert.Alert', 'GeneralTransitFeed.BookingRules', 'GeneralTransitFeedStatic.Levels', 'GeneralTransitFeedStatic.Stops', 'GeneralTransitFeedStatic.Timeframes', 'GeneralTransitFeedStatic.Shapes', 'GeneralTransitFeedStatic.LocationGroupStores', 'GeneralTransitFeedStatic.Attributions', 'GeneralTransitFeedStatic.FareRules', 'GeneralTransitFeedStatic.FareMedia', 'GeneralTransitFeedStatic.Agency', 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition', 'GeneralTransitFeedStatic.Translations', 'GeneralTransitFeedStatic.FareLegRules'}
+    # Hard floor: reference data that publishes from the static feed on every
+    # run. The realtime variants depend on TriMet's live feed and stay
+    # best-effort.
+    required_types = {'GeneralTransitFeedStatic.Agency', 'GeneralTransitFeedStatic.Routes', 'GeneralTransitFeedStatic.Stops'}
     expected_count = 31
 
 class TestMadridTrafficAmqpDockerFlow(AmqpDockerFlowBase):

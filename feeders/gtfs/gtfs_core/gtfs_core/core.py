@@ -1687,6 +1687,12 @@ async def fetch_and_publish_schedule(agency_id: str, publisher: Any, gtfs_urls: 
         calendar_dates_rows = read_schedule_file_contents(schedule_file_path, "calendar_dates.txt")
 
         send_count = 0
+        # Optional per-file row cap (default unlimited). Lets an operator run a
+        # bounded smoke/sample publish instead of the full static dataset -- used
+        # by the AMQP Docker E2E so the firehose does not overflow the small
+        # tmpfs test broker while nothing is draining it.
+        _max_rows_env = os.environ.get("GTFS_STATIC_MAX_ROWS_PER_FILE")
+        static_max_rows = int(_max_rows_env) if _max_rows_env and _max_rows_env.isdigit() else None
         for file_name in changed_files:
             file_base_name = os.path.basename(file_name).split(".")[0]
             if file_base_name in {"calendar", "calendar_dates"}:
@@ -1718,6 +1724,13 @@ async def fetch_and_publish_schedule(agency_id: str, publisher: Any, gtfs_urls: 
                 entity_count += 1
                 if send_count % 10000 == 0:
                     await _poll_publisher(publisher)
+                if static_max_rows is not None and entity_count >= static_max_rows:
+                    logger.info(
+                        "Reached GTFS_STATIC_MAX_ROWS_PER_FILE=%s cap for %s; skipping remaining rows",
+                        static_max_rows,
+                        file_base_name,
+                    )
+                    break
             logger.info("Processed %s %s entities", entity_count, file_base_name)
             await _flush_publisher(publisher)
             persisted = read_file_hashes(schedule_file_path, cache_dir)
