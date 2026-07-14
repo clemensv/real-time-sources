@@ -30,11 +30,13 @@ permissions:
 # The release tag is fixed (`notebook-wheels`) and is deleted + recreated on
 # every run. Concurrent runs (e.g. a burst of merges to main) would otherwise
 # race: one job deletes the release another job is mid-upload to, yielding
-# `HTTP 404` on asset upload and leaving the release deleted. Serialize on a
-# single group and cancel superseded in-flight runs so only the newest push
-# publishes — the release always reflects the latest commit on main.
+# `HTTP 404` on asset upload and leaving the release deleted. Serialize per ref
+# and cancel superseded in-flight runs so only the newest push on a given ref
+# publishes — the release always reflects the latest commit on main. The group
+# is keyed by ref so a PR's build run (which never publishes) cannot cancel an
+# in-flight main publish and leave the release deleted.
 concurrency:
-  group: publish-notebook-wheels
+  group: publish-notebook-wheels-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
