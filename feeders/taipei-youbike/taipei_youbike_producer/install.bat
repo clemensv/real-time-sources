@@ -1,0 +1,2 @@
+pip install .\taipei_youbike_producer_data
+pip install .\taipei_youbike_producer_kafka_producer

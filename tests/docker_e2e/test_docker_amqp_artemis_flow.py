@@ -83,6 +83,11 @@ def tfl_cycles_amqp_image():
     return build_image("tfl-cycles", dockerfile="Dockerfile.amqp", tag="test-tfl-cycles-amqp")
 
 
+@pytest.fixture(scope="module")
+def taipei_youbike_amqp_image():
+    return build_image("taipei-youbike", dockerfile="Dockerfile.amqp", tag="test-taipei-youbike-amqp")
+
+
 @pytest.fixture()
 def artemis_broker():
     client = docker.from_env()
@@ -426,6 +431,97 @@ class TestTflCyclesAmqpArtemisFlow:
         assert self.TELEMETRY_TYPE in by_type, sorted(str(k) for k in by_type)
 
         schemas = _load_tfl_cycles_schemas()
+        from json_structure import InstanceValidator, SchemaValidator
+        validator_factory = SchemaValidator(extended=True)
+        for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
+            sample_msg, sample_ce = by_type[ce_type][0]
+            for required in ("id", "source", "type", "subject", "specversion"):
+                assert required in sample_ce, f"Missing CE attribute {required!r} on {ce_type}: {sample_ce}"
+            assert sample_ce["specversion"] == "1.0"
+            assert sample_ce["type"] == ce_type
+            data = _body_to_obj(sample_msg)
+            assert isinstance(data, dict), f"{ce_type} body not a JSON object: {data!r}"
+            schema = schemas[ce_type]
+            assert not validator_factory.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(data)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+def _load_taipei_youbike_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, "feeders", "taipei-youbike", "xreg", "taipei-youbike.xreg.json")
+    with open(xreg_path, "r", encoding="utf-8") as fh:
+        manifest = json.load(fh)
+    group = manifest["schemagroups"]["TW.YouBike.jstruct"]["schemas"]
+    return {
+        "TW.YouBike.StationInformation":
+            group["TW.YouBike.StationInformation"]["versions"]["1"]["schema"],
+        "TW.YouBike.StationStatus":
+            group["TW.YouBike.StationStatus"]["versions"]["1"]["schema"],
+    }
+
+
+class TestTaipeiYoubikeAmqpArtemisFlow:
+    """End-to-end: taipei-youbike pushes StationInformation + StationStatus to Artemis.
+
+    Polls the public YouBike 2.0 island-wide station feed once; the feeder
+    sends reference (StationInformation) then telemetry (StationStatus)
+    CloudEvents over AMQP 1.0 in binary mode, keyed by {station_id}."""
+
+    REFERENCE_TYPE = "TW.YouBike.StationInformation"
+    TELEMETRY_TYPE = "TW.YouBike.StationStatus"
+
+    def test_emits_cloudevents_to_amqp_queue(self, artemis_broker, taipei_youbike_amqp_image):
+        client = docker.from_env()
+        feeder = client.containers.run(
+            taipei_youbike_amqp_image.id,
+            detach=True,
+            remove=False,
+            network=artemis_broker["network"],
+            environment={
+                "AMQP_HOST": artemis_broker["internal_host"],
+                "AMQP_PORT": str(artemis_broker["internal_port"]),
+                "AMQP_ADDRESS": artemis_broker["queue"],
+                "AMQP_USERNAME": artemis_broker["user"],
+                "AMQP_PASSWORD": artemis_broker["password"],
+                "AMQP_AUTH_MODE": "password",
+                "POLLING_INTERVAL": "60",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS (last 4KB) ---\n{logs[-4000:]}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _receive_messages(
+            "127.0.0.1",
+            artemis_broker["host_port"],
+            artemis_broker["queue"],
+            artemis_broker["user"],
+            artemis_broker["password"],
+            expected=30000,
+            timeout=180,
+        )
+        assert messages, "No AMQP messages received from Artemis"
+
+        by_type: Dict[str, List[Any]] = {}
+        for message in messages:
+            ce = _extract_ce_attrs(message)
+            t = ce.get("type")
+            if t:
+                by_type.setdefault(t, []).append((message, ce))
+        assert self.REFERENCE_TYPE in by_type, sorted(str(k) for k in by_type)
+        assert self.TELEMETRY_TYPE in by_type, sorted(str(k) for k in by_type)
+
+        schemas = _load_taipei_youbike_schemas()
         from json_structure import InstanceValidator, SchemaValidator
         validator_factory = SchemaValidator(extended=True)
         for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
