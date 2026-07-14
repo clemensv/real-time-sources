@@ -33,6 +33,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#taipei-youbike/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗺️ **Fabric Map**](fabric/README.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/taipei-youbike.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://apis.youbike.com.tw/json/station-yb2.json)
 
@@ -169,9 +170,12 @@ feeder container or notebook runs.
 ### Deploying into Microsoft Fabric
 
 Taipei YouBike targets Microsoft Fabric end-to-end: events land in a Fabric
-**Event Stream** (custom endpoint), and an attached **Eventhouse / KQL database**
+**Event Stream** (custom endpoint), an attached **Eventhouse / KQL database**
 materializes the contract from [`kql/`](kql/) into typed tables
-`['TW.YouBike.StationInformation']` and `['TW.YouBike.StationStatus']`.
+`['TW.YouBike.StationInformation']` and `['TW.YouBike.StationStatus']`, and the
+bundled [**Fabric Map**](fabric/README.md) visualizes all ~9,348 stations on a
+Taiwan basemap — colored by bike availability, sized by capacity, with a labels
+layer and an empty-docks overlay for riders returning a bike.
 
 Two hosting models are supported. Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources#taipei-youbike) to launch either — both walk you through the same Fabric workspace selection and follow-up steps.
 
@@ -216,7 +220,10 @@ tools/deploy-fabric/deploy-fabric-aci.ps1 `
 The script creates the Eventhouse, the KQL database with the [`kql/`](kql/)
 schema and update policies, the Event Stream with a custom endpoint, the ACI
 with the connection string wired in, and a storage account / file share mounted
-at `/state` for dedupe persistence.
+at `/state` for dedupe persistence. As a final step it runs the
+[`fabric/`](fabric/README.md) post-deploy hook, which creates the
+**`taipei-youbike-map`** Map item and wires its station-availability, labels,
+and empty-docks layers over the live KQL tables.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#taipei-youbike/fabric-aci)
 
@@ -336,6 +343,7 @@ taipei-youbike/
 ├── taipei_youbike_amqp_producer/          # xRegistry-generated AMQP producer
 ├── kql/taipei-youbike.kql                 # Eventhouse table + update policies
 ├── notebook/taipei-youbike-feed.ipynb     # Fabric Notebook feeder
+├── fabric/                                # Fabric Map post-deploy hook + layer wiring
 ├── Dockerfile.kafka                       # builds the Kafka feeder image
 ├── Dockerfile.mqtt                        # builds the MQTT feeder image
 ├── Dockerfile.amqp                        # builds the AMQP feeder image
@@ -362,6 +370,7 @@ taipei-youbike/
 📑 <a href="EVENTS.md">EVENTS.md</a> &nbsp;·&nbsp;
 🐳 <a href="CONTAINER.md">CONTAINER.md</a> &nbsp;·&nbsp;
 🗄️ <a href="kql/taipei-youbike.kql">KQL schema</a> &nbsp;·&nbsp;
+🗺️ <a href="fabric/README.md">Fabric Map</a> &nbsp;·&nbsp;
 ↗ <a href="https://apis.youbike.com.tw/json/station-yb2.json">YouBike station feed</a> &nbsp;·&nbsp;
 📖 <a href="https://tdx.transportdata.tw/">TDX</a>
 </sub>

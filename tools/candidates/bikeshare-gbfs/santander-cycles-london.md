@@ -1,5 +1,7 @@
 # Santander Cycles London
 
+> ✅ **SHIPPED** · feeder: `tfl-cycles` · entry: `tfl-cycles` · 2026-07-14
+
 **Country/Region**: United Kingdom — London
 **Publisher**: Transport for London (TfL)
 **API Endpoint**: `https://tfl.gov.uk/tfl/syndication/feeds/cycle-hire/livecyclehireupdates.xml` (XML) and `https://api.tfl.gov.uk/BikePoint` (REST/JSON)
