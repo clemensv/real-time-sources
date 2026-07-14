@@ -1,0 +1,253 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['TW.YouBike.StationInformation'] (
+   [station_id]: string,
+   [name_tw]: string,
+   [name_en]: string,
+   [name_cn]: string,
+   [district_tw]: string,
+   [district_en]: string,
+   [district_cn]: string,
+   [address_tw]: string,
+   [address_en]: string,
+   [address_cn]: string,
+   [lat]: real,
+   [lon]: real,
+   [capacity]: int,
+   [station_type]: int,
+   [country_code]: string,
+   [area_code]: string,
+   [img]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['TW.YouBike.StationInformation'] docstring @"{""description"": ""Reference record for one Taiwan YouBike 2.0 docking station as returned by the YouBike public station feed `https://apis.youbike.com.tw/json/station-yb2.json`. Identity, bilingual name, administrative district, street address, WGS 84 location, nominal docking capacity, station type, and administrative region codes. YouBike 2.0 is Taiwan's dominant station-based public bike-sharing system with roughly 9,300 stations across Taipei, New Taipei, Taoyuan, Hsinchu, Taichung, Chiayi, Tainan, Kaohsiung, and Pingtung.""}";
+
+.alter table ['TW.YouBike.StationInformation'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable YouBike station number from the `station_no` field of the upstream record, for example `500101001`. It is unique within the YouBike 2.0 network, persists across feed refreshes, and forms the single component of both the CloudEvents subject and the Kafka key. The leading digits encode the operating city and administrative area.""}",
+   [name_tw]: @"{""description"": ""Traditional Chinese (zh-Hant-TW) customer-facing station name from the `name_tw` field, for example `\u6377\u904b\u79d1\u6280\u5927\u6a13\u7ad9` (MRT Technology Building Station). This is the primary display name shown in the YouBike app and on station signage.""}",
+   [name_en]: @"{""description"": ""English station name from the `name_en` field, for example `MRT Technology Bldg. Sta.`. Intended for maps, screens, and accessibility tooling; the bridge emits null when the upstream value is absent or an empty string.""}",
+   [name_cn]: @"{""description"": ""Simplified Chinese (zh-Hans) station name from the `name_cn` field. This localization slot is present in the upstream schema but is currently returned as an empty string for every station; the bridge normalizes the empty string to null.""}",
+   [district_tw]: @"{""description"": ""Traditional Chinese administrative district (\u884c\u653f\u5340) in which the station is located, from the `district_tw` field, for example `\u5927\u5b89\u5340` (Da'an District). The bridge emits null when absent or empty.""}",
+   [district_en]: @"{""description"": ""English administrative district name from the `district_en` field, for example `Daan Dist.`. Useful for district-level grouping and filtering; the bridge emits null when absent or empty.""}",
+   [district_cn]: @"{""description"": ""Simplified Chinese administrative district name from the `district_cn` field. Present in the upstream schema but currently returned as an empty string for every station; the bridge normalizes the empty string to null.""}",
+   [address_tw]: @"{""description"": ""Traditional Chinese street address of the station from the `address_tw` field, for example `\u5fa9\u8208\u5357\u8def\u4e8c\u6bb5235\u865f\u524d` (in front of No. 235, Section 2, Fuxing South Road). The bridge emits null when absent or empty.""}",
+   [address_en]: @"{""description"": ""English street address of the station from the `address_en` field, for example `No.235, Sec. 2, Fuxing S. Rd.`. The bridge emits null when absent or empty.""}",
+   [address_cn]: @"{""description"": ""Simplified Chinese street address from the `address_cn` field. Present in the upstream schema but currently returned as an empty string for every station; the bridge normalizes the empty string to null.""}",
+   [lat]: @"{""description"": ""WGS 84 latitude of the docking station in decimal degrees, parsed from the string-valued `lat` field of the upstream record (for example `\""25.02605\""`). Positive values are north of the equator; all YouBike stations are in Taiwan, roughly between 22 and 25.3 degrees north.""}",
+   [lon]: @"{""description"": ""WGS 84 longitude of the docking station in decimal degrees, parsed from the string-valued `lng` field of the upstream record (for example `\""121.5436\""`). Positive values are east of the prime meridian; all YouBike stations are in Taiwan, roughly between 120 and 122 degrees east.""}",
+   [capacity]: @"{""description"": ""Nominal number of physical docking points at the station, from the `parking_spaces` field. Represents the configured physical size of the docking station; it is not necessarily equal to the live sum of available bikes, empty docks, and out-of-service docks. The bridge emits null when the value is absent.""}",
+   [station_type]: @"{""description"": ""YouBike station generation code from the `type` field. The value `2` denotes a YouBike 2.0 station (the lightweight docking generation that carries its lock and payment terminal on the bike rather than the dock). This feed exposes only YouBike 2.0 stations, so the value is `2` for every record.""}",
+   [country_code]: @"{""description"": ""YouBike internal country code from the `country_code` field. Currently `00` for every station (Taiwan). Reserved by the operator for future multi-country deployments; the bridge emits null when absent.""}",
+   [area_code]: @"{""description"": ""YouBike internal administrative-area code from the `area_code` field, a two-character hexadecimal code such as `00` (Taipei City), `05` (New Taipei City), `07` (Taoyuan), `01` (Taichung), `12` (Kaohsiung), `13` (Tainan), or `0A` (Miaoli County) that groups stations by operating city / service area across the 14 YouBike regions of Taiwan. The operator publishes no official code-to-city table; the mapping is established empirically by correlating the code with `district_tw` and the station coordinates. The bridge emits null when absent.""}",
+   [img]: @"{""description"": ""Relative URL path of the station photograph on the YouBike web site from the `img` field, for example `/images/station/default.jpg`. Resolve against `https://apis.youbike.com.tw` to obtain the absolute image URL; the bridge emits null when absent.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['TW.YouBike.StationInformation'] ingestion json mapping "TW.YouBike.StationInformation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name_tw", "path": "$.name_tw"},
+  {"column": "name_en", "path": "$.name_en"},
+  {"column": "name_cn", "path": "$.name_cn"},
+  {"column": "district_tw", "path": "$.district_tw"},
+  {"column": "district_en", "path": "$.district_en"},
+  {"column": "district_cn", "path": "$.district_cn"},
+  {"column": "address_tw", "path": "$.address_tw"},
+  {"column": "address_en", "path": "$.address_en"},
+  {"column": "address_cn", "path": "$.address_cn"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "capacity", "path": "$.capacity"},
+  {"column": "station_type", "path": "$.station_type"},
+  {"column": "country_code", "path": "$.country_code"},
+  {"column": "area_code", "path": "$.area_code"},
+  {"column": "img", "path": "$.img"}
+]
+```
+
+.create-or-alter table ['TW.YouBike.StationInformation'] ingestion json mapping "TW.YouBike.StationInformation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name_tw", "path": "$.data.name_tw"},
+  {"column": "name_en", "path": "$.data.name_en"},
+  {"column": "name_cn", "path": "$.data.name_cn"},
+  {"column": "district_tw", "path": "$.data.district_tw"},
+  {"column": "district_en", "path": "$.data.district_en"},
+  {"column": "district_cn", "path": "$.data.district_cn"},
+  {"column": "address_tw", "path": "$.data.address_tw"},
+  {"column": "address_en", "path": "$.data.address_en"},
+  {"column": "address_cn", "path": "$.data.address_cn"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lon", "path": "$.data.lon"},
+  {"column": "capacity", "path": "$.data.capacity"},
+  {"column": "station_type", "path": "$.data.station_type"},
+  {"column": "country_code", "path": "$.data.country_code"},
+  {"column": "area_code", "path": "$.data.area_code"},
+  {"column": "img", "path": "$.data.img"}
+]
+```
+
+.drop materialized-view ['TW.YouBike.StationInformationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['TW.YouBike.StationInformationLatest'] on table ['TW.YouBike.StationInformation'] {
+    ['TW.YouBike.StationInformation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['TW.YouBike.StationInformation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'TW.YouBike.StationInformation') | project['station_id'] = tostring(data.['station_id']),['name_tw'] = tostring(data.['name_tw']),['name_en'] = tostring(data.['name_en']),['name_cn'] = tostring(data.['name_cn']),['district_tw'] = tostring(data.['district_tw']),['district_en'] = tostring(data.['district_en']),['district_cn'] = tostring(data.['district_cn']),['address_tw'] = tostring(data.['address_tw']),['address_en'] = tostring(data.['address_en']),['address_cn'] = tostring(data.['address_cn']),['lat'] = toreal(data.['lat']),['lon'] = toreal(data.['lon']),['capacity'] = toint(data.['capacity']),['station_type'] = toint(data.['station_type']),['country_code'] = tostring(data.['country_code']),['area_code'] = tostring(data.['area_code']),['img'] = tostring(data.['img']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['TW.YouBike.StationStatus'] (
+   [station_id]: string,
+   [num_bikes_available]: int,
+   [num_bikes_yb1]: int,
+   [num_bikes_yb2]: int,
+   [num_ebikes_available]: int,
+   [num_empty_docks]: int,
+   [num_forbidden_docks]: int,
+   [availability_level]: int,
+   [service_status]: int,
+   [updated_at]: datetime,
+   [snapshot_time]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['TW.YouBike.StationStatus'] docstring @"{""description"": ""Near-real-time availability record for one Taiwan YouBike 2.0 docking station, from the YouBike public station feed `https://apis.youbike.com.tw/json/station-yb2.json`. Reports the current count of rentable bikes (with the per-generation breakdown), empty docks available for returns, out-of-service docks, the discrete availability gauge level, the station service status, and the upstream data-update timestamps. The upstream feed refreshes approximately every minute.""}";
+
+.alter table ['TW.YouBike.StationStatus'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable YouBike station number from the `station_no` field of the upstream record, for example `500101001`. Matches the `station_id` of the corresponding `StationInformation` event and forms the CloudEvents subject and Kafka key.""}",
+   [num_bikes_available]: @"{""description"": ""Total number of rentable bikes currently docked and available at the station, from the `available_spaces` field. Equals the sum of `num_bikes_yb1`, `num_bikes_yb2`, and `num_ebikes_available`.""}",
+   [num_bikes_yb1]: @"{""description"": ""Number of first-generation YouBike 1.0 mechanical bikes currently available at the station, from the `yb1` key of the upstream `available_spaces_detail` object. This is a legacy field retained from when YouBike 1.0 and 2.0 coexisted; YouBike 1.0 has been fully retired and the value is `0` for every station in the current island-wide feed (the companion `station-yb1.json` endpoint returns an empty document). The bridge emits null when the breakdown is absent.""}",
+   [num_bikes_yb2]: @"{""description"": ""Number of second-generation YouBike 2.0 mechanical bikes currently available at the station, from the `yb2` key of the upstream `available_spaces_detail` object. The bridge emits null when the breakdown is absent.""}",
+   [num_ebikes_available]: @"{""description"": ""Number of electric YouBike (YouBike 2.0E, electrically assisted) bikes currently available at the station, from the `eyb` key of the upstream `available_spaces_detail` object. The bridge emits null when the breakdown is absent.""}",
+   [num_empty_docks]: @"{""description"": ""Number of empty docking points currently available for returning a bike at the station, from the `empty_spaces` field.""}",
+   [num_forbidden_docks]: @"{""description"": ""Number of docking points currently disabled or out of service (\u6545\u969c/\u7981\u7528\u8eca\u4f4d, for example a broken dock that can neither release nor accept a bike), from the `forbidden_spaces` field. The bridge emits null when absent.""}",
+   [availability_level]: @"{""description"": ""Discrete availability gauge level from the `available_spaces_level` field, taking one of the values 0, 20, 40, 60, 80, or 100 (a six-step / 0-to-5-bar signal indicator the YouBike app renders, 0 = empty, 100 = plentiful). It tracks standard YouBike 2.0 (`num_bikes_yb2`) availability: the level is 0 whenever no standard bikes are docked, even if electric bikes are present. It is a coarse presentation rather than an exact percentage, and the exact bucketing thresholds are proprietary to the operator. The bridge emits null when absent.""}",
+   [service_status]: @"{""description"": ""Station service status from the `status` field, aligned with the TDX (Taiwan Transport Data eXchange) `ServiceStatus` enumeration. `1` indicates normal operation (\u6b63\u5e38\u71df\u904b); `2` indicates the station is temporarily suspended (\u66ab\u505c\u71df\u904b) \u2014 observed suspended stations have every dock forbidden (`num_forbidden_docks` equals `capacity`), zero available bikes and empty docks, and a frozen timestamp. `0` (\u505c\u6b62\u71df\u904b, ceased) denotes a permanently closed station and is not observed in the current feed because closed stations are dropped from the document rather than flagged.""}",
+   [updated_at]: @"{""description"": ""Timestamp at which the YouBike backend last wrote this station's record, in ISO 8601 / RFC 3339 UTC. It is the operator's record-update time and runs a few tens of seconds after `snapshot_time` (the underlying sensor reading). The upstream `updated_at` field is a naive local time string in the Asia/Taipei time zone (UTC+8), for example `2026-07-15 01:30:34`; the bridge converts it to an absolute UTC instant.""}",
+   [snapshot_time]: @"{""description"": ""Timestamp at which the station hardware (the on-site IoT module) collected the occupancy reading, in ISO 8601 / RFC 3339 UTC. This is the source sensor time (the Taipei open-data mirror labels the equivalent field `infoTime` / `mday`) and is typically a few tens of seconds earlier than `updated_at`. The upstream `time` field is a naive local time string in the Asia/Taipei time zone (UTC+8), for example `2026-07-15 01:30:04`; the bridge converts it to an absolute UTC instant and emits null when absent.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['TW.YouBike.StationStatus'] ingestion json mapping "TW.YouBike.StationStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "num_bikes_available", "path": "$.num_bikes_available"},
+  {"column": "num_bikes_yb1", "path": "$.num_bikes_yb1"},
+  {"column": "num_bikes_yb2", "path": "$.num_bikes_yb2"},
+  {"column": "num_ebikes_available", "path": "$.num_ebikes_available"},
+  {"column": "num_empty_docks", "path": "$.num_empty_docks"},
+  {"column": "num_forbidden_docks", "path": "$.num_forbidden_docks"},
+  {"column": "availability_level", "path": "$.availability_level"},
+  {"column": "service_status", "path": "$.service_status"},
+  {"column": "updated_at", "path": "$.updated_at"},
+  {"column": "snapshot_time", "path": "$.snapshot_time"}
+]
+```
+
+.create-or-alter table ['TW.YouBike.StationStatus'] ingestion json mapping "TW.YouBike.StationStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "num_bikes_available", "path": "$.data.num_bikes_available"},
+  {"column": "num_bikes_yb1", "path": "$.data.num_bikes_yb1"},
+  {"column": "num_bikes_yb2", "path": "$.data.num_bikes_yb2"},
+  {"column": "num_ebikes_available", "path": "$.data.num_ebikes_available"},
+  {"column": "num_empty_docks", "path": "$.data.num_empty_docks"},
+  {"column": "num_forbidden_docks", "path": "$.data.num_forbidden_docks"},
+  {"column": "availability_level", "path": "$.data.availability_level"},
+  {"column": "service_status", "path": "$.data.service_status"},
+  {"column": "updated_at", "path": "$.data.updated_at"},
+  {"column": "snapshot_time", "path": "$.data.snapshot_time"}
+]
+```
+
+.drop materialized-view ['TW.YouBike.StationStatusLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['TW.YouBike.StationStatusLatest'] on table ['TW.YouBike.StationStatus'] {
+    ['TW.YouBike.StationStatus'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['TW.YouBike.StationStatus'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'TW.YouBike.StationStatus') | project['station_id'] = tostring(data.['station_id']),['num_bikes_available'] = toint(data.['num_bikes_available']),['num_bikes_yb1'] = toint(data.['num_bikes_yb1']),['num_bikes_yb2'] = toint(data.['num_bikes_yb2']),['num_ebikes_available'] = toint(data.['num_ebikes_available']),['num_empty_docks'] = toint(data.['num_empty_docks']),['num_forbidden_docks'] = toint(data.['num_forbidden_docks']),['availability_level'] = toint(data.['availability_level']),['service_status'] = toint(data.['service_status']),['updated_at'] = todatetime(data.['updated_at']),['snapshot_time'] = todatetime(data.['snapshot_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+

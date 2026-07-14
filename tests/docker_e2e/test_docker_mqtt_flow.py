@@ -67,6 +67,11 @@ def tfl_cycles_mqtt_image():
 
 
 @pytest.fixture(scope='module')
+def taipei_youbike_mqtt_image():
+    return build_image('taipei-youbike', dockerfile='Dockerfile.mqtt', tag='test-taipei-youbike-mqtt')
+
+
+@pytest.fixture(scope='module')
 def cap_alerts_mqtt_image():
     return build_image('cap-alerts', dockerfile='Dockerfile.mqtt', tag='test-cap-alerts-mqtt')
 
@@ -365,6 +370,120 @@ class TestTflCyclesMqttDockerFlow:
         assert by_type[self.REFERENCE_TYPE][0]['topic'].endswith('/info'), by_type[self.REFERENCE_TYPE][0]['topic']
         assert by_type[self.TELEMETRY_TYPE][0]['topic'].endswith('/status'), by_type[self.TELEMETRY_TYPE][0]['topic']
         schemas = _load_tfl_cycles_schemas()
+        schema_validator = SchemaValidator(extended=True)
+        for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
+            sample = by_type[ce_type][0]
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            payload = _to_dict(sample['payload'])
+            assert isinstance(payload, dict), sample
+            schema = schemas[ce_type]
+            assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+def _load_taipei_youbike_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'taipei-youbike', 'xreg', 'taipei-youbike.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    group = manifest['schemagroups']['TW.YouBike.jstruct']['schemas']
+    return {
+        'TW.YouBike.StationInformation':
+            group['TW.YouBike.StationInformation']['versions']['1']['schema'],
+        'TW.YouBike.StationStatus':
+            group['TW.YouBike.StationStatus']['versions']['1']['schema'],
+    }
+
+
+class TestTaipeiYoubikeMqttDockerFlow:
+    """Verify the taipei-youbike MQTT container publishes reference and telemetry events.
+
+    Polls the public YouBike 2.0 island-wide station feed once; the feeder
+    publishes StationInformation to mobility/taipei-youbike/{station_id}/info and
+    StationStatus to .../status in CloudEvents binary mode (CE metadata in MQTT
+    user properties, JSON payload body)."""
+
+    REFERENCE_TYPE = 'TW.YouBike.StationInformation'
+    TELEMETRY_TYPE = 'TW.YouBike.StationStatus'
+
+    def test_emits_reference_and_telemetry(self, taipei_youbike_mqtt_image):
+        container, network, host_port, broker_ip = _generic_mosquitto(
+            'taipei-youbike-mqtt-e2e', 'taipei-youbike-mqtt-e2e-broker'
+        )
+        messages: List[Dict[str, Any]] = []
+        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+
+        def on_message(_client, _userdata, msg):
+            props: Dict[str, Any] = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload})
+
+        client.on_message = on_message
+        feeder = None
+        try:
+            client.connect('127.0.0.1', host_port, 30)
+            client.subscribe('mobility/taipei-youbike/#', qos=1)
+            client.loop_start()
+
+            docker_client = docker.from_env()
+            feeder = docker_client.containers.run(
+                taipei_youbike_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'taipei-youbike-mqtt-e2e-broker:1883',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            deadline = time.time() + 15
+            while time.time() < deadline:
+                seen = {m['user_properties'].get('type') for m in messages}
+                if self.REFERENCE_TYPE in seen and self.TELEMETRY_TYPE in seen:
+                    break
+                time.sleep(0.25)
+        finally:
+            client.loop_stop()
+            client.disconnect()
+            if feeder is not None:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            try:
+                container.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
+
+        assert messages, 'No MQTT messages received from broker'
+        by_type: Dict[str, List[Dict[str, Any]]] = {}
+        for message in messages:
+            by_type.setdefault(message['user_properties'].get('type'), []).append(message)
+        assert self.REFERENCE_TYPE in by_type, by_type.keys()
+        assert self.TELEMETRY_TYPE in by_type, by_type.keys()
+        # Reference (info) publishes to .../info; telemetry (status) to .../status.
+        assert by_type[self.REFERENCE_TYPE][0]['topic'].endswith('/info'), by_type[self.REFERENCE_TYPE][0]['topic']
+        assert by_type[self.TELEMETRY_TYPE][0]['topic'].endswith('/status'), by_type[self.TELEMETRY_TYPE][0]['topic']
+        schemas = _load_taipei_youbike_schemas()
         schema_validator = SchemaValidator(extended=True)
         for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
             sample = by_type[ce_type][0]

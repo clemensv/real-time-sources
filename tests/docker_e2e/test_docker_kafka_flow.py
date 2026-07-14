@@ -113,6 +113,10 @@ def tfl_cycles_image():
     return build_image('tfl-cycles', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def taipei_youbike_image():
+    return build_image('taipei-youbike', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def erddap_image():
     return build_image('erddap', dockerfile='Dockerfile.kafka')
 
@@ -1258,6 +1262,24 @@ class TestTflCyclesDockerFlow:
         # BikePoint serves anonymously so no app key is required.
         _run_kafka_flow_test(
             kafka, tfl_cycles_image, self.TOPIC,
+            reference_types=['StationInformation'],
+            telemetry_types=['StationStatus'],
+            extra_env={'ONCE_MODE': 'true'},
+            min_messages=5,
+            timeout=240,
+        )
+
+
+class TestTaipeiYoubikeDockerFlow:
+    TOPIC = 'test-taipei-youbike'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, taipei_youbike_image):
+        # YouBike 2.0 island-wide station snapshot (~9,348 stations) polled once.
+        # StationInformation (reference metadata) is emitted first, then
+        # StationStatus (availability telemetry); both keyed by {station_id}.
+        # The public station feed serves anonymously so no API key is required.
+        _run_kafka_flow_test(
+            kafka, taipei_youbike_image, self.TOPIC,
             reference_types=['StationInformation'],
             telemetry_types=['StationStatus'],
             extra_env={'ONCE_MODE': 'true'},

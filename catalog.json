@@ -1089,6 +1089,17 @@
     "amqp": true
   },
   {
+    "id": "taipei-youbike",
+    "name": "YouBike 2.0 Taiwan",
+    "cat": "Transport",
+    "key": false,
+    "desc": "Taiwan — YouBike 2.0 island-wide bikeshare, ~9,348 stations",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "tfl-road-traffic",
     "name": "TfL Road Traffic",
     "cat": "Transport",

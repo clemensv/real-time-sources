@@ -1,0 +1,483 @@
+{
+  "endpoints": {
+    "TW.YouBike.Stations.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "taipei-youbike",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/TW.YouBike.kafka.stations"
+      ],
+      "description": "Kafka producer endpoint for Taiwan YouBike 2.0 public-bike docking-station reference and availability CloudEvents on the `taipei-youbike` topic, keyed by the stable YouBike station number `{station_id}` so every event for one docking station lands on the same partition in emission order."
+    },
+    "TW.YouBike.Mqtt": {
+      "usage": ["producer"],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/TW.YouBike.mqtt.stations"
+      ],
+      "description": "MQTT 5.0 producer endpoint for Taiwan YouBike 2.0 CloudEvents published in binary content mode into a mobility Unified Namespace topic hierarchy rooted at `mobility/taipei-youbike`."
+    },
+    "TW.YouBike.Amqp": {
+      "usage": ["producer"],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/taipei-youbike"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/TW.YouBike.amqp.stations"
+      ],
+      "description": "AMQP 1.0 producer endpoint for Taiwan YouBike 2.0 CloudEvents published in binary content mode to the configured broker address (RabbitMQ AMQP 1.0, ActiveMQ Artemis, or Azure Service Bus / Event Hubs)."
+    }
+  },
+  "messagegroups": {
+    "TW.YouBike.stations": {
+      "description": "Transport-neutral event family for Taiwan's YouBike 2.0 public bicycle-sharing system (branded YouBike 2.0 / 微笑單車, operated island-wide by YouBike Co., Ltd. under contract to Taiwanese municipalities). Both the slowly-changing docking-station reference event and the near-real-time availability event are keyed by the stable YouBike station number `{station_id}` so consumers can build temporally consistent views of one docking station.",
+      "messages": {
+        "TW.YouBike.StationInformation": {
+          "name": "StationInformation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data describing one Taiwan YouBike 2.0 docking station, sourced from the YouBike public station feed at `https://apis.youbike.com.tw/json/station-yb2.json`. Carries the stable station number, the bilingual (Traditional Chinese and English) station name, district and street address, WGS 84 coordinates, the nominal docking capacity, the station type, and the administrative region codes. Emitted at bridge startup and on periodic reference refresh so consumers can join StationStatus availability records against stable station metadata.",
+          "envelopemetadata": {
+            "type": { "value": "TW.YouBike.StationInformation" },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/TW.YouBike.jstruct/schemas/TW.YouBike.StationInformation"
+        },
+        "TW.YouBike.StationStatus": {
+          "name": "StationStatus",
+          "envelope": "CloudEvents/1.0",
+          "description": "Near-real-time availability telemetry for one Taiwan YouBike 2.0 docking station, derived from the YouBike public station feed at `https://apis.youbike.com.tw/json/station-yb2.json`. Reports the current count of rentable bikes (broken down by YouBike 1.0, YouBike 2.0, and electric YouBike), empty docks available for returns, out-of-service docks, the discrete availability gauge level, the station service status, and the upstream data-update timestamps.",
+          "envelopemetadata": {
+            "type": { "value": "TW.YouBike.StationStatus" },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/TW.YouBike.jstruct/schemas/TW.YouBike.StationStatus"
+        }
+      }
+    },
+    "TW.YouBike.kafka.stations": {
+      "description": "Kafka protocol binding for the Taiwan YouBike 2.0 station reference and availability events, keyed by the stable YouBike station number.",
+      "messages": {
+        "TW.YouBike.kafka.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/TW.YouBike.stations/messages/TW.YouBike.StationInformation",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}"
+          }
+        },
+        "TW.YouBike.kafka.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/TW.YouBike.stations/messages/TW.YouBike.StationStatus",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}"
+          }
+        }
+      }
+    },
+    "TW.YouBike.mqtt.stations": {
+      "description": "MQTT 5 protocol binding for the Taiwan YouBike 2.0 station events on the mobility Unified Namespace topic tree.",
+      "messages": {
+        "TW.YouBike.mqtt.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/TW.YouBike.stations/messages/TW.YouBike.StationInformation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/taipei-youbike/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "TW.YouBike.mqtt.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/TW.YouBike.stations/messages/TW.YouBike.StationStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/taipei-youbike/{station_id}/status",
+            "qos": 0,
+            "retain": false
+          }
+        }
+      }
+    },
+    "TW.YouBike.amqp.stations": {
+      "description": "AMQP 1.0 protocol binding for the Taiwan YouBike 2.0 station events, mirroring the CloudEvents subject and partition key onto the AMQP message.",
+      "messages": {
+        "TW.YouBike.amqp.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/TW.YouBike.stations/messages/TW.YouBike.StationInformation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one YouBike docking station."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the stable YouBike station number."
+              }
+            }
+          }
+        },
+        "TW.YouBike.amqp.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/TW.YouBike.stations/messages/TW.YouBike.StationStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one YouBike docking station."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the stable YouBike station number."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "TW.YouBike.jstruct": {
+      "schemas": {
+        "TW.YouBike.StationInformation": {
+          "name": "StationInformation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/tw/youbike/StationInformation/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "StationInformation",
+                "namespace": "TW.YouBike",
+                "description": "Reference record for one Taiwan YouBike 2.0 docking station as returned by the YouBike public station feed `https://apis.youbike.com.tw/json/station-yb2.json`. Identity, bilingual name, administrative district, street address, WGS 84 location, nominal docking capacity, station type, and administrative region codes. YouBike 2.0 is Taiwan's dominant station-based public bike-sharing system with roughly 9,300 stations across Taipei, New Taipei, Taoyuan, Hsinchu, Taichung, Chiayi, Tainan, Kaohsiung, and Pingtung.",
+                "required": [
+                  "station_id",
+                  "name_tw",
+                  "lat",
+                  "lon"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable YouBike station number from the `station_no` field of the upstream record, for example `500101001`. It is unique within the YouBike 2.0 network, persists across feed refreshes, and forms the single component of both the CloudEvents subject and the Kafka key. The leading digits encode the operating city and administrative area.",
+                    "altnames": {
+                      "youbike-api": "station_no"
+                    }
+                  },
+                  "name_tw": {
+                    "type": "string",
+                    "description": "Traditional Chinese (zh-Hant-TW) customer-facing station name from the `name_tw` field, for example `捷運科技大樓站` (MRT Technology Building Station). This is the primary display name shown in the YouBike app and on station signage.",
+                    "altnames": {
+                      "youbike-api": "name_tw"
+                    }
+                  },
+                  "name_en": {
+                    "type": ["null", "string"],
+                    "description": "English station name from the `name_en` field, for example `MRT Technology Bldg. Sta.`. Intended for maps, screens, and accessibility tooling; the bridge emits null when the upstream value is absent or an empty string.",
+                    "altnames": {
+                      "youbike-api": "name_en"
+                    }
+                  },
+                  "name_cn": {
+                    "type": ["null", "string"],
+                    "description": "Simplified Chinese (zh-Hans) station name from the `name_cn` field. This localization slot is present in the upstream schema but is currently returned as an empty string for every station; the bridge normalizes the empty string to null.",
+                    "altnames": {
+                      "youbike-api": "name_cn"
+                    }
+                  },
+                  "district_tw": {
+                    "type": ["null", "string"],
+                    "description": "Traditional Chinese administrative district (行政區) in which the station is located, from the `district_tw` field, for example `大安區` (Da'an District). The bridge emits null when absent or empty.",
+                    "altnames": {
+                      "youbike-api": "district_tw"
+                    }
+                  },
+                  "district_en": {
+                    "type": ["null", "string"],
+                    "description": "English administrative district name from the `district_en` field, for example `Daan Dist.`. Useful for district-level grouping and filtering; the bridge emits null when absent or empty.",
+                    "altnames": {
+                      "youbike-api": "district_en"
+                    }
+                  },
+                  "district_cn": {
+                    "type": ["null", "string"],
+                    "description": "Simplified Chinese administrative district name from the `district_cn` field. Present in the upstream schema but currently returned as an empty string for every station; the bridge normalizes the empty string to null.",
+                    "altnames": {
+                      "youbike-api": "district_cn"
+                    }
+                  },
+                  "address_tw": {
+                    "type": ["null", "string"],
+                    "description": "Traditional Chinese street address of the station from the `address_tw` field, for example `復興南路二段235號前` (in front of No. 235, Section 2, Fuxing South Road). The bridge emits null when absent or empty.",
+                    "altnames": {
+                      "youbike-api": "address_tw"
+                    }
+                  },
+                  "address_en": {
+                    "type": ["null", "string"],
+                    "description": "English street address of the station from the `address_en` field, for example `No.235, Sec. 2, Fuxing S. Rd.`. The bridge emits null when absent or empty.",
+                    "altnames": {
+                      "youbike-api": "address_en"
+                    }
+                  },
+                  "address_cn": {
+                    "type": ["null", "string"],
+                    "description": "Simplified Chinese street address from the `address_cn` field. Present in the upstream schema but currently returned as an empty string for every station; the bridge normalizes the empty string to null.",
+                    "altnames": {
+                      "youbike-api": "address_cn"
+                    }
+                  },
+                  "lat": {
+                    "type": "double",
+                    "description": "WGS 84 latitude of the docking station in decimal degrees, parsed from the string-valued `lat` field of the upstream record (for example `\"25.02605\"`). Positive values are north of the equator; all YouBike stations are in Taiwan, roughly between 22 and 25.3 degrees north.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "altnames": {
+                      "youbike-api": "lat"
+                    }
+                  },
+                  "lon": {
+                    "type": "double",
+                    "description": "WGS 84 longitude of the docking station in decimal degrees, parsed from the string-valued `lng` field of the upstream record (for example `\"121.5436\"`). Positive values are east of the prime meridian; all YouBike stations are in Taiwan, roughly between 120 and 122 degrees east.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "altnames": {
+                      "youbike-api": "lng"
+                    }
+                  },
+                  "capacity": {
+                    "type": ["null", "int32"],
+                    "description": "Nominal number of physical docking points at the station, from the `parking_spaces` field. Represents the configured physical size of the docking station; it is not necessarily equal to the live sum of available bikes, empty docks, and out-of-service docks. The bridge emits null when the value is absent.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "parking_spaces"
+                    }
+                  },
+                  "station_type": {
+                    "type": ["null", "int32"],
+                    "description": "YouBike station generation code from the `type` field. The value `2` denotes a YouBike 2.0 station (the lightweight docking generation that carries its lock and payment terminal on the bike rather than the dock). This feed exposes only YouBike 2.0 stations, so the value is `2` for every record.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "type"
+                    }
+                  },
+                  "country_code": {
+                    "type": ["null", "string"],
+                    "description": "YouBike internal country code from the `country_code` field. Currently `00` for every station (Taiwan). Reserved by the operator for future multi-country deployments; the bridge emits null when absent.",
+                    "altnames": {
+                      "youbike-api": "country_code"
+                    }
+                  },
+                  "area_code": {
+                    "type": ["null", "string"],
+                    "description": "YouBike internal administrative-area code from the `area_code` field, a two-character hexadecimal code such as `00` (Taipei City), `05` (New Taipei City), `07` (Taoyuan), `01` (Taichung), `12` (Kaohsiung), `13` (Tainan), or `0A` (Miaoli County) that groups stations by operating city / service area across the 14 YouBike regions of Taiwan. The operator publishes no official code-to-city table; the mapping is established empirically by correlating the code with `district_tw` and the station coordinates. The bridge emits null when absent.",
+                    "altnames": {
+                      "youbike-api": "area_code"
+                    }
+                  },
+                  "img": {
+                    "type": ["null", "string"],
+                    "description": "Relative URL path of the station photograph on the YouBike web site from the `img` field, for example `/images/station/default.jpg`. Resolve against `https://apis.youbike.com.tw` to obtain the absolute image URL; the bridge emits null when absent.",
+                    "altnames": {
+                      "youbike-api": "img"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "TW.YouBike.StationStatus": {
+          "name": "StationStatus",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/tw/youbike/StationStatus/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "StationStatus",
+                "namespace": "TW.YouBike",
+                "description": "Near-real-time availability record for one Taiwan YouBike 2.0 docking station, from the YouBike public station feed `https://apis.youbike.com.tw/json/station-yb2.json`. Reports the current count of rentable bikes (with the per-generation breakdown), empty docks available for returns, out-of-service docks, the discrete availability gauge level, the station service status, and the upstream data-update timestamps. The upstream feed refreshes approximately every minute.",
+                "required": [
+                  "station_id",
+                  "num_bikes_available",
+                  "num_empty_docks",
+                  "service_status",
+                  "updated_at"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable YouBike station number from the `station_no` field of the upstream record, for example `500101001`. Matches the `station_id` of the corresponding `StationInformation` event and forms the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "youbike-api": "station_no"
+                    }
+                  },
+                  "num_bikes_available": {
+                    "type": "int32",
+                    "description": "Total number of rentable bikes currently docked and available at the station, from the `available_spaces` field. Equals the sum of `num_bikes_yb1`, `num_bikes_yb2`, and `num_ebikes_available`.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "available_spaces"
+                    }
+                  },
+                  "num_bikes_yb1": {
+                    "type": ["null", "int32"],
+                    "description": "Number of first-generation YouBike 1.0 mechanical bikes currently available at the station, from the `yb1` key of the upstream `available_spaces_detail` object. This is a legacy field retained from when YouBike 1.0 and 2.0 coexisted; YouBike 1.0 has been fully retired and the value is `0` for every station in the current island-wide feed (the companion `station-yb1.json` endpoint returns an empty document). The bridge emits null when the breakdown is absent.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "available_spaces_detail.yb1"
+                    }
+                  },
+                  "num_bikes_yb2": {
+                    "type": ["null", "int32"],
+                    "description": "Number of second-generation YouBike 2.0 mechanical bikes currently available at the station, from the `yb2` key of the upstream `available_spaces_detail` object. The bridge emits null when the breakdown is absent.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "available_spaces_detail.yb2"
+                    }
+                  },
+                  "num_ebikes_available": {
+                    "type": ["null", "int32"],
+                    "description": "Number of electric YouBike (YouBike 2.0E, electrically assisted) bikes currently available at the station, from the `eyb` key of the upstream `available_spaces_detail` object. The bridge emits null when the breakdown is absent.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "available_spaces_detail.eyb"
+                    }
+                  },
+                  "num_empty_docks": {
+                    "type": "int32",
+                    "description": "Number of empty docking points currently available for returning a bike at the station, from the `empty_spaces` field.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "empty_spaces"
+                    }
+                  },
+                  "num_forbidden_docks": {
+                    "type": ["null", "int32"],
+                    "description": "Number of docking points currently disabled or out of service (故障/禁用車位, for example a broken dock that can neither release nor accept a bike), from the `forbidden_spaces` field. The bridge emits null when absent.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "forbidden_spaces"
+                    }
+                  },
+                  "availability_level": {
+                    "type": ["null", "int32"],
+                    "description": "Discrete availability gauge level from the `available_spaces_level` field, taking one of the values 0, 20, 40, 60, 80, or 100 (a six-step / 0-to-5-bar signal indicator the YouBike app renders, 0 = empty, 100 = plentiful). It tracks standard YouBike 2.0 (`num_bikes_yb2`) availability: the level is 0 whenever no standard bikes are docked, even if electric bikes are present. It is a coarse presentation rather than an exact percentage, and the exact bucketing thresholds are proprietary to the operator. The bridge emits null when absent.",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "altnames": {
+                      "youbike-api": "available_spaces_level"
+                    }
+                  },
+                  "service_status": {
+                    "type": "int32",
+                    "description": "Station service status from the `status` field, aligned with the TDX (Taiwan Transport Data eXchange) `ServiceStatus` enumeration. `1` indicates normal operation (正常營運); `2` indicates the station is temporarily suspended (暫停營運) — observed suspended stations have every dock forbidden (`num_forbidden_docks` equals `capacity`), zero available bikes and empty docks, and a frozen timestamp. `0` (停止營運, ceased) denotes a permanently closed station and is not observed in the current feed because closed stations are dropped from the document rather than flagged.",
+                    "minimum": 0,
+                    "altnames": {
+                      "youbike-api": "status"
+                    }
+                  },
+                  "updated_at": {
+                    "type": "datetime",
+                    "description": "Timestamp at which the YouBike backend last wrote this station's record, in ISO 8601 / RFC 3339 UTC. It is the operator's record-update time and runs a few tens of seconds after `snapshot_time` (the underlying sensor reading). The upstream `updated_at` field is a naive local time string in the Asia/Taipei time zone (UTC+8), for example `2026-07-15 01:30:34`; the bridge converts it to an absolute UTC instant.",
+                    "altnames": {
+                      "youbike-api": "updated_at"
+                    }
+                  },
+                  "snapshot_time": {
+                    "type": ["null", "datetime"],
+                    "description": "Timestamp at which the station hardware (the on-site IoT module) collected the occupancy reading, in ISO 8601 / RFC 3339 UTC. This is the source sensor time (the Taipei open-data mirror labels the equivalent field `infoTime` / `mday`) and is typically a few tens of seconds earlier than `updated_at`. The upstream `time` field is a naive local time string in the Asia/Taipei time zone (UTC+8), for example `2026-07-15 01:30:04`; the bridge converts it to an absolute UTC instant and emits null when absent.",
+                    "altnames": {
+                      "youbike-api": "time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
