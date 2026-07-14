@@ -127,10 +127,10 @@ def _build_mqtt_client(args: argparse.Namespace) -> tuple[mqtt.Client, str, int,
 async def _run_feed(args: argparse.Namespace) -> None:
     paho_client, host, port, entra_token = _build_mqtt_client(args)
 
-    avg_client = NLNDWAVGMqttMqttClient(paho_client)
-    drip_client = NLNDWDRIPMqttMqttClient(paho_client)
-    msi_client = NLNDWMSIMqttMqttClient(paho_client)
-    sit_client = NLNDWSituationsMqttMqttClient(paho_client)
+    avg_client = NLNDWAVGMqttMqttClient(paho_client, content_mode="binary")
+    drip_client = NLNDWDRIPMqttMqttClient(paho_client, content_mode="binary")
+    msi_client = NLNDWMSIMqttMqttClient(paho_client, content_mode="binary")
+    sit_client = NLNDWSituationsMqttMqttClient(paho_client, content_mode="binary")
 
     # Direct paho connect: multiple generated MqttClient instances sharing one
     # paho client overwrite each other's on_connect, causing connect() timeout.
