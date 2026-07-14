@@ -27,6 +27,16 @@ on:
 permissions:
   contents: write
 
+# The release tag is fixed (`notebook-wheels`) and is deleted + recreated on
+# every run. Concurrent runs (e.g. a burst of merges to main) would otherwise
+# race: one job deletes the release another job is mid-upload to, yielding
+# `HTTP 404` on asset upload and leaving the release deleted. Serialize on a
+# single group and cancel superseded in-flight runs so only the newest push
+# publishes — the release always reflects the latest commit on main.
+concurrency:
+  group: publish-notebook-wheels
+  cancel-in-progress: true
+
 jobs:
   discover:
     runs-on: ubuntu-latest
