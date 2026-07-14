@@ -1078,6 +1078,17 @@
     "amqp": true
   },
   {
+    "id": "tfl-cycles",
+    "name": "TfL Santander Cycles",
+    "cat": "Transport",
+    "key": false,
+    "desc": "London, UK — Santander Cycles bikeshare, ~798 docking stations",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "tfl-road-traffic",
     "name": "TfL Road Traffic",
     "cat": "Transport",
