@@ -1,5 +1,7 @@
 # Taipei YouBike 2.0
 
+> ✅ **SHIPPED** · feeder: `taipei-youbike` · entry: `taipei-youbike` · 2026-07-14
+
 **Country/Region**: Taiwan (island-wide — Taipei, New Taipei, Taoyuan, Hsinchu, Taichung, Kaohsiung, etc.)
 **Publisher**: YouBike Co., Ltd.
 **API Endpoint**: `https://apis.youbike.com.tw/json/station-yb2.json`
