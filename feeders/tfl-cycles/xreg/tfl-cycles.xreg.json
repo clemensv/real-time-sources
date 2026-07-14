@@ -1,0 +1,404 @@
+{
+  "endpoints": {
+    "UK.Gov.TfL.Cycles.Stations.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "tfl-cycles",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Gov.TfL.Cycles.kafka.stations"
+      ],
+      "description": "Kafka producer endpoint for Transport for London Santander Cycles docking-station reference and availability CloudEvents on the `tfl-cycles` topic, keyed by the stable BikePoint identifier `{station_id}` so every event for one docking station lands on the same partition in emission order."
+    },
+    "UK.Gov.TfL.Cycles.Mqtt": {
+      "usage": ["producer"],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations"
+      ],
+      "description": "MQTT 5.0 producer endpoint for Transport for London Santander Cycles CloudEvents published in binary content mode into a mobility Unified Namespace topic hierarchy rooted at `mobility/tfl-cycles`."
+    },
+    "UK.Gov.TfL.Cycles.Amqp": {
+      "usage": ["producer"],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/tfl-cycles"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Gov.TfL.Cycles.amqp.stations"
+      ],
+      "description": "AMQP 1.0 producer endpoint for Transport for London Santander Cycles CloudEvents published in binary content mode to the configured broker address (RabbitMQ AMQP 1.0, ActiveMQ Artemis, or Azure Service Bus / Event Hubs)."
+    }
+  },
+  "messagegroups": {
+    "UK.Gov.TfL.Cycles.stations": {
+      "description": "Transport-neutral event family for the Transport for London public cycle-hire scheme (branded Santander Cycles, operated on the TfL BikePoint platform). Both the slowly-changing docking-station reference event and the near-real-time availability event are keyed by the stable BikePoint identifier `{station_id}` so consumers can build temporally consistent views of one docking station.",
+      "messages": {
+        "UK.Gov.TfL.Cycles.StationInformation": {
+          "name": "StationInformation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data describing one Transport for London cycle-hire docking station (BikePoint), sourced from the TfL Unified API `GET /BikePoint` response `Place` object. Carries the stable BikePoint identifier, customer-facing name, WGS 84 coordinates, legacy terminal identifier, physical docking capacity, and provisioning lifecycle flags. Emitted at bridge startup and on periodic reference refresh so consumers can join StationStatus availability records against stable station metadata.",
+          "envelopemetadata": {
+            "type": { "value": "UK.Gov.TfL.Cycles.StationInformation" },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.jstruct/schemas/UK.Gov.TfL.Cycles.StationInformation"
+        },
+        "UK.Gov.TfL.Cycles.StationStatus": {
+          "name": "StationStatus",
+          "envelope": "CloudEvents/1.0",
+          "description": "Near-real-time availability telemetry for one Transport for London cycle-hire docking station (BikePoint), derived from the `additionalProperties` key/value entries of the TfL Unified API `GET /BikePoint` response. Reports the current count of rentable standard bikes and e-bikes, empty docks available for returns, total docks, and the operating flags together with the most recent upstream modification timestamp for the station.",
+          "envelopemetadata": {
+            "type": { "value": "UK.Gov.TfL.Cycles.StationStatus" },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.jstruct/schemas/UK.Gov.TfL.Cycles.StationStatus"
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.kafka.stations": {
+      "description": "Kafka protocol binding for the Transport for London cycle-hire station reference and availability events, keyed by the stable BikePoint identifier.",
+      "messages": {
+        "UK.Gov.TfL.Cycles.kafka.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationInformation",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}"
+          }
+        },
+        "UK.Gov.TfL.Cycles.kafka.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationStatus",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}"
+          }
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.mqtt.stations": {
+      "description": "MQTT 5 protocol binding for the Transport for London cycle-hire station events on the mobility Unified Namespace topic tree.",
+      "messages": {
+        "UK.Gov.TfL.Cycles.mqtt.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationInformation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/tfl-cycles/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "UK.Gov.TfL.Cycles.mqtt.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/tfl-cycles/{station_id}/status",
+            "qos": 0,
+            "retain": false
+          }
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.amqp.stations": {
+      "description": "AMQP 1.0 protocol binding for the Transport for London cycle-hire station events, mirroring the CloudEvents subject and partition key onto the AMQP message.",
+      "messages": {
+        "UK.Gov.TfL.Cycles.amqp.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationInformation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one BikePoint docking station."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the stable BikePoint station identity."
+              }
+            }
+          }
+        },
+        "UK.Gov.TfL.Cycles.amqp.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one BikePoint docking station."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the stable BikePoint station identity."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "UK.Gov.TfL.Cycles.jstruct": {
+      "schemas": {
+        "UK.Gov.TfL.Cycles.StationInformation": {
+          "name": "StationInformation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/uk/gov/tfl/cycles/StationInformation/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "StationInformation",
+                "description": "Reference record for one Transport for London cycle-hire docking station (BikePoint) as returned by the TfL Unified API `GET /BikePoint`. Identity, location, legacy terminal reference, physical docking capacity, and provisioning lifecycle flags. The bridge derives capacity and the lifecycle flags from the string-typed `additionalProperties` key/value entries on the BikePoint `Place` object.",
+                "required": [
+                  "station_id",
+                  "name",
+                  "lat",
+                  "lon"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable BikePoint identifier from the `id` field of the TfL `Place` object, for example `BikePoints_1`. It is unique within the London cycle-hire scheme, persists across API refreshes, appears in the `/Place/{id}` resource URL, and forms the single component of both the CloudEvents subject and the Kafka key.",
+                    "altnames": {
+                      "tfl-api": "id"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Customer-facing station name from the `commonName` field of the TfL `Place` object, for example `River Street , Clerkenwell`. Intended for maps, screens, and accessibility tooling.",
+                    "altnames": {
+                      "tfl-api": "commonName"
+                    }
+                  },
+                  "lat": {
+                    "type": "double",
+                    "description": "WGS 84 latitude of the docking station in decimal degrees from the `lat` field of the TfL `Place` object. Positive values are north of the equator.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "altnames": {
+                      "tfl-api": "lat"
+                    }
+                  },
+                  "lon": {
+                    "type": "double",
+                    "description": "WGS 84 longitude of the docking station in decimal degrees from the `lon` field of the TfL `Place` object. Positive values are east of the prime meridian and negative values are west; all London BikePoints are slightly west or east of Greenwich.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "altnames": {
+                      "tfl-api": "lon"
+                    }
+                  },
+                  "terminal_name": {
+                    "type": ["null", "string"],
+                    "description": "Legacy terminal identifier from the `TerminalName` entry in `additionalProperties`, for example `001023`. This is the numbering used by the original cycle-hire terminal hardware and the legacy `livecyclehireupdates.xml` feed; the bridge emits null when the entry is absent.",
+                    "altnames": {
+                      "tfl-api": "TerminalName"
+                    }
+                  },
+                  "capacity": {
+                    "type": ["null", "int32"],
+                    "description": "Total number of physical docking points at the station, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Represents the fixed physical size of the docking station; the bridge emits null when `NbDocks` is absent or non-numeric.",
+                    "minimum": 0,
+                    "altnames": {
+                      "tfl-api": "NbDocks"
+                    }
+                  },
+                  "temporary": {
+                    "type": ["null", "boolean"],
+                    "description": "Whether the docking station is a temporary installation, parsed from the string-valued `Temporary` entry in `additionalProperties` (`true`/`false`). Temporary stations are deployed for events or roadworks and may be removed; the bridge emits null when the entry is absent.",
+                    "altnames": {
+                      "tfl-api": "Temporary"
+                    }
+                  },
+                  "install_date": {
+                    "type": ["null", "datetime"],
+                    "description": "Timestamp at which the docking station was installed, in ISO 8601 / RFC 3339 UTC. The upstream `InstallDate` entry in `additionalProperties` is a string of Unix epoch milliseconds (for example `1278947280000`); the bridge converts it to an absolute UTC instant and emits null when the entry is empty or absent.",
+                    "altnames": {
+                      "tfl-api": "InstallDate"
+                    }
+                  },
+                  "removal_date": {
+                    "type": ["null", "datetime"],
+                    "description": "Timestamp at which the docking station is scheduled to be, or was, removed, in ISO 8601 / RFC 3339 UTC. The upstream `RemovalDate` entry in `additionalProperties` is a string of Unix epoch milliseconds or an empty string; the bridge converts a populated value to an absolute UTC instant and emits null for active stations with no removal scheduled.",
+                    "altnames": {
+                      "tfl-api": "RemovalDate"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "UK.Gov.TfL.Cycles.StationStatus": {
+          "name": "StationStatus",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/uk/gov/tfl/cycles/StationStatus/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "StationStatus",
+                "description": "Near-real-time availability record for one Transport for London cycle-hire docking station (BikePoint), derived from the string-valued `additionalProperties` key/value entries on the TfL `Place` object returned by `GET /BikePoint`. The bridge parses the numeric availability counts and boolean operating flags from their string representations and derives the modification timestamp from the newest per-property `modified` value.",
+                "required": [
+                  "station_id",
+                  "num_bikes_available",
+                  "num_empty_docks",
+                  "is_installed",
+                  "is_locked",
+                  "modified"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable BikePoint identifier from the `id` field of the TfL `Place` object, for example `BikePoints_1`. Matches the `station_id` of the corresponding `StationInformation` event and forms the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "tfl-api": "id"
+                    }
+                  },
+                  "num_bikes_available": {
+                    "type": "int32",
+                    "description": "Total number of rentable cycles currently docked and available at the station (standard pedal bikes plus e-bikes), parsed from the string-valued `NbBikes` entry in `additionalProperties`.",
+                    "minimum": 0,
+                    "altnames": {
+                      "tfl-api": "NbBikes"
+                    }
+                  },
+                  "num_standard_bikes_available": {
+                    "type": ["null", "int32"],
+                    "description": "Number of mechanical (non-electric) pedal cycles currently available at the station, parsed from the string-valued `NbStandardBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station.",
+                    "minimum": 0,
+                    "altnames": {
+                      "tfl-api": "NbStandardBikes"
+                    }
+                  },
+                  "num_ebikes_available": {
+                    "type": ["null", "int32"],
+                    "description": "Number of electrically assisted cycles (e-bikes) currently available at the station, parsed from the string-valued `NbEBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station.",
+                    "minimum": 0,
+                    "altnames": {
+                      "tfl-api": "NbEBikes"
+                    }
+                  },
+                  "num_empty_docks": {
+                    "type": "int32",
+                    "description": "Number of empty docking points currently available for returning a cycle at the station, parsed from the string-valued `NbEmptyDocks` entry in `additionalProperties`.",
+                    "minimum": 0,
+                    "altnames": {
+                      "tfl-api": "NbEmptyDocks"
+                    }
+                  },
+                  "num_docks": {
+                    "type": ["null", "int32"],
+                    "description": "Total number of docking points reported live for the station in this poll, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Under normal operation this equals `num_bikes_available` plus `num_empty_docks` plus any broken docks; the bridge emits null when `NbDocks` is absent or non-numeric.",
+                    "minimum": 0,
+                    "altnames": {
+                      "tfl-api": "NbDocks"
+                    }
+                  },
+                  "is_installed": {
+                    "type": "boolean",
+                    "description": "Whether the station is currently installed and in service, parsed from the string-valued `Installed` entry in `additionalProperties` (`true`/`false`). A value of false indicates the station is not physically present or is decommissioned.",
+                    "altnames": {
+                      "tfl-api": "Installed"
+                    }
+                  },
+                  "is_locked": {
+                    "type": "boolean",
+                    "description": "Whether the station is currently locked and temporarily out of service, parsed from the string-valued `Locked` entry in `additionalProperties` (`true`/`false`). A locked station accepts neither rentals nor returns even when it reports available bikes or docks.",
+                    "altnames": {
+                      "tfl-api": "Locked"
+                    }
+                  },
+                  "modified": {
+                    "type": "datetime",
+                    "description": "Most recent modification timestamp among the station's `additionalProperties` entries, in ISO 8601 / RFC 3339 UTC. Each availability property on the TfL `Place` object carries its own `modified` timestamp; the bridge takes the newest of these as the point in time at which TfL last updated this station's availability counts."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

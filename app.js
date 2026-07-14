@@ -113,6 +113,7 @@ const SOURCES = [
   { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", kql: false, mqtt: true, amqp: true, amqpSb: false },
   { id: "paris-bicycle-counters", name: "Paris Bicycle Counters", cat: "Transport", key: false, desc: "Paris — ~141 counting stations, hourly counts", notebook: true, mqtt: true, amqp: true },
   { id: "seattle-street-closures", name: "Seattle Street Closures", cat: "Transport", key: false, desc: "Seattle, WA — permit-driven street closure windows", notebook: true, mqtt: true, amqp: true, amqpSb: false },
+  { id: "tfl-cycles", name: "TfL Santander Cycles", cat: "Transport", key: false, desc: "London, UK — Santander Cycles bikeshare, ~798 docking stations", kql: true, notebook: true, mqtt: true, amqp: true },
   { id: "tfl-road-traffic", name: "TfL Road Traffic", cat: "Transport", key: false, desc: "London, UK — road corridor status and disruptions", kql: false, mqtt: true, amqp: true, kafka: false },
   { id: "tokyo-docomo-bikeshare", name: "Tokyo Docomo Bikeshare", cat: "Transport", key: false, desc: "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT", kql: false, mqtt: true, amqp: true, kafka: false, amqpSb: false },
   { id: "cbp-border-wait", name: "US CBP Border Wait", cat: "Transport", key: false, desc: "US borders — ~81 ports of entry", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },

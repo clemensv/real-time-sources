@@ -61,6 +61,10 @@ def _load_schemas() -> Dict[str, Dict[str, Any]]:
 def pegelonline_mqtt_image():
     return build_image('pegelonline', dockerfile='Dockerfile.mqtt', tag='test-pegelonline-mqtt')
 
+@pytest.fixture(scope='module')
+def tfl_cycles_mqtt_image():
+    return build_image('tfl-cycles', dockerfile='Dockerfile.mqtt', tag='test-tfl-cycles-mqtt')
+
 
 @pytest.fixture(scope='module')
 def cap_alerts_mqtt_image():
@@ -259,6 +263,120 @@ class TestPegelonlineMqttDockerFlow:
         assert level_payload is not None, f"level payload not parseable: {level_msgs[0]['payload']!r}"
         assert 'station_id' in info_payload and 'water' in info_payload
         assert 'station_id' in level_payload and 'value' in level_payload
+
+
+def _load_tfl_cycles_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'tfl-cycles', 'xreg', 'tfl-cycles.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    group = manifest['schemagroups']['UK.Gov.TfL.Cycles.jstruct']['schemas']
+    return {
+        'UK.Gov.TfL.Cycles.StationInformation':
+            group['UK.Gov.TfL.Cycles.StationInformation']['versions']['1']['schema'],
+        'UK.Gov.TfL.Cycles.StationStatus':
+            group['UK.Gov.TfL.Cycles.StationStatus']['versions']['1']['schema'],
+    }
+
+
+class TestTflCyclesMqttDockerFlow:
+    """Verify the tfl-cycles MQTT container publishes reference and telemetry events.
+
+    Hits the live TfL Unified API (GET /BikePoint, anonymous) once; the feeder
+    publishes StationInformation to mobility/tfl-cycles/{station_id}/info and
+    StationStatus to .../status in CloudEvents binary mode (CE metadata in MQTT
+    user properties, JSON payload body)."""
+
+    REFERENCE_TYPE = 'UK.Gov.TfL.Cycles.StationInformation'
+    TELEMETRY_TYPE = 'UK.Gov.TfL.Cycles.StationStatus'
+
+    def test_emits_reference_and_telemetry(self, tfl_cycles_mqtt_image):
+        container, network, host_port, broker_ip = _generic_mosquitto(
+            'tfl-cycles-mqtt-e2e', 'tfl-cycles-mqtt-e2e-broker'
+        )
+        messages: List[Dict[str, Any]] = []
+        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+
+        def on_message(_client, _userdata, msg):
+            props: Dict[str, Any] = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload})
+
+        client.on_message = on_message
+        feeder = None
+        try:
+            client.connect('127.0.0.1', host_port, 30)
+            client.subscribe('mobility/tfl-cycles/#', qos=1)
+            client.loop_start()
+
+            docker_client = docker.from_env()
+            feeder = docker_client.containers.run(
+                tfl_cycles_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'tfl-cycles-mqtt-e2e-broker:1883',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            deadline = time.time() + 15
+            while time.time() < deadline:
+                seen = {m['user_properties'].get('type') for m in messages}
+                if self.REFERENCE_TYPE in seen and self.TELEMETRY_TYPE in seen:
+                    break
+                time.sleep(0.25)
+        finally:
+            client.loop_stop()
+            client.disconnect()
+            if feeder is not None:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            try:
+                container.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
+
+        assert messages, 'No MQTT messages received from broker'
+        by_type: Dict[str, List[Dict[str, Any]]] = {}
+        for message in messages:
+            by_type.setdefault(message['user_properties'].get('type'), []).append(message)
+        assert self.REFERENCE_TYPE in by_type, by_type.keys()
+        assert self.TELEMETRY_TYPE in by_type, by_type.keys()
+        # Reference (info) publishes to .../info; telemetry (status) to .../status.
+        assert by_type[self.REFERENCE_TYPE][0]['topic'].endswith('/info'), by_type[self.REFERENCE_TYPE][0]['topic']
+        assert by_type[self.TELEMETRY_TYPE][0]['topic'].endswith('/status'), by_type[self.TELEMETRY_TYPE][0]['topic']
+        schemas = _load_tfl_cycles_schemas()
+        schema_validator = SchemaValidator(extended=True)
+        for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
+            sample = by_type[ce_type][0]
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            payload = _to_dict(sample['payload'])
+            assert isinstance(payload, dict), sample
+            schema = schemas[ce_type]
+            assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
 
 
 def _load_cap_alerts_schemas() -> Dict[str, Dict[str, Any]]:

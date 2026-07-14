@@ -79,7 +79,7 @@ FLAG_BY_ID = {
     "digitraffic-maritime": "fi", "hsl-hfp": "fi", "kystverket-ais": "no", "mode-s": "un",
     "vatsim": "un", "gtfs": "un", "madrid-traffic": "es",
     "nextbus": "us", "paris-bicycle-counters": "fr",
-    "seattle-street-closures": "us", "tfl-road-traffic": "gb",
+    "seattle-street-closures": "us", "tfl-cycles": "gb", "tfl-road-traffic": "gb",
     "tokyo-docomo-bikeshare": "jp", "cbp-border-wait": "us",
     "elexon-bmrs": "gb", "tepco-denkiyoho": "jp",
     "bluesky": "un", "wikimedia-osm-diffs": "un", "rss": "un",

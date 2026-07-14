@@ -124,7 +124,16 @@ def install_order(feeder: Path) -> list[Path]:
             continue
         subs.add(d)
     ordered = sorted(subs, key=lambda d: (priority(d), d.as_posix()))
-    return ordered + [feeder]  # main package last
+    # Append the top-level feeder dir as the main package **only** when it is
+    # itself an installable Python project. Transport-split sources (e.g.
+    # pegelonline, gbfs-bikeshare, tfl-cycles) have no aggregating top-level
+    # pyproject.toml -- every installable unit is a sub-package already in
+    # ``ordered`` -- so ``pip install -e feeders/<src>`` would fail with "does
+    # not appear to be a Python project". Sources with a top-level pyproject
+    # (e.g. hsl-hfp) still get it installed last.
+    if (feeder / "pyproject.toml").exists():
+        ordered = ordered + [feeder]
+    return ordered
 
 
 def _run(cmd: list) -> int:

@@ -1,0 +1,38 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tfl_cycles_amqp"
+dynamic = [
+    "version",
+]
+description = "AMQP 1.0 feeder for TfL Santander Cycles (generic brokers + Azure Service Bus / Event Hubs with Entra)."
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "azure-core>=1.30.0",
+    "azure-identity>=1.17.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "python-qpid-proton>=0.40.0",
+]
+
+[project.scripts]
+tfl-cycles-amqp = "tfl_cycles_amqp.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "tfl_cycles_amqp",
+]
