@@ -1,0 +1,213 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['UK.Gov.TfL.Cycles.StationInformation'] (
+   [station_id]: string,
+   [name]: string,
+   [lat]: real,
+   [lon]: real,
+   [terminal_name]: string,
+   [capacity]: int,
+   [temporary]: bool,
+   [install_date]: datetime,
+   [removal_date]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['UK.Gov.TfL.Cycles.StationInformation'] docstring @"{""description"": ""Reference record for one Transport for London cycle-hire docking station (BikePoint) as returned by the TfL Unified API `GET /BikePoint`. Identity, location, legacy terminal reference, physical docking capacity, and provisioning lifecycle flags. The bridge derives capacity and the lifecycle flags from the string-typed `additionalProperties` key/value entries on the BikePoint `Place` object.""}";
+
+.alter table ['UK.Gov.TfL.Cycles.StationInformation'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable BikePoint identifier from the `id` field of the TfL `Place` object, for example `BikePoints_1`. It is unique within the London cycle-hire scheme, persists across API refreshes, appears in the `/Place/{id}` resource URL, and forms the single component of both the CloudEvents subject and the Kafka key.""}",
+   [name]: @"{""description"": ""Customer-facing station name from the `commonName` field of the TfL `Place` object, for example `River Street , Clerkenwell`. Intended for maps, screens, and accessibility tooling.""}",
+   [lat]: @"{""description"": ""WGS 84 latitude of the docking station in decimal degrees from the `lat` field of the TfL `Place` object. Positive values are north of the equator.""}",
+   [lon]: @"{""description"": ""WGS 84 longitude of the docking station in decimal degrees from the `lon` field of the TfL `Place` object. Positive values are east of the prime meridian and negative values are west; all London BikePoints are slightly west or east of Greenwich.""}",
+   [terminal_name]: @"{""description"": ""Legacy terminal identifier from the `TerminalName` entry in `additionalProperties`, for example `001023`. This is the numbering used by the original cycle-hire terminal hardware and the legacy `livecyclehireupdates.xml` feed; the bridge emits null when the entry is absent.""}",
+   [capacity]: @"{""description"": ""Total number of physical docking points at the station, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Represents the fixed physical size of the docking station; the bridge emits null when `NbDocks` is absent or non-numeric.""}",
+   [temporary]: @"{""description"": ""Whether the docking station is a temporary installation, parsed from the string-valued `Temporary` entry in `additionalProperties` (`true`/`false`). Temporary stations are deployed for events or roadworks and may be removed; the bridge emits null when the entry is absent.""}",
+   [install_date]: @"{""description"": ""Timestamp at which the docking station was installed, in ISO 8601 / RFC 3339 UTC. The upstream `InstallDate` entry in `additionalProperties` is a string of Unix epoch milliseconds (for example `1278947280000`); the bridge converts it to an absolute UTC instant and emits null when the entry is empty or absent.""}",
+   [removal_date]: @"{""description"": ""Timestamp at which the docking station is scheduled to be, or was, removed, in ISO 8601 / RFC 3339 UTC. The upstream `RemovalDate` entry in `additionalProperties` is a string of Unix epoch milliseconds or an empty string; the bridge converts a populated value to an absolute UTC instant and emits null for active stations with no removal scheduled.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['UK.Gov.TfL.Cycles.StationInformation'] ingestion json mapping "UK.Gov.TfL.Cycles.StationInformation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "terminal_name", "path": "$.terminal_name"},
+  {"column": "capacity", "path": "$.capacity"},
+  {"column": "temporary", "path": "$.temporary"},
+  {"column": "install_date", "path": "$.install_date"},
+  {"column": "removal_date", "path": "$.removal_date"}
+]
+```
+
+.create-or-alter table ['UK.Gov.TfL.Cycles.StationInformation'] ingestion json mapping "UK.Gov.TfL.Cycles.StationInformation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lon", "path": "$.data.lon"},
+  {"column": "terminal_name", "path": "$.data.terminal_name"},
+  {"column": "capacity", "path": "$.data.capacity"},
+  {"column": "temporary", "path": "$.data.temporary"},
+  {"column": "install_date", "path": "$.data.install_date"},
+  {"column": "removal_date", "path": "$.data.removal_date"}
+]
+```
+
+.drop materialized-view ['UK.Gov.TfL.Cycles.StationInformationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['UK.Gov.TfL.Cycles.StationInformationLatest'] on table ['UK.Gov.TfL.Cycles.StationInformation'] {
+    ['UK.Gov.TfL.Cycles.StationInformation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['UK.Gov.TfL.Cycles.StationInformation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'UK.Gov.TfL.Cycles.StationInformation') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['lat'] = toreal(data.['lat']),['lon'] = toreal(data.['lon']),['terminal_name'] = tostring(data.['terminal_name']),['capacity'] = toint(data.['capacity']),['temporary'] = tobool(data.['temporary']),['install_date'] = todatetime(data.['install_date']),['removal_date'] = todatetime(data.['removal_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['UK.Gov.TfL.Cycles.StationStatus'] (
+   [station_id]: string,
+   [num_bikes_available]: int,
+   [num_standard_bikes_available]: int,
+   [num_ebikes_available]: int,
+   [num_empty_docks]: int,
+   [num_docks]: int,
+   [is_installed]: bool,
+   [is_locked]: bool,
+   [modified]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['UK.Gov.TfL.Cycles.StationStatus'] docstring @"{""description"": ""Near-real-time availability record for one Transport for London cycle-hire docking station (BikePoint), derived from the string-valued `additionalProperties` key/value entries on the TfL `Place` object returned by `GET /BikePoint`. The bridge parses the numeric availability counts and boolean operating flags from their string representations and derives the modification timestamp from the newest per-property `modified` value.""}";
+
+.alter table ['UK.Gov.TfL.Cycles.StationStatus'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable BikePoint identifier from the `id` field of the TfL `Place` object, for example `BikePoints_1`. Matches the `station_id` of the corresponding `StationInformation` event and forms the CloudEvents subject and Kafka key.""}",
+   [num_bikes_available]: @"{""description"": ""Total number of rentable cycles currently docked and available at the station (standard pedal bikes plus e-bikes), parsed from the string-valued `NbBikes` entry in `additionalProperties`.""}",
+   [num_standard_bikes_available]: @"{""description"": ""Number of mechanical (non-electric) pedal cycles currently available at the station, parsed from the string-valued `NbStandardBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station.""}",
+   [num_ebikes_available]: @"{""description"": ""Number of electrically assisted cycles (e-bikes) currently available at the station, parsed from the string-valued `NbEBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station.""}",
+   [num_empty_docks]: @"{""description"": ""Number of empty docking points currently available for returning a cycle at the station, parsed from the string-valued `NbEmptyDocks` entry in `additionalProperties`.""}",
+   [num_docks]: @"{""description"": ""Total number of docking points reported live for the station in this poll, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Under normal operation this equals `num_bikes_available` plus `num_empty_docks` plus any broken docks; the bridge emits null when `NbDocks` is absent or non-numeric.""}",
+   [is_installed]: @"{""description"": ""Whether the station is currently installed and in service, parsed from the string-valued `Installed` entry in `additionalProperties` (`true`/`false`). A value of false indicates the station is not physically present or is decommissioned.""}",
+   [is_locked]: @"{""description"": ""Whether the station is currently locked and temporarily out of service, parsed from the string-valued `Locked` entry in `additionalProperties` (`true`/`false`). A locked station accepts neither rentals nor returns even when it reports available bikes or docks.""}",
+   [modified]: @"{""description"": ""Most recent modification timestamp among the station's `additionalProperties` entries, in ISO 8601 / RFC 3339 UTC. Each availability property on the TfL `Place` object carries its own `modified` timestamp; the bridge takes the newest of these as the point in time at which TfL last updated this station's availability counts.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['UK.Gov.TfL.Cycles.StationStatus'] ingestion json mapping "UK.Gov.TfL.Cycles.StationStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "num_bikes_available", "path": "$.num_bikes_available"},
+  {"column": "num_standard_bikes_available", "path": "$.num_standard_bikes_available"},
+  {"column": "num_ebikes_available", "path": "$.num_ebikes_available"},
+  {"column": "num_empty_docks", "path": "$.num_empty_docks"},
+  {"column": "num_docks", "path": "$.num_docks"},
+  {"column": "is_installed", "path": "$.is_installed"},
+  {"column": "is_locked", "path": "$.is_locked"},
+  {"column": "modified", "path": "$.modified"}
+]
+```
+
+.create-or-alter table ['UK.Gov.TfL.Cycles.StationStatus'] ingestion json mapping "UK.Gov.TfL.Cycles.StationStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "num_bikes_available", "path": "$.data.num_bikes_available"},
+  {"column": "num_standard_bikes_available", "path": "$.data.num_standard_bikes_available"},
+  {"column": "num_ebikes_available", "path": "$.data.num_ebikes_available"},
+  {"column": "num_empty_docks", "path": "$.data.num_empty_docks"},
+  {"column": "num_docks", "path": "$.data.num_docks"},
+  {"column": "is_installed", "path": "$.data.is_installed"},
+  {"column": "is_locked", "path": "$.data.is_locked"},
+  {"column": "modified", "path": "$.data.modified"}
+]
+```
+
+.drop materialized-view ['UK.Gov.TfL.Cycles.StationStatusLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['UK.Gov.TfL.Cycles.StationStatusLatest'] on table ['UK.Gov.TfL.Cycles.StationStatus'] {
+    ['UK.Gov.TfL.Cycles.StationStatus'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['UK.Gov.TfL.Cycles.StationStatus'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'UK.Gov.TfL.Cycles.StationStatus') | project['station_id'] = tostring(data.['station_id']),['num_bikes_available'] = toint(data.['num_bikes_available']),['num_standard_bikes_available'] = toint(data.['num_standard_bikes_available']),['num_ebikes_available'] = toint(data.['num_ebikes_available']),['num_empty_docks'] = toint(data.['num_empty_docks']),['num_docks'] = toint(data.['num_docks']),['is_installed'] = tobool(data.['is_installed']),['is_locked'] = tobool(data.['is_locked']),['modified'] = todatetime(data.['modified']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+

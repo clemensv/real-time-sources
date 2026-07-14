@@ -109,6 +109,10 @@ def pegelonline_image():
     return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def tfl_cycles_image():
+    return build_image('tfl-cycles', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def erddap_image():
     return build_image('erddap', dockerfile='Dockerfile.kafka')
 
@@ -1241,6 +1245,24 @@ class TestPegelonlineDockerFlow:
             kafka, pegelonline_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['CurrentMeasurement'],
+        )
+
+
+class TestTflCyclesDockerFlow:
+    TOPIC = 'test-tfl-cycles'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, tfl_cycles_image):
+        # TfL Unified API /BikePoint (~798 docking stations) polled once.
+        # StationInformation (reference metadata) is emitted first, then
+        # StationStatus (availability telemetry); both keyed by {station_id}.
+        # BikePoint serves anonymously so no app key is required.
+        _run_kafka_flow_test(
+            kafka, tfl_cycles_image, self.TOPIC,
+            reference_types=['StationInformation'],
+            telemetry_types=['StationStatus'],
+            extra_env={'ONCE_MODE': 'true'},
+            min_messages=5,
+            timeout=240,
         )
 
 
