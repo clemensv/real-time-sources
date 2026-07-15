@@ -1,5 +1,7 @@
 # Transport for London (TfL) Unified API
 
+> **NOT A CONFIG-ADD** · TfL Unified API is a bespoke proprietary REST API (StopPoint / Line / arrivals), not a GTFS-RT/SIRI feed the `gtfs`/`siri` feeders consume by config. Needs a dedicated build.
+
 **Country/Region**: United Kingdom (London)
 **Publisher**: Transport for London (TfL)
 **API Endpoint**: `https://api.tfl.gov.uk/`

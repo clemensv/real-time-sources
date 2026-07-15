@@ -1,5 +1,7 @@
 # MTA New York City (GTFS-RT High-Volume Feeds)
 
+> ✅ **SHIPPED** · feeder: `gtfs` · entry: `mta-nyc` · 2026-07-15
+
 **Country/Region**: United States (New York City)
 **Publisher**: Metropolitan Transportation Authority (MTA)
 **API Endpoint**: `https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2F{feed_id}`

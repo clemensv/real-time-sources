@@ -1,5 +1,7 @@
 # Transitland — Global Transit Data Aggregator
 
+> ⏭ **SKIP** · Meta-aggregator/registry of transit feeds, not itself a real-time source.
+
 **Country/Region**: Global (coverage across 60+ countries)
 **Publisher**: Interline Technologies (maintainer of Transitland)
 **API Endpoint**: `https://transit.land/api/v2/rest/` (REST), `https://transit.land/api/v2/query` (GraphQL)

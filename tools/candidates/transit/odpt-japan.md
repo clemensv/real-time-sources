@@ -1,5 +1,7 @@
 # ODPT — Japan Open Data for Public Transportation
 
+> **NOT A CONFIG-ADD** · ODPT publishes proprietary JSON-LD (RDF) behind a consumer key, not GTFS-RT/SIRI. Bespoke build.
+
 **Country/Region**: Japan (Tokyo Metropolitan Area + expanding)
 **Publisher**: Association for Open Data of Public Transportation (ODPT / 公共交通オープンデータ協議会)
 **API Endpoint**: `https://api.odpt.org/api/v4/`

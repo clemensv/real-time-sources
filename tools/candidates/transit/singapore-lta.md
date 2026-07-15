@@ -1,5 +1,7 @@
 # Singapore LTA DataMall
 
+> **NOT A CONFIG-ADD** · Singapore LTA DataMall is a proprietary REST API behind an AccountKey, not GTFS-RT/SIRI. Bespoke build.
+
 **Country/Region**: Singapore
 **Publisher**: Land Transport Authority (LTA)
 **API Endpoint**: `https://datamall2.mytransport.sg/ltaodataservice/`

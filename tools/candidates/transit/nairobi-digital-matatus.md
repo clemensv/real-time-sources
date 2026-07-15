@@ -1,5 +1,7 @@
 # Nairobi Digital Matatu GTFS
 
+> ⏭ **SKIP** · Static GTFS Schedule only; no real-time (GTFS-RT) component.
+
 - **Country/Region**: Kenya (Nairobi)
 - **Endpoint**: `https://gtfs.digitaltransport4africa.org/api/gtfs/feeds`
 - **Protocol**: REST / GTFS Static

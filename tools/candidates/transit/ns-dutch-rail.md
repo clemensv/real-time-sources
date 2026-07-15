@@ -1,5 +1,7 @@
 # NS (Nederlandse Spoorwegen) — Dutch Railways API
 
+> **NOT A CONFIG-ADD** · NS (Dutch Railways) exposes a proprietary REST API behind a key, not GTFS-RT/SIRI. Bespoke build.
+
 **Country/Region**: Netherlands
 **Publisher**: NS (Nederlandse Spoorwegen)
 **API Endpoint**: `https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/`

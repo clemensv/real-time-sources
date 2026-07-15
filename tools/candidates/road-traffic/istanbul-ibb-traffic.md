@@ -1,5 +1,7 @@
 # Istanbul Metropolitan Municipality (İBB) Open Data — Traffic & Transit
 
+> **NOT A CONFIG-ADD** · Istanbul IBB traffic is a proprietary CKAN/ArcGIS dataset, not GTFS-RT/SIRI. Bespoke build.
+
 **Country/Region**: Turkey (Istanbul)
 **Publisher**: Istanbul Metropolitan Municipality (İstanbul Büyükşehir Belediyesi — İBB)
 **API Endpoint**: `https://data.ibb.gov.tr/api/3/action/`

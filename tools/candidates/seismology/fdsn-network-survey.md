@@ -1,5 +1,7 @@
 # FDSN Event Service Network — Node Survey
 
+> ⏭ **SKIP** · Survey note, not a source; every viable FDSN node it identifies is already in the `fdsn-seismology` catalog.
+
 ## Overview
 
 The International Federation of Digital Seismograph Networks (FDSN) defines a standard web service specification for earthquake event data. Multiple institutions worldwide implement this spec, creating a federated network of interoperable seismic data sources. This document surveys all known FDSN event service nodes beyond those already documented individually (EMSC, GFZ, INGV).

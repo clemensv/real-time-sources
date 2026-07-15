@@ -1,5 +1,7 @@
 # Riyadh Metro - GTFS Real-Time
 
+> ⏭ **SKIP** · GTFS-RT is only assumed/unpublished for Riyadh Metro; no verified real-time endpoint.
+
 - **Country/Region**: Saudi Arabia (Riyadh)
 - **Endpoint**: Unknown (system opening in phases 2024-2025)
 - **Protocol**: GTFS-RT (assumed)

@@ -1,5 +1,7 @@
 # Indian Railways — Train Running Status
 
+> ⏭ **SKIP** · No official open real-time API; would require scraping. Out of scope.
+
 **Country/Region**: India
 **Publisher**: Centre for Railway Information Systems (CRIS), Indian Railways
 **API Endpoint**: Various — `indianrail.gov.in`, `enquiry.indianrail.gov.in` (official); `erail.in` (third-party)

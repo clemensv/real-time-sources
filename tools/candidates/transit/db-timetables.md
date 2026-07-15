@@ -1,5 +1,7 @@
 # Deutsche Bahn Timetables API (IRIS)
 
+> **NOT A CONFIG-ADD** · Deutsche Bahn IRIS/Timetables is a proprietary XML API behind a key, not GTFS-RT/SIRI. Bespoke build.
+
 **Country/Region**: Germany
 **Publisher**: DB Station&Service AG / Deutsche Bahn
 **API Endpoint**: `https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/`

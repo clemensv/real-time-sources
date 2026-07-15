@@ -1,5 +1,7 @@
 # Seoul Ddareungi (따릉이 / Seoul Bike)
 
+> **NOT A CONFIG-ADD** · Seoul Ddareungi (Seoul Bike) publishes a proprietary Open API JSON, explicitly NOT GBFS — no autodiscovery URL for `gbfs-bikeshare`. Bespoke build (cf. taipei-youbike).
+
 **Country/Region**: South Korea — Seoul
 **Publisher**: Seoul Metropolitan Government
 **API Endpoint**: `http://openapi.seoul.go.kr:8088/{API_KEY}/json/bikeList/{start}/{end}/`

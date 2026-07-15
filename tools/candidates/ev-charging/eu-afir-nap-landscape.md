@@ -1,5 +1,7 @@
 # EU AFIR / EAFO / National Access Points — EV Charging Data Landscape
 
+> ⏭ **SKIP** · Landscape survey of fragmented EU NAP EV-charging reporting portals, not a single real-time feed (note verdict: REJECTED).
+
 - **Country/Region**: EU-27 + EEA
 - **Regulation**: EU Regulation 2023/1804 (AFIR — Alternative Fuels Infrastructure Regulation)
 - **Coordination**: NAPCORE (National Access Point Coordination Organisation for Europe)

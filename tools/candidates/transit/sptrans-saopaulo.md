@@ -1,5 +1,7 @@
 # SPTrans — São Paulo Bus Real-Time
 
+> **NOT A CONFIG-ADD** · SPTrans Olho Vivo is a proprietary REST API behind session-token auth, not GTFS-RT/SIRI. Bespoke build.
+
 **Country/Region**: Brazil (São Paulo)
 **Publisher**: SPTrans (São Paulo Transporte S.A.)
 **API Endpoint**: `http://api.olhovivo.sptrans.com.br/v2.1/`

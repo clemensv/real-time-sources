@@ -1,5 +1,7 @@
 # Oman National Seismic Network (FDSN OM)
 
+> ⏭ **SKIP** · No working public Oman (SQU/EMQC) FDSN node; the region is already covered by the shipped EMSC feed.
+
 - **Country/Region**: Sultanate of Oman
 - **Endpoint**: FDSN web services via IRIS/GEOFON (network code `OM`)
 - **Protocol**: FDSN web services (fdsnws-station, fdsnws-event, fdsnws-dataselect)

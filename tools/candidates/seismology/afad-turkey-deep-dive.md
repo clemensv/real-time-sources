@@ -1,5 +1,7 @@
 # AFAD Turkey Earthquake API — Deep Dive Update
 
+> **NOT A CONFIG-ADD** · AFAD publishes a proprietary earthquake REST API, not the FDSN/QuakeML the `fdsn-seismology` feeder federates. Bespoke build.
+
 **Country/Region**: Turkey
 **Publisher**: AFAD (Disaster and Emergency Management Authority), Ministry of Interior
 **API Endpoint**: `https://deprem.afad.gov.tr/apiv2/event/filter`

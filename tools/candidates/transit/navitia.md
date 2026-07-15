@@ -1,5 +1,7 @@
 # Navitia — Open Journey Planner with Real-Time
 
+> **NOT A CONFIG-ADD** · Navitia is a proprietary journey-planner aggregator API behind a key, not a GTFS-RT/SIRI source feed. Bespoke build.
+
 **Country/Region**: Global (primary coverage: France, Switzerland, Brazil, and 20+ regions)
 **Publisher**: Hove (formerly Kisio Digital, part of Keolis/SNCF group)
 **API Endpoint**: `https://api.navitia.io/v1/`
