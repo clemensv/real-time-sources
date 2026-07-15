@@ -1,5 +1,7 @@
 # HSL MQTT — Helsinki Real-Time Vehicle Positions (High-Frequency Push)
 
+> ✅ **SHIPPED** · feeder: `hsl-hfp` · entry: `hsl-hfp` · 2026-07-15
+
 **Country/Region**: Finland (Helsinki Region)
 **Publisher**: HSL (Helsinki Region Transport)
 **API Endpoint**: `mqtt.hsl.fi` (MQTT broker, port 8883/TLS or 443/WSS)

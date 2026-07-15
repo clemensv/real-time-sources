@@ -1,5 +1,7 @@
 # Open Charge Map
 
+> ✅ **SHIPPED** · feeder: `open-charge-map` · entry: `open-charge-map` · 2026-07-15
+
 **Country/Region**: Global (180+ countries)
 **Publisher**: Open Charge Map community / Open Energy Foundation
 **API Endpoint**: `https://api.openchargemap.io/v3/poi/`
