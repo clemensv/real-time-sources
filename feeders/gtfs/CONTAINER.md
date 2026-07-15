@@ -243,7 +243,7 @@ docker run --rm \
 
 ### Known GTFS-Realtime sources
 
-Use MobilityData’s [Mobility Database](https://database.mobilitydata.org/) and agency developer portals to find operator-specific GTFS Schedule and GTFS-Realtime feeds. Some are free and keyless; others require API keys or custom headers. The packaged catalog ships only disabled entries: `mbta-boston` (real keyless MBTA URLs), `tfnsw-sydney` (Transport for NSW Sydney / NSW feeds, ready to enable with `TFNSW_API_KEY`), and `keyed-operator-template` (`REPLACE_WITH_*` placeholders plus `${SOME_GTFS_KEY}` headers).
+Use MobilityData’s [Mobility Database](https://database.mobilitydata.org/) and agency developer portals to find operator-specific GTFS Schedule and GTFS-Realtime feeds. Some are free and keyless; others require API keys or custom headers. The packaged catalog ships only disabled entries: `mbta-boston` (real keyless MBTA URLs), `mta-nyc` (real keyless Metropolitan Transportation Authority New York City feeds — subway, LIRR, Metro-North, and alerts, plus GTFS Schedule archives; high volume), `tfnsw-sydney` (Transport for NSW Sydney / NSW feeds, ready to enable with `TFNSW_API_KEY`), and `keyed-operator-template` (`REPLACE_WITH_*` placeholders plus `${SOME_GTFS_KEY}` headers).
 
 ### Kafka image
 
