@@ -8,7 +8,7 @@ from gtfs_core import DEFAULT_SOURCES_FILE, load_source_configs, select_entries
 def test_default_catalog_loads_disabled_examples_only():
     configs = load_source_configs(selector="*")
     assert DEFAULT_SOURCES_FILE.endswith("gtfs-sources.json")
-    assert [config["agency"] for config in configs] == ["mbta", "tfnsw", "replace-me"]
+    assert [config["agency"] for config in configs] == ["mbta", "mta-nyc", "tfnsw", "replace-me"]
     assert configs[0]["gtfs_rt_urls"] == [
         "https://cdn.mbta.com/realtime/TripUpdates.pb",
         "https://cdn.mbta.com/realtime/VehiclePositions.pb",
@@ -26,7 +26,22 @@ def test_selector_returns_named_entries_in_requested_order():
 
 
 def test_selector_star_includes_disabled_templates():
-    assert len(load_source_configs(selector="*")) == 3
+    assert len(load_source_configs(selector="*")) == 4
+
+
+def test_mta_nyc_entry_exposes_all_keyless_feeds():
+    configs = load_source_configs(selector="mta-nyc")
+    assert len(configs) == 1
+    entry = configs[0]
+    assert entry["agency"] == "mta-nyc"
+    # 11 keyless GTFS-Realtime feeds (NYCT subway divisions + LIRR + MNR + alerts)
+    assert len(entry["gtfs_rt_urls"]) == 11
+    assert all(url.startswith("https://api-endpoint.mta.info/") for url in entry["gtfs_rt_urls"])
+    # 7 public GTFS Schedule archives (subway supplemented + borough buses)
+    assert len(entry["gtfs_urls"]) == 7
+    # keyless: no auth headers required post-2023 MTA open-data migration
+    assert entry["gtfs_rt_headers"] is None
+    assert entry["gtfs_headers"] is None
 
 
 def test_unknown_selector_raises():

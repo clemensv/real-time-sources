@@ -17,6 +17,35 @@
       ]
     },
     {
+      "name": "mta-nyc",
+      "enabled": false,
+      "description": "Metropolitan Transportation Authority (New York City, US) public keyless GTFS-Realtime feeds covering NYC Transit subway (all divisions: A/C/E, B/D/F/M, G, J/Z, L, N/Q/R/W, 1-7/S, Staten Island Railway), Long Island Rail Road, Metro-North Railroad, and system-wide service alerts, plus the public NYCT subway and borough-bus GTFS Schedule archives. No API key required since the 2023 MTA open-data migration to api-endpoint.mta.info. High volume: the combined feeds emit tens of thousands of trip-update, vehicle-position, and alert entities per poll. Add 'mta-nyc' to GTFS_SOURCES to enable.",
+      "agency": "mta-nyc",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-jz",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-si",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr",
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fall-alerts"
+      ],
+      "gtfs_urls": [
+        "http://web.mta.info/developers/files/google_transit_supplemented.zip",
+        "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_bx.zip",
+        "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_b.zip",
+        "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_m.zip",
+        "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_q.zip",
+        "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_si.zip",
+        "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_busco.zip"
+      ]
+    },
+    {
       "name": "tfnsw-sydney",
       "enabled": false,
       "description": "Transport for NSW (Sydney and New South Wales, Australia) API-key-protected GTFS-Realtime feeds for trains, buses, ferries, light rail, and service alerts. Add 'tfnsw-sydney' to GTFS_SOURCES to enable.",

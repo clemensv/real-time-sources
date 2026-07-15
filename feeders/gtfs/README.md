@@ -224,6 +224,7 @@ docker run --rm \
 The GTFS ecosystem is decentralized: MobilityData’s [Mobility Database](https://database.mobilitydata.org/) catalogs many schedule and realtime feeds, and agencies often publish their own GTFS-Realtime endpoints. Many are free and keyless; others require registration, an API key, or custom headers. The packaged catalog intentionally ships only disabled entries:
 
 - `mbta-boston` — disabled, fully worked, keyless MBTA GTFS-Realtime URLs plus the public GTFS Schedule zip.
+- `mta-nyc` — disabled, fully worked, keyless Metropolitan Transportation Authority (New York City) feeds: 11 GTFS-Realtime endpoints covering NYC Transit subway (all divisions), Long Island Rail Road, Metro-North Railroad, and system-wide service alerts, plus 7 public GTFS Schedule archives. No API key required since the 2023 MTA open-data migration to `api-endpoint.mta.info`; high volume.
 - `tfnsw-sydney` — disabled, ready-to-enable Transport for NSW GTFS-Realtime feeds for Sydney / NSW trains, buses, ferries, light rail, and rail alerts; requires `TFNSW_API_KEY` in the documented `Authorization: apikey ...` header.
 - `keyed-operator-template` — disabled template showing `REPLACE_WITH_*` URLs and `${SOME_GTFS_KEY}` header expansion.
 
