@@ -1,5 +1,7 @@
 # Harrat Volcanic Fields - Seismic and Volcanic Monitoring
 
+> ⏭ **SKIP** · No verified public FDSN/real-time endpoint for the Harrat volcanic fields.
+
 - **Country/Region**: Saudi Arabia (western Saudi Arabia, harrat volcanic fields)
 - **Endpoint**: Part of SGS National Seismic Network (see separate SGS candidate)
 - **Protocol**: FDSN webservices (if exists)

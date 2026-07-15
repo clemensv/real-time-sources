@@ -1,5 +1,7 @@
 # Santiago RED/Metro Transit — Chile
 
+> ⏭ **SKIP** · GTFS-RT is only suspected/unverified for Santiago RED/Metro; no confirmed endpoint.
+
 **Country/Region**: Chile (Santiago metropolitan area)
 **Publisher**: Directorio de Transporte Público Metropolitano (DTPM)
 **API Endpoint**: `https://www.red.cl/` (connection failed), `https://api.scltrans.cl/` (connection failed)

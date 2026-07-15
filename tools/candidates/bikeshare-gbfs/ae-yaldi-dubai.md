@@ -1,5 +1,7 @@
 # Yaldi Dubai (GBFS)
 
+> **ENDPOINT DRIFTED (2026-07-15)** · `yaldi.rideatom.com` DNS is dead; system 511 is not served on the sibling Rideatom hosts (`gbfs.rideatom.com`/`yoio.rideatom.com` → HTTP 400). The Rideatom platform itself is alive (sibling tenants return GBFS 3.0). Genuine GBFS 3.0 config-add for `gbfs-bikeshare` once a current discovery URL is recovered.
+
 - **Country/Region**: United Arab Emirates / Dubai
 - **Endpoint**: `https://yaldi.rideatom.com/gbfs/511/v3.0/gbfs`
 - **Protocol**: GBFS 3.0 (General Bikeshare Feed Specification)

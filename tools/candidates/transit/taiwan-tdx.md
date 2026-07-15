@@ -1,5 +1,7 @@
 # Taiwan TDX — Transport Data eXchange
 
+> **NOT A CONFIG-ADD** · Taiwan TDX is a proprietary OData API behind OAuth2 client-credentials, not a GTFS-RT/SIRI config feed. Bespoke build.
+
 **Country/Region**: Taiwan (national)
 **Publisher**: Ministry of Transportation and Communications (MOTC) / Transport Data eXchange (TDX)
 **API Endpoint**: `https://tdx.transportdata.tw/api/basic/v2/`

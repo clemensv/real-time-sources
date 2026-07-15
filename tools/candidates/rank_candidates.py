@@ -62,9 +62,23 @@ GENERALIZED_DIRS = {d for ds in GENERALIZED_FEEDER.values() for d in ds}
 GENERIC_CONFIG_CAT = {"bikeshare-gbfs"}
 CONFIG_TRANSIT_HINTS = ["gtfs-rt", "gtfs", "siri", "mqtt vehicle"]
 
+# Explicit per-note override. reuse_leverage() tags any note that merely
+# MENTIONS a generalized-feeder protocol family (GTFS/SIRI/GBFS/FDSN) with that
+# family label, which would otherwise force a "config" classification. Many such
+# notes are NOT drop-in config entries: they speak a proprietary REST/JSON-LD/
+# OData/HAFAS API or a push (AMQP) protocol and need a bespoke build. A note
+# carrying this banner near the top is routed to a build wave instead of Wave 0,
+# while staying in the backlog. Mirrors the SHIPPED / SKIP banner idiom:
+#   > **NOT A CONFIG-ADD** * <reason>
+NOT_CONFIG_MARK = re.compile(r"\*\*NOT A CONFIG[- ]ADD\*\*", re.I)
+
 
 def classify_kind(cat: str, slug: str, title: str, text: str,
                   reuse_label: str) -> str:
+    # An explicit "not a config-add" banner overrides the protocol-mention
+    # heuristic below: the source needs a bespoke feeder, not a catalog entry.
+    if NOT_CONFIG_MARK.search(text):
+        return "new"
     # A source whose protocol family already has a generalized feeder in the
     # repo is a config add, not a build.
     if reuse_label in GENERALIZED_FEEDER:
@@ -254,7 +268,7 @@ def parse_note(path: str):
 
 def main():
     rows = []
-    for path in glob.glob(os.path.join(BASE, "**", "*.md"), recursive=True):
+    for path in sorted(glob.glob(os.path.join(BASE, "**", "*.md"), recursive=True)):
         name = os.path.basename(path)
         if name == "INDEX.md" or "_research-rounds" in path.replace("\\", "/"):
             continue
@@ -355,6 +369,13 @@ def main():
       "`<feeder-dir>` \u00b7 entry: `<catalog-name>` \u00b7 <date>` — then re-run: "
       "shipped candidates move to the **Shipped** section and leave the "
       "backlog. (A hand-ticked `- [x]` box does not survive regeneration.)\n")
+    A("> To **route a candidate out of Wave 0** without shipping it — a source "
+      "that merely *mentions* GTFS/SIRI/GBFS/FDSN but actually needs a bespoke "
+      "build (proprietary REST/JSON-LD/OData/HAFAS or an AMQP push feed) — add "
+      "`> **NOT A CONFIG-ADD** \u00b7 <reason>` near the top of its note; it "
+      "then ranks as a new build. To drop a non-source entirely (survey, "
+      "meta-catalog, static-only, unverified, or duplicate), add `> \u23ed "
+      "**SKIP** \u00b7 <reason>`.\n")
     A("This is the single ordered backlog for building out the qualifying "
       "candidate feeders catalogued under `tools/candidates/`. Work it "
       "top-to-bottom. Within each wave, rows are in strict priority order "

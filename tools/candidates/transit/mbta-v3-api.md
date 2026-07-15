@@ -1,5 +1,7 @@
 # MBTA V3 API (Boston)
 
+> ✅ **SHIPPED** · feeder: `gtfs` · entry: `mbta-boston` · 2026-07-15
+
 **Country/Region**: United States (Massachusetts)
 **Publisher**: Massachusetts Bay Transportation Authority (MBTA)
 **API Endpoint**: `https://api-v3.mbta.com/`

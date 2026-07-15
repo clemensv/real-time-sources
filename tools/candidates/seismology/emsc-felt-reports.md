@@ -1,5 +1,7 @@
 # EMSC Felt Reports & Testimonies
 
+> **NOT A CONFIG-ADD** · EMSC felt-report testimonies are a separate proprietary API, not an FDSN event stream. Bespoke build (distinct from the shipped EMSC FDSN feed).
+
 ## Source Identity
 
 | Field            | Value |

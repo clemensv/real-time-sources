@@ -1,5 +1,7 @@
 # Iran IIEES — International Institute of Earthquake Engineering and Seismology
 
+> ⏭ **SKIP** · IIEES publishes an HTML portal only; no machine-readable real-time feed.
+
 **Country/Region**: Iran
 **Publisher**: International Institute of Earthquake Engineering and Seismology (IIEES)
 **API Endpoint**: `https://www.iiees.ac.ir/en/` (institutional website), `http://irsc.ut.ac.ir/` (Iranian Seismological Center)

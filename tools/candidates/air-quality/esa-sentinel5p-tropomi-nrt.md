@@ -1,5 +1,7 @@
 # ESA Sentinel-5P TROPOMI Near-Real-Time Air Quality
 
+> **NOT A CONFIG-ADD** · Sentinel-5P TROPOMI NRT is a STAC/OData satellite-granule feed (mislabeled transit), not GTFS-RT. Bespoke granule-notification build.
+
 - **Country/Region**: Global
 - **Endpoint**: `https://dataspace.copernicus.eu/odata/v1/Products`
 - **Protocol**: OData / STAC API

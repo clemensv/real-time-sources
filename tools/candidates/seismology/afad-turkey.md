@@ -1,5 +1,7 @@
 # AFAD — Disaster and Emergency Management Authority (Turkey)
 
+> ⏭ **SKIP** · Duplicate of afad-turkey-deep-dive; superseded.
+
 ## Source Identity
 
 | Field            | Value |

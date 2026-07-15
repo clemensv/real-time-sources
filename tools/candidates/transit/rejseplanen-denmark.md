@@ -1,5 +1,7 @@
 # Rejseplanen — Denmark National Journey Planner
 
+> **NOT A CONFIG-ADD** · Rejseplanen is a proprietary HAFAS API behind a key, not GTFS-RT/SIRI. Bespoke build.
+
 **Country/Region**: Denmark (national)
 **Publisher**: Rejseplanen A/S (Danish national journey planning company)
 **API Endpoint**: `https://rejseplanen.dk/api/` (v2)

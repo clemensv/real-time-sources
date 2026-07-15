@@ -1,5 +1,7 @@
 # IGP Peru — Instituto Geofísico del Perú
 
+> **NOT A CONFIG-ADD** · IGP Peru publishes a proprietary seismic REST feed, not FDSN/QuakeML. Bespoke build.
+
 ## Source Identity
 
 | Field            | Value |

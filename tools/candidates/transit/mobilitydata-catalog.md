@@ -1,5 +1,7 @@
 # MobilityData GTFS-RT Feed Catalog & Quality
 
+> ⏭ **SKIP** · Meta-catalog of GTFS feeds, not itself a real-time source.
+
 **Country/Region**: Global
 **Publisher**: MobilityData (non-profit maintaining GTFS/GTFS-RT specifications)
 **API Endpoint**: https://database.mobilitydata.org/ (Mobility Database Catalog)

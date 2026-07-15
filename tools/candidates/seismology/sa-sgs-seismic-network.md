@@ -1,5 +1,7 @@
 # Saudi Geological Survey (SGS) - National Seismic Network
 
+> ⏭ **SKIP** · No verified public FDSN/real-time endpoint for the Saudi SGS network.
+
 - **Country/Region**: Saudi Arabia (KSA)
 - **Endpoint**: Unknown FDSN endpoint (not confirmed)
 - **Protocol**: FDSN webservices (if exists)

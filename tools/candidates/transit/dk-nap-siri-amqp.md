@@ -1,5 +1,7 @@
 # Danish NAP — SIRI over AMQP (Movia + Lokaltog)
 
+> **NOT A CONFIG-ADD** · Danish NAP delivers SIRI 2.x over an AMQP 1.0 push subscription, not the poll-based SIRI-Lite the `siri` feeder configures. Needs an AMQP-consumer build.
+
 **Country/Region**: Denmark (national NAP, Sjælland operational coverage)
 **Publisher**: Rejsekort & Rejseplan A/S (on behalf of Movia for buses, Movia for Lokaltog regional rail)
 **Access Point Operator**: Vejdirektoratet (Danish Road Directorate) — operates the NAP per EU ITS Directive 2010/40/EU + Delegated Regulation 2017/1926 (MMTIS, Retsakt-A)

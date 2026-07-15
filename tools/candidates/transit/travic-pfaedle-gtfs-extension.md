@@ -1,5 +1,7 @@
 # TRAVIC / trajserv + pfaedle — GTFS Shape Enrichment & Worldwide Feed Discovery
 
+> ⏭ **SKIP** · Offline GTFS shape-generation toolchain (pfaedle/TRAVIC), not a real-time feed.
+
 **Country/Region**: Global
 **Publisher**: Patrick Brosi / University of Freiburg, Chair of Algorithms & Data Structures (TRAVIC, trajserv, pfaedle). TRAVIC was originally a geOps project; geOps still ships the matching client libraries and the commercial tracker API.
 **API Endpoint**: https://travic.app/ (frontend) · backend `https://travic.cs.uni-freiburg.de/trajserv` (proxied as `/trajserv`) · geOps tracker API `https://api.geops.io/tracker/v1`

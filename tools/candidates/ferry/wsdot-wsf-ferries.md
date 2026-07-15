@@ -1,5 +1,7 @@
 # Washington State Ferries (WSF) API
 
+> **NOT A CONFIG-ADD** · Washington State Ferries is a proprietary WSDOT REST/SOAP vessel-location API, not GTFS-RT/SIRI. Bespoke build (WSDOT_ACCESS_CODE is available).
+
 - **Country/Region**: US — Puget Sound / Pacific Northwest
 - **Publisher**: Washington State Department of Transportation (WSDOT)
 - **Endpoint**: `https://www.wsdot.wa.gov/ferries/api/`

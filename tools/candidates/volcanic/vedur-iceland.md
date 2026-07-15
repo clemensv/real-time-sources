@@ -1,5 +1,7 @@
 # Vedur.is — Iceland Met Office Volcanic & Seismic Monitoring
 
+> **NOT A CONFIG-ADD** · Icelandic Met Office (Veðurstofa) publishes a proprietary earthquake JSON, not FDSN/QuakeML. Bespoke build.
+
 ## Source Identity
 
 | Field            | Value |

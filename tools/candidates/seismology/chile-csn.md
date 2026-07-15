@@ -1,5 +1,7 @@
 # CSN Chile — Centro Sismológico Nacional (via api.xor.cl)
 
+> ⏭ **SKIP** · CSN Chile's FDSN endpoint is defunct (confirmed by the FDSN node survey); no working public fdsnws node.
+
 **Country/Region**: Chile (national)
 **Publisher**: Centro Sismológico Nacional, Universidad de Chile
 **API Endpoint**: `https://api.xor.cl/sismo/recent`
