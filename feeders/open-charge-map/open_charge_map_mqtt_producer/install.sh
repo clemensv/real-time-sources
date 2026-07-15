@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./open_charge_map_mqtt_producer_data
+pip install ./open_charge_map_mqtt_producer_mqtt_client

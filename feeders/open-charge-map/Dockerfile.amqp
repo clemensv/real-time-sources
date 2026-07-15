@@ -1,0 +1,53 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/open-charge-map"
+LABEL org.opencontainers.image.title="Open Charge Map → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Polls the Open Charge Map v3 API (api.openchargemap.io) for the global open EV-charging registry — the charging-location catalog (delta-polled on DateLastStatusUpdate) plus the operator/connector/country/... reference lookup tables — and publishes them as CloudEvents over AMQP 1.0. Targets generic AMQP 1.0 brokers (RabbitMQ AMQP 1.0, ActiveMQ Artemis, Qpid Dispatch) via SASL PLAIN and Azure Service Bus / Event Hubs via Entra ID (AMQP CBS, no SAS-key minting)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/open-charge-map/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
+# python-qpid-proton compiles a C extension at install time. Install
+# build tools + -dev headers, build the wheel, then drop the build
+# packages but keep the runtime shared libs (libssl, libsasl2).
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig \
+            libssl-dev libsasl2-dev python3-dev \
+            libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+# Sequential installs to avoid path-dep resolution races.
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./open_charge_map_core \
+ && pip install --no-cache-dir ./open_charge_map_amqp_producer/open_charge_map_amqp_producer_data \
+ && pip install --no-cache-dir ./open_charge_map_amqp_producer/open_charge_map_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./open_charge_map_amqp \
+ && apt-get purge -y --auto-remove \
+        build-essential cmake pkg-config swig \
+        libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+
+# Defaults are placeholders; container expects --broker-url / AMQP_BROKER_URL
+# (generic brokers) or --host + --auth-mode entra (Azure SB/EH).
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="open-charge-map"
+
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'open_charge_map_amqp'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
+CMD ["python", "-m", "open_charge_map_amqp", "feed"]

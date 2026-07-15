@@ -1,0 +1,30 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/open-charge-map"
+LABEL org.opencontainers.image.title="Open Charge Map → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls the Open Charge Map v3 API (api.openchargemap.io) for the global open EV-charging registry — the charging-location catalog (delta-polled on DateLastStatusUpdate) plus the operator/connector/country/... reference lookup tables — and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (ev-charging/open-charge-map/...)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/open-charge-map/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
+COPY . /app
+
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./open_charge_map_mqtt_producer/open_charge_map_mqtt_producer_data \
+ && pip install --no-cache-dir ./open_charge_map_mqtt_producer/open_charge_map_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./open_charge_map_core \
+ && pip install --no-cache-dir ./open_charge_map_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'open_charge_map_mqtt'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
+CMD ["python", "-m", "open_charge_map_mqtt", "feed"]

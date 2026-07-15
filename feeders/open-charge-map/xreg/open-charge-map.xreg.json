@@ -1,0 +1,1997 @@
+{
+  "endpoints": {
+    "IO.OpenChargeMap.Locations.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "open-charge-map",
+          "key": "{poi_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/IO.OpenChargeMap.locations"
+      ],
+      "description": "Kafka producer endpoint for Open Charge Map charging-location CloudEvents on the `open-charge-map` topic, keyed by the stable OCM POI id `{poi_id}` so every update for one charging location lands on the same partition in emission order."
+    },
+    "IO.OpenChargeMap.Reference.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "open-charge-map",
+          "key": "{reference_type}/{reference_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/IO.OpenChargeMap.reference"
+      ],
+      "description": "Kafka producer endpoint for Open Charge Map reference-data CloudEvents (operators, connector standards, current types, charging levels, countries, data providers, status types, usage models, submission statuses) on the same `open-charge-map` topic, keyed by the composite `{reference_type}/{reference_id}` so each lookup entity partitions independently of the location telemetry it contextualizes."
+    },
+    "IO.OpenChargeMap.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/IO.OpenChargeMap.locations.mqtt",
+        "#/messagegroups/IO.OpenChargeMap.reference.mqtt"
+      ],
+      "description": "MQTT 5.0 producer endpoint for Open Charge Map CloudEvents published in binary content mode into an ev-charging Unified Namespace topic hierarchy rooted at `ev-charging/open-charge-map`."
+    },
+    "IO.OpenChargeMap.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/open-charge-map"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/IO.OpenChargeMap.locations.amqp",
+        "#/messagegroups/IO.OpenChargeMap.reference.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for Open Charge Map CloudEvents published in binary content mode to the configured broker address (RabbitMQ AMQP 1.0, ActiveMQ Artemis, or Azure Service Bus / Event Hubs)."
+    }
+  },
+  "messagegroups": {
+    "IO.OpenChargeMap.locations": {
+      "description": "Transport-neutral event family for Open Charge Map charging locations (points of interest). Carries the near-real-time ChargingLocation record keyed by the stable OCM `{poi_id}` so consumers can build a temporally consistent view of each charging location.",
+      "messages": {
+        "IO.OpenChargeMap.ChargingLocation": {
+          "name": "ChargingLocation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Near-real-time charging-location record for one Open Charge Map point of interest, keyed by the stable OCM POI id. Emitted at startup for the configured scope and thereafter whenever the record's `DateLastStatusUpdate` advances.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.ChargingLocation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{poi_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.ChargingLocation"
+        }
+      }
+    },
+    "IO.OpenChargeMap.reference": {
+      "description": "Transport-neutral reference-data event family for the Open Charge Map lookup tables that contextualize charging-location telemetry (operators, connector standards, current types, charging levels, countries, data providers, status types, usage models, submission statuses). All reference entities share the composite key `{reference_type}/{reference_id}` and the same reference topic, following the repo convention of modeling upstream metadata as first-class reference events.",
+      "messages": {
+        "IO.OpenChargeMap.Operator": {
+          "name": "Operator",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map Operator reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.Operator"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.Operator"
+        },
+        "IO.OpenChargeMap.ConnectionType": {
+          "name": "ConnectionType",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map ConnectionType reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.ConnectionType"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.ConnectionType"
+        },
+        "IO.OpenChargeMap.CurrentType": {
+          "name": "CurrentType",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map CurrentType reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.CurrentType"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.CurrentType"
+        },
+        "IO.OpenChargeMap.ChargerType": {
+          "name": "ChargerType",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map ChargerType reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.ChargerType"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.ChargerType"
+        },
+        "IO.OpenChargeMap.Country": {
+          "name": "Country",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map Country reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.Country"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.Country"
+        },
+        "IO.OpenChargeMap.DataProvider": {
+          "name": "DataProvider",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map DataProvider reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.DataProvider"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.DataProvider"
+        },
+        "IO.OpenChargeMap.StatusType": {
+          "name": "StatusType",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map StatusType reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.StatusType"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.StatusType"
+        },
+        "IO.OpenChargeMap.UsageType": {
+          "name": "UsageType",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map UsageType reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.UsageType"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.UsageType"
+        },
+        "IO.OpenChargeMap.SubmissionStatusType": {
+          "name": "SubmissionStatusType",
+          "envelope": "CloudEvents/1.0",
+          "description": "Open Charge Map SubmissionStatusType reference catalog entity, keyed by the composite `{reference_type}/{reference_id}` so all lookup entities share one identity shape on the reference topic. Emitted at startup and on the periodic reference refresh.",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.OpenChargeMap.SubmissionStatusType"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{reference_type}/{reference_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.OpenChargeMap.jstruct/schemas/IO.OpenChargeMap.SubmissionStatusType"
+        }
+      }
+    },
+    "IO.OpenChargeMap.locations.mqtt": {
+      "description": "MQTT 5 protocol binding for Open Charge Map charging-location events on the ev-charging Unified Namespace topic tree.",
+      "messages": {
+        "IO.OpenChargeMap.mqtt.ChargingLocation": {
+          "name": "ChargingLocation",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.locations/messages/IO.OpenChargeMap.ChargingLocation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/location/{poi_id}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "IO.OpenChargeMap.reference.mqtt": {
+      "description": "MQTT 5 protocol binding for the Open Charge Map reference-data events on the ev-charging Unified Namespace topic tree.",
+      "messages": {
+        "IO.OpenChargeMap.mqtt.Operator": {
+          "name": "Operator",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.Operator",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.ConnectionType": {
+          "name": "ConnectionType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.ConnectionType",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.CurrentType": {
+          "name": "CurrentType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.CurrentType",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.ChargerType": {
+          "name": "ChargerType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.ChargerType",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.Country": {
+          "name": "Country",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.Country",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.DataProvider": {
+          "name": "DataProvider",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.DataProvider",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.StatusType": {
+          "name": "StatusType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.StatusType",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.UsageType": {
+          "name": "UsageType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.UsageType",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "IO.OpenChargeMap.mqtt.SubmissionStatusType": {
+          "name": "SubmissionStatusType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.SubmissionStatusType",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "ev-charging/open-charge-map/reference/{reference_type}/{reference_id}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "IO.OpenChargeMap.locations.amqp": {
+      "description": "AMQP 1.0 protocol binding for Open Charge Map charging-location events, mirroring the CloudEvents subject and partition key onto the AMQP message.",
+      "messages": {
+        "IO.OpenChargeMap.amqp.ChargingLocation": {
+          "name": "ChargingLocation",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.locations/messages/IO.OpenChargeMap.ChargingLocation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{poi_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{poi_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        }
+      }
+    },
+    "IO.OpenChargeMap.reference.amqp": {
+      "description": "AMQP 1.0 protocol binding for the Open Charge Map reference-data events, mirroring the CloudEvents subject and partition key onto the AMQP message.",
+      "messages": {
+        "IO.OpenChargeMap.amqp.Operator": {
+          "name": "Operator",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.Operator",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.ConnectionType": {
+          "name": "ConnectionType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.ConnectionType",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.CurrentType": {
+          "name": "CurrentType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.CurrentType",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.ChargerType": {
+          "name": "ChargerType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.ChargerType",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.Country": {
+          "name": "Country",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.Country",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.DataProvider": {
+          "name": "DataProvider",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.DataProvider",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.StatusType": {
+          "name": "StatusType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.StatusType",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.UsageType": {
+          "name": "UsageType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.UsageType",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.amqp.SubmissionStatusType": {
+          "name": "SubmissionStatusType",
+          "basemessageuri": "/messagegroups/IO.OpenChargeMap.reference/messages/IO.OpenChargeMap.SubmissionStatusType",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for this entity."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{reference_type}/{reference_id}",
+                "description": "Partition key mirrors the CloudEvents subject / Kafka key for this entity."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "IO.OpenChargeMap.jstruct": {
+      "schemas": {
+        "IO.OpenChargeMap.ChargingLocation": {
+          "name": "ChargingLocation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/ChargingLocation/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "ChargingLocation",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One electric-vehicle charging location (point of interest) from the Open Charge Map v3 POI API `https://api.openchargemap.io/v3/poi/`. Open Charge Map is the largest global open registry of EV charging equipment, with 300,000+ locations worldwide contributed and verified by operators, national databases, and the public under open licences. This event carries the stable identity, the parsed and flattened address with WGS 84 coordinates, denormalized operator/usage/status labels, editorial and freshness timestamps, and the itemized charging connections. The feeder emits it at startup for the configured scope and thereafter on the `DateLastStatusUpdate` delta, so consumers can maintain a temporally consistent view of each charging location keyed by `poi_id`.",
+                "required": [
+                  "poi_id",
+                  "uuid",
+                  "latitude",
+                  "longitude",
+                  "connections"
+                ],
+                "properties": {
+                  "poi_id": {
+                    "type": "int32",
+                    "description": "Stable Open Charge Map identifier of the point of interest (charging location), from the POI `ID` field, for example `498580`. It is globally unique within OCM, persists across refreshes, and forms the single component of both the CloudEvents subject and the Kafka key so every update for one charging location lands on the same partition in emission order.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "uuid": {
+                    "type": "string",
+                    "description": "Globally unique GUID assigned to the charging location by OCM, from the POI `UUID` field, for example `82B28E8E-0E5F-4158-9DF0-AF9991E98162`. An alternate immutable identity useful for cross-referencing OCM exports; stable across the record's lifetime.",
+                    "altnames": {
+                      "ocm-api": "UUID"
+                    }
+                  },
+                  "data_provider_id": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Identifier of the data provider that supplied this record, from `DataProviderID`, for example `1` (Open Charge Map Contributors). Joins to the `DataProvider` reference event and indicates the licensing and provenance of the record.",
+                    "altnames": {
+                      "ocm-api": "DataProviderID"
+                    }
+                  },
+                  "operator_id": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Identifier of the charging-network operator for this location, from `OperatorID`, for example `3296` (InstaVolt Ltd). Joins to the `Operator` reference event. Null when the operator is unknown or not recorded.",
+                    "altnames": {
+                      "ocm-api": "OperatorID"
+                    }
+                  },
+                  "operator_title": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Human-readable operator name denormalized from the inline `OperatorInfo.Title`, for example `InstaVolt Ltd` or `Tesla (Supercharger)`. Carried inline so the event is self-contained. Null when no operator is associated.",
+                    "altnames": {
+                      "ocm-api": "OperatorInfo.Title"
+                    }
+                  },
+                  "usage_type_id": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Identifier of the access/usage model for this location, from `UsageTypeID`, for example `5` (Public - Pay At Location). Joins to the `UsageType` reference event describing whether membership, an access key, or payment at the location is required.",
+                    "altnames": {
+                      "ocm-api": "UsageTypeID"
+                    }
+                  },
+                  "usage_type_title": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Human-readable usage-model label denormalized from the inline `UsageType.Title`, for example `Public - Pay At Location`, `Public - Membership Required`, or `Private - Restricted Access`.",
+                    "altnames": {
+                      "ocm-api": "UsageType.Title"
+                    }
+                  },
+                  "usage_cost": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Free-text description of the cost to use the charging location, from the `UsageCost` field, for example `£0.85/kWh`, `Free`, or `See operator app`. Deliberately free-text because tariffs vary widely and are not normalized upstream.",
+                    "altnames": {
+                      "ocm-api": "UsageCost"
+                    }
+                  },
+                  "status_type_id": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Location-level operational-status identifier, from the POI `StatusTypeID`, for example `50` (Operational) or `75` (Partly Operational). Joins to the `StatusType` reference event.",
+                    "altnames": {
+                      "ocm-api": "StatusTypeID"
+                    }
+                  },
+                  "status_title": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Human-readable operational-status label denormalized from the inline `StatusType.Title`, for example `Operational`, `Planned For Future Date`, or `Temporarily Unavailable`.",
+                    "altnames": {
+                      "ocm-api": "StatusType.Title"
+                    }
+                  },
+                  "is_operational": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "Convenience boolean denormalized from the inline location-level `StatusType.IsOperational`: true when the location's status is considered operational, false when it is not, null when the status carries no operational flag.",
+                    "altnames": {
+                      "ocm-api": "StatusType.IsOperational"
+                    }
+                  },
+                  "submission_status_type_id": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Editorial submission-workflow status identifier, from `SubmissionStatusTypeID`, for example `200` (Submission Published). Joins to the `SubmissionStatusType` reference event. Live POIs returned by the public feed are normally published.",
+                    "altnames": {
+                      "ocm-api": "SubmissionStatusTypeID"
+                    }
+                  },
+                  "submission_status_title": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Human-readable submission-workflow label denormalized from the inline `SubmissionStatus.Title`, for example `Submission Published` or `Submission Under Review`.",
+                    "altnames": {
+                      "ocm-api": "SubmissionStatus.Title"
+                    }
+                  },
+                  "data_quality_level": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "OCM data-quality score for the record on a 1-5 scale, from `DataQualityLevel`, where 1 is the default/unverified baseline and higher values indicate more thoroughly reviewed data. Lets consumers filter to higher-confidence records.",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "altnames": {
+                      "ocm-api": "DataQualityLevel"
+                    }
+                  },
+                  "number_of_points": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Reported total number of charge points (EVSEs) at the location, from `NumberOfPoints`, for example `1` or `6`. May be supplied directly by the contributor and can differ from the summed connection `quantity`; treat as the operator-stated bay count.",
+                    "minimum": 0,
+                    "altnames": {
+                      "ocm-api": "NumberOfPoints"
+                    }
+                  },
+                  "general_comments": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Free-text notes about the location as a whole supplied by the contributor, from `GeneralComments`, for example access restrictions or landmark hints. Usually null.",
+                    "altnames": {
+                      "ocm-api": "GeneralComments"
+                    }
+                  },
+                  "is_recently_verified": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when OCM considers the record to have been verified recently (within the provider's freshness window), from `IsRecentlyVerified`. A quick freshness signal complementing `date_last_verified`.",
+                    "altnames": {
+                      "ocm-api": "IsRecentlyVerified"
+                    }
+                  },
+                  "date_created": {
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
+                    "description": "UTC timestamp when the record was first created in OCM, from `DateCreated` (ISO-8601, for example `2026-07-12T20:49:00Z`). Null for very old records lacking a creation timestamp.",
+                    "altnames": {
+                      "ocm-api": "DateCreated"
+                    }
+                  },
+                  "date_last_status_update": {
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
+                    "description": "UTC timestamp of the most recent change to the record, from `DateLastStatusUpdate` (ISO-8601). This is the watermark the feeder tracks: the delta poller requests records with `modifiedsince` set just past the highest observed value so only changed locations are re-emitted.",
+                    "altnames": {
+                      "ocm-api": "DateLastStatusUpdate"
+                    }
+                  },
+                  "date_last_verified": {
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
+                    "description": "UTC timestamp when the record was last verified by a contributor or automated check, from `DateLastVerified` (ISO-8601). Null when never explicitly verified.",
+                    "altnames": {
+                      "ocm-api": "DateLastVerified"
+                    }
+                  },
+                  "date_last_confirmed": {
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
+                    "description": "UTC timestamp when the location was last confirmed as still present/correct, from `DateLastConfirmed` (ISO-8601). Frequently null.",
+                    "altnames": {
+                      "ocm-api": "DateLastConfirmed"
+                    }
+                  },
+                  "date_planned": {
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
+                    "description": "UTC date on which a planned (not-yet-operational) location is expected to open, from `DatePlanned` (ISO-8601). Populated only for locations whose status is a planned/future state; otherwise null.",
+                    "altnames": {
+                      "ocm-api": "DatePlanned"
+                    }
+                  },
+                  "address_id": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Open Charge Map identifier of the address record attached to the location, from `AddressInfo.ID`. Internal to OCM; distinct from `poi_id`.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.ID"
+                    }
+                  },
+                  "address_title": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Short site name or title of the charging location, from `AddressInfo.Title`, for example `Starbucks`, `Tesco Extra`, or `Woodfield Way Car Park`. The primary human label for the location.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.Title"
+                    }
+                  },
+                  "address_line1": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "First line of the street address, from `AddressInfo.AddressLine1`, for example `Woodfield Way`.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.AddressLine1"
+                    }
+                  },
+                  "address_line2": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Second line of the street address (locality, estate, or building detail), from `AddressInfo.AddressLine2`, for example `Hexthorpe`. Usually null.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.AddressLine2"
+                    }
+                  },
+                  "town": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Town or city of the charging location, from `AddressInfo.Town`, for example `Doncaster`.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.Town"
+                    }
+                  },
+                  "state_or_province": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "State, province, region, or country subdivision, from `AddressInfo.StateOrProvince`, for example `England`, `California`, or `Bayern`.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.StateOrProvince"
+                    }
+                  },
+                  "postcode": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Postal or ZIP code of the charging location, from `AddressInfo.Postcode`, for example `DN4 8SJ`.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.Postcode"
+                    }
+                  },
+                  "country_id": {
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "description": "Identifier of the country the location is in, from `AddressInfo.CountryID`, for example `1` (United Kingdom). Joins to the `Country` reference event.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.CountryID"
+                    }
+                  },
+                  "country_iso_code": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "ISO 3166-1 alpha-2 country code denormalized from the inline `AddressInfo.Country.ISOCode`, for example `GB`, `US`, or `DE`. Carried inline for convenient country-level filtering.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.Country.ISOCode"
+                    }
+                  },
+                  "country_title": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Human-readable country name denormalized from the inline `AddressInfo.Country.Title`, for example `United Kingdom`.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.Country.Title"
+                    }
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "WGS 84 latitude of the charging location in decimal degrees, from `AddressInfo.Latitude`, for example `53.498591581284586`. Positive north of the equator. Present on every OCM location and used directly as the map coordinate.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "altnames": {
+                      "ocm-api": "AddressInfo.Latitude"
+                    }
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "WGS 84 longitude of the charging location in decimal degrees, from `AddressInfo.Longitude`, for example `-1.1232887704744599`. Positive east of the prime meridian. Present on every OCM location and used directly as the map coordinate.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "altnames": {
+                      "ocm-api": "AddressInfo.Longitude"
+                    }
+                  },
+                  "contact_telephone1": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Primary contact telephone number for the location, from `AddressInfo.ContactTelephone1`. Usually null.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.ContactTelephone1"
+                    }
+                  },
+                  "contact_telephone2": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Secondary contact telephone number for the location, from `AddressInfo.ContactTelephone2`. Usually null.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.ContactTelephone2"
+                    }
+                  },
+                  "contact_email": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Contact email address for the location, from `AddressInfo.ContactEmail`. Usually null.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.ContactEmail"
+                    }
+                  },
+                  "access_comments": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Free-text access notes for reaching or using the location, from `AddressInfo.AccessComments`, for example parking or opening-hours hints. Usually null.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.AccessComments"
+                    }
+                  },
+                  "related_url": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Operator or venue web page related to the location, from `AddressInfo.RelatedURL`. Usually null.",
+                    "altnames": {
+                      "ocm-api": "AddressInfo.RelatedURL"
+                    }
+                  },
+                  "connections": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "name": "Connection",
+                      "description": "One physical charging connection (EVSE connector) at the charging location, from an element of the upstream POI `Connections` array. Describes the connector standard, its charging level and current type, the electrical rating, the operational status, and how many identical connectors of this configuration the equipment provides.",
+                      "required": [
+                        "connection_id"
+                      ],
+                      "properties": {
+                        "connection_id": {
+                          "type": "int32",
+                          "description": "Open Charge Map identifier of this individual charging connection, from the connection element's `ID` field, for example `849338`. Unique within the OCM database; lets a consumer track an individual connector across successive location updates.",
+                          "altnames": {
+                            "ocm-api": "ID"
+                          }
+                        },
+                        "connection_type_id": {
+                          "type": [
+                            "null",
+                            "int32"
+                          ],
+                          "description": "Identifier of the connector standard for this connection, from `ConnectionTypeID`, for example `33` (CCS Type 2). Joins to the `ConnectionType` reference event whose `reference_id` equals this value.",
+                          "altnames": {
+                            "ocm-api": "ConnectionTypeID"
+                          }
+                        },
+                        "connection_type_title": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "Human-readable connector-standard name denormalized from the inline `ConnectionType.Title`, for example `CCS (Type 2)`, `Type 2 (Socket Only)`, or `CHAdeMO`. Carried inline so the event is self-contained for dashboards and maps.",
+                          "altnames": {
+                            "ocm-api": "ConnectionType.Title"
+                          }
+                        },
+                        "connection_type_formal_name": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "Formal standards designation of the connector, denormalized from `ConnectionType.FormalName`, for example `IEC 62196-3 Configuration FF`. Null when OCM has not recorded a formal name for the connector type.",
+                          "altnames": {
+                            "ocm-api": "ConnectionType.FormalName"
+                          }
+                        },
+                        "reference": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "Free-text operator or data-provider reference label for this connection, from the connection element's `Reference` field. Usually null; occasionally carries an equipment or bay identifier supplied by the operator.",
+                          "altnames": {
+                            "ocm-api": "Reference"
+                          }
+                        },
+                        "status_type_id": {
+                          "type": [
+                            "null",
+                            "int32"
+                          ],
+                          "description": "Operational-status identifier for this specific connection, from `StatusTypeID`, for example `50` (Operational). Joins to the `StatusType` reference event. May differ from the location-level status when only some connectors are in service.",
+                          "altnames": {
+                            "ocm-api": "StatusTypeID"
+                          }
+                        },
+                        "is_operational": {
+                          "type": [
+                            "null",
+                            "boolean"
+                          ],
+                          "description": "Convenience boolean denormalized from the inline `StatusType.IsOperational` for this connection: true when the connection's status type is considered operational, false when it is not (for example planned, non-operational, or removed), null when the status type carries no operational flag.",
+                          "altnames": {
+                            "ocm-api": "StatusType.IsOperational"
+                          }
+                        },
+                        "level_id": {
+                          "type": [
+                            "null",
+                            "int32"
+                          ],
+                          "description": "Charging-level identifier for this connection, from `LevelID`: `1` (Low, under ~2 kW), `2` (Medium, ~2-40 kW AC), or `3` (High, over 40 kW, typically DC fast charging). Joins to the `ChargerType` reference event whose `reference_id` equals this value.",
+                          "altnames": {
+                            "ocm-api": "LevelID"
+                          }
+                        },
+                        "level_title": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "Human-readable charging-level label denormalized from the inline `Level.Title`, for example `Level 3: High (Over 40kW)`. Null when the level is not recorded.",
+                          "altnames": {
+                            "ocm-api": "Level.Title"
+                          }
+                        },
+                        "is_fast_charge_capable": {
+                          "type": [
+                            "null",
+                            "boolean"
+                          ],
+                          "description": "Convenience boolean denormalized from the inline `Level.IsFastChargeCapable`: true when this connection's charging level is classed as fast charging (generally Level 3 DC), false otherwise, null when unknown.",
+                          "altnames": {
+                            "ocm-api": "Level.IsFastChargeCapable"
+                          }
+                        },
+                        "amps": {
+                          "type": [
+                            "null",
+                            "int32"
+                          ],
+                          "description": "Maximum supported current of this connection in amperes, from the connection element's `Amps` field. Frequently null in OCM because contributors often record power rather than current; present mainly for AC connections where the current limit is documented.",
+                          "unit": "A",
+                          "symbol": "A",
+                          "minimum": 0,
+                          "altnames": {
+                            "ocm-api": "Amps"
+                          }
+                        },
+                        "voltage": {
+                          "type": [
+                            "null",
+                            "int32"
+                          ],
+                          "description": "Nominal supply voltage of this connection in volts, from the connection element's `Voltage` field, for example `230`, `400`, or `500`. Frequently null when contributors record only power. For DC connections this is the nominal DC bus voltage.",
+                          "unit": "V",
+                          "symbol": "V",
+                          "minimum": 0,
+                          "altnames": {
+                            "ocm-api": "Voltage"
+                          }
+                        },
+                        "power_kw": {
+                          "type": [
+                            "null",
+                            "double"
+                          ],
+                          "description": "Maximum rated power of this connection in kilowatts, from the connection element's `PowerKW` field, for example `7.4`, `22`, `50`, `120`, or `350`. The single most commonly populated electrical rating in OCM and the primary basis for classifying a connector as slow, fast, or rapid.",
+                          "unit": "kW",
+                          "symbol": "kW",
+                          "minimum": 0,
+                          "altnames": {
+                            "ocm-api": "PowerKW"
+                          }
+                        },
+                        "current_type_id": {
+                          "type": [
+                            "null",
+                            "int32"
+                          ],
+                          "description": "Current-type identifier for this connection, from `CurrentTypeID`: `10` (AC single-phase), `20` (AC three-phase), or `30` (DC). Joins to the `CurrentType` reference event whose `reference_id` equals this value.",
+                          "altnames": {
+                            "ocm-api": "CurrentTypeID"
+                          }
+                        },
+                        "current_type_title": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "Human-readable current-type label denormalized from the inline `CurrentType.Title`, for example `AC (Single-Phase)`, `AC (Three-Phase)`, or `DC`. Null when the current type is not recorded.",
+                          "altnames": {
+                            "ocm-api": "CurrentType.Title"
+                          }
+                        },
+                        "quantity": {
+                          "type": [
+                            "null",
+                            "int32"
+                          ],
+                          "description": "Number of identically-configured physical connectors this connection element represents at the location, from the `Quantity` field, for example `1` or `2`. Sum across the connections approximates the deliverable-connector count; compare with the location-level `number_of_points`.",
+                          "minimum": 0,
+                          "altnames": {
+                            "ocm-api": "Quantity"
+                          }
+                        },
+                        "comments": {
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "description": "Free-text notes about this connection supplied by the contributor, from the connection element's `Comments` field, for example access notes or tariff hints. Usually null.",
+                          "altnames": {
+                            "ocm-api": "Comments"
+                          }
+                        }
+                      }
+                    },
+                    "description": "Array of the physical charging connections (EVSE connectors) documented at the location, from the POI `Connections` array. Each element describes one connector configuration: standard, level, current type, electrical rating, status, and quantity. The bridge always emits a list, empty when the contributor has not itemized the connectors, in which case `number_of_points` may still indicate the bay count."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.Operator": {
+          "name": "Operator",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/Operator/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "Operator",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One charging-network operator from the Open Charge Map reference data `https://api.openchargemap.io/v3/referencedata/` (`Operators` table, ~977 entries). Operators own or run the charging equipment; a ChargingLocation joins to this event through its `operator_id`. Emitted at startup and on the periodic reference refresh so telemetry consumers can resolve operator identifiers without a separate lookup.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `operator` identifying this event as an operator reference entity. Forms the first segment of the `{reference_type}/{reference_id}` CloudEvents subject and Kafka key."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map operator identifier, from the operator `ID` field, for example `3296`. Matches the `operator_id` carried on ChargingLocation and forms the second segment of the subject/key.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "website_url": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Operator web site URL, from `WebsiteURL`. Null when unknown.",
+                    "altnames": {
+                      "ocm-api": "WebsiteURL"
+                    }
+                  },
+                  "comments": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Free-text notes about the operator, from `Comments`, for example payment or roaming details. Often null.",
+                    "altnames": {
+                      "ocm-api": "Comments"
+                    }
+                  },
+                  "phone_primary_contact": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Primary contact telephone number for the operator, from `PhonePrimaryContact`. Often null.",
+                    "altnames": {
+                      "ocm-api": "PhonePrimaryContact"
+                    }
+                  },
+                  "phone_secondary_contact": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Secondary contact telephone number for the operator, from `PhoneSecondaryContact`. Often null.",
+                    "altnames": {
+                      "ocm-api": "PhoneSecondaryContact"
+                    }
+                  },
+                  "contact_email": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Contact email address for the operator, from `ContactEmail`. Often null.",
+                    "altnames": {
+                      "ocm-api": "ContactEmail"
+                    }
+                  },
+                  "booking_url": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "URL for booking or account sign-up with the operator, from `BookingURL`. Often null.",
+                    "altnames": {
+                      "ocm-api": "BookingURL"
+                    }
+                  },
+                  "fault_report_email": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Email address for reporting faults to the operator, from `FaultReportEmail`. Often null.",
+                    "altnames": {
+                      "ocm-api": "FaultReportEmail"
+                    }
+                  },
+                  "is_private_individual": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when the operator record represents a private individual rather than a commercial network, from `IsPrivateIndividual`.",
+                    "altnames": {
+                      "ocm-api": "IsPrivateIndividual"
+                    }
+                  },
+                  "is_restricted_edit": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when records attributed to this operator are edit-restricted in Open Charge Map (only privileged editors may modify them), from `IsRestrictedEdit`. Non-null for the large majority of operators.",
+                    "altnames": {
+                      "ocm-api": "IsRestrictedEdit"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.ConnectionType": {
+          "name": "ConnectionType",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/ConnectionType/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "ConnectionType",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One EV connector standard from the Open Charge Map reference data (`ConnectionTypes` table, ~43 entries). A ChargingLocation connection joins to this event through its `connection_type_id`. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `connection_type` identifying this event as a connector-standard reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map connection-type identifier, from the connection-type `ID` field, for example `33` (CCS Type 2). Matches the `connection_type_id` on ChargingLocation connections.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "formal_name": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Formal standards designation of the connector, from `FormalName`, for example `IEC 62196-3 Configuration FF`. Null when not recorded.",
+                    "altnames": {
+                      "ocm-api": "FormalName"
+                    }
+                  },
+                  "is_discontinued": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when the connector standard has been discontinued, from `IsDiscontinued`. Discontinued types still appear on historical locations.",
+                    "altnames": {
+                      "ocm-api": "IsDiscontinued"
+                    }
+                  },
+                  "is_obsolete": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when the connector standard is considered obsolete, from `IsObsolete`.",
+                    "altnames": {
+                      "ocm-api": "IsObsolete"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.CurrentType": {
+          "name": "CurrentType",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/CurrentType/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "CurrentType",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One electrical current type from the Open Charge Map reference data (`CurrentTypes` table, 3 entries: AC single-phase, AC three-phase, DC). A ChargingLocation connection joins to this event through its `current_type_id`. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `current_type` identifying this event as a current-type reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map current-type identifier, from the current-type `ID` field: `10` (AC single-phase), `20` (AC three-phase), or `30` (DC). Matches the `current_type_id` on ChargingLocation connections.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "description": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Longer description of the current type, from `Description`, for example `Direct Current`.",
+                    "altnames": {
+                      "ocm-api": "Description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.ChargerType": {
+          "name": "ChargerType",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/ChargerType/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "ChargerType",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One charging level (charger power class) from the Open Charge Map reference data (`ChargerTypes` table, 3 entries: Level 1 Low, Level 2 Medium, Level 3 High). Open Charge Map calls this table `ChargerTypes` while POI connections reference it through the `LevelID` field; a ChargingLocation connection joins to this event through its `level_id`. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `charger_type` identifying this event as a charging-level reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map charging-level identifier, from the charger-type `ID` field: `1` (Level 1, Low, under ~2 kW), `2` (Level 2, Medium, ~2-40 kW), or `3` (Level 3, High, over 40 kW). Matches the `level_id` on ChargingLocation connections.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "comments": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Description of the charging level's power band, from `Comments`, for example `40KW and Higher`.",
+                    "altnames": {
+                      "ocm-api": "Comments"
+                    }
+                  },
+                  "is_fast_charge_capable": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when this level is classed as fast charging, from `IsFastChargeCapable` (true for Level 3).",
+                    "altnames": {
+                      "ocm-api": "IsFastChargeCapable"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.Country": {
+          "name": "Country",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/Country/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "Country",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One country from the Open Charge Map reference data (`Countries` table, ~250 entries). A ChargingLocation joins to this event through its `country_id`. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `country` identifying this event as a country reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map country identifier, from the country `ID` field, for example `1` (United Kingdom). Matches the `country_id` on ChargingLocation.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "iso_code": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "ISO 3166-1 alpha-2 country code, from `ISOCode`, for example `GB`, `US`, or `DE`.",
+                    "altnames": {
+                      "ocm-api": "ISOCode"
+                    }
+                  },
+                  "continent_code": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Two-letter continent code, from `ContinentCode`, for example `EU`, `NA`, `AS`, `OC`, `AF`, or `SA`.",
+                    "altnames": {
+                      "ocm-api": "ContinentCode"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.DataProvider": {
+          "name": "DataProvider",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/DataProvider/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "DataProvider",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One data provider from the Open Charge Map reference data (`DataProviders` table, ~56 entries). Data providers are the databases and organizations whose records OCM aggregates; a ChargingLocation joins to this event through its `data_provider_id`, and the provider carries the licence under which the record may be reused. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `data_provider` identifying this event as a data-provider reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map data-provider identifier, from the data-provider `ID` field, for example `1` (Open Charge Map Contributors). Matches the `data_provider_id` on ChargingLocation.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "website_url": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Data provider web site URL, from `WebsiteURL`.",
+                    "altnames": {
+                      "ocm-api": "WebsiteURL"
+                    }
+                  },
+                  "comments": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Free-text notes about the data provider, from `Comments`. Often null.",
+                    "altnames": {
+                      "ocm-api": "Comments"
+                    }
+                  },
+                  "license": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Licence under which the provider's data is published, from `License`, for example `Licensed under Creative Commons Attribution 4.0 International`. Governs reuse of the records attributed to this provider.",
+                    "altnames": {
+                      "ocm-api": "License"
+                    }
+                  },
+                  "is_open_data_licensed": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when the provider's data is available under an open-data licence, from `IsOpenDataLicensed`.",
+                    "altnames": {
+                      "ocm-api": "IsOpenDataLicensed"
+                    }
+                  },
+                  "is_restricted_edit": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when records from this provider are edit-restricted in OCM, from `IsRestrictedEdit`.",
+                    "altnames": {
+                      "ocm-api": "IsRestrictedEdit"
+                    }
+                  },
+                  "is_approved_import": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when the provider is an approved bulk-import source, from `IsApprovedImport`.",
+                    "altnames": {
+                      "ocm-api": "IsApprovedImport"
+                    }
+                  },
+                  "status_title": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "description": "Human-readable provider-status label denormalized from the inline `DataProviderStatusType.Title`, for example `Manual Data Entry` or `Automated Import`.",
+                    "altnames": {
+                      "ocm-api": "DataProviderStatusType.Title"
+                    }
+                  },
+                  "is_provider_enabled": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when the provider is currently enabled as a source, denormalized from the inline `DataProviderStatusType.IsProviderEnabled`.",
+                    "altnames": {
+                      "ocm-api": "DataProviderStatusType.IsProviderEnabled"
+                    }
+                  },
+                  "date_last_imported": {
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
+                    "description": "UTC timestamp of the most recent automated import from this data provider, from `DateLastImported` (ISO-8601). Populated for providers fed by scheduled bulk imports; null for manual-entry providers. Signals the provenance freshness of the records attributed to this provider.",
+                    "altnames": {
+                      "ocm-api": "DateLastImported"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.StatusType": {
+          "name": "StatusType",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/StatusType/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "StatusType",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One operational-status type from the Open Charge Map reference data (`StatusTypes` table, ~10 entries). A ChargingLocation and each of its connections join to this event through their `status_type_id`. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `status_type` identifying this event as an operational-status reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map status-type identifier, from the status-type `ID` field, for example `50` (Operational). Matches the `status_type_id` on ChargingLocation and its connections.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "is_operational": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when this status denotes operational equipment, from `IsOperational`. Null for statuses that carry no operational determination.",
+                    "altnames": {
+                      "ocm-api": "IsOperational"
+                    }
+                  },
+                  "is_user_selectable": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when contributors may select this status when editing, from `IsUserSelectable`.",
+                    "altnames": {
+                      "ocm-api": "IsUserSelectable"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.UsageType": {
+          "name": "UsageType",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/UsageType/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "UsageType",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One access/usage model from the Open Charge Map reference data (`UsageTypes` table, ~8 entries). Describes whether payment at the location, membership, or an access key is required. A ChargingLocation joins to this event through its `usage_type_id`. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `usage_type` identifying this event as a usage-model reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map usage-type identifier, from the usage-type `ID` field, for example `5` (Public - Pay At Location). Matches the `usage_type_id` on ChargingLocation.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "is_pay_at_location": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when the user pays at the location (for example by card or coin), from `IsPayAtLocation`.",
+                    "altnames": {
+                      "ocm-api": "IsPayAtLocation"
+                    }
+                  },
+                  "is_membership_required": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when network membership is required to use the location, from `IsMembershipRequired`.",
+                    "altnames": {
+                      "ocm-api": "IsMembershipRequired"
+                    }
+                  },
+                  "is_access_key_required": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when a physical or digital access key (RFID card, app token) is required, from `IsAccessKeyRequired`.",
+                    "altnames": {
+                      "ocm-api": "IsAccessKeyRequired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "IO.OpenChargeMap.SubmissionStatusType": {
+          "name": "SubmissionStatusType",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/io/openchargemap/SubmissionStatusType/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "SubmissionStatusType",
+                "namespace": "IO.OpenChargeMap",
+                "description": "One editorial submission-workflow status from the Open Charge Map reference data (`SubmissionStatusTypes` table, ~11 entries). Describes where a record sits in OCM's contribution/review pipeline; a ChargingLocation joins to this event through its `submission_status_type_id`. Emitted at startup and on the periodic reference refresh.",
+                "required": [
+                  "reference_type",
+                  "reference_id",
+                  "title"
+                ],
+                "properties": {
+                  "reference_type": {
+                    "type": "string",
+                    "description": "Constant discriminator `submission_status_type` identifying this event as a submission-workflow reference entity."
+                  },
+                  "reference_id": {
+                    "type": "int32",
+                    "description": "Open Charge Map submission-status identifier, from the submission-status `ID` field, for example `200` (Submission Published). Matches the `submission_status_type_id` on ChargingLocation.",
+                    "altnames": {
+                      "ocm-api": "ID"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable name of the reference entity, from its `Title` field.",
+                    "altnames": {
+                      "ocm-api": "Title"
+                    }
+                  },
+                  "is_live": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when records with this submission status are publicly live/visible, from `IsLive`.",
+                    "altnames": {
+                      "ocm-api": "IsLive"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

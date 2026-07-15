@@ -707,6 +707,17 @@
     "amqp": true
   },
   {
+    "id": "open-charge-map",
+    "name": "Open Charge Map",
+    "cat": "Energy and Infrastructure",
+    "key": true,
+    "desc": "Global — EV charging locations and reference data (requires free API key)",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "openaq",
     "name": "OpenAQ",
     "cat": "Air Quality",

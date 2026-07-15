@@ -133,6 +133,7 @@ const SOURCES = [
   { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", notebook: true, mqtt: true, amqp: true },
   { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", notebook: true, mqtt: true, amqp: true },
   { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)", mqtt: true, amqp: true },
+  { id: "open-charge-map", name: "Open Charge Map", cat: "Energy", key: true, desc: "Global — EV charging locations and reference data (requires free API key)", kql: true, notebook: true, mqtt: true, amqp: true },
   { id: "tepco-denkiyoho", name: "TEPCO Denkiyoho", cat: "Energy", key: false, desc: "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar", notebook: true, mqtt: true, amqp: true, kafka: false },
 
   // ── Social Media and News ──

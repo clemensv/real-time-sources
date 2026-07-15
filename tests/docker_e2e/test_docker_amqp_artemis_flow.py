@@ -88,6 +88,11 @@ def taipei_youbike_amqp_image():
     return build_image("taipei-youbike", dockerfile="Dockerfile.amqp", tag="test-taipei-youbike-amqp")
 
 
+@pytest.fixture(scope="module")
+def open_charge_map_amqp_image():
+    return build_image("open-charge-map", dockerfile="Dockerfile.amqp", tag="test-open-charge-map-amqp")
+
+
 @pytest.fixture()
 def artemis_broker():
     client = docker.from_env()
@@ -522,6 +527,115 @@ class TestTaipeiYoubikeAmqpArtemisFlow:
         assert self.TELEMETRY_TYPE in by_type, sorted(str(k) for k in by_type)
 
         schemas = _load_taipei_youbike_schemas()
+        from json_structure import InstanceValidator, SchemaValidator
+        validator_factory = SchemaValidator(extended=True)
+        for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
+            sample_msg, sample_ce = by_type[ce_type][0]
+            for required in ("id", "source", "type", "subject", "specversion"):
+                assert required in sample_ce, f"Missing CE attribute {required!r} on {ce_type}: {sample_ce}"
+            assert sample_ce["specversion"] == "1.0"
+            assert sample_ce["type"] == ce_type
+            data = _body_to_obj(sample_msg)
+            assert isinstance(data, dict), f"{ce_type} body not a JSON object: {data!r}"
+            schema = schemas[ce_type]
+            assert not validator_factory.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(data)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+def _load_open_charge_map_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, "feeders", "open-charge-map", "xreg", "open-charge-map.xreg.json")
+    with open(xreg_path, "r", encoding="utf-8") as fh:
+        manifest = json.load(fh)
+    group = manifest["schemagroups"]["IO.OpenChargeMap.jstruct"]["schemas"]
+    names = [
+        "IO.OpenChargeMap.ChargingLocation",
+        "IO.OpenChargeMap.Operator",
+        "IO.OpenChargeMap.ConnectionType",
+        "IO.OpenChargeMap.CurrentType",
+        "IO.OpenChargeMap.ChargerType",
+        "IO.OpenChargeMap.Country",
+        "IO.OpenChargeMap.DataProvider",
+        "IO.OpenChargeMap.StatusType",
+        "IO.OpenChargeMap.UsageType",
+        "IO.OpenChargeMap.SubmissionStatusType",
+    ]
+    return {name: group[name]["versions"]["1"]["schema"] for name in names}
+
+
+@pytest.mark.skipif(
+    not os.environ.get("OPENCHARGEMAP_API_KEY"),
+    reason="OPENCHARGEMAP_API_KEY not set; live Open Charge Map ingestion unavailable",
+)
+class TestOpenChargeMapAmqpArtemisFlow:
+    """End-to-end: open-charge-map pushes reference + telemetry to Artemis.
+
+    Polls the Open Charge Map v3 API once (scoped to Ireland for a bounded
+    run); the feeder sends the nine reference lookup tables and the delta
+    charging-location catalog as CloudEvents over AMQP 1.0 in binary mode.
+    Reference events are keyed ``{reference_type}/{reference_id}`` and
+    ChargingLocation is keyed ``{poi_id}``.
+    """
+
+    TELEMETRY_TYPE = "IO.OpenChargeMap.ChargingLocation"
+    REFERENCE_TYPE = "IO.OpenChargeMap.Operator"
+
+    def test_emits_cloudevents_to_amqp_queue(self, artemis_broker, open_charge_map_amqp_image):
+        client = docker.from_env()
+        feeder = client.containers.run(
+            open_charge_map_amqp_image.id,
+            detach=True,
+            remove=False,
+            network=artemis_broker["network"],
+            environment={
+                "AMQP_HOST": artemis_broker["internal_host"],
+                "AMQP_PORT": str(artemis_broker["internal_port"]),
+                "AMQP_ADDRESS": artemis_broker["queue"],
+                "AMQP_USERNAME": artemis_broker["user"],
+                "AMQP_PASSWORD": artemis_broker["password"],
+                "AMQP_AUTH_MODE": "password",
+                "OPENCHARGEMAP_API_KEY": os.environ["OPENCHARGEMAP_API_KEY"],
+                "OCM_COUNTRYCODE": "IE",
+                "OCM_MODIFIED_SINCE_DAYS": "3650",
+                "OCM_MAX_RESULTS": "200",
+                "POLLING_INTERVAL": "600",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS (last 4KB) ---\n{logs[-4000:]}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _receive_messages(
+            "127.0.0.1",
+            artemis_broker["host_port"],
+            artemis_broker["queue"],
+            artemis_broker["user"],
+            artemis_broker["password"],
+            expected=30000,
+            timeout=180,
+        )
+        assert messages, "No AMQP messages received from Artemis"
+
+        by_type: Dict[str, List[Any]] = {}
+        for message in messages:
+            ce = _extract_ce_attrs(message)
+            t = ce.get("type")
+            if t:
+                by_type.setdefault(t, []).append((message, ce))
+        assert self.REFERENCE_TYPE in by_type, sorted(str(k) for k in by_type)
+        assert self.TELEMETRY_TYPE in by_type, sorted(str(k) for k in by_type)
+
+        schemas = _load_open_charge_map_schemas()
         from json_structure import InstanceValidator, SchemaValidator
         validator_factory = SchemaValidator(extended=True)
         for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):

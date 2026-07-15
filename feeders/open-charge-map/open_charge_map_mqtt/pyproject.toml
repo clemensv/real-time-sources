@@ -1,0 +1,37 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open_charge_map_mqtt"
+dynamic = [
+    "version",
+]
+description = "MQTT/UNS feeder for Open Charge Map."
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.11.3",
+    "azure-identity>=1.17.0",
+    "cloudevents>=1.10.1,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "paho-mqtt>=2.1.0",
+]
+
+[project.scripts]
+open-charge-map-mqtt = "open_charge_map_mqtt.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "open_charge_map_mqtt",
+]

@@ -1,0 +1,190 @@
+""" Operator dataclass. """
+
+# pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
+import io
+import gzip
+import enum
+import typing
+import dataclasses
+from dataclasses import dataclass
+import dataclasses_json
+from dataclasses_json import Undefined, dataclass_json
+import json
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class Operator:
+    """
+    One charging-network operator from the Open Charge Map reference data `https://api.openchargemap.io/v3/referencedata/` (`Operators` table, ~977 entries). Operators own or run the charging equipment; a ChargingLocation joins to this event through its `operator_id`. Emitted at startup and on the periodic reference refresh so telemetry consumers can resolve operator identifiers without a separate lookup.
+    
+    Attributes:
+        reference_type (str)
+        reference_id (int)
+        title (str)
+        website_url (typing.Optional[str])
+        comments (typing.Optional[str])
+        phone_primary_contact (typing.Optional[str])
+        phone_secondary_contact (typing.Optional[str])
+        contact_email (typing.Optional[str])
+        booking_url (typing.Optional[str])
+        fault_report_email (typing.Optional[str])
+        is_private_individual (typing.Optional[bool])
+        is_restricted_edit (typing.Optional[bool])
+    """
+    
+    
+    reference_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="reference_type"))
+    reference_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="reference_id"))
+    title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
+    website_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="website_url"))
+    comments: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="comments"))
+    phone_primary_contact: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="phone_primary_contact"))
+    phone_secondary_contact: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="phone_secondary_contact"))
+    contact_email: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="contact_email"))
+    booking_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="booking_url"))
+    fault_report_email: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fault_report_email"))
+    is_private_individual: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_private_individual"))
+    is_restricted_edit: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_restricted_edit"))
+
+    @classmethod
+    def from_serializer_dict(cls, data: dict) -> 'Operator':
+        """
+        Converts a dictionary to a dataclass instance.
+        
+        Args:
+            data: The dictionary to convert to a dataclass.
+        
+        Returns:
+            The dataclass representation of the dataclass.
+        """
+        return cls(**data)
+
+    def to_serializer_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary.
+
+        Returns:
+            The dictionary representation of the dataclass.
+        """
+        asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        return asdict_result
+
+    def _dict_resolver(self, data):
+        """
+        Helps resolving the Enum values to their actual values and fixes the key names.
+        """ 
+        def _resolve_enum(v):
+            if isinstance(v, enum.Enum):
+                return v.value
+            return v
+        def _fix_key(k):
+            return k[:-1] if k.endswith('_') else k
+        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
+
+    def to_byte_array(self, content_type_string: str) -> bytes:
+        """
+        Converts the dataclass to a byte array based on the content type string.
+        
+        Args:
+            content_type_string: The content type string to convert the dataclass to.
+                Supported content types:
+                    'application/json': Encodes the data to JSON format.
+                Supported content type extensions:
+                    '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
+
+        Returns:
+            The byte array representation of the dataclass.        
+        """
+        content_type = content_type_string.split(';')[0].strip()
+        result = None
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            #pylint: disable=no-member
+            result = self.to_json()
+            #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+
+        if result is not None and content_type.endswith('+gzip'):
+            # Handle string result from to_json()
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            with io.BytesIO() as stream:
+                with gzip.GzipFile(fileobj=stream, mode='wb') as gzip_file:
+                    gzip_file.write(result)
+                result = stream.getvalue()
+
+        if result is None:
+            raise NotImplementedError(f"Unsupported media type {content_type}")
+
+        return result
+
+    @classmethod
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Operator']:
+        """
+        Converts the data to a dataclass based on the content type string.
+        
+        Args:
+            data: The data to convert to a dataclass.
+            content_type_string: The content type string to convert the data to. 
+                Supported content types:
+                    'application/json': Attempts to decode the data from JSON encoded format.
+                Supported content type extensions:
+                    '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
+        Returns:
+            The dataclass representation of the data.
+        """
+        if data is None:
+            return None
+        if isinstance(data, cls):
+            return data
+        if isinstance(data, dict):
+            return cls.from_serializer_dict(data)
+
+        content_type = (content_type_string or 'application/octet-stream').split(';')[0].strip()
+
+        if content_type.endswith('+gzip'):
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for gzip decompression')
+            with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
+                data = gzip_file.read()
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            if isinstance(data, (bytes, str)):
+                data_str = data.decode('utf-8') if isinstance(data, bytes) else data
+                _record = json.loads(data_str)
+                return Operator.from_serializer_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+        raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Operator':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            reference_type='zwrofalxntpmghpobzad',
+            reference_id=int(13),
+            title='govubdmindcpmtyykcof',
+            website_url='piscjfkzzrkihmhdqdar',
+            comments='jgwmuingnqbrgwfdcmbq',
+            phone_primary_contact='eolxsvthnisxejyvghjn',
+            phone_secondary_contact='kidpbfbealcrguduwprq',
+            contact_email='vfymkvzcjecgsztsprco',
+            booking_url='jbnpuiwsaqhaaaauctfe',
+            fault_report_email='zazbcxvawhlfejpzplug',
+            is_private_individual=False,
+            is_restricted_edit=False
+        )

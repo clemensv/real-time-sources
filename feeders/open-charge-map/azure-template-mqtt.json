@@ -1,0 +1,249 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the Open Charge Map EV charging registry MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+  },
+  "parameters": {
+    "brokerUrl": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+      }
+    },
+    "brokerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "brokerPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "open-charge-map-mqtt",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "openChargeMapApiKey": {
+      "type": "securestring",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required Open Charge Map API key sent as the OPENCHARGEMAP_API_KEY container environment variable."
+      }
+    },
+    "ocmCountryCode": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional ISO country code scope for Open Charge Map POI polling. Leave empty for the global registry."
+      }
+    },
+    "ocmModifiedSinceDays": {
+      "type": "string",
+      "defaultValue": "1",
+      "metadata": {
+        "description": "Cold-start look-back window in days when no persisted Open Charge Map watermark exists."
+      }
+    },
+    "ocmMaxResults": {
+      "type": "string",
+      "defaultValue": "5000",
+      "metadata": {
+        "description": "Maximum number of Open Charge Map POI records requested per delta poll."
+      }
+    },
+    "ocmOpenData": {
+      "type": "string",
+      "defaultValue": "true",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Whether the feeder requests only openly licensed Open Charge Map POIs."
+      }
+    },
+    "ocmBaseUrl": {
+      "type": "string",
+      "defaultValue": "https://api.openchargemap.io/v3/",
+      "metadata": {
+        "description": "Open Charge Map API root URL; override only for tests, mirrors, or private gateways."
+      }
+    },
+    "pollingInterval": {
+      "type": "string",
+      "defaultValue": "600",
+      "metadata": {
+        "description": "Seconds between Open Charge Map POI delta-poll cycles."
+      }
+    },
+    "referenceRefreshInterval": {
+      "type": "string",
+      "defaultValue": "86400",
+      "metadata": {
+        "description": "Seconds between full re-emissions of Open Charge Map reference lookup tables."
+      }
+    },
+    "stateFile": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional state-file path for the persisted Open Charge Map watermark and POI change signatures."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-open-charge-map-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "MQTT client identifier (must be globally unique per broker)."
+      }
+    }
+  },
+  "variables": {
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "OnFailure",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "OPENCHARGEMAP_API_KEY",
+                  "secureValue": "[parameters('openChargeMapApiKey')]"
+                },
+                {
+                  "name": "OCM_COUNTRYCODE",
+                  "value": "[parameters('ocmCountryCode')]"
+                },
+                {
+                  "name": "OCM_MODIFIED_SINCE_DAYS",
+                  "value": "[parameters('ocmModifiedSinceDays')]"
+                },
+                {
+                  "name": "OCM_MAX_RESULTS",
+                  "value": "[parameters('ocmMaxResults')]"
+                },
+                {
+                  "name": "OCM_OPENDATA",
+                  "value": "[parameters('ocmOpenData')]"
+                },
+                {
+                  "name": "OCM_BASE_URL",
+                  "value": "[parameters('ocmBaseUrl')]"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "[parameters('pollingInterval')]"
+                },
+                {
+                  "name": "REFERENCE_REFRESH_INTERVAL",
+                  "value": "[parameters('referenceRefreshInterval')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "[parameters('stateFile')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+    }
+  }
+}
