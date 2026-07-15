@@ -22,6 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#open-charge-map/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗺️ **Fabric Map**](fabric/README.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/open-charge-map.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://openchargemap.org/)
 
@@ -131,7 +132,7 @@ Kafka uses key `498580`; MQTT publishes to `ev-charging/open-charge-map/location
 
 ### Deploying into Microsoft Fabric
 
-Open Charge Map targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** custom endpoint and an attached **Eventhouse / KQL database** can materialize the `ChargingLocation` stream and nine reference lookup tables.
+Open Charge Map targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** custom endpoint, an attached **Eventhouse / KQL database** materializes the `ChargingLocation` stream and nine reference lookup tables, and the bundled [**Fabric Map**](fabric/README.md) plots every charging location on a basemap — colored by operational status, sized by connector capacity, with a labels layer, a usage-type overlay, and a non-operational overlay.
 
 #### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
 
@@ -156,6 +157,8 @@ tools/deploy-fabric/deploy-fabric-aci.ps1 `
   -ResourceGroup <azure-rg> `
   -Location <azure-region>
 ```
+
+As a final step the script runs the [`fabric/`](fabric/README.md) post-deploy hook, which creates the **`open-charge-map-map`** Map item and wires its charging-location, labels, usage-type, and non-operational layers over the live KQL tables.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#open-charge-map/fabric-aci)
 
@@ -216,19 +219,20 @@ Reference data and telemetry share Kafka topic `open-charge-map`; MQTT separates
 
 ```text
 open-charge-map/
-â”œâ”€â”€ xreg/open-charge-map.xreg.json          # shared xRegistry contract
-â”œâ”€â”€ open_charge_map_core/                   # transport-agnostic API client, normalizer, state
-â”œâ”€â”€ open_charge_map_kafka/                  # Kafka feeder application (module open_charge_map)
-â”œâ”€â”€ open_charge_map_mqtt/                   # MQTT/UNS feeder application
-â”œâ”€â”€ open_charge_map_amqp/                   # AMQP 1.0 feeder application
-â”œâ”€â”€ open_charge_map_producer/               # xRegistry-generated Kafka producer
-â”œâ”€â”€ open_charge_map_mqtt_producer/          # xRegistry-generated MQTT producer
-â”œâ”€â”€ open_charge_map_amqp_producer/          # xRegistry-generated AMQP producer
-â”œâ”€â”€ notebook/open-charge-map-feed.ipynb     # Fabric Notebook feeder (deployment path)
-â”œâ”€â”€ Dockerfile.kafka                        # builds the Kafka feeder image
-â”œâ”€â”€ Dockerfile.mqtt                         # builds the MQTT feeder image
-â”œâ”€â”€ Dockerfile.amqp                         # builds the AMQP feeder image
-â””â”€â”€ tests/                                  # unit + integration tests
+├── xreg/open-charge-map.xreg.json       # shared xRegistry contract
+├── open_charge_map_core/                # transport-agnostic API client, normalizer, state
+├── open_charge_map_kafka/               # Kafka feeder application (module open_charge_map)
+├── open_charge_map_mqtt/                # MQTT/UNS feeder application
+├── open_charge_map_amqp/                # AMQP 1.0 feeder application
+├── open_charge_map_producer/            # xRegistry-generated Kafka producer
+├── open_charge_map_mqtt_producer/       # xRegistry-generated MQTT producer
+├── open_charge_map_amqp_producer/       # xRegistry-generated AMQP producer
+├── notebook/open-charge-map-feed.ipynb  # Fabric Notebook feeder (deployment path)
+├── fabric/                              # Fabric Map post-deploy hook + layer wiring
+├── Dockerfile.kafka                     # builds the Kafka feeder image
+├── Dockerfile.mqtt                      # builds the MQTT feeder image
+├── Dockerfile.amqp                      # builds the AMQP feeder image
+└── tests/                               # unit + integration tests
 ```
 
 ## Prerequisites (for self-hosted runs)
@@ -247,6 +251,7 @@ open-charge-map/
 <a href="https://clemensv.github.io/real-time-sources/#open-charge-map">Portal entry</a> -
 <a href="EVENTS.md">EVENTS.md</a> -
 <a href="CONTAINER.md">CONTAINER.md</a> -
+<a href="fabric/README.md">Fabric Map</a> -
 <a href="https://openchargemap.org/">Open Charge Map</a> -
 <a href="https://openchargemap.org/site/develop/api">API docs</a>
 </sub>
