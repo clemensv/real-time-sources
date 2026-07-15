@@ -18,6 +18,7 @@ requires-python = ">=3.10,<4.0"
 dependencies = [
     "avro>=1.12.1,<2.0.0",
     "beautifulsoup4>=4.12.3",
+    "soupsieve>=2.8.4",  # security pin (transitive via bs4): ReDoS/OOM in <=2.8.3
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "feedparser>=6.0.11",

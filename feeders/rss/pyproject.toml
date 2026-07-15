@@ -17,6 +17,7 @@ authors = [
 requires-python = ">=3.10,<4.0"
 dependencies = [
     "BeautifulSoup4>=4.12.3",
+    "soupsieve>=2.8.4",  # security pin (transitive via bs4): ReDoS/OOM in <=2.8.3
     "avro>=1.12.1,<2.0.0",
     "cloudevents>=1.12.1,<2.0.0",
     "confluent-kafka>=2.14.2",
