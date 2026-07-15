@@ -28,10 +28,10 @@ class Test_SubmissionStatusType(unittest.TestCase):
         Create instance of SubmissionStatusType for testing
         """
         instance = SubmissionStatusType(
-            reference_type='lpacnwgqkuagpbxsqhcn',
-            reference_id=int(85),
-            title='qrxqrdndofgvqmhujkrq',
-            is_live=False
+            reference_type='ucwrdpekdtivcwdqdnoo',
+            reference_id=int(26),
+            title='fshrzhmkdwuktrvkgryh',
+            is_live=True
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_SubmissionStatusType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'lpacnwgqkuagpbxsqhcn'
+        test_value = 'ucwrdpekdtivcwdqdnoo'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -48,7 +48,7 @@ class Test_SubmissionStatusType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(85)
+        test_value = int(26)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_SubmissionStatusType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'qrxqrdndofgvqmhujkrq'
+        test_value = 'fshrzhmkdwuktrvkgryh'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -64,7 +64,7 @@ class Test_SubmissionStatusType(unittest.TestCase):
         """
         Test is_live property
         """
-        test_value = False
+        test_value = True
         self.instance.is_live = test_value
         self.assertEqual(self.instance.is_live, test_value)
     

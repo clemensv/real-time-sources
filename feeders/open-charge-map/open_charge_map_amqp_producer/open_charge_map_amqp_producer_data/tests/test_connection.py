@@ -28,23 +28,23 @@ class Test_Connection(unittest.TestCase):
         Create instance of Connection for testing
         """
         instance = Connection(
-            connection_id=int(51),
-            connection_type_id=int(3),
-            connection_type_title='ukymmhikqxttevbtotek',
-            connection_type_formal_name='mibgqwesonicrnzramsl',
-            reference='cofrztwfihvyndpfkfzw',
+            connection_id=int(70),
+            connection_type_id=int(46),
+            connection_type_title='dicawtcbogpefnianvut',
+            connection_type_formal_name='wqcbsccfojantisbgocf',
+            reference='pajfcqboggskqwacjmhs',
             status_type_id=int(76),
             is_operational=False,
-            level_id=int(55),
-            level_title='lfipnqdhnsysxkhrpltu',
-            is_fast_charge_capable=True,
-            amps=int(26),
-            voltage=int(3),
-            power_kw=float(20.60514615181691),
-            current_type_id=int(97),
-            current_type_title='bubyiboqzaslncpccmef',
-            quantity=int(47),
-            comments='ifazampgyhcqokqkdaxl'
+            level_id=int(83),
+            level_title='jbebmcbarnqtlmwjpixb',
+            is_fast_charge_capable=False,
+            amps=int(3),
+            voltage=int(52),
+            power_kw=float(78.82780241577352),
+            current_type_id=int(82),
+            current_type_title='unvrqcfenrqdrxwexqqz',
+            quantity=int(15),
+            comments='kxpqyqcxrsqcicporxns'
         )
         return instance
 
@@ -53,7 +53,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test connection_id property
         """
-        test_value = int(51)
+        test_value = int(70)
         self.instance.connection_id = test_value
         self.assertEqual(self.instance.connection_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test connection_type_id property
         """
-        test_value = int(3)
+        test_value = int(46)
         self.instance.connection_type_id = test_value
         self.assertEqual(self.instance.connection_type_id, test_value)
     
@@ -69,7 +69,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test connection_type_title property
         """
-        test_value = 'ukymmhikqxttevbtotek'
+        test_value = 'dicawtcbogpefnianvut'
         self.instance.connection_type_title = test_value
         self.assertEqual(self.instance.connection_type_title, test_value)
     
@@ -77,7 +77,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test connection_type_formal_name property
         """
-        test_value = 'mibgqwesonicrnzramsl'
+        test_value = 'wqcbsccfojantisbgocf'
         self.instance.connection_type_formal_name = test_value
         self.assertEqual(self.instance.connection_type_formal_name, test_value)
     
@@ -85,7 +85,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test reference property
         """
-        test_value = 'cofrztwfihvyndpfkfzw'
+        test_value = 'pajfcqboggskqwacjmhs'
         self.instance.reference = test_value
         self.assertEqual(self.instance.reference, test_value)
     
@@ -109,7 +109,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test level_id property
         """
-        test_value = int(55)
+        test_value = int(83)
         self.instance.level_id = test_value
         self.assertEqual(self.instance.level_id, test_value)
     
@@ -117,7 +117,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test level_title property
         """
-        test_value = 'lfipnqdhnsysxkhrpltu'
+        test_value = 'jbebmcbarnqtlmwjpixb'
         self.instance.level_title = test_value
         self.assertEqual(self.instance.level_title, test_value)
     
@@ -125,7 +125,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test is_fast_charge_capable property
         """
-        test_value = True
+        test_value = False
         self.instance.is_fast_charge_capable = test_value
         self.assertEqual(self.instance.is_fast_charge_capable, test_value)
     
@@ -133,7 +133,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test amps property
         """
-        test_value = int(26)
+        test_value = int(3)
         self.instance.amps = test_value
         self.assertEqual(self.instance.amps, test_value)
     
@@ -141,7 +141,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test voltage property
         """
-        test_value = int(3)
+        test_value = int(52)
         self.instance.voltage = test_value
         self.assertEqual(self.instance.voltage, test_value)
     
@@ -149,7 +149,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test power_kw property
         """
-        test_value = float(20.60514615181691)
+        test_value = float(78.82780241577352)
         self.instance.power_kw = test_value
         self.assertEqual(self.instance.power_kw, test_value)
     
@@ -157,7 +157,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test current_type_id property
         """
-        test_value = int(97)
+        test_value = int(82)
         self.instance.current_type_id = test_value
         self.assertEqual(self.instance.current_type_id, test_value)
     
@@ -165,7 +165,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test current_type_title property
         """
-        test_value = 'bubyiboqzaslncpccmef'
+        test_value = 'unvrqcfenrqdrxwexqqz'
         self.instance.current_type_title = test_value
         self.assertEqual(self.instance.current_type_title, test_value)
     
@@ -173,7 +173,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = int(47)
+        test_value = int(15)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -181,7 +181,7 @@ class Test_Connection(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'ifazampgyhcqokqkdaxl'
+        test_value = 'kxpqyqcxrsqcicporxns'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     

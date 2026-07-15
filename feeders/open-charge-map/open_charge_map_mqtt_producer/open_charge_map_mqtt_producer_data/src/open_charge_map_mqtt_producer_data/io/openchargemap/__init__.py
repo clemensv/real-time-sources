@@ -1,13 +1,13 @@
-from .submissionstatustype import SubmissionStatusType
-from .usagetype import UsageType
-from .connectiontype import ConnectionType
-from .country import Country
-from .currenttype import CurrentType
-from .dataprovider import DataProvider
 from .connection import Connection
 from .charginglocation import ChargingLocation
+from .usagetype import UsageType
+from .statustype import StatusType
+from .currenttype import CurrentType
+from .submissionstatustype import SubmissionStatusType
+from .connectiontype import ConnectionType
+from .country import Country
 from .chargertype import ChargerType
 from .operator import Operator
-from .statustype import StatusType
+from .dataprovider import DataProvider
 
-__all__ = ["SubmissionStatusType", "UsageType", "ConnectionType", "Country", "CurrentType", "DataProvider", "Connection", "ChargingLocation", "ChargerType", "Operator", "StatusType"]
+__all__ = ["Connection", "ChargingLocation", "UsageType", "StatusType", "CurrentType", "SubmissionStatusType", "ConnectionType", "Country", "ChargerType", "Operator", "DataProvider"]

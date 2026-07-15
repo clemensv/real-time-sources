@@ -163,10 +163,10 @@ class UsageType:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='svlfbgmjwtbvxsidequj',
-            reference_id=int(10),
-            title='nmifkjzuhtykcjffgzwt',
-            is_pay_at_location=False,
+            reference_type='ejywdspqbtetxjsihvzn',
+            reference_id=int(98),
+            title='vrrnuqtrmfhdlirxdmwl',
+            is_pay_at_location=True,
             is_membership_required=False,
             is_access_key_required=True
         )

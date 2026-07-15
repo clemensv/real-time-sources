@@ -28,10 +28,10 @@ class Test_UsageType(unittest.TestCase):
         Create instance of UsageType for testing
         """
         instance = UsageType(
-            reference_type='svlfbgmjwtbvxsidequj',
-            reference_id=int(10),
-            title='nmifkjzuhtykcjffgzwt',
-            is_pay_at_location=False,
+            reference_type='ejywdspqbtetxjsihvzn',
+            reference_id=int(98),
+            title='vrrnuqtrmfhdlirxdmwl',
+            is_pay_at_location=True,
             is_membership_required=False,
             is_access_key_required=True
         )
@@ -42,7 +42,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'svlfbgmjwtbvxsidequj'
+        test_value = 'ejywdspqbtetxjsihvzn'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -50,7 +50,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(10)
+        test_value = int(98)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'nmifkjzuhtykcjffgzwt'
+        test_value = 'vrrnuqtrmfhdlirxdmwl'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -66,7 +66,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test is_pay_at_location property
         """
-        test_value = False
+        test_value = True
         self.instance.is_pay_at_location = test_value
         self.assertEqual(self.instance.is_pay_at_location, test_value)
     

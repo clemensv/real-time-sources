@@ -314,6 +314,7 @@ def _build_operator(reference_type: str, raw: Dict[str, Any]) -> Dict[str, Any]:
         booking_url=_clean_str(raw.get("BookingURL")),
         fault_report_email=_clean_str(raw.get("FaultReportEmail")),
         is_private_individual=_to_bool(raw.get("IsPrivateIndividual")),
+        is_restricted_edit=_to_bool(raw.get("IsRestrictedEdit")),
     )
     return fields
 
@@ -364,6 +365,7 @@ def _build_data_provider(reference_type: str, raw: Dict[str, Any]) -> Dict[str, 
         is_approved_import=_to_bool(raw.get("IsApprovedImport")),
         status_title=_clean_str(status.get("Title")),
         is_provider_enabled=_to_bool(status.get("IsProviderEnabled")),
+        date_last_imported=parse_ocm_datetime(raw.get("DateLastImported")),
     )
     return fields
 

@@ -161,9 +161,9 @@ class Country:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='tbpjqdkqylrxpnctjnwe',
-            reference_id=int(84),
-            title='jbstkxeuooyylyiaeeum',
-            iso_code='jitdaxbnmyrphfrwwynj',
-            continent_code='zjoamwqannlrnnxjfjsr'
+            reference_type='kecldpszrtrivnzbqyfa',
+            reference_id=int(80),
+            title='ilqiprabhspcynnbkpby',
+            iso_code='ukizlsgwcuwlnznkcsod',
+            continent_code='nmfymqqbxkmtiwojhqqg'
         )

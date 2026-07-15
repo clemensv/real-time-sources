@@ -30,46 +30,46 @@ class Test_ChargingLocation(unittest.TestCase):
         Create instance of ChargingLocation for testing
         """
         instance = ChargingLocation(
-            poi_id=int(46),
-            uuid='uilgpxxgtudiygsdbxfl',
-            data_provider_id=int(49),
-            operator_id=int(35),
-            operator_title='wccgxlbmirautmwgcjnj',
-            usage_type_id=int(99),
-            usage_type_title='ttojeyqzattabhhlhphg',
-            usage_cost='fiwsasjgwrfdutuyqfcu',
-            status_type_id=int(20),
-            status_title='dzrtakmnesczvswywqpi',
-            is_operational=True,
-            submission_status_type_id=int(91),
-            submission_status_title='iaeiomlyxsoqlnsoqwug',
-            data_quality_level=int(0),
-            number_of_points=int(14),
-            general_comments='wdnsiljuixwlbhnkdoxv',
-            is_recently_verified=False,
+            poi_id=int(41),
+            uuid='arpnyqyhucmbzygtpxko',
+            data_provider_id=int(24),
+            operator_id=int(8),
+            operator_title='bmakhaflqmdlwomxqfoh',
+            usage_type_id=int(17),
+            usage_type_title='txygocqfywqdicwrvhra',
+            usage_cost='sccfskmtfkemazqkhczw',
+            status_type_id=int(85),
+            status_title='odglojbathcpiejnrpfu',
+            is_operational=False,
+            submission_status_type_id=int(50),
+            submission_status_title='itimmrqtbewgtixgtfdm',
+            data_quality_level=int(26),
+            number_of_points=int(74),
+            general_comments='ajigsbqxvsnivaszjrnd',
+            is_recently_verified=True,
             date_created=datetime.datetime.now(datetime.timezone.utc),
             date_last_status_update=datetime.datetime.now(datetime.timezone.utc),
             date_last_verified=datetime.datetime.now(datetime.timezone.utc),
             date_last_confirmed=datetime.datetime.now(datetime.timezone.utc),
             date_planned=datetime.datetime.now(datetime.timezone.utc),
-            address_id=int(23),
-            address_title='nuenarygqvrtxnmzeixm',
-            address_line1='skrjhrngangaclabgsfb',
-            address_line2='kmgaauurimrtxconzvmg',
-            town='vphwnkjokzuwngkdhmwq',
-            state_or_province='cewqhvomepdwxfegomjh',
-            postcode='hzjazxvnjveajaqwsbge',
-            country_id=int(65),
-            country_iso_code='rawqafuligkgsfcrshvo',
-            country_title='dinjtcijbqpyxyqhgyrx',
-            latitude=float(78.37976030072039),
-            longitude=float(51.75439827643669),
-            contact_telephone1='wgftwnqymolhxwvtebkp',
-            contact_telephone2='noivelzpffngeuycvqgq',
-            contact_email='kjvzdzmnincawjvxzork',
-            access_comments='wixencziigxsakcwemle',
-            related_url='ugpvjxttlsubfupjypwi',
-            connections=[None, None, None, None, None]
+            address_id=int(72),
+            address_title='sgczdafjnnbycagnpedz',
+            address_line1='bosprjjbizmasglhfhgh',
+            address_line2='ihrsoezvkdjnpcbxufpt',
+            town='wncflsminjjxlvgbtfbp',
+            state_or_province='hsislbyklsucpknftbhh',
+            postcode='adxcdqvdpkpczzzxhcla',
+            country_id=int(16),
+            country_iso_code='yxbizuazjyarnstyopzd',
+            country_title='wbcdtozehjclycalndcd',
+            latitude=float(90.5333109252994),
+            longitude=float(98.6656579753967),
+            contact_telephone1='aixhfrwspqwqhvkwkhks',
+            contact_telephone2='ewozuaeojnswzsbfpiik',
+            contact_email='ugnuqftoqlkqujpvfdku',
+            access_comments='dvctumamqrdxtzhjeccl',
+            related_url='qusthklwjrlegyhydjol',
+            connections=[None, None]
         )
         return instance
 
@@ -78,7 +78,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test poi_id property
         """
-        test_value = int(46)
+        test_value = int(41)
         self.instance.poi_id = test_value
         self.assertEqual(self.instance.poi_id, test_value)
     
@@ -86,7 +86,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test uuid property
         """
-        test_value = 'uilgpxxgtudiygsdbxfl'
+        test_value = 'arpnyqyhucmbzygtpxko'
         self.instance.uuid = test_value
         self.assertEqual(self.instance.uuid, test_value)
     
@@ -94,7 +94,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test data_provider_id property
         """
-        test_value = int(49)
+        test_value = int(24)
         self.instance.data_provider_id = test_value
         self.assertEqual(self.instance.data_provider_id, test_value)
     
@@ -102,7 +102,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test operator_id property
         """
-        test_value = int(35)
+        test_value = int(8)
         self.instance.operator_id = test_value
         self.assertEqual(self.instance.operator_id, test_value)
     
@@ -110,7 +110,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test operator_title property
         """
-        test_value = 'wccgxlbmirautmwgcjnj'
+        test_value = 'bmakhaflqmdlwomxqfoh'
         self.instance.operator_title = test_value
         self.assertEqual(self.instance.operator_title, test_value)
     
@@ -118,7 +118,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test usage_type_id property
         """
-        test_value = int(99)
+        test_value = int(17)
         self.instance.usage_type_id = test_value
         self.assertEqual(self.instance.usage_type_id, test_value)
     
@@ -126,7 +126,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test usage_type_title property
         """
-        test_value = 'ttojeyqzattabhhlhphg'
+        test_value = 'txygocqfywqdicwrvhra'
         self.instance.usage_type_title = test_value
         self.assertEqual(self.instance.usage_type_title, test_value)
     
@@ -134,7 +134,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test usage_cost property
         """
-        test_value = 'fiwsasjgwrfdutuyqfcu'
+        test_value = 'sccfskmtfkemazqkhczw'
         self.instance.usage_cost = test_value
         self.assertEqual(self.instance.usage_cost, test_value)
     
@@ -142,7 +142,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test status_type_id property
         """
-        test_value = int(20)
+        test_value = int(85)
         self.instance.status_type_id = test_value
         self.assertEqual(self.instance.status_type_id, test_value)
     
@@ -150,7 +150,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test status_title property
         """
-        test_value = 'dzrtakmnesczvswywqpi'
+        test_value = 'odglojbathcpiejnrpfu'
         self.instance.status_title = test_value
         self.assertEqual(self.instance.status_title, test_value)
     
@@ -158,7 +158,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test is_operational property
         """
-        test_value = True
+        test_value = False
         self.instance.is_operational = test_value
         self.assertEqual(self.instance.is_operational, test_value)
     
@@ -166,7 +166,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test submission_status_type_id property
         """
-        test_value = int(91)
+        test_value = int(50)
         self.instance.submission_status_type_id = test_value
         self.assertEqual(self.instance.submission_status_type_id, test_value)
     
@@ -174,7 +174,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test submission_status_title property
         """
-        test_value = 'iaeiomlyxsoqlnsoqwug'
+        test_value = 'itimmrqtbewgtixgtfdm'
         self.instance.submission_status_title = test_value
         self.assertEqual(self.instance.submission_status_title, test_value)
     
@@ -182,7 +182,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test data_quality_level property
         """
-        test_value = int(0)
+        test_value = int(26)
         self.instance.data_quality_level = test_value
         self.assertEqual(self.instance.data_quality_level, test_value)
     
@@ -190,7 +190,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test number_of_points property
         """
-        test_value = int(14)
+        test_value = int(74)
         self.instance.number_of_points = test_value
         self.assertEqual(self.instance.number_of_points, test_value)
     
@@ -198,7 +198,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test general_comments property
         """
-        test_value = 'wdnsiljuixwlbhnkdoxv'
+        test_value = 'ajigsbqxvsnivaszjrnd'
         self.instance.general_comments = test_value
         self.assertEqual(self.instance.general_comments, test_value)
     
@@ -206,7 +206,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test is_recently_verified property
         """
-        test_value = False
+        test_value = True
         self.instance.is_recently_verified = test_value
         self.assertEqual(self.instance.is_recently_verified, test_value)
     
@@ -254,7 +254,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test address_id property
         """
-        test_value = int(23)
+        test_value = int(72)
         self.instance.address_id = test_value
         self.assertEqual(self.instance.address_id, test_value)
     
@@ -262,7 +262,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test address_title property
         """
-        test_value = 'nuenarygqvrtxnmzeixm'
+        test_value = 'sgczdafjnnbycagnpedz'
         self.instance.address_title = test_value
         self.assertEqual(self.instance.address_title, test_value)
     
@@ -270,7 +270,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test address_line1 property
         """
-        test_value = 'skrjhrngangaclabgsfb'
+        test_value = 'bosprjjbizmasglhfhgh'
         self.instance.address_line1 = test_value
         self.assertEqual(self.instance.address_line1, test_value)
     
@@ -278,7 +278,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test address_line2 property
         """
-        test_value = 'kmgaauurimrtxconzvmg'
+        test_value = 'ihrsoezvkdjnpcbxufpt'
         self.instance.address_line2 = test_value
         self.assertEqual(self.instance.address_line2, test_value)
     
@@ -286,7 +286,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test town property
         """
-        test_value = 'vphwnkjokzuwngkdhmwq'
+        test_value = 'wncflsminjjxlvgbtfbp'
         self.instance.town = test_value
         self.assertEqual(self.instance.town, test_value)
     
@@ -294,7 +294,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test state_or_province property
         """
-        test_value = 'cewqhvomepdwxfegomjh'
+        test_value = 'hsislbyklsucpknftbhh'
         self.instance.state_or_province = test_value
         self.assertEqual(self.instance.state_or_province, test_value)
     
@@ -302,7 +302,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test postcode property
         """
-        test_value = 'hzjazxvnjveajaqwsbge'
+        test_value = 'adxcdqvdpkpczzzxhcla'
         self.instance.postcode = test_value
         self.assertEqual(self.instance.postcode, test_value)
     
@@ -310,7 +310,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test country_id property
         """
-        test_value = int(65)
+        test_value = int(16)
         self.instance.country_id = test_value
         self.assertEqual(self.instance.country_id, test_value)
     
@@ -318,7 +318,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test country_iso_code property
         """
-        test_value = 'rawqafuligkgsfcrshvo'
+        test_value = 'yxbizuazjyarnstyopzd'
         self.instance.country_iso_code = test_value
         self.assertEqual(self.instance.country_iso_code, test_value)
     
@@ -326,7 +326,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test country_title property
         """
-        test_value = 'dinjtcijbqpyxyqhgyrx'
+        test_value = 'wbcdtozehjclycalndcd'
         self.instance.country_title = test_value
         self.assertEqual(self.instance.country_title, test_value)
     
@@ -334,7 +334,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(78.37976030072039)
+        test_value = float(90.5333109252994)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -342,7 +342,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(51.75439827643669)
+        test_value = float(98.6656579753967)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -350,7 +350,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test contact_telephone1 property
         """
-        test_value = 'wgftwnqymolhxwvtebkp'
+        test_value = 'aixhfrwspqwqhvkwkhks'
         self.instance.contact_telephone1 = test_value
         self.assertEqual(self.instance.contact_telephone1, test_value)
     
@@ -358,7 +358,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test contact_telephone2 property
         """
-        test_value = 'noivelzpffngeuycvqgq'
+        test_value = 'ewozuaeojnswzsbfpiik'
         self.instance.contact_telephone2 = test_value
         self.assertEqual(self.instance.contact_telephone2, test_value)
     
@@ -366,7 +366,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test contact_email property
         """
-        test_value = 'kjvzdzmnincawjvxzork'
+        test_value = 'ugnuqftoqlkqujpvfdku'
         self.instance.contact_email = test_value
         self.assertEqual(self.instance.contact_email, test_value)
     
@@ -374,7 +374,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test access_comments property
         """
-        test_value = 'wixencziigxsakcwemle'
+        test_value = 'dvctumamqrdxtzhjeccl'
         self.instance.access_comments = test_value
         self.assertEqual(self.instance.access_comments, test_value)
     
@@ -382,7 +382,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test related_url property
         """
-        test_value = 'ugpvjxttlsubfupjypwi'
+        test_value = 'qusthklwjrlegyhydjol'
         self.instance.related_url = test_value
         self.assertEqual(self.instance.related_url, test_value)
     
@@ -390,7 +390,7 @@ class Test_ChargingLocation(unittest.TestCase):
         """
         Test connections property
         """
-        test_value = [None, None, None, None, None]
+        test_value = [None, None]
         self.instance.connections = test_value
         self.assertEqual(self.instance.connections, test_value)
     

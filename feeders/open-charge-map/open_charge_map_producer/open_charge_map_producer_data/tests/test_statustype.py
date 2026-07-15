@@ -28,11 +28,11 @@ class Test_StatusType(unittest.TestCase):
         Create instance of StatusType for testing
         """
         instance = StatusType(
-            reference_type='rmuylkabiyypeglnolqb',
-            reference_id=int(75),
-            title='zacgsjojnpiqntvyjswf',
+            reference_type='oitxowmmqpfwtcqjtqru',
+            reference_id=int(56),
+            title='rnvxsbunudzwgpzunijk',
             is_operational=False,
-            is_user_selectable=False
+            is_user_selectable=True
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'rmuylkabiyypeglnolqb'
+        test_value = 'oitxowmmqpfwtcqjtqru'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -49,7 +49,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(75)
+        test_value = int(56)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'zacgsjojnpiqntvyjswf'
+        test_value = 'rnvxsbunudzwgpzunijk'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -73,7 +73,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test is_user_selectable property
         """
-        test_value = False
+        test_value = True
         self.instance.is_user_selectable = test_value
         self.assertEqual(self.instance.is_user_selectable, test_value)
     

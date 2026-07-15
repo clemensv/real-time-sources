@@ -102,6 +102,7 @@ SAMPLE_REFERENCE_DATA = {
             "PhonePrimaryContact": "1800 372 757",
             "ContactEmail": "ecars@esb.ie",
             "IsPrivateIndividual": False,
+            "IsRestrictedEdit": True,
         }
     ],
     "ConnectionTypes": [
@@ -120,6 +121,7 @@ SAMPLE_REFERENCE_DATA = {
             "IsRestrictedEdit": False,
             "IsApprovedImport": False,
             "DataProviderStatusType": {"ID": 1, "IsProviderEnabled": True, "Title": "Automated Import"},
+            "DateLastImported": "2026-07-10T12:00:00Z",
         }
     ],
     "StatusTypes": [{"ID": 50, "Title": "Operational", "IsOperational": True, "IsUserSelectable": True}],
@@ -335,6 +337,7 @@ def test_parse_reference_operator_fields():
     assert op.fields["website_url"] == "https://esb.ie/ecars"
     assert op.fields["contact_email"] == "ecars@esb.ie"
     assert op.fields["is_private_individual"] is False
+    assert op.fields["is_restricted_edit"] is True
     assert op.fields["comments"] is None
 
 
@@ -347,6 +350,8 @@ def test_parse_reference_data_provider_status_mapping():
     assert dp.fields["is_provider_enabled"] is True
     assert dp.fields["is_open_data_licensed"] is True
     assert dp.fields["license"] == "Open Data"
+    assert dp.fields["date_last_imported"] is not None
+    assert dp.fields["date_last_imported"].year == 2026
 
 
 @pytest.mark.unit

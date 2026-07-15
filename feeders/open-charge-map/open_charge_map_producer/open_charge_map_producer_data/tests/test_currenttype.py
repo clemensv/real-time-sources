@@ -28,10 +28,10 @@ class Test_CurrentType(unittest.TestCase):
         Create instance of CurrentType for testing
         """
         instance = CurrentType(
-            reference_type='oppbduyrmhrqapcifdkd',
-            reference_id=int(9),
-            title='oiwkytdncwiwergcsgez',
-            description='nahrklgvxjphvxyomqtl'
+            reference_type='jknomnkrrilwdhvusuit',
+            reference_id=int(8),
+            title='tinguxmvcwnlrnwpldzz',
+            description='kkfpvtmqixndppuvjpvm'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_CurrentType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'oppbduyrmhrqapcifdkd'
+        test_value = 'jknomnkrrilwdhvusuit'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -48,7 +48,7 @@ class Test_CurrentType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(9)
+        test_value = int(8)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_CurrentType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'oiwkytdncwiwergcsgez'
+        test_value = 'tinguxmvcwnlrnwpldzz'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -64,7 +64,7 @@ class Test_CurrentType(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'nahrklgvxjphvxyomqtl'
+        test_value = 'kkfpvtmqixndppuvjpvm'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     

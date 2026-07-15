@@ -1,3 +1,3 @@
-from .openchargemap import SubmissionStatusType, UsageType, ConnectionType, Country, CurrentType, DataProvider, Connection, ChargingLocation, ChargerType, Operator, StatusType
+from .openchargemap import Connection, ChargingLocation, UsageType, StatusType, CurrentType, SubmissionStatusType, ConnectionType, Country, ChargerType, Operator, DataProvider
 
-__all__ = ["SubmissionStatusType", "UsageType", "ConnectionType", "Country", "CurrentType", "DataProvider", "Connection", "ChargingLocation", "ChargerType", "Operator", "StatusType"]
+__all__ = ["Connection", "ChargingLocation", "UsageType", "StatusType", "CurrentType", "SubmissionStatusType", "ConnectionType", "Country", "ChargerType", "Operator", "DataProvider"]

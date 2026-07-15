@@ -31,6 +31,7 @@ class Operator:
         booking_url (typing.Optional[str])
         fault_report_email (typing.Optional[str])
         is_private_individual (typing.Optional[bool])
+        is_restricted_edit (typing.Optional[bool])
     """
     
     
@@ -45,6 +46,7 @@ class Operator:
     booking_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="booking_url"))
     fault_report_email: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fault_report_email"))
     is_private_individual: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_private_individual"))
+    is_restricted_edit: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_restricted_edit"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Operator':
@@ -173,15 +175,16 @@ class Operator:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='wywjwzpbrfyhzgwhpdgi',
-            reference_id=int(100),
-            title='crxotemrmszonhdyrtqz',
-            website_url='orgcwluiiadmxozktwgl',
-            comments='ssnwdzrfbgyommymzwvp',
-            phone_primary_contact='krwsdzknxattfzfpicid',
-            phone_secondary_contact='eldaajdvuylorwmaovxu',
-            contact_email='eempgioudpeoimgjzcen',
-            booking_url='xatwwahhrdfkhccboqtz',
-            fault_report_email='dnltzdrvprhslfzgetrv',
-            is_private_individual=True
+            reference_type='tnekjdehmkwhbqmdkncm',
+            reference_id=int(26),
+            title='mrjlgboiwgxxizieotlv',
+            website_url='csbneuuemswqjczycjlw',
+            comments='erjhgwacovghyiplmksi',
+            phone_primary_contact='mlrrptozcfyhbnpcofks',
+            phone_secondary_contact='uoofbonbobzwzuvealid',
+            contact_email='xrmfgxmqiukxoacbpwuj',
+            booking_url='clpaiyvwbjmvrsvyctpt',
+            fault_report_email='aplefbmbodjqzoishmqx',
+            is_private_individual=True,
+            is_restricted_edit=True
         )

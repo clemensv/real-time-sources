@@ -28,17 +28,18 @@ class Test_Operator(unittest.TestCase):
         Create instance of Operator for testing
         """
         instance = Operator(
-            reference_type='wywjwzpbrfyhzgwhpdgi',
-            reference_id=int(100),
-            title='crxotemrmszonhdyrtqz',
-            website_url='orgcwluiiadmxozktwgl',
-            comments='ssnwdzrfbgyommymzwvp',
-            phone_primary_contact='krwsdzknxattfzfpicid',
-            phone_secondary_contact='eldaajdvuylorwmaovxu',
-            contact_email='eempgioudpeoimgjzcen',
-            booking_url='xatwwahhrdfkhccboqtz',
-            fault_report_email='dnltzdrvprhslfzgetrv',
-            is_private_individual=True
+            reference_type='tnekjdehmkwhbqmdkncm',
+            reference_id=int(26),
+            title='mrjlgboiwgxxizieotlv',
+            website_url='csbneuuemswqjczycjlw',
+            comments='erjhgwacovghyiplmksi',
+            phone_primary_contact='mlrrptozcfyhbnpcofks',
+            phone_secondary_contact='uoofbonbobzwzuvealid',
+            contact_email='xrmfgxmqiukxoacbpwuj',
+            booking_url='clpaiyvwbjmvrsvyctpt',
+            fault_report_email='aplefbmbodjqzoishmqx',
+            is_private_individual=True,
+            is_restricted_edit=True
         )
         return instance
 
@@ -47,7 +48,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'wywjwzpbrfyhzgwhpdgi'
+        test_value = 'tnekjdehmkwhbqmdkncm'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -55,7 +56,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(100)
+        test_value = int(26)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -63,7 +64,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'crxotemrmszonhdyrtqz'
+        test_value = 'mrjlgboiwgxxizieotlv'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -71,7 +72,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test website_url property
         """
-        test_value = 'orgcwluiiadmxozktwgl'
+        test_value = 'csbneuuemswqjczycjlw'
         self.instance.website_url = test_value
         self.assertEqual(self.instance.website_url, test_value)
     
@@ -79,7 +80,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'ssnwdzrfbgyommymzwvp'
+        test_value = 'erjhgwacovghyiplmksi'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     
@@ -87,7 +88,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test phone_primary_contact property
         """
-        test_value = 'krwsdzknxattfzfpicid'
+        test_value = 'mlrrptozcfyhbnpcofks'
         self.instance.phone_primary_contact = test_value
         self.assertEqual(self.instance.phone_primary_contact, test_value)
     
@@ -95,7 +96,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test phone_secondary_contact property
         """
-        test_value = 'eldaajdvuylorwmaovxu'
+        test_value = 'uoofbonbobzwzuvealid'
         self.instance.phone_secondary_contact = test_value
         self.assertEqual(self.instance.phone_secondary_contact, test_value)
     
@@ -103,7 +104,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test contact_email property
         """
-        test_value = 'eempgioudpeoimgjzcen'
+        test_value = 'xrmfgxmqiukxoacbpwuj'
         self.instance.contact_email = test_value
         self.assertEqual(self.instance.contact_email, test_value)
     
@@ -111,7 +112,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test booking_url property
         """
-        test_value = 'xatwwahhrdfkhccboqtz'
+        test_value = 'clpaiyvwbjmvrsvyctpt'
         self.instance.booking_url = test_value
         self.assertEqual(self.instance.booking_url, test_value)
     
@@ -119,7 +120,7 @@ class Test_Operator(unittest.TestCase):
         """
         Test fault_report_email property
         """
-        test_value = 'dnltzdrvprhslfzgetrv'
+        test_value = 'aplefbmbodjqzoishmqx'
         self.instance.fault_report_email = test_value
         self.assertEqual(self.instance.fault_report_email, test_value)
     
@@ -130,6 +131,14 @@ class Test_Operator(unittest.TestCase):
         test_value = True
         self.instance.is_private_individual = test_value
         self.assertEqual(self.instance.is_private_individual, test_value)
+    
+    def test_is_restricted_edit_property(self):
+        """
+        Test is_restricted_edit property
+        """
+        test_value = True
+        self.instance.is_restricted_edit = test_value
+        self.assertEqual(self.instance.is_restricted_edit, test_value)
     
     def test_to_byte_array_json(self):
         """

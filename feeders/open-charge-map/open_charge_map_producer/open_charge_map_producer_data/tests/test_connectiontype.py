@@ -28,12 +28,12 @@ class Test_ConnectionType(unittest.TestCase):
         Create instance of ConnectionType for testing
         """
         instance = ConnectionType(
-            reference_type='wngsmgcupktguofggqhc',
-            reference_id=int(77),
-            title='ssdwlzwebjfsdarerpoy',
-            formal_name='pijkgsmlwbftqomxqftq',
-            is_discontinued=True,
-            is_obsolete=False
+            reference_type='olntlmswracoachxcqme',
+            reference_id=int(29),
+            title='vtadciudhgpljxuuuhao',
+            formal_name='jyunehpeeswiqjavkgpt',
+            is_discontinued=False,
+            is_obsolete=True
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_ConnectionType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'wngsmgcupktguofggqhc'
+        test_value = 'olntlmswracoachxcqme'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -50,7 +50,7 @@ class Test_ConnectionType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(77)
+        test_value = int(29)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_ConnectionType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'ssdwlzwebjfsdarerpoy'
+        test_value = 'vtadciudhgpljxuuuhao'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -66,7 +66,7 @@ class Test_ConnectionType(unittest.TestCase):
         """
         Test formal_name property
         """
-        test_value = 'pijkgsmlwbftqomxqftq'
+        test_value = 'jyunehpeeswiqjavkgpt'
         self.instance.formal_name = test_value
         self.assertEqual(self.instance.formal_name, test_value)
     
@@ -74,7 +74,7 @@ class Test_ConnectionType(unittest.TestCase):
         """
         Test is_discontinued property
         """
-        test_value = True
+        test_value = False
         self.instance.is_discontinued = test_value
         self.assertEqual(self.instance.is_discontinued, test_value)
     
@@ -82,7 +82,7 @@ class Test_ConnectionType(unittest.TestCase):
         """
         Test is_obsolete property
         """
-        test_value = False
+        test_value = True
         self.instance.is_obsolete = test_value
         self.assertEqual(self.instance.is_obsolete, test_value)
     

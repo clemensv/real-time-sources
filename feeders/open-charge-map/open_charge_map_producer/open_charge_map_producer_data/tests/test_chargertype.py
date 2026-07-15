@@ -28,11 +28,11 @@ class Test_ChargerType(unittest.TestCase):
         Create instance of ChargerType for testing
         """
         instance = ChargerType(
-            reference_type='bqzcggwjdspjxhjeeala',
-            reference_id=int(55),
-            title='rhbfbvpbhtcmpgowzpzo',
-            comments='jketukdytkvzhoftiluo',
-            is_fast_charge_capable=False
+            reference_type='mvfpihabzqfrnwgbzqzh',
+            reference_id=int(43),
+            title='sgrzozhszhoqsihmyfxd',
+            comments='ekdtkmjyaliodfmhqkba',
+            is_fast_charge_capable=True
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'bqzcggwjdspjxhjeeala'
+        test_value = 'mvfpihabzqfrnwgbzqzh'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -49,7 +49,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(55)
+        test_value = int(43)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'rhbfbvpbhtcmpgowzpzo'
+        test_value = 'sgrzozhszhoqsihmyfxd'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -65,7 +65,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'jketukdytkvzhoftiluo'
+        test_value = 'ekdtkmjyaliodfmhqkba'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     
@@ -73,7 +73,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test is_fast_charge_capable property
         """
-        test_value = False
+        test_value = True
         self.instance.is_fast_charge_capable = test_value
         self.assertEqual(self.instance.is_fast_charge_capable, test_value)
     

@@ -159,8 +159,8 @@ class SubmissionStatusType:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='srhrmmenasvjaurlsnvn',
-            reference_id=int(6),
-            title='pmzwebfstwveadqcfusx',
+            reference_type='aihodbtmyjexoyibsmuz',
+            reference_id=int(83),
+            title='jyqnzixuqwsqgndqulry',
             is_live=False
         )

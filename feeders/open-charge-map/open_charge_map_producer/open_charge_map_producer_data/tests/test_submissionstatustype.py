@@ -28,9 +28,9 @@ class Test_SubmissionStatusType(unittest.TestCase):
         Create instance of SubmissionStatusType for testing
         """
         instance = SubmissionStatusType(
-            reference_type='wpclwxqywhqrvteqmnqx',
-            reference_id=int(1),
-            title='wdvjqqjpyfsebgqkmznw',
+            reference_type='jefgpdtouwcgavxuusat',
+            reference_id=int(70),
+            title='rcvjdnkgizybpztrewlv',
             is_live=False
         )
         return instance
@@ -40,7 +40,7 @@ class Test_SubmissionStatusType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'wpclwxqywhqrvteqmnqx'
+        test_value = 'jefgpdtouwcgavxuusat'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -48,7 +48,7 @@ class Test_SubmissionStatusType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(1)
+        test_value = int(70)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_SubmissionStatusType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'wdvjqqjpyfsebgqkmznw'
+        test_value = 'rcvjdnkgizybpztrewlv'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     

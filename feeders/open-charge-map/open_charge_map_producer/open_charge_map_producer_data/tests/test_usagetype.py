@@ -28,11 +28,11 @@ class Test_UsageType(unittest.TestCase):
         Create instance of UsageType for testing
         """
         instance = UsageType(
-            reference_type='eczfardygtadmfuzxffx',
-            reference_id=int(31),
-            title='tcptjtorfubdshnlaaii',
+            reference_type='tpzqofxveiujevuwqepy',
+            reference_id=int(30),
+            title='gbdwkjyuxbrsptmummzn',
             is_pay_at_location=False,
-            is_membership_required=False,
+            is_membership_required=True,
             is_access_key_required=False
         )
         return instance
@@ -42,7 +42,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'eczfardygtadmfuzxffx'
+        test_value = 'tpzqofxveiujevuwqepy'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -50,7 +50,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(31)
+        test_value = int(30)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'tcptjtorfubdshnlaaii'
+        test_value = 'gbdwkjyuxbrsptmummzn'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -74,7 +74,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test is_membership_required property
         """
-        test_value = False
+        test_value = True
         self.instance.is_membership_required = test_value
         self.assertEqual(self.instance.is_membership_required, test_value)
     

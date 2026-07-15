@@ -1369,6 +1369,16 @@
                     "altnames": {
                       "ocm-api": "IsPrivateIndividual"
                     }
+                  },
+                  "is_restricted_edit": {
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "description": "True when records attributed to this operator are edit-restricted in Open Charge Map (only privileged editors may modify them), from `IsRestrictedEdit`. Non-null for the large majority of operators.",
+                    "altnames": {
+                      "ocm-api": "IsRestrictedEdit"
+                    }
                   }
                 }
               }
@@ -1763,6 +1773,16 @@
                     "description": "True when the provider is currently enabled as a source, denormalized from the inline `DataProviderStatusType.IsProviderEnabled`.",
                     "altnames": {
                       "ocm-api": "DataProviderStatusType.IsProviderEnabled"
+                    }
+                  },
+                  "date_last_imported": {
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
+                    "description": "UTC timestamp of the most recent automated import from this data provider, from `DateLastImported` (ISO-8601). Populated for providers fed by scheduled bulk imports; null for manual-entry providers. Signals the provenance freshness of the records attributed to this provider.",
+                    "altnames": {
+                      "ocm-api": "DateLastImported"
                     }
                   }
                 }

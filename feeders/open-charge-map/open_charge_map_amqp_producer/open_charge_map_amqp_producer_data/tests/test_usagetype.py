@@ -28,11 +28,11 @@ class Test_UsageType(unittest.TestCase):
         Create instance of UsageType for testing
         """
         instance = UsageType(
-            reference_type='sonwubccsploswbmpomq',
-            reference_id=int(21),
-            title='whfwhqrajmgzyscgspyd',
-            is_pay_at_location=True,
-            is_membership_required=False,
+            reference_type='tkjwxdbfiyjxiuaacjln',
+            reference_id=int(34),
+            title='dsngmfhgiwiqdzlagfze',
+            is_pay_at_location=False,
+            is_membership_required=True,
             is_access_key_required=True
         )
         return instance
@@ -42,7 +42,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'sonwubccsploswbmpomq'
+        test_value = 'tkjwxdbfiyjxiuaacjln'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -50,7 +50,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(21)
+        test_value = int(34)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'whfwhqrajmgzyscgspyd'
+        test_value = 'dsngmfhgiwiqdzlagfze'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -66,7 +66,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test is_pay_at_location property
         """
-        test_value = True
+        test_value = False
         self.instance.is_pay_at_location = test_value
         self.assertEqual(self.instance.is_pay_at_location, test_value)
     
@@ -74,7 +74,7 @@ class Test_UsageType(unittest.TestCase):
         """
         Test is_membership_required property
         """
-        test_value = False
+        test_value = True
         self.instance.is_membership_required = test_value
         self.assertEqual(self.instance.is_membership_required, test_value)
     

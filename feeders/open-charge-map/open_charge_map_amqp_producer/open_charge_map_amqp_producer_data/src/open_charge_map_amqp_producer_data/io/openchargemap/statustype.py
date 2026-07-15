@@ -161,9 +161,9 @@ class StatusType:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='nnymcppywtxgtigvwxyf',
-            reference_id=int(11),
-            title='gcirwynwlfqfgdocdqzx',
-            is_operational=True,
+            reference_type='jbanwdcnhuswejzbwdsb',
+            reference_id=int(39),
+            title='dqezlfzbztseuqklsfyd',
+            is_operational=False,
             is_user_selectable=True
         )

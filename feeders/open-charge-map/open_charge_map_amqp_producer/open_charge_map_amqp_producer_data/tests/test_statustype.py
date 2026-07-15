@@ -28,10 +28,10 @@ class Test_StatusType(unittest.TestCase):
         Create instance of StatusType for testing
         """
         instance = StatusType(
-            reference_type='nnymcppywtxgtigvwxyf',
-            reference_id=int(11),
-            title='gcirwynwlfqfgdocdqzx',
-            is_operational=True,
+            reference_type='jbanwdcnhuswejzbwdsb',
+            reference_id=int(39),
+            title='dqezlfzbztseuqklsfyd',
+            is_operational=False,
             is_user_selectable=True
         )
         return instance
@@ -41,7 +41,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'nnymcppywtxgtigvwxyf'
+        test_value = 'jbanwdcnhuswejzbwdsb'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -49,7 +49,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(11)
+        test_value = int(39)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'gcirwynwlfqfgdocdqzx'
+        test_value = 'dqezlfzbztseuqklsfyd'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -65,7 +65,7 @@ class Test_StatusType(unittest.TestCase):
         """
         Test is_operational property
         """
-        test_value = True
+        test_value = False
         self.instance.is_operational = test_value
         self.assertEqual(self.instance.is_operational, test_value)
     

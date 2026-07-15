@@ -161,9 +161,9 @@ class ChargerType:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='nwydfnhqnvbibvsmyjwh',
-            reference_id=int(51),
-            title='unokuytlwiwzmsyzijbv',
-            comments='wqcduxrqzcziahttutyz',
+            reference_type='tyfuxthbodgyfgylbtdt',
+            reference_id=int(7),
+            title='jgpdegsapxnsffvnizhm',
+            comments='yohqdcnqliytptrxrihl',
             is_fast_charge_capable=True
         )

@@ -28,11 +28,11 @@ class Test_Country(unittest.TestCase):
         Create instance of Country for testing
         """
         instance = Country(
-            reference_type='tbpjqdkqylrxpnctjnwe',
-            reference_id=int(84),
-            title='jbstkxeuooyylyiaeeum',
-            iso_code='jitdaxbnmyrphfrwwynj',
-            continent_code='zjoamwqannlrnnxjfjsr'
+            reference_type='kecldpszrtrivnzbqyfa',
+            reference_id=int(80),
+            title='ilqiprabhspcynnbkpby',
+            iso_code='ukizlsgwcuwlnznkcsod',
+            continent_code='nmfymqqbxkmtiwojhqqg'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Country(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'tbpjqdkqylrxpnctjnwe'
+        test_value = 'kecldpszrtrivnzbqyfa'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -49,7 +49,7 @@ class Test_Country(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(84)
+        test_value = int(80)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_Country(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'jbstkxeuooyylyiaeeum'
+        test_value = 'ilqiprabhspcynnbkpby'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -65,7 +65,7 @@ class Test_Country(unittest.TestCase):
         """
         Test iso_code property
         """
-        test_value = 'jitdaxbnmyrphfrwwynj'
+        test_value = 'ukizlsgwcuwlnznkcsod'
         self.instance.iso_code = test_value
         self.assertEqual(self.instance.iso_code, test_value)
     
@@ -73,7 +73,7 @@ class Test_Country(unittest.TestCase):
         """
         Test continent_code property
         """
-        test_value = 'zjoamwqannlrnnxjfjsr'
+        test_value = 'nmfymqqbxkmtiwojhqqg'
         self.instance.continent_code = test_value
         self.assertEqual(self.instance.continent_code, test_value)
     

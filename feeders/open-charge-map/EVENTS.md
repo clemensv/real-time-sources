@@ -232,6 +232,7 @@ Each event identifies the real-world resource with `{reference_type}/{reference_
 - **`booking_url`** (null or string, optional): URL for booking or account sign-up with the operator, from `BookingURL`. Often null.
 - **`fault_report_email`** (null or string, optional): Email address for reporting faults to the operator, from `FaultReportEmail`. Often null.
 - **`is_private_individual`** (null or boolean, optional): True when the operator record represents a private individual rather than a commercial network, from `IsPrivateIndividual`.
+- **`is_restricted_edit`** (null or boolean, optional): True when records attributed to this operator are edit-restricted in Open Charge Map (only privileged editors may modify them), from `IsRestrictedEdit`. Non-null for the large majority of operators.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -248,7 +249,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "contact_email": "string",
   "booking_url": "string",
   "fault_report_email": "string",
-  "is_private_individual": false
+  "is_private_individual": false,
+  "is_restricted_edit": false
 }
 ```
 
@@ -479,6 +481,7 @@ Each event identifies the real-world resource with `{reference_type}/{reference_
 - **`is_approved_import`** (null or boolean, optional): True when the provider is an approved bulk-import source, from `IsApprovedImport`.
 - **`status_title`** (null or string, optional): Human-readable provider-status label denormalized from the inline `DataProviderStatusType.Title`, for example `Manual Data Entry` or `Automated Import`.
 - **`is_provider_enabled`** (null or boolean, optional): True when the provider is currently enabled as a source, denormalized from the inline `DataProviderStatusType.IsProviderEnabled`.
+- **`date_last_imported`** (null or datetime, optional): UTC timestamp of the most recent automated import from this data provider, from `DateLastImported` (ISO-8601). Populated for providers fed by scheduled bulk imports; null for manual-entry providers. Signals the provenance freshness of the records attributed to this provider.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -495,7 +498,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "is_restricted_edit": false,
   "is_approved_import": false,
   "status_title": "string",
-  "is_provider_enabled": false
+  "is_provider_enabled": false,
+  "date_last_imported": "2024-01-01T00:00:00Z"
 }
 ```
 

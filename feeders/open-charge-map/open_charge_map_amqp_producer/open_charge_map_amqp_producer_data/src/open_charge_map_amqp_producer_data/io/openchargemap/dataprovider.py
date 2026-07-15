@@ -10,7 +10,9 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -31,6 +33,7 @@ class DataProvider:
         is_approved_import (typing.Optional[bool])
         status_title (typing.Optional[str])
         is_provider_enabled (typing.Optional[bool])
+        date_last_imported (typing.Optional[datetime.datetime])
     """
     
     
@@ -45,6 +48,7 @@ class DataProvider:
     is_approved_import: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_approved_import"))
     status_title: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_title"))
     is_provider_enabled: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_provider_enabled"))
+    date_last_imported: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_last_imported", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DataProvider':
@@ -173,15 +177,16 @@ class DataProvider:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='xqbolziwrtqdkoytjkwl',
-            reference_id=int(70),
-            title='qgmjhvlkojktfbfknher',
-            website_url='bzffovnbaalsebxcpoub',
-            comments='axeknuckwelgwftucbbd',
-            license='vlwxrxajuonsvacqycvo',
+            reference_type='omgniioegmsxdevdlksm',
+            reference_id=int(59),
+            title='ujdnpszdzyrqgkvqwsys',
+            website_url='ywkrtubcsdsnvrwhdxho',
+            comments='cbqjcqntqmgqaqogdxhv',
+            license='lvhqfjeygqndbamofrdo',
             is_open_data_licensed=True,
             is_restricted_edit=False,
-            is_approved_import=False,
-            status_title='wpnscptfhuiptaaarcts',
-            is_provider_enabled=False
+            is_approved_import=True,
+            status_title='jqxbchtythogrfojylya',
+            is_provider_enabled=True,
+            date_last_imported=datetime.datetime.now(datetime.timezone.utc)
         )

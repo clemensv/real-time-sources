@@ -1,3 +1,3 @@
-from .io import Country, ChargerType, StatusType, ConnectionType, Connection, ChargingLocation, UsageType, DataProvider, CurrentType, Operator, SubmissionStatusType
+from .io import DataProvider, Connection, ChargingLocation, StatusType, ChargerType, Country, ConnectionType, UsageType, Operator, CurrentType, SubmissionStatusType
 
-__all__ = ["Country", "ChargerType", "StatusType", "ConnectionType", "Connection", "ChargingLocation", "UsageType", "DataProvider", "CurrentType", "Operator", "SubmissionStatusType"]
+__all__ = ["DataProvider", "Connection", "ChargingLocation", "StatusType", "ChargerType", "Country", "ConnectionType", "UsageType", "Operator", "CurrentType", "SubmissionStatusType"]

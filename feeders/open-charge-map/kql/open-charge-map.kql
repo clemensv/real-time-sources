@@ -254,6 +254,7 @@
    [booking_url]: string,
    [fault_report_email]: string,
    [is_private_individual]: bool,
+   [is_restricted_edit]: bool,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -275,6 +276,7 @@
    [booking_url]: @"{""description"": ""URL for booking or account sign-up with the operator, from `BookingURL`. Often null.""}",
    [fault_report_email]: @"{""description"": ""Email address for reporting faults to the operator, from `FaultReportEmail`. Often null.""}",
    [is_private_individual]: @"{""description"": ""True when the operator record represents a private individual rather than a commercial network, from `IsPrivateIndividual`.""}",
+   [is_restricted_edit]: @"{""description"": ""True when records attributed to this operator are edit-restricted in Open Charge Map (only privileged editors may modify them), from `IsRestrictedEdit`. Non-null for the large majority of operators.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -300,7 +302,8 @@
   {"column": "contact_email", "path": "$.contact_email"},
   {"column": "booking_url", "path": "$.booking_url"},
   {"column": "fault_report_email", "path": "$.fault_report_email"},
-  {"column": "is_private_individual", "path": "$.is_private_individual"}
+  {"column": "is_private_individual", "path": "$.is_private_individual"},
+  {"column": "is_restricted_edit", "path": "$.is_restricted_edit"}
 ]
 ```
 
@@ -322,7 +325,8 @@
   {"column": "contact_email", "path": "$.data.contact_email"},
   {"column": "booking_url", "path": "$.data.booking_url"},
   {"column": "fault_report_email", "path": "$.data.fault_report_email"},
-  {"column": "is_private_individual", "path": "$.data.is_private_individual"}
+  {"column": "is_private_individual", "path": "$.data.is_private_individual"},
+  {"column": "is_restricted_edit", "path": "$.data.is_restricted_edit"}
 ]
 ```
 
@@ -337,7 +341,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.Operator') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['website_url'] = tostring(data.['website_url']),['comments'] = tostring(data.['comments']),['phone_primary_contact'] = tostring(data.['phone_primary_contact']),['phone_secondary_contact'] = tostring(data.['phone_secondary_contact']),['contact_email'] = tostring(data.['contact_email']),['booking_url'] = tostring(data.['booking_url']),['fault_report_email'] = tostring(data.['fault_report_email']),['is_private_individual'] = tobool(data.['is_private_individual']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.Operator') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['website_url'] = tostring(data.['website_url']),['comments'] = tostring(data.['comments']),['phone_primary_contact'] = tostring(data.['phone_primary_contact']),['phone_secondary_contact'] = tostring(data.['phone_secondary_contact']),['contact_email'] = tostring(data.['contact_email']),['booking_url'] = tostring(data.['booking_url']),['fault_report_email'] = tostring(data.['fault_report_email']),['is_private_individual'] = tobool(data.['is_private_individual']),['is_restricted_edit'] = tobool(data.['is_restricted_edit']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true
 }]
@@ -663,6 +667,7 @@
    [is_approved_import]: bool,
    [status_title]: string,
    [is_provider_enabled]: bool,
+   [date_last_imported]: datetime,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -684,6 +689,7 @@
    [is_approved_import]: @"{""description"": ""True when the provider is an approved bulk-import source, from `IsApprovedImport`.""}",
    [status_title]: @"{""description"": ""Human-readable provider-status label denormalized from the inline `DataProviderStatusType.Title`, for example `Manual Data Entry` or `Automated Import`.""}",
    [is_provider_enabled]: @"{""description"": ""True when the provider is currently enabled as a source, denormalized from the inline `DataProviderStatusType.IsProviderEnabled`.""}",
+   [date_last_imported]: @"{""description"": ""UTC timestamp of the most recent automated import from this data provider, from `DateLastImported` (ISO-8601). Populated for providers fed by scheduled bulk imports; null for manual-entry providers. Signals the provenance freshness of the records attributed to this provider.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -709,7 +715,8 @@
   {"column": "is_restricted_edit", "path": "$.is_restricted_edit"},
   {"column": "is_approved_import", "path": "$.is_approved_import"},
   {"column": "status_title", "path": "$.status_title"},
-  {"column": "is_provider_enabled", "path": "$.is_provider_enabled"}
+  {"column": "is_provider_enabled", "path": "$.is_provider_enabled"},
+  {"column": "date_last_imported", "path": "$.date_last_imported"}
 ]
 ```
 
@@ -731,7 +738,8 @@
   {"column": "is_restricted_edit", "path": "$.data.is_restricted_edit"},
   {"column": "is_approved_import", "path": "$.data.is_approved_import"},
   {"column": "status_title", "path": "$.data.status_title"},
-  {"column": "is_provider_enabled", "path": "$.data.is_provider_enabled"}
+  {"column": "is_provider_enabled", "path": "$.data.is_provider_enabled"},
+  {"column": "date_last_imported", "path": "$.data.date_last_imported"}
 ]
 ```
 
@@ -746,7 +754,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.DataProvider') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['website_url'] = tostring(data.['website_url']),['comments'] = tostring(data.['comments']),['license'] = tostring(data.['license']),['is_open_data_licensed'] = tobool(data.['is_open_data_licensed']),['is_restricted_edit'] = tobool(data.['is_restricted_edit']),['is_approved_import'] = tobool(data.['is_approved_import']),['status_title'] = tostring(data.['status_title']),['is_provider_enabled'] = tobool(data.['is_provider_enabled']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.DataProvider') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['website_url'] = tostring(data.['website_url']),['comments'] = tostring(data.['comments']),['license'] = tostring(data.['license']),['is_open_data_licensed'] = tobool(data.['is_open_data_licensed']),['is_restricted_edit'] = tobool(data.['is_restricted_edit']),['is_approved_import'] = tobool(data.['is_approved_import']),['status_title'] = tostring(data.['status_title']),['is_provider_enabled'] = tobool(data.['is_provider_enabled']),['date_last_imported'] = todatetime(data.['date_last_imported']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true
 }]

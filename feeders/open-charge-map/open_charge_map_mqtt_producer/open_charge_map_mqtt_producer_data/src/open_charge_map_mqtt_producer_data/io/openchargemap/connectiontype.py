@@ -163,10 +163,10 @@ class ConnectionType:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='vufykmckxksspxrnaxvu',
-            reference_id=int(11),
-            title='aujjbnoidgzwvxlsshvk',
-            formal_name='vvbrrxkpptduxiqwhkan',
-            is_discontinued=False,
-            is_obsolete=True
+            reference_type='ynnzzxecfasxlnhudtnq',
+            reference_id=int(47),
+            title='rlcyafkhuzqzxzltyjtr',
+            formal_name='jynirphvhpjqwfowzxzp',
+            is_discontinued=True,
+            is_obsolete=False
         )

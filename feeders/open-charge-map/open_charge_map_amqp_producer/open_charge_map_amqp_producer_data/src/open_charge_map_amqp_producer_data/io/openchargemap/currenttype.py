@@ -159,8 +159,8 @@ class CurrentType:
             An instance of the dataclass.
         """
         return cls(
-            reference_type='hwrbzhpqglsonoogyfil',
-            reference_id=int(3),
-            title='rqxohnvppcwtdjxbmgbk',
-            description='bqaxivjkobnjhlwcdulc'
+            reference_type='kgwlbpucshldtpfamuls',
+            reference_id=int(76),
+            title='ihuoejwzdpltzeatpjeb',
+            description='yhlcynppxejthdilkual'
         )

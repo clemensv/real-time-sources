@@ -28,10 +28,10 @@ class Test_ChargerType(unittest.TestCase):
         Create instance of ChargerType for testing
         """
         instance = ChargerType(
-            reference_type='nwydfnhqnvbibvsmyjwh',
-            reference_id=int(51),
-            title='unokuytlwiwzmsyzijbv',
-            comments='wqcduxrqzcziahttutyz',
+            reference_type='tyfuxthbodgyfgylbtdt',
+            reference_id=int(7),
+            title='jgpdegsapxnsffvnizhm',
+            comments='yohqdcnqliytptrxrihl',
             is_fast_charge_capable=True
         )
         return instance
@@ -41,7 +41,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'nwydfnhqnvbibvsmyjwh'
+        test_value = 'tyfuxthbodgyfgylbtdt'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -49,7 +49,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(51)
+        test_value = int(7)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'unokuytlwiwzmsyzijbv'
+        test_value = 'jgpdegsapxnsffvnizhm'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -65,7 +65,7 @@ class Test_ChargerType(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'wqcduxrqzcziahttutyz'
+        test_value = 'yohqdcnqliytptrxrihl'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     

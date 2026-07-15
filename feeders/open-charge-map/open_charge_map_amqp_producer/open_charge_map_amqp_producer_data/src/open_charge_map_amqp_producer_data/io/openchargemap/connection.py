@@ -185,21 +185,21 @@ class Connection:
             An instance of the dataclass.
         """
         return cls(
-            connection_id=int(51),
-            connection_type_id=int(3),
-            connection_type_title='ukymmhikqxttevbtotek',
-            connection_type_formal_name='mibgqwesonicrnzramsl',
-            reference='cofrztwfihvyndpfkfzw',
+            connection_id=int(70),
+            connection_type_id=int(46),
+            connection_type_title='dicawtcbogpefnianvut',
+            connection_type_formal_name='wqcbsccfojantisbgocf',
+            reference='pajfcqboggskqwacjmhs',
             status_type_id=int(76),
             is_operational=False,
-            level_id=int(55),
-            level_title='lfipnqdhnsysxkhrpltu',
-            is_fast_charge_capable=True,
-            amps=int(26),
-            voltage=int(3),
-            power_kw=float(20.60514615181691),
-            current_type_id=int(97),
-            current_type_title='bubyiboqzaslncpccmef',
-            quantity=int(47),
-            comments='ifazampgyhcqokqkdaxl'
+            level_id=int(83),
+            level_title='jbebmcbarnqtlmwjpixb',
+            is_fast_charge_capable=False,
+            amps=int(3),
+            voltage=int(52),
+            power_kw=float(78.82780241577352),
+            current_type_id=int(82),
+            current_type_title='unvrqcfenrqdrxwexqqz',
+            quantity=int(15),
+            comments='kxpqyqcxrsqcicporxns'
         )

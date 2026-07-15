@@ -9,6 +9,7 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from open_charge_map_amqp_producer_data.io.openchargemap.dataprovider import DataProvider
+import datetime
 
 
 class Test_DataProvider(unittest.TestCase):
@@ -28,17 +29,18 @@ class Test_DataProvider(unittest.TestCase):
         Create instance of DataProvider for testing
         """
         instance = DataProvider(
-            reference_type='xqbolziwrtqdkoytjkwl',
-            reference_id=int(70),
-            title='qgmjhvlkojktfbfknher',
-            website_url='bzffovnbaalsebxcpoub',
-            comments='axeknuckwelgwftucbbd',
-            license='vlwxrxajuonsvacqycvo',
+            reference_type='omgniioegmsxdevdlksm',
+            reference_id=int(59),
+            title='ujdnpszdzyrqgkvqwsys',
+            website_url='ywkrtubcsdsnvrwhdxho',
+            comments='cbqjcqntqmgqaqogdxhv',
+            license='lvhqfjeygqndbamofrdo',
             is_open_data_licensed=True,
             is_restricted_edit=False,
-            is_approved_import=False,
-            status_title='wpnscptfhuiptaaarcts',
-            is_provider_enabled=False
+            is_approved_import=True,
+            status_title='jqxbchtythogrfojylya',
+            is_provider_enabled=True,
+            date_last_imported=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
 
@@ -47,7 +49,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test reference_type property
         """
-        test_value = 'xqbolziwrtqdkoytjkwl'
+        test_value = 'omgniioegmsxdevdlksm'
         self.instance.reference_type = test_value
         self.assertEqual(self.instance.reference_type, test_value)
     
@@ -55,7 +57,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test reference_id property
         """
-        test_value = int(70)
+        test_value = int(59)
         self.instance.reference_id = test_value
         self.assertEqual(self.instance.reference_id, test_value)
     
@@ -63,7 +65,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'qgmjhvlkojktfbfknher'
+        test_value = 'ujdnpszdzyrqgkvqwsys'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -71,7 +73,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test website_url property
         """
-        test_value = 'bzffovnbaalsebxcpoub'
+        test_value = 'ywkrtubcsdsnvrwhdxho'
         self.instance.website_url = test_value
         self.assertEqual(self.instance.website_url, test_value)
     
@@ -79,7 +81,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'axeknuckwelgwftucbbd'
+        test_value = 'cbqjcqntqmgqaqogdxhv'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     
@@ -87,7 +89,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test license property
         """
-        test_value = 'vlwxrxajuonsvacqycvo'
+        test_value = 'lvhqfjeygqndbamofrdo'
         self.instance.license = test_value
         self.assertEqual(self.instance.license, test_value)
     
@@ -111,7 +113,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test is_approved_import property
         """
-        test_value = False
+        test_value = True
         self.instance.is_approved_import = test_value
         self.assertEqual(self.instance.is_approved_import, test_value)
     
@@ -119,7 +121,7 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test status_title property
         """
-        test_value = 'wpnscptfhuiptaaarcts'
+        test_value = 'jqxbchtythogrfojylya'
         self.instance.status_title = test_value
         self.assertEqual(self.instance.status_title, test_value)
     
@@ -127,9 +129,17 @@ class Test_DataProvider(unittest.TestCase):
         """
         Test is_provider_enabled property
         """
-        test_value = False
+        test_value = True
         self.instance.is_provider_enabled = test_value
         self.assertEqual(self.instance.is_provider_enabled, test_value)
+    
+    def test_date_last_imported_property(self):
+        """
+        Test date_last_imported property
+        """
+        test_value = datetime.datetime.now(datetime.timezone.utc)
+        self.instance.date_last_imported = test_value
+        self.assertEqual(self.instance.date_last_imported, test_value)
     
     def test_to_byte_array_json(self):
         """
