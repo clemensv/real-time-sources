@@ -1,0 +1,2 @@
+pip install .\open_charge_map_producer_data
+pip install .\open_charge_map_producer_kafka_producer

@@ -117,6 +117,10 @@ def taipei_youbike_image():
     return build_image('taipei-youbike', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def open_charge_map_image():
+    return build_image('open-charge-map', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def erddap_image():
     return build_image('erddap', dockerfile='Dockerfile.kafka')
 
@@ -1285,6 +1289,57 @@ class TestTaipeiYoubikeDockerFlow:
             extra_env={'ONCE_MODE': 'true'},
             min_messages=5,
             timeout=240,
+        )
+
+
+@pytest.mark.skipif(
+    not os.environ.get('OPENCHARGEMAP_API_KEY'),
+    reason='OPENCHARGEMAP_API_KEY not set; live Open Charge Map ingestion unavailable',
+)
+class TestOpenChargeMapDockerFlow:
+    """Verify the open-charge-map Kafka container emits reference + telemetry.
+
+    The Open Charge Map v3 API serves the global open EV-charging registry.
+    On startup the feeder emits a full snapshot of the nine reference lookup
+    tables (Operator / ConnectionType / CurrentType / ChargerType / Country /
+    DataProvider / StatusType / UsageType / SubmissionStatusType), then the
+    delta-polled charging-location catalog (ChargingLocation).  Both families
+    share topic ``open-charge-map``; ChargingLocation is keyed ``{poi_id}`` and
+    every reference type is keyed ``{reference_type}/{reference_id}``.
+
+    Scoped to Ireland (``OCM_COUNTRYCODE=IE``) with a wide look-back and a
+    small result cap so the run is bounded but guaranteed to carry telemetry.
+    Requires a free OCM API key (``OPENCHARGEMAP_API_KEY``).
+    """
+
+    TOPIC = 'test-open-charge-map'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, open_charge_map_image):
+        _run_kafka_flow_test(
+            kafka, open_charge_map_image, self.TOPIC,
+            reference_types=['Operator', 'ConnectionType', 'Country'],
+            telemetry_types=['ChargingLocation'],
+            required_exact_types=[
+                'IO.OpenChargeMap.ChargingLocation',
+                'IO.OpenChargeMap.Operator',
+                'IO.OpenChargeMap.ConnectionType',
+                'IO.OpenChargeMap.CurrentType',
+                'IO.OpenChargeMap.ChargerType',
+                'IO.OpenChargeMap.Country',
+                'IO.OpenChargeMap.DataProvider',
+                'IO.OpenChargeMap.StatusType',
+                'IO.OpenChargeMap.UsageType',
+                'IO.OpenChargeMap.SubmissionStatusType',
+            ],
+            extra_env={
+                'OPENCHARGEMAP_API_KEY': os.environ['OPENCHARGEMAP_API_KEY'],
+                'OCM_COUNTRYCODE': 'IE',
+                'OCM_MODIFIED_SINCE_DAYS': '3650',
+                'OCM_MAX_RESULTS': '200',
+                'ONCE_MODE': 'true',
+            },
+            min_messages=10,
+            timeout=300,
         )
 
 

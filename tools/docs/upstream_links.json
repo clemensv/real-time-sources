@@ -124,6 +124,10 @@
     "homepage": "https://remon.jrc.ec.europa.eu/",
     "api_docs": "https://eurdep.jrc.ec.europa.eu/Basic/Pages/Public/Data/Default.aspx"
   },
+  "fdsn-seismology": {
+    "homepage": "https://www.fdsn.org/webservices/",
+    "api_docs": "https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl"
+  },
   "fienta": {
     "homepage": "https://fienta.com/",
     "api_docs": "https://fienta.com/api-public-events"
@@ -248,6 +252,10 @@
     "homepage": "https://opensky-network.org/",
     "api_docs": "https://opensky-network.org/apidoc/"
   },
+  "nasa-firms": {
+    "homepage": "https://firms.modaps.eosdis.nasa.gov/",
+    "api_docs": "https://firms.modaps.eosdis.nasa.gov/api/area/"
+  },
   "ndw-road-traffic": {
     "homepage": "https://www.ndw.nu/",
     "api_docs": "https://opendata.ndw.nu/"
@@ -299,6 +307,10 @@
   "nws-forecasts": {
     "homepage": "https://www.weather.gov/",
     "api_docs": "https://www.weather.gov/documentation/services-web-api"
+  },
+  "open-charge-map": {
+    "homepage": "https://openchargemap.org/",
+    "api_docs": "https://openchargemap.org/site/develop/api"
   },
   "openaq": {
     "homepage": "https://openaq.org/",
@@ -383,14 +395,6 @@
   "usgs-earthquakes": {
     "homepage": "https://earthquake.usgs.gov/",
     "api_docs": "https://earthquake.usgs.gov/fdsnws/event/1/"
-  },
-  "fdsn-seismology": {
-    "homepage": "https://www.fdsn.org/webservices/",
-    "api_docs": "https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl"
-  },
-  "nasa-firms": {
-    "homepage": "https://firms.modaps.eosdis.nasa.gov/",
-    "api_docs": "https://firms.modaps.eosdis.nasa.gov/api/area/"
   },
   "usgs-geomag": {
     "homepage": "https://www.usgs.gov/programs/geomagnetism",

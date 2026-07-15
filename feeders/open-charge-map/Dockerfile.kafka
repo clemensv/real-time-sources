@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/open-charge-map"
+LABEL org.opencontainers.image.title="Open Charge Map → Apache Kafka bridge"
+LABEL org.opencontainers.image.description="Polls the Open Charge Map v3 API (api.openchargemap.io) — the largest global open registry of EV charging locations (300,000+ points of interest) — delta-polling the charging-location catalog on DateLastStatusUpdate plus the operator/connector/current/charger/country/data-provider/status/usage/submission reference lookup tables, and forwards CloudEvents to Apache Kafka or any Kafka-compatible service that supports TLS + SASL/PLAIN (Confluent Cloud, Microsoft Fabric Event Streams, Azure Event Hubs)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/open-charge-map/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
+# Bring in the local open-charge-map source tree. Generated producer packages
+# plus the transport-specific app are installed sequentially to avoid
+# path-resolution races in local installs.
+COPY . /app
+
+RUN pip install --no-cache-dir ./open_charge_map_producer/open_charge_map_producer_data \
+ && pip install --no-cache-dir ./open_charge_map_producer/open_charge_map_producer_kafka_producer \
+ && pip install --no-cache-dir ./open_charge_map_core \
+ && pip install --no-cache-dir ./open_charge_map_kafka
+
+ENV CONNECTION_STRING=""
+
+# Build-time import smoke: fail the image build if the app module (or any
+# companion package it imports) is not importable -- closes the "built but
+# never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
+RUN python -c "import importlib, importlib.util as _u; _m = 'open_charge_map'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+
+CMD ["python", "-m", "open_charge_map", "feed"]

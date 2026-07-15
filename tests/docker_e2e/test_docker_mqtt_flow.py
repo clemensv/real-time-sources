@@ -72,6 +72,11 @@ def taipei_youbike_mqtt_image():
 
 
 @pytest.fixture(scope='module')
+def open_charge_map_mqtt_image():
+    return build_image('open-charge-map', dockerfile='Dockerfile.mqtt', tag='test-open-charge-map-mqtt')
+
+
+@pytest.fixture(scope='module')
 def cap_alerts_mqtt_image():
     return build_image('cap-alerts', dockerfile='Dockerfile.mqtt', tag='test-cap-alerts-mqtt')
 
@@ -488,6 +493,138 @@ class TestTaipeiYoubikeMqttDockerFlow:
         for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
             sample = by_type[ce_type][0]
             for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            payload = _to_dict(sample['payload'])
+            assert isinstance(payload, dict), sample
+            schema = schemas[ce_type]
+            assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+def _load_open_charge_map_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'open-charge-map', 'xreg', 'open-charge-map.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    group = manifest['schemagroups']['IO.OpenChargeMap.jstruct']['schemas']
+    names = [
+        'IO.OpenChargeMap.ChargingLocation',
+        'IO.OpenChargeMap.Operator',
+        'IO.OpenChargeMap.ConnectionType',
+        'IO.OpenChargeMap.CurrentType',
+        'IO.OpenChargeMap.ChargerType',
+        'IO.OpenChargeMap.Country',
+        'IO.OpenChargeMap.DataProvider',
+        'IO.OpenChargeMap.StatusType',
+        'IO.OpenChargeMap.UsageType',
+        'IO.OpenChargeMap.SubmissionStatusType',
+    ]
+    return {name: group[name]['versions']['1']['schema'] for name in names}
+
+
+@pytest.mark.skipif(
+    not os.environ.get('OPENCHARGEMAP_API_KEY'),
+    reason='OPENCHARGEMAP_API_KEY not set; live Open Charge Map ingestion unavailable',
+)
+class TestOpenChargeMapMqttDockerFlow:
+    """Verify the open-charge-map MQTT container publishes reference + telemetry.
+
+    Polls the Open Charge Map v3 API once (scoped to Ireland for a bounded
+    run); the feeder publishes the nine reference lookup tables to
+    ``ev-charging/open-charge-map/reference/{reference_type}/{reference_id}``
+    and the charging-location catalog to
+    ``ev-charging/open-charge-map/location/{poi_id}`` in CloudEvents binary
+    mode (CE metadata in MQTT user properties, JSON payload body).
+    """
+
+    TELEMETRY_TYPE = 'IO.OpenChargeMap.ChargingLocation'
+    REFERENCE_TYPE = 'IO.OpenChargeMap.Operator'
+
+    def test_emits_reference_and_telemetry(self, open_charge_map_mqtt_image):
+        container, network, host_port, broker_ip = _generic_mosquitto(
+            'open-charge-map-mqtt-e2e', 'open-charge-map-mqtt-e2e-broker'
+        )
+        messages: List[Dict[str, Any]] = []
+        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+
+        def on_message(_client, _userdata, msg):
+            props: Dict[str, Any] = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload})
+
+        client.on_message = on_message
+        feeder = None
+        try:
+            client.connect('127.0.0.1', host_port, 30)
+            client.subscribe('ev-charging/open-charge-map/#', qos=1)
+            client.loop_start()
+
+            docker_client = docker.from_env()
+            feeder = docker_client.containers.run(
+                open_charge_map_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'open-charge-map-mqtt-e2e-broker:1883',
+                    'OPENCHARGEMAP_API_KEY': os.environ['OPENCHARGEMAP_API_KEY'],
+                    'OCM_COUNTRYCODE': 'IE',
+                    'OCM_MODIFIED_SINCE_DAYS': '3650',
+                    'OCM_MAX_RESULTS': '200',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=360)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
+            deadline = time.time() + 20
+            while time.time() < deadline:
+                seen = {m['user_properties'].get('type') for m in messages}
+                if self.REFERENCE_TYPE in seen and self.TELEMETRY_TYPE in seen:
+                    break
+                time.sleep(0.25)
+        finally:
+            client.loop_stop()
+            client.disconnect()
+            if feeder is not None:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            try:
+                container.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
+
+        assert messages, 'No MQTT messages received from broker'
+        by_type: Dict[str, List[Dict[str, Any]]] = {}
+        for message in messages:
+            by_type.setdefault(message['user_properties'].get('type'), []).append(message)
+        assert self.REFERENCE_TYPE in by_type, by_type.keys()
+        assert self.TELEMETRY_TYPE in by_type, by_type.keys()
+        # Reference publishes under .../reference/...; telemetry under .../location/...
+        assert '/reference/' in by_type[self.REFERENCE_TYPE][0]['topic'], by_type[self.REFERENCE_TYPE][0]['topic']
+        assert '/location/' in by_type[self.TELEMETRY_TYPE][0]['topic'], by_type[self.TELEMETRY_TYPE][0]['topic']
+        schemas = _load_open_charge_map_schemas()
+        schema_validator = SchemaValidator(extended=True)
+        for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
+            sample = by_type[ce_type][0]
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
                 assert required in sample['user_properties'], sample
             assert sample['user_properties'].get('_contenttype') == 'application/json'
             payload = _to_dict(sample['payload'])

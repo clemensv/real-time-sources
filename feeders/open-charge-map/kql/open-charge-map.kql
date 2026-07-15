@@ -1,0 +1,985 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['IO.OpenChargeMap.ChargingLocation'] (
+   [poi_id]: int,
+   [uuid]: string,
+   [data_provider_id]: int,
+   [operator_id]: int,
+   [operator_title]: string,
+   [usage_type_id]: int,
+   [usage_type_title]: string,
+   [usage_cost]: string,
+   [status_type_id]: int,
+   [status_title]: string,
+   [is_operational]: bool,
+   [submission_status_type_id]: int,
+   [submission_status_title]: string,
+   [data_quality_level]: int,
+   [number_of_points]: int,
+   [general_comments]: string,
+   [is_recently_verified]: bool,
+   [date_created]: datetime,
+   [date_last_status_update]: datetime,
+   [date_last_verified]: datetime,
+   [date_last_confirmed]: datetime,
+   [date_planned]: datetime,
+   [address_id]: int,
+   [address_title]: string,
+   [address_line1]: string,
+   [address_line2]: string,
+   [town]: string,
+   [state_or_province]: string,
+   [postcode]: string,
+   [country_id]: int,
+   [country_iso_code]: string,
+   [country_title]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [contact_telephone1]: string,
+   [contact_telephone2]: string,
+   [contact_email]: string,
+   [access_comments]: string,
+   [related_url]: string,
+   [connections]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.ChargingLocation'] docstring @"{""description"": ""One electric-vehicle charging location (point of interest) from the Open Charge Map v3 POI API `https://api.openchargemap.io/v3/poi/`. Open Charge Map is the largest global open registry of EV charging equipment, with 300,000+ locations worldwide contributed and verified by operators, national databases, and the public under open licences. This event carries the stable identity, the parsed and flattened address with WGS 84 coordinates, denormalized operator/usage/status labels, editorial and freshness timestamps, and the itemized charging connections. The feeder emits it at startup for the configured scope and thereafter on the `DateLastStatusUpdate` delta, so consumers can maintain a temporally consistent view of each charging location keyed by `poi_id`.""}";
+
+.alter table ['IO.OpenChargeMap.ChargingLocation'] column-docstrings (
+   [poi_id]: @"{""description"": ""Stable Open Charge Map identifier of the point of interest (charging location), from the POI `ID` field, for example `498580`. It is globally unique within OCM, persists across refreshes, and forms the single component of both the CloudEvents subject and the Kafka key so every update for one charging location lands on the same partition in emission order.""}",
+   [uuid]: @"{""description"": ""Globally unique GUID assigned to the charging location by OCM, from the POI `UUID` field, for example `82B28E8E-0E5F-4158-9DF0-AF9991E98162`. An alternate immutable identity useful for cross-referencing OCM exports; stable across the record's lifetime.""}",
+   [data_provider_id]: @"{""description"": ""Identifier of the data provider that supplied this record, from `DataProviderID`, for example `1` (Open Charge Map Contributors). Joins to the `DataProvider` reference event and indicates the licensing and provenance of the record.""}",
+   [operator_id]: @"{""description"": ""Identifier of the charging-network operator for this location, from `OperatorID`, for example `3296` (InstaVolt Ltd). Joins to the `Operator` reference event. Null when the operator is unknown or not recorded.""}",
+   [operator_title]: @"{""description"": ""Human-readable operator name denormalized from the inline `OperatorInfo.Title`, for example `InstaVolt Ltd` or `Tesla (Supercharger)`. Carried inline so the event is self-contained. Null when no operator is associated.""}",
+   [usage_type_id]: @"{""description"": ""Identifier of the access/usage model for this location, from `UsageTypeID`, for example `5` (Public - Pay At Location). Joins to the `UsageType` reference event describing whether membership, an access key, or payment at the location is required.""}",
+   [usage_type_title]: @"{""description"": ""Human-readable usage-model label denormalized from the inline `UsageType.Title`, for example `Public - Pay At Location`, `Public - Membership Required`, or `Private - Restricted Access`.""}",
+   [usage_cost]: @"{""description"": ""Free-text description of the cost to use the charging location, from the `UsageCost` field, for example `\u00a30.85/kWh`, `Free`, or `See operator app`. Deliberately free-text because tariffs vary widely and are not normalized upstream.""}",
+   [status_type_id]: @"{""description"": ""Location-level operational-status identifier, from the POI `StatusTypeID`, for example `50` (Operational) or `75` (Partly Operational). Joins to the `StatusType` reference event.""}",
+   [status_title]: @"{""description"": ""Human-readable operational-status label denormalized from the inline `StatusType.Title`, for example `Operational`, `Planned For Future Date`, or `Temporarily Unavailable`.""}",
+   [is_operational]: @"{""description"": ""Convenience boolean denormalized from the inline location-level `StatusType.IsOperational`: true when the location's status is considered operational, false when it is not, null when the status carries no operational flag.""}",
+   [submission_status_type_id]: @"{""description"": ""Editorial submission-workflow status identifier, from `SubmissionStatusTypeID`, for example `200` (Submission Published). Joins to the `SubmissionStatusType` reference event. Live POIs returned by the public feed are normally published.""}",
+   [submission_status_title]: @"{""description"": ""Human-readable submission-workflow label denormalized from the inline `SubmissionStatus.Title`, for example `Submission Published` or `Submission Under Review`.""}",
+   [data_quality_level]: @"{""description"": ""OCM data-quality score for the record on a 1-5 scale, from `DataQualityLevel`, where 1 is the default/unverified baseline and higher values indicate more thoroughly reviewed data. Lets consumers filter to higher-confidence records.""}",
+   [number_of_points]: @"{""description"": ""Reported total number of charge points (EVSEs) at the location, from `NumberOfPoints`, for example `1` or `6`. May be supplied directly by the contributor and can differ from the summed connection `quantity`; treat as the operator-stated bay count.""}",
+   [general_comments]: @"{""description"": ""Free-text notes about the location as a whole supplied by the contributor, from `GeneralComments`, for example access restrictions or landmark hints. Usually null.""}",
+   [is_recently_verified]: @"{""description"": ""True when OCM considers the record to have been verified recently (within the provider's freshness window), from `IsRecentlyVerified`. A quick freshness signal complementing `date_last_verified`.""}",
+   [date_created]: @"{""description"": ""UTC timestamp when the record was first created in OCM, from `DateCreated` (ISO-8601, for example `2026-07-12T20:49:00Z`). Null for very old records lacking a creation timestamp.""}",
+   [date_last_status_update]: @"{""description"": ""UTC timestamp of the most recent change to the record, from `DateLastStatusUpdate` (ISO-8601). This is the watermark the feeder tracks: the delta poller requests records with `modifiedsince` set just past the highest observed value so only changed locations are re-emitted.""}",
+   [date_last_verified]: @"{""description"": ""UTC timestamp when the record was last verified by a contributor or automated check, from `DateLastVerified` (ISO-8601). Null when never explicitly verified.""}",
+   [date_last_confirmed]: @"{""description"": ""UTC timestamp when the location was last confirmed as still present/correct, from `DateLastConfirmed` (ISO-8601). Frequently null.""}",
+   [date_planned]: @"{""description"": ""UTC date on which a planned (not-yet-operational) location is expected to open, from `DatePlanned` (ISO-8601). Populated only for locations whose status is a planned/future state; otherwise null.""}",
+   [address_id]: @"{""description"": ""Open Charge Map identifier of the address record attached to the location, from `AddressInfo.ID`. Internal to OCM; distinct from `poi_id`.""}",
+   [address_title]: @"{""description"": ""Short site name or title of the charging location, from `AddressInfo.Title`, for example `Starbucks`, `Tesco Extra`, or `Woodfield Way Car Park`. The primary human label for the location.""}",
+   [address_line1]: @"{""description"": ""First line of the street address, from `AddressInfo.AddressLine1`, for example `Woodfield Way`.""}",
+   [address_line2]: @"{""description"": ""Second line of the street address (locality, estate, or building detail), from `AddressInfo.AddressLine2`, for example `Hexthorpe`. Usually null.""}",
+   [town]: @"{""description"": ""Town or city of the charging location, from `AddressInfo.Town`, for example `Doncaster`.""}",
+   [state_or_province]: @"{""description"": ""State, province, region, or country subdivision, from `AddressInfo.StateOrProvince`, for example `England`, `California`, or `Bayern`.""}",
+   [postcode]: @"{""description"": ""Postal or ZIP code of the charging location, from `AddressInfo.Postcode`, for example `DN4 8SJ`.""}",
+   [country_id]: @"{""description"": ""Identifier of the country the location is in, from `AddressInfo.CountryID`, for example `1` (United Kingdom). Joins to the `Country` reference event.""}",
+   [country_iso_code]: @"{""description"": ""ISO 3166-1 alpha-2 country code denormalized from the inline `AddressInfo.Country.ISOCode`, for example `GB`, `US`, or `DE`. Carried inline for convenient country-level filtering.""}",
+   [country_title]: @"{""description"": ""Human-readable country name denormalized from the inline `AddressInfo.Country.Title`, for example `United Kingdom`.""}",
+   [latitude]: @"{""description"": ""WGS 84 latitude of the charging location in decimal degrees, from `AddressInfo.Latitude`, for example `53.498591581284586`. Positive north of the equator. Present on every OCM location and used directly as the map coordinate.""}",
+   [longitude]: @"{""description"": ""WGS 84 longitude of the charging location in decimal degrees, from `AddressInfo.Longitude`, for example `-1.1232887704744599`. Positive east of the prime meridian. Present on every OCM location and used directly as the map coordinate.""}",
+   [contact_telephone1]: @"{""description"": ""Primary contact telephone number for the location, from `AddressInfo.ContactTelephone1`. Usually null.""}",
+   [contact_telephone2]: @"{""description"": ""Secondary contact telephone number for the location, from `AddressInfo.ContactTelephone2`. Usually null.""}",
+   [contact_email]: @"{""description"": ""Contact email address for the location, from `AddressInfo.ContactEmail`. Usually null.""}",
+   [access_comments]: @"{""description"": ""Free-text access notes for reaching or using the location, from `AddressInfo.AccessComments`, for example parking or opening-hours hints. Usually null.""}",
+   [related_url]: @"{""description"": ""Operator or venue web page related to the location, from `AddressInfo.RelatedURL`. Usually null.""}",
+   [connections]: @"{""description"": ""Array of the physical charging connections (EVSE connectors) documented at the location, from the POI `Connections` array. Each element describes one connector configuration: standard, level, current type, electrical rating, status, and quantity. The bridge always emits a list, empty when the contributor has not itemized the connectors, in which case `number_of_points` may still indicate the bay count."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.ChargingLocation'] ingestion json mapping "IO.OpenChargeMap.ChargingLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "poi_id", "path": "$.poi_id"},
+  {"column": "uuid", "path": "$.uuid"},
+  {"column": "data_provider_id", "path": "$.data_provider_id"},
+  {"column": "operator_id", "path": "$.operator_id"},
+  {"column": "operator_title", "path": "$.operator_title"},
+  {"column": "usage_type_id", "path": "$.usage_type_id"},
+  {"column": "usage_type_title", "path": "$.usage_type_title"},
+  {"column": "usage_cost", "path": "$.usage_cost"},
+  {"column": "status_type_id", "path": "$.status_type_id"},
+  {"column": "status_title", "path": "$.status_title"},
+  {"column": "is_operational", "path": "$.is_operational"},
+  {"column": "submission_status_type_id", "path": "$.submission_status_type_id"},
+  {"column": "submission_status_title", "path": "$.submission_status_title"},
+  {"column": "data_quality_level", "path": "$.data_quality_level"},
+  {"column": "number_of_points", "path": "$.number_of_points"},
+  {"column": "general_comments", "path": "$.general_comments"},
+  {"column": "is_recently_verified", "path": "$.is_recently_verified"},
+  {"column": "date_created", "path": "$.date_created"},
+  {"column": "date_last_status_update", "path": "$.date_last_status_update"},
+  {"column": "date_last_verified", "path": "$.date_last_verified"},
+  {"column": "date_last_confirmed", "path": "$.date_last_confirmed"},
+  {"column": "date_planned", "path": "$.date_planned"},
+  {"column": "address_id", "path": "$.address_id"},
+  {"column": "address_title", "path": "$.address_title"},
+  {"column": "address_line1", "path": "$.address_line1"},
+  {"column": "address_line2", "path": "$.address_line2"},
+  {"column": "town", "path": "$.town"},
+  {"column": "state_or_province", "path": "$.state_or_province"},
+  {"column": "postcode", "path": "$.postcode"},
+  {"column": "country_id", "path": "$.country_id"},
+  {"column": "country_iso_code", "path": "$.country_iso_code"},
+  {"column": "country_title", "path": "$.country_title"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "contact_telephone1", "path": "$.contact_telephone1"},
+  {"column": "contact_telephone2", "path": "$.contact_telephone2"},
+  {"column": "contact_email", "path": "$.contact_email"},
+  {"column": "access_comments", "path": "$.access_comments"},
+  {"column": "related_url", "path": "$.related_url"},
+  {"column": "connections", "path": "$.connections"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.ChargingLocation'] ingestion json mapping "IO.OpenChargeMap.ChargingLocation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "poi_id", "path": "$.data.poi_id"},
+  {"column": "uuid", "path": "$.data.uuid"},
+  {"column": "data_provider_id", "path": "$.data.data_provider_id"},
+  {"column": "operator_id", "path": "$.data.operator_id"},
+  {"column": "operator_title", "path": "$.data.operator_title"},
+  {"column": "usage_type_id", "path": "$.data.usage_type_id"},
+  {"column": "usage_type_title", "path": "$.data.usage_type_title"},
+  {"column": "usage_cost", "path": "$.data.usage_cost"},
+  {"column": "status_type_id", "path": "$.data.status_type_id"},
+  {"column": "status_title", "path": "$.data.status_title"},
+  {"column": "is_operational", "path": "$.data.is_operational"},
+  {"column": "submission_status_type_id", "path": "$.data.submission_status_type_id"},
+  {"column": "submission_status_title", "path": "$.data.submission_status_title"},
+  {"column": "data_quality_level", "path": "$.data.data_quality_level"},
+  {"column": "number_of_points", "path": "$.data.number_of_points"},
+  {"column": "general_comments", "path": "$.data.general_comments"},
+  {"column": "is_recently_verified", "path": "$.data.is_recently_verified"},
+  {"column": "date_created", "path": "$.data.date_created"},
+  {"column": "date_last_status_update", "path": "$.data.date_last_status_update"},
+  {"column": "date_last_verified", "path": "$.data.date_last_verified"},
+  {"column": "date_last_confirmed", "path": "$.data.date_last_confirmed"},
+  {"column": "date_planned", "path": "$.data.date_planned"},
+  {"column": "address_id", "path": "$.data.address_id"},
+  {"column": "address_title", "path": "$.data.address_title"},
+  {"column": "address_line1", "path": "$.data.address_line1"},
+  {"column": "address_line2", "path": "$.data.address_line2"},
+  {"column": "town", "path": "$.data.town"},
+  {"column": "state_or_province", "path": "$.data.state_or_province"},
+  {"column": "postcode", "path": "$.data.postcode"},
+  {"column": "country_id", "path": "$.data.country_id"},
+  {"column": "country_iso_code", "path": "$.data.country_iso_code"},
+  {"column": "country_title", "path": "$.data.country_title"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "contact_telephone1", "path": "$.data.contact_telephone1"},
+  {"column": "contact_telephone2", "path": "$.data.contact_telephone2"},
+  {"column": "contact_email", "path": "$.data.contact_email"},
+  {"column": "access_comments", "path": "$.data.access_comments"},
+  {"column": "related_url", "path": "$.data.related_url"},
+  {"column": "connections", "path": "$.data.connections"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.ChargingLocationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.ChargingLocationLatest'] on table ['IO.OpenChargeMap.ChargingLocation'] {
+    ['IO.OpenChargeMap.ChargingLocation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.ChargingLocation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.ChargingLocation') | project['poi_id'] = toint(data.['poi_id']),['uuid'] = tostring(data.['uuid']),['data_provider_id'] = toint(data.['data_provider_id']),['operator_id'] = toint(data.['operator_id']),['operator_title'] = tostring(data.['operator_title']),['usage_type_id'] = toint(data.['usage_type_id']),['usage_type_title'] = tostring(data.['usage_type_title']),['usage_cost'] = tostring(data.['usage_cost']),['status_type_id'] = toint(data.['status_type_id']),['status_title'] = tostring(data.['status_title']),['is_operational'] = tobool(data.['is_operational']),['submission_status_type_id'] = toint(data.['submission_status_type_id']),['submission_status_title'] = tostring(data.['submission_status_title']),['data_quality_level'] = toint(data.['data_quality_level']),['number_of_points'] = toint(data.['number_of_points']),['general_comments'] = tostring(data.['general_comments']),['is_recently_verified'] = tobool(data.['is_recently_verified']),['date_created'] = todatetime(data.['date_created']),['date_last_status_update'] = todatetime(data.['date_last_status_update']),['date_last_verified'] = todatetime(data.['date_last_verified']),['date_last_confirmed'] = todatetime(data.['date_last_confirmed']),['date_planned'] = todatetime(data.['date_planned']),['address_id'] = toint(data.['address_id']),['address_title'] = tostring(data.['address_title']),['address_line1'] = tostring(data.['address_line1']),['address_line2'] = tostring(data.['address_line2']),['town'] = tostring(data.['town']),['state_or_province'] = tostring(data.['state_or_province']),['postcode'] = tostring(data.['postcode']),['country_id'] = toint(data.['country_id']),['country_iso_code'] = tostring(data.['country_iso_code']),['country_title'] = tostring(data.['country_title']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['contact_telephone1'] = tostring(data.['contact_telephone1']),['contact_telephone2'] = tostring(data.['contact_telephone2']),['contact_email'] = tostring(data.['contact_email']),['access_comments'] = tostring(data.['access_comments']),['related_url'] = tostring(data.['related_url']),['connections'] = todynamic(data.['connections']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.Operator'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [website_url]: string,
+   [comments]: string,
+   [phone_primary_contact]: string,
+   [phone_secondary_contact]: string,
+   [contact_email]: string,
+   [booking_url]: string,
+   [fault_report_email]: string,
+   [is_private_individual]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.Operator'] docstring @"{""description"": ""One charging-network operator from the Open Charge Map reference data `https://api.openchargemap.io/v3/referencedata/` (`Operators` table, ~977 entries). Operators own or run the charging equipment; a ChargingLocation joins to this event through its `operator_id`. Emitted at startup and on the periodic reference refresh so telemetry consumers can resolve operator identifiers without a separate lookup.""}";
+
+.alter table ['IO.OpenChargeMap.Operator'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `operator` identifying this event as an operator reference entity. Forms the first segment of the `{reference_type}/{reference_id}` CloudEvents subject and Kafka key.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map operator identifier, from the operator `ID` field, for example `3296`. Matches the `operator_id` carried on ChargingLocation and forms the second segment of the subject/key.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [website_url]: @"{""description"": ""Operator web site URL, from `WebsiteURL`. Null when unknown.""}",
+   [comments]: @"{""description"": ""Free-text notes about the operator, from `Comments`, for example payment or roaming details. Often null.""}",
+   [phone_primary_contact]: @"{""description"": ""Primary contact telephone number for the operator, from `PhonePrimaryContact`. Often null.""}",
+   [phone_secondary_contact]: @"{""description"": ""Secondary contact telephone number for the operator, from `PhoneSecondaryContact`. Often null.""}",
+   [contact_email]: @"{""description"": ""Contact email address for the operator, from `ContactEmail`. Often null.""}",
+   [booking_url]: @"{""description"": ""URL for booking or account sign-up with the operator, from `BookingURL`. Often null.""}",
+   [fault_report_email]: @"{""description"": ""Email address for reporting faults to the operator, from `FaultReportEmail`. Often null.""}",
+   [is_private_individual]: @"{""description"": ""True when the operator record represents a private individual rather than a commercial network, from `IsPrivateIndividual`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.Operator'] ingestion json mapping "IO.OpenChargeMap.Operator_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "website_url", "path": "$.website_url"},
+  {"column": "comments", "path": "$.comments"},
+  {"column": "phone_primary_contact", "path": "$.phone_primary_contact"},
+  {"column": "phone_secondary_contact", "path": "$.phone_secondary_contact"},
+  {"column": "contact_email", "path": "$.contact_email"},
+  {"column": "booking_url", "path": "$.booking_url"},
+  {"column": "fault_report_email", "path": "$.fault_report_email"},
+  {"column": "is_private_individual", "path": "$.is_private_individual"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.Operator'] ingestion json mapping "IO.OpenChargeMap.Operator_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "website_url", "path": "$.data.website_url"},
+  {"column": "comments", "path": "$.data.comments"},
+  {"column": "phone_primary_contact", "path": "$.data.phone_primary_contact"},
+  {"column": "phone_secondary_contact", "path": "$.data.phone_secondary_contact"},
+  {"column": "contact_email", "path": "$.data.contact_email"},
+  {"column": "booking_url", "path": "$.data.booking_url"},
+  {"column": "fault_report_email", "path": "$.data.fault_report_email"},
+  {"column": "is_private_individual", "path": "$.data.is_private_individual"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.OperatorLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.OperatorLatest'] on table ['IO.OpenChargeMap.Operator'] {
+    ['IO.OpenChargeMap.Operator'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.Operator'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.Operator') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['website_url'] = tostring(data.['website_url']),['comments'] = tostring(data.['comments']),['phone_primary_contact'] = tostring(data.['phone_primary_contact']),['phone_secondary_contact'] = tostring(data.['phone_secondary_contact']),['contact_email'] = tostring(data.['contact_email']),['booking_url'] = tostring(data.['booking_url']),['fault_report_email'] = tostring(data.['fault_report_email']),['is_private_individual'] = tobool(data.['is_private_individual']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.ConnectionType'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [formal_name]: string,
+   [is_discontinued]: bool,
+   [is_obsolete]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.ConnectionType'] docstring @"{""description"": ""One EV connector standard from the Open Charge Map reference data (`ConnectionTypes` table, ~43 entries). A ChargingLocation connection joins to this event through its `connection_type_id`. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.ConnectionType'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `connection_type` identifying this event as a connector-standard reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map connection-type identifier, from the connection-type `ID` field, for example `33` (CCS Type 2). Matches the `connection_type_id` on ChargingLocation connections.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [formal_name]: @"{""description"": ""Formal standards designation of the connector, from `FormalName`, for example `IEC 62196-3 Configuration FF`. Null when not recorded.""}",
+   [is_discontinued]: @"{""description"": ""True when the connector standard has been discontinued, from `IsDiscontinued`. Discontinued types still appear on historical locations.""}",
+   [is_obsolete]: @"{""description"": ""True when the connector standard is considered obsolete, from `IsObsolete`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.ConnectionType'] ingestion json mapping "IO.OpenChargeMap.ConnectionType_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "formal_name", "path": "$.formal_name"},
+  {"column": "is_discontinued", "path": "$.is_discontinued"},
+  {"column": "is_obsolete", "path": "$.is_obsolete"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.ConnectionType'] ingestion json mapping "IO.OpenChargeMap.ConnectionType_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "formal_name", "path": "$.data.formal_name"},
+  {"column": "is_discontinued", "path": "$.data.is_discontinued"},
+  {"column": "is_obsolete", "path": "$.data.is_obsolete"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.ConnectionTypeLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.ConnectionTypeLatest'] on table ['IO.OpenChargeMap.ConnectionType'] {
+    ['IO.OpenChargeMap.ConnectionType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.ConnectionType'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.ConnectionType') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['formal_name'] = tostring(data.['formal_name']),['is_discontinued'] = tobool(data.['is_discontinued']),['is_obsolete'] = tobool(data.['is_obsolete']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.CurrentType'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.CurrentType'] docstring @"{""description"": ""One electrical current type from the Open Charge Map reference data (`CurrentTypes` table, 3 entries: AC single-phase, AC three-phase, DC). A ChargingLocation connection joins to this event through its `current_type_id`. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.CurrentType'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `current_type` identifying this event as a current-type reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map current-type identifier, from the current-type `ID` field: `10` (AC single-phase), `20` (AC three-phase), or `30` (DC). Matches the `current_type_id` on ChargingLocation connections.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [description]: @"{""description"": ""Longer description of the current type, from `Description`, for example `Direct Current`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.CurrentType'] ingestion json mapping "IO.OpenChargeMap.CurrentType_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "description", "path": "$.description"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.CurrentType'] ingestion json mapping "IO.OpenChargeMap.CurrentType_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "description", "path": "$.data.description"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.CurrentTypeLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.CurrentTypeLatest'] on table ['IO.OpenChargeMap.CurrentType'] {
+    ['IO.OpenChargeMap.CurrentType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.CurrentType'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.CurrentType') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['description'] = tostring(data.['description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.ChargerType'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [comments]: string,
+   [is_fast_charge_capable]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.ChargerType'] docstring @"{""description"": ""One charging level (charger power class) from the Open Charge Map reference data (`ChargerTypes` table, 3 entries: Level 1 Low, Level 2 Medium, Level 3 High). Open Charge Map calls this table `ChargerTypes` while POI connections reference it through the `LevelID` field; a ChargingLocation connection joins to this event through its `level_id`. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.ChargerType'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `charger_type` identifying this event as a charging-level reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map charging-level identifier, from the charger-type `ID` field: `1` (Level 1, Low, under ~2 kW), `2` (Level 2, Medium, ~2-40 kW), or `3` (Level 3, High, over 40 kW). Matches the `level_id` on ChargingLocation connections.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [comments]: @"{""description"": ""Description of the charging level's power band, from `Comments`, for example `40KW and Higher`.""}",
+   [is_fast_charge_capable]: @"{""description"": ""True when this level is classed as fast charging, from `IsFastChargeCapable` (true for Level 3).""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.ChargerType'] ingestion json mapping "IO.OpenChargeMap.ChargerType_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "comments", "path": "$.comments"},
+  {"column": "is_fast_charge_capable", "path": "$.is_fast_charge_capable"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.ChargerType'] ingestion json mapping "IO.OpenChargeMap.ChargerType_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "comments", "path": "$.data.comments"},
+  {"column": "is_fast_charge_capable", "path": "$.data.is_fast_charge_capable"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.ChargerTypeLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.ChargerTypeLatest'] on table ['IO.OpenChargeMap.ChargerType'] {
+    ['IO.OpenChargeMap.ChargerType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.ChargerType'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.ChargerType') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['comments'] = tostring(data.['comments']),['is_fast_charge_capable'] = tobool(data.['is_fast_charge_capable']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.Country'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [iso_code]: string,
+   [continent_code]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.Country'] docstring @"{""description"": ""One country from the Open Charge Map reference data (`Countries` table, ~250 entries). A ChargingLocation joins to this event through its `country_id`. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.Country'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `country` identifying this event as a country reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map country identifier, from the country `ID` field, for example `1` (United Kingdom). Matches the `country_id` on ChargingLocation.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [iso_code]: @"{""description"": ""ISO 3166-1 alpha-2 country code, from `ISOCode`, for example `GB`, `US`, or `DE`.""}",
+   [continent_code]: @"{""description"": ""Two-letter continent code, from `ContinentCode`, for example `EU`, `NA`, `AS`, `OC`, `AF`, or `SA`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.Country'] ingestion json mapping "IO.OpenChargeMap.Country_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "iso_code", "path": "$.iso_code"},
+  {"column": "continent_code", "path": "$.continent_code"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.Country'] ingestion json mapping "IO.OpenChargeMap.Country_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "iso_code", "path": "$.data.iso_code"},
+  {"column": "continent_code", "path": "$.data.continent_code"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.CountryLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.CountryLatest'] on table ['IO.OpenChargeMap.Country'] {
+    ['IO.OpenChargeMap.Country'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.Country'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.Country') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['iso_code'] = tostring(data.['iso_code']),['continent_code'] = tostring(data.['continent_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.DataProvider'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [website_url]: string,
+   [comments]: string,
+   [license]: string,
+   [is_open_data_licensed]: bool,
+   [is_restricted_edit]: bool,
+   [is_approved_import]: bool,
+   [status_title]: string,
+   [is_provider_enabled]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.DataProvider'] docstring @"{""description"": ""One data provider from the Open Charge Map reference data (`DataProviders` table, ~56 entries). Data providers are the databases and organizations whose records OCM aggregates; a ChargingLocation joins to this event through its `data_provider_id`, and the provider carries the licence under which the record may be reused. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.DataProvider'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `data_provider` identifying this event as a data-provider reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map data-provider identifier, from the data-provider `ID` field, for example `1` (Open Charge Map Contributors). Matches the `data_provider_id` on ChargingLocation.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [website_url]: @"{""description"": ""Data provider web site URL, from `WebsiteURL`.""}",
+   [comments]: @"{""description"": ""Free-text notes about the data provider, from `Comments`. Often null.""}",
+   [license]: @"{""description"": ""Licence under which the provider's data is published, from `License`, for example `Licensed under Creative Commons Attribution 4.0 International`. Governs reuse of the records attributed to this provider.""}",
+   [is_open_data_licensed]: @"{""description"": ""True when the provider's data is available under an open-data licence, from `IsOpenDataLicensed`.""}",
+   [is_restricted_edit]: @"{""description"": ""True when records from this provider are edit-restricted in OCM, from `IsRestrictedEdit`.""}",
+   [is_approved_import]: @"{""description"": ""True when the provider is an approved bulk-import source, from `IsApprovedImport`.""}",
+   [status_title]: @"{""description"": ""Human-readable provider-status label denormalized from the inline `DataProviderStatusType.Title`, for example `Manual Data Entry` or `Automated Import`.""}",
+   [is_provider_enabled]: @"{""description"": ""True when the provider is currently enabled as a source, denormalized from the inline `DataProviderStatusType.IsProviderEnabled`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.DataProvider'] ingestion json mapping "IO.OpenChargeMap.DataProvider_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "website_url", "path": "$.website_url"},
+  {"column": "comments", "path": "$.comments"},
+  {"column": "license", "path": "$.license"},
+  {"column": "is_open_data_licensed", "path": "$.is_open_data_licensed"},
+  {"column": "is_restricted_edit", "path": "$.is_restricted_edit"},
+  {"column": "is_approved_import", "path": "$.is_approved_import"},
+  {"column": "status_title", "path": "$.status_title"},
+  {"column": "is_provider_enabled", "path": "$.is_provider_enabled"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.DataProvider'] ingestion json mapping "IO.OpenChargeMap.DataProvider_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "website_url", "path": "$.data.website_url"},
+  {"column": "comments", "path": "$.data.comments"},
+  {"column": "license", "path": "$.data.license"},
+  {"column": "is_open_data_licensed", "path": "$.data.is_open_data_licensed"},
+  {"column": "is_restricted_edit", "path": "$.data.is_restricted_edit"},
+  {"column": "is_approved_import", "path": "$.data.is_approved_import"},
+  {"column": "status_title", "path": "$.data.status_title"},
+  {"column": "is_provider_enabled", "path": "$.data.is_provider_enabled"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.DataProviderLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.DataProviderLatest'] on table ['IO.OpenChargeMap.DataProvider'] {
+    ['IO.OpenChargeMap.DataProvider'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.DataProvider'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.DataProvider') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['website_url'] = tostring(data.['website_url']),['comments'] = tostring(data.['comments']),['license'] = tostring(data.['license']),['is_open_data_licensed'] = tobool(data.['is_open_data_licensed']),['is_restricted_edit'] = tobool(data.['is_restricted_edit']),['is_approved_import'] = tobool(data.['is_approved_import']),['status_title'] = tostring(data.['status_title']),['is_provider_enabled'] = tobool(data.['is_provider_enabled']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.StatusType'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [is_operational]: bool,
+   [is_user_selectable]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.StatusType'] docstring @"{""description"": ""One operational-status type from the Open Charge Map reference data (`StatusTypes` table, ~10 entries). A ChargingLocation and each of its connections join to this event through their `status_type_id`. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.StatusType'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `status_type` identifying this event as an operational-status reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map status-type identifier, from the status-type `ID` field, for example `50` (Operational). Matches the `status_type_id` on ChargingLocation and its connections.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [is_operational]: @"{""description"": ""True when this status denotes operational equipment, from `IsOperational`. Null for statuses that carry no operational determination.""}",
+   [is_user_selectable]: @"{""description"": ""True when contributors may select this status when editing, from `IsUserSelectable`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.StatusType'] ingestion json mapping "IO.OpenChargeMap.StatusType_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "is_operational", "path": "$.is_operational"},
+  {"column": "is_user_selectable", "path": "$.is_user_selectable"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.StatusType'] ingestion json mapping "IO.OpenChargeMap.StatusType_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "is_operational", "path": "$.data.is_operational"},
+  {"column": "is_user_selectable", "path": "$.data.is_user_selectable"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.StatusTypeLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.StatusTypeLatest'] on table ['IO.OpenChargeMap.StatusType'] {
+    ['IO.OpenChargeMap.StatusType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.StatusType'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.StatusType') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['is_operational'] = tobool(data.['is_operational']),['is_user_selectable'] = tobool(data.['is_user_selectable']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.UsageType'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [is_pay_at_location]: bool,
+   [is_membership_required]: bool,
+   [is_access_key_required]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.UsageType'] docstring @"{""description"": ""One access/usage model from the Open Charge Map reference data (`UsageTypes` table, ~8 entries). Describes whether payment at the location, membership, or an access key is required. A ChargingLocation joins to this event through its `usage_type_id`. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.UsageType'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `usage_type` identifying this event as a usage-model reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map usage-type identifier, from the usage-type `ID` field, for example `5` (Public - Pay At Location). Matches the `usage_type_id` on ChargingLocation.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [is_pay_at_location]: @"{""description"": ""True when the user pays at the location (for example by card or coin), from `IsPayAtLocation`.""}",
+   [is_membership_required]: @"{""description"": ""True when network membership is required to use the location, from `IsMembershipRequired`.""}",
+   [is_access_key_required]: @"{""description"": ""True when a physical or digital access key (RFID card, app token) is required, from `IsAccessKeyRequired`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.UsageType'] ingestion json mapping "IO.OpenChargeMap.UsageType_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "is_pay_at_location", "path": "$.is_pay_at_location"},
+  {"column": "is_membership_required", "path": "$.is_membership_required"},
+  {"column": "is_access_key_required", "path": "$.is_access_key_required"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.UsageType'] ingestion json mapping "IO.OpenChargeMap.UsageType_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "is_pay_at_location", "path": "$.data.is_pay_at_location"},
+  {"column": "is_membership_required", "path": "$.data.is_membership_required"},
+  {"column": "is_access_key_required", "path": "$.data.is_access_key_required"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.UsageTypeLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.UsageTypeLatest'] on table ['IO.OpenChargeMap.UsageType'] {
+    ['IO.OpenChargeMap.UsageType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.UsageType'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.UsageType') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['is_pay_at_location'] = tobool(data.['is_pay_at_location']),['is_membership_required'] = tobool(data.['is_membership_required']),['is_access_key_required'] = tobool(data.['is_access_key_required']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['IO.OpenChargeMap.SubmissionStatusType'] (
+   [reference_type]: string,
+   [reference_id]: int,
+   [title]: string,
+   [is_live]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['IO.OpenChargeMap.SubmissionStatusType'] docstring @"{""description"": ""One editorial submission-workflow status from the Open Charge Map reference data (`SubmissionStatusTypes` table, ~11 entries). Describes where a record sits in OCM's contribution/review pipeline; a ChargingLocation joins to this event through its `submission_status_type_id`. Emitted at startup and on the periodic reference refresh.""}";
+
+.alter table ['IO.OpenChargeMap.SubmissionStatusType'] column-docstrings (
+   [reference_type]: @"{""description"": ""Constant discriminator `submission_status_type` identifying this event as a submission-workflow reference entity.""}",
+   [reference_id]: @"{""description"": ""Open Charge Map submission-status identifier, from the submission-status `ID` field, for example `200` (Submission Published). Matches the `submission_status_type_id` on ChargingLocation.""}",
+   [title]: @"{""description"": ""Human-readable name of the reference entity, from its `Title` field.""}",
+   [is_live]: @"{""description"": ""True when records with this submission status are publicly live/visible, from `IsLive`.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['IO.OpenChargeMap.SubmissionStatusType'] ingestion json mapping "IO.OpenChargeMap.SubmissionStatusType_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.reference_type"},
+  {"column": "reference_id", "path": "$.reference_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "is_live", "path": "$.is_live"}
+]
+```
+
+.create-or-alter table ['IO.OpenChargeMap.SubmissionStatusType'] ingestion json mapping "IO.OpenChargeMap.SubmissionStatusType_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "reference_type", "path": "$.data.reference_type"},
+  {"column": "reference_id", "path": "$.data.reference_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "is_live", "path": "$.data.is_live"}
+]
+```
+
+.drop materialized-view ['IO.OpenChargeMap.SubmissionStatusTypeLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['IO.OpenChargeMap.SubmissionStatusTypeLatest'] on table ['IO.OpenChargeMap.SubmissionStatusType'] {
+    ['IO.OpenChargeMap.SubmissionStatusType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['IO.OpenChargeMap.SubmissionStatusType'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.OpenChargeMap.SubmissionStatusType') | project['reference_type'] = tostring(data.['reference_type']),['reference_id'] = toint(data.['reference_id']),['title'] = tostring(data.['title']),['is_live'] = tobool(data.['is_live']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
