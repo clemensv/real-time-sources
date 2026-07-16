@@ -1,5 +1,8 @@
 # Israel Ministry of Transport — Open Data Portal (SIRI/GTFS-RT Transit)
 
+> 🔴 **BLOCKED — not a `gtfs` config-add** · recheck 2026-07-16 (live)
+> Real-time is **SIRI-SM/VM behind a free `ISRAEL_MOT` registration key** (not in creds) — SIRI, not GTFS-RT, so this is a bespoke `siri`-family build, not a generic GTFS-RT catalog entry. Static GTFS is keyless (`gtfs.mot.gov.il` → 200, 148 MB zip) but static-only ≠ real-time. No keyless GTFS-RT feed exists.
+
 **Country/Region**: Israel
 **Publisher**: Ministry of Transport and Road Safety (משרד התחבורה והבטיחות בדרכים)
 **API Endpoint**: `https://data.gov.il/api/3/action/` (CKAN portal) + SIRI/GTFS real-time feeds

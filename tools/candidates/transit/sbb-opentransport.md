@@ -1,5 +1,8 @@
 # SBB / Open Transport Data Switzerland
 
+> 🔴 **BLOCKED for a `gtfs` config-add** · recheck 2026-07-16 (live)
+> Official **opentransportdata.swiss GTFS-RT requires an API token** (`SBB_OTD`, not in creds) — `api.opentransportdata.swiss` is gated (no-auth → 404/401). The keyless **community API** (`transport.opendata.ch`) is proprietary HAFAS JSON, **not GTFS-RT**, so it would be a bespoke build, not a GTFS-RT catalog entry. Needs a user-obtained free key.
+
 **Country/Region**: Switzerland (national)
 **Publisher**: SBB CFF FFS / Swiss Federal Office of Transport (BAV/OFT) via opentransportdata.swiss
 **API Endpoint**: `https://transport.opendata.ch/v1/` (community) and `https://api.opentransportdata.swiss/` (official)

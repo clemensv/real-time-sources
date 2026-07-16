@@ -1,5 +1,8 @@
 # Digitransit — Finland National Journey Planner
 
+> ⚪ **NOT VIABLE for a GTFS-RT config-add** · recheck 2026-07-16 (live)
+> `DIGITRANSIT_SUBSCRIPTION_KEY` is now in creds and **valid** (routing GraphQL: no-key → 401, with-key → 200), **but the GTFS-RT HTTP feed is gone**: `realtime.digitransit.fi` no longer resolves (DNS-dead). Per current Digitransit docs, GTFS-RT **trip-updates are discontinued** (GraphQL only) and **vehicle-positions moved to Waltti open data** (`data.waltti.fi` → 407, its own key) or the **HSL GTFS-RT API** (already shipped keyless as `gtfs` / `hsl-helsinki`). The subscription key unlocks routing/geocoding, not a GTFS-RT feed — there is nothing to point a config-add at. Finnish GTFS-RT coverage we can have is HSL (shipped) or Waltti (separate portal + key).
+
 **Country/Region**: Finland (national, with focus on Helsinki HSL region)
 **Publisher**: Fintraffic / HSL (Helsinki Region Transport) / Waltti
 **API Endpoint**: `https://api.digitransit.fi/routing/v2/hsl/gtfs/v1` (HSL), `https://api.digitransit.fi/routing/v2/finland/gtfs/v1` (national)
