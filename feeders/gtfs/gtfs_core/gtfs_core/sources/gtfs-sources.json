@@ -93,6 +93,20 @@
       }
     },
     {
+      "name": "sncf-france",
+      "enabled": false,
+      "description": "Societe nationale des chemins de fer francais (SNCF; France) national-rail GTFS-Realtime feeds published through the French National Access Point (transport.data.gouv.fr) proxy: trip updates and service alerts for the TGV / TGV INOUI high-speed network, Intercites, and TER regional express trains. The feeds are served keyless via proxy.transport.data.gouv.fr - the NAP re-publishes the SNCF feed with no API key required - and the SNCF GTFS Schedule archive on data.gouv.fr is likewise keyless. Note: this SNCF national-rail dataset exposes only trip updates and service alerts; there is no GTFS-Realtime vehicle-positions feed. SNCF open data is licensed under the Open Database License (ODbL). Add 'sncf-france' to GTFS_SOURCES to enable.",
+      "agency": "sncf",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://proxy.transport.data.gouv.fr/resource/sncf-gtfs-rt-trip-updates",
+        "https://proxy.transport.data.gouv.fr/resource/sncf-gtfs-rt-service-alerts"
+      ],
+      "gtfs_urls": [
+        "https://www.data.gouv.fr/api/1/datasets/r/9ae758ec-cd7a-40cd-a890-bb3963224942"
+      ]
+    },
+    {
       "name": "tfnsw-sydney",
       "enabled": false,
       "description": "Transport for NSW (Sydney and New South Wales, Australia) API-key-protected GTFS-Realtime feeds for trains, buses, ferries, light rail, and service alerts. Add 'tfnsw-sydney' to GTFS_SOURCES to enable.",
