@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./celestrak_mqtt_producer_data
+pip install ./celestrak_mqtt_producer_mqtt_client
