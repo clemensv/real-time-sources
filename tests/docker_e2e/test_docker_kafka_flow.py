@@ -117,6 +117,10 @@ def taipei_youbike_image():
     return build_image('taipei-youbike', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def celestrak_image():
+    return build_image('celestrak', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def open_charge_map_image():
     return build_image('open-charge-map', dockerfile='Dockerfile.kafka')
 
@@ -1287,6 +1291,24 @@ class TestTaipeiYoubikeDockerFlow:
             reference_types=['StationInformation'],
             telemetry_types=['StationStatus'],
             extra_env={'ONCE_MODE': 'true'},
+            min_messages=5,
+            timeout=240,
+        )
+
+
+class TestCelestrakDockerFlow:
+    TOPIC = 'test-celestrak'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, celestrak_image):
+        # CelesTrak crewed-station GROUP (ISS, CSS, Progress/Cygnus/Soyuz/Dragon,
+        # ~25 objects) polled once. SatelliteCatalogEntry (SATCAT reference) is
+        # emitted first, then OrbitMeanElements (GP telemetry); both keyed by
+        # {NORAD_CAT_ID}. The public GP/SATCAT views serve anonymously (no key).
+        _run_kafka_flow_test(
+            kafka, celestrak_image, self.TOPIC,
+            reference_types=['SatelliteCatalogEntry'],
+            telemetry_types=['OrbitMeanElements'],
+            extra_env={'ONCE_MODE': 'true', 'CELESTRAK_GROUPS': 'stations'},
             min_messages=5,
             timeout=240,
         )

@@ -61,6 +61,20 @@ def _opt_int(raw: Dict[str, Any], key: str) -> Optional[int]:
     return int(value)
 
 
+def _parse_epoch(value: str) -> datetime:
+    """Return a tz-aware UTC datetime for a CelesTrak EPOCH.
+
+    CelesTrak/CCSDS orbital epochs are always UTC, but the upstream JSON omits the
+    timezone designator (e.g. ``2026-07-15T18:23:37.536288``). Attaching UTC makes
+    the serialized value RFC3339-compliant (``...+00:00``) as required by the
+    JsonStructure ``datetime`` type.
+    """
+    dt = datetime.fromisoformat(value)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
 def _build_satcat(raw: Dict[str, Any]) -> SatelliteCatalogEntry:
     return SatelliteCatalogEntry(
         OBJECT_NAME=_opt_str(raw, "OBJECT_NAME"),
@@ -87,7 +101,7 @@ def _build_gp(raw: Dict[str, Any]) -> OrbitMeanElements:
     return OrbitMeanElements(
         OBJECT_NAME=_opt_str(raw, "OBJECT_NAME"),
         OBJECT_ID=_opt_str(raw, "OBJECT_ID"),
-        EPOCH=datetime.fromisoformat(raw["EPOCH"]),
+        EPOCH=_parse_epoch(raw["EPOCH"]),
         MEAN_MOTION=float(raw["MEAN_MOTION"]),
         ECCENTRICITY=float(raw["ECCENTRICITY"]),
         INCLINATION=float(raw["INCLINATION"]),
@@ -109,7 +123,7 @@ def _build_supgp(raw: Dict[str, Any]) -> SupplementalOrbitMeanElements:
     return SupplementalOrbitMeanElements(
         OBJECT_NAME=_opt_str(raw, "OBJECT_NAME"),
         OBJECT_ID=_opt_str(raw, "OBJECT_ID"),
-        EPOCH=datetime.fromisoformat(raw["EPOCH"]),
+        EPOCH=_parse_epoch(raw["EPOCH"]),
         MEAN_MOTION=float(raw["MEAN_MOTION"]),
         ECCENTRICITY=float(raw["ECCENTRICITY"]),
         INCLINATION=float(raw["INCLINATION"]),

@@ -379,17 +379,15 @@
                             "type": [
                               "null",
                               "double"
-                            ],
-                            "unit": "min",
-                            "minimum": 0,
-                            "description": "Orbital period, in minutes. Null when no current elements are available. From the SATCAT `PERIOD` field."
+                              ],
+                              "minimum": 0,
+                              "description": "Orbital period, in minutes. Null when no current elements are available. From the SATCAT `PERIOD` field."
                           },
                           "INCLINATION": {
                             "type": [
                               "null",
                               "double"
                             ],
-                            "unit": "deg",
                             "symbol": "°",
                             "minimum": 0,
                             "maximum": 180,
@@ -399,28 +397,25 @@
                             "type": [
                               "null",
                               "int32"
-                            ],
-                            "unit": "km",
-                            "minimum": 0,
-                            "description": "Apogee altitude above the Earth's surface, in kilometres (the farthest orbital point). Null when no current elements are available. From the SATCAT `APOGEE` field."
+                              ],
+                              "minimum": 0,
+                              "description": "Apogee altitude above the Earth's surface, in kilometres (the farthest orbital point). Null when no current elements are available. From the SATCAT `APOGEE` field."
                           },
                           "PERIGEE": {
                             "type": [
                               "null",
                               "int32"
-                            ],
-                            "unit": "km",
-                            "minimum": 0,
-                            "description": "Perigee altitude above the Earth's surface, in kilometres (the closest orbital point). Null when no current elements are available. From the SATCAT `PERIGEE` field."
+                              ],
+                              "minimum": 0,
+                              "description": "Perigee altitude above the Earth's surface, in kilometres (the closest orbital point). Null when no current elements are available. From the SATCAT `PERIGEE` field."
                           },
                           "RCS": {
                             "type": [
                               "null",
                               "double"
-                            ],
-                            "unit": "m^2",
-                            "minimum": 0,
-                            "description": "Radar Cross Section, in square metres -- a proxy for the object's size as seen by tracking radar. Null when not available. From the SATCAT `RCS` field."
+                              ],
+                              "minimum": 0,
+                              "description": "Radar Cross Section, in square metres -- a proxy for the object's size as seen by tracking radar. Null when not available. From the SATCAT `RCS` field."
                           },
                           "DATA_STATUS_CODE": {
                             "type": [
@@ -533,7 +528,7 @@
                           },
                           "EPOCH": {
                             "type": "datetime",
-                            "description": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. ISO 8601 with sub-second precision and no offset (UTC is implied by the OMM `TIME_SYSTEM=UTC`), e.g. `2026-07-15T18:23:37.536288`. From the CCSDS OMM `EPOCH` keyword."
+                            "description": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. The upstream CCSDS OMM `EPOCH` keyword is an offset-less ISO 8601 value (UTC is implied by `TIME_SYSTEM=UTC`); the feeder normalizes it to a UTC-aware RFC 3339 timestamp with an explicit `+00:00` offset, e.g. `2026-07-15T18:23:37.536288+00:00`. From the CCSDS OMM `EPOCH` keyword."
                           },
                           "MEAN_MOTION": {
                             "type": "double",
@@ -698,7 +693,7 @@
                           },
                           "EPOCH": {
                             "type": "datetime",
-                            "description": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. ISO 8601 with sub-second precision and no offset (UTC is implied by the OMM `TIME_SYSTEM=UTC`), e.g. `2026-07-15T18:23:37.536288`. From the CCSDS OMM `EPOCH` keyword."
+                            "description": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. The upstream CCSDS OMM `EPOCH` keyword is an offset-less ISO 8601 value (UTC is implied by `TIME_SYSTEM=UTC`); the feeder normalizes it to a UTC-aware RFC 3339 timestamp with an explicit `+00:00` offset, e.g. `2026-07-15T18:23:37.536288+00:00`. From the CCSDS OMM `EPOCH` keyword."
                           },
                           "MEAN_MOTION": {
                             "type": "double",

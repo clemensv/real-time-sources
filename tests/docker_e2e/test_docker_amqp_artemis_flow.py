@@ -89,6 +89,11 @@ def taipei_youbike_amqp_image():
 
 
 @pytest.fixture(scope="module")
+def celestrak_amqp_image():
+    return build_image("celestrak", dockerfile="Dockerfile.amqp", tag="test-celestrak-amqp")
+
+
+@pytest.fixture(scope="module")
 def open_charge_map_amqp_image():
     return build_image("open-charge-map", dockerfile="Dockerfile.amqp", tag="test-open-charge-map-amqp")
 
@@ -527,6 +532,98 @@ class TestTaipeiYoubikeAmqpArtemisFlow:
         assert self.TELEMETRY_TYPE in by_type, sorted(str(k) for k in by_type)
 
         schemas = _load_taipei_youbike_schemas()
+        from json_structure import InstanceValidator, SchemaValidator
+        validator_factory = SchemaValidator(extended=True)
+        for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
+            sample_msg, sample_ce = by_type[ce_type][0]
+            for required in ("id", "source", "type", "subject", "specversion"):
+                assert required in sample_ce, f"Missing CE attribute {required!r} on {ce_type}: {sample_ce}"
+            assert sample_ce["specversion"] == "1.0"
+            assert sample_ce["type"] == ce_type
+            data = _body_to_obj(sample_msg)
+            assert isinstance(data, dict), f"{ce_type} body not a JSON object: {data!r}"
+            schema = schemas[ce_type]
+            assert not validator_factory.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(data)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+def _load_celestrak_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, "feeders", "celestrak", "xreg", "celestrak.xreg.json")
+    with open(xreg_path, "r", encoding="utf-8") as fh:
+        manifest = json.load(fh)
+    group = manifest["schemagroups"]["org.celestrak.jstruct"]["schemas"]
+    return {
+        "org.celestrak.SatelliteCatalogEntry":
+            group["org.celestrak.SatelliteCatalogEntry"]["versions"]["1"]["schema"],
+        "org.celestrak.OrbitMeanElements":
+            group["org.celestrak.OrbitMeanElements"]["versions"]["1"]["schema"],
+    }
+
+
+class TestCelestrakAmqpArtemisFlow:
+    """End-to-end: celestrak pushes SatelliteCatalogEntry + OrbitMeanElements to Artemis.
+
+    Polls the CelesTrak crewed-station GROUP once; the feeder sends reference
+    (SatelliteCatalogEntry) then telemetry (OrbitMeanElements) CloudEvents over
+    AMQP 1.0 in binary mode, keyed by {NORAD_CAT_ID}."""
+
+    REFERENCE_TYPE = "org.celestrak.SatelliteCatalogEntry"
+    TELEMETRY_TYPE = "org.celestrak.OrbitMeanElements"
+
+    def test_emits_cloudevents_to_amqp_queue(self, artemis_broker, celestrak_amqp_image):
+        client = docker.from_env()
+        feeder = client.containers.run(
+            celestrak_amqp_image.id,
+            detach=True,
+            remove=False,
+            network=artemis_broker["network"],
+            environment={
+                "AMQP_HOST": artemis_broker["internal_host"],
+                "AMQP_PORT": str(artemis_broker["internal_port"]),
+                "AMQP_ADDRESS": artemis_broker["queue"],
+                "AMQP_USERNAME": artemis_broker["user"],
+                "AMQP_PASSWORD": artemis_broker["password"],
+                "AMQP_AUTH_MODE": "password",
+                "POLLING_INTERVAL": "60",
+                "ONCE_MODE": "true",
+                "CELESTRAK_GROUPS": "stations",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS (last 4KB) ---\n{logs[-4000:]}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _receive_messages(
+            "127.0.0.1",
+            artemis_broker["host_port"],
+            artemis_broker["queue"],
+            artemis_broker["user"],
+            artemis_broker["password"],
+            expected=500,
+            timeout=120,
+        )
+        assert messages, "No AMQP messages received from Artemis"
+
+        by_type: Dict[str, List[Any]] = {}
+        for message in messages:
+            ce = _extract_ce_attrs(message)
+            t = ce.get("type")
+            if t:
+                by_type.setdefault(t, []).append((message, ce))
+        assert self.REFERENCE_TYPE in by_type, sorted(str(k) for k in by_type)
+        assert self.TELEMETRY_TYPE in by_type, sorted(str(k) for k in by_type)
+
+        schemas = _load_celestrak_schemas()
         from json_structure import InstanceValidator, SchemaValidator
         validator_factory = SchemaValidator(extended=True)
         for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
