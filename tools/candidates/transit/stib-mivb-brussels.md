@@ -1,5 +1,8 @@
 # STIB-MIVB Brussels Open Data
 
+> 🔴 **BLOCKED for a `gtfs` config-add** · recheck 2026-07-16 (live)
+> GTFS-RT via the STIB Opendatasoft portal **requires an `Apikey`** (`STIB`, not in creds); the real-time vehicle-position dataset is gated (no-auth → 302 redirect to auth). Needs a user-obtained free key.
+
 **Country/Region**: Belgium - Brussels Capital Region
 **Publisher**: STIB-MIVB (Brussels public transport operator)
 **API Endpoint**: `https://data.stib-mivb.brussels/`

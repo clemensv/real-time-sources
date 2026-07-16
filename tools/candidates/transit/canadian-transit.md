@@ -1,5 +1,8 @@
 # Canadian Transit GTFS-RT — TTC, TransLink, STM
 
+> 🟡 **PARTIAL** · recheck 2026-07-16 (live)
+> **STM Montréal ✅ shipped** as `gtfs` / `stm-montreal` (keyed `apiKey` header; in open PR #1541). **TTC** has **no keyless GTFS-RT** — `bustime.ttc.ca` resolves but connection-fails on `gtfsrt/*` (TTC real-time is NextBus/Umo format, not GTFS-RT). **TransLink** (Vancouver) GTFS-RT needs a **free API key** (`gtfs.translink.ca` / RTTI portal; not in creds). No further keyless config-add available.
+
 **Country/Region**: Canada (Toronto, Vancouver, Montreal)
 **Publishers**: TTC (Toronto), TransLink (Vancouver), STM (Montreal), and more
 **API Endpoints**:
