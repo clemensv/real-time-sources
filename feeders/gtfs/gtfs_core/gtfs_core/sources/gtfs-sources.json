@@ -46,6 +46,36 @@
       ]
     },
     {
+      "name": "hsl-helsinki",
+      "enabled": false,
+      "description": "Helsingin seudun liikenne / Helsinki Regional Transport (HSL; Helsinki, Espoo, Vantaa, Kauniainen, Kerava, Kirkkonummi, Sipoo, Siuntio, Tuusula, and the surrounding capital region, Finland) public keyless GTFS-Realtime feeds served by the HSL GTFS-RT API (realtime.hsl.fi): vehicle positions (~1 s cadence), trip updates (~15 s), and service alerts (~5 min) for metro, tram, bus, commuter rail, and the Suomenlinna ferry, plus the public HSL GTFS Schedule archive. No API key is required for these protobuf feeds; the api.digitransit.fi subscription key applies only to the separate GraphQL routing/geocoding APIs, which this feeder does not use. Note: HSL trip IDs are unstable, so trips are identified by route_id + start_date + start_time + direction_id. Add 'hsl-helsinki' to GTFS_SOURCES to enable.",
+      "agency": "hsl",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
+        "https://realtime.hsl.fi/realtime/trip-updates/v2/hsl",
+        "https://realtime.hsl.fi/realtime/service-alerts/v2/hsl"
+      ],
+      "gtfs_urls": [
+        "https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip"
+      ]
+    },
+    {
+      "name": "bkk-budapest",
+      "enabled": false,
+      "description": "Budapesti Kozlekedesi Kozpont / Centre for Budapest Transport (BKK; Budapest, Hungary) GTFS-Realtime feeds from the BKK Futar OpenData API (go.bkk.hu): vehicle positions, trip updates, and service alerts for metro, tram, trolleybus, bus, the suburban railway (HEV), and Danube river boats. The realtime feeds require a free BKK OpenData key, supplied as the 'key' query parameter via the ${BKK_API_KEY} environment placeholder (register at opendata.bkk.hu, then generate a key under Key management). The public GTFS Schedule archive at bkk.hu is keyless. Export BKK_API_KEY and add 'bkk-budapest' to GTFS_SOURCES to enable.",
+      "agency": "bkk",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://go.bkk.hu/api/query/v1/ws/gtfs-rt/full/VehiclePositions.pb?key=${BKK_API_KEY}",
+        "https://go.bkk.hu/api/query/v1/ws/gtfs-rt/full/TripUpdates.pb?key=${BKK_API_KEY}",
+        "https://go.bkk.hu/api/query/v1/ws/gtfs-rt/full/Alerts.pb?key=${BKK_API_KEY}"
+      ],
+      "gtfs_urls": [
+        "https://bkk.hu/gtfs/budapest_gtfs.zip"
+      ]
+    },
+    {
       "name": "tfnsw-sydney",
       "enabled": false,
       "description": "Transport for NSW (Sydney and New South Wales, Australia) API-key-protected GTFS-Realtime feeds for trains, buses, ferries, light rail, and service alerts. Add 'tfnsw-sydney' to GTFS_SOURCES to enable.",
