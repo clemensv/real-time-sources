@@ -148,6 +148,7 @@ const SOURCES = [
   { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API", kql: false, mqtt: true, amqp: true },
 
   // ── Scientific Research ──
+  { id: "celestrak", name: "CelesTrak Orbital Data", cat: "Science", key: false, desc: "Global — satellite catalog (SATCAT) and GP orbital element sets, keyed by NORAD catalog number", kql: true, notebook: true, mqtt: true, amqp: true },
   { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
   { id: "openaq", name: "OpenAQ", cat: "Air Quality", key: true, desc: "Global — locations, sensors, latest pollutant measurements", kql: true, notebook: true, mqtt: true, amqp: true },
 ];

@@ -60,6 +60,10 @@
     "homepage": "https://cdec.water.ca.gov/",
     "api_docs": "https://cdec.water.ca.gov/dynamicapp/wsSensorData"
   },
+  "celestrak": {
+    "homepage": "https://celestrak.org/",
+    "api_docs": "https://celestrak.org/NORAD/documentation/gp-data-formats.php"
+  },
   "chmi-hydro": {
     "homepage": "https://www.chmi.cz/",
     "api_docs": "https://opendata.chmi.cz/hydrology/"
