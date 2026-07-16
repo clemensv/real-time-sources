@@ -8,7 +8,7 @@ from gtfs_core import DEFAULT_SOURCES_FILE, load_source_configs, select_entries
 def test_default_catalog_loads_disabled_examples_only():
     configs = load_source_configs(selector="*")
     assert DEFAULT_SOURCES_FILE.endswith("gtfs-sources.json")
-    assert [config["agency"] for config in configs] == ["mbta", "mta-nyc", "hsl", "bkk", "tfnsw", "replace-me"]
+    assert [config["agency"] for config in configs] == ["mbta", "mta-nyc", "hsl", "bkk", "stm", "sncf", "tfnsw", "replace-me"]
     assert configs[0]["gtfs_rt_urls"] == [
         "https://cdn.mbta.com/realtime/TripUpdates.pb",
         "https://cdn.mbta.com/realtime/VehiclePositions.pb",
@@ -26,7 +26,7 @@ def test_selector_returns_named_entries_in_requested_order():
 
 
 def test_selector_star_includes_disabled_templates():
-    assert len(load_source_configs(selector="*")) == 6
+    assert len(load_source_configs(selector="*")) == 8
 
 
 def test_hsl_helsinki_entry_is_keyless():
@@ -62,6 +62,47 @@ def test_bkk_budapest_entry_interpolates_key_into_urls(monkeypatch):
     # BKK authenticates via URL query param, not headers
     assert entry["gtfs_rt_headers"] is None
     assert entry["gtfs_headers"] is None
+
+
+def test_stm_montreal_entry_interpolates_key_into_header(monkeypatch):
+    monkeypatch.setenv("STM_API_KEY", "test-stm-key")
+    configs = load_source_configs(selector="stm-montreal")
+    assert len(configs) == 1
+    entry = configs[0]
+    assert entry["agency"] == "stm"
+    # 2 GTFS-Realtime feeds (vehicle positions, trip updates); STM exposes no alerts feed
+    assert len(entry["gtfs_rt_urls"]) == 2
+    assert all(
+        url.startswith("https://api.stm.info/pub/od/gtfs-rt/ic/v2/") for url in entry["gtfs_rt_urls"]
+    )
+    # the key never leaks into the URLs; STM authenticates via a request header
+    assert all("${" not in url for url in entry["gtfs_rt_urls"])
+    # the free API key rides as the 'apiKey' request header, expanded from the env
+    assert entry["gtfs_rt_headers"] == [["apiKey", "test-stm-key"]]
+    # the schedule archive is keyless (no placeholder, no headers)
+    assert entry["gtfs_urls"] == ["https://www.stm.info/sites/default/files/gtfs/gtfs_stm.zip"]
+    assert entry["gtfs_headers"] is None
+
+
+def test_sncf_france_entry_is_keyless():
+    configs = load_source_configs(selector="sncf-france")
+    assert len(configs) == 1
+    entry = configs[0]
+    assert entry["agency"] == "sncf"
+    # 2 keyless GTFS-Realtime feeds (trip updates, service alerts); no vehicle positions
+    assert len(entry["gtfs_rt_urls"]) == 2
+    assert all(
+        url.startswith("https://proxy.transport.data.gouv.fr/resource/sncf-gtfs-rt-")
+        for url in entry["gtfs_rt_urls"]
+    )
+    # keyless NAP proxy: no auth headers and no ${...} placeholder anywhere
+    assert entry["gtfs_rt_headers"] is None
+    assert entry["gtfs_headers"] is None
+    assert all("${" not in url for url in entry["gtfs_rt_urls"])
+    # public keyless GTFS Schedule archive via the data.gouv.fr stable resource link
+    assert entry["gtfs_urls"] == [
+        "https://www.data.gouv.fr/api/1/datasets/r/9ae758ec-cd7a-40cd-a890-bb3963224942"
+    ]
 
 
 def test_mta_nyc_entry_exposes_all_keyless_feeds():
