@@ -467,6 +467,17 @@
     "amqp": true
   },
   {
+    "id": "celestrak",
+    "name": "CelesTrak Orbital Data",
+    "cat": "Science",
+    "key": false,
+    "desc": "Global — satellite catalog (SATCAT) and GP orbital element sets, keyed by NORAD catalog number",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "gracedb",
     "name": "GraceDB",
     "cat": "Science",
