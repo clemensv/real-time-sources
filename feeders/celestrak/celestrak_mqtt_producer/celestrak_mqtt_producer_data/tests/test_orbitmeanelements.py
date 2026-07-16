@@ -30,23 +30,23 @@ class Test_OrbitMeanElements(unittest.TestCase):
         Create instance of OrbitMeanElements for testing
         """
         instance = OrbitMeanElements(
-            OBJECT_NAME='xqdbepfrwmgyeajhgmyz',
-            OBJECT_ID='sssghbdxfbktsuawfrcs',
+            OBJECT_NAME='uxuzfsnzifxrvvvaqkjy',
+            OBJECT_ID='dbmiynrpabhvfnfcflbe',
             EPOCH=datetime.datetime.now(datetime.timezone.utc),
-            MEAN_MOTION=float(87.17920334632416),
-            ECCENTRICITY=float(14.540688248708856),
-            INCLINATION=float(23.188352988804418),
-            RA_OF_ASC_NODE=float(13.980526142301485),
-            ARG_OF_PERICENTER=float(68.26367020701537),
-            MEAN_ANOMALY=float(96.05499855606628),
-            EPHEMERIS_TYPE=int(90),
+            MEAN_MOTION=float(26.909184205139127),
+            ECCENTRICITY=float(61.706532161195824),
+            INCLINATION=float(52.943019681075754),
+            RA_OF_ASC_NODE=float(70.18271257913901),
+            ARG_OF_PERICENTER=float(27.3657608915417),
+            MEAN_ANOMALY=float(47.982972236834385),
+            EPHEMERIS_TYPE=int(46),
             CLASSIFICATION_TYPE=None,
-            NORAD_CAT_ID=int(45),
-            ELEMENT_SET_NO=int(95),
-            REV_AT_EPOCH=int(87),
-            BSTAR=float(89.23483002300433),
-            MEAN_MOTION_DOT=float(74.45311859503951),
-            MEAN_MOTION_DDOT=float(14.894199308171707)
+            NORAD_CAT_ID=int(30),
+            ELEMENT_SET_NO=int(3),
+            REV_AT_EPOCH=int(1),
+            BSTAR=float(49.07977125998103),
+            MEAN_MOTION_DOT=float(15.403030248667783),
+            MEAN_MOTION_DDOT=float(38.12091857279609)
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test OBJECT_NAME property
         """
-        test_value = 'xqdbepfrwmgyeajhgmyz'
+        test_value = 'uxuzfsnzifxrvvvaqkjy'
         self.instance.OBJECT_NAME = test_value
         self.assertEqual(self.instance.OBJECT_NAME, test_value)
     
@@ -63,7 +63,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test OBJECT_ID property
         """
-        test_value = 'sssghbdxfbktsuawfrcs'
+        test_value = 'dbmiynrpabhvfnfcflbe'
         self.instance.OBJECT_ID = test_value
         self.assertEqual(self.instance.OBJECT_ID, test_value)
     
@@ -79,7 +79,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test MEAN_MOTION property
         """
-        test_value = float(87.17920334632416)
+        test_value = float(26.909184205139127)
         self.instance.MEAN_MOTION = test_value
         self.assertEqual(self.instance.MEAN_MOTION, test_value)
     
@@ -87,7 +87,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test ECCENTRICITY property
         """
-        test_value = float(14.540688248708856)
+        test_value = float(61.706532161195824)
         self.instance.ECCENTRICITY = test_value
         self.assertEqual(self.instance.ECCENTRICITY, test_value)
     
@@ -95,7 +95,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test INCLINATION property
         """
-        test_value = float(23.188352988804418)
+        test_value = float(52.943019681075754)
         self.instance.INCLINATION = test_value
         self.assertEqual(self.instance.INCLINATION, test_value)
     
@@ -103,7 +103,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test RA_OF_ASC_NODE property
         """
-        test_value = float(13.980526142301485)
+        test_value = float(70.18271257913901)
         self.instance.RA_OF_ASC_NODE = test_value
         self.assertEqual(self.instance.RA_OF_ASC_NODE, test_value)
     
@@ -111,7 +111,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test ARG_OF_PERICENTER property
         """
-        test_value = float(68.26367020701537)
+        test_value = float(27.3657608915417)
         self.instance.ARG_OF_PERICENTER = test_value
         self.assertEqual(self.instance.ARG_OF_PERICENTER, test_value)
     
@@ -119,7 +119,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test MEAN_ANOMALY property
         """
-        test_value = float(96.05499855606628)
+        test_value = float(47.982972236834385)
         self.instance.MEAN_ANOMALY = test_value
         self.assertEqual(self.instance.MEAN_ANOMALY, test_value)
     
@@ -127,7 +127,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test EPHEMERIS_TYPE property
         """
-        test_value = int(90)
+        test_value = int(46)
         self.instance.EPHEMERIS_TYPE = test_value
         self.assertEqual(self.instance.EPHEMERIS_TYPE, test_value)
     
@@ -143,7 +143,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test NORAD_CAT_ID property
         """
-        test_value = int(45)
+        test_value = int(30)
         self.instance.NORAD_CAT_ID = test_value
         self.assertEqual(self.instance.NORAD_CAT_ID, test_value)
     
@@ -151,7 +151,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test ELEMENT_SET_NO property
         """
-        test_value = int(95)
+        test_value = int(3)
         self.instance.ELEMENT_SET_NO = test_value
         self.assertEqual(self.instance.ELEMENT_SET_NO, test_value)
     
@@ -159,7 +159,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test REV_AT_EPOCH property
         """
-        test_value = int(87)
+        test_value = int(1)
         self.instance.REV_AT_EPOCH = test_value
         self.assertEqual(self.instance.REV_AT_EPOCH, test_value)
     
@@ -167,7 +167,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test BSTAR property
         """
-        test_value = float(89.23483002300433)
+        test_value = float(49.07977125998103)
         self.instance.BSTAR = test_value
         self.assertEqual(self.instance.BSTAR, test_value)
     
@@ -175,7 +175,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test MEAN_MOTION_DOT property
         """
-        test_value = float(74.45311859503951)
+        test_value = float(15.403030248667783)
         self.instance.MEAN_MOTION_DOT = test_value
         self.assertEqual(self.instance.MEAN_MOTION_DOT, test_value)
     
@@ -183,7 +183,7 @@ class Test_OrbitMeanElements(unittest.TestCase):
         """
         Test MEAN_MOTION_DDOT property
         """
-        test_value = float(14.894199308171707)
+        test_value = float(38.12091857279609)
         self.instance.MEAN_MOTION_DDOT = test_value
         self.assertEqual(self.instance.MEAN_MOTION_DDOT, test_value)
     

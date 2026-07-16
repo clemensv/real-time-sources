@@ -355,9 +355,10 @@
                           "LAUNCH_DATE": {
                             "type": [
                               "null",
-                              "date"
+                              "string"
                             ],
-                            "description": "Launch date as a UTC calendar date (ISO 8601 `YYYY-MM-DD`). Null if unknown. From the SATCAT `LAUNCH_DATE` field."
+                            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+                            "description": "Launch date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null if unknown. From the SATCAT `LAUNCH_DATE` field."
                           },
                           "LAUNCH_SITE": {
                             "type": [
@@ -369,9 +370,10 @@
                           "DECAY_DATE": {
                             "type": [
                               "null",
-                              "date"
+                              "string"
                             ],
-                            "description": "Decay (re-entry) date as a UTC calendar date (ISO 8601 `YYYY-MM-DD`). Null while the object is still on orbit. From the SATCAT `DECAY_DATE` field (upstream empty string is mapped to null)."
+                            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+                            "description": "Decay (re-entry) date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null while the object is still on orbit. From the SATCAT `DECAY_DATE` field (upstream empty string is mapped to null)."
                           },
                           "PERIOD": {
                             "type": [

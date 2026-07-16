@@ -1,3 +1,3 @@
-from .org import OrbitMeanElements, ClassificationTypeEnum, SupplementalOrbitMeanElements, SatelliteCatalogEntry, DataStatusCodeEnum, ObjectTypeEnum, OrbitTypeEnum
+from .org import SupplementalOrbitMeanElements, ClassificationTypeEnum, OrbitMeanElements, SatelliteCatalogEntry, DataStatusCodeEnum, ObjectTypeEnum, OrbitTypeEnum
 
-__all__ = ["OrbitMeanElements", "ClassificationTypeEnum", "SupplementalOrbitMeanElements", "SatelliteCatalogEntry", "DataStatusCodeEnum", "ObjectTypeEnum", "OrbitTypeEnum"]
+__all__ = ["SupplementalOrbitMeanElements", "ClassificationTypeEnum", "OrbitMeanElements", "SatelliteCatalogEntry", "DataStatusCodeEnum", "ObjectTypeEnum", "OrbitTypeEnum"]

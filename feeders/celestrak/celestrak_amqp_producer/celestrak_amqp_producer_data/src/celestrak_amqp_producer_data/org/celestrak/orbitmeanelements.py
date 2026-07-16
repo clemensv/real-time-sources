@@ -190,21 +190,21 @@ class OrbitMeanElements:
             An instance of the dataclass.
         """
         return cls(
-            OBJECT_NAME='zzgdgpwpeknxfotfeduf',
-            OBJECT_ID='usbcqgzymirmrvvftbft',
+            OBJECT_NAME='kozygpdoszljzcfzwsii',
+            OBJECT_ID='fwtukkbureaorgivgzlr',
             EPOCH=datetime.datetime.now(datetime.timezone.utc),
-            MEAN_MOTION=float(90.25679200921503),
-            ECCENTRICITY=float(68.20381486457961),
-            INCLINATION=float(82.86946773202459),
-            RA_OF_ASC_NODE=float(29.3121086928239),
-            ARG_OF_PERICENTER=float(51.99270726036105),
-            MEAN_ANOMALY=float(12.475193352864922),
-            EPHEMERIS_TYPE=int(8),
+            MEAN_MOTION=float(99.47513791664225),
+            ECCENTRICITY=float(4.864207876682947),
+            INCLINATION=float(11.92255575130815),
+            RA_OF_ASC_NODE=float(55.41887381350183),
+            ARG_OF_PERICENTER=float(37.59041581266829),
+            MEAN_ANOMALY=float(18.77966878773204),
+            EPHEMERIS_TYPE=int(60),
             CLASSIFICATION_TYPE=None,
-            NORAD_CAT_ID=int(67),
-            ELEMENT_SET_NO=int(19),
-            REV_AT_EPOCH=int(21),
-            BSTAR=float(31.60453857593376),
-            MEAN_MOTION_DOT=float(3.9878398555947214),
-            MEAN_MOTION_DDOT=float(92.1990042725972)
+            NORAD_CAT_ID=int(49),
+            ELEMENT_SET_NO=int(79),
+            REV_AT_EPOCH=int(45),
+            BSTAR=float(37.090774310024386),
+            MEAN_MOTION_DOT=float(76.2016140997513),
+            MEAN_MOTION_DDOT=float(65.34971356682358)
         )

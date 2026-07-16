@@ -10,7 +10,6 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from celestrak_mqtt_producer_data.org.celestrak.satellitecatalogentry import SatelliteCatalogEntry
 from typing import Any
-import datetime
 
 
 class Test_SatelliteCatalogEntry(unittest.TestCase):
@@ -30,22 +29,22 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         Create instance of SatelliteCatalogEntry for testing
         """
         instance = SatelliteCatalogEntry(
-            OBJECT_NAME='qnetfwkofdupeiddijqj',
-            OBJECT_ID='oyadhryddycntihwgcxq',
-            NORAD_CAT_ID=int(17),
+            OBJECT_NAME='yibmccchvrjiwafybqua',
+            OBJECT_ID='mqwvfusimupbysmlgera',
+            NORAD_CAT_ID=int(86),
             OBJECT_TYPE=None,
-            OPS_STATUS_CODE='dqudjmjghizdfijddurq',
-            OWNER='okuhtlvbfeweiiiikdpd',
-            LAUNCH_DATE=datetime.date.today(),
-            LAUNCH_SITE='etyeqxkilpulhwbznpju',
-            DECAY_DATE=datetime.date.today(),
-            PERIOD=float(11.850213780091279),
-            INCLINATION=float(54.490493762318906),
-            APOGEE=int(7),
-            PERIGEE=int(75),
-            RCS=float(38.38954400009723),
+            OPS_STATUS_CODE='bvfwfqvjokdjupjdexjg',
+            OWNER='dzxzfqcowmfdjfarsqoh',
+            LAUNCH_DATE='xioakzwujseedgxebylv',
+            LAUNCH_SITE='chdkclpcmxyckmnqzpso',
+            DECAY_DATE='rfxjkikjswqqsrkktcdn',
+            PERIOD=float(52.53571554957407),
+            INCLINATION=float(76.74999983608687),
+            APOGEE=int(65),
+            PERIGEE=int(41),
+            RCS=float(99.87834716503616),
             DATA_STATUS_CODE=None,
-            ORBIT_CENTER='hnptmlczdesixiugldil',
+            ORBIT_CENTER='umdjwmpaictltrqcsgjr',
             ORBIT_TYPE=None
         )
         return instance
@@ -55,7 +54,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test OBJECT_NAME property
         """
-        test_value = 'qnetfwkofdupeiddijqj'
+        test_value = 'yibmccchvrjiwafybqua'
         self.instance.OBJECT_NAME = test_value
         self.assertEqual(self.instance.OBJECT_NAME, test_value)
     
@@ -63,7 +62,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test OBJECT_ID property
         """
-        test_value = 'oyadhryddycntihwgcxq'
+        test_value = 'mqwvfusimupbysmlgera'
         self.instance.OBJECT_ID = test_value
         self.assertEqual(self.instance.OBJECT_ID, test_value)
     
@@ -71,7 +70,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test NORAD_CAT_ID property
         """
-        test_value = int(17)
+        test_value = int(86)
         self.instance.NORAD_CAT_ID = test_value
         self.assertEqual(self.instance.NORAD_CAT_ID, test_value)
     
@@ -87,7 +86,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test OPS_STATUS_CODE property
         """
-        test_value = 'dqudjmjghizdfijddurq'
+        test_value = 'bvfwfqvjokdjupjdexjg'
         self.instance.OPS_STATUS_CODE = test_value
         self.assertEqual(self.instance.OPS_STATUS_CODE, test_value)
     
@@ -95,7 +94,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test OWNER property
         """
-        test_value = 'okuhtlvbfeweiiiikdpd'
+        test_value = 'dzxzfqcowmfdjfarsqoh'
         self.instance.OWNER = test_value
         self.assertEqual(self.instance.OWNER, test_value)
     
@@ -103,7 +102,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test LAUNCH_DATE property
         """
-        test_value = datetime.date.today()
+        test_value = 'xioakzwujseedgxebylv'
         self.instance.LAUNCH_DATE = test_value
         self.assertEqual(self.instance.LAUNCH_DATE, test_value)
     
@@ -111,7 +110,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test LAUNCH_SITE property
         """
-        test_value = 'etyeqxkilpulhwbznpju'
+        test_value = 'chdkclpcmxyckmnqzpso'
         self.instance.LAUNCH_SITE = test_value
         self.assertEqual(self.instance.LAUNCH_SITE, test_value)
     
@@ -119,7 +118,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test DECAY_DATE property
         """
-        test_value = datetime.date.today()
+        test_value = 'rfxjkikjswqqsrkktcdn'
         self.instance.DECAY_DATE = test_value
         self.assertEqual(self.instance.DECAY_DATE, test_value)
     
@@ -127,7 +126,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test PERIOD property
         """
-        test_value = float(11.850213780091279)
+        test_value = float(52.53571554957407)
         self.instance.PERIOD = test_value
         self.assertEqual(self.instance.PERIOD, test_value)
     
@@ -135,7 +134,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test INCLINATION property
         """
-        test_value = float(54.490493762318906)
+        test_value = float(76.74999983608687)
         self.instance.INCLINATION = test_value
         self.assertEqual(self.instance.INCLINATION, test_value)
     
@@ -143,7 +142,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test APOGEE property
         """
-        test_value = int(7)
+        test_value = int(65)
         self.instance.APOGEE = test_value
         self.assertEqual(self.instance.APOGEE, test_value)
     
@@ -151,7 +150,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test PERIGEE property
         """
-        test_value = int(75)
+        test_value = int(41)
         self.instance.PERIGEE = test_value
         self.assertEqual(self.instance.PERIGEE, test_value)
     
@@ -159,7 +158,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test RCS property
         """
-        test_value = float(38.38954400009723)
+        test_value = float(99.87834716503616)
         self.instance.RCS = test_value
         self.assertEqual(self.instance.RCS, test_value)
     
@@ -175,7 +174,7 @@ class Test_SatelliteCatalogEntry(unittest.TestCase):
         """
         Test ORBIT_CENTER property
         """
-        test_value = 'hnptmlczdesixiugldil'
+        test_value = 'umdjwmpaictltrqcsgjr'
         self.instance.ORBIT_CENTER = test_value
         self.assertEqual(self.instance.ORBIT_CENTER, test_value)
     

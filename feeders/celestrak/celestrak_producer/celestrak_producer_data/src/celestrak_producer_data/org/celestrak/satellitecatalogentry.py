@@ -12,7 +12,6 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
 from typing import Any
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -28,9 +27,9 @@ class SatelliteCatalogEntry:
         OBJECT_TYPE (typing.Optional[Any])
         OPS_STATUS_CODE (typing.Optional[str])
         OWNER (typing.Optional[str])
-        LAUNCH_DATE (typing.Optional[datetime.date])
+        LAUNCH_DATE (typing.Optional[str])
         LAUNCH_SITE (typing.Optional[str])
-        DECAY_DATE (typing.Optional[datetime.date])
+        DECAY_DATE (typing.Optional[str])
         PERIOD (typing.Optional[float])
         INCLINATION (typing.Optional[float])
         APOGEE (typing.Optional[int])
@@ -48,9 +47,9 @@ class SatelliteCatalogEntry:
     OBJECT_TYPE: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="OBJECT_TYPE"))
     OPS_STATUS_CODE: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="OPS_STATUS_CODE"))
     OWNER: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="OWNER"))
-    LAUNCH_DATE: typing.Optional[datetime.date]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="LAUNCH_DATE"))
+    LAUNCH_DATE: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="LAUNCH_DATE"))
     LAUNCH_SITE: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="LAUNCH_SITE"))
-    DECAY_DATE: typing.Optional[datetime.date]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="DECAY_DATE"))
+    DECAY_DATE: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="DECAY_DATE"))
     PERIOD: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="PERIOD"))
     INCLINATION: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="INCLINATION"))
     APOGEE: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="APOGEE"))
@@ -189,21 +188,21 @@ class SatelliteCatalogEntry:
             An instance of the dataclass.
         """
         return cls(
-            OBJECT_NAME='zeezzxasgzxadqwsdsez',
-            OBJECT_ID='ntijgnortdxwlkpysczd',
-            NORAD_CAT_ID=int(68),
+            OBJECT_NAME='letoahwfbzjqeoyrfrkt',
+            OBJECT_ID='zgggfyvhfaovdmbplahl',
+            NORAD_CAT_ID=int(48),
             OBJECT_TYPE=None,
-            OPS_STATUS_CODE='wextwnjocnronovlyybi',
-            OWNER='gaccfckluanyayxizfvl',
-            LAUNCH_DATE=datetime.date.today(),
-            LAUNCH_SITE='ezxffpkcqwvsdmtkinzz',
-            DECAY_DATE=datetime.date.today(),
-            PERIOD=float(59.2755066040614),
-            INCLINATION=float(81.23772647595804),
-            APOGEE=int(61),
-            PERIGEE=int(53),
-            RCS=float(34.199233400792025),
+            OPS_STATUS_CODE='zaejbamnowukzlqufoda',
+            OWNER='dbgrgnfzcvxxdgpzcsmv',
+            LAUNCH_DATE='sjusgenucekqyjdamvmr',
+            LAUNCH_SITE='ygyhjfyddmgtkxpwcwnx',
+            DECAY_DATE='rzcqcrgpyqtfvsmmwxwv',
+            PERIOD=float(22.061274868759572),
+            INCLINATION=float(53.299513140726994),
+            APOGEE=int(5),
+            PERIGEE=int(25),
+            RCS=float(64.83423469626996),
             DATA_STATUS_CODE=None,
-            ORBIT_CENTER='bwwuclpajtkpbdgonvrm',
+            ORBIT_CENTER='uegvdhmlnydqkstmwyoe',
             ORBIT_TYPE=None
         )

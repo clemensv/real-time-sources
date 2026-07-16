@@ -1,0 +1,1 @@
+"""CelesTrak MQTT feeder package."""
