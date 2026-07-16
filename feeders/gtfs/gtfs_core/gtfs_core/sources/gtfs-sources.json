@@ -76,6 +76,23 @@
       ]
     },
     {
+      "name": "stm-montreal",
+      "enabled": false,
+      "description": "Societe de transport de Montreal (STM; Montreal, Quebec, Canada) GTFS-Realtime feeds from the STM Developpeurs API Hub (api.stm.info): vehicle positions and trip updates for the STM bus network and metro. The realtime feeds require a free STM API key, supplied as the 'apiKey' request header via the ${STM_API_KEY} environment placeholder (register at portail.developpeurs.stm.info, create an application, add the GTFS-Realtime (v2.0) API and accept its terms, then publish the application to activate the key). The public GTFS Schedule archive at stm.info is keyless. STM open data is licensed under Creative Commons Attribution 4.0 (CC-BY). Note: the STM GTFS-Realtime API exposes only vehicle positions and trip updates; there is no GTFS-Realtime service-alerts feed. Export STM_API_KEY and add 'stm-montreal' to GTFS_SOURCES to enable.",
+      "agency": "stm",
+      "route": "*",
+      "gtfs_rt_urls": [
+        "https://api.stm.info/pub/od/gtfs-rt/ic/v2/vehiclePositions",
+        "https://api.stm.info/pub/od/gtfs-rt/ic/v2/tripUpdates"
+      ],
+      "gtfs_urls": [
+        "https://www.stm.info/sites/default/files/gtfs/gtfs_stm.zip"
+      ],
+      "gtfs_rt_headers": {
+        "apiKey": "${STM_API_KEY}"
+      }
+    },
+    {
       "name": "tfnsw-sydney",
       "enabled": false,
       "description": "Transport for NSW (Sydney and New South Wales, Australia) API-key-protected GTFS-Realtime feeds for trains, buses, ferries, light rail, and service alerts. Add 'tfnsw-sydney' to GTFS_SOURCES to enable.",
