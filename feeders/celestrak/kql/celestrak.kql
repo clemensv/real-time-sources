@@ -1,0 +1,410 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [SatelliteCatalogEntry] (
+   [OBJECT_NAME]: string,
+   [OBJECT_ID]: string,
+   [NORAD_CAT_ID]: int,
+   [OBJECT_TYPE]: string,
+   [OPS_STATUS_CODE]: string,
+   [OWNER]: string,
+   [LAUNCH_DATE]: string,
+   [LAUNCH_SITE]: string,
+   [DECAY_DATE]: string,
+   [PERIOD]: real,
+   [INCLINATION]: real,
+   [APOGEE]: int,
+   [PERIGEE]: int,
+   [RCS]: real,
+   [DATA_STATUS_CODE]: string,
+   [ORBIT_CENTER]: string,
+   [ORBIT_TYPE]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SatelliteCatalogEntry] docstring @"{""description"": ""Reference record for one object in the US Space Force satellite catalog (SATCAT), as published by CelesTrak at `satcat/records.php`. Carries the object's identity (name, international designator, NORAD number), classification (type, owner, operational status) and coarse orbital parameters (period, inclination, apogee, perigee). Emitted as reference data at bridge start-up and periodically refreshed, so consumers can resolve the `NORAD_CAT_ID` on every OrbitMeanElements event to a named, described object without an out-of-band lookup. Shares the `NORAD_CAT_ID` key model and Kafka topic with the element-set events for temporal consistency.""}";
+
+.alter table [SatelliteCatalogEntry] column-docstrings (
+   [OBJECT_NAME]: @"{""description"": ""Satellite / object name(s). May include alternate names in parentheses, an object-descriptor in brackets (e.g. `BREEZE-M DEB [TANK]`), and `&` to denote two or more attached objects. Mutable; never use as a key. From the SATCAT `OBJECT_NAME` field.""}",
+   [OBJECT_ID]: @"{""description"": ""International Designator (COSPAR ID), format `YYYY-NNNAAA`: launch year, launch number of the year, and one-to-three-letter piece designator (excluding I and O). Null for analyst objects with no associated launch. From the SATCAT `OBJECT_ID` field.""}",
+   [NORAD_CAT_ID]: @"{""description"": ""NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits (the five-digit range was exhausted at 100000+ on 2026-07-11; analyst objects use the 7995xxxxx range). Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP subject. References the same object as the OrbitMeanElements event with the identical `NORAD_CAT_ID`. From the SATCAT `NORAD_CAT_ID` field.""}",
+   [OBJECT_TYPE]: @"{""description"": ""Object type: `PAY` payload, `R/B` rocket body, `DEB` other debris, `UNK` unknown. From the SATCAT `OBJECT_TYPE` field.""}",
+   [OPS_STATUS_CODE]: @"{""description"": ""Operational status code: `+` operational, `-` nonoperational, `P` partially operational, `B` backup/standby, `S` spare, `X` extended mission, `D` decayed, `?` unknown. An object is considered 'active' if its status is one of `+`,`P`,`B`,`S`,`X`. Modelled as a plain string because the code symbols (`+`,`-`,`?`) are not valid enumeration identifiers. From the SATCAT `OPS_STATUS_CODE` field; see https://celestrak.org/satcat/status.php.""}",
+   [OWNER]: @"{""description"": ""Owner / source: the country or organisation that owns the object, as a CelesTrak source code (e.g. `US`, `CIS`, `PRC`, `ESA`, `ISS`, `TBD`). From the SATCAT `OWNER` field; see https://celestrak.org/satcat/sources.php.""}",
+   [LAUNCH_DATE]: @"{""description"": ""Launch date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null if unknown. From the SATCAT `LAUNCH_DATE` field.""}",
+   [LAUNCH_SITE]: @"{""description"": ""Launch site code (e.g. `TYMSC` Baikonur/Tyuratam, `AFETR` Cape Canaveral, `FRGUI` Kourou). Null if unknown. From the SATCAT `LAUNCH_SITE` field; see https://celestrak.org/satcat/launchsites.php.""}",
+   [DECAY_DATE]: @"{""description"": ""Decay (re-entry) date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null while the object is still on orbit. From the SATCAT `DECAY_DATE` field (upstream empty string is mapped to null).""}",
+   [PERIOD]: @"{""description"": ""Orbital period, in minutes. Null when no current elements are available. From the SATCAT `PERIOD` field.""}",
+   [INCLINATION]: @"{""description"": ""Orbital inclination to the equator, in degrees (0-180). Null when no current elements are available. From the SATCAT `INCLINATION` field.""}",
+   [APOGEE]: @"{""description"": ""Apogee altitude above the Earth's surface, in kilometres (the farthest orbital point). Null when no current elements are available. From the SATCAT `APOGEE` field.""}",
+   [PERIGEE]: @"{""description"": ""Perigee altitude above the Earth's surface, in kilometres (the closest orbital point). Null when no current elements are available. From the SATCAT `PERIGEE` field.""}",
+   [RCS]: @"{""description"": ""Radar Cross Section, in square metres -- a proxy for the object's size as seen by tracking radar. Null when not available. From the SATCAT `RCS` field.""}",
+   [DATA_STATUS_CODE]: @"{""description"": ""Data status: `NCE` no current elements, `NIE` no initial elements, `NEA` no elements available. Null when elements are available. From the SATCAT `DATA_STATUS_CODE` field (upstream empty string is mapped to null).""}",
+   [ORBIT_CENTER]: @"{""description"": ""Orbit center: `EA` Earth, `EM` Earth-Moon barycenter, `EL1`/`EL2` Earth-Sun Lagrange points, `MO` Moon, `SU` Sun, `SS` solar-system escape, planetary bodies (`MA` Mars, `JU` Jupiter, `VE` Venus, ...), or a NORAD Catalog Number for an object docked to another catalogued object. Modelled as a plain string because the value space includes numeric catalog numbers. From the SATCAT `ORBIT_CENTER` field.""}",
+   [ORBIT_TYPE]: @"{""description"": ""Orbit type: `ORB` orbiting, `LAN` landing, `IMP` impact, `DOC` docked to another catalogued object, `R/T` roundtrip. From the SATCAT `ORBIT_TYPE` field.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SatelliteCatalogEntry] ingestion json mapping "SatelliteCatalogEntry_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "OBJECT_NAME", "path": "$.OBJECT_NAME"},
+  {"column": "OBJECT_ID", "path": "$.OBJECT_ID"},
+  {"column": "NORAD_CAT_ID", "path": "$.NORAD_CAT_ID"},
+  {"column": "OBJECT_TYPE", "path": "$.OBJECT_TYPE"},
+  {"column": "OPS_STATUS_CODE", "path": "$.OPS_STATUS_CODE"},
+  {"column": "OWNER", "path": "$.OWNER"},
+  {"column": "LAUNCH_DATE", "path": "$.LAUNCH_DATE"},
+  {"column": "LAUNCH_SITE", "path": "$.LAUNCH_SITE"},
+  {"column": "DECAY_DATE", "path": "$.DECAY_DATE"},
+  {"column": "PERIOD", "path": "$.PERIOD"},
+  {"column": "INCLINATION", "path": "$.INCLINATION"},
+  {"column": "APOGEE", "path": "$.APOGEE"},
+  {"column": "PERIGEE", "path": "$.PERIGEE"},
+  {"column": "RCS", "path": "$.RCS"},
+  {"column": "DATA_STATUS_CODE", "path": "$.DATA_STATUS_CODE"},
+  {"column": "ORBIT_CENTER", "path": "$.ORBIT_CENTER"},
+  {"column": "ORBIT_TYPE", "path": "$.ORBIT_TYPE"}
+]
+```
+
+.create-or-alter table [SatelliteCatalogEntry] ingestion json mapping "SatelliteCatalogEntry_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "OBJECT_NAME", "path": "$.data.OBJECT_NAME"},
+  {"column": "OBJECT_ID", "path": "$.data.OBJECT_ID"},
+  {"column": "NORAD_CAT_ID", "path": "$.data.NORAD_CAT_ID"},
+  {"column": "OBJECT_TYPE", "path": "$.data.OBJECT_TYPE"},
+  {"column": "OPS_STATUS_CODE", "path": "$.data.OPS_STATUS_CODE"},
+  {"column": "OWNER", "path": "$.data.OWNER"},
+  {"column": "LAUNCH_DATE", "path": "$.data.LAUNCH_DATE"},
+  {"column": "LAUNCH_SITE", "path": "$.data.LAUNCH_SITE"},
+  {"column": "DECAY_DATE", "path": "$.data.DECAY_DATE"},
+  {"column": "PERIOD", "path": "$.data.PERIOD"},
+  {"column": "INCLINATION", "path": "$.data.INCLINATION"},
+  {"column": "APOGEE", "path": "$.data.APOGEE"},
+  {"column": "PERIGEE", "path": "$.data.PERIGEE"},
+  {"column": "RCS", "path": "$.data.RCS"},
+  {"column": "DATA_STATUS_CODE", "path": "$.data.DATA_STATUS_CODE"},
+  {"column": "ORBIT_CENTER", "path": "$.data.ORBIT_CENTER"},
+  {"column": "ORBIT_TYPE", "path": "$.data.ORBIT_TYPE"}
+]
+```
+
+.drop materialized-view SatelliteCatalogEntryLatest ifexists;
+
+.create materialized-view with (backfill=true) SatelliteCatalogEntryLatest on table SatelliteCatalogEntry {
+    SatelliteCatalogEntry | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SatelliteCatalogEntry] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.celestrak.SatelliteCatalogEntry') | project['OBJECT_NAME'] = tostring(data.['OBJECT_NAME']),['OBJECT_ID'] = tostring(data.['OBJECT_ID']),['NORAD_CAT_ID'] = toint(data.['NORAD_CAT_ID']),['OBJECT_TYPE'] = tostring(data.['OBJECT_TYPE']),['OPS_STATUS_CODE'] = tostring(data.['OPS_STATUS_CODE']),['OWNER'] = tostring(data.['OWNER']),['LAUNCH_DATE'] = tostring(data.['LAUNCH_DATE']),['LAUNCH_SITE'] = tostring(data.['LAUNCH_SITE']),['DECAY_DATE'] = tostring(data.['DECAY_DATE']),['PERIOD'] = toreal(data.['PERIOD']),['INCLINATION'] = toreal(data.['INCLINATION']),['APOGEE'] = toint(data.['APOGEE']),['PERIGEE'] = toint(data.['PERIGEE']),['RCS'] = toreal(data.['RCS']),['DATA_STATUS_CODE'] = tostring(data.['DATA_STATUS_CODE']),['ORBIT_CENTER'] = tostring(data.['ORBIT_CENTER']),['ORBIT_TYPE'] = tostring(data.['ORBIT_TYPE']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [OrbitMeanElements] (
+   [OBJECT_NAME]: string,
+   [OBJECT_ID]: string,
+   [EPOCH]: datetime,
+   [MEAN_MOTION]: real,
+   [ECCENTRICITY]: real,
+   [INCLINATION]: real,
+   [RA_OF_ASC_NODE]: real,
+   [ARG_OF_PERICENTER]: real,
+   [MEAN_ANOMALY]: real,
+   [EPHEMERIS_TYPE]: int,
+   [CLASSIFICATION_TYPE]: string,
+   [NORAD_CAT_ID]: int,
+   [ELEMENT_SET_NO]: int,
+   [REV_AT_EPOCH]: int,
+   [BSTAR]: real,
+   [MEAN_MOTION_DOT]: real,
+   [MEAN_MOTION_DDOT]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [OrbitMeanElements] docstring @"{""description"": ""A General Perturbations (GP) orbital element set for one catalogued object, as published by CelesTrak at `NORAD/elements/gp.php`. This is a CCSDS Orbit Mean-Elements Message (OMM, CCSDS 502.0-B-3) fit by the US Space Force 18th Space Defense Squadron to Space Surveillance Network observations for use with the SGP4 propagator. The property names are the verbatim OMM keys, so the payload is a drop-in OMM JSON object for SGP4 libraries. Emitted whenever the bridge observes a new or refreshed element set for the object (GP data updates several times per day). Keyed by `NORAD_CAT_ID`.""}";
+
+.alter table [OrbitMeanElements] column-docstrings (
+   [OBJECT_NAME]: @"{""description"": ""Satellite / object name (TLE Line 0). Up to 24 characters in the legacy TLE format; Unicode-capable in OMM. Mutable and not globally unique -- never use as a key. Null for uncatalogued / analyst objects that have no assigned name. From the CCSDS OMM `OBJECT_NAME` keyword.""}",
+   [OBJECT_ID]: @"{""description"": ""International Designator (COSPAR ID) of the object, format `YYYY-NNNAAA`: four-digit launch year, three-digit launch number of that year, and one-to-three-letter piece designator (letters I and O are excluded). Null for analyst objects with no associated launch. From the CCSDS OMM `OBJECT_ID` keyword.""}",
+   [EPOCH]: @"{""description"": ""UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. ISO 8601 with sub-second precision and no offset (UTC is implied by the OMM `TIME_SYSTEM=UTC`), e.g. `2026-07-15T18:23:37.536288`. From the CCSDS OMM `EPOCH` keyword.""}",
+   [MEAN_MOTION]: @"{""description"": ""Mean motion: the number of orbital revolutions the object completes per solar day, a Brouwer mean element consumed directly by the SGP4 propagator. Larger values correspond to lower orbits (~15.5 for the ISS in LEO, ~1.0 for geostationary objects). From the CCSDS OMM `MEAN_MOTION` keyword.""}",
+   [ECCENTRICITY]: @"{""description"": ""Orbital eccentricity, dimensionless: 0 is a circular orbit and values approaching 1 are highly elliptical. In the legacy TLE this is stored as a leading-decimal integer; the OMM JSON gives the true fractional value. From the CCSDS OMM `ECCENTRICITY` keyword.""}",
+   [INCLINATION]: @"{""description"": ""Inclination of the orbital plane to Earth's equatorial plane, in degrees (0-180; > 90 indicates a retrograde orbit). From the CCSDS OMM `INCLINATION` keyword.""}",
+   [RA_OF_ASC_NODE]: @"{""description"": ""Right Ascension of the Ascending Node (RAAN), in degrees (0-360): the angle from the vernal equinox to the point where the orbit crosses the equatorial plane going north. From the CCSDS OMM `RA_OF_ASC_NODE` keyword.""}",
+   [ARG_OF_PERICENTER]: @"{""description"": ""Argument of pericenter (perigee), in degrees (0-360): the angle from the ascending node to the point of closest approach, measured in the orbital plane. From the CCSDS OMM `ARG_OF_PERICENTER` keyword.""}",
+   [MEAN_ANOMALY]: @"{""description"": ""Mean anomaly at epoch, in degrees (0-360): the fraction of the orbital period elapsed since pericenter passage expressed as an angle, used with the other elements to locate the object at `EPOCH`. From the CCSDS OMM `MEAN_ANOMALY` keyword.""}",
+   [EPHEMERIS_TYPE]: @"{""description"": ""Ephemeris / orbital-model type. `0` denotes the SGP4 (SGP4/SDP4) mean-element theory, the only value distributed in public GP data. From the CCSDS OMM `EPHEMERIS_TYPE` keyword.""}",
+   [CLASSIFICATION_TYPE]: @"{""description"": ""Security classification of the element set (always `U` for public CelesTrak data). From the CCSDS OMM `CLASSIFICATION_TYPE` keyword.""}",
+   [NORAD_CAT_ID]: @"{""description"": ""NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits -- regular objects exhausted the five-digit range (reaching 100000+) on 2026-07-11, and analyst objects use the 7995xxxxx range -- so this MUST be treated as an up-to-9-digit integer, never a fixed-width field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP message subject for every event this source emits. From the CCSDS OMM `NORAD_CAT_ID` keyword.""}",
+   [ELEMENT_SET_NO]: @"{""description"": ""Element set number: a counter incremented (modulo 1000) each time a new element set is generated for the object; 18 SDS frequently emits the placeholder `999`. From the CCSDS OMM `ELEMENT_SET_NO` keyword.""}",
+   [REV_AT_EPOCH]: @"{""description"": ""Revolution number at epoch: the integer count of orbital revolutions the object has completed since launch, as of `EPOCH`. From the CCSDS OMM `REV_AT_EPOCH` keyword.""}",
+   [BSTAR]: @"{""description"": ""B* (BSTAR) drag term, in inverse Earth radii, used by SGP4 to model the effect of atmospheric drag. Physically meaningful only for low-Earth-orbit objects; may be zero (deep space) or negative. From the CCSDS OMM `BSTAR` keyword.""}",
+   [MEAN_MOTION_DOT]: @"{""description"": ""First time-derivative of the mean motion (one half of dn/dt), in revolutions per day squared -- the classical TLE 'ballistic coefficient' term. From the CCSDS OMM `MEAN_MOTION_DOT` keyword.""}",
+   [MEAN_MOTION_DDOT]: @"{""description"": ""Second time-derivative of the mean motion (one sixth of d2n/dt2), in revolutions per day cubed; almost always 0 under the SGP4 theory. From the CCSDS OMM `MEAN_MOTION_DDOT` keyword.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [OrbitMeanElements] ingestion json mapping "OrbitMeanElements_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "OBJECT_NAME", "path": "$.OBJECT_NAME"},
+  {"column": "OBJECT_ID", "path": "$.OBJECT_ID"},
+  {"column": "EPOCH", "path": "$.EPOCH"},
+  {"column": "MEAN_MOTION", "path": "$.MEAN_MOTION"},
+  {"column": "ECCENTRICITY", "path": "$.ECCENTRICITY"},
+  {"column": "INCLINATION", "path": "$.INCLINATION"},
+  {"column": "RA_OF_ASC_NODE", "path": "$.RA_OF_ASC_NODE"},
+  {"column": "ARG_OF_PERICENTER", "path": "$.ARG_OF_PERICENTER"},
+  {"column": "MEAN_ANOMALY", "path": "$.MEAN_ANOMALY"},
+  {"column": "EPHEMERIS_TYPE", "path": "$.EPHEMERIS_TYPE"},
+  {"column": "CLASSIFICATION_TYPE", "path": "$.CLASSIFICATION_TYPE"},
+  {"column": "NORAD_CAT_ID", "path": "$.NORAD_CAT_ID"},
+  {"column": "ELEMENT_SET_NO", "path": "$.ELEMENT_SET_NO"},
+  {"column": "REV_AT_EPOCH", "path": "$.REV_AT_EPOCH"},
+  {"column": "BSTAR", "path": "$.BSTAR"},
+  {"column": "MEAN_MOTION_DOT", "path": "$.MEAN_MOTION_DOT"},
+  {"column": "MEAN_MOTION_DDOT", "path": "$.MEAN_MOTION_DDOT"}
+]
+```
+
+.create-or-alter table [OrbitMeanElements] ingestion json mapping "OrbitMeanElements_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "OBJECT_NAME", "path": "$.data.OBJECT_NAME"},
+  {"column": "OBJECT_ID", "path": "$.data.OBJECT_ID"},
+  {"column": "EPOCH", "path": "$.data.EPOCH"},
+  {"column": "MEAN_MOTION", "path": "$.data.MEAN_MOTION"},
+  {"column": "ECCENTRICITY", "path": "$.data.ECCENTRICITY"},
+  {"column": "INCLINATION", "path": "$.data.INCLINATION"},
+  {"column": "RA_OF_ASC_NODE", "path": "$.data.RA_OF_ASC_NODE"},
+  {"column": "ARG_OF_PERICENTER", "path": "$.data.ARG_OF_PERICENTER"},
+  {"column": "MEAN_ANOMALY", "path": "$.data.MEAN_ANOMALY"},
+  {"column": "EPHEMERIS_TYPE", "path": "$.data.EPHEMERIS_TYPE"},
+  {"column": "CLASSIFICATION_TYPE", "path": "$.data.CLASSIFICATION_TYPE"},
+  {"column": "NORAD_CAT_ID", "path": "$.data.NORAD_CAT_ID"},
+  {"column": "ELEMENT_SET_NO", "path": "$.data.ELEMENT_SET_NO"},
+  {"column": "REV_AT_EPOCH", "path": "$.data.REV_AT_EPOCH"},
+  {"column": "BSTAR", "path": "$.data.BSTAR"},
+  {"column": "MEAN_MOTION_DOT", "path": "$.data.MEAN_MOTION_DOT"},
+  {"column": "MEAN_MOTION_DDOT", "path": "$.data.MEAN_MOTION_DDOT"}
+]
+```
+
+.drop materialized-view OrbitMeanElementsLatest ifexists;
+
+.create materialized-view with (backfill=true) OrbitMeanElementsLatest on table OrbitMeanElements {
+    OrbitMeanElements | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [OrbitMeanElements] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.celestrak.OrbitMeanElements') | project['OBJECT_NAME'] = tostring(data.['OBJECT_NAME']),['OBJECT_ID'] = tostring(data.['OBJECT_ID']),['EPOCH'] = todatetime(data.['EPOCH']),['MEAN_MOTION'] = toreal(data.['MEAN_MOTION']),['ECCENTRICITY'] = toreal(data.['ECCENTRICITY']),['INCLINATION'] = toreal(data.['INCLINATION']),['RA_OF_ASC_NODE'] = toreal(data.['RA_OF_ASC_NODE']),['ARG_OF_PERICENTER'] = toreal(data.['ARG_OF_PERICENTER']),['MEAN_ANOMALY'] = toreal(data.['MEAN_ANOMALY']),['EPHEMERIS_TYPE'] = toint(data.['EPHEMERIS_TYPE']),['CLASSIFICATION_TYPE'] = tostring(data.['CLASSIFICATION_TYPE']),['NORAD_CAT_ID'] = toint(data.['NORAD_CAT_ID']),['ELEMENT_SET_NO'] = toint(data.['ELEMENT_SET_NO']),['REV_AT_EPOCH'] = toint(data.['REV_AT_EPOCH']),['BSTAR'] = toreal(data.['BSTAR']),['MEAN_MOTION_DOT'] = toreal(data.['MEAN_MOTION_DOT']),['MEAN_MOTION_DDOT'] = toreal(data.['MEAN_MOTION_DDOT']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table [SupplementalOrbitMeanElements] (
+   [OBJECT_NAME]: string,
+   [OBJECT_ID]: string,
+   [EPOCH]: datetime,
+   [MEAN_MOTION]: real,
+   [ECCENTRICITY]: real,
+   [INCLINATION]: real,
+   [RA_OF_ASC_NODE]: real,
+   [ARG_OF_PERICENTER]: real,
+   [MEAN_ANOMALY]: real,
+   [EPHEMERIS_TYPE]: int,
+   [CLASSIFICATION_TYPE]: string,
+   [NORAD_CAT_ID]: int,
+   [ELEMENT_SET_NO]: int,
+   [REV_AT_EPOCH]: int,
+   [BSTAR]: real,
+   [MEAN_MOTION_DOT]: real,
+   [MEAN_MOTION_DDOT]: real,
+   [RMS]: real,
+   [DATA_SOURCE]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SupplementalOrbitMeanElements] docstring @"{""description"": ""A Supplemental GP (SupGP) orbital element set for one catalogued object, as published by CelesTrak at `NORAD/elements/supplemental/sup-gp.php`. Structurally a CCSDS OMM (identical to OrbitMeanElements) plus a fit-quality `RMS` and a `DATA_SOURCE` provenance code. SupGP is provided by satellite operators and analysis centres (SpaceX, ISS, Intelsat, laser-ranging, GPS almanacs, ...), is typically fit forward from the epoch, and -- unlike standard GP -- may carry several element sets per object distinguished by `DATA_SOURCE` and `EPOCH`. Emitted only when supplemental sources are configured. Keyed by `NORAD_CAT_ID`.""}";
+
+.alter table [SupplementalOrbitMeanElements] column-docstrings (
+   [OBJECT_NAME]: @"{""description"": ""Satellite / object name as published by the supplemental data provider. May carry provider annotations absent from standard GP data, e.g. an ISS ephemeris segment tag `ISS [Segment 01]` or a CPF prediction-centre tag in brackets. Mutable; never use as a key. From the CCSDS OMM `OBJECT_NAME` keyword.""}",
+   [OBJECT_ID]: @"{""description"": ""International Designator (COSPAR ID) of the object, format `YYYY-NNNAAA`: four-digit launch year, three-digit launch number of that year, and one-to-three-letter piece designator (letters I and O are excluded). Null for analyst objects with no associated launch. From the CCSDS OMM `OBJECT_ID` keyword.""}",
+   [EPOCH]: @"{""description"": ""UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. ISO 8601 with sub-second precision and no offset (UTC is implied by the OMM `TIME_SYSTEM=UTC`), e.g. `2026-07-15T18:23:37.536288`. From the CCSDS OMM `EPOCH` keyword.""}",
+   [MEAN_MOTION]: @"{""description"": ""Mean motion: the number of orbital revolutions the object completes per solar day, a Brouwer mean element consumed directly by the SGP4 propagator. Larger values correspond to lower orbits (~15.5 for the ISS in LEO, ~1.0 for geostationary objects). From the CCSDS OMM `MEAN_MOTION` keyword.""}",
+   [ECCENTRICITY]: @"{""description"": ""Orbital eccentricity, dimensionless: 0 is a circular orbit and values approaching 1 are highly elliptical. In the legacy TLE this is stored as a leading-decimal integer; the OMM JSON gives the true fractional value. From the CCSDS OMM `ECCENTRICITY` keyword.""}",
+   [INCLINATION]: @"{""description"": ""Inclination of the orbital plane to Earth's equatorial plane, in degrees (0-180; > 90 indicates a retrograde orbit). From the CCSDS OMM `INCLINATION` keyword.""}",
+   [RA_OF_ASC_NODE]: @"{""description"": ""Right Ascension of the Ascending Node (RAAN), in degrees (0-360): the angle from the vernal equinox to the point where the orbit crosses the equatorial plane going north. From the CCSDS OMM `RA_OF_ASC_NODE` keyword.""}",
+   [ARG_OF_PERICENTER]: @"{""description"": ""Argument of pericenter (perigee), in degrees (0-360): the angle from the ascending node to the point of closest approach, measured in the orbital plane. From the CCSDS OMM `ARG_OF_PERICENTER` keyword.""}",
+   [MEAN_ANOMALY]: @"{""description"": ""Mean anomaly at epoch, in degrees (0-360): the fraction of the orbital period elapsed since pericenter passage expressed as an angle, used with the other elements to locate the object at `EPOCH`. From the CCSDS OMM `MEAN_ANOMALY` keyword.""}",
+   [EPHEMERIS_TYPE]: @"{""description"": ""Ephemeris / orbital-model type. `0` denotes the SGP4 (SGP4/SDP4) mean-element theory, the only value distributed in public GP data. From the CCSDS OMM `EPHEMERIS_TYPE` keyword.""}",
+   [CLASSIFICATION_TYPE]: @"{""description"": ""Security classification of the element set (always `U` for public CelesTrak data). From the CCSDS OMM `CLASSIFICATION_TYPE` keyword.""}",
+   [NORAD_CAT_ID]: @"{""description"": ""NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits -- regular objects exhausted the five-digit range (reaching 100000+) on 2026-07-11, and analyst objects use the 7995xxxxx range -- so this MUST be treated as an up-to-9-digit integer, never a fixed-width field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP message subject for every event this source emits. From the CCSDS OMM `NORAD_CAT_ID` keyword.""}",
+   [ELEMENT_SET_NO]: @"{""description"": ""Element set number: a counter incremented (modulo 1000) each time a new element set is generated for the object; 18 SDS frequently emits the placeholder `999`. From the CCSDS OMM `ELEMENT_SET_NO` keyword.""}",
+   [REV_AT_EPOCH]: @"{""description"": ""Revolution number at epoch: the integer count of orbital revolutions the object has completed since launch, as of `EPOCH`. From the CCSDS OMM `REV_AT_EPOCH` keyword.""}",
+   [BSTAR]: @"{""description"": ""B* (BSTAR) drag term, in inverse Earth radii, used by SGP4 to model the effect of atmospheric drag. Physically meaningful only for low-Earth-orbit objects; may be zero (deep space) or negative. From the CCSDS OMM `BSTAR` keyword.""}",
+   [MEAN_MOTION_DOT]: @"{""description"": ""First time-derivative of the mean motion (one half of dn/dt), in revolutions per day squared -- the classical TLE 'ballistic coefficient' term. From the CCSDS OMM `MEAN_MOTION_DOT` keyword.""}",
+   [MEAN_MOTION_DDOT]: @"{""description"": ""Second time-derivative of the mean motion (one sixth of d2n/dt2), in revolutions per day cubed; almost always 0 under the SGP4 theory. From the CCSDS OMM `MEAN_MOTION_DDOT` keyword.""}",
+   [RMS]: @"{""description"": ""Root-mean-square of the orbit-determination fit residuals reported by the supplemental data provider -- a quality indicator for this element set. Present only in SupGP data (absent from standard 18 SDS GP data). From the CelesTrak SupGP `RMS` field.""}",
+   [DATA_SOURCE]: @"{""description"": ""Supplemental data source / provider code identifying who produced this element set and by which technique, e.g. `ISS-E` (ISS ephemeris), `SpaceX-E` (SpaceX ephemeris), `CPF` (consolidated laser-ranging predictions), `GPS-A` (GPS almanac), `Intelsat-E`. Unlike standard GP, a single object may have several SupGP element sets distinguished by `DATA_SOURCE` and `EPOCH`. From the CelesTrak SupGP `DATA_SOURCE` field.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SupplementalOrbitMeanElements] ingestion json mapping "SupplementalOrbitMeanElements_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "OBJECT_NAME", "path": "$.OBJECT_NAME"},
+  {"column": "OBJECT_ID", "path": "$.OBJECT_ID"},
+  {"column": "EPOCH", "path": "$.EPOCH"},
+  {"column": "MEAN_MOTION", "path": "$.MEAN_MOTION"},
+  {"column": "ECCENTRICITY", "path": "$.ECCENTRICITY"},
+  {"column": "INCLINATION", "path": "$.INCLINATION"},
+  {"column": "RA_OF_ASC_NODE", "path": "$.RA_OF_ASC_NODE"},
+  {"column": "ARG_OF_PERICENTER", "path": "$.ARG_OF_PERICENTER"},
+  {"column": "MEAN_ANOMALY", "path": "$.MEAN_ANOMALY"},
+  {"column": "EPHEMERIS_TYPE", "path": "$.EPHEMERIS_TYPE"},
+  {"column": "CLASSIFICATION_TYPE", "path": "$.CLASSIFICATION_TYPE"},
+  {"column": "NORAD_CAT_ID", "path": "$.NORAD_CAT_ID"},
+  {"column": "ELEMENT_SET_NO", "path": "$.ELEMENT_SET_NO"},
+  {"column": "REV_AT_EPOCH", "path": "$.REV_AT_EPOCH"},
+  {"column": "BSTAR", "path": "$.BSTAR"},
+  {"column": "MEAN_MOTION_DOT", "path": "$.MEAN_MOTION_DOT"},
+  {"column": "MEAN_MOTION_DDOT", "path": "$.MEAN_MOTION_DDOT"},
+  {"column": "RMS", "path": "$.RMS"},
+  {"column": "DATA_SOURCE", "path": "$.DATA_SOURCE"}
+]
+```
+
+.create-or-alter table [SupplementalOrbitMeanElements] ingestion json mapping "SupplementalOrbitMeanElements_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "OBJECT_NAME", "path": "$.data.OBJECT_NAME"},
+  {"column": "OBJECT_ID", "path": "$.data.OBJECT_ID"},
+  {"column": "EPOCH", "path": "$.data.EPOCH"},
+  {"column": "MEAN_MOTION", "path": "$.data.MEAN_MOTION"},
+  {"column": "ECCENTRICITY", "path": "$.data.ECCENTRICITY"},
+  {"column": "INCLINATION", "path": "$.data.INCLINATION"},
+  {"column": "RA_OF_ASC_NODE", "path": "$.data.RA_OF_ASC_NODE"},
+  {"column": "ARG_OF_PERICENTER", "path": "$.data.ARG_OF_PERICENTER"},
+  {"column": "MEAN_ANOMALY", "path": "$.data.MEAN_ANOMALY"},
+  {"column": "EPHEMERIS_TYPE", "path": "$.data.EPHEMERIS_TYPE"},
+  {"column": "CLASSIFICATION_TYPE", "path": "$.data.CLASSIFICATION_TYPE"},
+  {"column": "NORAD_CAT_ID", "path": "$.data.NORAD_CAT_ID"},
+  {"column": "ELEMENT_SET_NO", "path": "$.data.ELEMENT_SET_NO"},
+  {"column": "REV_AT_EPOCH", "path": "$.data.REV_AT_EPOCH"},
+  {"column": "BSTAR", "path": "$.data.BSTAR"},
+  {"column": "MEAN_MOTION_DOT", "path": "$.data.MEAN_MOTION_DOT"},
+  {"column": "MEAN_MOTION_DDOT", "path": "$.data.MEAN_MOTION_DDOT"},
+  {"column": "RMS", "path": "$.data.RMS"},
+  {"column": "DATA_SOURCE", "path": "$.data.DATA_SOURCE"}
+]
+```
+
+.drop materialized-view SupplementalOrbitMeanElementsLatest ifexists;
+
+.create materialized-view with (backfill=true) SupplementalOrbitMeanElementsLatest on table SupplementalOrbitMeanElements {
+    SupplementalOrbitMeanElements | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SupplementalOrbitMeanElements] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.celestrak.SupplementalOrbitMeanElements') | project['OBJECT_NAME'] = tostring(data.['OBJECT_NAME']),['OBJECT_ID'] = tostring(data.['OBJECT_ID']),['EPOCH'] = todatetime(data.['EPOCH']),['MEAN_MOTION'] = toreal(data.['MEAN_MOTION']),['ECCENTRICITY'] = toreal(data.['ECCENTRICITY']),['INCLINATION'] = toreal(data.['INCLINATION']),['RA_OF_ASC_NODE'] = toreal(data.['RA_OF_ASC_NODE']),['ARG_OF_PERICENTER'] = toreal(data.['ARG_OF_PERICENTER']),['MEAN_ANOMALY'] = toreal(data.['MEAN_ANOMALY']),['EPHEMERIS_TYPE'] = toint(data.['EPHEMERIS_TYPE']),['CLASSIFICATION_TYPE'] = tostring(data.['CLASSIFICATION_TYPE']),['NORAD_CAT_ID'] = toint(data.['NORAD_CAT_ID']),['ELEMENT_SET_NO'] = toint(data.['ELEMENT_SET_NO']),['REV_AT_EPOCH'] = toint(data.['REV_AT_EPOCH']),['BSTAR'] = toreal(data.['BSTAR']),['MEAN_MOTION_DOT'] = toreal(data.['MEAN_MOTION_DOT']),['MEAN_MOTION_DDOT'] = toreal(data.['MEAN_MOTION_DDOT']),['RMS'] = toreal(data.['RMS']),['DATA_SOURCE'] = tostring(data.['DATA_SOURCE']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+

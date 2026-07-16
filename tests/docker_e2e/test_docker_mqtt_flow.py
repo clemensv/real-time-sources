@@ -72,6 +72,11 @@ def taipei_youbike_mqtt_image():
 
 
 @pytest.fixture(scope='module')
+def celestrak_mqtt_image():
+    return build_image('celestrak', dockerfile='Dockerfile.mqtt', tag='test-celestrak-mqtt')
+
+
+@pytest.fixture(scope='module')
 def open_charge_map_mqtt_image():
     return build_image('open-charge-map', dockerfile='Dockerfile.mqtt', tag='test-open-charge-map-mqtt')
 
@@ -489,6 +494,121 @@ class TestTaipeiYoubikeMqttDockerFlow:
         assert by_type[self.REFERENCE_TYPE][0]['topic'].endswith('/info'), by_type[self.REFERENCE_TYPE][0]['topic']
         assert by_type[self.TELEMETRY_TYPE][0]['topic'].endswith('/status'), by_type[self.TELEMETRY_TYPE][0]['topic']
         schemas = _load_taipei_youbike_schemas()
+        schema_validator = SchemaValidator(extended=True)
+        for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
+            sample = by_type[ce_type][0]
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            payload = _to_dict(sample['payload'])
+            assert isinstance(payload, dict), sample
+            schema = schemas[ce_type]
+            assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+def _load_celestrak_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'celestrak', 'xreg', 'celestrak.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    group = manifest['schemagroups']['org.celestrak.jstruct']['schemas']
+    return {
+        'org.celestrak.SatelliteCatalogEntry':
+            group['org.celestrak.SatelliteCatalogEntry']['versions']['1']['schema'],
+        'org.celestrak.OrbitMeanElements':
+            group['org.celestrak.OrbitMeanElements']['versions']['1']['schema'],
+    }
+
+
+class TestCelestrakMqttDockerFlow:
+    """Verify the celestrak MQTT container publishes reference and telemetry events.
+
+    Polls the CelesTrak crewed-station GROUP once; the feeder publishes
+    SatelliteCatalogEntry to space/celestrak/satcat/{NORAD_CAT_ID} and
+    OrbitMeanElements to space/celestrak/gp/{NORAD_CAT_ID} in CloudEvents binary
+    mode (CE metadata in MQTT user properties, JSON payload body)."""
+
+    REFERENCE_TYPE = 'org.celestrak.SatelliteCatalogEntry'
+    TELEMETRY_TYPE = 'org.celestrak.OrbitMeanElements'
+
+    def test_emits_reference_and_telemetry(self, celestrak_mqtt_image):
+        container, network, host_port, broker_ip = _generic_mosquitto(
+            'celestrak-mqtt-e2e', 'celestrak-mqtt-e2e-broker'
+        )
+        messages: List[Dict[str, Any]] = []
+        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+
+        def on_message(_client, _userdata, msg):
+            props: Dict[str, Any] = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload})
+
+        client.on_message = on_message
+        feeder = None
+        try:
+            client.connect('127.0.0.1', host_port, 30)
+            client.subscribe('space/celestrak/#', qos=1)
+            client.loop_start()
+
+            docker_client = docker.from_env()
+            feeder = docker_client.containers.run(
+                celestrak_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'celestrak-mqtt-e2e-broker:1883',
+                    'ONCE_MODE': 'true',
+                    'CELESTRAK_GROUPS': 'stations',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            deadline = time.time() + 15
+            while time.time() < deadline:
+                seen = {m['user_properties'].get('type') for m in messages}
+                if self.REFERENCE_TYPE in seen and self.TELEMETRY_TYPE in seen:
+                    break
+                time.sleep(0.25)
+        finally:
+            client.loop_stop()
+            client.disconnect()
+            if feeder is not None:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            try:
+                container.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
+
+        assert messages, 'No MQTT messages received from broker'
+        by_type: Dict[str, List[Dict[str, Any]]] = {}
+        for message in messages:
+            by_type.setdefault(message['user_properties'].get('type'), []).append(message)
+        assert self.REFERENCE_TYPE in by_type, by_type.keys()
+        assert self.TELEMETRY_TYPE in by_type, by_type.keys()
+        # Reference (SATCAT) publishes to .../satcat/...; telemetry (GP) to .../gp/...
+        assert '/satcat/' in by_type[self.REFERENCE_TYPE][0]['topic'], by_type[self.REFERENCE_TYPE][0]['topic']
+        assert '/gp/' in by_type[self.TELEMETRY_TYPE][0]['topic'], by_type[self.TELEMETRY_TYPE][0]['topic']
+        schemas = _load_celestrak_schemas()
         schema_validator = SchemaValidator(extended=True)
         for ce_type in (self.REFERENCE_TYPE, self.TELEMETRY_TYPE):
             sample = by_type[ce_type][0]

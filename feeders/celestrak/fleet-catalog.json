@@ -1,0 +1,32 @@
+{
+  "feeders": [
+    {
+      "slug": "celestrak",
+      "imageBase": "real-time-sources-celestrak",
+      "queueName": "celestrak",
+      "eventHubName": "celestrak",
+      "mqttTopicRoot": "celestrak/#",
+      "emptyTemplates": [
+        "feeders/celestrak/azure-template.json",
+        "feeders/celestrak/azure-template-with-eventhub.json",
+        "feeders/celestrak/azure-template-with-servicebus.json",
+        "feeders/celestrak/azure-template-mqtt.json",
+        "feeders/celestrak/azure-template-with-eventgrid-mqtt.json"
+      ],
+      "envVars": [
+        {
+          "name": "CELESTRAK_GROUPS",
+          "armParamName": "celestrakGroups",
+          "description": "Comma/space-separated CelesTrak GROUP views to poll, for example stations, active, starlink, or visual. Each GROUP is a curated catalog subset. Default: stations.",
+          "default": "stations"
+        },
+        {
+          "name": "SUPGP_SOURCES",
+          "armParamName": "supgpSources",
+          "description": "Comma/space-separated Supplemental GP sources to additionally fetch, for example SpaceX, Planet, or OneWeb. Empty disables SupGP. Default: empty.",
+          "default": ""
+        }
+      ]
+    }
+  ]
+}

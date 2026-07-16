@@ -325,6 +325,24 @@
       "module": "taipei_youbike_amqp"
     },
     {
+      "dir": "feeders/celestrak",
+      "image": "celestrak-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "celestrak_kafka"
+    },
+    {
+      "dir": "feeders/celestrak",
+      "image": "celestrak-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "celestrak_mqtt"
+    },
+    {
+      "dir": "feeders/celestrak",
+      "image": "celestrak-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "celestrak_amqp"
+    },
+    {
       "dir": "feeders/open-charge-map",
       "image": "open-charge-map-kafka",
       "file": "Dockerfile.kafka",
@@ -2323,6 +2341,26 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestTaipeiYoubikeAmqpArtemisFlow"
+    },
+    {
+      "dir": "feeders/celestrak",
+      "image": "celestrak-kafka",
+      "file": "Dockerfile.kafka",
+      "test_class": "TestCelestrakDockerFlow"
+    },
+    {
+      "dir": "feeders/celestrak",
+      "image": "celestrak-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCelestrakMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/celestrak",
+      "image": "celestrak-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestCelestrakAmqpArtemisFlow"
     },
     {
       "dir": "feeders/open-charge-map",

@@ -1,0 +1,837 @@
+{
+  "endpoints": {
+    "org.celestrak.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "celestrak",
+          "key": "{NORAD_CAT_ID}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.celestrak.kafka"
+      ],
+      "description": "Kafka producer endpoint for CelesTrak CloudEvents on the `celestrak` topic keyed by `{NORAD_CAT_ID}`."
+    },
+    "org.celestrak.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.celestrak.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for CelesTrak CloudEvents on the `space/celestrak/...` topic hierarchy."
+    },
+    "org.celestrak.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/celestrak"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.celestrak.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for CelesTrak CloudEvents on the configured broker address."
+    }
+  },
+  "messagegroups": {
+    "org.celestrak": {
+      "description": "CelesTrak orbital-data events: the SATCAT reference catalog and the GP / SupGP orbital element sets. All event types share the object identity (`NORAD_CAT_ID`) as CloudEvents subject and Kafka key, so reference and element-set events for the same object partition together.",
+      "messages": {
+        "org.celestrak.SatelliteCatalogEntry": {
+          "name": "SatelliteCatalogEntry",
+          "envelope": "CloudEvents/1.0",
+          "description": "A CelesTrak SATCAT reference record for one catalogued space object. Emitted at start-up and on periodic refresh so consumers can resolve every `NORAD_CAT_ID` to a named, described object.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.celestrak.SatelliteCatalogEntry"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{NORAD_CAT_ID}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.celestrak.jstruct/schemas/org.celestrak.SatelliteCatalogEntry"
+        },
+        "org.celestrak.OrbitMeanElements": {
+          "name": "OrbitMeanElements",
+          "envelope": "CloudEvents/1.0",
+          "description": "A CelesTrak GP (General Perturbations) OMM orbital element set for one object. Emitted when a new or refreshed element set is observed.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.celestrak.OrbitMeanElements"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{NORAD_CAT_ID}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.celestrak.jstruct/schemas/org.celestrak.OrbitMeanElements"
+        },
+        "org.celestrak.SupplementalOrbitMeanElements": {
+          "name": "SupplementalOrbitMeanElements",
+          "envelope": "CloudEvents/1.0",
+          "description": "A CelesTrak SupGP (Supplemental GP) OMM element set for one object, from an operator or analysis-centre source. Emitted when supplemental sources are configured.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.celestrak.SupplementalOrbitMeanElements"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{NORAD_CAT_ID}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.celestrak.jstruct/schemas/org.celestrak.SupplementalOrbitMeanElements"
+        }
+      }
+    },
+    "org.celestrak.kafka": {
+      "description": "Kafka variant of the CelesTrak events, keyed by `NORAD_CAT_ID` so all events for one object share a partition.",
+      "messages": {
+        "org.celestrak.kafka.SatelliteCatalogEntry": {
+          "name": "SatelliteCatalogEntry",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.SatelliteCatalogEntry",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{NORAD_CAT_ID}"
+          }
+        },
+        "org.celestrak.kafka.OrbitMeanElements": {
+          "name": "OrbitMeanElements",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.OrbitMeanElements",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{NORAD_CAT_ID}"
+          }
+        },
+        "org.celestrak.kafka.SupplementalOrbitMeanElements": {
+          "name": "SupplementalOrbitMeanElements",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.SupplementalOrbitMeanElements",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{NORAD_CAT_ID}"
+          }
+        }
+      }
+    },
+    "org.celestrak.mqtt": {
+      "description": "MQTT 5 variant of the CelesTrak events, republished on a `space/celestrak/{satcat|gp|supgp}/{NORAD_CAT_ID}` topic tree with retain so late subscribers receive the latest record per object.",
+      "messages": {
+        "org.celestrak.mqtt.SatelliteCatalogEntry": {
+          "name": "SatelliteCatalogEntry",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.SatelliteCatalogEntry",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "space/celestrak/satcat/{NORAD_CAT_ID}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "org.celestrak.mqtt.OrbitMeanElements": {
+          "name": "OrbitMeanElements",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.OrbitMeanElements",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "space/celestrak/gp/{NORAD_CAT_ID}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "org.celestrak.mqtt.SupplementalOrbitMeanElements": {
+          "name": "SupplementalOrbitMeanElements",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.SupplementalOrbitMeanElements",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "space/celestrak/supgp/{NORAD_CAT_ID}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.celestrak.amqp": {
+      "description": "AMQP 1.0 variant of the CelesTrak events, with the NORAD Catalog Number as subject and routing hints in application-properties.",
+      "messages": {
+        "org.celestrak.amqp.SatelliteCatalogEntry": {
+          "name": "SatelliteCatalogEntry",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.SatelliteCatalogEntry",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{NORAD_CAT_ID}",
+                "description": "AMQP message subject -- the NORAD Catalog Number, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "norad_cat_id": {
+                "type": "uritemplate",
+                "value": "{NORAD_CAT_ID}",
+                "description": "NORAD Catalog Number, so brokers can route / filter by object without cracking the JSON body."
+              },
+              "data_kind": {
+                "type": "uritemplate",
+                "value": "satcat",
+                "description": "Kind of CelesTrak record on this message: `satcat`, `gp` or `supgp`."
+              }
+            }
+          }
+        },
+        "org.celestrak.amqp.OrbitMeanElements": {
+          "name": "OrbitMeanElements",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.OrbitMeanElements",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{NORAD_CAT_ID}",
+                "description": "AMQP message subject -- the NORAD Catalog Number, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "norad_cat_id": {
+                "type": "uritemplate",
+                "value": "{NORAD_CAT_ID}",
+                "description": "NORAD Catalog Number, so brokers can route / filter by object without cracking the JSON body."
+              },
+              "data_kind": {
+                "type": "uritemplate",
+                "value": "gp",
+                "description": "Kind of CelesTrak record on this message: `satcat`, `gp` or `supgp`."
+              }
+            }
+          }
+        },
+        "org.celestrak.amqp.SupplementalOrbitMeanElements": {
+          "name": "SupplementalOrbitMeanElements",
+          "basemessageuri": "/messagegroups/org.celestrak/messages/org.celestrak.SupplementalOrbitMeanElements",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{NORAD_CAT_ID}",
+                "description": "AMQP message subject -- the NORAD Catalog Number, matching the CloudEvents subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "norad_cat_id": {
+                "type": "uritemplate",
+                "value": "{NORAD_CAT_ID}",
+                "description": "NORAD Catalog Number, so brokers can route / filter by object without cracking the JSON body."
+              },
+              "data_kind": {
+                "type": "uritemplate",
+                "value": "supgp",
+                "description": "Kind of CelesTrak record on this message: `satcat`, `gp` or `supgp`."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.celestrak.jstruct": {
+      "schemas": {
+        "org.celestrak.SatelliteCatalogEntry": {
+          "name": "SatelliteCatalogEntry",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/celestrak/SatelliteCatalogEntry/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "SatelliteCatalogEntry",
+                "$root": "#/definitions/org/celestrak/SatelliteCatalogEntry",
+                "definitions": {
+                  "org": {
+                    "celestrak": {
+                      "SatelliteCatalogEntry": {
+                        "name": "SatelliteCatalogEntry",
+                        "type": "object",
+                        "description": "Reference record for one object in the US Space Force satellite catalog (SATCAT), as published by CelesTrak at `satcat/records.php`. Carries the object's identity (name, international designator, NORAD number), classification (type, owner, operational status) and coarse orbital parameters (period, inclination, apogee, perigee). Emitted as reference data at bridge start-up and periodically refreshed, so consumers can resolve the `NORAD_CAT_ID` on every OrbitMeanElements event to a named, described object without an out-of-band lookup. Shares the `NORAD_CAT_ID` key model and Kafka topic with the element-set events for temporal consistency.",
+                        "properties": {
+                          "OBJECT_NAME": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Satellite / object name(s). May include alternate names in parentheses, an object-descriptor in brackets (e.g. `BREEZE-M DEB [TANK]`), and `&` to denote two or more attached objects. Mutable; never use as a key. From the SATCAT `OBJECT_NAME` field."
+                          },
+                          "OBJECT_ID": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "pattern": "^[0-9]{4}-[0-9]{3}[A-Z]{0,3}$",
+                            "description": "International Designator (COSPAR ID), format `YYYY-NNNAAA`: launch year, launch number of the year, and one-to-three-letter piece designator (excluding I and O). Null for analyst objects with no associated launch. From the SATCAT `OBJECT_ID` field."
+                          },
+                          "NORAD_CAT_ID": {
+                            "type": "int32",
+                            "minimum": 1,
+                            "maximum": 999999999,
+                            "description": "NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits (the five-digit range was exhausted at 100000+ on 2026-07-11; analyst objects use the 7995xxxxx range). Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP subject. References the same object as the OrbitMeanElements event with the identical `NORAD_CAT_ID`. From the SATCAT `NORAD_CAT_ID` field."
+                          },
+                          "OBJECT_TYPE": {
+                            "type": [
+                              "null",
+                              {
+                                "$ref": "#/definitions/org/celestrak/ObjectTypeEnum"
+                              }
+                            ],
+                            "description": "Object type: `PAY` payload, `R/B` rocket body, `DEB` other debris, `UNK` unknown. From the SATCAT `OBJECT_TYPE` field."
+                          },
+                          "OPS_STATUS_CODE": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Operational status code: `+` operational, `-` nonoperational, `P` partially operational, `B` backup/standby, `S` spare, `X` extended mission, `D` decayed, `?` unknown. An object is considered 'active' if its status is one of `+`,`P`,`B`,`S`,`X`. Modelled as a plain string because the code symbols (`+`,`-`,`?`) are not valid enumeration identifiers. From the SATCAT `OPS_STATUS_CODE` field; see https://celestrak.org/satcat/status.php."
+                          },
+                          "OWNER": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Owner / source: the country or organisation that owns the object, as a CelesTrak source code (e.g. `US`, `CIS`, `PRC`, `ESA`, `ISS`, `TBD`). From the SATCAT `OWNER` field; see https://celestrak.org/satcat/sources.php."
+                          },
+                          "LAUNCH_DATE": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+                            "description": "Launch date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null if unknown. From the SATCAT `LAUNCH_DATE` field."
+                          },
+                          "LAUNCH_SITE": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Launch site code (e.g. `TYMSC` Baikonur/Tyuratam, `AFETR` Cape Canaveral, `FRGUI` Kourou). Null if unknown. From the SATCAT `LAUNCH_SITE` field; see https://celestrak.org/satcat/launchsites.php."
+                          },
+                          "DECAY_DATE": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+                            "description": "Decay (re-entry) date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null while the object is still on orbit. From the SATCAT `DECAY_DATE` field (upstream empty string is mapped to null)."
+                          },
+                          "PERIOD": {
+                            "type": [
+                              "null",
+                              "double"
+                              ],
+                              "minimum": 0,
+                              "description": "Orbital period, in minutes. Null when no current elements are available. From the SATCAT `PERIOD` field."
+                          },
+                          "INCLINATION": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 180,
+                            "description": "Orbital inclination to the equator, in degrees (0-180). Null when no current elements are available. From the SATCAT `INCLINATION` field."
+                          },
+                          "APOGEE": {
+                            "type": [
+                              "null",
+                              "int32"
+                              ],
+                              "minimum": 0,
+                              "description": "Apogee altitude above the Earth's surface, in kilometres (the farthest orbital point). Null when no current elements are available. From the SATCAT `APOGEE` field."
+                          },
+                          "PERIGEE": {
+                            "type": [
+                              "null",
+                              "int32"
+                              ],
+                              "minimum": 0,
+                              "description": "Perigee altitude above the Earth's surface, in kilometres (the closest orbital point). Null when no current elements are available. From the SATCAT `PERIGEE` field."
+                          },
+                          "RCS": {
+                            "type": [
+                              "null",
+                              "double"
+                              ],
+                              "minimum": 0,
+                              "description": "Radar Cross Section, in square metres -- a proxy for the object's size as seen by tracking radar. Null when not available. From the SATCAT `RCS` field."
+                          },
+                          "DATA_STATUS_CODE": {
+                            "type": [
+                              "null",
+                              {
+                                "$ref": "#/definitions/org/celestrak/DataStatusCodeEnum"
+                              }
+                            ],
+                            "description": "Data status: `NCE` no current elements, `NIE` no initial elements, `NEA` no elements available. Null when elements are available. From the SATCAT `DATA_STATUS_CODE` field (upstream empty string is mapped to null)."
+                          },
+                          "ORBIT_CENTER": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Orbit center: `EA` Earth, `EM` Earth-Moon barycenter, `EL1`/`EL2` Earth-Sun Lagrange points, `MO` Moon, `SU` Sun, `SS` solar-system escape, planetary bodies (`MA` Mars, `JU` Jupiter, `VE` Venus, ...), or a NORAD Catalog Number for an object docked to another catalogued object. Modelled as a plain string because the value space includes numeric catalog numbers. From the SATCAT `ORBIT_CENTER` field."
+                          },
+                          "ORBIT_TYPE": {
+                            "type": [
+                              "null",
+                              {
+                                "$ref": "#/definitions/org/celestrak/OrbitTypeEnum"
+                              }
+                            ],
+                            "description": "Orbit type: `ORB` orbiting, `LAN` landing, `IMP` impact, `DOC` docked to another catalogued object, `R/T` roundtrip. From the SATCAT `ORBIT_TYPE` field."
+                          }
+                        },
+                        "required": [
+                          "NORAD_CAT_ID"
+                        ]
+                      },
+                      "DataStatusCodeEnum": {
+                        "name": "DataStatusCodeEnum",
+                        "type": "string",
+                        "enum": [
+                          "NCE",
+                          "NIE",
+                          "NEA"
+                        ],
+                        "description": "Data status code, present only when element data is unavailable: `NCE` no current elements, `NIE` no initial elements, `NEA` no elements available. Absent/null when elements are available. From the SATCAT `DATA_STATUS_CODE` field (upstream empty string is mapped to null)."
+                      },
+                      "ObjectTypeEnum": {
+                        "name": "ObjectTypeEnum",
+                        "type": "string",
+                        "enum": [
+                          "PAY",
+                          "R/B",
+                          "DEB",
+                          "UNK"
+                        ],
+                        "description": "Object type: `PAY` payload, `R/B` rocket body, `DEB` other debris, `UNK` unknown. From the SATCAT `OBJECT_TYPE` field."
+                      },
+                      "OrbitTypeEnum": {
+                        "name": "OrbitTypeEnum",
+                        "type": "string",
+                        "enum": [
+                          "ORB",
+                          "LAN",
+                          "IMP",
+                          "DOC",
+                          "R/T"
+                        ],
+                        "description": "Orbit type: `ORB` orbiting, `LAN` landing, `IMP` impact, `DOC` docked to another catalogued object, `R/T` roundtrip. From the SATCAT `ORBIT_TYPE` field."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "org.celestrak.OrbitMeanElements": {
+          "name": "OrbitMeanElements",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/celestrak/OrbitMeanElements/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "OrbitMeanElements",
+                "$root": "#/definitions/org/celestrak/OrbitMeanElements",
+                "definitions": {
+                  "org": {
+                    "celestrak": {
+                      "OrbitMeanElements": {
+                        "name": "OrbitMeanElements",
+                        "type": "object",
+                        "description": "A General Perturbations (GP) orbital element set for one catalogued object, as published by CelesTrak at `NORAD/elements/gp.php`. This is a CCSDS Orbit Mean-Elements Message (OMM, CCSDS 502.0-B-3) fit by the US Space Force 18th Space Defense Squadron to Space Surveillance Network observations for use with the SGP4 propagator. The property names are the verbatim OMM keys, so the payload is a drop-in OMM JSON object for SGP4 libraries. Emitted whenever the bridge observes a new or refreshed element set for the object (GP data updates several times per day). Keyed by `NORAD_CAT_ID`.",
+                        "properties": {
+                          "OBJECT_NAME": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Satellite / object name (TLE Line 0). Up to 24 characters in the legacy TLE format; Unicode-capable in OMM. Mutable and not globally unique -- never use as a key. Null for uncatalogued / analyst objects that have no assigned name. From the CCSDS OMM `OBJECT_NAME` keyword."
+                          },
+                          "OBJECT_ID": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "pattern": "^[0-9]{4}-[0-9]{3}[A-Z]{0,3}$",
+                            "description": "International Designator (COSPAR ID) of the object, format `YYYY-NNNAAA`: four-digit launch year, three-digit launch number of that year, and one-to-three-letter piece designator (letters I and O are excluded). Null for analyst objects with no associated launch. From the CCSDS OMM `OBJECT_ID` keyword."
+                          },
+                          "EPOCH": {
+                            "type": "datetime",
+                            "description": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. The upstream CCSDS OMM `EPOCH` keyword is an offset-less ISO 8601 value (UTC is implied by `TIME_SYSTEM=UTC`); the feeder normalizes it to a UTC-aware RFC 3339 timestamp with an explicit `+00:00` offset, e.g. `2026-07-15T18:23:37.536288+00:00`. From the CCSDS OMM `EPOCH` keyword."
+                          },
+                          "MEAN_MOTION": {
+                            "type": "double",
+                            "unit": "rev/day",
+                            "minimum": 0,
+                            "description": "Mean motion: the number of orbital revolutions the object completes per solar day, a Brouwer mean element consumed directly by the SGP4 propagator. Larger values correspond to lower orbits (~15.5 for the ISS in LEO, ~1.0 for geostationary objects). From the CCSDS OMM `MEAN_MOTION` keyword."
+                          },
+                          "ECCENTRICITY": {
+                            "type": "double",
+                            "minimum": 0,
+                            "maximum": 1,
+                            "description": "Orbital eccentricity, dimensionless: 0 is a circular orbit and values approaching 1 are highly elliptical. In the legacy TLE this is stored as a leading-decimal integer; the OMM JSON gives the true fractional value. From the CCSDS OMM `ECCENTRICITY` keyword."
+                          },
+                          "INCLINATION": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 180,
+                            "description": "Inclination of the orbital plane to Earth's equatorial plane, in degrees (0-180; > 90 indicates a retrograde orbit). From the CCSDS OMM `INCLINATION` keyword."
+                          },
+                          "RA_OF_ASC_NODE": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "description": "Right Ascension of the Ascending Node (RAAN), in degrees (0-360): the angle from the vernal equinox to the point where the orbit crosses the equatorial plane going north. From the CCSDS OMM `RA_OF_ASC_NODE` keyword."
+                          },
+                          "ARG_OF_PERICENTER": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "description": "Argument of pericenter (perigee), in degrees (0-360): the angle from the ascending node to the point of closest approach, measured in the orbital plane. From the CCSDS OMM `ARG_OF_PERICENTER` keyword."
+                          },
+                          "MEAN_ANOMALY": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "description": "Mean anomaly at epoch, in degrees (0-360): the fraction of the orbital period elapsed since pericenter passage expressed as an angle, used with the other elements to locate the object at `EPOCH`. From the CCSDS OMM `MEAN_ANOMALY` keyword."
+                          },
+                          "EPHEMERIS_TYPE": {
+                            "type": "int32",
+                            "minimum": 0,
+                            "description": "Ephemeris / orbital-model type. `0` denotes the SGP4 (SGP4/SDP4) mean-element theory, the only value distributed in public GP data. From the CCSDS OMM `EPHEMERIS_TYPE` keyword."
+                          },
+                          "CLASSIFICATION_TYPE": {
+                            "type": {
+                              "$ref": "#/definitions/org/celestrak/ClassificationTypeEnum"
+                            },
+                            "description": "Security classification of the element set (always `U` for public CelesTrak data). From the CCSDS OMM `CLASSIFICATION_TYPE` keyword."
+                          },
+                          "NORAD_CAT_ID": {
+                            "type": "int32",
+                            "minimum": 1,
+                            "maximum": 999999999,
+                            "description": "NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits -- regular objects exhausted the five-digit range (reaching 100000+) on 2026-07-11, and analyst objects use the 7995xxxxx range -- so this MUST be treated as an up-to-9-digit integer, never a fixed-width field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP message subject for every event this source emits. From the CCSDS OMM `NORAD_CAT_ID` keyword."
+                          },
+                          "ELEMENT_SET_NO": {
+                            "type": "int32",
+                            "minimum": 0,
+                            "description": "Element set number: a counter incremented (modulo 1000) each time a new element set is generated for the object; 18 SDS frequently emits the placeholder `999`. From the CCSDS OMM `ELEMENT_SET_NO` keyword."
+                          },
+                          "REV_AT_EPOCH": {
+                            "type": "int32",
+                            "minimum": 0,
+                            "description": "Revolution number at epoch: the integer count of orbital revolutions the object has completed since launch, as of `EPOCH`. From the CCSDS OMM `REV_AT_EPOCH` keyword."
+                          },
+                          "BSTAR": {
+                            "type": "double",
+                            "unit": "1/ER",
+                            "description": "B* (BSTAR) drag term, in inverse Earth radii, used by SGP4 to model the effect of atmospheric drag. Physically meaningful only for low-Earth-orbit objects; may be zero (deep space) or negative. From the CCSDS OMM `BSTAR` keyword."
+                          },
+                          "MEAN_MOTION_DOT": {
+                            "type": "double",
+                            "unit": "rev/day^2",
+                            "description": "First time-derivative of the mean motion (one half of dn/dt), in revolutions per day squared -- the classical TLE 'ballistic coefficient' term. From the CCSDS OMM `MEAN_MOTION_DOT` keyword."
+                          },
+                          "MEAN_MOTION_DDOT": {
+                            "type": "double",
+                            "unit": "rev/day^3",
+                            "description": "Second time-derivative of the mean motion (one sixth of d2n/dt2), in revolutions per day cubed; almost always 0 under the SGP4 theory. From the CCSDS OMM `MEAN_MOTION_DDOT` keyword."
+                          }
+                        },
+                        "required": [
+                          "EPOCH",
+                          "MEAN_MOTION",
+                          "ECCENTRICITY",
+                          "INCLINATION",
+                          "RA_OF_ASC_NODE",
+                          "ARG_OF_PERICENTER",
+                          "MEAN_ANOMALY",
+                          "EPHEMERIS_TYPE",
+                          "CLASSIFICATION_TYPE",
+                          "NORAD_CAT_ID",
+                          "ELEMENT_SET_NO",
+                          "REV_AT_EPOCH",
+                          "BSTAR",
+                          "MEAN_MOTION_DOT",
+                          "MEAN_MOTION_DDOT"
+                        ]
+                      },
+                      "ClassificationTypeEnum": {
+                        "name": "ClassificationTypeEnum",
+                        "type": "string",
+                        "enum": [
+                          "U",
+                          "C",
+                          "S"
+                        ],
+                        "description": "Security classification of the element set: `U` unclassified, `C` classified, `S` secret. Public CelesTrak/Space-Track GP data is always `U`; supplemental operator data may carry `C`. From the CCSDS OMM `CLASSIFICATION_TYPE` keyword (GP `CLASSIFICATION_TYPE`)."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "org.celestrak.SupplementalOrbitMeanElements": {
+          "name": "SupplementalOrbitMeanElements",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/celestrak/SupplementalOrbitMeanElements/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureValidation"
+                ],
+                "name": "SupplementalOrbitMeanElements",
+                "$root": "#/definitions/org/celestrak/SupplementalOrbitMeanElements",
+                "definitions": {
+                  "org": {
+                    "celestrak": {
+                      "SupplementalOrbitMeanElements": {
+                        "name": "SupplementalOrbitMeanElements",
+                        "type": "object",
+                        "description": "A Supplemental GP (SupGP) orbital element set for one catalogued object, as published by CelesTrak at `NORAD/elements/supplemental/sup-gp.php`. Structurally a CCSDS OMM (identical to OrbitMeanElements) plus a fit-quality `RMS` and a `DATA_SOURCE` provenance code. SupGP is provided by satellite operators and analysis centres (SpaceX, ISS, Intelsat, laser-ranging, GPS almanacs, ...), is typically fit forward from the epoch, and -- unlike standard GP -- may carry several element sets per object distinguished by `DATA_SOURCE` and `EPOCH`. Emitted only when supplemental sources are configured. Keyed by `NORAD_CAT_ID`.",
+                        "properties": {
+                          "OBJECT_NAME": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Satellite / object name as published by the supplemental data provider. May carry provider annotations absent from standard GP data, e.g. an ISS ephemeris segment tag `ISS [Segment 01]` or a CPF prediction-centre tag in brackets. Mutable; never use as a key. From the CCSDS OMM `OBJECT_NAME` keyword."
+                          },
+                          "OBJECT_ID": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "pattern": "^[0-9]{4}-[0-9]{3}[A-Z]{0,3}$",
+                            "description": "International Designator (COSPAR ID) of the object, format `YYYY-NNNAAA`: four-digit launch year, three-digit launch number of that year, and one-to-three-letter piece designator (letters I and O are excluded). Null for analyst objects with no associated launch. From the CCSDS OMM `OBJECT_ID` keyword."
+                          },
+                          "EPOCH": {
+                            "type": "datetime",
+                            "description": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. The upstream CCSDS OMM `EPOCH` keyword is an offset-less ISO 8601 value (UTC is implied by `TIME_SYSTEM=UTC`); the feeder normalizes it to a UTC-aware RFC 3339 timestamp with an explicit `+00:00` offset, e.g. `2026-07-15T18:23:37.536288+00:00`. From the CCSDS OMM `EPOCH` keyword."
+                          },
+                          "MEAN_MOTION": {
+                            "type": "double",
+                            "unit": "rev/day",
+                            "minimum": 0,
+                            "description": "Mean motion: the number of orbital revolutions the object completes per solar day, a Brouwer mean element consumed directly by the SGP4 propagator. Larger values correspond to lower orbits (~15.5 for the ISS in LEO, ~1.0 for geostationary objects). From the CCSDS OMM `MEAN_MOTION` keyword."
+                          },
+                          "ECCENTRICITY": {
+                            "type": "double",
+                            "minimum": 0,
+                            "maximum": 1,
+                            "description": "Orbital eccentricity, dimensionless: 0 is a circular orbit and values approaching 1 are highly elliptical. In the legacy TLE this is stored as a leading-decimal integer; the OMM JSON gives the true fractional value. From the CCSDS OMM `ECCENTRICITY` keyword."
+                          },
+                          "INCLINATION": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 180,
+                            "description": "Inclination of the orbital plane to Earth's equatorial plane, in degrees (0-180; > 90 indicates a retrograde orbit). From the CCSDS OMM `INCLINATION` keyword."
+                          },
+                          "RA_OF_ASC_NODE": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "description": "Right Ascension of the Ascending Node (RAAN), in degrees (0-360): the angle from the vernal equinox to the point where the orbit crosses the equatorial plane going north. From the CCSDS OMM `RA_OF_ASC_NODE` keyword."
+                          },
+                          "ARG_OF_PERICENTER": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "description": "Argument of pericenter (perigee), in degrees (0-360): the angle from the ascending node to the point of closest approach, measured in the orbital plane. From the CCSDS OMM `ARG_OF_PERICENTER` keyword."
+                          },
+                          "MEAN_ANOMALY": {
+                            "type": "double",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "description": "Mean anomaly at epoch, in degrees (0-360): the fraction of the orbital period elapsed since pericenter passage expressed as an angle, used with the other elements to locate the object at `EPOCH`. From the CCSDS OMM `MEAN_ANOMALY` keyword."
+                          },
+                          "EPHEMERIS_TYPE": {
+                            "type": "int32",
+                            "minimum": 0,
+                            "description": "Ephemeris / orbital-model type. `0` denotes the SGP4 (SGP4/SDP4) mean-element theory, the only value distributed in public GP data. From the CCSDS OMM `EPHEMERIS_TYPE` keyword."
+                          },
+                          "CLASSIFICATION_TYPE": {
+                            "type": {
+                              "$ref": "#/definitions/org/celestrak/ClassificationTypeEnum"
+                            },
+                            "description": "Security classification of the element set (always `U` for public CelesTrak data). From the CCSDS OMM `CLASSIFICATION_TYPE` keyword."
+                          },
+                          "NORAD_CAT_ID": {
+                            "type": "int32",
+                            "minimum": 1,
+                            "maximum": 999999999,
+                            "description": "NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits -- regular objects exhausted the five-digit range (reaching 100000+) on 2026-07-11, and analyst objects use the 7995xxxxx range -- so this MUST be treated as an up-to-9-digit integer, never a fixed-width field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP message subject for every event this source emits. From the CCSDS OMM `NORAD_CAT_ID` keyword."
+                          },
+                          "ELEMENT_SET_NO": {
+                            "type": "int32",
+                            "minimum": 0,
+                            "description": "Element set number: a counter incremented (modulo 1000) each time a new element set is generated for the object; 18 SDS frequently emits the placeholder `999`. From the CCSDS OMM `ELEMENT_SET_NO` keyword."
+                          },
+                          "REV_AT_EPOCH": {
+                            "type": "int32",
+                            "minimum": 0,
+                            "description": "Revolution number at epoch: the integer count of orbital revolutions the object has completed since launch, as of `EPOCH`. From the CCSDS OMM `REV_AT_EPOCH` keyword."
+                          },
+                          "BSTAR": {
+                            "type": "double",
+                            "unit": "1/ER",
+                            "description": "B* (BSTAR) drag term, in inverse Earth radii, used by SGP4 to model the effect of atmospheric drag. Physically meaningful only for low-Earth-orbit objects; may be zero (deep space) or negative. From the CCSDS OMM `BSTAR` keyword."
+                          },
+                          "MEAN_MOTION_DOT": {
+                            "type": "double",
+                            "unit": "rev/day^2",
+                            "description": "First time-derivative of the mean motion (one half of dn/dt), in revolutions per day squared -- the classical TLE 'ballistic coefficient' term. From the CCSDS OMM `MEAN_MOTION_DOT` keyword."
+                          },
+                          "MEAN_MOTION_DDOT": {
+                            "type": "double",
+                            "unit": "rev/day^3",
+                            "description": "Second time-derivative of the mean motion (one sixth of d2n/dt2), in revolutions per day cubed; almost always 0 under the SGP4 theory. From the CCSDS OMM `MEAN_MOTION_DDOT` keyword."
+                          },
+                          "RMS": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "description": "Root-mean-square of the orbit-determination fit residuals reported by the supplemental data provider -- a quality indicator for this element set. Present only in SupGP data (absent from standard 18 SDS GP data). From the CelesTrak SupGP `RMS` field."
+                          },
+                          "DATA_SOURCE": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Supplemental data source / provider code identifying who produced this element set and by which technique, e.g. `ISS-E` (ISS ephemeris), `SpaceX-E` (SpaceX ephemeris), `CPF` (consolidated laser-ranging predictions), `GPS-A` (GPS almanac), `Intelsat-E`. Unlike standard GP, a single object may have several SupGP element sets distinguished by `DATA_SOURCE` and `EPOCH`. From the CelesTrak SupGP `DATA_SOURCE` field."
+                          }
+                        },
+                        "required": [
+                          "EPOCH",
+                          "MEAN_MOTION",
+                          "ECCENTRICITY",
+                          "INCLINATION",
+                          "RA_OF_ASC_NODE",
+                          "ARG_OF_PERICENTER",
+                          "MEAN_ANOMALY",
+                          "EPHEMERIS_TYPE",
+                          "CLASSIFICATION_TYPE",
+                          "NORAD_CAT_ID",
+                          "ELEMENT_SET_NO",
+                          "REV_AT_EPOCH",
+                          "BSTAR",
+                          "MEAN_MOTION_DOT",
+                          "MEAN_MOTION_DDOT"
+                        ]
+                      },
+                      "ClassificationTypeEnum": {
+                        "name": "ClassificationTypeEnum",
+                        "type": "string",
+                        "enum": [
+                          "U",
+                          "C",
+                          "S"
+                        ],
+                        "description": "Security classification of the element set: `U` unclassified, `C` classified, `S` secret. Public CelesTrak/Space-Track GP data is always `U`; supplemental operator data may carry `C`. From the CCSDS OMM `CLASSIFICATION_TYPE` keyword (GP `CLASSIFICATION_TYPE`)."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

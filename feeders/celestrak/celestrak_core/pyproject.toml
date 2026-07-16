@@ -1,0 +1,32 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "celestrak_core"
+dynamic = [
+    "version"
+]
+description = "Transport-agnostic acquisition and config for the CelesTrak bridge."
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" }
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "idna>=3.15",
+    "requests>=2.32.3",
+    "urllib3>=2.7.0"
+]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "celestrak_core"
+]
