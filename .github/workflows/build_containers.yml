@@ -17,6 +17,12 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  # docker/build-push-action uploads a ".dockerbuild" build-record artifact per
+  # matrix leg by default. With ~100 containers x several variants per run that
+  # exhausts the Actions artifact storage quota within days, and the records are
+  # never consumed. Disable the upload and the job summary that drives it.
+  DOCKER_BUILD_RECORD_UPLOAD: false
+  DOCKER_BUILD_SUMMARY: false
 
 jobs:
   find-dockerfiles:
