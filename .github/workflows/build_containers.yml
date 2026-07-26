@@ -172,7 +172,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # ignore-error: the Actions cache is over the 10 GB repo limit and
+          # evicts constantly, so concurrent cache exports race and return
+          # "not_found". That must not fail a build whose image already pushed.
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
@@ -280,7 +283,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # ignore-error: the Actions cache is over the 10 GB repo limit and
+          # evicts constantly, so concurrent cache exports race and return
+          # "not_found". That must not fail a build whose image already pushed.
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
