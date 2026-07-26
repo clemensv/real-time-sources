@@ -21,6 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#ticketmaster) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/ticketmaster.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.ticketmaster.com/)
 
 </td></tr></table>

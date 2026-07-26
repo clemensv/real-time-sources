@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#rws-waterwebservices/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/rws_waterwebservices.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/rws-waterwebservices.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://waterinfo.rws.nl/)
 
 </td></tr></table>

@@ -1,4 +1,31 @@
-# Tokyo Docomo Bikeshare container images (Kafka, MQTT, AMQP)
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/jp.png" alt="Tokyo" width="64" height="48"><br>
+<sub><b>Tokyo</b></sub>
+</td>
+<td valign="middle">
+
+# Tokyo Docomo Bikeshare
+
+<sub>Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare · Kafka · <a href="https://docomo-cycle.jp/tokyo/">upstream</a> · <a href="https://developer.odpt.org/info">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Tokyo, Japan — Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#tokyo-docomo-bikeshare) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/tokyo-docomo-bikeshare.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://docomo-cycle.jp/tokyo/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 For the source overview see [README.md](README.md); for the CloudEvents contract and routing metadata see [EVENTS.md](EVENTS.md).
 

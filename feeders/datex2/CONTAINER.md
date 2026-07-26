@@ -1,4 +1,31 @@
-# DATEX II Kafka, MQTT, and AMQP containers
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/eu.png" alt="Europe" width="64" height="48"><br>
+<sub><b>Europe</b></sub>
+</td>
+<td valign="middle">
+
+# DATEX II
+
+<sub>generalized DATEX II road traffic XML profiles · Kafka · MQTT · AMQP</sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-6_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Europe — generalized DATEX II road traffic XML profiles
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#datex2) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#datex2/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/datex2.kql)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 DATEX II containers turn European road-traffic XML publications into CloudEvents for operational traffic dashboards, traveler-information services, safety analytics, and event-driven digital twins.
 

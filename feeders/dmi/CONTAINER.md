@@ -8,7 +8,7 @@
 
 # DMI
 
-<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendataapi.dmi.dk/">API docs</a></sub>
+<sub>DMI observation triad (metObs + oceanObs + lightning) · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -16,7 +16,7 @@
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
-> Denmark — meteorological observations, sea level, lightning strikes
+> Denmark — DMI observation triad (metObs + oceanObs + lightning)
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#dmi) &nbsp;·&nbsp;
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#dmi/fabric-notebook) &nbsp;·&nbsp;

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#environment-canada/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/environment_canada.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/environment-canada.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://weather.gc.ca/)
 
 </td></tr></table>

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#wallonia-issep/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/wallonia_issep.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/wallonia-issep.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.issep.be/)
 
 </td></tr></table>
