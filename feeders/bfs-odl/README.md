@@ -8,7 +8,7 @@
 
 # BfS ODL
 
-<sub>~1,700 stations, hourly gamma dose rate · Kafka · MQTT · AMQP · <a href="https://odlinfo.bfs.de/">upstream</a> · <a href="https://odlinfo.bfs.de/ODL/EN/service/data-interface/data-interface_node.html">API docs</a></sub>
+<sub>~1,700 stations, hourly gamma dose rate · Kafka · MQTT · AMQP · <a href="https://odlinfo.bfs.de/">upstream</a> · <a href="https://odlinfo.bfs.de/ODL/EN/service/datenschnittstelle/datenschnittstelle_node.html">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#bfs-odl/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/bfs_odl.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/bfs-odl.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://odlinfo.bfs.de/)
 
 </td></tr></table>

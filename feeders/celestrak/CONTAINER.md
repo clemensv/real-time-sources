@@ -1,14 +1,14 @@
 <!-- source-hero:begin -->
 <table width="100%"><tr>
 <td width="80" valign="middle" align="center">
-<div style="font-size:48px">🛰️</div><br>
-<sub><b>Space</b></sub>
+<img src="https://flagcdn.com/64x48/un.png" alt="Global" width="64" height="48"><br>
+<sub><b>Global</b></sub>
 </td>
 <td valign="middle">
 
-# CelesTrak
+# CelesTrak Orbital Data
 
-<sub>public satellite catalog and orbital elements · Kafka · MQTT · AMQP</sub>
+<sub>satellite catalog (SATCAT) and GP orbital element sets, keyed by NORAD catalog number · Kafka · MQTT · AMQP · <a href="https://celestrak.org/">upstream</a> · <a href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -16,13 +16,14 @@
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
-> Space - public orbital data redistributed by CelesTrak
+> Global — satellite catalog (SATCAT) and GP orbital element sets, keyed by NORAD catalog number
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#celestrak) &nbsp;·&nbsp;
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#celestrak/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/celestrak.kql)
+[🗄️ **KQL schema**](kql/celestrak.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://celestrak.org/)
 
 </td></tr></table>
 <!-- source-hero:end -->

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#imgw-hydro/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/imgw_hydro.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/imgw-hydro.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.imgw.pl/)
 
 </td></tr></table>

@@ -19,6 +19,7 @@
 > Netherlands — national road traffic, DATEX II XML
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#ndw-road-traffic) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#ndw-road-traffic/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/ndw-road-traffic.kql) &nbsp;·&nbsp;

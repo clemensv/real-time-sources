@@ -22,8 +22,8 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#open-charge-map/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗺️ **Fabric Map**](fabric/README.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/open-charge-map.kql) &nbsp;·&nbsp;
+[🗺️ **Fabric Map**](fabric/README.md) &nbsp;·&nbsp;
 [↗ **Upstream**](https://openchargemap.org/)
 
 </td></tr></table>

@@ -8,7 +8,7 @@
 
 # SNOTEL Snow
 
-<sub>~900 snowpack stations, NRCS · Kafka · MQTT · AMQP · <a href="https://www.nrcs.usda.gov/wps/portal/wcc/home/">upstream</a> · <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">API docs</a></sub>
+<sub>~900 snowpack stations, NRCS · Kafka · MQTT · AMQP · <a href="https://www.nrcs.usda.gov/wps/portal/wcc/home/">upstream</a> · <a href="https://wcc.sc.egov.usda.gov/awdbRestWebService/swagger-ui/index.html">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;

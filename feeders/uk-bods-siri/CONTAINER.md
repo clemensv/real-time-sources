@@ -1,30 +1,29 @@
 <!-- source-hero:begin -->
-
 <table width="100%"><tr>
 <td width="80" valign="middle" align="center">
-
-<img src="https://flagcdn.com/64x48/gb.png" alt="United Kingdom" width="64" height="48"><br>
-
-<sub><b>United Kingdom</b></sub>
-
+<img src="https://flagcdn.com/64x48/un.png" alt="England" width="64" height="48"><br>
+<sub><b>England</b></sub>
 </td>
-
 <td valign="middle">
 
-# UK BODS SIRI container images
+# UK BODS SIRI
 
-<sub>configuration-only wrapper over <code>siri</code> · Kafka · MQTT · AMQP · <a href="https://www.bus-data.dft.gov.uk/">upstream</a></sub>
+<sub>BODS SIRI-VM via generalized siri feeder (requires free API key) · Kafka</sub>
 
-[📘 **Overview**](README.md) &nbsp;·&nbsp;
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
+> England — BODS SIRI-VM via generalized siri feeder (requires free API key)
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#uk-bods-siri) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-
-[🗄️ **KQL schema**](kql/uk-bods-siri.kql) &nbsp;·&nbsp;
-
-[↗ **Upstream**](https://www.bus-data.dft.gov.uk/)
+[🗄️ **KQL schema**](kql/uk-bods-siri.kql)
 
 </td></tr></table>
-
 <!-- source-hero:end -->
 
 This document covers the published OCI container images for the UK BODS SIRI thin wrapper, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).

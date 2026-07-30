@@ -1,14 +1,14 @@
 <!-- source-hero:begin -->
 <table width="100%"><tr>
 <td width="80" valign="middle" align="center">
-<img src="https://flagcdn.com/64x48/gb.png" alt="United Kingdom" width="64" height="48"><br>
-<sub><b>United Kingdom</b></sub>
+<img src="https://flagcdn.com/64x48/gb.png" alt="London" width="64" height="48"><br>
+<sub><b>London</b></sub>
 </td>
 <td valign="middle">
 
 # TfL Santander Cycles
 
-<sub>London public bikeshare, ~798 docking stations · Kafka · MQTT · AMQP · <a href="https://tfl.gov.uk/modes/cycling/santander-cycles">upstream</a> · <a href="https://api.tfl.gov.uk/">API docs</a></sub>
+<sub>Santander Cycles bikeshare, ~798 docking stations · Kafka · MQTT · AMQP</sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -16,14 +16,14 @@
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
-> United Kingdom — London Santander Cycles docking-station catalog and live availability
+> London, UK — Santander Cycles bikeshare, ~798 docking stations
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#tfl-cycles) &nbsp;·&nbsp;
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#tfl-cycles/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/tfl-cycles.kql) &nbsp;·&nbsp;
-[↗ **Upstream**](https://api.tfl.gov.uk/BikePoint)
+[🗺️ **Fabric Map**](fabric/README.md)
 
 </td></tr></table>
 <!-- source-hero:end -->

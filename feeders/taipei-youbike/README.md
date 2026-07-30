@@ -22,7 +22,8 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#taipei-youbike/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/taipei-youbike.kql)
+[🗄️ **KQL schema**](kql/taipei-youbike.kql) &nbsp;·&nbsp;
+[🗺️ **Fabric Map**](fabric/README.md)
 
 </td></tr></table>
 <!-- source-hero:end -->

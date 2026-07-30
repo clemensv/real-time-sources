@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#syke-hydro/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/syke_hydro.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/syke-hydro.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.syke.fi/)
 
 </td></tr></table>

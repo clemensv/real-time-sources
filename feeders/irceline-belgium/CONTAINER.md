@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#irceline-belgium/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/irceline_belgium.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/irceline-belgium.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.irceline.be/)
 
 </td></tr></table>
