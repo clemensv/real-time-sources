@@ -41,6 +41,44 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
 VISIBILITY_DATASCHEMA = "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Visibility"
 VISIBILITY_DATACONTENTTYPE = "application/json"
 
+
+def _atomic_write_json(path: str, data: Dict, retries: int = 5, backoff_seconds: float = 0.5) -> None:
+    """
+    Write JSON to `path` resiliently against transient BlockingIOError/OSError
+    from shared network filesystems (e.g. Azure Files/NFS lock contention),
+    and atomically (write-to-temp-then-rename) so a failed or interrupted
+    write never leaves a truncated/corrupt state file behind.
+    """
+    import errno
+    import time
+    import uuid
+
+    tmp_path = f"{path}.{uuid.uuid4().hex}.tmp"
+    last_exc: Exception | None = None
+    for attempt in range(retries + 1):
+        try:
+            with open(tmp_path, 'w', encoding='utf-8') as file:
+                json.dump(data, file)
+            os.replace(tmp_path, path)
+            return
+        except (BlockingIOError, OSError) as exc:
+            last_exc = exc
+            transient = isinstance(exc, BlockingIOError) or getattr(exc, "errno", None) in (
+                errno.EAGAIN,
+                errno.EWOULDBLOCK,
+                errno.EBUSY,
+            )
+            try:
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+            except OSError:
+                pass
+            if not transient or attempt >= retries:
+                raise
+            time.sleep(backoff_seconds * (2 ** attempt))
+    if last_exc is not None:
+        raise last_exc
+
 class NOAADataPoller:
     """
     Class to poll NOAA data and send it to a Kafka topic.
@@ -252,8 +290,7 @@ class NOAADataPoller:
                     saved_times[product] = {}
                 saved_times[product][station] = timestamp.isoformat()
         os.makedirs(os.path.dirname(self.last_polled_file), exist_ok=True)
-        with open(self.last_polled_file, 'w', encoding='utf-8') as file:
-            json.dump(saved_times, file)
+        _atomic_write_json(self.last_polled_file, saved_times)
 
     def poll_and_send(self):
         """
@@ -441,7 +478,14 @@ class NOAADataPoller:
                         if product not in last_polled_times:
                             last_polled_times[product] = {}
                         last_polled_times[product][station_id] = max_timestamp
-                        self.save_last_polled_times(last_polled_times)
+                        try:
+                            self.save_last_polled_times(last_polled_times)
+                        except OSError as exc:
+                            # Do not let a transient state-file write failure
+                            # (e.g. shared fileshare lock contention) crash
+                            # the whole poller -- log and retry on the next
+                            # cycle instead.
+                            print(f"Failed to save last-polled state (will retry next cycle): {exc}")
 
             if os.getenv('ONCE_MODE', 'false').lower() in ('true', '1', 'yes'):
                 break
