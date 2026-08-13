@@ -28,6 +28,12 @@ VIEW_URL = "https://data.kingcounty.gov/api/views/{dataset_id}"
 ROWS_URL = "https://data.kingcounty.gov/resource/{dataset_id}.json"
 DEFAULT_POLL_INTERVAL_SECONDS = 900
 REFERENCE_REFRESH_SECONDS = 86400
+# King County's own buoy telemetry pipeline occasionally stalls upstream
+# (observed: rows stop advancing for 9+ days while the API keeps returning
+# 200 OK with the same stale tail). When that happens "Sent 0 readings" is
+# expected behavior, not a bridge bug -- but it should be visible as a
+# WARNING instead of blending into routine idle-cycle INFO logs.
+UPSTREAM_STALENESS_WARNING_THRESHOLD = timedelta(hours=2)
 MAX_SEEN_IDS = 50000
 PST_FIXED = timezone(timedelta(hours=-8))
 HTTP_TIMEOUT = (15, 60)
@@ -345,6 +351,7 @@ class KingCountyMarineBridge:
                             raise
 
                 sent = 0
+                newest_observation: Optional[datetime] = None
                 for dataset_id in list(self.station_metadata.keys()):
                     try:
                         rows = self.fetch_rows(dataset_id)
@@ -354,6 +361,9 @@ class KingCountyMarineBridge:
 
                     for row in rows:
                         reading = self.build_reading(dataset_id, row)
+                        observed_at = datetime.fromisoformat(reading.observation_time.replace("Z", "+00:00"))
+                        if newest_observation is None or observed_at > newest_observation:
+                            newest_observation = observed_at
                         reading_id = f"{reading.station_id}|{reading.observation_time}"
                         if reading_id in self.seen_reading_ids:
                             continue
@@ -366,7 +376,21 @@ class KingCountyMarineBridge:
                         sent += 1
                 producer.producer.flush()
                 self.save_state()
-                LOGGER.info("Sent %d King County marine readings", sent)
+                if sent == 0 and newest_observation is not None:
+                    staleness = datetime.now(timezone.utc) - newest_observation
+                    if staleness >= UPSTREAM_STALENESS_WARNING_THRESHOLD:
+                        LOGGER.warning(
+                            "Sent 0 King County marine readings; newest available upstream "
+                            "observation is %s old (observed_at=%s). This looks like an "
+                            "upstream data staleness issue at King County, not a bridge bug -- "
+                            "the fetched rows are simply not advancing.",
+                            staleness,
+                            newest_observation.isoformat(),
+                        )
+                    else:
+                        LOGGER.info("Sent %d King County marine readings", sent)
+                else:
+                    LOGGER.info("Sent %d King County marine readings", sent)
             except (KeyError, OSError, ValueError, requests.RequestException) as exc:
                 LOGGER.exception("Error during King County marine poll: %s", exc)
 
