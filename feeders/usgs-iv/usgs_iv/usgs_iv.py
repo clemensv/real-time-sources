@@ -59,6 +59,44 @@ except ModuleNotFoundError:
 # pylint: enable=import-error, line-too-long
 
 
+def _atomic_write_json(path: str, data: Dict, retries: int = 5, backoff_seconds: float = 0.5) -> None:
+    """
+    Write JSON to `path` resiliently against transient BlockingIOError/OSError
+    from shared network filesystems (e.g. Azure Files/NFS lock contention),
+    and atomically (write-to-temp-then-rename) so a failed or interrupted
+    write never leaves a truncated/corrupt state file behind.
+    """
+    import errno
+    import time
+    import uuid
+
+    tmp_path = f"{path}.{uuid.uuid4().hex}.tmp"
+    last_exc: Exception | None = None
+    for attempt in range(retries + 1):
+        try:
+            with open(tmp_path, 'w', encoding='utf-8') as file:
+                json.dump(data, file)
+            os.replace(tmp_path, path)
+            return
+        except (BlockingIOError, OSError) as exc:
+            last_exc = exc
+            transient = isinstance(exc, BlockingIOError) or getattr(exc, "errno", None) in (
+                errno.EAGAIN,
+                errno.EWOULDBLOCK,
+                errno.EBUSY,
+            )
+            try:
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+            except OSError:
+                pass
+            if not transient or attempt >= retries:
+                raise
+            time.sleep(backoff_seconds * (2 ** attempt))
+    if last_exc is not None:
+        raise last_exc
+
+
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 else:
@@ -290,8 +328,7 @@ class USGSDataPoller:
                 saved_times[parameter][site_no] = timestamp.isoformat()
         if not self.last_polled_file:
             return
-        with open(self.last_polled_file, 'w', encoding='utf-8') as file:
-            json.dump(saved_times, file)
+        _atomic_write_json(self.last_polled_file, saved_times)
 
     async def poll_and_send(self):
         """
@@ -535,7 +572,13 @@ class USGSDataPoller:
                     if count_records % 1000 == 0:
                         await flush_transport(self.values_producer)
                 await flush_transport(self.values_producer)
-                self.save_last_polled_times(last_polled_times)
+                try:
+                    self.save_last_polled_times(last_polled_times)
+                except OSError as exc:
+                    # Do not let a transient state-file write failure (e.g.
+                    # shared fileshare lock contention) crash the whole
+                    # poller -- log and retry on the next cycle instead.
+                    logger.warning("Failed to save last-polled state (will retry next cycle): %s", exc)
                 logger.info("Processed records for state %s: %d", state_code, count_records)
                 counts_str = ', '.join([f"{k}: {v}" for k, v in counts.items()])
                 logger.info("Counts for state %s: %s", state_code, counts_str)

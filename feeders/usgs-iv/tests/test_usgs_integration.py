@@ -216,8 +216,9 @@ class TestLastPolledTimes:
                 result = poller.load_last_polled_times()
                 assert result == {}
 
+    @patch('os.replace')
     @patch('builtins.open')
-    def test_save_last_polled_times(self, mock_open):
+    def test_save_last_polled_times(self, mock_open, mock_replace):
         """Test saving last polled times to file."""
         mock_file = Mock()
         mock_file.__enter__ = Mock(return_value=mock_file)
@@ -242,6 +243,7 @@ class TestLastPolledTimes:
                 poller.save_last_polled_times(test_times)
                 
                 mock_dump.assert_called_once()
+                mock_replace.assert_called_once()
                 saved_data = mock_dump.call_args[0][0]
                 assert '00060' in saved_data
                 assert '01646500' in saved_data['00060']
