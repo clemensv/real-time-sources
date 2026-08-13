@@ -991,8 +991,8 @@ def map_alert(entity):
                         schedule_relationship=selector.trip.schedule_relationship
                     )
                 ) for selector in entity.alert.informed_entity],
-                cause=Cause.from_ordinal(entity.alert.cause),
-                effect=Effect.from_ordinal(entity.alert.effect),
+                cause=Cause[gtfs_realtime_pb2.Alert.Cause.Name(entity.alert.cause)],
+                effect=Effect[gtfs_realtime_pb2.Alert.Effect.Name(entity.alert.effect)],
                 url=TranslatedString(translation=[Translation(language=translation.language, text=translation.text) for translation in entity.alert.url.translation]),
                 header_text=TranslatedString(translation=[Translation(language=translation.language, text=translation.text) for translation in entity.alert.header_text.translation]),
                 description_text=TranslatedString(translation=[Translation(language=translation.language, text=translation.text) for translation in entity.alert.description_text.translation])
