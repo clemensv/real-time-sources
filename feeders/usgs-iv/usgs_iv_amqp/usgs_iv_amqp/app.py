@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import inspect
 import logging
 import os
 from datetime import datetime, timezone
@@ -114,15 +115,33 @@ class _AmqpPublishFacade:
         if target is None:
             raise AttributeError(f"send_{suffix}")
 
+        # Some AMQP-generated send_* methods declare their CloudEvents time
+        # attribute as a required '_datetime' placeholder (when the xreg
+        # message group's time template is '{datetime}'), rather than the
+        # generic optional '_time' the Kafka producer variant accepts.
+        # Dropping the caller's time value unconditionally (as this used to
+        # do) silently satisfied methods with an auto-generated time, but
+        # left required-'_datetime' methods missing a positional argument --
+        # a "shipped but never ran" class of bug: it only surfaces the first
+        # time a real send is attempted. Forward the value under whichever
+        # name the target actually declares, instead of always dropping it.
+        target_params = inspect.signature(target).parameters
+        time_param_name = "_datetime" if "_datetime" in target_params else "_time" if "_time" in target_params else None
+
         async def _publish(**kwargs):
             call = {}
+            time_value = None
             for key, value in kwargs.items():
                 if key in ("data", "content_type"):
                     call[key] = value
-                elif key in ("flush_producer", "time", "_time"):
+                elif key in ("flush_producer",):
                     continue
+                elif key in ("time", "_time"):
+                    time_value = value
                 else:
                     call["_" + key.lstrip("_")] = value
+            if time_param_name is not None and time_value is not None:
+                call[time_param_name] = time_value
             target(**call)
 
         return _publish
