@@ -20,6 +20,7 @@ class RouteType(Enum):
     MONORAIL = 'MONORAIL'
     OTHER = 'OTHER'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'RouteType':
         """

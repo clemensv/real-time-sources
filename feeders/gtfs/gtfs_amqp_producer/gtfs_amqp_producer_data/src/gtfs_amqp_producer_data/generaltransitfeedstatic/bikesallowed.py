@@ -9,6 +9,7 @@ class BikesAllowed(Enum):
     BICYCLE_ALLOWED = 'BICYCLE_ALLOWED'
     BICYCLE_NOT_ALLOWED = 'BICYCLE_NOT_ALLOWED'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'BikesAllowed':
         """

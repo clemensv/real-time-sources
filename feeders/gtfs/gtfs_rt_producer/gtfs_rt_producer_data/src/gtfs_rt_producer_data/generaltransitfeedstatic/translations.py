@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Translations:
@@ -27,10 +29,12 @@ class Translations:
     """
     
     
+    
     tableName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tableName"))
     fieldName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fieldName"))
     language: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="language"))
     translation: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="translation"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Translations':
@@ -92,6 +96,8 @@ class Translations:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -148,6 +154,7 @@ class Translations:
                 return Translations.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -159,8 +166,8 @@ class Translations:
             An instance of the dataclass.
         """
         return cls(
-            tableName='trizzyveqlfdviiwgzix',
-            fieldName='mxscsndrjxcbwdzcazen',
-            language='idbtehwxeraljdjdzdiq',
-            translation='yswyczjmrplalrdtvgzv'
+            tableName='ptfzzsfgfftboceovztp',
+            fieldName='vjjikhjtxijwurtdqoth',
+            language='xjsqxtetzbgkjdfezxmd',
+            translation='sdehmsvfgydcxyzgnnlg'
         )

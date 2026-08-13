@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Frequencies:
@@ -28,11 +30,13 @@ class Frequencies:
     """
     
     
+    
     tripId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
     startTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startTime"))
     endTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endTime"))
     headwaySecs: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="headwaySecs"))
     exactTimes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="exactTimes"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Frequencies':
@@ -94,6 +98,8 @@ class Frequencies:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -150,6 +156,7 @@ class Frequencies:
                 return Frequencies.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -161,9 +168,9 @@ class Frequencies:
             An instance of the dataclass.
         """
         return cls(
-            tripId='zaqzutzndkkmyqovwgvx',
-            startTime='etxkqoshmruvzqhuvllc',
-            endTime='zqcejrdgisyqxbfqkiym',
-            headwaySecs=int(51),
-            exactTimes=int(7)
+            tripId='gmwlplecnoizspeapxvh',
+            startTime='lildvyjleakznrodnqmw',
+            endTime='zambofuclgjeiifnfrux',
+            headwaySecs=int(29),
+            exactTimes=int(9)
         )

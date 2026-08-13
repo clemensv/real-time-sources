@@ -28,10 +28,10 @@ class Test_BookingRules(unittest.TestCase):
         Create instance of BookingRules for testing
         """
         instance = BookingRules(
-            bookingRuleId='rniozwkwjothjmftubvb',
-            bookingRuleName='lvkgkimmmfsmuppklwin',
-            bookingRuleDesc='djhbfxiogslcnjlektxx',
-            bookingRuleUrl='arqittioqufpznilgnrd'
+            bookingRuleId='efrazxwfaoxpunbtvkzt',
+            bookingRuleName='uectetyrjwayknirjmsl',
+            bookingRuleDesc='ggqbtmotsrvbfxppzfjl',
+            bookingRuleUrl='gahmjohnrkcwftcnvbsy'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleId property
         """
-        test_value = 'rniozwkwjothjmftubvb'
+        test_value = 'efrazxwfaoxpunbtvkzt'
         self.instance.bookingRuleId = test_value
         self.assertEqual(self.instance.bookingRuleId, test_value)
     
@@ -48,7 +48,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleName property
         """
-        test_value = 'lvkgkimmmfsmuppklwin'
+        test_value = 'uectetyrjwayknirjmsl'
         self.instance.bookingRuleName = test_value
         self.assertEqual(self.instance.bookingRuleName, test_value)
     
@@ -56,7 +56,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleDesc property
         """
-        test_value = 'djhbfxiogslcnjlektxx'
+        test_value = 'ggqbtmotsrvbfxppzfjl'
         self.instance.bookingRuleDesc = test_value
         self.assertEqual(self.instance.bookingRuleDesc, test_value)
     
@@ -64,7 +64,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleUrl property
         """
-        test_value = 'arqittioqufpznilgnrd'
+        test_value = 'gahmjohnrkcwftcnvbsy'
         self.instance.bookingRuleUrl = test_value
         self.assertEqual(self.instance.bookingRuleUrl, test_value)
     

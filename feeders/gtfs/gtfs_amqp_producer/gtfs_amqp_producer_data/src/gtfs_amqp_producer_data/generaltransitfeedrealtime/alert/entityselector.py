@@ -14,6 +14,8 @@ import json
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.tripdescriptor import TripDescriptor
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class EntitySelector:
@@ -29,11 +31,13 @@ class EntitySelector:
     """
     
     
+    
     agency_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency_id"))
     route_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_id"))
     route_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_type"))
     trip: typing.Optional[TripDescriptor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip"))
     stop_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_id"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'EntitySelector':
@@ -95,6 +99,8 @@ class EntitySelector:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -151,6 +157,7 @@ class EntitySelector:
                 return EntitySelector.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -162,9 +169,9 @@ class EntitySelector:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='jphmoowxoqyjbvvomyem',
-            route_id='vhtsnrhizhofoqbhrkqy',
-            route_type=int(89),
+            agency_id='crzdurtfyjrzgcusvalp',
+            route_id='ydiuedgpymiqkarmviss',
+            route_type=int(99),
             trip=None,
-            stop_id='hvayauurbgsfyplsovwx'
+            stop_id='ojwbgedqywaheywyokvy'
         )

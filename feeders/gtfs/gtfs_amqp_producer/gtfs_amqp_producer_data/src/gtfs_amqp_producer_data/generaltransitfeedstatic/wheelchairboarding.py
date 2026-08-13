@@ -9,6 +9,7 @@ class WheelchairBoarding(Enum):
     SOME_VEHICLES = 'SOME_VEHICLES'
     NOT_POSSIBLE = 'NOT_POSSIBLE'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'WheelchairBoarding':
         """

@@ -11,6 +11,7 @@ class LocationType(Enum):
     GENERIC_NODE = 'GENERIC_NODE'
     BOARDING_AREA = 'BOARDING_AREA'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'LocationType':
         """

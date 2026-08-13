@@ -9,6 +9,7 @@ class VehicleStopStatus(Enum):
     STOPPED_AT = 'STOPPED_AT'
     IN_TRANSIT_TO = 'IN_TRANSIT_TO'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'VehicleStopStatus':
         """

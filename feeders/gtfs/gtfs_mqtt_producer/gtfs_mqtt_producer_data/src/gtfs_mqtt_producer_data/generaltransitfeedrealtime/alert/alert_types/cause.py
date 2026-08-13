@@ -18,6 +18,7 @@ class Cause(Enum):
     POLICE_ACTIVITY = 'POLICE_ACTIVITY'
     MEDICAL_EMERGENCY = 'MEDICAL_EMERGENCY'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'Cause':
         """

@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Position:
@@ -28,11 +30,13 @@ class Position:
     """
     
     
+    
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     bearing: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bearing"))
     odometer: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="odometer"))
     speed: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="speed"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Position':
@@ -94,6 +98,8 @@ class Position:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -150,6 +156,7 @@ class Position:
                 return Position.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -161,9 +168,9 @@ class Position:
             An instance of the dataclass.
         """
         return cls(
-            latitude=float(36.5678128736006),
-            longitude=float(1.5828233168690309),
-            bearing=float(21.71080256859672),
-            odometer=float(74.5222612413816),
-            speed=float(32.2589725659715)
+            latitude=float(14.4014090377385),
+            longitude=float(36.260534976377215),
+            bearing=float(17.320745790190383),
+            odometer=float(41.084977910828734),
+            speed=float(99.05639082593775)
         )

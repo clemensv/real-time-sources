@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Pathways:
@@ -35,6 +37,7 @@ class Pathways:
     """
     
     
+    
     pathwayId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pathwayId"))
     fromStopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromStopId"))
     toStopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toStopId"))
@@ -47,6 +50,7 @@ class Pathways:
     minWidth: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="minWidth"))
     signpostedAs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="signpostedAs"))
     reversedSignpostedAs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="reversedSignpostedAs"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Pathways':
@@ -108,6 +112,8 @@ class Pathways:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -164,6 +170,7 @@ class Pathways:
                 return Pathways.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -175,16 +182,16 @@ class Pathways:
             An instance of the dataclass.
         """
         return cls(
-            pathwayId='xygenpffxbqxbwxdzkff',
-            fromStopId='wtopuieddgqyzgkznatw',
-            toStopId='xxvpgrvcxlgijffyijra',
-            pathwayMode=int(93),
-            isBidirectional=int(10),
-            length=float(36.71903381140492),
-            traversalTime=int(35),
-            stairCount=int(49),
-            maxSlope=float(71.98536245357828),
-            minWidth=float(85.00116838943535),
-            signpostedAs='fpcqmgghwnyrxzcybopv',
-            reversedSignpostedAs='kcwzfalmmpqrscumgzwv'
+            pathwayId='nghchsrqtcjkqdmapsnl',
+            fromStopId='gofsddsmilvrtnqznndv',
+            toStopId='sgwbgrwkriellcnqhdpm',
+            pathwayMode=int(72),
+            isBidirectional=int(96),
+            length=float(53.29303021773685),
+            traversalTime=int(94),
+            stairCount=int(39),
+            maxSlope=float(92.3505627064884),
+            minWidth=float(1.0661017860300825),
+            signpostedAs='nkssddxkwhzzhlqlcmen',
+            reversedSignpostedAs='yexebfpgbonabxvricqk'
         )

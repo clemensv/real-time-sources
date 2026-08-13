@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class LocationGroups:
@@ -27,10 +29,12 @@ class LocationGroups:
     """
     
     
+    
     locationGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupId"))
     locationGroupName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupName"))
     locationGroupDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupDesc"))
     locationGroupUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupUrl"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'LocationGroups':
@@ -92,6 +96,8 @@ class LocationGroups:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -148,6 +154,7 @@ class LocationGroups:
                 return LocationGroups.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -159,8 +166,8 @@ class LocationGroups:
             An instance of the dataclass.
         """
         return cls(
-            locationGroupId='mlazcwjsdiqeussvvzeg',
-            locationGroupName='iwjywvfzxkwwadepvexp',
-            locationGroupDesc='ktaiateypswblmcharsb',
-            locationGroupUrl='fogckwumtekvstkeuadf'
+            locationGroupId='rjowfaeemwtmviolfjbw',
+            locationGroupName='qzjxtmbeekmqlouznqjo',
+            locationGroupDesc='rdsxesfxipvaihrcfrvx',
+            locationGroupUrl='ohvvhkomrbgvslicqmfg'
         )

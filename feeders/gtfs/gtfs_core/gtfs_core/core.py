@@ -1502,10 +1502,6 @@ def _async_result(value: Any):
     return _noop()
 
 
-async def _call_publish(method: Any, **kwargs: Any) -> None:
-    await _async_result(method(**kwargs))
-
-
 async def _maybe_call(member: Any, *args: Any, **kwargs: Any) -> Any:
     if member is None:
         return None
@@ -1521,6 +1517,39 @@ async def _flush_publisher(publisher: Any) -> None:
 
 async def _poll_publisher(publisher: Any) -> None:
     await _maybe_call(getattr(publisher, "poll", None))
+
+
+# Underlying Kafka producer's local delivery-report queue (bounded by
+# librdkafka's queue.buffering.max.messages/max.kbytes) only drains when
+# poll()/flush() run delivery-report callbacks. A caller that issues many
+# produce() calls in a row without ever polling can exhaust that queue and
+# get BufferError('Local: Queue full') from confluent_kafka. Retry with a
+# short poll+backoff instead of letting one full queue take down the whole
+# poll cycle (and, if it never drains, the whole process going forward).
+_BUFFER_FULL_MAX_RETRIES = 5
+_BUFFER_FULL_INITIAL_BACKOFF = 0.5
+
+
+async def _call_publish(method: Any, publisher: Any = None, **kwargs: Any) -> None:
+    attempt = 0
+    backoff = _BUFFER_FULL_INITIAL_BACKOFF
+    while True:
+        try:
+            await _async_result(method(**kwargs))
+            return
+        except BufferError:
+            attempt += 1
+            if attempt > _BUFFER_FULL_MAX_RETRIES:
+                raise
+            logger.warning(
+                "Local Kafka producer queue full, draining and retrying (attempt %s/%s)",
+                attempt,
+                _BUFFER_FULL_MAX_RETRIES,
+            )
+            if publisher is not None:
+                await _poll_publisher(publisher)
+            await asyncio.sleep(backoff)
+            backoff *= 2
 
 
 def _static_event_specs() -> dict[str, tuple[Any, str, Any]]:
@@ -1576,6 +1605,15 @@ async def poll_and_publish_realtime_feed(agency_id: str, publisher: Any, feed_ur
         logger.error("Failed to parse a GTFS Realtime message from %s with %s", feed_url, exc)
         return
 
+    # Periodically service delivery-report callbacks so the producer's local
+    # queue (bounded by queue.buffering.max.messages/max.kbytes) drains as we
+    # go. Large nationwide feeds (e.g. gtfs.de) can carry tens of thousands
+    # of entities in a single poll; publishing them all with produce()-only
+    # calls before any poll()/flush() exhausts that queue and raises
+    # BufferError('Local: Queue full') -- see repo issue tracking gtfs-de.
+    published_since_poll = 0
+    poll_every_n_entities = 500
+
     for entity in incoming_feed_message.entity:
         if entity.vehicle and entity.vehicle.vehicle and entity.vehicle.vehicle.id:
             vehicle = map_vehicle_position(entity)
@@ -1590,6 +1628,7 @@ async def poll_and_publish_realtime_feed(agency_id: str, publisher: Any, feed_ur
                 continue
             await _call_publish(
                 getattr(publisher, REALTIME_PUBLISH_METHODS["vehicle"]),
+                publisher=publisher,
                 feedurl=feed_url,
                 agencyid=agency_id,
                 route_id=_key_segment(vehicle.trip.route_id if vehicle.trip else None),
@@ -1598,6 +1637,7 @@ async def poll_and_publish_realtime_feed(agency_id: str, publisher: Any, feed_ur
                 content_type="application/json",
             )
             hashes_vehicles[vehicle_id] = hash_vph
+            published_since_poll += 1
         elif entity.trip_update and entity.trip_update.trip and entity.trip_update.trip.trip_id:
             trip_update = map_trip_update(entity)
             if route and route != "*" and trip_update.trip and trip_update.trip.route_id != route:
@@ -1611,6 +1651,7 @@ async def poll_and_publish_realtime_feed(agency_id: str, publisher: Any, feed_ur
                 continue
             await _call_publish(
                 getattr(publisher, REALTIME_PUBLISH_METHODS["trip"]),
+                publisher=publisher,
                 feedurl=feed_url,
                 agencyid=agency_id,
                 route_id=_key_segment(trip_update.trip.route_id if trip_update.trip else None),
@@ -1619,6 +1660,7 @@ async def poll_and_publish_realtime_feed(agency_id: str, publisher: Any, feed_ur
                 content_type="application/json",
             )
             hashes_trip[trip_id] = hash_tuh
+            published_since_poll += 1
         elif entity.alert and len(entity.alert.header_text.translation) > 0:
             alert = map_alert(entity)
             sah = map_alert(entity)
@@ -1629,6 +1671,7 @@ async def poll_and_publish_realtime_feed(agency_id: str, publisher: Any, feed_ur
                 continue
             await _call_publish(
                 getattr(publisher, REALTIME_PUBLISH_METHODS["alert"]),
+                publisher=publisher,
                 feedurl=feed_url,
                 agencyid=agency_id,
                 route_id=_alert_route_id(alert),
@@ -1637,6 +1680,11 @@ async def poll_and_publish_realtime_feed(agency_id: str, publisher: Any, feed_ur
                 content_type="application/json",
             )
             hashes_alert[hash_sah] = hash_sah
+            published_since_poll += 1
+
+        if published_since_poll >= poll_every_n_entities:
+            await _poll_publisher(publisher)
+            published_since_poll = 0
     await _flush_publisher(publisher)
 
 
@@ -1714,6 +1762,7 @@ async def fetch_and_publish_schedule(agency_id: str, publisher: Any, gtfs_urls: 
                 row_id = row_id_builder(entity, agency_id)
                 await _call_publish(
                     publish_method,
+                    publisher=publisher,
                     feedurl=agency_url,
                     agencyid=agency_id,
                     row_id=row_id,
@@ -1722,7 +1771,7 @@ async def fetch_and_publish_schedule(agency_id: str, publisher: Any, gtfs_urls: 
                 )
                 send_count += 1
                 entity_count += 1
-                if send_count % 10000 == 0:
+                if send_count % 1000 == 0:
                     await _poll_publisher(publisher)
                 if static_max_rows is not None and entity_count >= static_max_rows:
                     logger.info(

@@ -12,8 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
 from typing import Any
-from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
+from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -37,6 +39,7 @@ class Trips:
     """
     
     
+    
     routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
     serviceDates: typing.Optional[Calendar]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
     serviceExceptions: typing.List[CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceExceptions"))
@@ -48,6 +51,7 @@ class Trips:
     shapeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeId"))
     wheelchairAccessible: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairAccessible"))
     bikesAllowed: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bikesAllowed"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Trips':
@@ -109,6 +113,8 @@ class Trips:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,6 +171,7 @@ class Trips:
                 return Trips.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -176,15 +183,15 @@ class Trips:
             An instance of the dataclass.
         """
         return cls(
-            routeId='suyrtmtmwwgiavvykjcn',
+            routeId='kzzbptpstcviggawhxyp',
             serviceDates=None,
-            serviceExceptions=[None, None, None, None, None],
-            tripId='niaqvgtdfyagyggflqjb',
-            tripHeadsign='pypyldkdepivfitfrtkm',
-            tripShortName='bhznqeguznwpxnftibwo',
+            serviceExceptions=[None, None, None, None],
+            tripId='nsipablqniatajrtbdmh',
+            tripHeadsign='huoqrppokibgpjwennue',
+            tripShortName='wbvziconthfokylqildb',
             directionId=None,
-            blockId='iicteayqesifsohvdmci',
-            shapeId='ttfqhblmayiqttlyfskz',
+            blockId='hnwzdlkqvhhjnvokvlvg',
+            shapeId='tdgpofonhjkbbedixwte',
             wheelchairAccessible=None,
             bikesAllowed=None
         )

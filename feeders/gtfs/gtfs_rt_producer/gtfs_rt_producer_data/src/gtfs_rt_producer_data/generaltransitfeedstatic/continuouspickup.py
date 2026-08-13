@@ -10,6 +10,7 @@ class ContinuousPickup(Enum):
     PHONE_AGENCY = 'PHONE_AGENCY'
     COORDINATE_WITH_DRIVER = 'COORDINATE_WITH_DRIVER'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'ContinuousPickup':
         """

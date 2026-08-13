@@ -38,3 +38,5 @@ class Test_Effect(unittest.TestCase):
         self.assertEqual(Effect.OTHER_EFFECT.value, 'OTHER_EFFECT')
         self.assertEqual(Effect.UNKNOWN_EFFECT.value, 'UNKNOWN_EFFECT')
         self.assertEqual(Effect.STOP_MOVED.value, 'STOP_MOVED')
+        self.assertEqual(Effect.NO_EFFECT.value, 'NO_EFFECT')
+        self.assertEqual(Effect.ACCESSIBILITY_ISSUE.value, 'ACCESSIBILITY_ISSUE')

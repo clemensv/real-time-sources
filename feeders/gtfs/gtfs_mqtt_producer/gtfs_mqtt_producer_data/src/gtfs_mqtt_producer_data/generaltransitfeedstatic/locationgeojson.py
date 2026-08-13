@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class LocationGeoJson:
@@ -26,9 +28,11 @@ class LocationGeoJson:
     """
     
     
+    
     locationGeoJsonId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGeoJsonId"))
     locationGeoJsonType: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGeoJsonType"))
     locationGeoJsonData: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGeoJsonData"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'LocationGeoJson':
@@ -90,6 +94,8 @@ class LocationGeoJson:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -146,6 +152,7 @@ class LocationGeoJson:
                 return LocationGeoJson.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -157,7 +164,7 @@ class LocationGeoJson:
             An instance of the dataclass.
         """
         return cls(
-            locationGeoJsonId='ubmpoabsqrscqtnqmifs',
-            locationGeoJsonType='lnuaixnrezdctdpkhldd',
-            locationGeoJsonData='valdujwwymgllbvymgip'
+            locationGeoJsonId='njyrmwgcshiqawamfwtf',
+            locationGeoJsonType='adfddjngozhekxupaxgp',
+            locationGeoJsonData='lubfhfxwbgqwaxkncohj'
         )

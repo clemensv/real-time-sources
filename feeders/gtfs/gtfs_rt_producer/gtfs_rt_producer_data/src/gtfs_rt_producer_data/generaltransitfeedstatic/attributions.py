@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Attributions:
@@ -34,6 +36,7 @@ class Attributions:
     """
     
     
+    
     attributionId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionId"))
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
     routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
@@ -45,6 +48,7 @@ class Attributions:
     attributionUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionUrl"))
     attributionEmail: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionEmail"))
     attributionPhone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionPhone"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Attributions':
@@ -106,6 +110,8 @@ class Attributions:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -162,6 +168,7 @@ class Attributions:
                 return Attributions.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -173,15 +180,15 @@ class Attributions:
             An instance of the dataclass.
         """
         return cls(
-            attributionId='jistpufizytcatpeinos',
-            agencyId='nfgooivedjodlswyvhte',
-            routeId='nrgsaluqjtsybtzipknp',
-            tripId='uoxndgjydvzwfcqvwwjd',
-            organizationName='zelmefwjugehwwhkbbah',
-            isProducer=int(97),
-            isOperator=int(51),
-            isAuthority=int(53),
-            attributionUrl='czldxmetwdkonlkiaerd',
-            attributionEmail='wcssnqvotelaqyxgbkoc',
-            attributionPhone='kqzdproqzjtjqrdxihbr'
+            attributionId='zweojxlmrtlkkfujuicx',
+            agencyId='bmqpstkfgkzdybxogbpf',
+            routeId='rnvvvlsxkfmkeownkkau',
+            tripId='fvkruyiclmelqorncqlp',
+            organizationName='rigabkjgadwogmyuenyc',
+            isProducer=int(39),
+            isOperator=int(28),
+            isAuthority=int(50),
+            attributionUrl='aieentndtlruyniehthn',
+            attributionEmail='iejfzhxklpjyaiwzokzy',
+            attributionPhone='igrqeopqvniqsdaqdtxw'
         )

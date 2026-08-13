@@ -14,6 +14,8 @@ import json
 from typing import Any
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class TripDescriptor:
@@ -30,12 +32,14 @@ class TripDescriptor:
     """
     
     
+    
     trip_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip_id"))
     route_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_id"))
     direction_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="direction_id"))
     start_time: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_time"))
     start_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_date"))
     schedule_relationship: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="schedule_relationship"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TripDescriptor':
@@ -97,6 +101,8 @@ class TripDescriptor:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -153,6 +159,7 @@ class TripDescriptor:
                 return TripDescriptor.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -164,10 +171,10 @@ class TripDescriptor:
             An instance of the dataclass.
         """
         return cls(
-            trip_id='ayqcvmgdkwnrcpjbluzi',
-            route_id='tihrfitsredeurqfgbyl',
-            direction_id=int(48),
-            start_time='knnfkgfycmqhebqcrijy',
-            start_date='pgpditpxwvwycvfsbvmy',
+            trip_id='mbvptrlnrbtowuhqcjjq',
+            route_id='ypnjkjlvtashehgthmfy',
+            direction_id=int(88),
+            start_time='oqfpurwkwpykkttslmzh',
+            start_date='cmssznjpudtbifpejofw',
             schedule_relationship=None
         )

@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Shapes:
@@ -28,11 +30,13 @@ class Shapes:
     """
     
     
+    
     shapeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeId"))
     shapePtLat: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapePtLat"))
     shapePtLon: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapePtLon"))
     shapePtSequence: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapePtSequence"))
     shapeDistTraveled: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeDistTraveled"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Shapes':
@@ -94,6 +98,8 @@ class Shapes:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -150,6 +156,7 @@ class Shapes:
                 return Shapes.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -161,9 +168,9 @@ class Shapes:
             An instance of the dataclass.
         """
         return cls(
-            shapeId='ubmbszqobhuvmhyowvpk',
-            shapePtLat=float(72.63361216737938),
-            shapePtLon=float(69.18937585610763),
-            shapePtSequence=int(65),
-            shapeDistTraveled=float(39.74426712157233)
+            shapeId='mjeyihkizahfyhyslhpv',
+            shapePtLat=float(24.070975638848104),
+            shapePtLon=float(62.31346897822178),
+            shapePtSequence=int(64),
+            shapeDistTraveled=float(77.71473502288862)
         )

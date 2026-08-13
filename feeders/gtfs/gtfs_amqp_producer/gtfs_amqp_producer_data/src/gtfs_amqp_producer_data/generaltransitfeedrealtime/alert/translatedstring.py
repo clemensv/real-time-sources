@@ -14,6 +14,8 @@ import json
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.translatedstring_types.translation import Translation
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class TranslatedString:
@@ -25,7 +27,9 @@ class TranslatedString:
     """
     
     
+    
     translation: typing.List[Translation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="translation"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TranslatedString':
@@ -87,6 +91,8 @@ class TranslatedString:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -143,6 +149,7 @@ class TranslatedString:
                 return TranslatedString.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -154,5 +161,5 @@ class TranslatedString:
             An instance of the dataclass.
         """
         return cls(
-            translation=[None, None, None, None, None]
+            translation=[None, None]
         )

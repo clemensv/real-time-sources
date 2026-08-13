@@ -14,6 +14,8 @@ import json
 from typing import Any
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Stops:
@@ -39,6 +41,7 @@ class Stops:
     """
     
     
+    
     stopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
     stopCode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopCode"))
     stopName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopName"))
@@ -54,6 +57,7 @@ class Stops:
     wheelchairBoarding: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairBoarding"))
     levelId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="levelId"))
     platformCode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="platformCode"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Stops':
@@ -115,6 +119,8 @@ class Stops:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,6 +177,7 @@ class Stops:
                 return Stops.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -182,19 +189,19 @@ class Stops:
             An instance of the dataclass.
         """
         return cls(
-            stopId='ihzfiuhysnstjzrumipk',
-            stopCode='kufypdomshjmzmsenoan',
-            stopName='mlemsydfeojxxmpotzbx',
-            ttsStopName='rziilturqrovuunztxvv',
-            stopDesc='fyfrlfbfnzgswrnfcvyr',
-            stopLat=float(50.32521675661563),
-            stopLon=float(93.39898633434132),
-            zoneId='nkivktzjbpweokxowjkw',
-            stopUrl='iffhceycjpvubpkvahie',
+            stopId='mziisrxpwgcbchlcofny',
+            stopCode='yulnjifgnqngmstitjle',
+            stopName='sndkwehpzmyndipbskoa',
+            ttsStopName='gxweweslbigarjiuipfj',
+            stopDesc='fdjdbnexuwqbthvbflpr',
+            stopLat=float(59.20656988436813),
+            stopLon=float(44.1434171821263),
+            zoneId='haggfdvbxrdmcfwcfcgd',
+            stopUrl='hxhisjkhsikduuuxsomh',
             locationType=None,
-            parentStation='rfcwdgsvlmfuenqfxqyy',
-            stopTimezone='gedunknwflyzbhmvogzn',
+            parentStation='tagpqdrzjfffsgkysbov',
+            stopTimezone='cmnggmjrjbdrcfgevtcm',
             wheelchairBoarding=None,
-            levelId='ikxlcpvvamkdasxsetvo',
-            platformCode='bpwrfcrxrbgqczbxubma'
+            levelId='hroeokiqeuhjtmaiegca',
+            platformCode='kylelteaqbphfmucohfw'
         )

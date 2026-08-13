@@ -9,6 +9,7 @@ class WheelchairAccessible(Enum):
     WHEELCHAIR_ACCESSIBLE = 'WHEELCHAIR_ACCESSIBLE'
     NOT_WHEELCHAIR_ACCESSIBLE = 'NOT_WHEELCHAIR_ACCESSIBLE'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'WheelchairAccessible':
         """

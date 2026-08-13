@@ -28,15 +28,15 @@ class Test_FeedInfo(unittest.TestCase):
         Create instance of FeedInfo for testing
         """
         instance = FeedInfo(
-            feedPublisherName='tivlearetipekondyquk',
-            feedPublisherUrl='wfsjmgejwbpxqcytymyg',
-            feedLang='ulrqfckqrtxcczqufdtp',
-            defaultLang='ddkgchvjkumvwvacusgx',
-            feedStartDate='etqjdlpwknqafznropec',
-            feedEndDate='koitoyiqjnjahqboivwa',
-            feedVersion='xlsoeqiovayqvfcrhgrc',
-            feedContactEmail='nojiuxwqatejqhwshoci',
-            feedContactUrl='tlcxdfbowchufzafquvx'
+            feedPublisherName='hbuowzabernauorgugzs',
+            feedPublisherUrl='yzbwljegnqlgvyzlspjp',
+            feedLang='kfxugmbzjtfmfiprdxde',
+            defaultLang='aokqgtenyaavktxqlofs',
+            feedStartDate='mksqttvclwiisgbnjjrw',
+            feedEndDate='kzqhfbxxnjbcaxxfnben',
+            feedVersion='hhfedazingyrphbjerqq',
+            feedContactEmail='ddnxiaxhbentglyonaww',
+            feedContactUrl='oruugaedqaccnystdmrk'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedPublisherName property
         """
-        test_value = 'tivlearetipekondyquk'
+        test_value = 'hbuowzabernauorgugzs'
         self.instance.feedPublisherName = test_value
         self.assertEqual(self.instance.feedPublisherName, test_value)
     
@@ -53,7 +53,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedPublisherUrl property
         """
-        test_value = 'wfsjmgejwbpxqcytymyg'
+        test_value = 'yzbwljegnqlgvyzlspjp'
         self.instance.feedPublisherUrl = test_value
         self.assertEqual(self.instance.feedPublisherUrl, test_value)
     
@@ -61,7 +61,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedLang property
         """
-        test_value = 'ulrqfckqrtxcczqufdtp'
+        test_value = 'kfxugmbzjtfmfiprdxde'
         self.instance.feedLang = test_value
         self.assertEqual(self.instance.feedLang, test_value)
     
@@ -69,7 +69,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test defaultLang property
         """
-        test_value = 'ddkgchvjkumvwvacusgx'
+        test_value = 'aokqgtenyaavktxqlofs'
         self.instance.defaultLang = test_value
         self.assertEqual(self.instance.defaultLang, test_value)
     
@@ -77,7 +77,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedStartDate property
         """
-        test_value = 'etqjdlpwknqafznropec'
+        test_value = 'mksqttvclwiisgbnjjrw'
         self.instance.feedStartDate = test_value
         self.assertEqual(self.instance.feedStartDate, test_value)
     
@@ -85,7 +85,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedEndDate property
         """
-        test_value = 'koitoyiqjnjahqboivwa'
+        test_value = 'kzqhfbxxnjbcaxxfnben'
         self.instance.feedEndDate = test_value
         self.assertEqual(self.instance.feedEndDate, test_value)
     
@@ -93,7 +93,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedVersion property
         """
-        test_value = 'xlsoeqiovayqvfcrhgrc'
+        test_value = 'hhfedazingyrphbjerqq'
         self.instance.feedVersion = test_value
         self.assertEqual(self.instance.feedVersion, test_value)
     
@@ -101,7 +101,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedContactEmail property
         """
-        test_value = 'nojiuxwqatejqhwshoci'
+        test_value = 'ddnxiaxhbentglyonaww'
         self.instance.feedContactEmail = test_value
         self.assertEqual(self.instance.feedContactEmail, test_value)
     
@@ -109,7 +109,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedContactUrl property
         """
-        test_value = 'tlcxdfbowchufzafquvx'
+        test_value = 'oruugaedqaccnystdmrk'
         self.instance.feedContactUrl = test_value
         self.assertEqual(self.instance.feedContactUrl, test_value)
     

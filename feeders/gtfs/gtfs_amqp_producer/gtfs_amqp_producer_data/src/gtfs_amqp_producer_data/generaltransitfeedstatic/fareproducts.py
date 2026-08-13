@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class FareProducts:
@@ -27,10 +29,12 @@ class FareProducts:
     """
     
     
+    
     fareProductId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
     fareProductName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductName"))
     fareProductDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductDesc"))
     fareProductUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductUrl"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FareProducts':
@@ -92,6 +96,8 @@ class FareProducts:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -148,6 +154,7 @@ class FareProducts:
                 return FareProducts.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -159,8 +166,8 @@ class FareProducts:
             An instance of the dataclass.
         """
         return cls(
-            fareProductId='briobbtzyspasmtafuuw',
-            fareProductName='mijbjwwnosmxnwbqduqh',
-            fareProductDesc='wqmbmwwxlqmcqkxcagka',
-            fareProductUrl='wczwaufylpqefidhbqeh'
+            fareProductId='mxakfhgcyeecedvlflxl',
+            fareProductName='qfvrpdecbksldfuyfcpl',
+            fareProductDesc='tnzbulpbtithasqfonhh',
+            fareProductUrl='kpqnrdxsoyuyhjbczhxg'
         )

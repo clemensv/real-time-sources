@@ -14,6 +14,8 @@ import json
 from typing import Any
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Routes:
@@ -37,6 +39,7 @@ class Routes:
     """
     
     
+    
     routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
     routeShortName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeShortName"))
@@ -50,6 +53,7 @@ class Routes:
     continuousPickup: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousPickup"))
     continuousDropOff: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousDropOff"))
     networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Routes':
@@ -111,6 +115,8 @@ class Routes:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,6 +173,7 @@ class Routes:
                 return Routes.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -178,17 +185,17 @@ class Routes:
             An instance of the dataclass.
         """
         return cls(
-            routeId='ykxlkhfkxnavlrwbfmzm',
-            agencyId='ammmgjiulcqulrjqzlkm',
-            routeShortName='qqwhfuwcujrdtcksepuv',
-            routeLongName='wnvlwijhhlgnkrizrjjj',
-            routeDesc='eaatcfmuqzxozqfykzhz',
+            routeId='hzrgynxcrtnvllkpzkxu',
+            agencyId='sywsmmhfsufkihvdusdg',
+            routeShortName='hazzxeoqpmeescfchvor',
+            routeLongName='mowlrntusykvfcnvmkhb',
+            routeDesc='qatjsgjbmrydelpeldaf',
             routeType=None,
-            routeUrl='ealhsbsuuvcgyknfrijo',
-            routeColor='mpbrlezlaokzihridpzv',
-            routeTextColor='bowjowxigpegjeucvylu',
-            routeSortOrder=int(80),
+            routeUrl='bdwhgedlzuuvlqwnzbof',
+            routeColor='ytfzfkvkjeetvfbjamkh',
+            routeTextColor='psnxswktvwpjinnkarmm',
+            routeSortOrder=int(100),
             continuousPickup=None,
             continuousDropOff=None,
-            networkId='hzmthkgyxwqjlyfhfnxi'
+            networkId='ynjcgyxzpuaubbwtniio'
         )
