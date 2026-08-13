@@ -12,8 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripdescriptor import TripDescriptor
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.vehicledescriptor import VehicleDescriptor
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -31,11 +33,13 @@ class TripUpdate:
     """
     
     
+    
     trip: TripDescriptor=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip"))
     vehicle: typing.Optional[VehicleDescriptor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vehicle"))
     stop_time_update: typing.List[StopTimeUpdate]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_time_update"))
     timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     delay: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="delay"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TripUpdate':
@@ -101,6 +105,8 @@ class TripUpdate:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,6 +163,7 @@ class TripUpdate:
                 return TripUpdate.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -170,7 +177,7 @@ class TripUpdate:
         return cls(
             trip=None,
             vehicle=None,
-            stop_time_update=[None, None, None, None, None],
-            timestamp=int(69),
-            delay=int(21)
+            stop_time_update=[None, None, None],
+            timestamp=int(81),
+            delay=int(40)
         )

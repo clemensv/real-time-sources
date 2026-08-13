@@ -11,10 +11,12 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from typing import Any
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
+from typing import Any
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -34,6 +36,7 @@ class Alert:
     """
     
     
+    
     active_period: typing.List[TimeRange]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="active_period"))
     informed_entity: typing.List[EntitySelector]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="informed_entity"))
     cause: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cause"))
@@ -41,6 +44,7 @@ class Alert:
     url: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
     header_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="header_text"))
     description_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description_text"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Alert':
@@ -102,6 +106,8 @@ class Alert:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -158,6 +164,7 @@ class Alert:
                 return Alert.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -169,8 +176,8 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            active_period=[None, None, None, None, None],
-            informed_entity=[None, None, None, None, None],
+            active_period=[None, None, None, None],
+            informed_entity=[None],
             cause=None,
             effect=None,
             url=None,

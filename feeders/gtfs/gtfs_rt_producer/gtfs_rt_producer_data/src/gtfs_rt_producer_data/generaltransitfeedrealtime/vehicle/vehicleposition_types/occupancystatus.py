@@ -13,6 +13,7 @@ class OccupancyStatus(Enum):
     FULL = 'FULL'
     NOT_ACCEPTING_PASSENGERS = 'NOT_ACCEPTING_PASSENGERS'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'OccupancyStatus':
         """

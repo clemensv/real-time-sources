@@ -8,6 +8,7 @@ class ExceptionType(Enum):
     SERVICE_ADDED = 'SERVICE_ADDED'
     SERVICE_REMOVED = 'SERVICE_REMOVED'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'ExceptionType':
         """

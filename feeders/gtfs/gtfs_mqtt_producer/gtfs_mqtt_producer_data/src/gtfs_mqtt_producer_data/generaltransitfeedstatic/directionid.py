@@ -8,6 +8,7 @@ class DirectionId(Enum):
     OUTBOUND = 'OUTBOUND'
     INBOUND = 'INBOUND'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'DirectionId':
         """

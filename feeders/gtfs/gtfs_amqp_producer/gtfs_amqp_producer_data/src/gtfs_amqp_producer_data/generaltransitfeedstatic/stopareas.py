@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class StopAreas:
@@ -26,9 +28,11 @@ class StopAreas:
     """
     
     
+    
     stopAreaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopAreaId"))
     stopId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stopId"))
     areaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="areaId"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'StopAreas':
@@ -90,6 +94,8 @@ class StopAreas:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -146,6 +152,7 @@ class StopAreas:
                 return StopAreas.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -157,7 +164,7 @@ class StopAreas:
             An instance of the dataclass.
         """
         return cls(
-            stopAreaId='sqartdfyhapkixhiuqml',
-            stopId='donfivofhjyttxtbfqlc',
-            areaId='ngfokktwtemvfexakkqf'
+            stopAreaId='tztzczzmnvwllygmbnnu',
+            stopId='ojnmivqvancbynmdwvex',
+            areaId='vhwwpcvvkmruamcvbvjc'
         )

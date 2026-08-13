@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class FeedInfo:
@@ -32,6 +34,7 @@ class FeedInfo:
     """
     
     
+    
     feedPublisherName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedPublisherName"))
     feedPublisherUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedPublisherUrl"))
     feedLang: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedLang"))
@@ -41,6 +44,7 @@ class FeedInfo:
     feedVersion: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedVersion"))
     feedContactEmail: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedContactEmail"))
     feedContactUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feedContactUrl"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FeedInfo':
@@ -102,6 +106,8 @@ class FeedInfo:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -158,6 +164,7 @@ class FeedInfo:
                 return FeedInfo.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -169,13 +176,13 @@ class FeedInfo:
             An instance of the dataclass.
         """
         return cls(
-            feedPublisherName='deudvmqnaoptqvpzdibj',
-            feedPublisherUrl='ggocabzuooruijgcqixx',
-            feedLang='sucqcdzdejiyauklsplz',
-            defaultLang='nqaaxpiadfkccziwnkdg',
-            feedStartDate='asvesmnwflfeeyxvxnhx',
-            feedEndDate='ycoizvdhtxdtybuvqvwf',
-            feedVersion='fpcsiavtljczpooskanl',
-            feedContactEmail='aopshpokalkdycztdddb',
-            feedContactUrl='jrfoxhsijspxrzfldwkh'
+            feedPublisherName='qdgsvituawuuhaenggjs',
+            feedPublisherUrl='mdtgadtsluubeyclktgs',
+            feedLang='mnrvwdrqycpjkuefywks',
+            defaultLang='oliaxisdjlulzzkywdjm',
+            feedStartDate='ieogjzefemzieocaursf',
+            feedEndDate='qxytkipgdypemrrcqign',
+            feedVersion='erkodtopchemkjvtnbos',
+            feedContactEmail='fwtekhaxnqnvvcynutpu',
+            feedContactUrl='mwljnxghengqphbykcvi'
         )

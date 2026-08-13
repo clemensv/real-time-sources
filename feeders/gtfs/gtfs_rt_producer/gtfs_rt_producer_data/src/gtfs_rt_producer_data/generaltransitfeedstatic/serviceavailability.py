@@ -8,6 +8,7 @@ class ServiceAvailability(Enum):
     NO_SERVICE = 'NO_SERVICE'
     SERVICE_AVAILABLE = 'SERVICE_AVAILABLE'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'ServiceAvailability':
         """

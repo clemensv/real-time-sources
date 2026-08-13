@@ -15,6 +15,8 @@ from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Timeframes:
@@ -29,10 +31,12 @@ class Timeframes:
     """
     
     
+    
     timeframeGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeframeGroupId"))
     startTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startTime"))
     endTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endTime"))
     serviceDates: typing.Union[Calendar, CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Timeframes':
@@ -94,6 +98,8 @@ class Timeframes:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -150,6 +156,7 @@ class Timeframes:
                 return Timeframes.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -161,8 +168,8 @@ class Timeframes:
             An instance of the dataclass.
         """
         return cls(
-            timeframeGroupId='vsjigpvtrefqjpvafgvc',
-            startTime='takmzsalsutuaahlpnhf',
-            endTime='kiymqwqmwbxtlxysfvgr',
+            timeframeGroupId='ulvpxqdokbwcsirhmsbc',
+            startTime='sepbhkkcvktmfrjrzfmh',
+            endTime='vvgtyoluxmpfbgaiudvi',
             serviceDates=None
         )

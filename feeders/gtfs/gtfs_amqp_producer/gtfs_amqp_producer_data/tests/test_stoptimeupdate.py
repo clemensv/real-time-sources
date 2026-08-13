@@ -30,8 +30,8 @@ class Test_StopTimeUpdate(unittest.TestCase):
         Create instance of StopTimeUpdate for testing
         """
         instance = StopTimeUpdate(
-            stop_sequence=int(11),
-            stop_id='jyzsivahzsrdlyhdsgmr',
+            stop_sequence=int(28),
+            stop_id='cskftojrbvalpodfdqtc',
             arrival=None,
             departure=None,
             schedule_relationship=None
@@ -43,7 +43,7 @@ class Test_StopTimeUpdate(unittest.TestCase):
         """
         Test stop_sequence property
         """
-        test_value = int(11)
+        test_value = int(28)
         self.instance.stop_sequence = test_value
         self.assertEqual(self.instance.stop_sequence, test_value)
     
@@ -51,7 +51,7 @@ class Test_StopTimeUpdate(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'jyzsivahzsrdlyhdsgmr'
+        test_value = 'cskftojrbvalpodfdqtc'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     

@@ -8,6 +8,7 @@ class Timepoint(Enum):
     APPROXIMATE = 'APPROXIMATE'
     EXACT = 'EXACT'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'Timepoint':
         """

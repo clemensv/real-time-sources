@@ -14,6 +14,8 @@ import json
 from typing import Any
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class CalendarDates:
@@ -27,9 +29,11 @@ class CalendarDates:
     """
     
     
+    
     serviceId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
     date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
     exceptionType: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="exceptionType"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'CalendarDates':
@@ -91,6 +95,8 @@ class CalendarDates:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -147,6 +153,7 @@ class CalendarDates:
                 return CalendarDates.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -158,7 +165,7 @@ class CalendarDates:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='hsbruejkzojvuqrhizwk',
-            date='hubvvfjkijtpabtaevxk',
+            serviceId='oqxwgfmogtbfbcgrpmzn',
+            date='ksvpwaavpagrktjeyqhn',
             exceptionType=None
         )

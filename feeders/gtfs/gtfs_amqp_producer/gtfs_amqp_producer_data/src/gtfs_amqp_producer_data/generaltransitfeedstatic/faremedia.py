@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class FareMedia:
@@ -27,10 +29,12 @@ class FareMedia:
     """
     
     
+    
     fareMediaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaId"))
     fareMediaName: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaName"))
     fareMediaDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaDesc"))
     fareMediaUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareMediaUrl"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FareMedia':
@@ -92,6 +96,8 @@ class FareMedia:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -148,6 +154,7 @@ class FareMedia:
                 return FareMedia.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -159,8 +166,8 @@ class FareMedia:
             An instance of the dataclass.
         """
         return cls(
-            fareMediaId='uziltyaggpdubgsyzleb',
-            fareMediaName='arxvkpxqwrgfpgotxtdq',
-            fareMediaDesc='xwbmhbvwadcauryydoju',
-            fareMediaUrl='fcgbsvuomevjrfwsdmwy'
+            fareMediaId='oyuexegkuzjrjfsvqpvj',
+            fareMediaName='ufnvomrpzgvjhyffctzg',
+            fareMediaDesc='ulsjqyeozbaqqsrkvfya',
+            fareMediaUrl='enltyiayhihbevevszig'
         )

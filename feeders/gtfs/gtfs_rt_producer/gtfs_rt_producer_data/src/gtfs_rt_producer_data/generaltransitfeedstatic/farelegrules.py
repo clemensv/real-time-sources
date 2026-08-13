@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class FareLegRules:
@@ -29,12 +31,14 @@ class FareLegRules:
     """
     
     
+    
     fareLegRuleId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareLegRuleId"))
     fareProductId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
     legGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="legGroupId"))
     networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
     fromAreaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromAreaId"))
     toAreaId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toAreaId"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FareLegRules':
@@ -96,6 +100,8 @@ class FareLegRules:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -152,6 +158,7 @@ class FareLegRules:
                 return FareLegRules.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -163,10 +170,10 @@ class FareLegRules:
             An instance of the dataclass.
         """
         return cls(
-            fareLegRuleId='dufixprcalfplylrgkaf',
-            fareProductId='gmjaiurcjbmjamxdtmqg',
-            legGroupId='bzuxafuxpmkavxrvsdde',
-            networkId='ozcvnxomgvnheoesbmdl',
-            fromAreaId='dklqmhyynwfgblsbgmwe',
-            toAreaId='tercokaukkiuikfrvywv'
+            fareLegRuleId='rcylozsdqbrhkmqyhglp',
+            fareProductId='efgszdvtthlyaztxfpdb',
+            legGroupId='buixkhpmktpxbylhlptj',
+            networkId='ifsffqkzndknfcsfzbvd',
+            fromAreaId='mbwmbjbpxbtoznipmlyw',
+            toAreaId='cuwnjnmhvhcerppgcyjo'
         )

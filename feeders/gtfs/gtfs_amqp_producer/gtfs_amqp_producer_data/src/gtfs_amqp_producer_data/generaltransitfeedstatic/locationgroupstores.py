@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class LocationGroupStores:
@@ -26,9 +28,11 @@ class LocationGroupStores:
     """
     
     
+    
     locationGroupStoreId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupStoreId"))
     locationGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="locationGroupId"))
     storeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="storeId"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'LocationGroupStores':
@@ -90,6 +94,8 @@ class LocationGroupStores:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -146,6 +152,7 @@ class LocationGroupStores:
                 return LocationGroupStores.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -157,7 +164,7 @@ class LocationGroupStores:
             An instance of the dataclass.
         """
         return cls(
-            locationGroupStoreId='ckkefkpvwwzemamdpylo',
-            locationGroupId='ouddpljyfgwvqtyiylqj',
-            storeId='hptkctfkcrudpkurdadu'
+            locationGroupStoreId='okefxwyjuyvvonpexvxn',
+            locationGroupId='mjynenofptqpfyldronf',
+            storeId='scoygbfneqqjzgltynpn'
         )

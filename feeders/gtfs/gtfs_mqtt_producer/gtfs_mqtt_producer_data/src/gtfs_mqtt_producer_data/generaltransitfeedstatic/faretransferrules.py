@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class FareTransferRules:
@@ -30,6 +32,7 @@ class FareTransferRules:
     """
     
     
+    
     fareTransferRuleId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareTransferRuleId"))
     fareProductId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
     transferCount: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferCount"))
@@ -37,6 +40,7 @@ class FareTransferRules:
     toLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toLegGroupId"))
     duration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     durationType: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="durationType"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FareTransferRules':
@@ -102,6 +106,8 @@ class FareTransferRules:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -158,6 +164,7 @@ class FareTransferRules:
                 return FareTransferRules.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -169,11 +176,11 @@ class FareTransferRules:
             An instance of the dataclass.
         """
         return cls(
-            fareTransferRuleId='hjjvcoiyrsghqqhprmne',
-            fareProductId='vqoazqbymylbzlkydfjs',
-            transferCount=int(72),
-            fromLegGroupId='zvojhpldbknmonwmnrbn',
-            toLegGroupId='ubybwdadofzsostirggf',
-            duration=int(77),
-            durationType='fgnubhpumnfvnjovwzuc'
+            fareTransferRuleId='kldcrqdocbirdiousdhw',
+            fareProductId='xuniktfcbowezyfwueys',
+            transferCount=int(32),
+            fromLegGroupId='qbfhrsxjqhqlayeidlwv',
+            toLegGroupId='jwncnghgexlgaztiwfxd',
+            duration=int(78),
+            durationType='mxblrhkoqnawrgoovlze'
         )

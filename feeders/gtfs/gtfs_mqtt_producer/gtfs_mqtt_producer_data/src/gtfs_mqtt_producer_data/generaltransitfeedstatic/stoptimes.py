@@ -14,6 +14,8 @@ import json
 from typing import Any
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class StopTimes:
@@ -36,6 +38,7 @@ class StopTimes:
     """
     
     
+    
     tripId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tripId"))
     arrivalTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arrivalTime"))
     departureTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departureTime"))
@@ -48,6 +51,7 @@ class StopTimes:
     continuousDropOff: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousDropOff"))
     shapeDistTraveled: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeDistTraveled"))
     timepoint: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timepoint"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'StopTimes':
@@ -109,6 +113,8 @@ class StopTimes:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,6 +171,7 @@ class StopTimes:
                 return StopTimes.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -176,16 +183,16 @@ class StopTimes:
             An instance of the dataclass.
         """
         return cls(
-            tripId='qzwqrevhbqgvnywarton',
-            arrivalTime='iigfzxnvqwppmumtyovi',
-            departureTime='fuwbxedgtnvvsvtdjkae',
-            stopId='fliyizdpfwbvbtmrffys',
-            stopSequence=int(70),
-            stopHeadsign='phdnskecjzybedhmdnur',
+            tripId='vtfarobqkvspbldinozx',
+            arrivalTime='smtbqixkkjkyvajghugt',
+            departureTime='vfmtfhcqnfgggsatrcql',
+            stopId='qyycondhljawtjmtxzso',
+            stopSequence=int(3),
+            stopHeadsign='nabvozvravbrgqsazspl',
             pickupType=None,
             dropOffType=None,
             continuousPickup=None,
             continuousDropOff=None,
-            shapeDistTraveled=float(75.4796154684078),
+            shapeDistTraveled=float(38.922194561712196),
             timepoint=None
         )

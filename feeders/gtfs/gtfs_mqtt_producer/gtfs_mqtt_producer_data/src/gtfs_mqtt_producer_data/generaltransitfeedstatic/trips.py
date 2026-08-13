@@ -11,9 +11,11 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
-from typing import Any
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -37,6 +39,7 @@ class Trips:
     """
     
     
+    
     routeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeId"))
     serviceDates: typing.Optional[Calendar]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
     serviceExceptions: typing.List[CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceExceptions"))
@@ -48,6 +51,7 @@ class Trips:
     shapeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeId"))
     wheelchairAccessible: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairAccessible"))
     bikesAllowed: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bikesAllowed"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Trips':
@@ -109,6 +113,8 @@ class Trips:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,6 +171,7 @@ class Trips:
                 return Trips.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -176,15 +183,15 @@ class Trips:
             An instance of the dataclass.
         """
         return cls(
-            routeId='sqsdgosksnpufrajcodk',
+            routeId='gmxukrcefgfqyalyuwdb',
             serviceDates=None,
             serviceExceptions=[None, None, None, None, None],
-            tripId='gxxkikjmcwyjltvlsfqp',
-            tripHeadsign='wlaqosiyhyeqbczdlaer',
-            tripShortName='iixfgimdewwovekoptuc',
+            tripId='jafbmlfxfnjhaldytosj',
+            tripHeadsign='grsydhcgrxpfwjmcpblv',
+            tripShortName='jpnpzoymvipquaaduncs',
             directionId=None,
-            blockId='jjvnfpfmkqeppusjaali',
-            shapeId='gdmprbjxgnsmnfcjstvn',
+            blockId='ljuhmqvdxddfmeqvkcjt',
+            shapeId='lnqtgfogjjekjuwwlexy',
             wheelchairAccessible=None,
             bikesAllowed=None
         )

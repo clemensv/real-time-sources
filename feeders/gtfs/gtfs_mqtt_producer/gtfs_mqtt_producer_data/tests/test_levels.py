@@ -28,9 +28,9 @@ class Test_Levels(unittest.TestCase):
         Create instance of Levels for testing
         """
         instance = Levels(
-            levelId='hpojhpeksnoqywlwdpeo',
-            levelIndex=float(85.9999021853366),
-            levelName='phfwrvqmiiryuozsdnlw'
+            levelId='bcaomwxyeqimvrmqctal',
+            levelIndex=float(50.13226819951667),
+            levelName='nbisrbglqalyarpxqlcm'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelId property
         """
-        test_value = 'hpojhpeksnoqywlwdpeo'
+        test_value = 'bcaomwxyeqimvrmqctal'
         self.instance.levelId = test_value
         self.assertEqual(self.instance.levelId, test_value)
     
@@ -47,7 +47,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelIndex property
         """
-        test_value = float(85.9999021853366)
+        test_value = float(50.13226819951667)
         self.instance.levelIndex = test_value
         self.assertEqual(self.instance.levelIndex, test_value)
     
@@ -55,7 +55,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelName property
         """
-        test_value = 'phfwrvqmiiryuozsdnlw'
+        test_value = 'nbisrbglqalyarpxqlcm'
         self.instance.levelName = test_value
         self.assertEqual(self.instance.levelName, test_value)
     

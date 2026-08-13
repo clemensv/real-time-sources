@@ -9,6 +9,7 @@ class ScheduleRelationship(Enum):
     SKIPPED = 'SKIPPED'
     NO_DATA = 'NO_DATA'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'ScheduleRelationship':
         """

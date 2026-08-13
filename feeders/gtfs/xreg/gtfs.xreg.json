@@ -2725,7 +2725,9 @@
                             "MODIFIED_SERVICE",
                             "OTHER_EFFECT",
                             "UNKNOWN_EFFECT",
-                            "STOP_MOVED"
+                            "STOP_MOVED",
+                            "NO_EFFECT",
+                            "ACCESSIBILITY_ISSUE"
                           ],
                           "description": "What is the effect of this problem on the affected entity."
                         }
@@ -3602,7 +3604,9 @@
                           "MODIFIED_SERVICE",
                           "OTHER_EFFECT",
                           "UNKNOWN_EFFECT",
-                          "STOP_MOVED"
+                          "STOP_MOVED",
+                          "NO_EFFECT",
+                          "ACCESSIBILITY_ISSUE"
                         ],
                         "ordinals": {
                           "NO_SERVICE": 1,
@@ -3613,7 +3617,9 @@
                           "MODIFIED_SERVICE": 6,
                           "OTHER_EFFECT": 7,
                           "UNKNOWN_EFFECT": 8,
-                          "STOP_MOVED": 9
+                          "STOP_MOVED": 9,
+                          "NO_EFFECT": 10,
+                          "ACCESSIBILITY_ISSUE": 11
                         },
                         "doc": "What is the effect of this problem on the affected entity."
                       }

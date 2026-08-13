@@ -14,6 +14,9 @@ class Effect(Enum):
     OTHER_EFFECT = 'OTHER_EFFECT'
     UNKNOWN_EFFECT = 'UNKNOWN_EFFECT'
     STOP_MOVED = 'STOP_MOVED'
+    NO_EFFECT = 'NO_EFFECT'
+    ACCESSIBILITY_ISSUE = 'ACCESSIBILITY_ISSUE'
+
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'Effect':

@@ -10,6 +10,7 @@ class ScheduleRelationship(Enum):
     UNSCHEDULED = 'UNSCHEDULED'
     CANCELED = 'CANCELED'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'ScheduleRelationship':
         """

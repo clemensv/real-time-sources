@@ -11,10 +11,12 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
-from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
+from typing import Any
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -36,6 +38,7 @@ class VehiclePosition:
     """
     
     
+    
     trip: typing.Optional[TripDescriptor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip"))
     vehicle: typing.Optional[VehicleDescriptor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vehicle"))
     position: typing.Optional[Position]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position"))
@@ -45,6 +48,7 @@ class VehiclePosition:
     timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     congestion_level: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="congestion_level"))
     occupancy_status: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="occupancy_status"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'VehiclePosition':
@@ -110,6 +114,8 @@ class VehiclePosition:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -166,6 +172,7 @@ class VehiclePosition:
                 return VehiclePosition.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -180,10 +187,10 @@ class VehiclePosition:
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(25),
-            stop_id='ijanmzqdhyqgsvrotylh',
+            current_stop_sequence=int(22),
+            stop_id='srlsvrhyernxgmdimecn',
             current_status=None,
-            timestamp=int(10),
+            timestamp=int(58),
             congestion_level=None,
             occupancy_status=None
         )

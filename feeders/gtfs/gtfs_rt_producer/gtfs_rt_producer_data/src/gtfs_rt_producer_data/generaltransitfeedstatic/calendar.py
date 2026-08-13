@@ -14,6 +14,8 @@ import json
 from typing import Any
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Calendar:
@@ -34,6 +36,7 @@ class Calendar:
     """
     
     
+    
     serviceId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceId"))
     monday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="monday"))
     tuesday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tuesday"))
@@ -44,6 +47,7 @@ class Calendar:
     sunday: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunday"))
     startDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startDate"))
     endDate: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endDate"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Calendar':
@@ -105,6 +109,8 @@ class Calendar:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,6 +167,7 @@ class Calendar:
                 return Calendar.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -172,7 +179,7 @@ class Calendar:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='lqaunwadtsqalltocbnf',
+            serviceId='qiegewdbkdmrsdnzoghz',
             monday=None,
             tuesday=None,
             wednesday=None,
@@ -180,6 +187,6 @@ class Calendar:
             friday=None,
             saturday=None,
             sunday=None,
-            startDate='tepunfxhsngnxgywsutv',
-            endDate='uipwiwxionpxbeliuljp'
+            startDate='flswytghpyyxadzqrqlm',
+            endDate='mtkxqwnecxddsjumvfoi'
         )

@@ -11,8 +11,10 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeevent import StopTimeEvent
 from typing import Any
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeevent import StopTimeEvent
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -30,11 +32,13 @@ class StopTimeUpdate:
     """
     
     
+    
     stop_sequence: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_sequence"))
     stop_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_id"))
     arrival: typing.Optional[StopTimeEvent]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arrival"))
     departure: typing.Optional[StopTimeEvent]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departure"))
     schedule_relationship: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="schedule_relationship"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'StopTimeUpdate':
@@ -96,6 +100,8 @@ class StopTimeUpdate:
             #pylint: enable=no-member
             if isinstance(result, str):
                 result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -152,6 +158,7 @@ class StopTimeUpdate:
                 return StopTimeUpdate.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -163,8 +170,8 @@ class StopTimeUpdate:
             An instance of the dataclass.
         """
         return cls(
-            stop_sequence=int(14),
-            stop_id='tychnhkkxvfjjmhdkxny',
+            stop_sequence=int(12),
+            stop_id='ibjjromqzbmfkdpxsdux',
             arrival=None,
             departure=None,
             schedule_relationship=None

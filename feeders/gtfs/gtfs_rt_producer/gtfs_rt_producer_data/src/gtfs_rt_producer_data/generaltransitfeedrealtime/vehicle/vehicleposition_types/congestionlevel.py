@@ -11,6 +11,7 @@ class CongestionLevel(Enum):
     CONGESTION = 'CONGESTION'
     SEVERE_CONGESTION = 'SEVERE_CONGESTION'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'CongestionLevel':
         """
