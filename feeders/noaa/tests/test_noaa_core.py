@@ -125,3 +125,72 @@ def test_last_polled_roundtrip(tmp_path):
     noaa_core.save_last_polled_times(path, times)
     loaded = noaa_core.load_last_polled_times(path)
     assert loaded["water_level"]["9447130"] == times["water_level"]["9447130"]
+
+
+def test_poll_product_backs_off_on_403(requests_mock, monkeypatch):
+    """A 403 must stand down and escalate the cooldown instead of raising.
+
+    NOAA's API Gateway IP-bans abusive callers; retrying immediately deepens
+    the ban, so the client sleeps and doubles its cooldown.
+    """
+    requests_mock.get(NOAAClient.BASE_URL, status_code=403, json={"message": "Forbidden"})
+    slept = []
+    monkeypatch.setattr(noaa_core.time, "sleep", slept.append)
+
+    client = NOAAClient()
+    baseline = client.rate_limit_cooldown
+    rows = client.poll_product(
+        "water_level", "9447130", "MLLW", dt.datetime(2024, 1, 1, tzinfo=dt.timezone.utc)
+    )
+
+    assert rows == []
+    assert slept == [baseline]
+    assert client.rate_limit_cooldown == baseline * 2
+
+
+def test_poll_product_backs_off_on_429(requests_mock, monkeypatch):
+    """429 is treated the same as 403."""
+    requests_mock.get(NOAAClient.BASE_URL, status_code=429, json={})
+    slept = []
+    monkeypatch.setattr(noaa_core.time, "sleep", slept.append)
+
+    client = NOAAClient()
+    assert client.poll_product(
+        "water_level", "9447130", "MLLW", dt.datetime(2024, 1, 1, tzinfo=dt.timezone.utc)
+    ) == []
+    assert slept  # we actually stood down
+
+
+def test_successful_poll_resets_cooldown(requests_mock):
+    """A good response clears an escalated cooldown back to the baseline."""
+    requests_mock.get(NOAAClient.BASE_URL, json={"data": []})
+    client = NOAAClient()
+    client.rate_limit_cooldown = noaa_core.RATE_LIMIT_COOLDOWN * 8
+    client.poll_product(
+        "water_level", "9447130", "MLLW", dt.datetime(2024, 1, 1, tzinfo=dt.timezone.utc)
+    )
+    assert client.rate_limit_cooldown == noaa_core.RATE_LIMIT_COOLDOWN
+
+
+def test_rate_limiter_enforces_minimum_spacing(monkeypatch):
+    """The limiter sleeps for exactly the remaining gap between calls."""
+    limiter = noaa_core.RateLimiter(2.0)
+    ticks = iter([50.0, 50.0, 50.5, 50.5])
+    slept = []
+    monkeypatch.setattr(noaa_core.time, "monotonic", lambda: next(ticks))
+    monkeypatch.setattr(noaa_core.time, "sleep", slept.append)
+
+    limiter.wait()  # primes the clock
+    limiter.wait()  # only 0.5s elapsed -> sleep the remaining 1.5s
+
+    assert slept == [1.5]
+
+
+def test_rate_limiter_zero_interval_never_sleeps(monkeypatch):
+    """A zero interval disables pacing entirely."""
+    limiter = noaa_core.RateLimiter(0)
+    slept = []
+    monkeypatch.setattr(noaa_core.time, "sleep", slept.append)
+    limiter.wait()
+    limiter.wait()
+    assert slept == []

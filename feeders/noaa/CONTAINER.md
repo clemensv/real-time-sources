@@ -233,6 +233,24 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `NOAA_POLLING_INTERVAL` | Seconds between poll cycles (default `300`). |
 | `MOCK_MODE` | Set to a truthy value to emit deterministic offline sample data instead of calling the live upstream (offline testing / Docker E2E). |
 
+### Upstream request pacing
+
+> [!IMPORTANT]
+> NOAA CO-OPS publishes no numeric rate limit for the `datagetter` API, but its
+> AWS API Gateway **will hard-ban a source IP** that polls abusively, returning
+> `403 Forbidden` for every subsequent request until the block is lifted. The
+> defaults below are deliberately conservative. Do not raise the request rate
+> without understanding this risk.
+
+| Variable | Description |
+|---|---|
+| `NOAA_MIN_REQUEST_INTERVAL` | Minimum seconds between two outbound upstream requests (default `1.0`). This is the primary guard against being IP-banned. Set to `0` to disable pacing entirely — not recommended. |
+| `NOAA_POLL_INTERVAL` | Seconds the Kafka feeder idles between full poll cycles (default `900`). NOAA observations are 6-minute-interval at best, so polling more often cannot surface new data. |
+| `NOAA_RATE_LIMIT_COOLDOWN` | Initial seconds to stand down after the upstream returns `403`/`429` (default `300`). Doubles on each consecutive occurrence. |
+| `NOAA_MAX_RATE_LIMIT_COOLDOWN` | Upper bound for the escalating cooldown (default `3600`). |
+| `NOAA_EMPTY_BACKOFF_THRESHOLD` | Consecutive empty responses for a (product, station) pair before it starts being skipped (default `3`). Most stations do not offer most products, so these requests are pure waste. |
+| `NOAA_MAX_EMPTY_BACKOFF` | Maximum number of cycles a consistently-empty pair is skipped before being retried (default `32`). |
+
 ### Common (all images)
 
 | Variable | Description |
