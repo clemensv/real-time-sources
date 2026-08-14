@@ -14,6 +14,7 @@ MQTT and AMQP feeders.
 
 import json
 import os
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Dict, List, Optional
 
@@ -29,6 +30,41 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
 
 SOURCE_URI = "https://api.tidesandcurrents.noaa.gov"
 STATIONS_URL = "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json"
+
+# --- Outbound request pacing -------------------------------------------------
+# NOAA CO-OPS publishes no numeric rate limit for the `datagetter` API, but its
+# AWS API Gateway *will* hard-ban a source IP that polls abusively, returning
+# `403 ForbiddenException` for every subsequent request. Keep these defaults in
+# sync with the Kafka feeder (`noaa/noaa.py`).
+MIN_REQUEST_INTERVAL = float(os.environ.get("NOAA_MIN_REQUEST_INTERVAL", "1.0"))
+POLL_INTERVAL = float(os.environ.get("NOAA_POLL_INTERVAL", "900"))
+RATE_LIMIT_COOLDOWN = float(os.environ.get("NOAA_RATE_LIMIT_COOLDOWN", "300"))
+MAX_RATE_LIMIT_COOLDOWN = float(os.environ.get("NOAA_MAX_RATE_LIMIT_COOLDOWN", "3600"))
+
+
+class RateLimiter:
+    """
+    Simple monotonic-clock spacing gate shared by every outbound NOAA request.
+
+    `wait()` blocks until at least `min_interval` seconds have elapsed since
+    the previous call, guaranteeing a hard ceiling on outbound request rate
+    regardless of how fast the caller's poll loop iterates.
+    """
+
+    def __init__(self, min_interval: float = MIN_REQUEST_INTERVAL):
+        self.min_interval = max(0.0, min_interval)
+        self._last_call = 0.0
+
+    def wait(self) -> None:
+        """Block until the configured minimum spacing has elapsed."""
+        if self.min_interval <= 0:
+            return
+        now = time.monotonic()
+        elapsed = now - self._last_call
+        if 0 <= elapsed < self.min_interval:
+            time.sleep(self.min_interval - elapsed)
+        self._last_call = time.monotonic()
+
 
 VISIBILITY_DATASCHEMA = (
     "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/"
@@ -78,6 +114,9 @@ class NOAAClient:
     def __init__(self, user_agent: str = USER_AGENT, request_timeout: float = 10.0):
         self.user_agent = user_agent
         self.request_timeout = request_timeout
+        self.rate_limiter = RateLimiter(MIN_REQUEST_INTERVAL)
+        # Current stand-down window after a 403/429; grows on repeat offences.
+        self.rate_limit_cooldown = RATE_LIMIT_COOLDOWN
 
     def _headers(self) -> Dict[str, str]:
         return {"User-Agent": self.user_agent}
@@ -92,6 +131,7 @@ class NOAAClient:
         decodes cleanly.
         """
         try:
+            self.rate_limiter.wait()
             response = requests.get(
                 STATIONS_URL, headers=self._headers(), timeout=self.request_timeout
             )
@@ -164,10 +204,29 @@ class NOAAClient:
             data_key = "data"
 
         try:
+            self.rate_limiter.wait()
             response = requests.get(
                 product_url, headers=self._headers(), timeout=self.request_timeout
             )
+            if response.status_code in (403, 429):
+                # NOAA's API Gateway blocks abusive callers at the IP level and
+                # keeps returning 403 long after the offending traffic stops.
+                # Stand down for a growing window rather than hammering on and
+                # deepening the ban.
+                print(
+                    f"NOAA API returned {response.status_code} for station {station_id} "
+                    f"({product}); backing off {self.rate_limit_cooldown:.0f}s. If this "
+                    f"persists across all stations, this source IP is likely blocked "
+                    f"by NOAA and must be changed or unblocked."
+                )
+                time.sleep(self.rate_limit_cooldown)
+                self.rate_limit_cooldown = min(
+                    self.rate_limit_cooldown * 2, MAX_RATE_LIMIT_COOLDOWN
+                )
+                return []
             response.raise_for_status()
+            # Successful call -- reset the escalating cooldown.
+            self.rate_limit_cooldown = RATE_LIMIT_COOLDOWN
             if data_key is None:
                 return response.json().get("current_predictions", {}).get("cp", [])
             return response.json().get(data_key, [])

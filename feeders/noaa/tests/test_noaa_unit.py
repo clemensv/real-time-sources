@@ -276,6 +276,108 @@ class TestNOAAConfiguration:
 
 
 @pytest.mark.unit
+class TestRateLimiting:
+    """Unit tests for outbound request pacing and rate-limit backoff.
+
+    NOAA's API Gateway IP-bans abusive callers, so these behaviours are what
+    keep the feeder from getting blocked again.
+    """
+
+    @pytest.fixture
+    def mock_kafka_config(self):
+        """Minimal Kafka config; the producer itself is patched out."""
+        return {'bootstrap.servers': 'test-server:9092'}
+
+    def test_rate_limiter_spaces_requests(self):
+        """The limiter must sleep for the remaining gap between calls."""
+        from noaa.noaa import _RateLimiter
+
+        limiter = _RateLimiter(1.0)
+        with patch('time.monotonic', side_effect=[100.0, 100.0, 100.4, 100.4]), \
+                patch('time.sleep') as mock_sleep:
+            limiter.wait()   # first call primes the clock, no sleep
+            limiter.wait()   # 0.4s elapsed -> must sleep the remaining 0.6s
+        mock_sleep.assert_called_once()
+        assert mock_sleep.call_args[0][0] == pytest.approx(0.6)
+
+    def test_rate_limiter_disabled_when_zero(self):
+        """A zero interval disables pacing entirely (no sleep at all)."""
+        from noaa.noaa import _RateLimiter
+
+        limiter = _RateLimiter(0)
+        with patch('time.sleep') as mock_sleep:
+            limiter.wait()
+            limiter.wait()
+        mock_sleep.assert_not_called()
+
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    @patch('noaa.noaa.requests.get')
+    def test_poll_backs_off_and_escalates_on_403(self, mock_get, mock_producer, mock_kafka_config):
+        """A 403 must trigger a stand-down and double the cooldown, not raise."""
+        from noaa.noaa import RATE_LIMIT_COOLDOWN
+
+        mock_response = Mock()
+        mock_response.json.return_value = {'stations': []}
+        mock_get.return_value = mock_response
+
+        with patch('noaa.noaa.Station.schema') as mock_schema:
+            mock_schema.return_value.load.return_value = []
+            poller = NOAADataPoller(
+                kafka_config=mock_kafka_config,
+                kafka_topic='test-topic',
+                last_polled_file='/tmp/test_last_polled.json'
+            )
+            poller.stations = [Mock(station_id='9444900', tideType='Harmonic')]
+
+            forbidden = Mock()
+            forbidden.status_code = 403
+            mock_get.return_value = forbidden
+
+            with patch('time.sleep') as mock_sleep:
+                result = poller.poll_noaa_api(
+                    'water_level', '9444900',
+                    datetime(2026, 1, 1, tzinfo=timezone.utc))
+
+            # No data, no exception, and we actually stood down.
+            assert result == []
+            assert mock_sleep.call_args[0][0] == pytest.approx(RATE_LIMIT_COOLDOWN)
+            # Cooldown escalates so repeat offences back off harder.
+            assert poller.rate_limit_cooldown == pytest.approx(RATE_LIMIT_COOLDOWN * 2)
+
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    @patch('noaa.noaa.requests.get')
+    def test_successful_poll_resets_cooldown(self, mock_get, mock_producer, mock_kafka_config):
+        """A good response must reset an escalated cooldown back to baseline."""
+        from noaa.noaa import RATE_LIMIT_COOLDOWN
+
+        mock_response = Mock()
+        mock_response.json.return_value = {'stations': []}
+        mock_get.return_value = mock_response
+
+        with patch('noaa.noaa.Station.schema') as mock_schema:
+            mock_schema.return_value.load.return_value = []
+            poller = NOAADataPoller(
+                kafka_config=mock_kafka_config,
+                kafka_topic='test-topic',
+                last_polled_file='/tmp/test_last_polled.json'
+            )
+            poller.stations = [Mock(station_id='9444900', tideType='Harmonic')]
+            poller.rate_limit_cooldown = RATE_LIMIT_COOLDOWN * 8
+
+            ok = Mock()
+            ok.status_code = 200
+            ok.json.return_value = {'data': [{'t': '2026-01-01 00:00', 'v': '1.0'}]}
+            mock_get.return_value = ok
+
+            result = poller.poll_noaa_api(
+                'water_level', '9444900',
+                datetime(2026, 1, 1, tzinfo=timezone.utc))
+
+            assert len(result) == 1
+            assert poller.rate_limit_cooldown == pytest.approx(RATE_LIMIT_COOLDOWN)
+
+
+@pytest.mark.unit
 class TestKafkaConfiguration:
     """Unit tests for Kafka configuration"""
 

@@ -42,6 +42,56 @@ VISIBILITY_DATASCHEMA = "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schem
 VISIBILITY_DATACONTENTTYPE = "application/json"
 
 
+# --- Outbound request pacing -------------------------------------------------
+# NOAA CO-OPS publishes no numeric rate limit for the `datagetter` API, but its
+# AWS API Gateway *will* hard-ban a source IP that polls abusively, returning
+# `403 ForbiddenException` for every subsequent request. An unthrottled poller
+# iterating stations x products in a tight `while True:` loop trivially reaches
+# several requests per second sustained around the clock, which is what earned
+# this feeder an IP ban. Every knob below is overridable so operators can slow
+# the feeder further without a rebuild.
+
+# Minimum wall-clock spacing between two outbound datagetter requests.
+MIN_REQUEST_INTERVAL = float(os.environ.get("NOAA_MIN_REQUEST_INTERVAL", "1.0"))
+# Idle time between full poll cycles. NOAA data is 6-minute-interval at best,
+# so polling more often than this cannot yield new observations anyway.
+POLL_INTERVAL = float(os.environ.get("NOAA_POLL_INTERVAL", "900"))
+# How long to stand down after the API signals rate limiting / forbids us.
+RATE_LIMIT_COOLDOWN = float(os.environ.get("NOAA_RATE_LIMIT_COOLDOWN", "300"))
+MAX_RATE_LIMIT_COOLDOWN = float(os.environ.get("NOAA_MAX_RATE_LIMIT_COOLDOWN", "3600"))
+# Adaptive skipping: most stations do not offer most products, so those
+# requests are guaranteed-empty pure waste. After this many consecutive empty
+# responses for a (product, station) pair, start skipping it for a growing
+# number of cycles, capped by MAX_EMPTY_BACKOFF.
+EMPTY_BACKOFF_THRESHOLD = int(os.environ.get("NOAA_EMPTY_BACKOFF_THRESHOLD", "3"))
+MAX_EMPTY_BACKOFF = int(os.environ.get("NOAA_MAX_EMPTY_BACKOFF", "32"))
+
+
+class _RateLimiter:
+    """
+    Simple monotonic-clock spacing gate shared by every outbound NOAA request.
+
+    `wait()` blocks until at least `min_interval` seconds have elapsed since
+    the previous call, guaranteeing a hard ceiling on outbound request rate
+    regardless of how fast the poll loop iterates.
+    """
+
+    def __init__(self, min_interval: float):
+        self.min_interval = max(0.0, min_interval)
+        self._last_call = 0.0
+
+    def wait(self) -> None:
+        """Block until the configured minimum spacing has elapsed."""
+        if self.min_interval <= 0:
+            return
+        import time
+        now = time.monotonic()
+        elapsed = now - self._last_call
+        if 0 <= elapsed < self.min_interval:
+            time.sleep(self.min_interval - elapsed)
+        self._last_call = time.monotonic()
+
+
 def _atomic_write_json(path: str, data: Dict, retries: int = 5, backoff_seconds: float = 0.5) -> None:
     """
     Write JSON to `path` resiliently against transient BlockingIOError/OSError
@@ -112,6 +162,12 @@ class NOAADataPoller:
         """
         self.kafka_topic = kafka_topic
         self.last_polled_file = last_polled_file
+        self.rate_limiter = _RateLimiter(MIN_REQUEST_INTERVAL)
+        # Current stand-down window after a 403/429; grows on repeat offences.
+        self.rate_limit_cooldown = RATE_LIMIT_COOLDOWN
+        # (product, station_id) -> consecutive-empty count / cycles left to skip
+        self.empty_streak: Dict[tuple, int] = {}
+        self.skip_cycles: Dict[tuple, int] = {}
         from confluent_kafka import Producer
         kafka_producer = Producer(kafka_config)
         self.producer = MicrosoftOpenDataUSNOAAEventProducer(kafka_producer, kafka_topic)
@@ -138,6 +194,7 @@ class NOAADataPoller:
         """
         url = "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json"
         try:
+            self.rate_limiter.wait()
             response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=10)
             response.raise_for_status()
             stations_data = response.json()
@@ -226,8 +283,27 @@ class NOAADataPoller:
         else:
             data_key = "data"
         try:
+            self.rate_limiter.wait()
             response = requests.get(product_url, headers={"User-Agent": USER_AGENT}, timeout=10)
+            if response.status_code in (403, 429):
+                # NOAA's API Gateway blocks abusive callers at the IP level and
+                # keeps returning 403 long after the offending traffic stops.
+                # Stand down for a growing window rather than hammering on and
+                # deepening the ban.
+                import time
+                print(
+                    f"NOAA API returned {response.status_code} for station {station_id} "
+                    f"({product}); backing off {self.rate_limit_cooldown:.0f}s. If this "
+                    f"persists across all stations, this source IP is likely blocked "
+                    f"by NOAA and must be changed or unblocked."
+                )
+                time.sleep(self.rate_limit_cooldown)
+                self.rate_limit_cooldown = min(
+                    self.rate_limit_cooldown * 2, MAX_RATE_LIMIT_COOLDOWN)
+                return []
             response.raise_for_status()
+            # Successful call -- reset the escalating cooldown.
+            self.rate_limit_cooldown = RATE_LIMIT_COOLDOWN
             if data_key is None:
                 data = response.json().get("current_predictions", {}).get("cp", [])
             else:
@@ -309,11 +385,32 @@ class NOAADataPoller:
                 station_id = station.station_id
                 station_region = getattr(station, "region", None) or "unknown"
                 for product in self.PRODUCTS:
+                    pair = (product, station_id)
+                    # Most stations do not offer most products. Skip pairs that
+                    # have repeatedly come back empty so we spend our limited
+                    # request budget on pairs that actually carry data.
+                    remaining = self.skip_cycles.get(pair, 0)
+                    if remaining > 0:
+                        self.skip_cycles[pair] = remaining - 1
+                        continue
                     print(f"Polling {product} data for station {station_id}: {station.name}:", end='')
                     last_polled_time = last_polled_times.get(product, {}).get(
                         station_id, datetime.now(timezone.utc) - timedelta(hours=24))
                     new_data_records = self.poll_noaa_api(product, station_id, last_polled_time)
                     print(f" {len(new_data_records)} new records found since {last_polled_time}")
+
+                    if new_data_records:
+                        self.empty_streak.pop(pair, None)
+                    else:
+                        streak = self.empty_streak.get(pair, 0) + 1
+                        self.empty_streak[pair] = streak
+                        if streak >= EMPTY_BACKOFF_THRESHOLD:
+                            # Exponential in the number of empties past the
+                            # threshold, capped so a pair is always retried
+                            # eventually (a station may start reporting later).
+                            self.skip_cycles[pair] = min(
+                                2 ** (streak - EMPTY_BACKOFF_THRESHOLD + 1),
+                                MAX_EMPTY_BACKOFF)
 
                     max_timestamp = last_polled_time
                     for record in new_data_records:
@@ -489,6 +586,14 @@ class NOAADataPoller:
 
             if os.getenv('ONCE_MODE', 'false').lower() in ('true', '1', 'yes'):
                 break
+
+            # NOAA observations are 6-minute-interval at best, so re-polling
+            # sooner than this cannot surface new data and only burns request
+            # budget against an API that IP-bans abusive callers.
+            if POLL_INTERVAL > 0:
+                import time
+                print(f"Poll cycle complete; sleeping {POLL_INTERVAL:.0f}s before next cycle.")
+                time.sleep(POLL_INTERVAL)
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
