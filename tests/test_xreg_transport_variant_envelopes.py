@@ -8,7 +8,7 @@ def test_transport_variants_with_envelope_metadata_set_cloudevents_envelope():
     repo_root = Path(__file__).resolve().parents[1]
     errors: list[str] = []
 
-    for manifest_path in sorted(repo_root.glob("*/xreg/*.xreg.json")):
+    for manifest_path in sorted(repo_root.glob("feeders/*/xreg/*.xreg.json")):
         document = json.loads(manifest_path.read_text(encoding="utf-8"))
         messagegroups = document.get("messagegroups") or {}
         for messagegroup_id, messagegroup in messagegroups.items():

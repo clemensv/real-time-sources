@@ -2,7 +2,7 @@
 """
 Merge all *.xreg.json manifests in this repo into one xRegistry import document.
 
-Each source directory contains a single  <source>/xreg/*.xreg.json  file whose
+Each feeder directory contains a single  feeders/<source>/xreg/*.xreg.json  file whose
 top-level keys are the xRegistry collection names:
 
     endpoints      – Kafka / MQTT / AMQP endpoint declarations
@@ -22,7 +22,7 @@ Usage
   python3 tools/merge-xreg.py -o /tmp/combined.json
 
   # Custom glob pattern (relative to repo root)
-  python3 tools/merge-xreg.py --pattern "*/xreg/*.xreg.json" -o combined.json
+  python3 tools/merge-xreg.py --pattern "feeders/*/xreg/*.xreg.json" -o combined.json
 
 Exit codes
 ----------
@@ -39,7 +39,11 @@ from pathlib import Path
 
 COLLECTION_KEYS = ("endpoints", "messagegroups", "schemagroups")
 
-DEFAULT_PATTERN = "*/xreg/*.xreg.json"
+DEFAULT_PATTERN = "feeders/*/xreg/*.xreg.json"
+
+
+def discover_manifest_paths(pattern: str, repo_root: Path) -> list[Path]:
+    return sorted(repo_root.glob(pattern))
 
 def _normalize_refs(obj: object) -> object:
     """Recursively replace '#/'-prefixed XID references with absolute '/' XIDs.
@@ -193,7 +197,7 @@ def _normalize_message_attrs(messagegroups: dict) -> dict:
 
 
 def merge(pattern: str, repo_root: Path) -> dict:
-    files = sorted(repo_root.glob(pattern))
+    files = discover_manifest_paths(pattern, repo_root)
     if not files:
         sys.exit(f"No files matched pattern: {pattern!r} under {repo_root}")
 
