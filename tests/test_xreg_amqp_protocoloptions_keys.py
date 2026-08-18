@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import importlib.util
 
 
 def _iter_amqp_messages(manifest: dict):
@@ -13,12 +14,24 @@ def _iter_amqp_messages(manifest: dict):
                 yield message_id, message
 
 
+def _load_merge_xreg_module():
+    module_path = Path(__file__).resolve().parents[1] / "tools" / "merge-xreg.py"
+    spec = importlib.util.spec_from_file_location("merge_xreg", module_path)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_amqp_protocoloptions_use_hyphenated_keys():
     repo_root = Path(__file__).resolve().parents[1]
+    merge_module = _load_merge_xreg_module()
     invalid_locations: list[str] = []
 
-    for manifest_path in sorted(repo_root.glob("*/xreg/*.xreg.json")):
+    for manifest_path in sorted(repo_root.glob("feeders/*/xreg/*.xreg.json")):
         document = json.loads(manifest_path.read_text(encoding="utf-8"))
+        merge_module._normalize_message_attrs(document.get("messagegroups", {}))
         rel_path = manifest_path.relative_to(repo_root).as_posix()
         for message_id, message in _iter_amqp_messages(document):
             protocoloptions = message.get("protocoloptions")
@@ -36,7 +49,7 @@ def test_amqp_protocoloptions_use_hyphenated_keys():
 
 def test_entsoe_application_properties_keys_are_lowercase_kebab_case():
     repo_root = Path(__file__).resolve().parents[1]
-    manifest_path = repo_root / "entsoe/xreg/entsoe.xreg.json"
+    manifest_path = repo_root / "feeders/entsoe/xreg/entsoe.xreg.json"
     document = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     invalid_locations: list[str] = []

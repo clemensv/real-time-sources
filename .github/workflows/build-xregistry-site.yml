@@ -8,7 +8,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "*/xreg/*.xreg.json"
+      - "feeders/*/xreg/*.xreg.json"
   workflow_dispatch:
 
 # Serialise with the catalog-sync workflow — both push to ghpages.
@@ -35,6 +35,12 @@ jobs:
         with:
           ref: main
           path: main
+
+      - name: Capture source commit metadata
+        working-directory: main
+        run: |
+          echo "SOURCE_COMMIT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "REGISTRY_BUILD_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
 
       # ── 2. Merge all *.xreg.json files ───────────────────────────────────
       - name: Merge xreg manifests
@@ -118,6 +124,23 @@ jobs:
           docker cp xreg:/tmp/out.tar.gz /tmp/out.tar.gz
           mkdir -p /tmp/registry-out
           tar xzf /tmp/out.tar.gz -C /tmp/registry-out
+          python3 - <<'PYEOF'
+          import json
+          import os
+          from pathlib import Path
+
+          Path("/tmp/registry-out/build-info.json").write_text(
+              json.dumps(
+                  {
+                      "source_commit_sha": os.environ["SOURCE_COMMIT_SHA"],
+                      "build_timestamp_utc": os.environ["REGISTRY_BUILD_TIMESTAMP"],
+                  },
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+          PYEOF
 
       # ── 9. Stop xrserver ─────────────────────────────────────────────────
       - name: Stop xrserver
@@ -157,4 +180,3 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update xRegistry static export [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
           git push origin ghpages
-

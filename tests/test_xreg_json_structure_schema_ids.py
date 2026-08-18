@@ -6,7 +6,7 @@ import json
 
 
 def _iter_json_structure_schemas(repo_root: Path):
-    for manifest_path in sorted(repo_root.glob("*/xreg/*.xreg.json")):
+    for manifest_path in sorted(repo_root.glob("feeders/*/xreg/*.xreg.json")):
         document = json.loads(manifest_path.read_text(encoding="utf-8"))
         schemagroups = document.get("schemagroups") or {}
         for schemagroup in schemagroups.values():
