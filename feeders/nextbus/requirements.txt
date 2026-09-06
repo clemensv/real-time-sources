@@ -2,6 +2,6 @@ requests>=2.34.2
 confluent-kafka>=2.15.0
 cloudevents>=2.2.0,<3.0.0
 dataclasses_json>=0.6.7
-avro>=1.11.3
+avro>=1.12.2
 flit>=3.12.0
 setuptools_scm>=10.2.1
