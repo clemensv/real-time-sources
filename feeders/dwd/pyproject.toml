@@ -20,7 +20,7 @@ dependencies = [
     "cloudevents>=1.10.1,<2.0.0",
     "confluent-kafka>=2.15.0",
     "dataclasses_json>=0.6.7",
-    "eccodes>=2.47.0",
+    "eccodes>=2.48.0",
     "numpy>=2.2.6",
     "requests>=2.34.2",
     "dwd_core",
