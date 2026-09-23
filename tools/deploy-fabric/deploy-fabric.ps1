@@ -570,6 +570,16 @@ function Invoke-SourcePostDeployHook {
         Write-Warning "Post-deploy hook failed: $($_.Exception.Message)"
         Write-Warning "Core deployment was successful; re-run the hook manually:"
         Write-Warning "  pwsh $hookPath -Context <hashtable>"
+        # A thrown exception inside & $hookPath does not itself set $LASTEXITCODE,
+        # but it commonly leaves behind whatever nonzero code the hook's last
+        # external command (e.g. a failed `az ...`) set before throwing. Left
+        # unreset, that stale code survives this function and is picked up by
+        # deploy-fabric-aci.ps1's `if ($LASTEXITCODE -ne 0) { throw ... }`
+        # check, which aborts an otherwise-successful Fabric deployment. The
+        # hook is documented as non-fatal, so reset unconditionally — mirrors
+        # the reset already done in the non-throwing "exited nonzero" branch
+        # above.
+        $global:LASTEXITCODE = 0
     }
 }
 
