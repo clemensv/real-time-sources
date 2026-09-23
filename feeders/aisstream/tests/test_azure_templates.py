@@ -75,6 +75,21 @@ class TestAzureAmqpTemplates:
 
 
 class TestAzureKafkaTemplates:
+    def test_direct_connection_template_does_not_require_shared_key_storage(self):
+        template = _load_template("azure-template.json")
+
+        resource_types = {resource["type"] for resource in template["resources"]}
+        assert not any(resource_type.startswith("Microsoft.Storage/") for resource_type in resource_types)
+
+        container_group = next(
+            resource
+            for resource in template["resources"]
+            if resource["type"] == "Microsoft.ContainerInstance/containerGroups"
+        )
+        properties = container_group["properties"]
+        assert "volumes" not in properties
+        assert "volumeMounts" not in properties["containers"][0]["properties"]
+
     def test_eventhub_template_has_specific_sku_description(self):
         template = _load_template("azure-template-with-eventhub.json")
 

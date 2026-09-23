@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the Aisstream bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
+    "description": "Deploys the Aisstream bridge as an Azure Container Instance with Log Analytics diagnostics."
   },
   "parameters": {
     "connectionString": {
@@ -65,8 +65,6 @@
     }
   },
   "variables": {
-    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
-    "fileShareName": "bridge-state",
     "imageName": "ghcr.io/clemensv/real-time-sources-aisstream:latest",
     "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
   },
@@ -84,47 +82,12 @@
       }
     },
     {
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-05-01",
-      "name": "[variables('storageAccountName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "Standard_LRS"
-      },
-      "kind": "StorageV2",
-      "properties": {
-        "accessTier": "Hot",
-        "minimumTlsVersion": "TLS1_2"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2023-05-01",
-      "name": "[concat(variables('storageAccountName'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-      ],
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-      "apiVersion": "2023-05-01",
-      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-      ],
-      "properties": {
-        "shareQuota": 1
-      }
-    },
-    {
       "type": "Microsoft.ContainerInstance/containerGroups",
       "apiVersion": "2023-05-01",
       "name": "[parameters('containerGroupName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
       ],
       "properties": {
         "osType": "Linux",
@@ -180,23 +143,7 @@
                   "name": "PYTHONUNBUFFERED",
                   "value": "1"
                 }
-              ],
-              "volumeMounts": [
-                {
-                  "name": "bridge-state",
-                  "mountPath": "/mnt/bridge-state"
-                }
               ]
-            }
-          }
-        ],
-        "volumes": [
-          {
-            "name": "bridge-state",
-            "azureFile": {
-              "shareName": "[variables('fileShareName')]",
-              "storageAccountName": "[variables('storageAccountName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
             }
           }
         ]
