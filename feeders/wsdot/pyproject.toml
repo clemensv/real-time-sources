@@ -1,7 +1,7 @@
 [build-system]
 requires = [
-    "setuptools>=83.0.0",
-    "setuptools-scm>=10.2.1",
+    "setuptools>=84.0.0",
+    "setuptools-scm>=10.2.3",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -13,9 +13,9 @@ dynamic = [
 description = "WSDOT traffic flow bridge to Apache Kafka"
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "avro>=1.12.1",
+    "avro>=1.12.2",
     "cloudevents>=1.10.1,<2.0.0",
-    "confluent-kafka>=2.15.0",
+    "confluent-kafka>=2.15.1",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
 ]
