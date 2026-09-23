@@ -538,28 +538,6 @@ def _color_match(column: str, palette: dict[str, str], fallback: str = "#94A3B8"
     return expr
 
 
-def _icon_image_reference(layer_id: str, icon: str, fill_color: Any) -> Any:
-    if not isinstance(fill_color, list) or len(fill_color) < 4 or fill_color[0] != "match":
-        return f"{layer_id}:{icon}"
-
-    expr: list[Any] = ["match", copy.deepcopy(fill_color[1])]
-    pairs = fill_color[2:-1]
-    fallback = fill_color[-1]
-
-    if len(pairs) % 2 != 0 or not isinstance(fallback, str):
-        return f"{layer_id}:{icon}"
-
-    for idx in range(0, len(pairs), 2):
-        value = copy.deepcopy(pairs[idx])
-        color = pairs[idx + 1]
-        if not isinstance(color, str):
-            return f"{layer_id}:{icon}"
-        expr.extend([value, f"{layer_id}:{icon}-{color}"])
-
-    expr.append(f"{layer_id}:{icon}-{fallback}")
-    return expr
-
-
 def _interpolate(column: str, stops: list[tuple[float, str]]) -> list[Any]:
     expr: list[Any] = ["interpolate", ["linear"], ["get", column]]
     for value, color in stops:
@@ -939,6 +917,17 @@ def _layers() -> list[Layer]:
     ]
 
 
+def _apply_marker_icon(layer_options: dict[str, Any], layer: Layer) -> None:
+    if not layer.marker_icon:
+        return
+    marker_options = layer_options.setdefault("markerOptions", {})
+    marker_options.setdefault("icon", layer.marker_icon)
+    # Fabric Map schema 2.1 requires iconOptions.image to be a scalar string.
+    # Keep data-driven coloring in fillColor instead of generating an invalid
+    # expression array for the sprite image.
+    marker_options.pop("iconOptions", None)
+
+
 def _b64(text: str) -> str:
     return base64.b64encode(text.encode("utf-8")).decode("ascii")
 
@@ -1173,14 +1162,7 @@ def wire(
         source_id = str(uuid.uuid4())
         layer_id = str(uuid.uuid4())
         layer_options = copy.deepcopy(layer.options)
-        if layer.marker_icon:
-            marker_options = layer_options.setdefault("markerOptions", {})
-            marker_options.setdefault("icon", layer.marker_icon)
-            marker_options.setdefault("iconOptions", {})["image"] = _icon_image_reference(
-                layer_id,
-                layer.marker_icon,
-                marker_options.get("fillColor"),
-            )
+        _apply_marker_icon(layer_options, layer)
         mp["layerSources"].append(
             {
                 "id": source_id,
