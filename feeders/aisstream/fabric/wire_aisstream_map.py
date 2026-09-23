@@ -38,6 +38,11 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
     + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
 
+MAP_SCHEMA = (
+    "https://developer.microsoft.com/json-schemas/fabric/item/map/"
+    "definition/2.0.0/schema.json"
+)
+
 
 def _get_token(env_name: str, scope: str | list[str]) -> str:
     token = os.environ.get(env_name)
@@ -928,6 +933,15 @@ def _apply_marker_icon(layer_options: dict[str, Any], layer: Layer) -> None:
     marker_options.pop("iconOptions", None)
 
 
+def _location_binding(layer: Layer) -> dict[str, str]:
+    if layer.options.get("pointLayerType") in {"bubble", "marker"}:
+        return {
+            "latitudeColumnName": "latitude",
+            "longitudeColumnName": "longitude",
+        }
+    return {"geometryColumnName": "geometry"}
+
+
 def _b64(text: str) -> str:
     return base64.b64encode(text.encode("utf-8")).decode("ascii")
 
@@ -950,11 +964,7 @@ def _get_definition(
     mp.setdefault("iconSources", [])
     mp.setdefault("layerSources", [])
     mp.setdefault("layerSettings", [])
-    if "$schema" not in mp:
-        mp["$schema"] = (
-            "https://developer.microsoft.com/json-schemas/fabric/item/map/"
-            "definition/2.0.0/schema.json"
-        )
+    mp["$schema"] = MAP_SCHEMA
     return mp, parts
 
 
@@ -1173,16 +1183,15 @@ def wire(
                 "refreshIntervalMs": layer.refresh_interval_ms,
             }
         )
-        mp["layerSettings"].append(
-            {
-                "id": layer_id,
-                "name": layer.name,
-                "sourceId": source_id,
-                "geometryColumnName": "geometry",
-                "filters": layer.filters,
-                "options": layer_options,
-            }
-        )
+        layer_setting = {
+            "id": layer_id,
+            "name": layer.name,
+            "sourceId": source_id,
+            "filters": layer.filters,
+            "options": layer_options,
+        }
+        layer_setting.update(_location_binding(layer))
+        mp["layerSettings"].append(layer_setting)
         parts[f"queries/layerSource-{source_id}.kql"] = {
             "path": f"queries/layerSource-{source_id}.kql",
             "payload": _b64(layer.kql),
