@@ -6,10 +6,13 @@ import sys
 import os
 import time
 import logging
+import threading
 import requests
 from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from nve_hydro_producer_data import Station
 from nve_hydro_producer_data import WaterLevelObservation
@@ -29,7 +32,10 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
 PARAM_STAGE = 1000       # Water level / Vannstand (m)
 PARAM_DISCHARGE = 1001   # Discharge / Vannføring (m³/s)
 
-MAX_WORKERS = 10
+MAX_WORKERS = 4
+MAX_SERIES_PER_REQUEST = 10
+MIN_REQUEST_INTERVAL_SECONDS = 0.21
+REFERENCE_REFRESH_SECONDS = int(os.environ.get("REFERENCE_REFRESH_INTERVAL", "14400"))
 
 
 class NVEHydroAPI:
@@ -41,29 +47,59 @@ class NVEHydroAPI:
         self.session.headers["User-Agent"] = USER_AGENT
         self.session.headers['X-API-Key'] = api_key
         self.session.headers['Accept'] = 'application/json'
+        retry = Retry(
+            total=4,
+            connect=4,
+            read=4,
+            status=4,
+            backoff_factor=1.0,
+            status_forcelist=(429, 500, 502, 503, 504),
+            allowed_methods=frozenset({"GET"}),
+            respect_retry_after_header=True,
+            raise_on_status=False,
+        )
+        adapter = HTTPAdapter(max_retries=retry, pool_connections=MAX_WORKERS, pool_maxsize=MAX_WORKERS)
+        self.session.mount("https://", adapter)
+        self.session.mount("http://", adapter)
+        self._rate_lock = threading.Lock()
+        self._last_request_at = 0.0
+
+    def _get(self, path: str, *, params: dict, timeout: int) -> requests.Response:
+        with self._rate_lock:
+            delay = MIN_REQUEST_INTERVAL_SECONDS - (time.monotonic() - self._last_request_at)
+            if delay > 0:
+                time.sleep(delay)
+            self._last_request_at = time.monotonic()
+        response = self.session.get(f"{self.base_url}/{path}", params=params, timeout=timeout)
+        if response.status_code == 429:
+            logger.warning("NVE HydAPI throttled request to %s; retries exhausted", path)
+        response.raise_for_status()
+        return response
 
     def get_stations(self) -> list:
         """Fetch all active stations."""
-        url = f"{self.base_url}/Stations"
-        params = {"Active": "1"}
-        response = self.session.get(url, params=params, timeout=60)
-        response.raise_for_status()
+        response = self._get("Stations", params={"Active": "1"}, timeout=60)
         return response.json().get('data', [])
 
-    def get_observations(self, station_id: str, parameter: int) -> list:
-        """Fetch latest observation for a station and parameter."""
-        url = f"{self.base_url}/Observations"
+    def get_observations(self, station_ids: str | list[str], parameters: int | list[int]) -> list:
+        """Fetch the latest observations for at most ten station/parameter series."""
+        station_id = station_ids if isinstance(station_ids, str) else ",".join(station_ids)
+        parameter = str(parameters) if isinstance(parameters, int) else ",".join(str(p) for p in parameters)
         params = {
             "StationId": station_id,
-            "Parameter": str(parameter),
+            "Parameter": parameter,
             "ResolutionTime": "0",
         }
         try:
-            response = self.session.get(url, params=params, timeout=30)
-            response.raise_for_status()
+            response = self._get("Observations", params=params, timeout=60)
             return response.json().get('data', [])
         except requests.RequestException as e:
-            logger.debug("Failed to fetch observations for %s param %d: %s", station_id, parameter, e)
+            logger.warning(
+                "Failed to fetch observations for stations %s and parameters %s: %s",
+                station_id,
+                parameter,
+                e,
+            )
             return []
 
 
@@ -115,6 +151,18 @@ def _save_state(state_file: str, data: dict) -> None:
         logging.warning("Could not save state to %s: %s", state_file, e)
 
 
+def _parse_datetime(value: str | None) -> datetime | None:
+    """Parse an upstream ISO 8601 timestamp, including the UTC ``Z`` suffix."""
+    if not value:
+        return None
+    text = value.strip()
+    if not text:
+        return None
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    return datetime.fromisoformat(text)
+
+
 def _station_has_parameter(station: dict, param_id: int) -> bool:
     """Check if a station has a specific parameter in its series list."""
     for series in station.get('seriesList') or []:
@@ -136,6 +184,69 @@ def _fetch_station_observations(api: NVEHydroAPI, station_id: str, params: list)
                     result[param_id] = latest
                     break
     return result
+
+
+def _build_observation_batches(station_params: dict[str, list[int]]) -> list[list[str]]:
+    """Group stations into requests that stay within HydAPI's ten-series limit."""
+    batches: list[list[str]] = []
+    current: list[str] = []
+    series_count = 0
+    for station_id, params in station_params.items():
+        station_series = len(params)
+        if current and series_count + station_series > MAX_SERIES_PER_REQUEST:
+            batches.append(current)
+            current = []
+            series_count = 0
+        current.append(station_id)
+        series_count += station_series
+    if current:
+        batches.append(current)
+    return batches
+
+
+def _fetch_observation_batch(
+    api: NVEHydroAPI,
+    station_ids: list[str],
+    station_params: dict[str, list[int]],
+) -> dict[str, dict[int, dict]]:
+    parameters = sorted({param for sid in station_ids for param in station_params[sid]})
+    result: dict[str, dict[int, dict]] = {}
+    for item in api.get_observations(station_ids, parameters):
+        station_id = item.get("stationId")
+        parameter = item.get("parameter")
+        if not station_id or parameter not in station_params.get(station_id, []):
+            continue
+        for observation in reversed(item.get("observations") or []):
+            if observation.get("value") is None:
+                continue
+            result.setdefault(station_id, {})[parameter] = {
+                **observation,
+                "unit": item.get("unit"),
+                "method": item.get("method"),
+                "series_version": item.get("serieVersionNo"),
+            }
+            break
+    return result
+
+
+def fetch_observation_batches(
+    api: NVEHydroAPI,
+    station_params: dict[str, list[int]],
+) -> dict[str, dict[int, dict]]:
+    """Fetch current observations with bounded concurrency and HydAPI-sized batches."""
+    observations: dict[str, dict[int, dict]] = {}
+    batches = _build_observation_batches(station_params)
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = {
+            executor.submit(_fetch_observation_batch, api, batch, station_params): batch
+            for batch in batches
+        }
+        for future in as_completed(futures):
+            try:
+                observations.update(future.result())
+            except Exception as exc:
+                logger.warning("Failed NVE observation batch %s: %s", futures[future], exc)
+    return observations
 
 
 def send_stations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer) -> tuple:
@@ -160,18 +271,21 @@ def send_stations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer) -> tu
         station_data = Station(
             station_id=sid,
             station_name=station.get('stationName', ''),
-            river_name=station.get('riverName', ''),
+            river_name=station.get('riverName'),
             latitude=station.get('latitude', 0.0),
             longitude=station.get('longitude', 0.0),
-            masl=station.get('masl') or 0.0,
-            council_name=station.get('councilName', ''),
-            county_name=station.get('countyName', ''),
-            drainage_basin_area=station.get('drainageBasinArea') or 0.0,
+            masl=station.get('masl'),
+            council_name=station.get('councilName'),
+            county_name=station.get('countyName'),
+            drainage_basin_area=station.get('drainageBasinArea'),
         )
         producer.send_no_nve_hydrology_station(_station_id=sid, data=station_data, flush_producer=False)
         sent_count += 1
+        if sent_count % 100 == 0 and producer.producer.flush(timeout=120) != 0:
+            raise RuntimeError("Kafka flush failed while emitting NVE station reference events")
 
-    producer.producer.flush()
+    if producer.producer.flush(timeout=120) != 0:
+        raise RuntimeError("Kafka flush failed while emitting NVE station reference events")
     logger.info("Sent %d station events", sent_count)
     return station_params, station_river
 
@@ -180,59 +294,64 @@ def feed_observations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer,
                       station_params: dict, station_river: dict, previous_readings: dict) -> int:
     """Fetch observations and send measurement events to Kafka."""
     sent_count = 0
+    pending_readings: dict[str, str] = {}
+    for sid, obs_by_param in fetch_observation_batches(api, station_params).items():
+        if not obs_by_param:
+            continue
 
-    def fetch_one(sid):
-        return sid, _fetch_station_observations(api, sid, station_params[sid])
+        wl_val = None
+        wl_ts = ""
+        q_val = None
+        q_ts = ""
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = {executor.submit(fetch_one, sid): sid for sid in station_params}
-        for future in as_completed(futures):
-            sid = futures[future]
-            try:
-                _, obs_by_param = future.result()
-            except Exception as e:
-                logger.debug("Error fetching observations for %s: %s", sid, e)
-                continue
-            if not obs_by_param:
-                continue
+        if PARAM_STAGE in obs_by_param:
+            stage = obs_by_param[PARAM_STAGE]
+            wl_val = float(stage["value"])
+            wl_ts = stage.get("time", "")
 
-            wl_val = None
-            wl_ts = ""
-            q_val = None
-            q_ts = ""
+        if PARAM_DISCHARGE in obs_by_param:
+            discharge = obs_by_param[PARAM_DISCHARGE]
+            q_val = float(discharge["value"])
+            q_ts = discharge.get("time", "")
 
-            if PARAM_STAGE in obs_by_param:
-                stage = obs_by_param[PARAM_STAGE]
-                wl_val = float(stage["value"])
-                wl_ts = stage.get("time", "")
+        if wl_val is None and q_val is None:
+            continue
 
-            if PARAM_DISCHARGE in obs_by_param:
-                discharge = obs_by_param[PARAM_DISCHARGE]
-                q_val = float(discharge["value"])
-                q_ts = discharge.get("time", "")
+        reading_key = f"{sid}:{wl_ts}:{q_ts}"
+        if reading_key in previous_readings:
+            continue
 
-            if wl_val is None and q_val is None:
-                continue
+        stage = obs_by_param.get(PARAM_STAGE, {})
+        discharge = obs_by_param.get(PARAM_DISCHARGE, {})
+        obs_data = WaterLevelObservation(
+            station_id=sid,
+            river_name=station_river.get(sid, '') or '',
+            water_level=wl_val,
+            water_level_unit=stage.get("unit") if wl_val is not None else None,
+            water_level_timestamp=_parse_datetime(wl_ts),
+            water_level_quality=stage.get("quality"),
+            water_level_correction=stage.get("correction"),
+            water_level_series_version=stage.get("series_version"),
+            water_level_method=stage.get("method"),
+            discharge=q_val,
+            discharge_unit=discharge.get("unit") if q_val is not None else None,
+            discharge_timestamp=_parse_datetime(q_ts),
+            discharge_quality=discharge.get("quality"),
+            discharge_correction=discharge.get("correction"),
+            discharge_series_version=discharge.get("series_version"),
+            discharge_method=discharge.get("method"),
+        )
+        producer.send_no_nve_hydrology_water_level_observation(
+            _station_id=sid,
+            data=obs_data,
+            flush_producer=False,
+        )
+        sent_count += 1
+        pending_readings[reading_key] = wl_ts or q_ts
 
-            reading_key = f"{sid}:{wl_ts}:{q_ts}"
-            if reading_key in previous_readings:
-                continue
-
-            obs_data = WaterLevelObservation(
-                station_id=sid,
-                river_name=station_river.get(sid, '') or '',
-                water_level=wl_val if wl_val is not None else 0.0,
-                water_level_unit='m',
-                water_level_timestamp=datetime.fromisoformat(wl_ts) if wl_ts else None,
-                discharge=q_val if q_val is not None else 0.0,
-                discharge_unit='m3/s',
-                discharge_timestamp=datetime.fromisoformat(q_ts) if q_ts else None,
-            )
-            producer.send_no_nve_hydrology_water_level_observation(_station_id=sid, data=obs_data, flush_producer=False)
-            sent_count += 1
-            previous_readings[reading_key] = wl_ts or q_ts
-
-    producer.producer.flush()
+    if producer.producer.flush(timeout=120) != 0:
+        raise RuntimeError("Kafka flush failed while emitting NVE observations")
+    previous_readings.update(pending_readings)
     return sent_count
 
 
@@ -298,11 +417,17 @@ def main():
         logger.info("Starting NVE Hydro bridge, polling every %d seconds", args.polling_interval)
         previous_readings = _load_state(args.state_file)
         station_params, station_river = send_stations(api, nve_producer)
+        last_station_refresh = time.monotonic()
         while True:
             try:
                 count = feed_observations(api, nve_producer, station_params, station_river, previous_readings)
                 _save_state(args.state_file, previous_readings)
                 logger.info("Sent %d events", count)
+                if time.monotonic() - last_station_refresh >= REFERENCE_REFRESH_SECONDS:
+                    refreshed_params, refreshed_river = send_stations(api, nve_producer)
+                    station_params = refreshed_params
+                    station_river = refreshed_river
+                    last_station_refresh = time.monotonic()
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
             if args.once:

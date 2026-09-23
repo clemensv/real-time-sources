@@ -15,41 +15,61 @@ import json
 import datetime
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
-    
+    Measurement payload for water level and discharge observations in the NVE Hydrology source.
+
     Attributes:
         station_id (str)
         river_name (str)
         water_level (typing.Optional[float])
         water_level_unit (typing.Optional[str])
         water_level_timestamp (typing.Optional[datetime.datetime])
+        water_level_quality (typing.Optional[int])
+        water_level_correction (typing.Optional[int])
+        water_level_series_version (typing.Optional[int])
+        water_level_method (typing.Optional[str])
         discharge (typing.Optional[float])
         discharge_unit (typing.Optional[str])
         discharge_timestamp (typing.Optional[datetime.datetime])
+        discharge_quality (typing.Optional[int])
+        discharge_correction (typing.Optional[int])
+        discharge_series_version (typing.Optional[int])
+        discharge_method (typing.Optional[str])
     """
-    
-    
+
+
+
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     river_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river_name"))
     water_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
     water_level_unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_unit"))
     water_level_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    water_level_quality: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_quality"))
+    water_level_correction: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_correction"))
+    water_level_series_version: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_series_version"))
+    water_level_method: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_method"))
     discharge: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
     discharge_unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_unit"))
     discharge_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    discharge_quality: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_quality"))
+    discharge_correction: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_correction"))
+    discharge_series_version: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_series_version"))
+    discharge_method: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_method"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WaterLevelObservation':
         """
         Converts a dictionary to a dataclass instance.
-        
+
         Args:
             data: The dictionary to convert to a dataclass.
-        
+
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -68,7 +88,7 @@ class WaterLevelObservation:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -80,7 +100,7 @@ class WaterLevelObservation:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-        
+
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -89,17 +109,21 @@ class WaterLevelObservation:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.        
+            The byte array representation of the dataclass.
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -119,10 +143,10 @@ class WaterLevelObservation:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['WaterLevelObservation']:
         """
         Converts the data to a dataclass based on the content type string.
-        
+
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to. 
+            content_type_string: The content type string to convert the data to.
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -146,7 +170,7 @@ class WaterLevelObservation:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -156,23 +180,32 @@ class WaterLevelObservation:
                 return WaterLevelObservation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
     def create_instance(cls) -> 'WaterLevelObservation':
         """
         Creates an instance of the dataclass with test values.
-        
+
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            station_id='vaxguklwtqvvbhhhqbxd',
-            river_name='cxkywwfqtslpqqsccssu',
-            water_level=float(6.952309498038256),
-            water_level_unit='sjihrdkxfzqvrkepybwa',
+            station_id='uxpcskvsgrvvdqmzsjvq',
+            river_name='hnqvqmyzdayfpvdaghoh',
+            water_level=float(35.39938962274435),
+            water_level_unit='dbrtbaysadrnkuecblne',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(37.262733086534496),
-            discharge_unit='gsfgviiplbxwwbcxljqe',
-            discharge_timestamp=datetime.datetime.now(datetime.timezone.utc)
+            water_level_quality=int(57),
+            water_level_correction=int(90),
+            water_level_series_version=int(91),
+            water_level_method='iwuayzvgnjzqorzzdkrn',
+            discharge=float(57.36300123108112),
+            discharge_unit='exiqgbdidffglkpuiscx',
+            discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
+            discharge_quality=int(0),
+            discharge_correction=int(97),
+            discharge_series_version=int(28),
+            discharge_method='ztnltkchswzmmzokksln'
         )

@@ -4,7 +4,7 @@ import json
 import pytest
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch, PropertyMock
-from smhi_hydro.smhi_hydro import SMHIHydroAPI, parse_connection_string, feed_stations
+from smhi_hydro.smhi_hydro import SMHIHydroAPI, parse_connection_string, feed_stations, _load_state, _save_state
 from smhi_hydro_producer_data import Station
 from smhi_hydro_producer_data import DischargeObservation
 from smhi_hydro_producer_kafka_producer.producer import SEGovSMHIHydroEventProducer
@@ -279,6 +279,13 @@ class TestParseConnectionString:
     def test_parse_empty_connection_string(self):
         config = parse_connection_string("")
         assert config == {}
+
+
+def test_state_serializes_datetime_values(tmp_path):
+    path = tmp_path / "state.json"
+    timestamp = datetime(2026, 9, 23, 6, 0, tzinfo=timezone.utc)
+    _save_state(str(path), {"station:timestamp": timestamp})
+    assert _load_state(str(path)) == {"station:timestamp": "2026-09-23T06:00:00+00:00"}
 
 
 class TestFeedStations:

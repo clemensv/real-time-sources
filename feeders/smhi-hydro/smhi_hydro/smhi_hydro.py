@@ -121,6 +121,12 @@ def _load_state(state_file: str) -> dict:
     return {}
 
 
+def _json_default(value):
+    if isinstance(value, datetime):
+        return value.isoformat()
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+
+
 def _save_state(state_file: str, data: dict) -> None:
     """Save dedup state to a JSON file, keeping at most 100000 entries."""
     if not state_file:
@@ -130,7 +136,7 @@ def _save_state(state_file: str, data: dict) -> None:
             keys = list(data.keys())
             data = {k: data[k] for k in keys[-50000:]}
         with open(state_file, 'w', encoding='utf-8') as f:
-            json.dump(data, f)
+            json.dump(data, f, default=_json_default)
     except Exception as e:
         logging.warning("Could not save state to %s: %s", state_file, e)
 

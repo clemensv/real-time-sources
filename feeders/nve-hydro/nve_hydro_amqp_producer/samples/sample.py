@@ -9,8 +9,8 @@ from nve_hydro_amqp_producer_amqp_producer import *
 
 def main():
     """Main function"""
-    
-    
+
+
     # Create producer
     print("Creating AMQP producer...")
     producer = NONVEHydrologyAmqpProducer(
@@ -22,10 +22,10 @@ def main():
         content_mode='structured',  # or 'binary' for CloudEvents
         format_type='application/json'
     )
-    
+
     try:
-        
-        
+
+
         # Send Station message
         print("Sending Station message...")
         # TODO: Create a Station instance with actual data
@@ -35,9 +35,9 @@ def main():
         #     content_type="application/json"
         # )
         # print("Station message sent successfully!")
-        
-        
-        
+
+
+
         # Send WaterLevelObservation message
         print("Sending WaterLevelObservation message...")
         # TODO: Create a WaterLevelObservation instance with actual data
@@ -47,19 +47,19 @@ def main():
         #     content_type="application/json"
         # )
         # print("WaterLevelObservation message sent successfully!")
-        
-        
+
+
         print("\nAll messages sent successfully!")
-        
+
     except Exception as e:
         print(f"Error sending messages: {e}", file=sys.stderr)
         return 1
     finally:
         producer.close()
         print("Producer closed")
-    
+
     return 0
-    
+
 
 if __name__ == "__main__":
     sys.exit(main())
