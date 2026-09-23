@@ -73,45 +73,57 @@ function Get-KustoAccessToken {
         $KustoUri
     ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
 
-    $reauthAttempted = $false
     $lastErr = $null
-    while ($true) {
-        foreach ($resource in $resources) {
-            $errFile = Join-Path ([System.IO.Path]::GetTempPath()) ("kusto-token-err-{0}.txt" -f ([Guid]::NewGuid().ToString("N")))
-            $token = az account get-access-token --resource $resource --query accessToken -o tsv 2>$errFile
-            $stderr = if (Test-Path $errFile) { (Get-Content $errFile -Raw) } else { "" }
-            Remove-Item $errFile -ErrorAction SilentlyContinue
-            if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($token)) {
-                return $token.Trim()
-            }
-            if ($stderr) { $lastErr = $stderr }
+    foreach ($resource in $resources) {
+        $errFile = Join-Path ([System.IO.Path]::GetTempPath()) ("kusto-token-err-{0}.txt" -f ([Guid]::NewGuid().ToString("N")))
+        $token = az account get-access-token --resource $resource --query accessToken -o tsv 2>$errFile
+        $stderr = if (Test-Path $errFile) { (Get-Content $errFile -Raw) } else { "" }
+        Remove-Item $errFile -ErrorAction SilentlyContinue
+        if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($token)) {
+            return $token.Trim()
         }
+        if ($stderr) { $lastErr = $stderr }
+    }
 
-        # Azure Cloud Shell's relayed MSI only supports a fixed allow-list of
-        # resource audiences; the dynamically-assigned per-workspace Kusto
-        # cluster URI is not on it ("... is not a supported MSI token
-        # audience"). A real (non-MSI) AAD session obtained via `az login`
-        # can mint tokens for any resource through MSAL, bypassing that
-        # allow-list entirely. Attempt exactly one automatic interactive
-        # re-auth (Cloud Shell falls back to a device-code prompt when no
-        # local browser is available) before giving up.
-        if (-not $reauthAttempted -and $lastErr -match 'not a supported MSI token audience') {
-            $reauthAttempted = $true
-            Write-Host "  Kusto token audience is not supported by this shell's managed-identity relay." -ForegroundColor Yellow
-            Write-Host "  Re-authenticating interactively (az login) to obtain a token-mintable AAD session..." -ForegroundColor Yellow
-            az login --scope "$($resources[-1])/.default" --only-show-errors | Out-Null
-            if ($LASTEXITCODE -eq 0) {
-                if ($Context.SubscriptionId) {
-                    az account set --subscription $Context.SubscriptionId --only-show-errors | Out-Null
+    # Azure Cloud Shell's relayed MSI only supports a fixed allow-list of
+    # resource audiences; the dynamically-assigned per-workspace Kusto
+    # cluster URI is not on it ("... is not a supported MSI token
+    # audience"). Az PowerShell's Get-AzAccessToken uses a separate token
+    # cache/auth path (the session Cloud Shell already established via
+    # Connect-AzAccount at shell start-up) and can sometimes mint tokens for
+    # audiences the az-CLI MSI relay rejects. Try it as a second,
+    # non-interactive option before giving up — it never opens a sign-in
+    # prompt, so it cannot trip Conditional Access device-code restrictions
+    # the way an automatic `az login` would (see incident: CA error 53003,
+    # "Microsoft Azure CLI" app blocked for device-code sign-in in this
+    # tenant). Do NOT add an automatic interactive re-auth here — that is a
+    # tenant policy decision for the user/admin to make, not something this
+    # script may trigger on its own.
+    if (Get-Command Get-AzAccessToken -ErrorAction SilentlyContinue) {
+        foreach ($resource in $resources) {
+            try {
+                $azToken = Get-AzAccessToken -ResourceUrl $resource -ErrorAction Stop
+                if ($azToken -and $azToken.Token) {
+                    $plain = if ($azToken.Token -is [System.Security.SecureString]) {
+                        [System.Runtime.InteropServices.Marshal]::PtrToStringAuto(
+                            [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($azToken.Token))
+                    } else {
+                        $azToken.Token
+                    }
+                    if (-not [string]::IsNullOrWhiteSpace($plain)) { return $plain }
                 }
-                continue
+            } catch {
+                $lastErr = $_.Exception.Message
             }
         }
-        break
     }
 
     $suffix = if ($lastErr) { " Last error: $($lastErr.Trim())" } else { "" }
-    throw "Failed to acquire a Kusto access token for $KustoUri.$suffix"
+    throw "Failed to acquire a Kusto access token for $KustoUri.$suffix`n" +
+        "This shell's identity cannot mint a token for the per-workspace Kusto cluster audience. " +
+        "Re-run this hook from a session with a full (non-MSI) AAD sign-in, e.g. locally after " +
+        "'az login', or ask your tenant admin whether device-code sign-in for the Azure CLI app " +
+        "is restricted by Conditional Access."
 }
 
 if (-not $Context.WorkspaceId) {
