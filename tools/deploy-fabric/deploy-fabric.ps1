@@ -331,6 +331,92 @@ function Invoke-KqlScript {
     Write-OK "Applied $Label"
 }
 
+function Invoke-KqlSchemaApply {
+    <#
+    Applies a KQL schema script to a Fabric KQL database, with a resilient
+    fallback path.
+
+    The Kusto dataplane (.execute database script via az rest --resource
+    $QueryUri) is the primary path because it reports per-command
+    success/failure. It requires an AAD token scoped to the *per-workspace*
+    Kusto cluster URI (https://trd-....kusto.fabric.microsoft.com), which is
+    not always obtainable from Azure Cloud Shell's relayed MSI — Cloud Shell
+    only supports a fixed allow-list of resource audiences, and dynamically
+    assigned per-cluster Fabric Kusto URIs are not on it ("... is not a
+    supported MSI token audience"). That failure is permanent for the
+    duration of the shell session, so it is detected and short-circuited
+    immediately instead of burning through retries.
+
+    The fallback is the Fabric item-definition API (updateDefinition), which
+    only needs the api.fabric.microsoft.com audience — already proven
+    reachable earlier in this script (workspace/eventhouse/database
+    resolution all use it) — so it works even when the Kusto dataplane
+    audience is blocked.
+
+    Returns $true on success. Returns $false only when -AllowStaleDelete is
+    set and both paths failed (caller should delete + recreate the
+    database). Throws when both paths failed and -AllowStaleDelete is not
+    set (brand-new database — nothing sensible to fall back further to).
+    #>
+    param(
+        [string]$QueryUri,
+        [string]$Database,
+        [string]$ScriptContent,
+        [string]$FilteredKql,
+        [string]$EventhouseId,
+        [string]$WorkspaceId,
+        [string]$DatabaseId,
+        [string]$Label,
+        [switch]$AllowStaleDelete
+    )
+
+    $maxAttempts = 3
+    $dataplaneFailed = $false
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        try {
+            Invoke-KqlScript -QueryUri $QueryUri -Database $Database -ScriptContent $ScriptContent -Label $Label
+            return $true
+        } catch {
+            $msg = $_.Exception.Message
+            if ($msg -match 'not a supported MSI token audience') {
+                Write-Host "  Kusto dataplane token unavailable in this shell (Cloud Shell MSI audience restriction on the per-workspace Kusto cluster URI) — falling back to the Fabric definition API." -ForegroundColor Yellow
+                $dataplaneFailed = $true
+                break
+            }
+            if ($attempt -eq $maxAttempts) { $dataplaneFailed = $true; break }
+            Write-Host "  Schema apply attempt $attempt failed: $($msg.Split([Environment]::NewLine)[0]); retrying in 15s..." -ForegroundColor DarkYellow
+            Start-Sleep -Seconds 15
+        }
+    }
+    if (-not $dataplaneFailed) { return $true }
+
+    Write-Host "  Falling back to Fabric definition API..." -ForegroundColor Yellow
+    $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($FilteredKql))
+    $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
+    $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
+    try {
+        Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$DatabaseId/updateDefinition" -Body @{ definition = @{ parts = @(
+            @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
+            @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
+        )}}
+        Start-Sleep -Seconds 30
+        Write-OK "Schema update submitted (definition API fallback)"
+        return $true
+    } catch {
+        if ($AllowStaleDelete) {
+            Write-Host "  updateDefinition failed ($_). Deleting stale DB and recreating..." -ForegroundColor Yellow
+            try {
+                Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$DatabaseId" | Out-Null
+                Start-Sleep -Seconds 5
+            } catch {
+                Write-Host "  Could not delete stale DB (ignoring): $_" -ForegroundColor Yellow
+            }
+            return $false
+        }
+        throw "Both the Kusto dataplane and the Fabric definition API failed to apply the schema for ${Label}: $_"
+    }
+}
+
 function Get-EventStreamConnectionString {
     <#
     Retrieve the CustomEndpoint primary connection string for an Event Stream
@@ -633,33 +719,14 @@ if ($existingDb) {
     $dbStaleness = $false
     if ($kqlContent) {
         Write-Step "2/6" "Updating KQL schema..."
-        try {
-            Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent -Label "$Source.kql"
-        } catch {
-            Write-Host "  Falling back to Fabric definition API..." -ForegroundColor Yellow
-            $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
-            $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
-            $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
-            try {
-                Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" -Body @{ definition = @{ parts = @(
-                    @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
-                    @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
-                )}}
-                Start-Sleep -Seconds 30
-                Write-OK "Schema update submitted"
-            } catch {
-                # updateDefinition failed (e.g. ItemNotFound / stale orphan from a prior deploy).
-                # Delete the stale database entry and fall through to the create path.
-                Write-Host "  updateDefinition failed ($_). Deleting stale DB and recreating..." -ForegroundColor Yellow
-                try {
-                    Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$databaseId" | Out-Null
-                    Start-Sleep -Seconds 5
-                } catch {
-                    Write-Host "  Could not delete stale DB (ignoring): $_" -ForegroundColor Yellow
-                }
-                $dbStaleness = $true
-            }
-        }
+        # updateDefinition can still fail outright (e.g. ItemNotFound / stale
+        # orphan from a prior deploy); AllowStaleDelete tells the helper to
+        # delete the stale DB and fall through to the create path below
+        # instead of throwing.
+        $ok = Invoke-KqlSchemaApply -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent `
+            -FilteredKql $filteredKql -EventhouseId $EventhouseId -WorkspaceId $WorkspaceId -DatabaseId $databaseId `
+            -Label "$Source.kql" -AllowStaleDelete
+        if (-not $ok) { $dbStaleness = $true }
     } else {
         Write-Step "2/6" "No KQL schema available — skipping"
     }
@@ -759,17 +826,11 @@ if (-not $existingDb -or $dbStaleness) {
         Write-Step "2/6" "Applying KQL schema via dataplane..."
         # Brief delay to let the new DB's query/mgmt endpoint become ready
         Start-Sleep -Seconds 20
-        $maxAttempts = 6
-        for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
-            try {
-                Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent -Label "$Source.kql"
-                break
-            } catch {
-                if ($attempt -eq $maxAttempts) { throw }
-                Write-Host "  Schema apply attempt $attempt failed: $($_.Exception.Message.Split([Environment]::NewLine)[0]); retrying in 15s..." -ForegroundColor DarkYellow
-                Start-Sleep -Seconds 15
-            }
-        }
+        # Brand-new database: no stale entry to delete, so a double failure
+        # (dataplane + definition API) is fatal — Invoke-KqlSchemaApply throws.
+        Invoke-KqlSchemaApply -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent `
+            -FilteredKql $filteredKql -EventhouseId $EventhouseId -WorkspaceId $WorkspaceId -DatabaseId $databaseId `
+            -Label "$Source.kql" | Out-Null
     } else {
         Write-Step "2/6" "No KQL schema available — skipping"
     }
