@@ -42,7 +42,24 @@
    [___subject]: string
 );
 
-.alter table ['no.nve.hydrology.Station'] docstring "{\"description\": \"Station\"}";
+.alter table ['no.nve.hydrology.Station'] docstring @"{""description"": ""Reference details for one monitoring station or site in the NVE Hydrology source.""}";
+
+.alter table ['no.nve.hydrology.Station'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the monitoring station or site.""}",
+   [station_name]: @"{""description"": ""Human-readable name of the monitoring station.""}",
+   [river_name]: @"{""description"": ""Name of the river or watercourse observed at the station, or null when NVE does not publish a river name.""}",
+   [latitude]: @"{""description"": ""Latitude of the station in WGS 84 coordinates.""}",
+   [longitude]: @"{""description"": ""Longitude of the station in WGS 84 coordinates.""}",
+   [masl]: @"{""description"": ""Station elevation in metres above sea level, or null when NVE does not publish an elevation.""}",
+   [council_name]: @"{""description"": ""Human-readable name of the municipality, or null when NVE does not publish one.""}",
+   [county_name]: @"{""description"": ""Human-readable name of the county, or null when NVE does not publish one.""}",
+   [drainage_basin_area]: @"{""description"": ""Drainage basin area in square kilometres, or null when NVE does not publish a basin area.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
 
 .create-or-alter table ['no.nve.hydrology.Station'] ingestion json mapping "no.nve.hydrology.Station_json_flat"
 ```
@@ -60,7 +77,7 @@
   {"column": "masl", "path": "$.masl"},
   {"column": "council_name", "path": "$.council_name"},
   {"column": "county_name", "path": "$.county_name"},
-  {"column": "drainage_basin_area", "path": "$.drainage_basin_area"},
+  {"column": "drainage_basin_area", "path": "$.drainage_basin_area"}
 ]
 ```
 
@@ -80,7 +97,7 @@
   {"column": "masl", "path": "$.data.masl"},
   {"column": "council_name", "path": "$.data.council_name"},
   {"column": "county_name", "path": "$.data.county_name"},
-  {"column": "drainage_basin_area", "path": "$.data.drainage_basin_area"},
+  {"column": "drainage_basin_area", "path": "$.data.drainage_basin_area"}
 ]
 ```
 
@@ -97,18 +114,27 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.NVE.Hydrology.Station') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['river_name'] = tostring(data.['river_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['masl'] = toreal(data.['masl']),['council_name'] = tostring(data.['council_name']),['county_name'] = tostring(data.['county_name']),['drainage_basin_area'] = toreal(data.['drainage_basin_area']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
 .create-merge table ['no.nve.hydrology.WaterLevelObservation'] (
    [station_id]: string,
+   [river_name]: string,
    [water_level]: real,
    [water_level_unit]: string,
    [water_level_timestamp]: datetime,
+   [water_level_quality]: int,
+   [water_level_correction]: int,
+   [water_level_series_version]: long,
+   [water_level_method]: string,
    [discharge]: real,
    [discharge_unit]: string,
    [discharge_timestamp]: datetime,
+   [discharge_quality]: int,
+   [discharge_correction]: int,
+   [discharge_series_version]: long,
+   [discharge_method]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -116,7 +142,31 @@
    [___subject]: string
 );
 
-.alter table ['no.nve.hydrology.WaterLevelObservation'] docstring "{\"description\": \"WaterLevelObservation\"}";
+.alter table ['no.nve.hydrology.WaterLevelObservation'] docstring @"{""description"": ""Measurement payload for water level and discharge observations in the NVE Hydrology source.""}";
+
+.alter table ['no.nve.hydrology.WaterLevelObservation'] column-docstrings (
+   [station_id]: @"{""description"": ""Stable identifier assigned by the upstream provider for the monitoring station or site.""}",
+   [river_name]: @"{""description"": ""Raw name of the river the station observes from the NVE HydAPI 'riverName' field (Norwegian 'Vassdrag', for example 'Glomma' or 'Drammenselva'). The bridge propagates this catalog value onto every observation so payload consumers do not need an out-of-band catalog join. MQTT topic segments and AMQP routing properties use a separate lowercase kebab-case slug derived from this value.""}",
+   [water_level]: @"{""description"": ""Latest instantaneous stage value for NVE parameter 1000 (Vannstand / Stage), or null when the station has no current stage observation. Consumers use this value for water-level monitoring and threshold evaluation.""}",
+   [water_level_unit]: @"{""description"": ""Verbatim HydAPI unit token for parameter 1000, currently 'm'. Null when no water-level observation is present or HydAPI omits the series unit metadata.""}",
+   [water_level_timestamp]: @"{""description"": ""Time associated with the water-level measurement, or null when no water-level observation is present.""}",
+   [water_level_quality]: @"{""description"": ""NVE quality-control code for the water-level value: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled. Null when no water-level observation is present or HydAPI omits the observation quality metadata.""}",
+   [water_level_correction]: @"{""description"": ""NVE correction code for the water-level value. Documented values are 0 no changes, 1 manual or ice correction, 2 interpolation, 3 modeled or derived from other series, 4 arithmetic daily mean, 5 smoothed negative value, 6 dry pipe, 7 ice in pipe, 8 damaged pipe, 9 pumping, 11 linear adjustment, 12 incomplete source, 13 adjusted replacement-station estimate, 14 statistical estimate, 15 invalid numeric calculation, and 16 value from a rejected period; code 10 is not documented. Null when no water-level observation is present or HydAPI omits the observation correction metadata.""}",
+   [water_level_series_version]: @"{""description"": ""Non-negative NVE series version number selected for the water-level response. HydAPI returns the version with the newest data when a version is not requested. Null when no water-level observation is present or HydAPI omits the series version metadata.""}",
+   [water_level_method]: @"{""description"": ""HydAPI aggregation method for the water-level series. Resolution 0 currently returns Instantaneous. Null when no water-level observation is present or HydAPI omits the series method metadata.""}",
+   [discharge]: @"{""description"": ""Latest instantaneous discharge value for NVE parameter 1001 (Vannf\u00f8ring / Discharge), or null when the station has no current discharge observation. Consumers use this value for streamflow monitoring and threshold evaluation.""}",
+   [discharge_unit]: @"{""description"": ""Verbatim HydAPI unit token for parameter 1001, currently 'm\u00b3/s'. Null when no discharge observation is present or HydAPI omits the series unit metadata.""}",
+   [discharge_timestamp]: @"{""description"": ""Time associated with the discharge measurement, or null when no discharge observation is present.""}",
+   [discharge_quality]: @"{""description"": ""NVE quality-control code for the discharge value: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled. Null when no discharge observation is present or HydAPI omits the observation quality metadata.""}",
+   [discharge_correction]: @"{""description"": ""NVE correction code for the discharge value, using the same documented correction-code set as water level; code 10 is not documented. Null when no discharge observation is present or HydAPI omits the observation correction metadata.""}",
+   [discharge_series_version]: @"{""description"": ""Non-negative NVE series version number selected for the discharge response. HydAPI returns the version with the newest data when a version is not requested. Null when no discharge observation is present or HydAPI omits the series version metadata.""}",
+   [discharge_method]: @"{""description"": ""HydAPI aggregation method for the discharge series. Resolution 0 currently returns Instantaneous. Null when no discharge observation is present or HydAPI omits the series method metadata.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
 
 .create-or-alter table ['no.nve.hydrology.WaterLevelObservation'] ingestion json mapping "no.nve.hydrology.WaterLevelObservation_json_flat"
 ```
@@ -127,12 +177,21 @@
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
   {"column": "station_id", "path": "$.station_id"},
+  {"column": "river_name", "path": "$.river_name"},
   {"column": "water_level", "path": "$.water_level"},
   {"column": "water_level_unit", "path": "$.water_level_unit"},
   {"column": "water_level_timestamp", "path": "$.water_level_timestamp"},
+  {"column": "water_level_quality", "path": "$.water_level_quality"},
+  {"column": "water_level_correction", "path": "$.water_level_correction"},
+  {"column": "water_level_series_version", "path": "$.water_level_series_version"},
+  {"column": "water_level_method", "path": "$.water_level_method"},
   {"column": "discharge", "path": "$.discharge"},
   {"column": "discharge_unit", "path": "$.discharge_unit"},
   {"column": "discharge_timestamp", "path": "$.discharge_timestamp"},
+  {"column": "discharge_quality", "path": "$.discharge_quality"},
+  {"column": "discharge_correction", "path": "$.discharge_correction"},
+  {"column": "discharge_series_version", "path": "$.discharge_series_version"},
+  {"column": "discharge_method", "path": "$.discharge_method"}
 ]
 ```
 
@@ -145,12 +204,21 @@
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
   {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "river_name", "path": "$.data.river_name"},
   {"column": "water_level", "path": "$.data.water_level"},
   {"column": "water_level_unit", "path": "$.data.water_level_unit"},
   {"column": "water_level_timestamp", "path": "$.data.water_level_timestamp"},
+  {"column": "water_level_quality", "path": "$.data.water_level_quality"},
+  {"column": "water_level_correction", "path": "$.data.water_level_correction"},
+  {"column": "water_level_series_version", "path": "$.data.water_level_series_version"},
+  {"column": "water_level_method", "path": "$.data.water_level_method"},
   {"column": "discharge", "path": "$.data.discharge"},
   {"column": "discharge_unit", "path": "$.data.discharge_unit"},
   {"column": "discharge_timestamp", "path": "$.data.discharge_timestamp"},
+  {"column": "discharge_quality", "path": "$.data.discharge_quality"},
+  {"column": "discharge_correction", "path": "$.data.discharge_correction"},
+  {"column": "discharge_series_version", "path": "$.data.discharge_series_version"},
+  {"column": "discharge_method", "path": "$.data.discharge_method"}
 ]
 ```
 
@@ -165,9 +233,9 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.NVE.Hydrology.WaterLevelObservation') | project['station_id'] = tostring(data.['station_id']),['water_level'] = toreal(data.['water_level']),['water_level_unit'] = tostring(data.['water_level_unit']),['water_level_timestamp'] = todatetime(data.['water_level_timestamp']),['discharge'] = toreal(data.['discharge']),['discharge_unit'] = tostring(data.['discharge_unit']),['discharge_timestamp'] = todatetime(data.['discharge_timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.NVE.Hydrology.WaterLevelObservation') | project['station_id'] = tostring(data.['station_id']),['river_name'] = tostring(data.['river_name']),['water_level'] = toreal(data.['water_level']),['water_level_unit'] = tostring(data.['water_level_unit']),['water_level_timestamp'] = todatetime(data.['water_level_timestamp']),['water_level_quality'] = toint(data.['water_level_quality']),['water_level_correction'] = toint(data.['water_level_correction']),['water_level_series_version'] = tolong(data.['water_level_series_version']),['water_level_method'] = tostring(data.['water_level_method']),['discharge'] = toreal(data.['discharge']),['discharge_unit'] = tostring(data.['discharge_unit']),['discharge_timestamp'] = todatetime(data.['discharge_timestamp']),['discharge_quality'] = toint(data.['discharge_quality']),['discharge_correction'] = toint(data.['discharge_correction']),['discharge_series_version'] = tolong(data.['discharge_series_version']),['discharge_method'] = tostring(data.['discharge_method']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
