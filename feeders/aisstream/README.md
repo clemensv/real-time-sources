@@ -236,7 +236,7 @@ tools/deploy-fabric/deploy-fabric-aci.ps1 `
   -Location <azure-region>
 ```
 
-The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, and the ACI with the connection string wired in. This streaming bridge does not require persistent state storage.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#aisstream/fabric-aci)
 
@@ -247,7 +247,7 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 #### Kafka — bring your own Event Hub / Kafka
 
-Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string. You pass the connection string at deploy time; the template provisions only the container and a storage account for persistent dedupe state.
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string. You pass the connection string at deploy time; the template provisions the container and Log Analytics diagnostics. It does not create a storage account or require Shared Key access.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Faisstream%2Fazure-template.json)
 
