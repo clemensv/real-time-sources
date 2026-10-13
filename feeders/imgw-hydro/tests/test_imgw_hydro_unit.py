@@ -1,9 +1,10 @@
 """Unit tests for the IMGW Hydro bridge."""
 
+import datetime
 import json
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
-from imgw_hydro.imgw_hydro import IMGWHydroAPI, parse_connection_string, feed_stations, IMGW_BASE_URL
+from imgw_hydro.imgw_hydro import IMGWHydroAPI, parse_connection_string, feed_stations, IMGW_BASE_URL, _load_state, _save_state
 from imgw_hydro_producer_data import Station
 from imgw_hydro_producer_data import WaterLevelObservation
 from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroEventProducer
@@ -100,6 +101,13 @@ class TestConnectionStringParsing:
     def test_empty_connection_string(self):
         config = parse_connection_string("")
         assert 'bootstrap.servers' not in config
+
+
+def test_state_serializes_datetime_values(tmp_path):
+    path = tmp_path / "state.json"
+    timestamp = datetime.datetime(2026, 9, 23, 6, 0, tzinfo=datetime.timezone.utc)
+    _save_state(str(path), {"station:timestamp": timestamp})
+    assert _load_state(str(path)) == {"station:timestamp": "2026-09-23T06:00:00+00:00"}
 
 
 class TestDataClasses:

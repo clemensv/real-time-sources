@@ -67,11 +67,16 @@ class TestIMGWHydroE2E:
     def test_station_coordinates(self, api):
         """Test that station coordinates are reasonable for Poland."""
         records = api.get_all_data()
-        stations_with_coords = [api.parse_station(r) for r in records if r.get("lon") and r.get("lat")]
+        stations = [api.parse_station(r) for r in records]
+        stations_with_coords = [
+            station
+            for station in stations
+            if station.longitude not in (None, 0.0) and station.latitude not in (None, 0.0)
+        ]
         assert len(stations_with_coords) > 50
         for s in stations_with_coords:
-            assert 14.0 <= s.longitude <= 25.0, f"Longitude {s.longitude} out of Poland range for {s.stacja}"
-            assert 49.0 <= s.latitude <= 55.0, f"Latitude {s.latitude} out of Poland range for {s.stacja}"
+            assert 14.0 <= s.longitude <= 25.0, f"Longitude {s.longitude} out of Poland range for {s.station_name}"
+            assert 49.0 <= s.latitude <= 55.0, f"Latitude {s.latitude} out of Poland range for {s.station_name}"
 
     def test_unicode_station_names(self, api):
         """Test that Polish unicode characters are handled correctly."""

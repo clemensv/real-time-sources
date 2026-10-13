@@ -154,7 +154,9 @@ no_nve_hydrology_mqtt_station_async:  Callable[[PartitionContext, EventData, Clo
 
 make test
 
-```Asynchronous handler hook for `NO.NVE.Hydrology.mqtt.Station`:
+```Asynchronous handler hook for `NO.NVE.Hydrology.mqtt.Station`: A reference record for one Norwegian hydrological
+monitoring station published by the Norwegian Water Resources and Energy Directorate (NVE). It fires when the bridge
+publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -197,7 +199,9 @@ WaterLevelObservation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `NO.NVE.Hydrology.mqtt.WaterLevelObservation`:
+```Asynchronous handler hook for `NO.NVE.Hydrology.mqtt.WaterLevelObservation`: A current measurement from the Norwegian
+Water Resources and Energy Directorate (NVE) for one monitoring site. It carries water level and discharge observations
+when the upstream feed reports a new or refreshed value.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

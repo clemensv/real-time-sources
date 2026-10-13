@@ -92,5 +92,5 @@ class TestSMHIHydroE2E:
         for station_data in data["station"]:
             obs = api.parse_latest_observation(station_data)
             if obs:
-                ts = datetime.fromisoformat(obs.timestamp)
+                ts = obs.timestamp
                 assert ts > one_day_ago, f"Observation timestamp {obs.timestamp} is too old for {obs.station_name}"

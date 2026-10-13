@@ -1,0 +1,169 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eurowater
+  namespace: feeders
+  labels:
+    app: eurowater
+    fleet: rts-feeders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eurowater
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: eurowater
+        fleet: rts-feeders
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: pegelonline
+          image: ghcr.io/clemensv/real-time-sources-pegelonline:latest
+          imagePullPolicy: Always
+          envFrom: &eurowater-secret
+            - secretRef:
+                name: eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/pegelonline_state.json
+          resources: &standard-resources
+            requests:
+              cpu: 100m
+              memory: 307Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+          volumeMounts: &state-mount
+            - name: state
+              mountPath: /mnt/fileshare
+
+        - name: chmi-hydro
+          image: ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/chmi_hydro_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: imgw-hydro
+          image: ghcr.io/clemensv/real-time-sources-imgw-hydro:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/imgw_hydro_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: smhi-hydro
+          image: ghcr.io/clemensv/real-time-sources-smhi-hydro:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/smhi_hydro_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: hubeau-hydrometrie
+          image: ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/hubeau_hydrometrie_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: uk-ea-flood-monitoring
+          image: ghcr.io/clemensv/real-time-sources-uk-ea-flood-monitoring:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/uk_ea_flood_monitoring_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: rws-waterwebservices
+          image: ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: POLLING_INTERVAL
+              value: "600"
+            - name: STATE_FILE
+              value: /mnt/fileshare/rws_waterwebservices_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: waterinfo-vmm
+          image: ghcr.io/clemensv/real-time-sources-waterinfo-vmm:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: POLLING_INTERVAL
+              value: "900"
+            - name: STATE_FILE
+              value: /mnt/fileshare/waterinfo_vmm_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: nve-hydro
+          image: ghcr.io/clemensv/real-time-sources-nve-hydro:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/nve_hydro_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: syke-hydro
+          image: ghcr.io/clemensv/real-time-sources-syke-hydro:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: POLLING_INTERVAL
+              value: "3600"
+            - name: STATE_FILE
+              value: /mnt/fileshare/syke_hydro_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: bafu-hydro
+          image: ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/bafu_hydro_state.json
+          resources: *standard-resources
+          volumeMounts: *state-mount
+
+        - name: german-waters
+          image: ghcr.io/clemensv/real-time-sources-german-waters:latest
+          imagePullPolicy: Always
+          envFrom: *eurowater-secret
+          env:
+            - name: STATE_FILE
+              value: /mnt/fileshare/german_waters_state.json
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 768Mi
+          volumeMounts: *state-mount
+
+      volumes:
+        - name: state
+          persistentVolumeClaim:
+            claimName: eurowater-pvc

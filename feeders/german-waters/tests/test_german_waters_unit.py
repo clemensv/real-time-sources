@@ -280,6 +280,20 @@ class TestObsToEvent:
         assert evt.water_level_unit == "cm"
         assert evt.discharge_unit == "m3/s"
 
+    def test_placeholder_timestamp_is_treated_as_missing(self):
+        src = _make_obs()
+        src.discharge_timestamp = "--"
+        evt = _obs_to_event(src)
+        assert evt.water_level_timestamp is not None
+        assert evt.discharge_timestamp is None
+
+    def test_malformed_timestamp_is_treated_as_missing(self):
+        src = _make_obs()
+        src.discharge_timestamp = "invalid-date"
+        evt = _obs_to_event(src)
+        assert evt.water_level_timestamp is not None
+        assert evt.discharge_timestamp is None
+
 
 # ---------------------------------------------------------------------------
 # send_stations (startup station emission)

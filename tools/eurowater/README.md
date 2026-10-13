@@ -58,6 +58,38 @@ az deployment group create \
     --parameters connectionStringSecret="Endpoint=sb://..."
 ```
 
+## Deploy to Azure Kubernetes Service
+
+The `aks` directory contains the production-shaped 12-container Deployment.
+It references an existing `eurowater-secret` and `eurowater-pvc`; neither
+credentials nor storage keys are stored in this repository.
+
+The deployment requests 1.3 CPU cores and about 3.9 GiB of memory. The current
+`aks-rts-feeders` deployment uses three `Standard_D4s_v3` nodes so the pod can
+schedule without displacing the other feeder workloads.
+
+```powershell
+.\aks\deploy-aks.ps1 `
+    -ResourceGroupName rg-rts-feeders-aks `
+    -ClusterName aks-rts-feeders `
+    -NodePoolName nodepool1 `
+    -NodeCount 3
+```
+
+Omit `-NodeCount` to apply the manifest without changing cluster capacity.
+The script uses the `az_m` profile shim, validates the Secret and PVC, performs
+client-side and server-side dry runs, applies the Deployment, and waits for all
+12 containers to become ready.
+
+Run the secret-safe health check after deployment:
+
+```powershell
+.\aks\health-check-aks.ps1 -Namespace feeders -StateFreshnessMinutes 120
+```
+
+The check reports container readiness, restarts, image references, and shared
+state-file ages. It never reads or prints Secret contents.
+
 ## Run with Docker Compose
 
 All containers share the same Kafka target via environment variables.

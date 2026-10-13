@@ -28,91 +28,91 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_id='luvebqcmuknlpdvxiqhg',
-            station_name='gwhwsghepyxezcjuhnzn',
-            river_name='xoudqoryhmfwhuhrrzor',
-            latitude=float(6.750218104537497),
-            longitude=float(12.153710008278418),
-            masl=float(12.673408608737248),
-            council_name='ufmovaowspcabzhjmfwj',
-            county_name='dgjzhilhcclrbmsphivk',
-            drainage_basin_area=float(12.76421742632473)
+            station_id='xhyakcjgyhpfolxfekxc',
+            station_name='cregifjaomzwufpxwpua',
+            river_name='cmnvcpgwtiosljibjpqg',
+            latitude=float(76.4609631605764),
+            longitude=float(77.32447692593594),
+            masl=float(11.744657108979217),
+            council_name='bcevlbskllkakmnuedgw',
+            county_name='zopyovsedjsspkvkcxiv',
+            drainage_basin_area=float(44.86763058884327)
         )
         return instance
 
-    
+
     def test_station_id_property(self):
         """
         Test station_id property
         """
-        test_value = 'luvebqcmuknlpdvxiqhg'
+        test_value = 'xhyakcjgyhpfolxfekxc'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
-    
+
     def test_station_name_property(self):
         """
         Test station_name property
         """
-        test_value = 'gwhwsghepyxezcjuhnzn'
+        test_value = 'cregifjaomzwufpxwpua'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
-    
+
     def test_river_name_property(self):
         """
         Test river_name property
         """
-        test_value = 'xoudqoryhmfwhuhrrzor'
+        test_value = 'cmnvcpgwtiosljibjpqg'
         self.instance.river_name = test_value
         self.assertEqual(self.instance.river_name, test_value)
-    
+
     def test_latitude_property(self):
         """
         Test latitude property
         """
-        test_value = float(6.750218104537497)
+        test_value = float(76.4609631605764)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
-    
+
     def test_longitude_property(self):
         """
         Test longitude property
         """
-        test_value = float(12.153710008278418)
+        test_value = float(77.32447692593594)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
-    
+
     def test_masl_property(self):
         """
         Test masl property
         """
-        test_value = float(12.673408608737248)
+        test_value = float(11.744657108979217)
         self.instance.masl = test_value
         self.assertEqual(self.instance.masl, test_value)
-    
+
     def test_council_name_property(self):
         """
         Test council_name property
         """
-        test_value = 'ufmovaowspcabzhjmfwj'
+        test_value = 'bcevlbskllkakmnuedgw'
         self.instance.council_name = test_value
         self.assertEqual(self.instance.council_name, test_value)
-    
+
     def test_county_name_property(self):
         """
         Test county_name property
         """
-        test_value = 'dgjzhilhcclrbmsphivk'
+        test_value = 'zopyovsedjsspkvkcxiv'
         self.instance.county_name = test_value
         self.assertEqual(self.instance.county_name, test_value)
-    
+
     def test_drainage_basin_area_property(self):
         """
         Test drainage_basin_area property
         """
-        test_value = float(12.76421742632473)
+        test_value = float(44.86763058884327)
         self.instance.drainage_basin_area = test_value
         self.assertEqual(self.instance.drainage_basin_area, test_value)
-    
+
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type
