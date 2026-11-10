@@ -10,6 +10,7 @@ from syke_hydro.syke_hydro import (
     parse_connection_string,
     _load_state,
     _save_state,
+    _parse_datetime,
     _parse_dms,
     _get_latest_per_station,
     send_stations,
@@ -122,6 +123,11 @@ class TestStateHelpers:
         path = str(tmp_path / "out.json")
         _save_state(path, {"x": "y"})
         assert os.path.exists(path)
+
+    def test_parse_datetime_accepts_utc_z_suffix(self):
+        parsed = _parse_datetime("2026-09-21T00:00:00Z")
+        assert parsed is not None
+        assert parsed.isoformat() == "2026-09-21T00:00:00+00:00"
 
 
 # ---------------------------------------------------------------------------

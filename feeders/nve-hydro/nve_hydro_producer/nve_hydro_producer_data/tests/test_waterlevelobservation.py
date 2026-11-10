@@ -29,50 +29,58 @@ class Test_WaterLevelObservation(unittest.TestCase):
         Create instance of WaterLevelObservation for testing
         """
         instance = WaterLevelObservation(
-            station_id='tafjrojecssjvmgohfly',
-            river_name='xjhngtkgdhcbvxqmdkfe',
-            water_level=float(10.425198677996173),
-            water_level_unit='gxqdhqrbzpthommmwjdi',
+            station_id='oadzpxufkkwfccxzjmdq',
+            river_name='lcrezbvalmgcgxkqzufd',
+            water_level=float(72.28757504654595),
+            water_level_unit='juqqjyfbpbozlrgdtdin',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(53.09448751544138),
-            discharge_unit='bhwaqohasceifnubqlrm',
-            discharge_timestamp=datetime.datetime.now(datetime.timezone.utc)
+            water_level_quality=int(42),
+            water_level_correction=int(99),
+            water_level_series_version=int(35),
+            water_level_method='pvlkagebtiqpjpiibbge',
+            discharge=float(8.660918447229148),
+            discharge_unit='xgulwcwymithcatlfrgf',
+            discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
+            discharge_quality=int(5),
+            discharge_correction=int(64),
+            discharge_series_version=int(70),
+            discharge_method='qjhlhunjdmmdawducrsi'
         )
         return instance
 
-    
+
     def test_station_id_property(self):
         """
         Test station_id property
         """
-        test_value = 'tafjrojecssjvmgohfly'
+        test_value = 'oadzpxufkkwfccxzjmdq'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
-    
+
     def test_river_name_property(self):
         """
         Test river_name property
         """
-        test_value = 'xjhngtkgdhcbvxqmdkfe'
+        test_value = 'lcrezbvalmgcgxkqzufd'
         self.instance.river_name = test_value
         self.assertEqual(self.instance.river_name, test_value)
-    
+
     def test_water_level_property(self):
         """
         Test water_level property
         """
-        test_value = float(10.425198677996173)
+        test_value = float(72.28757504654595)
         self.instance.water_level = test_value
         self.assertEqual(self.instance.water_level, test_value)
-    
+
     def test_water_level_unit_property(self):
         """
         Test water_level_unit property
         """
-        test_value = 'gxqdhqrbzpthommmwjdi'
+        test_value = 'juqqjyfbpbozlrgdtdin'
         self.instance.water_level_unit = test_value
         self.assertEqual(self.instance.water_level_unit, test_value)
-    
+
     def test_water_level_timestamp_property(self):
         """
         Test water_level_timestamp property
@@ -80,23 +88,55 @@ class Test_WaterLevelObservation(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.water_level_timestamp = test_value
         self.assertEqual(self.instance.water_level_timestamp, test_value)
-    
+
+    def test_water_level_quality_property(self):
+        """
+        Test water_level_quality property
+        """
+        test_value = int(42)
+        self.instance.water_level_quality = test_value
+        self.assertEqual(self.instance.water_level_quality, test_value)
+
+    def test_water_level_correction_property(self):
+        """
+        Test water_level_correction property
+        """
+        test_value = int(99)
+        self.instance.water_level_correction = test_value
+        self.assertEqual(self.instance.water_level_correction, test_value)
+
+    def test_water_level_series_version_property(self):
+        """
+        Test water_level_series_version property
+        """
+        test_value = int(35)
+        self.instance.water_level_series_version = test_value
+        self.assertEqual(self.instance.water_level_series_version, test_value)
+
+    def test_water_level_method_property(self):
+        """
+        Test water_level_method property
+        """
+        test_value = 'pvlkagebtiqpjpiibbge'
+        self.instance.water_level_method = test_value
+        self.assertEqual(self.instance.water_level_method, test_value)
+
     def test_discharge_property(self):
         """
         Test discharge property
         """
-        test_value = float(53.09448751544138)
+        test_value = float(8.660918447229148)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
-    
+
     def test_discharge_unit_property(self):
         """
         Test discharge_unit property
         """
-        test_value = 'bhwaqohasceifnubqlrm'
+        test_value = 'xgulwcwymithcatlfrgf'
         self.instance.discharge_unit = test_value
         self.assertEqual(self.instance.discharge_unit, test_value)
-    
+
     def test_discharge_timestamp_property(self):
         """
         Test discharge_timestamp property
@@ -104,7 +144,39 @@ class Test_WaterLevelObservation(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.discharge_timestamp = test_value
         self.assertEqual(self.instance.discharge_timestamp, test_value)
-    
+
+    def test_discharge_quality_property(self):
+        """
+        Test discharge_quality property
+        """
+        test_value = int(5)
+        self.instance.discharge_quality = test_value
+        self.assertEqual(self.instance.discharge_quality, test_value)
+
+    def test_discharge_correction_property(self):
+        """
+        Test discharge_correction property
+        """
+        test_value = int(64)
+        self.instance.discharge_correction = test_value
+        self.assertEqual(self.instance.discharge_correction, test_value)
+
+    def test_discharge_series_version_property(self):
+        """
+        Test discharge_series_version property
+        """
+        test_value = int(70)
+        self.instance.discharge_series_version = test_value
+        self.assertEqual(self.instance.discharge_series_version, test_value)
+
+    def test_discharge_method_property(self):
+        """
+        Test discharge_method property
+        """
+        test_value = 'qjhlhunjdmmdawducrsi'
+        self.instance.discharge_method = test_value
+        self.assertEqual(self.instance.discharge_method, test_value)
+
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

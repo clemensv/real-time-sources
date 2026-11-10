@@ -30,11 +30,56 @@
 
 This feeder turns the upstream NVE Hydro hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+Flood-warning teams, river operators, insurers, and environmental analysts use
+the stream to track current Norwegian water levels and discharge without
+running their own HydAPI polling fleet. Station reference events support map
+and catchment joins; measurement events carry NVE quality and correction
+metadata so alerting and operational decisions can distinguish raw,
+controlled, and adjusted observations.
+
 <!-- upstream-links:begin -->
 ## Upstream
 
 - Home page: <https://www.nve.no/>
 - API / data documentation: <https://hydapi.nve.no/UserDocumentation/>
+- OpenAPI document: <https://hydapi.nve.no/swagger/v1/swagger.json>
+- API-key registration: <https://hydapi.nve.no/Users>
+- Data licence: <https://data.norge.no/nlod/en/2.0>
+
+HydAPI requires a free API key. NVE publishes the data under the Norwegian
+Licence for Open Government Data (NLOD), compatible with CC BY 3.0 Norway.
+Attribution: **Contains data under NLOD distributed by the Norwegian Water
+Resources and Energy Directorate (NVE).** NVE supplies the data as-is and it
+can contain errors or omissions; this bridge preserves the upstream quality,
+correction, series-version, method, and unit metadata needed to assess each
+measurement.
+
+NVE does not publish a fixed daily request quota. HydAPI exposes per-key
+`X-Rate-Limit-*` headers and can temporarily block clients that exceed its
+throttling policy. The bridge limits request starts to fewer than five per
+second, retries transient `429` and `5xx` responses, groups at most ten
+station/parameter series into each request, polls observations every 600
+seconds by default, and refreshes the station catalog every four hours.
+
+### API coverage and feeder scope
+
+The HydAPI surface was re-audited against authenticated live responses on
+September 23, 2026. This feeder deliberately publishes the two current
+river-state series used by the Eurowater deployment:
+
+| HydAPI surface | Decision | Rationale |
+|---|---|---|
+| `Stations` | Keep selected fields | Emits stable identity, name, river, WGS 84 location, elevation, municipality, county, and drainage-basin area. HydAPI's remaining catchment morphology, regulation, reservoir, historical-quantile, alternate-coordinate, and ownership fields are analytical inventory attributes rather than context required to interpret current stage/discharge events. |
+| `Series` and each station's `seriesList` | Use for discovery; do not emit separately | The bridge uses series metadata to select stations exposing parameter 1000 or 1001. The selected response's version, method, and unit are carried on every observation event, so consumers receive the operational series metadata used for that value. |
+| `Parameters` | Keep 1000 and 1001 | Parameter 1000 is Stage (`m`); parameter 1001 is Discharge (`m³/s`). The other 45 definitions cover precipitation, temperature, snow, soil, groundwater, and specialized derived products outside this river-level/discharge feeder's declared scope. |
+| `Observations` GET | Keep | Batched live source for values, timestamps, quality, correction, selected series version, method, and unit. |
+| `Observations` POST | Drop duplicate access path | It returns the same observation resource and is intended for request shapes that do not fit the GET query. The bridge's ten-series GET batches stay within the documented service limit. |
+| `Ratingcurves` | Drop | Derived calibration curves are not a current observation channel and have a different identity and lifecycle from station telemetry. |
+| `Percentiles` | Drop | Derived statistical reference products are not current station observations and are not needed to interpret the emitted stage/discharge values. |
+
+HydAPI currently advertises 47 parameter definitions. Extending this feeder to
+additional measurement families requires separate named event contracts rather
+than folding unrelated measurements into `WaterLevelObservation`.
 
 <!-- upstream-links:end -->
 
@@ -72,6 +117,7 @@ All variants share:
 ## Key features
 
 - Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `STATE_FILE`.
+- Rate-limited, retrying HydAPI requests with ten-series batching and four-hour station-catalog refresh.
 - Consistent CloudEvents identities and schemas across transport variants.
 - Contract-first event modeling from the checked-in xRegistry manifest.
 - Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
@@ -200,6 +246,13 @@ tools/deploy-fabric/deploy-fabric-aci.ps1 `
 ```
 
 The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+
+> [!NOTE]
+> Kusto `string` columns do not preserve JSON nulls. Missing optional string
+> metadata such as `water_level_unit` or `discharge_method` is projected as an
+> empty string in the typed Eventhouse tables; use `isempty()` rather than
+> `isnull()` for those columns. Numeric and datetime metadata retains null
+> semantics.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#nve-hydro/fabric-aci)
 

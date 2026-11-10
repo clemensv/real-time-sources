@@ -1,4 +1,4 @@
-# NVE Hydro feeder Events
+# NVE Hydro Events
 
 NVE Hydrology publishes water level and discharge observations from the Norwegian Water Resources and Energy Directorate (NVE) for Norwegian hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `nve-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/no/nve/nve-hydro/{river_name}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/nve-hydro`, message subject `{station_id}`; application properties river_name `{river_name}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/nve-hydro`, message subject `{station_id}` |
 
 #### Payload
 
@@ -86,13 +86,13 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
 - **`station_name`** (string, required): Human-readable name of the monitoring station.
-- **`river_name`** (string, optional): Name of the river or watercourse observed at the station.
+- **`river_name`** (string or null, optional): Name of the river or watercourse observed at the station, or null when NVE does not publish a river name.
 - **`latitude`** (double, required): Latitude of the station in WGS 84 coordinates.
 - **`longitude`** (double, required): Longitude of the station in WGS 84 coordinates.
-- **`masl`** (double, optional): Provider-supplied masl value for this record.
-- **`council_name`** (string, optional): Human-readable name of the council.
-- **`county_name`** (string, optional): Human-readable name of the county.
-- **`drainage_basin_area`** (double, optional): Provider-supplied drainage basin area value for this record.
+- **`masl`** (double or null, optional, m): Station elevation in metres above sea level, or null when NVE does not publish an elevation.
+- **`council_name`** (string or null, optional): Human-readable name of the municipality, or null when NVE does not publish one.
+- **`county_name`** (string or null, optional): Human-readable name of the county, or null when NVE does not publish one.
+- **`drainage_basin_area`** (double or null, optional, km^2 (km²)): Drainage basin area in square kilometres, or null when NVE does not publish a basin area.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -133,20 +133,28 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `nve-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/no/nve/nve-hydro/{river_name}/{station_id}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/nve-hydro`, message subject `{station_id}`; application properties river_name `{river_name}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/nve-hydro`, message subject `{station_id}` |
 
 #### Payload
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_id`, `river_name`.
 
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
-- **`river_name`** (string, required): Name of the river the station observes (NVE HydAPI 'riverName' field, in Norwegian 'Vassdrag', e.g. 'Glomma', 'Drammenselva'). Sourced by the bridge from the station catalog (https://hydapi.nve.no/api/v1/Stations) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {river_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.
-- **`water_level`** (double, optional): Current water level reported for the station.
-- **`water_level_unit`** (string, optional): Unit used for the water-level value.
-- **`water_level_timestamp`** (datetime, optional): Time associated with the water-level measurement.
-- **`discharge`** (double, optional): Current streamflow or discharge reported for the station.
-- **`discharge_unit`** (string, optional): Unit used for the discharge value.
-- **`discharge_timestamp`** (datetime, optional): Time associated with the discharge measurement.
+- **`river_name`** (string, required): Raw name of the river the station observes from the NVE HydAPI 'riverName' field (Norwegian 'Vassdrag', for example 'Glomma' or 'Drammenselva'). The bridge propagates this catalog value onto every observation so payload consumers do not need an out-of-band catalog join. MQTT topic segments and AMQP routing properties use a separate lowercase kebab-case slug derived from this value.
+- **`water_level`** (double or null, optional, m): Latest instantaneous stage value for NVE parameter 1000 (Vannstand / Stage), or null when the station has no current stage observation. Consumers use this value for water-level monitoring and threshold evaluation.
+- **`water_level_unit`** (string or null, optional): Verbatim HydAPI unit token for parameter 1000, currently 'm'. Null when no water-level observation is present or HydAPI omits the series unit metadata.
+- **`water_level_timestamp`** (datetime or null, optional): Time associated with the water-level measurement, or null when no water-level observation is present.
+- **`water_level_quality`** (uint8 or null, optional): NVE quality-control code for the water-level value: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled. Null when no water-level observation is present or HydAPI omits the observation quality metadata. Constraints: minimum `0`, maximum `3`.
+- **`water_level_correction`** (uint8 or null, optional): NVE correction code for the water-level value. Documented values are 0 no changes, 1 manual or ice correction, 2 interpolation, 3 modeled or derived from other series, 4 arithmetic daily mean, 5 smoothed negative value, 6 dry pipe, 7 ice in pipe, 8 damaged pipe, 9 pumping, 11 linear adjustment, 12 incomplete source, 13 adjusted replacement-station estimate, 14 statistical estimate, 15 invalid numeric calculation, and 16 value from a rejected period; code 10 is not documented. Null when no water-level observation is present or HydAPI omits the observation correction metadata. Constraints: minimum `0`, maximum `16`.
+- **`water_level_series_version`** (uint32 or null, optional): Non-negative NVE series version number selected for the water-level response. HydAPI returns the version with the newest data when a version is not requested. Null when no water-level observation is present or HydAPI omits the series version metadata. Constraints: minimum `0`.
+- **`water_level_method`** (string or null, optional): HydAPI aggregation method for the water-level series. Resolution 0 currently returns Instantaneous. Null when no water-level observation is present or HydAPI omits the series method metadata.
+- **`discharge`** (double or null, optional, m^3/s (m³/s)): Latest instantaneous discharge value for NVE parameter 1001 (Vannføring / Discharge), or null when the station has no current discharge observation. Consumers use this value for streamflow monitoring and threshold evaluation.
+- **`discharge_unit`** (string or null, optional): Verbatim HydAPI unit token for parameter 1001, currently 'm³/s'. Null when no discharge observation is present or HydAPI omits the series unit metadata.
+- **`discharge_timestamp`** (datetime or null, optional): Time associated with the discharge measurement, or null when no discharge observation is present.
+- **`discharge_quality`** (uint8 or null, optional): NVE quality-control code for the discharge value: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled. Null when no discharge observation is present or HydAPI omits the observation quality metadata. Constraints: minimum `0`, maximum `3`.
+- **`discharge_correction`** (uint8 or null, optional): NVE correction code for the discharge value, using the same documented correction-code set as water level; code 10 is not documented. Null when no discharge observation is present or HydAPI omits the observation correction metadata. Constraints: minimum `0`, maximum `16`.
+- **`discharge_series_version`** (uint32 or null, optional): Non-negative NVE series version number selected for the discharge response. HydAPI returns the version with the newest data when a version is not requested. Null when no discharge observation is present or HydAPI omits the series version metadata. Constraints: minimum `0`.
+- **`discharge_method`** (string or null, optional): HydAPI aggregation method for the discharge series. Resolution 0 currently returns Instantaneous. Null when no discharge observation is present or HydAPI omits the series method metadata.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -158,9 +166,17 @@ Synthetic example values are generated deterministically from the schema: consta
   "water_level": 0,
   "water_level_unit": "string",
   "water_level_timestamp": "2024-01-01T00:00:00Z",
+  "water_level_quality": null,
+  "water_level_correction": null,
+  "water_level_series_version": null,
+  "water_level_method": "string",
   "discharge": 0,
   "discharge_unit": "string",
-  "discharge_timestamp": "2024-01-01T00:00:00Z"
+  "discharge_timestamp": "2024-01-01T00:00:00Z",
+  "discharge_quality": null,
+  "discharge_correction": null,
+  "discharge_series_version": null,
+  "discharge_method": "string"
 }
 ```
 
@@ -186,9 +202,11 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/nve_hydro.xreg.json`](xreg/nve_hydro.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

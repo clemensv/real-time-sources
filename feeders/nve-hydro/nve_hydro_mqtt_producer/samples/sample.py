@@ -58,12 +58,12 @@ async def main(broker_host, broker_port, topic, username=None, password=None):
     print(f"Connecting to {broker_host}:{broker_port}...")
     print(f"Topic: {topic}")
     print("Press Ctrl+C to stop\n")
-    
+
     stop_event = asyncio.Event()
     loop = asyncio.get_running_loop()
     loop.add_signal_handler(signal.SIGTERM, lambda: stop_event.set())
     loop.add_signal_handler(signal.SIGINT, lambda: stop_event.set())
-    
+
     await stop_event.wait()
     print("\nStopping...")
 

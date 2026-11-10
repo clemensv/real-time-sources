@@ -14,10 +14,10 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import logging
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlencode, urlparse
@@ -30,14 +30,15 @@ from nve_hydro.nve_hydro import (
     NVEHydroAPI,
     PARAM_DISCHARGE,
     PARAM_STAGE,
+    REFERENCE_REFRESH_SECONDS,
     _load_state,
+    _parse_datetime,
     _save_state,
-    _fetch_station_observations,
+    fetch_observation_batches,
     _station_has_parameter,
 )
 from nve_hydro_mqtt_producer_data import Station, WaterLevelObservation
 from nve_hydro_mqtt_producer_mqtt_client.client import NONVEHydrologyMqttMqttClient
-import json
 
 def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
     params = {
@@ -108,16 +109,22 @@ def _uns_slug(value: str) -> str:
     return slug or "unknown"
 
 def _build_station(s: Dict[str, Any]) -> Station:
+    masl = s.get("masl")
+    drainage_basin_area = s.get("drainageBasinArea")
     return Station(
         station_id=s.get("stationId", ""),
         station_name=s.get("stationName", "") or "",
-        river_name=s.get("riverName", "") or "",
+        river_name=s.get("riverName"),
         latitude=float(s.get("latitude", 0.0) or 0.0),
         longitude=float(s.get("longitude", 0.0) or 0.0),
-        masl=float(s.get("masl") or 0.0),
-        council_name=s.get("councilName", "") or "",
-        county_name=s.get("countyName", "") or "",
-        drainage_basin_area=float(s.get("drainageBasinArea") or 0.0),
+        masl=float(masl) if masl is not None else None,
+        council_name=s.get("councilName"),
+        county_name=s.get("countyName"),
+        drainage_basin_area=(
+            float(drainage_basin_area)
+            if drainage_basin_area is not None
+            else None
+        ),
     )
 
 async def _publish_stations(
@@ -154,64 +161,69 @@ async def _publish_observations(
         if params:
             station_params[sid] = params
 
-    loop = asyncio.get_running_loop()
     sent = 0
+    loop = asyncio.get_running_loop()
+    observations_by_station = await loop.run_in_executor(
+        None,
+        fetch_observation_batches,
+        api,
+        station_params,
+    )
+    for sid, obs_by_param in observations_by_station.items():
+        if not obs_by_param:
+            continue
 
-    def fetch_one(sid: str):
-        return sid, _fetch_station_observations(api, sid, station_params[sid])
+        wl_val = None
+        wl_ts = ""
+        q_val = None
+        q_ts = ""
+        stage: Dict[str, Any] = {}
+        discharge: Dict[str, Any] = {}
+        if PARAM_STAGE in obs_by_param:
+            stage = obs_by_param[PARAM_STAGE]
+            wl_val = float(stage["value"])
+            wl_ts = stage.get("time", "")
+        if PARAM_DISCHARGE in obs_by_param:
+            discharge = obs_by_param[PARAM_DISCHARGE]
+            q_val = float(discharge["value"])
+            q_ts = discharge.get("time", "")
+        if wl_val is None and q_val is None:
+            continue
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = [loop.run_in_executor(executor, fetch_one, sid) for sid in station_params]
-        for fut in asyncio.as_completed(futures):
-            try:
-                sid, obs_by_param = await fut
-            except Exception as exc:  # pylint: disable=broad-except
-                logger.debug("Error fetching observations: %s", exc)
-                continue
-            if not obs_by_param:
-                continue
+        reading_key = f"{sid}:{wl_ts}:{q_ts}"
+        if reading_key in previous_readings:
+            continue
 
-            wl_val = None
-            wl_ts = ""
-            q_val = None
-            q_ts = ""
-            if PARAM_STAGE in obs_by_param:
-                stage = obs_by_param[PARAM_STAGE]
-                wl_val = float(stage["value"])
-                wl_ts = stage.get("time", "")
-            if PARAM_DISCHARGE in obs_by_param:
-                discharge = obs_by_param[PARAM_DISCHARGE]
-                q_val = float(discharge["value"])
-                q_ts = discharge.get("time", "")
-            if wl_val is None and q_val is None:
-                continue
-
-            reading_key = f"{sid}:{wl_ts}:{q_ts}"
-            if reading_key in previous_readings:
-                continue
-
-            station = stations_by_id.get(sid) or {}
-            river_raw = station.get("riverName", "") or ""
-            river_slug = _uns_slug(river_raw)
-            try:
-                await mqtt_client.publish_no_nve_hydrology_mqtt_water_level_observation(
+        station = stations_by_id.get(sid) or {}
+        river_raw = station.get("riverName", "") or ""
+        river_slug = _uns_slug(river_raw)
+        try:
+            await mqtt_client.publish_no_nve_hydrology_mqtt_water_level_observation(
+                station_id=sid,
+                river_name=river_slug,
+                data=WaterLevelObservation(
                     station_id=sid,
-                    river_name=river_slug,
-                    data=WaterLevelObservation(
-                        station_id=sid,
-                        river_name=river_raw,
-                        water_level=wl_val if wl_val is not None else 0.0,
-                        water_level_unit="m",
-                        water_level_timestamp=datetime.fromisoformat(wl_ts.replace("Z", "+00:00")) if wl_ts else None,
-                        discharge=q_val if q_val is not None else 0.0,
-                        discharge_unit="m3/s",
-                        discharge_timestamp=datetime.fromisoformat(q_ts.replace("Z", "+00:00")) if q_ts else None,
-                    ),
-                )
-                sent += 1
-                previous_readings[reading_key] = wl_ts or q_ts
-            except Exception as exc:  # pylint: disable=broad-except
-                logger.error("Error publishing observation for %s: %s", sid, exc)
+                    river_name=river_raw,
+                    water_level=wl_val,
+                    water_level_unit=stage.get("unit") if wl_val is not None else None,
+                    water_level_timestamp=_parse_datetime(wl_ts),
+                    water_level_quality=stage.get("quality"),
+                    water_level_correction=stage.get("correction"),
+                    water_level_series_version=stage.get("series_version"),
+                    water_level_method=stage.get("method"),
+                    discharge=q_val,
+                    discharge_unit=discharge.get("unit") if q_val is not None else None,
+                    discharge_timestamp=_parse_datetime(q_ts),
+                    discharge_quality=discharge.get("quality"),
+                    discharge_correction=discharge.get("correction"),
+                    discharge_series_version=discharge.get("series_version"),
+                    discharge_method=discharge.get("method"),
+                ),
+            )
+            sent += 1
+            previous_readings[reading_key] = wl_ts or q_ts
+        except Exception as exc:  # pylint: disable=broad-except
+            logger.error("Error publishing observation for %s: %s", sid, exc)
     return sent
 
 async def feed(
@@ -246,6 +258,8 @@ async def feed(
         paho_client.tls_set()
 
     loop = asyncio.get_running_loop()
+    # WORKAROUND(xregistry/codegen#638): xrcg defaults generated clients to
+    # structured mode even when the selected endpoint declares binary mode.
     mqtt_client = NONVEHydrologyMqttMqttClient(
         client=paho_client,
         content_mode=content_mode,  # type: ignore[arg-type]
@@ -264,6 +278,7 @@ async def feed(
     logger.info("Publishing %d station info events under hydro/no/nve/nve-hydro/...", len(stations))
     stations_by_id = await _publish_stations(mqtt_client, stations)
     logger.info("Finished publishing station catalog")
+    last_station_refresh = asyncio.get_running_loop().time()
 
     try:
         while True:
@@ -277,6 +292,11 @@ async def feed(
                 if once:
                     logger.info("--once mode: exiting after first polling cycle")
                     break
+                if asyncio.get_running_loop().time() - last_station_refresh >= REFERENCE_REFRESH_SECONDS:
+                    refreshed = api.get_stations()
+                    stations_by_id = await _publish_stations(mqtt_client, refreshed)
+                    last_station_refresh = asyncio.get_running_loop().time()
+                    logger.info("Refreshed %d station info events", len(stations_by_id))
                 if effective > 0:
                     await asyncio.sleep(effective)
             except KeyboardInterrupt:

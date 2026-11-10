@@ -57,7 +57,7 @@
         "deployed": false,
         "endpoints": [
           {
-            "uri": "amqps://localhost:5671/nve-hydro"
+            "uri": "amqp://localhost:5672/nve-hydro"
           }
         ]
       },
@@ -155,7 +155,7 @@
               "river_name": {
                 "type": "uritemplate",
                 "value": "{river_name}",
-                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (river_name)."
+                "description": "Lowercase kebab-case river slug derived from the source catalog river name for AMQP subscription filters and broker-side routing."
               }
             }
           }
@@ -176,7 +176,7 @@
               "river_name": {
                 "type": "uritemplate",
                 "value": "{river_name}",
-                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (river_name)."
+                "description": "Lowercase kebab-case river slug derived from the source catalog river name for AMQP subscription filters and broker-side routing."
               }
             }
           }
@@ -196,6 +196,9 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits"
+                ],
                 "type": "object",
                 "required": [
                   "station_id",
@@ -214,8 +217,11 @@
                     "description": "Human-readable name of the monitoring station."
                   },
                   "river_name": {
-                    "type": "string",
-                    "description": "Name of the river or watercourse observed at the station."
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Name of the river or watercourse observed at the station, or null when NVE does not publish a river name."
                   },
                   "latitude": {
                     "type": "double",
@@ -226,20 +232,36 @@
                     "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "masl": {
-                    "type": "double",
-                    "description": "Provider-supplied masl value for this record."
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Station elevation in metres above sea level, or null when NVE does not publish an elevation.",
+                    "unit": "m",
+                    "symbol": "m"
                   },
                   "council_name": {
-                    "type": "string",
-                    "description": "Human-readable name of the council."
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable name of the municipality, or null when NVE does not publish one."
                   },
                   "county_name": {
-                    "type": "string",
-                    "description": "Human-readable name of the county."
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable name of the county, or null when NVE does not publish one."
                   },
                   "drainage_basin_area": {
-                    "type": "double",
-                    "description": "Provider-supplied drainage basin area value for this record."
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Drainage basin area in square kilometres, or null when NVE does not publish a basin area.",
+                    "unit": "km^2",
+                    "symbol": "km²"
                   }
                 },
                 "$id": "https://example.com/schemas/NO/NVE/Hydrology/Station",
@@ -257,6 +279,9 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits"
+                ],
                 "type": "object",
                 "required": [
                   "station_id",
@@ -270,31 +295,119 @@
                   },
                   "river_name": {
                     "type": "string",
-                    "description": "Name of the river the station observes (NVE HydAPI 'riverName' field, in Norwegian 'Vassdrag', e.g. 'Glomma', 'Drammenselva'). Sourced by the bridge from the station catalog (https://hydapi.nve.no/api/v1/Stations) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {river_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
+                    "description": "Raw name of the river the station observes from the NVE HydAPI 'riverName' field (Norwegian 'Vassdrag', for example 'Glomma' or 'Drammenselva'). The bridge propagates this catalog value onto every observation so payload consumers do not need an out-of-band catalog join. MQTT topic segments and AMQP routing properties use a separate lowercase kebab-case slug derived from this value."
                   },
                   "water_level": {
-                    "type": "double",
-                    "description": "Current water level reported for the station."
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Latest instantaneous stage value for NVE parameter 1000 (Vannstand / Stage), or null when the station has no current stage observation. Consumers use this value for water-level monitoring and threshold evaluation.",
+                    "unit": "m",
+                    "symbol": "m"
                   },
                   "water_level_unit": {
-                    "type": "string",
-                    "description": "Unit used for the water-level value."
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Verbatim HydAPI unit token for parameter 1000, currently 'm'. Null when no water-level observation is present or HydAPI omits the series unit metadata."
                   },
                   "water_level_timestamp": {
-                    "type": "datetime",
-                    "description": "Time associated with the water-level measurement."
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "Time associated with the water-level measurement, or null when no water-level observation is present."
+                  },
+                  "water_level_quality": {
+                    "type": [
+                      "uint8",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 3,
+                    "description": "NVE quality-control code for the water-level value: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled. Null when no water-level observation is present or HydAPI omits the observation quality metadata."
+                  },
+                  "water_level_correction": {
+                    "type": [
+                      "uint8",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 16,
+                    "description": "NVE correction code for the water-level value. Documented values are 0 no changes, 1 manual or ice correction, 2 interpolation, 3 modeled or derived from other series, 4 arithmetic daily mean, 5 smoothed negative value, 6 dry pipe, 7 ice in pipe, 8 damaged pipe, 9 pumping, 11 linear adjustment, 12 incomplete source, 13 adjusted replacement-station estimate, 14 statistical estimate, 15 invalid numeric calculation, and 16 value from a rejected period; code 10 is not documented. Null when no water-level observation is present or HydAPI omits the observation correction metadata."
+                  },
+                  "water_level_series_version": {
+                    "type": [
+                      "uint32",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "description": "Non-negative NVE series version number selected for the water-level response. HydAPI returns the version with the newest data when a version is not requested. Null when no water-level observation is present or HydAPI omits the series version metadata."
+                  },
+                  "water_level_method": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "HydAPI aggregation method for the water-level series. Resolution 0 currently returns Instantaneous. Null when no water-level observation is present or HydAPI omits the series method metadata."
                   },
                   "discharge": {
-                    "type": "double",
-                    "description": "Current streamflow or discharge reported for the station."
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Latest instantaneous discharge value for NVE parameter 1001 (Vannføring / Discharge), or null when the station has no current discharge observation. Consumers use this value for streamflow monitoring and threshold evaluation.",
+                    "unit": "m^3/s",
+                    "symbol": "m³/s"
                   },
                   "discharge_unit": {
-                    "type": "string",
-                    "description": "Unit used for the discharge value."
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Verbatim HydAPI unit token for parameter 1001, currently 'm³/s'. Null when no discharge observation is present or HydAPI omits the series unit metadata."
                   },
                   "discharge_timestamp": {
-                    "type": "datetime",
-                    "description": "Time associated with the discharge measurement."
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "Time associated with the discharge measurement, or null when no discharge observation is present."
+                  },
+                  "discharge_quality": {
+                    "type": [
+                      "uint8",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 3,
+                    "description": "NVE quality-control code for the discharge value: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled. Null when no discharge observation is present or HydAPI omits the observation quality metadata."
+                  },
+                  "discharge_correction": {
+                    "type": [
+                      "uint8",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 16,
+                    "description": "NVE correction code for the discharge value, using the same documented correction-code set as water level; code 10 is not documented. Null when no discharge observation is present or HydAPI omits the observation correction metadata."
+                  },
+                  "discharge_series_version": {
+                    "type": [
+                      "uint32",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "description": "Non-negative NVE series version number selected for the discharge response. HydAPI returns the version with the newest data when a version is not requested. Null when no discharge observation is present or HydAPI omits the series version metadata."
+                  },
+                  "discharge_method": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "HydAPI aggregation method for the discharge series. Resolution 0 currently returns Instantaneous. Null when no discharge observation is present or HydAPI omits the series method metadata."
                   }
                 },
                 "$id": "https://example.com/schemas/NO/NVE/Hydrology/WaterLevelObservation",
@@ -321,11 +434,13 @@
                 "fields": [
                   {
                     "name": "station_id",
-                    "type": "string"
+                    "type": "string",
+                    "doc": "Stable NVE station identifier, such as 6.10.0. It is the CloudEvents subject and Kafka partition key."
                   },
                   {
                     "name": "station_name",
-                    "type": "string"
+                    "type": "string",
+                    "doc": "Human-readable monitoring-station name published by the NVE Stations endpoint."
                   },
                   {
                     "name": "river_name",
@@ -333,15 +448,18 @@
                       "null",
                       "string"
                     ],
+                    "doc": "River or watercourse name published by NVE, or null when no name is available.",
                     "default": null
                   },
                   {
                     "name": "latitude",
-                    "type": "double"
+                    "type": "double",
+                    "doc": "Station latitude in WGS 84 decimal degrees."
                   },
                   {
                     "name": "longitude",
-                    "type": "double"
+                    "type": "double",
+                    "doc": "Station longitude in WGS 84 decimal degrees."
                   },
                   {
                     "name": "masl",
@@ -349,6 +467,7 @@
                       "null",
                       "double"
                     ],
+                    "doc": "Station elevation in metres above sea level, or null when NVE does not publish an elevation.",
                     "default": null
                   },
                   {
@@ -357,6 +476,7 @@
                       "null",
                       "string"
                     ],
+                    "doc": "Municipality name published by NVE, or null when unavailable.",
                     "default": null
                   },
                   {
@@ -365,6 +485,7 @@
                       "null",
                       "string"
                     ],
+                    "doc": "County name published by NVE, or null when unavailable.",
                     "default": null
                   },
                   {
@@ -373,6 +494,7 @@
                       "null",
                       "double"
                     ],
+                    "doc": "Drainage-basin area in square kilometres, or null when unavailable.",
                     "default": null
                   }
                 ],
@@ -396,7 +518,8 @@
                 "fields": [
                   {
                     "name": "station_id",
-                    "type": "string"
+                    "type": "string",
+                    "doc": "Stable NVE station identifier used as the CloudEvents subject and Kafka partition key."
                   },
                   {
                     "name": "river_name",
@@ -409,6 +532,7 @@
                       "null",
                       "double"
                     ],
+                    "doc": "Latest instantaneous NVE parameter 1000 stage value in metres, or null when unavailable.",
                     "default": null
                   },
                   {
@@ -417,17 +541,52 @@
                       "null",
                       "string"
                     ],
+                    "doc": "Upstream unit token for water level, currently m, or null when unavailable.",
                     "default": null
                   },
                   {
                     "name": "water_level_timestamp",
                     "type": [
                       "null",
-                      {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
-                      }
+                      "string"
                     ],
+                    "doc": "RFC 3339 timestamp associated with the water-level measurement.",
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_quality",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NVE water-level quality code: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled.",
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_correction",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NVE water-level correction code describing interpolation, modeling, manual correction, or other upstream adjustment.",
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_series_version",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NVE series version selected for the water-level response.",
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_method",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HydAPI aggregation method for water level, currently Instantaneous for resolution 0.",
                     "default": null
                   },
                   {
@@ -436,6 +595,7 @@
                       "null",
                       "double"
                     ],
+                    "doc": "Latest instantaneous NVE parameter 1001 discharge value in cubic metres per second, or null when unavailable.",
                     "default": null
                   },
                   {
@@ -444,17 +604,52 @@
                       "null",
                       "string"
                     ],
+                    "doc": "Upstream unit token for discharge, currently m³/s, or null when unavailable.",
                     "default": null
                   },
                   {
                     "name": "discharge_timestamp",
                     "type": [
                       "null",
-                      {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
-                      }
+                      "string"
                     ],
+                    "doc": "RFC 3339 timestamp associated with the discharge measurement.",
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_quality",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NVE discharge quality code: 0 unknown, 1 uncontrolled, 2 primary controlled, or 3 secondary controlled.",
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_correction",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NVE discharge correction code describing interpolation, modeling, manual correction, or other upstream adjustment.",
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_series_version",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NVE series version selected for the discharge response.",
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_method",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HydAPI aggregation method for discharge, currently Instantaneous for resolution 0.",
                     "default": null
                   }
                 ],

@@ -149,6 +149,22 @@ def _station_to_event(s: StationData) -> Station:
     )
 
 
+def _parse_optional_datetime(value: Optional[str]) -> Optional[datetime]:
+    """Parse valid upstream timestamps and treat placeholder values as missing."""
+    if not value:
+        return None
+    text = value.strip()
+    if not text or text in {"-", "--"}:
+        return None
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        return datetime.fromisoformat(text)
+    except ValueError:
+        logger.warning("Ignoring invalid upstream timestamp %r", value)
+        return None
+
+
 def _obs_to_event(o: ObservationData, water_body: Optional[str] = None) -> WaterLevelObservation:
     resolved_water_body = water_body if water_body is not None else o.water_body
     return WaterLevelObservation(
@@ -157,10 +173,10 @@ def _obs_to_event(o: ObservationData, water_body: Optional[str] = None) -> Water
         water_body=resolved_water_body,
         water_level=o.water_level,
         water_level_unit=o.water_level_unit,
-        water_level_timestamp=datetime.fromisoformat(o.water_level_timestamp) if o.water_level_timestamp else None,
+        water_level_timestamp=_parse_optional_datetime(o.water_level_timestamp),
         discharge=o.discharge,
         discharge_unit=o.discharge_unit,
-        discharge_timestamp=datetime.fromisoformat(o.discharge_timestamp) if o.discharge_timestamp else None,
+        discharge_timestamp=_parse_optional_datetime(o.discharge_timestamp),
         trend=o.trend,
         situation=o.situation,
     )
