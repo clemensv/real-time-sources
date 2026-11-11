@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/BlueskyFirehose"
+        "#/messagegroups/BlueskyFirehose",
+        "#/messagegroups/BlueskyFirehose.avro",
+        "#/messagegroups/BlueskyFirehose.avro.binary"
       ]
     },
     "BlueskyFirehose.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BlueskyFirehose.mqtt"
+        "#/messagegroups/BlueskyFirehose.mqtt",
+        "#/messagegroups/BlueskyFirehose.avro",
+        "#/messagegroups/BlueskyFirehose.avro.binary"
       ]
     },
     "BlueskyFirehose.Amqp": {
@@ -60,7 +64,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BlueskyFirehose.amqp"
+        "#/messagegroups/BlueskyFirehose.amqp",
+        "#/messagegroups/BlueskyFirehose.avro",
+        "#/messagegroups/BlueskyFirehose.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for bluesky CloudEvents on the configured broker address."
     }
@@ -79,6 +85,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:00",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -115,6 +125,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:01",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -151,6 +165,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:02",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -187,6 +205,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:03",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -223,6 +245,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:04",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -259,6 +285,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:05",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -289,6 +319,124 @@
       "createdat": "2024-11-14T12:00:00",
       "epoch": 0,
       "modifiedat": "2024-11-14T12:00:00"
+    },
+    "BlueskyFirehose.avro": {
+      "messagegroupid": "BlueskyFirehose.avro",
+      "messages": {
+        "Bluesky.Feed.Post": {
+          "messageid": "Bluesky.Feed.Post",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post"
+        },
+        "Bluesky.Feed.Like": {
+          "messageid": "Bluesky.Feed.Like",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like"
+        },
+        "Bluesky.Feed.Repost": {
+          "messageid": "Bluesky.Feed.Repost",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost"
+        },
+        "Bluesky.Graph.Follow": {
+          "messageid": "Bluesky.Graph.Follow",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow"
+        },
+        "Bluesky.Graph.Block": {
+          "messageid": "Bluesky.Graph.Block",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block"
+        },
+        "Bluesky.Actor.Profile": {
+          "messageid": "Bluesky.Actor.Profile",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile"
+        }
+      }
+    },
+    "BlueskyFirehose.avro.binary": {
+      "messagegroupid": "BlueskyFirehose.avro.binary",
+      "messages": {
+        "Bluesky.Feed.Post": {
+          "messageid": "Bluesky.Feed.Post",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Feed.Like": {
+          "messageid": "Bluesky.Feed.Like",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Feed.Repost": {
+          "messageid": "Bluesky.Feed.Repost",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Graph.Follow": {
+          "messageid": "Bluesky.Graph.Follow",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Graph.Block": {
+          "messageid": "Bluesky.Graph.Block",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Actor.Profile": {
+          "messageid": "Bluesky.Actor.Profile",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "dataschemaformat": "Avro",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     },
     "BlueskyFirehose.mqtt": {
       "messagegroupid": "BlueskyFirehose.mqtt",
