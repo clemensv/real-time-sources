@@ -1,10 +1,10 @@
-# BAFU Hydro feeder Events
+# BAFU Hydro Events
 
 BAFU Hydrology publishes water level, discharge, and water temperature observations from the Swiss Federal Office for the Environment (BAFU/FOEN) for Swiss river, lake, and stream gauges. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Event types:** 2 documented event types (18 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `bafu-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/bafu-hydro`, message subject `{station_id}`; application properties water_body_name `{water_body_name}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/bafu-hydro`, message subject `{station_id}` |
 
 #### Payload
 
@@ -127,7 +127,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `bafu-hydro`, key `{station_id}` |
 | `MQTT/5.0` | topic `hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/bafu-hydro`, message subject `{station_id}`; application properties water_body_name `{water_body_name}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/bafu-hydro`, message subject `{station_id}` |
 
 #### Payload
 
@@ -135,15 +135,15 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
 - **`water_body_name`** (string, required): Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.
-- **`water_level`** (double, optional): Current water level reported for the station.
+- **`water_level`** (double or null, optional): Current water level reported for the station.
 - **`water_level_unit`** (string, optional): Unit used for the water-level value.
-- **`water_level_timestamp`** (datetime, optional): Time associated with the water-level measurement.
-- **`discharge`** (double, optional): Current streamflow or discharge reported for the station.
+- **`water_level_timestamp`** (datetime or null, optional): Time associated with the water-level measurement.
+- **`discharge`** (double or null, optional): Current streamflow or discharge reported for the station.
 - **`discharge_unit`** (string, optional): Unit used for the discharge value.
-- **`discharge_timestamp`** (datetime, optional): Time associated with the discharge measurement.
-- **`water_temperature`** (double, optional): Current water temperature reported for the station.
+- **`discharge_timestamp`** (datetime or null, optional): Time associated with the discharge measurement.
+- **`water_temperature`** (double or null, optional): Current water temperature reported for the station.
 - **`water_temperature_unit`** (string, optional): Unit used for the water-temperature value.
-- **`water_temperature_timestamp`** (datetime, optional): Time associated with the water-temperature measurement.
+- **`water_temperature_timestamp`** (datetime or null, optional): Time associated with the water-temperature measurement.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -181,7 +181,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -192,3 +196,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/bafu_hydro.xreg.json`](xreg/bafu_hydro.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

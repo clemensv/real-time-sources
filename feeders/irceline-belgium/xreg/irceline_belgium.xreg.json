@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/be.irceline.Stations"
+        "#/messagegroups/be.irceline.Stations",
+        "#/messagegroups/be.irceline.Stations.avro",
+        "#/messagegroups/be.irceline.Stations.avro.binary"
       ],
       "description": "Kafka producer endpoint for IRCELINE Belgium Air Quality CloudEvents on the `irceline-belgium` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/be.irceline.Timeseries"
+        "#/messagegroups/be.irceline.Timeseries",
+        "#/messagegroups/be.irceline.Timeseries.avro",
+        "#/messagegroups/be.irceline.Timeseries.avro.binary"
       ],
       "description": "Kafka producer endpoint for IRCELINE Belgium Air Quality CloudEvents on the `irceline-belgium` topic keyed by `{timeseries_id}`."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/be.irceline.Stations.mqtt",
-        "#/messagegroups/be.irceline.Timeseries.mqtt"
+        "#/messagegroups/be.irceline.Timeseries.mqtt",
+        "#/messagegroups/be.irceline.Stations.mqtt.avro",
+        "#/messagegroups/be.irceline.Stations.mqtt.avro.binary",
+        "#/messagegroups/be.irceline.Timeseries.mqtt.avro",
+        "#/messagegroups/be.irceline.Timeseries.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for irceline-belgium CloudEvents using the documented Unified Namespace topic hierarchy."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/be.irceline.Stations.amqp",
-        "#/messagegroups/be.irceline.Timeseries.amqp"
+        "#/messagegroups/be.irceline.Timeseries.amqp",
+        "#/messagegroups/be.irceline.Stations.amqp.avro",
+        "#/messagegroups/be.irceline.Stations.amqp.avro.binary",
+        "#/messagegroups/be.irceline.Timeseries.amqp.avro",
+        "#/messagegroups/be.irceline.Timeseries.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for irceline-belgium CloudEvents on the configured broker address."
     }
@@ -107,6 +119,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -131,6 +147,10 @@
             "subject": {
               "value": "{timeseries_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -150,6 +170,10 @@
             "subject": {
               "value": "{timeseries_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -292,6 +316,228 @@
                 "value": "{pollutant}",
                 "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.Stations.avro": {
+      "messagegroupid": "be.irceline.Stations.avro",
+      "messages": {
+        "be.irceline.Station": {
+          "messageid": "be.irceline.Station",
+          "basemessage": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Station"
+        }
+      }
+    },
+    "be.irceline.Stations.avro.binary": {
+      "messagegroupid": "be.irceline.Stations.avro.binary",
+      "messages": {
+        "be.irceline.Station": {
+          "messageid": "be.irceline.Station",
+          "basemessage": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.Timeseries.avro": {
+      "messagegroupid": "be.irceline.Timeseries.avro",
+      "messages": {
+        "be.irceline.Timeseries": {
+          "messageid": "be.irceline.Timeseries",
+          "basemessage": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Timeseries"
+        },
+        "be.irceline.Observation": {
+          "messageid": "be.irceline.Observation",
+          "basemessage": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Observation"
+        }
+      }
+    },
+    "be.irceline.Timeseries.avro.binary": {
+      "messagegroupid": "be.irceline.Timeseries.avro.binary",
+      "messages": {
+        "be.irceline.Timeseries": {
+          "messageid": "be.irceline.Timeseries",
+          "basemessage": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irceline.Observation": {
+          "messageid": "be.irceline.Observation",
+          "basemessage": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.Stations.mqtt.avro": {
+      "messagegroupid": "be.irceline.Stations.mqtt.avro",
+      "messages": {
+        "be.irceline.Stations.mqtt.Station": {
+          "messageid": "be.irceline.Stations.mqtt.Station",
+          "basemessage": "/messagegroups/be.irceline.Stations.mqtt/messages/be.irceline.Stations.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Station"
+        }
+      }
+    },
+    "be.irceline.Stations.mqtt.avro.binary": {
+      "messagegroupid": "be.irceline.Stations.mqtt.avro.binary",
+      "messages": {
+        "be.irceline.Stations.mqtt.Station": {
+          "messageid": "be.irceline.Stations.mqtt.Station",
+          "basemessage": "/messagegroups/be.irceline.Stations.mqtt/messages/be.irceline.Stations.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.Stations.amqp.avro": {
+      "messagegroupid": "be.irceline.Stations.amqp.avro",
+      "messages": {
+        "be.irceline.Stations.amqp.Station": {
+          "messageid": "be.irceline.Stations.amqp.Station",
+          "basemessage": "/messagegroups/be.irceline.Stations.amqp/messages/be.irceline.Stations.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Station"
+        }
+      }
+    },
+    "be.irceline.Stations.amqp.avro.binary": {
+      "messagegroupid": "be.irceline.Stations.amqp.avro.binary",
+      "messages": {
+        "be.irceline.Stations.amqp.Station": {
+          "messageid": "be.irceline.Stations.amqp.Station",
+          "basemessage": "/messagegroups/be.irceline.Stations.amqp/messages/be.irceline.Stations.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.Timeseries.mqtt.avro": {
+      "messagegroupid": "be.irceline.Timeseries.mqtt.avro",
+      "messages": {
+        "be.irceline.Timeseries.mqtt.Timeseries": {
+          "messageid": "be.irceline.Timeseries.mqtt.Timeseries",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.mqtt/messages/be.irceline.Timeseries.mqtt.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Timeseries"
+        },
+        "be.irceline.Timeseries.mqtt.Observation": {
+          "messageid": "be.irceline.Timeseries.mqtt.Observation",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.mqtt/messages/be.irceline.Timeseries.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Observation"
+        }
+      }
+    },
+    "be.irceline.Timeseries.mqtt.avro.binary": {
+      "messagegroupid": "be.irceline.Timeseries.mqtt.avro.binary",
+      "messages": {
+        "be.irceline.Timeseries.mqtt.Timeseries": {
+          "messageid": "be.irceline.Timeseries.mqtt.Timeseries",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.mqtt/messages/be.irceline.Timeseries.mqtt.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irceline.Timeseries.mqtt.Observation": {
+          "messageid": "be.irceline.Timeseries.mqtt.Observation",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.mqtt/messages/be.irceline.Timeseries.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.Timeseries.amqp.avro": {
+      "messagegroupid": "be.irceline.Timeseries.amqp.avro",
+      "messages": {
+        "be.irceline.Timeseries.amqp.Timeseries": {
+          "messageid": "be.irceline.Timeseries.amqp.Timeseries",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.amqp/messages/be.irceline.Timeseries.amqp.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Timeseries"
+        },
+        "be.irceline.Timeseries.amqp.Observation": {
+          "messageid": "be.irceline.Timeseries.amqp.Observation",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.amqp/messages/be.irceline.Timeseries.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Observation"
+        }
+      }
+    },
+    "be.irceline.Timeseries.amqp.avro.binary": {
+      "messagegroupid": "be.irceline.Timeseries.amqp.avro.binary",
+      "messages": {
+        "be.irceline.Timeseries.amqp.Timeseries": {
+          "messageid": "be.irceline.Timeseries.amqp.Timeseries",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.amqp/messages/be.irceline.Timeseries.amqp.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irceline.Timeseries.amqp.Observation": {
+          "messageid": "be.irceline.Timeseries.amqp.Observation",
+          "basemessage": "/messagegroups/be.irceline.Timeseries.amqp/messages/be.irceline.Timeseries.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irceline.avro/schemas/be.irceline.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

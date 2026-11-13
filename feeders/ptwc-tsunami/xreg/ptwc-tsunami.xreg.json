@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/PTWC.Bulletins"
+        "#/messagegroups/PTWC.Bulletins",
+        "#/messagegroups/PTWC.Bulletins.avro",
+        "#/messagegroups/PTWC.Bulletins.avro.binary"
       ],
       "description": "Kafka producer endpoint for PTWC Tsunami CloudEvents on the `ptwc-tsunami` topic keyed by `{bulletin_id}`."
     },
@@ -32,7 +34,9 @@
         "mode": "binary"
       },
       "messagegroups": [
-        "#/messagegroups/PTWC.Bulletins.mqtt"
+        "#/messagegroups/PTWC.Bulletins.mqtt",
+        "#/messagegroups/PTWC.Bulletins.mqtt.avro",
+        "#/messagegroups/PTWC.Bulletins.mqtt.avro.binary"
       ],
       "deployed": false,
       "endpoints": [
@@ -64,7 +68,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/PTWC.Bulletins.amqp"
+        "#/messagegroups/PTWC.Bulletins.amqp",
+        "#/messagegroups/PTWC.Bulletins.amqp.avro",
+        "#/messagegroups/PTWC.Bulletins.amqp.avro.binary"
       ]
     }
   },
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{bulletin_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -144,6 +154,90 @@
             }
           },
           "messageid": "PTWC.Bulletins.amqp.TsunamiBulletin"
+        }
+      }
+    },
+    "PTWC.Bulletins.avro": {
+      "messagegroupid": "PTWC.Bulletins.avro",
+      "messages": {
+        "PTWC.TsunamiBulletin": {
+          "messageid": "PTWC.TsunamiBulletin",
+          "basemessage": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PTWC.avro/schemas/PTWC.TsunamiBulletin"
+        }
+      }
+    },
+    "PTWC.Bulletins.avro.binary": {
+      "messagegroupid": "PTWC.Bulletins.avro.binary",
+      "messages": {
+        "PTWC.TsunamiBulletin": {
+          "messageid": "PTWC.TsunamiBulletin",
+          "basemessage": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PTWC.avro/schemas/PTWC.TsunamiBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "PTWC.Bulletins.mqtt.avro": {
+      "messagegroupid": "PTWC.Bulletins.mqtt.avro",
+      "messages": {
+        "PTWC.Bulletins.mqtt.TsunamiBulletin": {
+          "messageid": "PTWC.Bulletins.mqtt.TsunamiBulletin",
+          "basemessage": "/messagegroups/PTWC.Bulletins.mqtt/messages/PTWC.Bulletins.mqtt.TsunamiBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PTWC.avro/schemas/PTWC.TsunamiBulletin"
+        }
+      }
+    },
+    "PTWC.Bulletins.mqtt.avro.binary": {
+      "messagegroupid": "PTWC.Bulletins.mqtt.avro.binary",
+      "messages": {
+        "PTWC.Bulletins.mqtt.TsunamiBulletin": {
+          "messageid": "PTWC.Bulletins.mqtt.TsunamiBulletin",
+          "basemessage": "/messagegroups/PTWC.Bulletins.mqtt/messages/PTWC.Bulletins.mqtt.TsunamiBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PTWC.avro/schemas/PTWC.TsunamiBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "PTWC.Bulletins.amqp.avro": {
+      "messagegroupid": "PTWC.Bulletins.amqp.avro",
+      "messages": {
+        "PTWC.Bulletins.amqp.TsunamiBulletin": {
+          "messageid": "PTWC.Bulletins.amqp.TsunamiBulletin",
+          "basemessage": "/messagegroups/PTWC.Bulletins.amqp/messages/PTWC.Bulletins.amqp.TsunamiBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PTWC.avro/schemas/PTWC.TsunamiBulletin"
+        }
+      }
+    },
+    "PTWC.Bulletins.amqp.avro.binary": {
+      "messagegroupid": "PTWC.Bulletins.amqp.avro.binary",
+      "messages": {
+        "PTWC.Bulletins.amqp.TsunamiBulletin": {
+          "messageid": "PTWC.Bulletins.amqp.TsunamiBulletin",
+          "basemessage": "/messagegroups/PTWC.Bulletins.amqp/messages/PTWC.Bulletins.amqp.TsunamiBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PTWC.avro/schemas/PTWC.TsunamiBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -211,7 +305,10 @@
                     "description": "The longitude of the seismic event epicenter in decimal degrees."
                   },
                   "category": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form.",
                     "enum": [
                       "Warning",
@@ -282,6 +379,172 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "PTWC.avro": {
+      "schemas": {
+        "PTWC.TsunamiBulletin": {
+          "name": "TsunamiBulletin",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PTWC.TsunamiBulletin",
+                "fields": [
+                  {
+                    "name": "bulletin_id",
+                    "type": "string",
+                    "doc": "The unique bulletin identifier as a URN UUID from the Atom entry (e.g., 'urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9')."
+                  },
+                  {
+                    "name": "feed",
+                    "type": {
+                      "type": "enum",
+                      "name": "PTWC.TsunamiBulletin_types.feed",
+                      "symbols": [
+                        "PAAQ",
+                        "PHEB"
+                      ]
+                    },
+                    "doc": "The feed this bulletin was obtained from. JSON Structure annotations: {\"descriptions\": {\"PAAQ\": \"Provider value `PAAQ` for this coded alert field.\", \"PHEB\": \"Provider value `PHEB` for this coded alert field.\"}, \"enum\": [\"PAAQ\", \"PHEB\"]}"
+                  },
+                  {
+                    "name": "center",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The issuing tsunami warning center name (e.g., 'NWS National Tsunami Warning Center Palmer AK', 'NWS PACIFIC TSUNAMI WARNING CENTER HONOLULU HI'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "The title of the bulletin, typically the location of the seismic event (e.g., '60 miles SW of Buldir I., Alaska')."
+                  },
+                  {
+                    "name": "updated",
+                    "type": "string",
+                    "doc": "The date and time when the bulletin was last updated, in ISO-8601 format."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "The latitude of the seismic event epicenter in decimal degrees. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "The longitude of the seismic event epicenter in decimal degrees. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "PTWC.TsunamiBulletin_types.category",
+                        "symbols": [
+                          "Warning",
+                          "Advisory",
+                          "Watch",
+                          "Information"
+                        ]
+                      }
+                    ],
+                    "doc": "Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form. JSON Structure annotations: {\"descriptions\": {\"Advisory\": \"Provider value `Advisory` for this coded alert field.\", \"Information\": \"Provider value `Information` for this coded alert field.\", \"Warning\": \"Provider value `Warning` for this coded alert field.\", \"Watch\": \"Provider value `Watch` for this coded alert field.\"}, \"enum\": [\"Warning\", \"Advisory\", \"Watch\", \"Information\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "magnitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The preliminary earthquake magnitude and type (e.g., '5.2(mb)', '7.1(Mw)'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "affected_region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The affected region description from the bulletin summary. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "note",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Additional notes from the bulletin (e.g., 'There is NO tsunami danger from this earthquake.'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bulletin_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL to the full text bulletin on tsunami.gov. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "cap_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL to the CAP XML document for this bulletin. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "type": {
+                      "type": "enum",
+                      "name": "PTWC.TsunamiBulletin_types.basin",
+                      "symbols": [
+                        "pacific",
+                        "alaska",
+                        "unknown"
+                      ]
+                    },
+                    "doc": "Basin or warning-area slug derived from the NOAA tsunami.gov feed (pacific for PHEB, alaska for PAAQ, or unknown). Matches the {basin} MQTT topic axis. JSON Structure annotations: {\"descriptions\": {\"alaska\": \"Provider value `alaska` for this coded alert field.\", \"pacific\": \"Provider value `pacific` for this coded alert field.\", \"unknown\": \"Provider value `unknown` for this coded alert field.\"}, \"enum\": [\"pacific\", \"alaska\", \"unknown\"]}"
+                  },
+                  {
+                    "name": "ptwc_level",
+                    "type": {
+                      "type": "enum",
+                      "name": "PTWC.TsunamiBulletin_types.ptwc_level",
+                      "symbols": [
+                        "warning",
+                        "advisory",
+                        "watch",
+                        "information",
+                        "unknown"
+                      ]
+                    },
+                    "doc": "Native tsunami bulletin category normalized to lowercase for MQTT routing. Matches the {ptwc_level} MQTT topic axis. JSON Structure annotations: {\"descriptions\": {\"advisory\": \"Provider value `advisory` for this coded alert field.\", \"information\": \"Provider value `information` for this coded alert field.\", \"unknown\": \"Provider value `unknown` for this coded alert field.\", \"warning\": \"Provider value `warning` for this coded alert field.\", \"watch\": \"Provider value `watch` for this coded alert field.\"}, \"enum\": [\"warning\", \"advisory\", \"watch\", \"information\", \"unknown\"]}"
+                  }
+                ],
+                "doc": "A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov."
               }
             }
           }

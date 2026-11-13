@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Com.Fienta"
+        "#/messagegroups/Com.Fienta",
+        "#/messagegroups/Com.Fienta.avro",
+        "#/messagegroups/Com.Fienta.avro.binary"
       ]
     },
     "Com.Fienta.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Com.Fienta.mqtt"
+        "#/messagegroups/Com.Fienta.mqtt",
+        "#/messagegroups/Com.Fienta.mqtt.avro",
+        "#/messagegroups/Com.Fienta.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for fienta."
     },
@@ -65,7 +69,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Com.Fienta.amqp"
+        "#/messagegroups/Com.Fienta.amqp",
+        "#/messagegroups/Com.Fienta.amqp.avro",
+        "#/messagegroups/Com.Fienta.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for fienta."
     }
@@ -86,6 +92,10 @@
             "subject": {
               "value": "{event_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -104,6 +114,10 @@
             "subject": {
               "value": "{event_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -178,6 +192,144 @@
                 "value": "{event_id}",
                 "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "Com.Fienta.avro": {
+      "messagegroupid": "Com.Fienta.avro",
+      "messages": {
+        "Com.Fienta.Event": {
+          "messageid": "Com.Fienta.Event",
+          "basemessage": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.Event"
+        },
+        "Com.Fienta.EventSaleStatus": {
+          "messageid": "Com.Fienta.EventSaleStatus",
+          "basemessage": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.EventSaleStatus"
+        }
+      }
+    },
+    "Com.Fienta.avro.binary": {
+      "messagegroupid": "Com.Fienta.avro.binary",
+      "messages": {
+        "Com.Fienta.Event": {
+          "messageid": "Com.Fienta.Event",
+          "basemessage": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Com.Fienta.EventSaleStatus": {
+          "messageid": "Com.Fienta.EventSaleStatus",
+          "basemessage": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.EventSaleStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Com.Fienta.mqtt.avro": {
+      "messagegroupid": "Com.Fienta.mqtt.avro",
+      "messages": {
+        "Com.Fienta.mqtt.Event": {
+          "messageid": "Com.Fienta.mqtt.Event",
+          "basemessage": "/messagegroups/Com.Fienta.mqtt/messages/Com.Fienta.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.Event"
+        },
+        "Com.Fienta.mqtt.EventSaleStatus": {
+          "messageid": "Com.Fienta.mqtt.EventSaleStatus",
+          "basemessage": "/messagegroups/Com.Fienta.mqtt/messages/Com.Fienta.mqtt.EventSaleStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.EventSaleStatus"
+        }
+      }
+    },
+    "Com.Fienta.mqtt.avro.binary": {
+      "messagegroupid": "Com.Fienta.mqtt.avro.binary",
+      "messages": {
+        "Com.Fienta.mqtt.Event": {
+          "messageid": "Com.Fienta.mqtt.Event",
+          "basemessage": "/messagegroups/Com.Fienta.mqtt/messages/Com.Fienta.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Com.Fienta.mqtt.EventSaleStatus": {
+          "messageid": "Com.Fienta.mqtt.EventSaleStatus",
+          "basemessage": "/messagegroups/Com.Fienta.mqtt/messages/Com.Fienta.mqtt.EventSaleStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.EventSaleStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Com.Fienta.amqp.avro": {
+      "messagegroupid": "Com.Fienta.amqp.avro",
+      "messages": {
+        "Com.Fienta.amqp.Event": {
+          "messageid": "Com.Fienta.amqp.Event",
+          "basemessage": "/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.Event"
+        },
+        "Com.Fienta.amqp.EventSaleStatus": {
+          "messageid": "Com.Fienta.amqp.EventSaleStatus",
+          "basemessage": "/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.EventSaleStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.EventSaleStatus"
+        }
+      }
+    },
+    "Com.Fienta.amqp.avro.binary": {
+      "messagegroupid": "Com.Fienta.amqp.avro.binary",
+      "messages": {
+        "Com.Fienta.amqp.Event": {
+          "messageid": "Com.Fienta.amqp.Event",
+          "basemessage": "/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Com.Fienta.amqp.EventSaleStatus": {
+          "messageid": "Com.Fienta.amqp.EventSaleStatus",
+          "basemessage": "/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.EventSaleStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Com.Fienta.avro/schemas/Com.Fienta.EventSaleStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -436,6 +588,304 @@
                     "description": "RFC 3339 UTC timestamp generated by the bridge when it observed the sale_status change while polling the Fienta public events API."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Com.Fienta.avro": {
+      "schemas": {
+        "Com.Fienta.Event": {
+          "name": "Event",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Com.Fienta.Event",
+                "fields": [
+                  {
+                    "name": "event_id",
+                    "type": "string",
+                    "doc": "Unique stable identifier for the event as assigned by Fienta. Sourced from the 'id' field in the Fienta API response and used as the CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Display title of the event as shown on the public event page. Sourced from the 'title' field in the Fienta API response."
+                  },
+                  {
+                    "name": "start",
+                    "type": "string",
+                    "doc": "Local event start datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Sourced from the 'starts_at' field in the Fienta API response."
+                  },
+                  {
+                    "name": "end",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Local event end datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Null when the public event payload has no end time. Sourced from the 'ends_at' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "duration_text",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable duration summary rendered by Fienta for the event schedule, for example 'Tue 1. April 2025 at 09:00 - Thu 31. December 2026 at 17:00'. Sourced from the 'duration_string' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "time_notes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Free-form notes about the event timing published by the organizer. Null when the event listing has no timing note. Sourced from the 'notes_about_time' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_status",
+                    "type": "string",
+                    "doc": "Lifecycle status of the event listing as published by Fienta, for example 'scheduled'. Sourced from the 'event_status' field in the Fienta API response."
+                  },
+                  {
+                    "name": "sale_status",
+                    "type": "string",
+                    "doc": "Current ticket sale status of the event. Observed values in the public feed include 'onSale', 'soldOut', 'notOnSale', and 'saleEnded'. Sourced from the 'sale_status' field in the Fienta API response."
+                  },
+                  {
+                    "name": "attendance_mode",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Attendance mode reported by Fienta for the event, for example 'offline'. Null when the public event listing omits the field. Sourced from the 'attendance_mode' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "venue_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Venue or place name shown on the public event listing, for example 'Worldwide' or a named physical venue. Null when not supplied. Sourced from the 'venue' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "venue_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Venue identifier provided by Fienta for the event location. Null when the listing has no venue identifier. Sourced from the 'venue_id' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "address",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Postal street address for the venue as shown on the public event listing. Null when the address is not supplied. Sourced from the 'address' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "postal_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Postal code for the venue address. Null when the event listing has no postal code. Sourced from the 'address_postal_code' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event description as published by the organizer. The public payload can contain HTML markup or be empty. Sourced from the 'description' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "url",
+                    "type": "string",
+                    "doc": "Public Fienta URL for the event details page. Sourced from the 'url' field in the Fienta API response."
+                  },
+                  {
+                    "name": "buy_tickets_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Public URL that Fienta exposes for the ticket purchase flow. Null when the listing does not include a dedicated purchase URL. Sourced from the 'buy_tickets_url' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "image_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL of the primary promotional image for the event. Null when no image is provided. Sourced from the 'image_url' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "image_small_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL of the smaller promotional image variant for the event. Null when the public event listing does not include a smaller image rendition. Sourced from the 'image_small_url' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "series_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Series identifier or slug used by Fienta to group related event listings. Null when the event is not associated with a series. Sourced from the 'series_id' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "organizer_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Display name of the event organizer. Null when the organizer name is absent from the public payload. Sourced from the 'organizer_name' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "organizer_phone",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Organizer phone number published on the event listing. Null when the organizer did not expose a phone number. Sourced from the 'organizer_phone' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "organizer_email",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Organizer email address published on the event listing. Null when the organizer did not expose an email address. Sourced from the 'organizer_email' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "organizer_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric identifier of the organizer account in Fienta. Null when the public event payload omits the organizer identifier. Sourced from the 'organizer_id' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "categories",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "List of category labels assigned to the event listing, such as 'other' or 'family'. The bridge emits an empty array when the public event payload omits the categories array. Sourced from the 'categories' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference data for a Fienta public event as exposed by the public events endpoint. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with the latest published event metadata from https://fienta.com/api/v1/public/events."
+              }
+            }
+          }
+        },
+        "Com.Fienta.EventSaleStatus": {
+          "name": "EventSaleStatus",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Com.Fienta.EventSaleStatus",
+                "fields": [
+                  {
+                    "name": "event_id",
+                    "type": "string",
+                    "doc": "Unique stable identifier for the event as assigned by Fienta. Sourced from the 'id' field in the Fienta API response and used as the CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Display title of the event at the time the bridge observed the sale status change. Sourced from the 'title' field in the Fienta API response."
+                  },
+                  {
+                    "name": "sale_status",
+                    "type": "string",
+                    "doc": "Current ticket sale status observed for the event, such as 'onSale', 'soldOut', 'notOnSale', or 'saleEnded'. Sourced from the 'sale_status' field in the Fienta API response."
+                  },
+                  {
+                    "name": "event_status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lifecycle status of the event listing at the time of observation, for example 'scheduled'. Null when the public payload omits the value. Sourced from the 'event_status' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Local event start datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Null when the public event payload omits the start time. Sourced from the 'starts_at' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "end",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Local event end datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Null when the public event payload omits the end time. Sourced from the 'ends_at' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Public Fienta URL for the event details page. Null when the public payload omits the event URL. Sourced from the 'url' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "buy_tickets_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Public URL that Fienta exposes for the ticket purchase flow at the time of the observation. Null when the listing does not include a dedicated purchase URL. Sourced from the 'buy_tickets_url' field in the Fienta API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "observed_at",
+                    "type": "string",
+                    "doc": "RFC 3339 UTC timestamp generated by the bridge when it observed the sale_status change while polling the Fienta public events API."
+                  }
+                ],
+                "doc": "Telemetry event emitted whenever the bridge observes a change in the sale_status value of a Fienta public event between two polls of the public events endpoint."
               }
             }
           }

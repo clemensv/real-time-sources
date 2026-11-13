@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.NWS.Zones.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.NWS.Observations.Kafka": {
@@ -60,7 +64,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.NWS.Alerts.Mqtt": {
@@ -82,7 +88,11 @@
       },
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt",
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.avro.binary",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for noaa-nws."
     },
@@ -105,7 +115,11 @@
       },
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp",
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.avro.binary",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for noaa-nws."
     }
@@ -126,6 +140,10 @@
             "subject": {
               "value": "{alert_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -148,6 +166,10 @@
             "subject": {
               "value": "{zone_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -170,6 +192,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -188,6 +214,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -389,6 +419,256 @@
           "envelope": "CloudEvents/1.0"
         }
       }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Zones.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Zones.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Zone": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Zone",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones/messages/Microsoft.OpenData.US.NOAA.NWS.Zone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.Zone"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Zones.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Zones.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Zone": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Zone",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones/messages/Microsoft.OpenData.US.NOAA.NWS.Zone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.Zone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Observations.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.ObservationStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Observations.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.ObservationStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -515,11 +795,17 @@
                     "type": "string"
                   },
                   "zone_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   },
                   "state": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "event_type": {
@@ -561,7 +847,10 @@
                     "description": "Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'."
                   },
                   "state": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Two-letter US state or territory abbreviation."
                   },
                   "forecast_office": {
@@ -648,11 +937,17 @@
                     "description": "NWS fire weather zone identifier for the station's location."
                   },
                   "state": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "zone_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -796,11 +1091,17 @@
                     "symbol": "°C"
                   },
                   "state": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "zone_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -820,7 +1121,7 @@
         "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert": {
           "name": "WeatherAlert",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -840,22 +1141,19 @@
                   {
                     "name": "sent",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
                     "name": "effective",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
                     "name": "expires",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -917,13 +1215,200 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NWS"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+                "fields": [
+                  {
+                    "name": "alert_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "area_desc",
+                    "type": "string"
+                  },
+                  {
+                    "name": "sent",
+                    "type": "string"
+                  },
+                  {
+                    "name": "effective",
+                    "type": "string"
+                  },
+                  {
+                    "name": "expires",
+                    "type": "string"
+                  },
+                  {
+                    "name": "status",
+                    "type": {
+                      "type": "enum",
+                      "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert_types.status",
+                      "symbols": [
+                        "Actual",
+                        "Exercise",
+                        "System",
+                        "Test",
+                        "Draft"
+                      ]
+                    },
+                    "doc": "JSON Structure annotations: {\"enum\": [\"Actual\", \"Exercise\", \"System\", \"Test\", \"Draft\"]}"
+                  },
+                  {
+                    "name": "message_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert_types.message_type",
+                      "symbols": [
+                        "Alert",
+                        "Update",
+                        "Cancel"
+                      ]
+                    },
+                    "doc": "JSON Structure annotations: {\"enum\": [\"Alert\", \"Update\", \"Cancel\"]}"
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert_types.category",
+                        "symbols": [
+                          "Met",
+                          "Geo",
+                          "Safety",
+                          "Security",
+                          "Rescue",
+                          "Fire",
+                          "Health",
+                          "Env",
+                          "Transport",
+                          "Infra",
+                          "CBRNE",
+                          "Other"
+                        ]
+                      }
+                    ],
+                    "doc": "JSON Structure annotations: {\"enum\": [\"Met\", \"Geo\", \"Safety\", \"Security\", \"Rescue\", \"Fire\", \"Health\", \"Env\", \"Transport\", \"Infra\", \"CBRNE\", \"Other\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "severity",
+                    "type": {
+                      "type": "enum",
+                      "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert_types.severity",
+                      "symbols": [
+                        "Extreme",
+                        "Severe",
+                        "Moderate",
+                        "Minor",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "JSON Structure annotations: {\"enum\": [\"Extreme\", \"Severe\", \"Moderate\", \"Minor\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "certainty",
+                    "type": {
+                      "type": "enum",
+                      "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert_types.certainty",
+                      "symbols": [
+                        "Observed",
+                        "Likely",
+                        "Possible",
+                        "Unlikely",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "JSON Structure annotations: {\"enum\": [\"Observed\", \"Likely\", \"Possible\", \"Unlikely\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "urgency",
+                    "type": {
+                      "type": "enum",
+                      "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert_types.urgency",
+                      "symbols": [
+                        "Immediate",
+                        "Expected",
+                        "Future",
+                        "Past",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "JSON Structure annotations: {\"enum\": [\"Immediate\", \"Expected\", \"Future\", \"Past\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "event",
+                    "type": "string"
+                  },
+                  {
+                    "name": "sender_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "headline",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "zone_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'event_type' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Active weather alert from the NWS Common Alerting Protocol (CAP) feed. Alerts cover severe weather warnings, watches, advisories, and statements issued by NWS Weather Forecast Offices."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NWS.Zone": {
           "name": "Zone",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -978,6 +1463,318 @@
                   }
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NWS"
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NWS.Zone",
+                "fields": [
+                  {
+                    "name": "zone_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "NWS zone identifier, e.g. 'NYZ072' for New York City. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable zone name."
+                  },
+                  {
+                    "name": "type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Two-letter US state or territory abbreviation. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "forecast_office",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "NWS Weather Forecast Office (WFO) responsible for this zone, e.g. 'OKX'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timezone",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "IANA timezone name for the zone, e.g. 'America/New_York'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "radar_station",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Nearest NEXRAD radar station identifier, or null if none assigned. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "NWS forecast zone reference data. Zones partition the US into geographic areas for which forecasts and warnings are issued."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.ObservationStation": {
+          "name": "ObservationStation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name, e.g. 'New York, Kennedy International Airport'."
+                  },
+                  {
+                    "name": "elevation_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station elevation above mean sea level. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "time_zone",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "IANA timezone of the station, e.g. 'America/New_York'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "forecast_zone",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "NWS forecast zone identifier associated with this station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "county",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "NWS county zone identifier for the station's location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "fire_weather_zone",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "NWS fire weather zone identifier for the station's location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "zone_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "ICAO or cooperative observer station identifier."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "UTC timestamp of the observation."
+                  },
+                  {
+                    "name": "text_description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature at the time of observation. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dewpoint",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dew point temperature. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction in degrees from which the wind is blowing. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sustained wind speed. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_gust",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Peak wind gust speed, null if no gusts observed. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "barometric_pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station barometric pressure (not reduced to sea level). JSON Structure annotations: {\"symbol\": \"Pa\", \"unit\": \"Pa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sea_level_pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Atmospheric pressure reduced to mean sea level. JSON Structure annotations: {\"symbol\": \"Pa\", \"unit\": \"Pa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "visibility",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Horizontal visibility. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Relative humidity percentage. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"percent\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_chill",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calculated wind chill temperature, null when conditions do not warrant it. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "heat_index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calculated heat index temperature, null when conditions do not warrant it. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "zone_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl)."
               }
             }
           }

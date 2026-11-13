@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/eu.entsoe.transparency.ByDomain"
+        "#/messagegroups/eu.entsoe.transparency.ByDomain",
+        "#/messagegroups/eu.entsoe.transparency.ByDomain.avro",
+        "#/messagegroups/eu.entsoe.transparency.ByDomain.avro.binary"
       ]
     },
     "eu.entsoe.transparency.ByDomainPsrType.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType"
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType",
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.avro",
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.avro.binary"
       ]
     },
     "eu.entsoe.transparency.CrossBorder.Kafka": {
@@ -60,7 +64,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/eu.entsoe.transparency.CrossBorder"
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder",
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.avro",
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.avro.binary"
       ]
     },
     "eu.entsoe.transparency.Mqtt": {
@@ -82,7 +88,13 @@
       "messagegroups": [
         "#/messagegroups/eu.entsoe.transparency.ByDomain.mqtt",
         "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt",
-        "#/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt"
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt",
+        "#/messagegroups/eu.entsoe.transparency.ByDomain.mqtt.avro",
+        "#/messagegroups/eu.entsoe.transparency.ByDomain.mqtt.avro.binary",
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt.avro",
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt.avro.binary",
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt.avro",
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt.avro.binary"
       ],
       "deployed": false
     },
@@ -109,7 +121,13 @@
       "messagegroups": [
         "#/messagegroups/eu.entsoe.transparency.ByDomain.amqp",
         "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp",
-        "#/messagegroups/eu.entsoe.transparency.CrossBorder.amqp"
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.amqp",
+        "#/messagegroups/eu.entsoe.transparency.ByDomain.amqp.avro",
+        "#/messagegroups/eu.entsoe.transparency.ByDomain.amqp.avro.binary",
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp.avro",
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp.avro.binary",
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.amqp.avro",
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder.amqp.avro.binary"
       ],
       "deployed": false
     }
@@ -132,6 +150,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -153,6 +172,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -174,6 +194,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -195,6 +216,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -216,6 +238,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -237,6 +260,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -262,6 +286,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -283,6 +308,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -304,6 +330,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -325,6 +352,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -350,6 +378,7 @@
               "type": "uritemplate"
             },
             "datacontenttype": {
+              "type": "string",
               "value": "application/json"
             }
           },
@@ -1301,6 +1330,690 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomain.avro": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomain.avro",
+      "messages": {
+        "eu.entsoe.transparency.DayAheadPrices": {
+          "messageid": "eu.entsoe.transparency.DayAheadPrices",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.DayAheadPrices",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.DayAheadPrices"
+        },
+        "eu.entsoe.transparency.ActualTotalLoad": {
+          "messageid": "eu.entsoe.transparency.ActualTotalLoad",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualTotalLoad",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualTotalLoad"
+        },
+        "eu.entsoe.transparency.LoadForecastMargin": {
+          "messageid": "eu.entsoe.transparency.LoadForecastMargin",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.LoadForecastMargin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.LoadForecastMargin"
+        },
+        "eu.entsoe.transparency.GenerationForecast": {
+          "messageid": "eu.entsoe.transparency.GenerationForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.GenerationForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast"
+        },
+        "eu.entsoe.transparency.ReservoirFillingInformation": {
+          "messageid": "eu.entsoe.transparency.ReservoirFillingInformation",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ReservoirFillingInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ReservoirFillingInformation"
+        },
+        "eu.entsoe.transparency.ActualGeneration": {
+          "messageid": "eu.entsoe.transparency.ActualGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGeneration"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomain.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomain.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.DayAheadPrices": {
+          "messageid": "eu.entsoe.transparency.DayAheadPrices",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.DayAheadPrices",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.DayAheadPrices",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ActualTotalLoad": {
+          "messageid": "eu.entsoe.transparency.ActualTotalLoad",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualTotalLoad",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualTotalLoad",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.LoadForecastMargin": {
+          "messageid": "eu.entsoe.transparency.LoadForecastMargin",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.LoadForecastMargin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.LoadForecastMargin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.GenerationForecast": {
+          "messageid": "eu.entsoe.transparency.GenerationForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.GenerationForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ReservoirFillingInformation": {
+          "messageid": "eu.entsoe.transparency.ReservoirFillingInformation",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ReservoirFillingInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ReservoirFillingInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ActualGeneration": {
+          "messageid": "eu.entsoe.transparency.ActualGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGeneration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomainPsrType.avro": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomainPsrType.avro",
+      "messages": {
+        "eu.entsoe.transparency.ActualGenerationPerType": {
+          "messageid": "eu.entsoe.transparency.ActualGenerationPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.ActualGenerationPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGenerationPerType"
+        },
+        "eu.entsoe.transparency.WindSolarForecast": {
+          "messageid": "eu.entsoe.transparency.WindSolarForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarForecast"
+        },
+        "eu.entsoe.transparency.WindSolarGeneration": {
+          "messageid": "eu.entsoe.transparency.WindSolarGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarGeneration"
+        },
+        "eu.entsoe.transparency.InstalledGenerationCapacityPerType": {
+          "messageid": "eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomainPsrType.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomainPsrType.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.ActualGenerationPerType": {
+          "messageid": "eu.entsoe.transparency.ActualGenerationPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.ActualGenerationPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGenerationPerType",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.WindSolarForecast": {
+          "messageid": "eu.entsoe.transparency.WindSolarForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.WindSolarGeneration": {
+          "messageid": "eu.entsoe.transparency.WindSolarGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarGeneration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.InstalledGenerationCapacityPerType": {
+          "messageid": "eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.CrossBorder.avro": {
+      "messagegroupid": "eu.entsoe.transparency.CrossBorder.avro",
+      "messages": {
+        "eu.entsoe.transparency.CrossBorderPhysicalFlows": {
+          "messageid": "eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows"
+        }
+      }
+    },
+    "eu.entsoe.transparency.CrossBorder.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.CrossBorder.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.CrossBorderPhysicalFlows": {
+          "messageid": "eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomain.mqtt.avro": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomain.mqtt.avro",
+      "messages": {
+        "eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.DayAheadPrices"
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualTotalLoad"
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.LoadForecastMargin"
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast"
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ReservoirFillingInformation"
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGeneration"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomain.mqtt.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomain.mqtt.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.DayAheadPrices",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualTotalLoad",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.LoadForecastMargin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ReservoirFillingInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.mqtt/messages/eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGeneration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomainPsrType.mqtt.avro": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.avro",
+      "messages": {
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGenerationPerType"
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarForecast"
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarGeneration"
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomainPsrType.mqtt.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGenerationPerType",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarGeneration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.mqtt/messages/eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.CrossBorder.mqtt.avro": {
+      "messagegroupid": "eu.entsoe.transparency.CrossBorder.mqtt.avro",
+      "messages": {
+        "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows": {
+          "messageid": "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt/messages/eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows"
+        }
+      }
+    },
+    "eu.entsoe.transparency.CrossBorder.mqtt.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.CrossBorder.mqtt.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows": {
+          "messageid": "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt/messages/eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomain.amqp.avro": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomain.amqp.avro",
+      "messages": {
+        "eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.DayAheadPrices"
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualTotalLoad"
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.LoadForecastMargin"
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.GenerationForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.GenerationForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.GenerationForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast"
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ReservoirFillingInformation"
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.ActualGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.ActualGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ActualGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGeneration"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomain.amqp.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomain.amqp.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.DayAheadPrices",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualTotalLoad",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.LoadForecastMargin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.GenerationForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.GenerationForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.GenerationForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ReservoirFillingInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomain.amqp.ActualGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomain.amqp.ActualGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ActualGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGeneration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomainPsrType.amqp.avro": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomainPsrType.amqp.avro",
+      "messages": {
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGenerationPerType"
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarForecast"
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarGeneration"
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomainPsrType.amqp.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.ByDomainPsrType.amqp.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.ActualGenerationPerType",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.WindSolarGeneration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType": {
+          "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.entsoe.transparency.CrossBorder.amqp.avro": {
+      "messagegroupid": "eu.entsoe.transparency.CrossBorder.amqp.avro",
+      "messages": {
+        "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows": {
+          "messageid": "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.CrossBorder.amqp/messages/eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows"
+        }
+      }
+    },
+    "eu.entsoe.transparency.CrossBorder.amqp.avro.binary": {
+      "messagegroupid": "eu.entsoe.transparency.CrossBorder.amqp.avro.binary",
+      "messages": {
+        "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows": {
+          "messageid": "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows",
+          "basemessage": "/messagegroups/eu.entsoe.transparency.CrossBorder.amqp/messages/eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }

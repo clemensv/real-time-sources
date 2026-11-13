@@ -1,13 +1,14 @@
-# GTFS Realtime feeder Events
+# GTFS Realtime Events
 
-MQTT 5 UNS topic bindings for gtfs.
+<sub>1,000+ transit agencies, vehicles, trips, alerts · Kafka · MQTT · AMQP · <a href="https://gtfs.org/">upstream</a> · <a href="https://gtfs.org/documentation/realtime/reference/">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 31 documented event types (93 transport bindings in the manifest).
+- **Event types:** 31 documented event types (279 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 31 telemetry event types.
 - **Identity:** `{agencyid}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -338,6 +339,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 - `OTHER_EFFECT`
 - `UNKNOWN_EFFECT`
 - `STOP_MOVED`
+- `NO_EFFECT`
+- `ACCESSIBILITY_ISSUE`
 ##### TranslatedString
 <a id="payload-generaltransitfeedrealtime-alert-alert-translatedstring"></a>
 
@@ -415,10 +418,10 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Agency` payloads are JSON object. Required fields: `agencyId`, `agencyName`, `agencyUrl`, `agencyTimezone`.
 
-- **`agencyId`** (string, required): Identifies a transit brand which is often synonymous with a transit agency.
-- **`agencyName`** (string, required): Full name of the transit agency.
-- **`agencyUrl`** (string, required): URL of the transit agency.
-- **`agencyTimezone`** (string, required): Timezone where the transit agency is located.
+- **`agencyId`** (string or null, required): Identifies a transit brand which is often synonymous with a transit agency.
+- **`agencyName`** (string or null, required): Full name of the transit agency.
+- **`agencyUrl`** (string or null, required): URL of the transit agency.
+- **`agencyTimezone`** (string or null, required): Timezone where the transit agency is located.
 - **`agencyLang`** (string, optional): Primary language used by this transit agency.
 - **`agencyPhone`** (string, optional): A voice telephone number for the specified agency.
 - **`agencyFareUrl`** (string, optional): URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.
@@ -468,8 +471,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Areas` payloads are JSON object. Required fields: `areaId`, `areaName`.
 
-- **`areaId`** (string, required): Identifies an area.
-- **`areaName`** (string, required): Name of the area.
+- **`areaId`** (string or null, required): Identifies an area.
+- **`areaName`** (string or null, required): Name of the area.
 - **`areaDesc`** (string, optional): Description of the area.
 - **`areaUrl`** (string, optional): URL of a web page about the area.
 #### Example payload
@@ -517,7 +520,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 - **`agencyId`** (string, optional): Identifies the agency associated with the attribution.
 - **`routeId`** (string, optional): Identifies the route associated with the attribution.
 - **`tripId`** (string, optional): Identifies the trip associated with the attribution.
-- **`organizationName`** (string, required): Name of the organization associated with the attribution.
+- **`organizationName`** (string or null, required): Name of the organization associated with the attribution.
 - **`isProducer`** (int32, optional): Indicates if the organization is a producer.
 - **`isOperator`** (int32, optional): Indicates if the organization is an operator.
 - **`isAuthority`** (int32, optional): Indicates if the organization is an authority.
@@ -572,8 +575,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Booking Rules` payloads are JSON object. Required fields: `bookingRuleId`, `bookingRuleName`.
 
-- **`bookingRuleId`** (string, required): Identifies a booking rule.
-- **`bookingRuleName`** (string, required): Name of the booking rule.
+- **`bookingRuleId`** (string or null, required): Identifies a booking rule.
+- **`bookingRuleName`** (string or null, required): Name of the booking rule.
 - **`bookingRuleDesc`** (string, optional): Description of the booking rule.
 - **`bookingRuleUrl`** (string, optional): URL of a web page about the booking rule.
 #### Example payload
@@ -617,9 +620,9 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Fare Attributes` payloads are JSON object. Required fields: `fareId`, `price`, `currencyType`, `paymentMethod`.
 
-- **`fareId`** (string, required): Identifies a fare class.
+- **`fareId`** (string or null, required): Identifies a fare class.
 - **`price`** (double, required): Fare price, in the unit specified by currency_type.
-- **`currencyType`** (string, required): Currency type used to pay the fare.
+- **`currencyType`** (string or null, required): Currency type used to pay the fare.
 - **`paymentMethod`** (int32, required): When 0, fare must be paid on board. When 1, fare must be paid before boarding.
 - **`transfers`** (int32, optional): Specifies the number of transfers permitted on this fare.
 - **`agencyId`** (string, optional): Identifies the agency for the specified fare.
@@ -668,8 +671,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Fare Leg Rules` payloads are JSON object. Required fields: `fareLegRuleId`, `fareProductId`.
 
-- **`fareLegRuleId`** (string, required): Identifies a fare leg rule.
-- **`fareProductId`** (string, required): Identifies a fare product.
+- **`fareLegRuleId`** (string or null, required): Identifies a fare leg rule.
+- **`fareProductId`** (string or null, required): Identifies a fare product.
 - **`legGroupId`** (string, optional): Identifies a group of legs.
 - **`networkId`** (string, optional): Identifies a network.
 - **`fromAreaId`** (string, optional): Identifies the origin area.
@@ -717,8 +720,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Fare Media` payloads are JSON object. Required fields: `fareMediaId`, `fareMediaName`.
 
-- **`fareMediaId`** (string, required): Identifies a fare media.
-- **`fareMediaName`** (string, required): Name of the fare media.
+- **`fareMediaId`** (string or null, required): Identifies a fare media.
+- **`fareMediaName`** (string or null, required): Name of the fare media.
 - **`fareMediaDesc`** (string, optional): Description of the fare media.
 - **`fareMediaUrl`** (string, optional): URL of a web page about the fare media.
 #### Example payload
@@ -762,8 +765,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Fare Products` payloads are JSON object. Required fields: `fareProductId`, `fareProductName`.
 
-- **`fareProductId`** (string, required): Identifies a fare product.
-- **`fareProductName`** (string, required): Name of the fare product.
+- **`fareProductId`** (string or null, required): Identifies a fare product.
+- **`fareProductName`** (string or null, required): Name of the fare product.
 - **`fareProductDesc`** (string, optional): Description of the fare product.
 - **`fareProductUrl`** (string, optional): URL of a web page about the fare product.
 #### Example payload
@@ -807,7 +810,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Fare Rules` payloads are JSON object. Required fields: `fareId`.
 
-- **`fareId`** (string, required): Identifies a fare class.
+- **`fareId`** (string or null, required): Identifies a fare class.
 - **`routeId`** (string, optional): Identifies a route associated with the fare.
 - **`originId`** (string, optional): Identifies the fare zone of the origin.
 - **`destinationId`** (string, optional): Identifies the fare zone of the destination.
@@ -854,8 +857,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Fare Transfer Rules` payloads are JSON object. Required fields: `fareTransferRuleId`, `fareProductId`.
 
-- **`fareTransferRuleId`** (string, required): Identifies a fare transfer rule.
-- **`fareProductId`** (string, required): Identifies a fare product.
+- **`fareTransferRuleId`** (string or null, required): Identifies a fare transfer rule.
+- **`fareProductId`** (string or null, required): Identifies a fare product.
 - **`transferCount`** (int32, optional): Number of transfers permitted.
 - **`fromLegGroupId`** (string, optional): Identifies the leg group from which the transfer starts.
 - **`toLegGroupId`** (string, optional): Identifies the leg group to which the transfer applies.
@@ -905,9 +908,9 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Feed Info` payloads are JSON object. Required fields: `feedPublisherName`, `feedPublisherUrl`, `feedLang`.
 
-- **`feedPublisherName`** (string, required): Full name of the organization that publishes the feed.
-- **`feedPublisherUrl`** (string, required): URL of the feed publishing organization's website.
-- **`feedLang`** (string, required): Default language for the text in this feed.
+- **`feedPublisherName`** (string or null, required): Full name of the organization that publishes the feed.
+- **`feedPublisherUrl`** (string or null, required): URL of the feed publishing organization's website.
+- **`feedLang`** (string or null, required): Default language for the text in this feed.
 - **`defaultLang`** (string, optional): Specifies the language used when the data consumer doesn’t know the language of the user.
 - **`feedStartDate`** (string, optional): The start date for the dataset.
 - **`feedEndDate`** (string, optional): The end date for the dataset.
@@ -960,9 +963,9 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Frequencies` payloads are JSON object. Required fields: `tripId`, `startTime`, `endTime`, `headwaySecs`.
 
-- **`tripId`** (string, required): Identifies a trip.
-- **`startTime`** (string, required): Time at which service begins with the specified frequency.
-- **`endTime`** (string, required): Time at which service ends with the specified frequency.
+- **`tripId`** (string or null, required): Identifies a trip.
+- **`startTime`** (string or null, required): Time at which service begins with the specified frequency.
+- **`endTime`** (string or null, required): Time at which service ends with the specified frequency.
 - **`headwaySecs`** (int32, required): Time between departures from the same stop (headway) for this trip, in seconds.
 - **`exactTimes`** (int32, optional): When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled.
 #### Example payload
@@ -1007,7 +1010,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Levels` payloads are JSON object. Required fields: `levelId`, `levelIndex`.
 
-- **`levelId`** (string, required): Identifies a level.
+- **`levelId`** (string or null, required): Identifies a level.
 - **`levelIndex`** (double, required): Numeric index of the level that indicates relative position of the level in relation to other levels.
 - **`levelName`** (string, optional): Name of the level.
 #### Example payload
@@ -1093,8 +1096,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Location Groups` payloads are JSON object. Required fields: `locationGroupId`, `locationGroupName`.
 
-- **`locationGroupId`** (string, required): Identifies a location group.
-- **`locationGroupName`** (string, required): Name of the location group.
+- **`locationGroupId`** (string or null, required): Identifies a location group.
+- **`locationGroupName`** (string or null, required): Name of the location group.
 - **`locationGroupDesc`** (string, optional): Description of the location group.
 - **`locationGroupUrl`** (string, optional): URL of a web page about the location group.
 #### Example payload
@@ -1138,9 +1141,9 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Location Group Stores` payloads are JSON object. Required fields: `locationGroupStoreId`, `locationGroupId`, `storeId`.
 
-- **`locationGroupStoreId`** (string, required): Identifies a location group store.
-- **`locationGroupId`** (string, required): Identifies a location group.
-- **`storeId`** (string, required): Identifies a store.
+- **`locationGroupStoreId`** (string or null, required): Identifies a location group store.
+- **`locationGroupId`** (string or null, required): Identifies a location group.
+- **`storeId`** (string or null, required): Identifies a store.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1181,8 +1184,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Networks` payloads are JSON object. Required fields: `networkId`, `networkName`.
 
-- **`networkId`** (string, required): Identifies a network.
-- **`networkName`** (string, required): Name of the network.
+- **`networkId`** (string or null, required): Identifies a network.
+- **`networkName`** (string or null, required): Name of the network.
 - **`networkDesc`** (string, optional): Description of the network.
 - **`networkUrl`** (string, optional): URL of a web page about the network.
 #### Example payload
@@ -1226,9 +1229,9 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Pathways` payloads are JSON object. Required fields: `pathwayId`, `fromStopId`, `toStopId`, `pathwayMode`, `isBidirectional`.
 
-- **`pathwayId`** (string, required): Identifies a pathway.
-- **`fromStopId`** (string, required): Identifies a stop or station where the pathway begins.
-- **`toStopId`** (string, required): Identifies a stop or station where the pathway ends.
+- **`pathwayId`** (string or null, required): Identifies a pathway.
+- **`fromStopId`** (string or null, required): Identifies a stop or station where the pathway begins.
+- **`toStopId`** (string or null, required): Identifies a stop or station where the pathway ends.
 - **`pathwayMode`** (int32, required): Type of pathway between the specified (from_stop_id, to_stop_id) pair.
 - **`isBidirectional`** (int32, required): When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id).
 - **`length`** (double, optional): Length of the pathway, in meters.
@@ -1287,9 +1290,9 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Route Networks` payloads are JSON object. Required fields: `routeNetworkId`, `routeId`, `networkId`.
 
-- **`routeNetworkId`** (string, required): Identifies a route network.
-- **`routeId`** (string, required): Identifies a route.
-- **`networkId`** (string, required): Identifies a network.
+- **`routeNetworkId`** (string or null, required): Identifies a route network.
+- **`routeId`** (string or null, required): Identifies a route.
+- **`networkId`** (string or null, required): Identifies a network.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1330,7 +1333,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Routes` payloads are JSON object. Required fields: `routeId`, `routeType`, `continuousPickup`, `continuousDropOff`.
 
-- **`routeId`** (string, required): Identifies a route.
+- **`routeId`** (string or null, required): Identifies a route.
 - **`agencyId`** (string, optional): Agency for the specified route.
 - **`routeShortName`** (string, optional): Short name of a route.
 - **`routeLongName`** (string, optional): Full name of a route.
@@ -1421,7 +1424,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Shapes` payloads are JSON object. Required fields: `shapeId`, `shapePtLat`, `shapePtLon`, `shapePtSequence`.
 
-- **`shapeId`** (string, required): Identifies a shape.
+- **`shapeId`** (string or null, required): Identifies a shape.
 - **`shapePtLat`** (double, required): Latitude of a shape point.
 - **`shapePtLon`** (double, required): Longitude of a shape point.
 - **`shapePtSequence`** (int32, required): Sequence in which the shape points connect to form the shape.
@@ -1468,9 +1471,9 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Stop Areas` payloads are JSON object. Required fields: `stopAreaId`, `stopId`, `areaId`.
 
-- **`stopAreaId`** (string, required): Identifies a stop area.
-- **`stopId`** (string, required): Identifies a stop.
-- **`areaId`** (string, required): Identifies an area.
+- **`stopAreaId`** (string or null, required): Identifies a stop area.
+- **`stopId`** (string or null, required): Identifies a stop.
+- **`areaId`** (string or null, required): Identifies an area.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1511,7 +1514,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Stops` payloads are JSON object. Required fields: `stopId`, `locationType`, `wheelchairBoarding`.
 
-- **`stopId`** (string, required): Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area.
+- **`stopId`** (string or null, required): Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area.
 - **`stopCode`** (string, optional): Short text or a number that identifies the location for riders.
 - **`stopName`** (string, optional): Name of the location.
 - **`ttsStopName`** (string, optional): Readable version of the stop_name.
@@ -1590,7 +1593,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Stop Times` payloads are JSON object. Required fields: `tripId`, `stopSequence`, `pickupType`, `dropOffType`, `timepoint`.
 
-- **`tripId`** (string, required): Identifies a trip.
+- **`tripId`** (string or null, required): Identifies a trip.
 - **`arrivalTime`** (string, optional): Arrival time at the stop for a specific trip.
 - **`departureTime`** (string, optional): Departure time from the stop for a specific trip.
 - **`stopId`** (string, optional): Identifies the serviced stop.
@@ -1679,7 +1682,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Timeframes` payloads are JSON object. Required fields: `timeframeGroupId`, `serviceDates`.
 
-- **`timeframeGroupId`** (string, required): Identifies a timeframe or set of timeframes.
+- **`timeframeGroupId`** (string or null, required): Identifies a timeframe or set of timeframes.
 - **`startTime`** (string, optional): Defines the beginning of a timeframe.
 - **`endTime`** (string, optional): Defines the end of a timeframe.
 - **`serviceDates`** (choice, required): Identifies a set of dates when service is available for one or more routes.
@@ -1724,8 +1727,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Transfers` payloads are JSON object. Required fields: `fromStopId`, `toStopId`, `transferType`.
 
-- **`fromStopId`** (string, required): Identifies a stop or station where a connection between routes begins.
-- **`toStopId`** (string, required): Identifies a stop or station where a connection between routes ends.
+- **`fromStopId`** (string or null, required): Identifies a stop or station where a connection between routes begins.
+- **`toStopId`** (string or null, required): Identifies a stop or station where a connection between routes ends.
 - **`transferType`** (int32, required): Type of connection for the specified (from_stop_id, to_stop_id) pair.
 - **`minTransferTime`** (int32, optional): Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id).
 #### Example payload
@@ -1769,10 +1772,10 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Translations` payloads are JSON object. Required fields: `tableName`, `fieldName`, `language`, `translation`.
 
-- **`tableName`** (string, required): Name of the table containing the field to be translated.
-- **`fieldName`** (string, required): Name of the field to be translated.
-- **`language`** (string, required): Language of the translation.
-- **`translation`** (string, required): Translated value.
+- **`tableName`** (string or null, required): Name of the table containing the field to be translated.
+- **`fieldName`** (string or null, required): Name of the field to be translated.
+- **`language`** (string or null, required): Language of the translation.
+- **`translation`** (string or null, required): Translated value.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1814,10 +1817,10 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 `Trips` payloads are JSON object. Required fields: `routeId`, `serviceDates`, `serviceExceptions`, `tripId`, `directionId`, `wheelchairAccessible`, `bikesAllowed`.
 
-- **`routeId`** (string, required): Identifies a route.
+- **`routeId`** (string or null, required): Identifies a route.
 - **`serviceDates`** (object, required): No description provided. See [Calendar](#payload-generaltransitfeedstatic-trips-calendar).
 - **`serviceExceptions`** (array of object, required): No description provided.
-- **`tripId`** (string, required): Identifies a trip.
+- **`tripId`** (string or null, required): Identifies a trip.
 - **`tripHeadsign`** (string, optional): Text that appears on signage identifying the trip's destination to riders.
 - **`tripShortName`** (string, optional): Public facing text used to identify the trip to riders.
 - **`directionId`** (enum, required): Indicates the direction of travel for a trip.
@@ -1872,7 +1875,7 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 
 Nested record.
 
-- **`serviceId`** (string, required): Identifies a set of dates when service is available for one or more routes.
+- **`serviceId`** (string or null, required): Identifies a set of dates when service is available for one or more routes.
 - **`monday`** (enum, required): Indicates whether the service operates on all Mondays in the date range specified.
 - **`tuesday`** (enum, required): Indicates whether the service operates on all Tuesdays in the date range specified.
 - **`wednesday`** (enum, required): Indicates whether the service operates on all Wednesdays in the date range specified.
@@ -1880,8 +1883,8 @@ Nested record.
 - **`friday`** (enum, required): Indicates whether the service operates on all Fridays in the date range specified.
 - **`saturday`** (enum, required): Indicates whether the service operates on all Saturdays in the date range specified.
 - **`sunday`** (enum, required): Indicates whether the service operates on all Sundays in the date range specified.
-- **`startDate`** (string, required): Start service day for the service interval.
-- **`endDate`** (string, required): End service day for the service interval.
+- **`startDate`** (string or null, required): Start service day for the service interval.
+- **`endDate`** (string or null, required): End service day for the service interval.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1936,11 +1939,15 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 

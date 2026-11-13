@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Wikimedia.EventStreams"
+        "#/messagegroups/Wikimedia.EventStreams",
+        "#/messagegroups/Wikimedia.EventStreams.avro",
+        "#/messagegroups/Wikimedia.EventStreams.avro.binary"
       ]
     },
     "Wikimedia.EventStreams.Mqtt": {
@@ -38,7 +40,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Wikimedia.EventStreams.mqtt"
+        "#/messagegroups/Wikimedia.EventStreams.mqtt",
+        "#/messagegroups/Wikimedia.EventStreams.mqtt.avro",
+        "#/messagegroups/Wikimedia.EventStreams.mqtt.avro.binary"
       ]
     },
     "Wikimedia.EventStreams.Amqp": {
@@ -59,7 +63,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Wikimedia.EventStreams.amqp"
+        "#/messagegroups/Wikimedia.EventStreams.amqp",
+        "#/messagegroups/Wikimedia.EventStreams.amqp.avro",
+        "#/messagegroups/Wikimedia.EventStreams.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for wikimedia-eventstreams CloudEvents on the configured broker address."
     }
@@ -85,6 +91,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -128,6 +138,90 @@
                 "value": "{event_id}",
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "Wikimedia.EventStreams.avro": {
+      "messagegroupid": "Wikimedia.EventStreams.avro",
+      "messages": {
+        "Wikimedia.EventStreams.RecentChange": {
+          "messageid": "Wikimedia.EventStreams.RecentChange",
+          "basemessage": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Wikimedia.EventStreams.avro/schemas/Wikimedia.EventStreams.RecentChange"
+        }
+      }
+    },
+    "Wikimedia.EventStreams.avro.binary": {
+      "messagegroupid": "Wikimedia.EventStreams.avro.binary",
+      "messages": {
+        "Wikimedia.EventStreams.RecentChange": {
+          "messageid": "Wikimedia.EventStreams.RecentChange",
+          "basemessage": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Wikimedia.EventStreams.avro/schemas/Wikimedia.EventStreams.RecentChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Wikimedia.EventStreams.mqtt.avro": {
+      "messagegroupid": "Wikimedia.EventStreams.mqtt.avro",
+      "messages": {
+        "Wikimedia.EventStreams.RecentChange.mqtt": {
+          "messageid": "Wikimedia.EventStreams.RecentChange.mqtt",
+          "basemessage": "/messagegroups/Wikimedia.EventStreams.mqtt/messages/Wikimedia.EventStreams.RecentChange.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Wikimedia.EventStreams.avro/schemas/Wikimedia.EventStreams.RecentChange"
+        }
+      }
+    },
+    "Wikimedia.EventStreams.mqtt.avro.binary": {
+      "messagegroupid": "Wikimedia.EventStreams.mqtt.avro.binary",
+      "messages": {
+        "Wikimedia.EventStreams.RecentChange.mqtt": {
+          "messageid": "Wikimedia.EventStreams.RecentChange.mqtt",
+          "basemessage": "/messagegroups/Wikimedia.EventStreams.mqtt/messages/Wikimedia.EventStreams.RecentChange.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Wikimedia.EventStreams.avro/schemas/Wikimedia.EventStreams.RecentChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Wikimedia.EventStreams.amqp.avro": {
+      "messagegroupid": "Wikimedia.EventStreams.amqp.avro",
+      "messages": {
+        "Wikimedia.EventStreams.amqp.RecentChange": {
+          "messageid": "Wikimedia.EventStreams.amqp.RecentChange",
+          "basemessage": "/messagegroups/Wikimedia.EventStreams.amqp/messages/Wikimedia.EventStreams.amqp.RecentChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Wikimedia.EventStreams.avro/schemas/Wikimedia.EventStreams.RecentChange"
+        }
+      }
+    },
+    "Wikimedia.EventStreams.amqp.avro.binary": {
+      "messagegroupid": "Wikimedia.EventStreams.amqp.avro.binary",
+      "messages": {
+        "Wikimedia.EventStreams.amqp.RecentChange": {
+          "messageid": "Wikimedia.EventStreams.amqp.RecentChange",
+          "basemessage": "/messagegroups/Wikimedia.EventStreams.amqp/messages/Wikimedia.EventStreams.amqp.RecentChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Wikimedia.EventStreams.avro/schemas/Wikimedia.EventStreams.RecentChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -408,6 +502,363 @@
                   "user",
                   "wiki"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "Wikimedia.EventStreams.avro": {
+      "schemas": {
+        "Wikimedia.EventStreams.RecentChange": {
+          "name": "RecentChange",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Wikimedia.EventStreams.RecentChange",
+                "fields": [
+                  {
+                    "name": "event_id",
+                    "type": "string",
+                    "doc": "Top-level copy of meta.id so downstream validators and consumers can resolve the CloudEvents subject and Kafka key from the event payload itself."
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string",
+                    "doc": "Top-level copy of meta.dt in ISO-8601 UTC format so downstream validators and consumers can resolve the CloudEvents time attribute from the payload itself."
+                  },
+                  {
+                    "name": "schema_uri",
+                    "type": "string",
+                    "doc": "URI of the upstream Wikimedia JSON schema from the $schema field on the original event payload."
+                  },
+                  {
+                    "name": "meta",
+                    "type": {
+                      "type": "record",
+                      "name": "Wikimedia.EventStreams.RecentChange_types.meta",
+                      "fields": [
+                        {
+                          "name": "uri",
+                          "default": null,
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "doc": "URI of the Wikimedia entity or page the event pertains to, when provided by the upstream stream. An absent JSON property uses the declared default in Avro."
+                        },
+                        {
+                          "name": "request_id",
+                          "default": null,
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "doc": "Unique request identifier assigned by Wikimedia for the request that caused the event. An absent JSON property uses the declared default in Avro."
+                        },
+                        {
+                          "name": "id",
+                          "type": "string",
+                          "doc": "Globally unique Wikimedia event UUID for this recentchange record."
+                        },
+                        {
+                          "name": "domain",
+                          "type": "string",
+                          "doc": "Wikimedia domain the event pertains to, such as www.wikipedia.org or www.wikidata.org."
+                        },
+                        {
+                          "name": "stream",
+                          "type": "string",
+                          "doc": "Name of the upstream EventStreams stream that emitted the event, typically mediawiki.recentchange."
+                        },
+                        {
+                          "name": "topic",
+                          "default": null,
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "doc": "Underlying Wikimedia Kafka topic that carried the event before it was exposed through EventStreams. An absent JSON property uses the declared default in Avro."
+                        },
+                        {
+                          "name": "partition",
+                          "default": null,
+                          "type": [
+                            "null",
+                            "int"
+                          ],
+                          "doc": "Underlying Kafka partition number from Wikimedia's internal stream metadata. An absent JSON property uses the declared default in Avro."
+                        },
+                        {
+                          "name": "offset",
+                          "default": null,
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "doc": "Underlying Kafka offset from Wikimedia's internal stream metadata, stringified to avoid range loss across generated languages and validators. An absent JSON property uses the declared default in Avro."
+                        },
+                        {
+                          "name": "dt",
+                          "type": "string",
+                          "doc": "UTC event timestamp in ISO-8601 format from the upstream metadata block."
+                        }
+                      ],
+                      "doc": "Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details."
+                    },
+                    "doc": "Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details. JSON Structure annotations: {\"required\": [\"id\", \"domain\", \"stream\", \"dt\"]}"
+                  },
+                  {
+                    "name": "id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "MediaWiki recentchanges row identifier (rcid) for the event, stringified because some Wikimedia wikis already exceed signed 32-bit integer range. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "type",
+                    "type": "string",
+                    "doc": "Recentchange type such as edit, new, log, categorize, or external."
+                  },
+                  {
+                    "name": "namespace_id",
+                    "type": "int",
+                    "doc": "Numeric MediaWiki namespace identifier for the affected page (0 = main, 1 = talk, 6 = file, 14 = category, -1 for special log events). Renamed from ``namespace`` to free that name for the kebab-case bucket that is also used as the {namespace} MQTT topic axis."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "Affected page title in MediaWiki prefixed text form."
+                  },
+                  {
+                    "name": "title_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Canonical page URL for the affected title when present in the upstream payload. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "comment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Edit or log comment as supplied by the upstream recentchange record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "int",
+                    "doc": "Unix timestamp derived from the MediaWiki rc_timestamp value."
+                  },
+                  {
+                    "name": "user",
+                    "type": "string",
+                    "doc": "User name or IP address associated with the change."
+                  },
+                  {
+                    "name": "bot",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the recentchange entry was flagged as a bot edit. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "minor",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the recentchange entry was flagged as a minor change. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "patrolled",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the recentchange entry had been patrolled when the event was emitted. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "length",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "Wikimedia.EventStreams.RecentChange_types.length",
+                        "fields": [
+                          {
+                            "name": "old",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "doc": "Length of the page before the change. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "new",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "doc": "Length of the page after the change. An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki."
+                      }
+                    ],
+                    "doc": "Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "revision",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "Wikimedia.EventStreams.RecentChange_types.revision",
+                        "fields": [
+                          {
+                            "name": "old",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Previous revision identifier before the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "new",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "New revision identifier after the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range. An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Old and new MediaWiki revision identifiers associated with the change."
+                      }
+                    ],
+                    "doc": "Old and new MediaWiki revision identifiers associated with the change. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "server_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Canonical server URL for the wiki that emitted the event. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "server_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Server host name of the wiki that emitted the event. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "server_script_path",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "MediaWiki script path on the emitting wiki. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wiki",
+                    "type": "string",
+                    "doc": "Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki."
+                  },
+                  {
+                    "name": "namespace",
+                    "type": "string",
+                    "doc": "Kebab-case bucket label for the MediaWiki namespace (e.g. ``main`` for 0, ``talk`` for 1, ``file`` for 6, ``category`` for 14, ``ns-<n>`` for unrecognised values). Used as the {namespace} MQTT topic segment; subscribers can wildcard per wiki/namespace without parsing the integer id."
+                  },
+                  {
+                    "name": "parsedcomment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HTML-parsed form of the recentchange comment when Wikimedia provides it. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "notify_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL that points to a diff view or other relevant page for the change. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "log_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "MediaWiki log type for log events, such as move, delete, or patrol. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "log_action",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Specific MediaWiki log action name for log events. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "log_action_comment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Additional comment field emitted for some MediaWiki log actions. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "log_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "MediaWiki log identifier associated with the event when the change is a log entry, stringified for stable cross-language handling. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "log_params_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized form of the upstream log_params field, which may be an object, array, or string in the raw Wikimedia payload. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Normalized representation of Wikimedia's mediawiki/recentchange event schema. This contract preserves the documented recentchange payload while renaming the upstream $schema field to schema_uri and serializing the variant log_params field into log_params_json for stable generated types."
               }
             }
           }

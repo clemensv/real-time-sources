@@ -22,7 +22,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.fdsn.event.kafka"
+        "#/messagegroups/org.fdsn.event.kafka",
+        "#/messagegroups/org.fdsn.event.kafka.avro",
+        "#/messagegroups/org.fdsn.event.kafka.avro.binary"
       ],
       "description": "Kafka producer endpoint for FDSN seismology CloudEvents on the `fdsn-seismology` topic. Each message carries its own stable per-family Kafka key template in the Kafka transport message group."
     },
@@ -44,7 +46,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/org.fdsn.event.mqtt"
+        "#/messagegroups/org.fdsn.event.mqtt",
+        "#/messagegroups/org.fdsn.event.mqtt.avro",
+        "#/messagegroups/org.fdsn.event.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for FDSN seismology CloudEvents under a seismology/fdsn/... topic tree."
     },
@@ -66,7 +70,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/org.fdsn.event.amqp"
+        "#/messagegroups/org.fdsn.event.amqp",
+        "#/messagegroups/org.fdsn.event.amqp.avro",
+        "#/messagegroups/org.fdsn.event.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for FDSN seismology CloudEvents on one configured broker address."
     }
@@ -94,6 +100,10 @@
             "time": {
               "value": "{time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -114,6 +124,10 @@
             "subject": {
               "value": "{node_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -209,6 +223,190 @@
                 "value": "{node_id}",
                 "description": "Node identifier supplied as an AMQP application property for broker-side filtering."
               }
+            }
+          }
+        }
+      }
+    },
+    "org.fdsn.event.avro": {
+      "messagegroupid": "org.fdsn.event.avro",
+      "messages": {
+        "org.fdsn.event.Earthquake": {
+          "messageid": "org.fdsn.event.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake"
+        },
+        "org.fdsn.event.Node": {
+          "messageid": "org.fdsn.event.Node",
+          "basemessage": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node"
+        }
+      }
+    },
+    "org.fdsn.event.avro.binary": {
+      "messagegroupid": "org.fdsn.event.avro.binary",
+      "messages": {
+        "org.fdsn.event.Earthquake": {
+          "messageid": "org.fdsn.event.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.fdsn.event.Node": {
+          "messageid": "org.fdsn.event.Node",
+          "basemessage": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.fdsn.event.kafka.avro": {
+      "messagegroupid": "org.fdsn.event.kafka.avro",
+      "messages": {
+        "org.fdsn.event.kafka.Earthquake": {
+          "messageid": "org.fdsn.event.kafka.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event.kafka/messages/org.fdsn.event.kafka.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake"
+        },
+        "org.fdsn.event.kafka.Node": {
+          "messageid": "org.fdsn.event.kafka.Node",
+          "basemessage": "/messagegroups/org.fdsn.event.kafka/messages/org.fdsn.event.kafka.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node"
+        }
+      }
+    },
+    "org.fdsn.event.kafka.avro.binary": {
+      "messagegroupid": "org.fdsn.event.kafka.avro.binary",
+      "messages": {
+        "org.fdsn.event.kafka.Earthquake": {
+          "messageid": "org.fdsn.event.kafka.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event.kafka/messages/org.fdsn.event.kafka.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.fdsn.event.kafka.Node": {
+          "messageid": "org.fdsn.event.kafka.Node",
+          "basemessage": "/messagegroups/org.fdsn.event.kafka/messages/org.fdsn.event.kafka.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.fdsn.event.mqtt.avro": {
+      "messagegroupid": "org.fdsn.event.mqtt.avro",
+      "messages": {
+        "org.fdsn.event.mqtt.Earthquake": {
+          "messageid": "org.fdsn.event.mqtt.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event.mqtt/messages/org.fdsn.event.mqtt.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake"
+        },
+        "org.fdsn.event.mqtt.Node": {
+          "messageid": "org.fdsn.event.mqtt.Node",
+          "basemessage": "/messagegroups/org.fdsn.event.mqtt/messages/org.fdsn.event.mqtt.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node"
+        }
+      }
+    },
+    "org.fdsn.event.mqtt.avro.binary": {
+      "messagegroupid": "org.fdsn.event.mqtt.avro.binary",
+      "messages": {
+        "org.fdsn.event.mqtt.Earthquake": {
+          "messageid": "org.fdsn.event.mqtt.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event.mqtt/messages/org.fdsn.event.mqtt.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.fdsn.event.mqtt.Node": {
+          "messageid": "org.fdsn.event.mqtt.Node",
+          "basemessage": "/messagegroups/org.fdsn.event.mqtt/messages/org.fdsn.event.mqtt.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.fdsn.event.amqp.avro": {
+      "messagegroupid": "org.fdsn.event.amqp.avro",
+      "messages": {
+        "org.fdsn.event.amqp.Earthquake": {
+          "messageid": "org.fdsn.event.amqp.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event.amqp/messages/org.fdsn.event.amqp.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake"
+        },
+        "org.fdsn.event.amqp.Node": {
+          "messageid": "org.fdsn.event.amqp.Node",
+          "basemessage": "/messagegroups/org.fdsn.event.amqp/messages/org.fdsn.event.amqp.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node"
+        }
+      }
+    },
+    "org.fdsn.event.amqp.avro.binary": {
+      "messagegroupid": "org.fdsn.event.amqp.avro.binary",
+      "messages": {
+        "org.fdsn.event.amqp.Earthquake": {
+          "messageid": "org.fdsn.event.amqp.Earthquake",
+          "basemessage": "/messagegroups/org.fdsn.event.amqp/messages/org.fdsn.event.amqp.Earthquake",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Earthquake",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.fdsn.event.amqp.Node": {
+          "messageid": "org.fdsn.event.amqp.Node",
+          "basemessage": "/messagegroups/org.fdsn.event.amqp/messages/org.fdsn.event.amqp.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.avro/schemas/org.fdsn.event.Node",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -425,6 +623,184 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.fdsn.event.avro": {
+      "schemas": {
+        "org.fdsn.event.Earthquake": {
+          "name": "Earthquake",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.fdsn.event.Earthquake",
+                "fields": [
+                  {
+                    "name": "event_id",
+                    "type": "string",
+                    "doc": "Unique identifier assigned by the contributing institution, e.g. '20260604_0000095' or 'gfz2026kvsq'. JSON Structure annotations: {\"minLength\": 1}"
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Origin time of the seismic event in ISO 8601 UTC format as reported by the authoritative source."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Epicenter latitude in decimal degrees, WGS84 datum, range -90 to 90. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Epicenter longitude in decimal degrees, WGS84 datum, range -180 to 180. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "depth_km",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Hypocentral depth in kilometers below the Earth's surface; null if unconstrained. JSON Structure annotations: {\"symbol\": \"km\", \"unit\": \"kilometer\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "author",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Agency or analyst who computed the preferred origin solution, e.g. 'EMSC', 'GFZ', 'SURVEY-INGV'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "catalog",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the event catalog this earthquake belongs to, e.g. 'EMSC-RTS', 'SED'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "contributor",
+                    "type": "string",
+                    "doc": "Short code of the institution that contributed this event record to the FDSN node, e.g. 'CSN', 'GFZ', 'EMSC'. JSON Structure annotations: {\"minLength\": 1}"
+                  },
+                  {
+                    "name": "contributor_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Contributor's internal identifier for this event, may differ from event_id. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "magnitude_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scale used for the preferred magnitude: 'ML' (local), 'mb' (body-wave), 'Mw' (moment), 'Ms' (surface), 'm' (unspecified). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "magnitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Preferred magnitude value on the scale indicated by magnitude_type; null if no magnitude computed. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "magnitude_author",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Agency that computed the preferred magnitude, may differ from the origin author. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_location_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable geographic description of the epicenter region, typically a Flinn-Engdahl region name. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Seismological event classification: 'earthquake', 'quarry blast', 'explosion', 'induced or triggered event', etc. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "node_url",
+                    "type": "string",
+                    "doc": "Base URL of the FDSN node that served this event record, identifying the data source."
+                  }
+                ],
+                "doc": "Preferred-origin earthquake event record returned by an FDSN Event web-service node in text format. The record carries origin time, hypocenter, magnitude, provenance, and human-readable region metadata for one seismic event."
+              }
+            }
+          }
+        },
+        "org.fdsn.event.Node": {
+          "name": "Node",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.fdsn.event.Node",
+                "fields": [
+                  {
+                    "name": "node_id",
+                    "type": "string",
+                    "doc": "Short identifier for the FDSN node, e.g. 'emsc', 'gfz', 'ingv', 'ethz', 'resif'. JSON Structure annotations: {\"minLength\": 1}"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Full institution name operating the FDSN event service. JSON Structure annotations: {\"minLength\": 1}"
+                  },
+                  {
+                    "name": "base_url",
+                    "type": "string",
+                    "doc": "Base URL for the FDSN event web service endpoint, e.g. 'https://seismicportal.eu/fdsnws/event/1/'."
+                  },
+                  {
+                    "name": "coverage",
+                    "type": "string",
+                    "doc": "Geographic or magnitude coverage description, e.g. 'Global aggregator', 'Italy + Mediterranean'. JSON Structure annotations: {\"minLength\": 1}"
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ISO 3166-1 alpha-2 country code of the operating institution. JSON Structure annotations: {\"pattern\": \"^[A-Z]{2}$\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference-data record describing one pre-configured FDSN Event web-service node that the feeder polls for earthquake detections."
               }
             }
           }

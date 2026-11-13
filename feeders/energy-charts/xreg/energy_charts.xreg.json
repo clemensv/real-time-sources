@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/info.energy_charts"
+        "#/messagegroups/info.energy_charts",
+        "#/messagegroups/info.energy_charts.avro",
+        "#/messagegroups/info.energy_charts.avro.binary"
       ]
     },
     "info.energy_charts.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/info.energy_charts.mqtt"
+        "#/messagegroups/info.energy_charts.mqtt",
+        "#/messagegroups/info.energy_charts.mqtt.avro",
+        "#/messagegroups/info.energy_charts.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for energy-charts."
     },
@@ -65,7 +69,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/info.energy_charts.amqp"
+        "#/messagegroups/info.energy_charts.amqp",
+        "#/messagegroups/info.energy_charts.amqp.avro",
+        "#/messagegroups/info.energy_charts.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for energy-charts."
     }
@@ -86,6 +92,10 @@
             "subject": {
               "value": "{country}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -104,6 +114,10 @@
             "subject": {
               "value": "{country}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -122,6 +136,10 @@
             "subject": {
               "value": "{country}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -141,6 +159,10 @@
             "subject": {
               "value": "{country}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -277,6 +299,252 @@
                 "value": "{country}",
                 "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "info.energy_charts.avro": {
+      "messagegroupid": "info.energy_charts.avro",
+      "messages": {
+        "info.energy_charts.PublicPower": {
+          "messageid": "info.energy_charts.PublicPower",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.PublicPower",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower"
+        },
+        "info.energy_charts.SpotPrice": {
+          "messageid": "info.energy_charts.SpotPrice",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.SpotPrice"
+        },
+        "info.energy_charts.GridSignal": {
+          "messageid": "info.energy_charts.GridSignal",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.GridSignal",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.GridSignal"
+        },
+        "info.energy_charts.Info": {
+          "messageid": "info.energy_charts.Info",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.Info"
+        }
+      }
+    },
+    "info.energy_charts.avro.binary": {
+      "messagegroupid": "info.energy_charts.avro.binary",
+      "messages": {
+        "info.energy_charts.PublicPower": {
+          "messageid": "info.energy_charts.PublicPower",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.PublicPower",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.SpotPrice": {
+          "messageid": "info.energy_charts.SpotPrice",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.SpotPrice",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.GridSignal": {
+          "messageid": "info.energy_charts.GridSignal",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.GridSignal",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.GridSignal",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.Info": {
+          "messageid": "info.energy_charts.Info",
+          "basemessage": "/messagegroups/info.energy_charts/messages/info.energy_charts.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "info.energy_charts.mqtt.avro": {
+      "messagegroupid": "info.energy_charts.mqtt.avro",
+      "messages": {
+        "info.energy_charts.mqtt.PublicPower": {
+          "messageid": "info.energy_charts.mqtt.PublicPower",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.PublicPower",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower"
+        },
+        "info.energy_charts.mqtt.SpotPrice": {
+          "messageid": "info.energy_charts.mqtt.SpotPrice",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.SpotPrice",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.SpotPrice"
+        },
+        "info.energy_charts.mqtt.GridSignal": {
+          "messageid": "info.energy_charts.mqtt.GridSignal",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.GridSignal",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.GridSignal"
+        },
+        "info.energy_charts.mqtt.Info": {
+          "messageid": "info.energy_charts.mqtt.Info",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.Info"
+        }
+      }
+    },
+    "info.energy_charts.mqtt.avro.binary": {
+      "messagegroupid": "info.energy_charts.mqtt.avro.binary",
+      "messages": {
+        "info.energy_charts.mqtt.PublicPower": {
+          "messageid": "info.energy_charts.mqtt.PublicPower",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.PublicPower",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.mqtt.SpotPrice": {
+          "messageid": "info.energy_charts.mqtt.SpotPrice",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.SpotPrice",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.SpotPrice",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.mqtt.GridSignal": {
+          "messageid": "info.energy_charts.mqtt.GridSignal",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.GridSignal",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.GridSignal",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.mqtt.Info": {
+          "messageid": "info.energy_charts.mqtt.Info",
+          "basemessage": "/messagegroups/info.energy_charts.mqtt/messages/info.energy_charts.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "info.energy_charts.amqp.avro": {
+      "messagegroupid": "info.energy_charts.amqp.avro",
+      "messages": {
+        "info.energy_charts.amqp.PublicPower": {
+          "messageid": "info.energy_charts.amqp.PublicPower",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.PublicPower",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower"
+        },
+        "info.energy_charts.amqp.SpotPrice": {
+          "messageid": "info.energy_charts.amqp.SpotPrice",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.SpotPrice",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.SpotPrice"
+        },
+        "info.energy_charts.amqp.GridSignal": {
+          "messageid": "info.energy_charts.amqp.GridSignal",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.GridSignal",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.GridSignal"
+        },
+        "info.energy_charts.amqp.Info": {
+          "messageid": "info.energy_charts.amqp.Info",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.Info"
+        }
+      }
+    },
+    "info.energy_charts.amqp.avro.binary": {
+      "messagegroupid": "info.energy_charts.amqp.avro.binary",
+      "messages": {
+        "info.energy_charts.amqp.PublicPower": {
+          "messageid": "info.energy_charts.amqp.PublicPower",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.PublicPower",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.amqp.SpotPrice": {
+          "messageid": "info.energy_charts.amqp.SpotPrice",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.SpotPrice",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.SpotPrice",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.amqp.GridSignal": {
+          "messageid": "info.energy_charts.amqp.GridSignal",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.GridSignal",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.GridSignal",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "info.energy_charts.amqp.Info": {
+          "messageid": "info.energy_charts.amqp.Info",
+          "basemessage": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -1063,6 +1331,132 @@
                     "default": null
                   }
                 ]
+              }
+            }
+          }
+        },
+        "info.energy_charts.Info": {
+          "name": "Info",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "info.energy_charts.Info",
+                "fields": [
+                  {
+                    "name": "info_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "city",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "City segment used in civic-events topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event category segment used in topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "price_area",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Energy market price area or bidding zone represented by this reference record, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GB settlement date for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "GB settlement period for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Electricity control area or utility service area code represented by this record when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "segment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ticketmaster classification segment used for wildcard topic routing, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "entity_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream entity identifier for reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream event identifier for event-scoped reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "venue_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable venue identifier for venue-scoped civic event topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope."
               }
             }
           }

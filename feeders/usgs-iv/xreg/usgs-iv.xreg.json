@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/USGS.Sites"
+        "#/messagegroups/USGS.Sites",
+        "#/messagegroups/USGS.Sites.avro",
+        "#/messagegroups/USGS.Sites.avro.binary"
       ],
       "description": "Kafka producer endpoint for USGS Instantaneous Values CloudEvents on the `usgs-iv` topic keyed by `{agency_cd}/{site_no}`."
     },
@@ -41,7 +43,11 @@
       },
       "messagegroups": [
         "#/messagegroups/USGS.SiteTimeseries",
-        "#/messagegroups/USGS.InstantaneousValues"
+        "#/messagegroups/USGS.InstantaneousValues",
+        "#/messagegroups/USGS.SiteTimeseries.avro",
+        "#/messagegroups/USGS.SiteTimeseries.avro.binary",
+        "#/messagegroups/USGS.InstantaneousValues.avro",
+        "#/messagegroups/USGS.InstantaneousValues.avro.binary"
       ],
       "description": "Kafka producer endpoint for USGS Instantaneous Values CloudEvents on the `usgs-iv` topic keyed by `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`."
     },
@@ -63,7 +69,13 @@
       "messagegroups": [
         "#/messagegroups/USGS.Sites.mqtt",
         "#/messagegroups/USGS.SiteTimeseries.mqtt",
-        "#/messagegroups/USGS.InstantaneousValues.mqtt"
+        "#/messagegroups/USGS.InstantaneousValues.mqtt",
+        "#/messagegroups/USGS.Sites.mqtt.avro",
+        "#/messagegroups/USGS.Sites.mqtt.avro.binary",
+        "#/messagegroups/USGS.SiteTimeseries.mqtt.avro",
+        "#/messagegroups/USGS.SiteTimeseries.mqtt.avro.binary",
+        "#/messagegroups/USGS.InstantaneousValues.mqtt.avro",
+        "#/messagegroups/USGS.InstantaneousValues.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for USGS Instantaneous Values CloudEvents using the source's documented topic hierarchy and retain settings."
     },
@@ -87,7 +99,13 @@
       "messagegroups": [
         "#/messagegroups/USGS.Sites.amqp",
         "#/messagegroups/USGS.SiteTimeseries.amqp",
-        "#/messagegroups/USGS.InstantaneousValues.amqp"
+        "#/messagegroups/USGS.InstantaneousValues.amqp",
+        "#/messagegroups/USGS.Sites.amqp.avro",
+        "#/messagegroups/USGS.Sites.amqp.avro.binary",
+        "#/messagegroups/USGS.SiteTimeseries.amqp.avro",
+        "#/messagegroups/USGS.SiteTimeseries.amqp.avro.binary",
+        "#/messagegroups/USGS.InstantaneousValues.amqp.avro",
+        "#/messagegroups/USGS.InstantaneousValues.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for usgs-iv CloudEvents on the configured broker address."
     }
@@ -110,6 +128,10 @@
             "subject": {
               "value": "{agency_cd}/{site_no}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -135,6 +157,10 @@
             "subject": {
               "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -164,6 +190,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -188,6 +218,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -212,6 +246,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -236,6 +274,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -260,6 +302,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -284,6 +330,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -308,6 +358,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -332,6 +386,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -356,6 +414,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -380,6 +442,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -404,6 +470,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -428,6 +498,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -452,6 +526,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -476,6 +554,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -500,6 +582,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -524,6 +610,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -548,6 +638,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -572,6 +666,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -596,6 +694,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -620,6 +722,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -644,6 +750,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -668,6 +778,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -692,6 +806,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -716,6 +834,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -740,6 +862,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -764,6 +890,10 @@
             "time": {
               "value": "{datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1497,6 +1627,1608 @@
                 "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "USGS.Sites.avro": {
+      "messagegroupid": "USGS.Sites.avro",
+      "messages": {
+        "USGS.Sites.Site": {
+          "messageid": "USGS.Sites.Site",
+          "basemessage": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.Site"
+        }
+      }
+    },
+    "USGS.Sites.avro.binary": {
+      "messagegroupid": "USGS.Sites.avro.binary",
+      "messages": {
+        "USGS.Sites.Site": {
+          "messageid": "USGS.Sites.Site",
+          "basemessage": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.Site",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.SiteTimeseries.avro": {
+      "messagegroupid": "USGS.SiteTimeseries.avro",
+      "messages": {
+        "USGS.Sites.SiteTimeseries": {
+          "messageid": "USGS.Sites.SiteTimeseries",
+          "basemessage": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.SiteTimeseries"
+        }
+      }
+    },
+    "USGS.SiteTimeseries.avro.binary": {
+      "messagegroupid": "USGS.SiteTimeseries.avro.binary",
+      "messages": {
+        "USGS.Sites.SiteTimeseries": {
+          "messageid": "USGS.Sites.SiteTimeseries",
+          "basemessage": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.SiteTimeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.InstantaneousValues.avro": {
+      "messagegroupid": "USGS.InstantaneousValues.avro",
+      "messages": {
+        "USGS.InstantaneousValues.OtherParameter": {
+          "messageid": "USGS.InstantaneousValues.OtherParameter",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.OtherParameter"
+        },
+        "USGS.InstantaneousValues.Precipitation": {
+          "messageid": "USGS.InstantaneousValues.Precipitation",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Precipitation"
+        },
+        "USGS.InstantaneousValues.Streamflow": {
+          "messageid": "USGS.InstantaneousValues.Streamflow",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Streamflow"
+        },
+        "USGS.InstantaneousValues.GageHeight": {
+          "messageid": "USGS.InstantaneousValues.GageHeight",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GageHeight"
+        },
+        "USGS.InstantaneousValues.WaterTemperature": {
+          "messageid": "USGS.InstantaneousValues.WaterTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterTemperature"
+        },
+        "USGS.InstantaneousValues.DissolvedOxygen": {
+          "messageid": "USGS.InstantaneousValues.DissolvedOxygen",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.DissolvedOxygen"
+        },
+        "USGS.InstantaneousValues.pH": {
+          "messageid": "USGS.InstantaneousValues.pH",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.pH"
+        },
+        "USGS.InstantaneousValues.SpecificConductance": {
+          "messageid": "USGS.InstantaneousValues.SpecificConductance",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.SpecificConductance"
+        },
+        "USGS.InstantaneousValues.Turbidity": {
+          "messageid": "USGS.InstantaneousValues.Turbidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity"
+        },
+        "USGS.InstantaneousValues.AirTemperature": {
+          "messageid": "USGS.InstantaneousValues.AirTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.AirTemperature"
+        },
+        "USGS.InstantaneousValues.WindSpeed": {
+          "messageid": "USGS.InstantaneousValues.WindSpeed",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindSpeed"
+        },
+        "USGS.InstantaneousValues.WindDirection": {
+          "messageid": "USGS.InstantaneousValues.WindDirection",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindDirection"
+        },
+        "USGS.InstantaneousValues.RelativeHumidity": {
+          "messageid": "USGS.InstantaneousValues.RelativeHumidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.RelativeHumidity"
+        },
+        "USGS.InstantaneousValues.BarometricPressure": {
+          "messageid": "USGS.InstantaneousValues.BarometricPressure",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.BarometricPressure"
+        },
+        "USGS.InstantaneousValues.TurbidityFNU": {
+          "messageid": "USGS.InstantaneousValues.TurbidityFNU",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TurbidityFNU"
+        },
+        "USGS.InstantaneousValues.fDOM": {
+          "messageid": "USGS.InstantaneousValues.fDOM",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.fDOM"
+        },
+        "USGS.InstantaneousValues.ReservoirStorage": {
+          "messageid": "USGS.InstantaneousValues.ReservoirStorage",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.ReservoirStorage"
+        },
+        "USGS.InstantaneousValues.LakeElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.LakeElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
+        },
+        "USGS.InstantaneousValues.WaterDepth": {
+          "messageid": "USGS.InstantaneousValues.WaterDepth",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterDepth"
+        },
+        "USGS.InstantaneousValues.EquipmentStatus": {
+          "messageid": "USGS.InstantaneousValues.EquipmentStatus",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EquipmentStatus"
+        },
+        "USGS.InstantaneousValues.TidallyFilteredDischarge": {
+          "messageid": "USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
+        },
+        "USGS.InstantaneousValues.WaterVelocity": {
+          "messageid": "USGS.InstantaneousValues.WaterVelocity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterVelocity"
+        },
+        "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
+        },
+        "USGS.InstantaneousValues.LakeElevationNAVD88": {
+          "messageid": "USGS.InstantaneousValues.LakeElevationNAVD88",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
+        },
+        "USGS.InstantaneousValues.Salinity": {
+          "messageid": "USGS.InstantaneousValues.Salinity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Salinity"
+        },
+        "USGS.InstantaneousValues.GateOpening": {
+          "messageid": "USGS.InstantaneousValues.GateOpening",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GateOpening"
+        }
+      }
+    },
+    "USGS.InstantaneousValues.avro.binary": {
+      "messagegroupid": "USGS.InstantaneousValues.avro.binary",
+      "messages": {
+        "USGS.InstantaneousValues.OtherParameter": {
+          "messageid": "USGS.InstantaneousValues.OtherParameter",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.OtherParameter",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.Precipitation": {
+          "messageid": "USGS.InstantaneousValues.Precipitation",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Precipitation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.Streamflow": {
+          "messageid": "USGS.InstantaneousValues.Streamflow",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Streamflow",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.GageHeight": {
+          "messageid": "USGS.InstantaneousValues.GageHeight",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GageHeight",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.WaterTemperature": {
+          "messageid": "USGS.InstantaneousValues.WaterTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterTemperature",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.DissolvedOxygen": {
+          "messageid": "USGS.InstantaneousValues.DissolvedOxygen",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.DissolvedOxygen",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.pH": {
+          "messageid": "USGS.InstantaneousValues.pH",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.pH",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.SpecificConductance": {
+          "messageid": "USGS.InstantaneousValues.SpecificConductance",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.SpecificConductance",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.Turbidity": {
+          "messageid": "USGS.InstantaneousValues.Turbidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.AirTemperature": {
+          "messageid": "USGS.InstantaneousValues.AirTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.AirTemperature",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.WindSpeed": {
+          "messageid": "USGS.InstantaneousValues.WindSpeed",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindSpeed",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.WindDirection": {
+          "messageid": "USGS.InstantaneousValues.WindDirection",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindDirection",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.RelativeHumidity": {
+          "messageid": "USGS.InstantaneousValues.RelativeHumidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.RelativeHumidity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.BarometricPressure": {
+          "messageid": "USGS.InstantaneousValues.BarometricPressure",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.BarometricPressure",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.TurbidityFNU": {
+          "messageid": "USGS.InstantaneousValues.TurbidityFNU",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TurbidityFNU",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.fDOM": {
+          "messageid": "USGS.InstantaneousValues.fDOM",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.fDOM",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.ReservoirStorage": {
+          "messageid": "USGS.InstantaneousValues.ReservoirStorage",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.ReservoirStorage",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.LakeElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.LakeElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.WaterDepth": {
+          "messageid": "USGS.InstantaneousValues.WaterDepth",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterDepth",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.EquipmentStatus": {
+          "messageid": "USGS.InstantaneousValues.EquipmentStatus",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EquipmentStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.TidallyFilteredDischarge": {
+          "messageid": "USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.WaterVelocity": {
+          "messageid": "USGS.InstantaneousValues.WaterVelocity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterVelocity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.LakeElevationNAVD88": {
+          "messageid": "USGS.InstantaneousValues.LakeElevationNAVD88",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.Salinity": {
+          "messageid": "USGS.InstantaneousValues.Salinity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Salinity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.GateOpening": {
+          "messageid": "USGS.InstantaneousValues.GateOpening",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GateOpening",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.Sites.mqtt.avro": {
+      "messagegroupid": "USGS.Sites.mqtt.avro",
+      "messages": {
+        "USGS.Sites.mqtt.Site": {
+          "messageid": "USGS.Sites.mqtt.Site",
+          "basemessage": "/messagegroups/USGS.Sites.mqtt/messages/USGS.Sites.mqtt.Site",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.Site"
+        }
+      }
+    },
+    "USGS.Sites.mqtt.avro.binary": {
+      "messagegroupid": "USGS.Sites.mqtt.avro.binary",
+      "messages": {
+        "USGS.Sites.mqtt.Site": {
+          "messageid": "USGS.Sites.mqtt.Site",
+          "basemessage": "/messagegroups/USGS.Sites.mqtt/messages/USGS.Sites.mqtt.Site",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.Site",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.SiteTimeseries.mqtt.avro": {
+      "messagegroupid": "USGS.SiteTimeseries.mqtt.avro",
+      "messages": {
+        "USGS.SiteTimeseries.mqtt.SiteTimeseries": {
+          "messageid": "USGS.SiteTimeseries.mqtt.SiteTimeseries",
+          "basemessage": "/messagegroups/USGS.SiteTimeseries.mqtt/messages/USGS.SiteTimeseries.mqtt.SiteTimeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.SiteTimeseries"
+        }
+      }
+    },
+    "USGS.SiteTimeseries.mqtt.avro.binary": {
+      "messagegroupid": "USGS.SiteTimeseries.mqtt.avro.binary",
+      "messages": {
+        "USGS.SiteTimeseries.mqtt.SiteTimeseries": {
+          "messageid": "USGS.SiteTimeseries.mqtt.SiteTimeseries",
+          "basemessage": "/messagegroups/USGS.SiteTimeseries.mqtt/messages/USGS.SiteTimeseries.mqtt.SiteTimeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.SiteTimeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.InstantaneousValues.mqtt.avro": {
+      "messagegroupid": "USGS.InstantaneousValues.mqtt.avro",
+      "messages": {
+        "USGS.InstantaneousValues.mqtt.OtherParameter": {
+          "messageid": "USGS.InstantaneousValues.mqtt.OtherParameter",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.OtherParameter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.OtherParameter"
+        },
+        "USGS.InstantaneousValues.mqtt.Precipitation": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Precipitation",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Precipitation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Precipitation"
+        },
+        "USGS.InstantaneousValues.mqtt.Streamflow": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Streamflow",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Streamflow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Streamflow"
+        },
+        "USGS.InstantaneousValues.mqtt.GageHeight": {
+          "messageid": "USGS.InstantaneousValues.mqtt.GageHeight",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.GageHeight",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GageHeight"
+        },
+        "USGS.InstantaneousValues.mqtt.WaterTemperature": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WaterTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WaterTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterTemperature"
+        },
+        "USGS.InstantaneousValues.mqtt.DissolvedOxygen": {
+          "messageid": "USGS.InstantaneousValues.mqtt.DissolvedOxygen",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.DissolvedOxygen",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.DissolvedOxygen"
+        },
+        "USGS.InstantaneousValues.mqtt.pH": {
+          "messageid": "USGS.InstantaneousValues.mqtt.pH",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.pH",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.pH"
+        },
+        "USGS.InstantaneousValues.mqtt.SpecificConductance": {
+          "messageid": "USGS.InstantaneousValues.mqtt.SpecificConductance",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.SpecificConductance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.SpecificConductance"
+        },
+        "USGS.InstantaneousValues.mqtt.Turbidity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Turbidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Turbidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity"
+        },
+        "USGS.InstantaneousValues.mqtt.AirTemperature": {
+          "messageid": "USGS.InstantaneousValues.mqtt.AirTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.AirTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.AirTemperature"
+        },
+        "USGS.InstantaneousValues.mqtt.WindSpeed": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WindSpeed",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WindSpeed",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindSpeed"
+        },
+        "USGS.InstantaneousValues.mqtt.WindDirection": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WindDirection",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WindDirection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindDirection"
+        },
+        "USGS.InstantaneousValues.mqtt.RelativeHumidity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.RelativeHumidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.RelativeHumidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.RelativeHumidity"
+        },
+        "USGS.InstantaneousValues.mqtt.BarometricPressure": {
+          "messageid": "USGS.InstantaneousValues.mqtt.BarometricPressure",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.BarometricPressure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.BarometricPressure"
+        },
+        "USGS.InstantaneousValues.mqtt.TurbidityFNU": {
+          "messageid": "USGS.InstantaneousValues.mqtt.TurbidityFNU",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.TurbidityFNU",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TurbidityFNU"
+        },
+        "USGS.InstantaneousValues.mqtt.fDOM": {
+          "messageid": "USGS.InstantaneousValues.mqtt.fDOM",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.fDOM",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.fDOM"
+        },
+        "USGS.InstantaneousValues.mqtt.ReservoirStorage": {
+          "messageid": "USGS.InstantaneousValues.mqtt.ReservoirStorage",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.ReservoirStorage",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.ReservoirStorage"
+        },
+        "USGS.InstantaneousValues.mqtt.LakeElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.mqtt.LakeElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.LakeElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
+        },
+        "USGS.InstantaneousValues.mqtt.WaterDepth": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WaterDepth",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WaterDepth",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterDepth"
+        },
+        "USGS.InstantaneousValues.mqtt.EquipmentStatus": {
+          "messageid": "USGS.InstantaneousValues.mqtt.EquipmentStatus",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.EquipmentStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EquipmentStatus"
+        },
+        "USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge": {
+          "messageid": "USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
+        },
+        "USGS.InstantaneousValues.mqtt.WaterVelocity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WaterVelocity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WaterVelocity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterVelocity"
+        },
+        "USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
+        },
+        "USGS.InstantaneousValues.mqtt.LakeElevationNAVD88": {
+          "messageid": "USGS.InstantaneousValues.mqtt.LakeElevationNAVD88",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.LakeElevationNAVD88",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
+        },
+        "USGS.InstantaneousValues.mqtt.Salinity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Salinity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Salinity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Salinity"
+        },
+        "USGS.InstantaneousValues.mqtt.GateOpening": {
+          "messageid": "USGS.InstantaneousValues.mqtt.GateOpening",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.GateOpening",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GateOpening"
+        }
+      }
+    },
+    "USGS.InstantaneousValues.mqtt.avro.binary": {
+      "messagegroupid": "USGS.InstantaneousValues.mqtt.avro.binary",
+      "messages": {
+        "USGS.InstantaneousValues.mqtt.OtherParameter": {
+          "messageid": "USGS.InstantaneousValues.mqtt.OtherParameter",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.OtherParameter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.OtherParameter",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Precipitation": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Precipitation",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Precipitation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Precipitation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Streamflow": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Streamflow",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Streamflow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Streamflow",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.GageHeight": {
+          "messageid": "USGS.InstantaneousValues.mqtt.GageHeight",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.GageHeight",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GageHeight",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WaterTemperature": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WaterTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WaterTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterTemperature",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.DissolvedOxygen": {
+          "messageid": "USGS.InstantaneousValues.mqtt.DissolvedOxygen",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.DissolvedOxygen",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.DissolvedOxygen",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.pH": {
+          "messageid": "USGS.InstantaneousValues.mqtt.pH",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.pH",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.pH",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.SpecificConductance": {
+          "messageid": "USGS.InstantaneousValues.mqtt.SpecificConductance",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.SpecificConductance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.SpecificConductance",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Turbidity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Turbidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Turbidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.AirTemperature": {
+          "messageid": "USGS.InstantaneousValues.mqtt.AirTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.AirTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.AirTemperature",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WindSpeed": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WindSpeed",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WindSpeed",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindSpeed",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WindDirection": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WindDirection",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WindDirection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindDirection",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.RelativeHumidity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.RelativeHumidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.RelativeHumidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.RelativeHumidity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.BarometricPressure": {
+          "messageid": "USGS.InstantaneousValues.mqtt.BarometricPressure",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.BarometricPressure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.BarometricPressure",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.TurbidityFNU": {
+          "messageid": "USGS.InstantaneousValues.mqtt.TurbidityFNU",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.TurbidityFNU",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TurbidityFNU",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.fDOM": {
+          "messageid": "USGS.InstantaneousValues.mqtt.fDOM",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.fDOM",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.fDOM",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.ReservoirStorage": {
+          "messageid": "USGS.InstantaneousValues.mqtt.ReservoirStorage",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.ReservoirStorage",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.ReservoirStorage",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.LakeElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.mqtt.LakeElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.LakeElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WaterDepth": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WaterDepth",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WaterDepth",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterDepth",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.EquipmentStatus": {
+          "messageid": "USGS.InstantaneousValues.mqtt.EquipmentStatus",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.EquipmentStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EquipmentStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge": {
+          "messageid": "USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WaterVelocity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.WaterVelocity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WaterVelocity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterVelocity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.LakeElevationNAVD88": {
+          "messageid": "USGS.InstantaneousValues.mqtt.LakeElevationNAVD88",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.LakeElevationNAVD88",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Salinity": {
+          "messageid": "USGS.InstantaneousValues.mqtt.Salinity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.Salinity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Salinity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.GateOpening": {
+          "messageid": "USGS.InstantaneousValues.mqtt.GateOpening",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.GateOpening",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GateOpening",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.Sites.amqp.avro": {
+      "messagegroupid": "USGS.Sites.amqp.avro",
+      "messages": {
+        "USGS.Sites.amqp.Site": {
+          "messageid": "USGS.Sites.amqp.Site",
+          "basemessage": "/messagegroups/USGS.Sites.amqp/messages/USGS.Sites.amqp.Site",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.Site"
+        }
+      }
+    },
+    "USGS.Sites.amqp.avro.binary": {
+      "messagegroupid": "USGS.Sites.amqp.avro.binary",
+      "messages": {
+        "USGS.Sites.amqp.Site": {
+          "messageid": "USGS.Sites.amqp.Site",
+          "basemessage": "/messagegroups/USGS.Sites.amqp/messages/USGS.Sites.amqp.Site",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.Site",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.SiteTimeseries.amqp.avro": {
+      "messagegroupid": "USGS.SiteTimeseries.amqp.avro",
+      "messages": {
+        "USGS.SiteTimeseries.amqp.SiteTimeseries": {
+          "messageid": "USGS.SiteTimeseries.amqp.SiteTimeseries",
+          "basemessage": "/messagegroups/USGS.SiteTimeseries.amqp/messages/USGS.SiteTimeseries.amqp.SiteTimeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.SiteTimeseries"
+        }
+      }
+    },
+    "USGS.SiteTimeseries.amqp.avro.binary": {
+      "messagegroupid": "USGS.SiteTimeseries.amqp.avro.binary",
+      "messages": {
+        "USGS.SiteTimeseries.amqp.SiteTimeseries": {
+          "messageid": "USGS.SiteTimeseries.amqp.SiteTimeseries",
+          "basemessage": "/messagegroups/USGS.SiteTimeseries.amqp/messages/USGS.SiteTimeseries.amqp.SiteTimeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Sites.avro/schemas/USGS.Sites.SiteTimeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.InstantaneousValues.amqp.avro": {
+      "messagegroupid": "USGS.InstantaneousValues.amqp.avro",
+      "messages": {
+        "USGS.InstantaneousValues.amqp.OtherParameter": {
+          "messageid": "USGS.InstantaneousValues.amqp.OtherParameter",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.OtherParameter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.OtherParameter"
+        },
+        "USGS.InstantaneousValues.amqp.Precipitation": {
+          "messageid": "USGS.InstantaneousValues.amqp.Precipitation",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Precipitation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Precipitation"
+        },
+        "USGS.InstantaneousValues.amqp.Streamflow": {
+          "messageid": "USGS.InstantaneousValues.amqp.Streamflow",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Streamflow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Streamflow"
+        },
+        "USGS.InstantaneousValues.amqp.GageHeight": {
+          "messageid": "USGS.InstantaneousValues.amqp.GageHeight",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.GageHeight",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GageHeight"
+        },
+        "USGS.InstantaneousValues.amqp.WaterTemperature": {
+          "messageid": "USGS.InstantaneousValues.amqp.WaterTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WaterTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterTemperature"
+        },
+        "USGS.InstantaneousValues.amqp.DissolvedOxygen": {
+          "messageid": "USGS.InstantaneousValues.amqp.DissolvedOxygen",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.DissolvedOxygen",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.DissolvedOxygen"
+        },
+        "USGS.InstantaneousValues.amqp.pH": {
+          "messageid": "USGS.InstantaneousValues.amqp.pH",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.pH",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.pH"
+        },
+        "USGS.InstantaneousValues.amqp.SpecificConductance": {
+          "messageid": "USGS.InstantaneousValues.amqp.SpecificConductance",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.SpecificConductance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.SpecificConductance"
+        },
+        "USGS.InstantaneousValues.amqp.Turbidity": {
+          "messageid": "USGS.InstantaneousValues.amqp.Turbidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Turbidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity"
+        },
+        "USGS.InstantaneousValues.amqp.AirTemperature": {
+          "messageid": "USGS.InstantaneousValues.amqp.AirTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.AirTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.AirTemperature"
+        },
+        "USGS.InstantaneousValues.amqp.WindSpeed": {
+          "messageid": "USGS.InstantaneousValues.amqp.WindSpeed",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WindSpeed",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindSpeed"
+        },
+        "USGS.InstantaneousValues.amqp.WindDirection": {
+          "messageid": "USGS.InstantaneousValues.amqp.WindDirection",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WindDirection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindDirection"
+        },
+        "USGS.InstantaneousValues.amqp.RelativeHumidity": {
+          "messageid": "USGS.InstantaneousValues.amqp.RelativeHumidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.RelativeHumidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.RelativeHumidity"
+        },
+        "USGS.InstantaneousValues.amqp.BarometricPressure": {
+          "messageid": "USGS.InstantaneousValues.amqp.BarometricPressure",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.BarometricPressure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.BarometricPressure"
+        },
+        "USGS.InstantaneousValues.amqp.TurbidityFNU": {
+          "messageid": "USGS.InstantaneousValues.amqp.TurbidityFNU",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.TurbidityFNU",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TurbidityFNU"
+        },
+        "USGS.InstantaneousValues.amqp.fDOM": {
+          "messageid": "USGS.InstantaneousValues.amqp.fDOM",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.fDOM",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.fDOM"
+        },
+        "USGS.InstantaneousValues.amqp.ReservoirStorage": {
+          "messageid": "USGS.InstantaneousValues.amqp.ReservoirStorage",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.ReservoirStorage",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.ReservoirStorage"
+        },
+        "USGS.InstantaneousValues.amqp.LakeElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.amqp.LakeElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.LakeElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
+        },
+        "USGS.InstantaneousValues.amqp.WaterDepth": {
+          "messageid": "USGS.InstantaneousValues.amqp.WaterDepth",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WaterDepth",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterDepth"
+        },
+        "USGS.InstantaneousValues.amqp.EquipmentStatus": {
+          "messageid": "USGS.InstantaneousValues.amqp.EquipmentStatus",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.EquipmentStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EquipmentStatus"
+        },
+        "USGS.InstantaneousValues.amqp.TidallyFilteredDischarge": {
+          "messageid": "USGS.InstantaneousValues.amqp.TidallyFilteredDischarge",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.TidallyFilteredDischarge",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
+        },
+        "USGS.InstantaneousValues.amqp.WaterVelocity": {
+          "messageid": "USGS.InstantaneousValues.amqp.WaterVelocity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WaterVelocity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterVelocity"
+        },
+        "USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
+        },
+        "USGS.InstantaneousValues.amqp.LakeElevationNAVD88": {
+          "messageid": "USGS.InstantaneousValues.amqp.LakeElevationNAVD88",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.LakeElevationNAVD88",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
+        },
+        "USGS.InstantaneousValues.amqp.Salinity": {
+          "messageid": "USGS.InstantaneousValues.amqp.Salinity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Salinity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Salinity"
+        },
+        "USGS.InstantaneousValues.amqp.GateOpening": {
+          "messageid": "USGS.InstantaneousValues.amqp.GateOpening",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.GateOpening",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GateOpening"
+        }
+      }
+    },
+    "USGS.InstantaneousValues.amqp.avro.binary": {
+      "messagegroupid": "USGS.InstantaneousValues.amqp.avro.binary",
+      "messages": {
+        "USGS.InstantaneousValues.amqp.OtherParameter": {
+          "messageid": "USGS.InstantaneousValues.amqp.OtherParameter",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.OtherParameter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.OtherParameter",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Precipitation": {
+          "messageid": "USGS.InstantaneousValues.amqp.Precipitation",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Precipitation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Precipitation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Streamflow": {
+          "messageid": "USGS.InstantaneousValues.amqp.Streamflow",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Streamflow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Streamflow",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.GageHeight": {
+          "messageid": "USGS.InstantaneousValues.amqp.GageHeight",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.GageHeight",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GageHeight",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WaterTemperature": {
+          "messageid": "USGS.InstantaneousValues.amqp.WaterTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WaterTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterTemperature",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.DissolvedOxygen": {
+          "messageid": "USGS.InstantaneousValues.amqp.DissolvedOxygen",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.DissolvedOxygen",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.DissolvedOxygen",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.pH": {
+          "messageid": "USGS.InstantaneousValues.amqp.pH",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.pH",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.pH",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.SpecificConductance": {
+          "messageid": "USGS.InstantaneousValues.amqp.SpecificConductance",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.SpecificConductance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.SpecificConductance",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Turbidity": {
+          "messageid": "USGS.InstantaneousValues.amqp.Turbidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Turbidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.AirTemperature": {
+          "messageid": "USGS.InstantaneousValues.amqp.AirTemperature",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.AirTemperature",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.AirTemperature",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WindSpeed": {
+          "messageid": "USGS.InstantaneousValues.amqp.WindSpeed",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WindSpeed",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindSpeed",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WindDirection": {
+          "messageid": "USGS.InstantaneousValues.amqp.WindDirection",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WindDirection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WindDirection",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.RelativeHumidity": {
+          "messageid": "USGS.InstantaneousValues.amqp.RelativeHumidity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.RelativeHumidity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.RelativeHumidity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.BarometricPressure": {
+          "messageid": "USGS.InstantaneousValues.amqp.BarometricPressure",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.BarometricPressure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.BarometricPressure",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.TurbidityFNU": {
+          "messageid": "USGS.InstantaneousValues.amqp.TurbidityFNU",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.TurbidityFNU",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TurbidityFNU",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.fDOM": {
+          "messageid": "USGS.InstantaneousValues.amqp.fDOM",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.fDOM",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.fDOM",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.ReservoirStorage": {
+          "messageid": "USGS.InstantaneousValues.amqp.ReservoirStorage",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.ReservoirStorage",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.ReservoirStorage",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.LakeElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.amqp.LakeElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.LakeElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WaterDepth": {
+          "messageid": "USGS.InstantaneousValues.amqp.WaterDepth",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WaterDepth",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterDepth",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.EquipmentStatus": {
+          "messageid": "USGS.InstantaneousValues.amqp.EquipmentStatus",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.EquipmentStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EquipmentStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.TidallyFilteredDischarge": {
+          "messageid": "USGS.InstantaneousValues.amqp.TidallyFilteredDischarge",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.TidallyFilteredDischarge",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WaterVelocity": {
+          "messageid": "USGS.InstantaneousValues.amqp.WaterVelocity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.WaterVelocity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.WaterVelocity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29": {
+          "messageid": "USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.LakeElevationNAVD88": {
+          "messageid": "USGS.InstantaneousValues.amqp.LakeElevationNAVD88",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.LakeElevationNAVD88",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Salinity": {
+          "messageid": "USGS.InstantaneousValues.amqp.Salinity",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.Salinity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Salinity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.GateOpening": {
+          "messageid": "USGS.InstantaneousValues.amqp.GateOpening",
+          "basemessage": "/messagegroups/USGS.InstantaneousValues.amqp/messages/USGS.InstantaneousValues.amqp.GateOpening",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.GateOpening",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -4082,7 +5814,7 @@
           "name": "OtherParameter",
           "format": "Avro/1.11.3",
           "description": "USGS other parameter data.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4100,7 +5832,6 @@
                   {
                     "name": "datetime",
                     "type": "string",
-                    "logicalType": "timestamp-millis",
                     "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                   },
                   {
@@ -4140,6 +5871,62 @@
                 ],
                 "description": "Payload record for other parameter events in the USGS Instantaneous Values source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.OtherParameter",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS other parameter data."
+              }
             }
           }
         },
@@ -4147,7 +5934,7 @@
           "name": "Precipitation",
           "format": "Avro/1.11.3",
           "description": "USGS precipitation data. Parameter code 00045.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4165,7 +5952,6 @@
                   {
                     "name": "datetime",
                     "type": "string",
-                    "logicalType": "timestamp-millis",
                     "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                   },
                   {
@@ -4209,6 +5995,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.Precipitation",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Precipitation value, inches.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS precipitation data. Parameter code 00045."
+              }
             }
           }
         },
@@ -4216,7 +6058,7 @@
           "name": "Streamflow",
           "format": "Avro/1.11.3",
           "description": "USGS streamflow data. Parameter code 00060.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4234,7 +6076,6 @@
                   {
                     "name": "datetime",
                     "type": "string",
-                    "logicalType": "timestamp-millis",
                     "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                   },
                   {
@@ -4278,6 +6119,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.Streamflow",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Discharge value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS streamflow data. Parameter code 00060."
+              }
             }
           }
         },
@@ -4285,7 +6182,7 @@
           "name": "GageHeight",
           "format": "Avro/1.11.3",
           "description": "USGS gage height data. Parameter code 00065.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4303,7 +6200,6 @@
                   {
                     "name": "datetime",
                     "type": "string",
-                    "logicalType": "timestamp-millis",
                     "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                   },
                   {
@@ -4347,6 +6243,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.GageHeight",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Gage height value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS gage height data. Parameter code 00065."
+              }
             }
           }
         },
@@ -4354,7 +6306,7 @@
           "name": "WaterTemperature",
           "format": "Avro/1.11.3",
           "description": "USGS water temperature data. Parameter code 00010.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4415,6 +6367,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.WaterTemperature",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Water temperature value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS water temperature data. Parameter code 00010."
+              }
             }
           }
         },
@@ -4422,7 +6430,7 @@
           "name": "DissolvedOxygen",
           "format": "Avro/1.11.3",
           "description": "USGS dissolved oxygen data. Parameter code 00300.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4483,6 +6491,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.DissolvedOxygen",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Dissolved oxygen value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS dissolved oxygen data. Parameter code 00300."
+              }
             }
           }
         },
@@ -4490,7 +6554,7 @@
           "name": "pH",
           "format": "Avro/1.11.3",
           "description": "USGS pH data. Parameter code 00400.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4551,6 +6615,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.pH",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"pH value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS pH data. Parameter code 00400."
+              }
             }
           }
         },
@@ -4558,7 +6678,7 @@
           "name": "SpecificConductance",
           "format": "Avro/1.11.3",
           "description": "USGS specific conductance data. Parameter code 00095.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4576,7 +6696,6 @@
                   {
                     "name": "datetime",
                     "type": "string",
-                    "logicalType": "timestamp-millis",
                     "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                   },
                   {
@@ -4620,6 +6739,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.SpecificConductance",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Specific conductance value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS specific conductance data. Parameter code 00095."
+              }
             }
           }
         },
@@ -4627,7 +6802,7 @@
           "name": "Turbidity",
           "format": "Avro/1.11.3",
           "description": "USGS turbidity data. Parameter code 00076.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4688,6 +6863,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.Turbidity",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Turbidity value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS turbidity data. Parameter code 00076."
+              }
             }
           }
         },
@@ -4695,7 +6926,7 @@
           "name": "WindSpeed",
           "format": "Avro/1.11.3",
           "description": "USGS wind speed data. Parameter code 00035.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4756,6 +6987,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.WindSpeed",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Wind speed value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS wind speed data. Parameter code 00035."
+              }
             }
           }
         },
@@ -4763,7 +7050,7 @@
           "name": "WindDirection",
           "format": "Avro/1.11.3",
           "description": "USGS wind direction data. Parameter codes 00036 and 163695.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4824,6 +7111,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.WindDirection",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Wind direction value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS wind direction data. Parameter codes 00036 and 163695."
+              }
             }
           }
         },
@@ -4831,7 +7174,7 @@
           "name": "RelativeHumidity",
           "format": "Avro/1.11.3",
           "description": "USGS relative humidity data. Parameter code 00052.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4892,6 +7235,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.RelativeHumidity",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Relative humidity value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS relative humidity data. Parameter code 00052."
+              }
             }
           }
         },
@@ -4899,7 +7298,7 @@
           "name": "BarometricPressure",
           "format": "Avro/1.11.3",
           "description": "USGS barometric pressure data. Parameter codes 62605 and 75969.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4960,6 +7359,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.BarometricPressure",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Barometric pressure value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS barometric pressure data. Parameter codes 62605 and 75969."
+              }
             }
           }
         },
@@ -4967,7 +7422,7 @@
           "name": "AirTemperature",
           "format": "Avro/1.11.3",
           "description": "USGS air temperature data. Parameter code 00020.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5028,6 +7483,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.AirTemperature",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Air temperature value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS air temperature data. Parameter code 00020."
+              }
             }
           }
         },
@@ -5035,7 +7546,7 @@
           "name": "TurbidityFNU",
           "format": "Avro/1.11.3",
           "description": "USGS turbidity data (FNU). Parameter code 63680.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5096,6 +7607,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.TurbidityFNU",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Turbidity value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS turbidity data (FNU). Parameter code 63680."
+              }
             }
           }
         },
@@ -5103,7 +7670,7 @@
           "name": "fDOM",
           "format": "Avro/1.11.3",
           "description": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5164,6 +7731,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.fDOM",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Dissolved organic matter fluorescence value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322."
+              }
             }
           }
         },
@@ -5171,7 +7794,7 @@
           "name": "ReservoirStorage",
           "format": "Avro/1.11.3",
           "description": "USGS reservoir storage data. Parameter code 00054.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5232,6 +7855,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.ReservoirStorage",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Reservoir storage value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS reservoir storage data. Parameter code 00054."
+              }
             }
           }
         },
@@ -5239,7 +7918,7 @@
           "name": "LakeElevationNGVD29",
           "format": "Avro/1.11.3",
           "description": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5300,6 +7979,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.LakeElevationNGVD29",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Lake elevation above NGVD 1929.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614."
+              }
             }
           }
         },
@@ -5307,7 +8042,7 @@
           "name": "WaterDepth",
           "format": "Avro/1.11.3",
           "description": "USGS water depth data. Parameter code 72199.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5368,6 +8103,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.WaterDepth",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Water depth value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS water depth data. Parameter code 72199."
+              }
             }
           }
         },
@@ -5375,7 +8166,7 @@
           "name": "EquipmentStatus",
           "format": "Avro/1.11.3",
           "description": "USGS equipment alarm status data. Parameter code 99235.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5416,6 +8207,45 @@
                 ],
                 "description": "Payload record for equipment status events in the USGS Instantaneous Values source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.EquipmentStatus",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Status of equipment alarm as codes.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS equipment alarm status data. Parameter code 99235."
+              }
             }
           }
         },
@@ -5423,7 +8253,7 @@
           "name": "TidallyFilteredDischarge",
           "format": "Avro/1.11.3",
           "description": "USGS tidally filtered discharge data. Parameter code 72137.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5484,6 +8314,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.TidallyFilteredDischarge",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Tidally filtered discharge value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS tidally filtered discharge data. Parameter code 72137."
+              }
             }
           }
         },
@@ -5491,7 +8377,7 @@
           "name": "WaterVelocity",
           "format": "Avro/1.11.3",
           "description": "USGS water velocity data. Parameter code 72254.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5552,6 +8438,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.WaterVelocity",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Water velocity value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS water velocity data. Parameter code 72254."
+              }
             }
           }
         },
@@ -5559,7 +8501,7 @@
           "name": "EstuaryElevationNGVD29",
           "format": "Avro/1.11.3",
           "description": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5620,6 +8562,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.EstuaryElevationNGVD29",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Estuary or ocean water surface elevation above NGVD 1929.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619."
+              }
             }
           }
         },
@@ -5627,7 +8625,7 @@
           "name": "LakeElevationNAVD88",
           "format": "Avro/1.11.3",
           "description": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5688,6 +8686,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.LakeElevationNAVD88",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Lake elevation above NAVD 1988.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615."
+              }
             }
           }
         },
@@ -5695,7 +8749,7 @@
           "name": "Salinity",
           "format": "Avro/1.11.3",
           "description": "USGS salinity data. Parameter code 00480.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5756,6 +8810,62 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.Salinity",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Salinity value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS salinity data. Parameter code 00480."
+              }
             }
           }
         },
@@ -5763,7 +8873,7 @@
           "name": "GateOpening",
           "format": "Avro/1.11.3",
           "description": "USGS gate opening data. Parameter code 45592.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -5823,6 +8933,62 @@
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.InstantaneousValues.GateOpening",
+                "fields": [
+                  {
+                    "name": "site_no",
+                    "type": "string",
+                    "doc": "{\"description\": \"USGS site number.\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "{\"description\": \"Gate opening value.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exception",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "{\"description\": \"Exception code when the value is unavailable.\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifiers",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                  },
+                  {
+                    "name": "parameter_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Parameter code.\"}"
+                  },
+                  {
+                    "name": "timeseries_cd",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timeseries code.\"}"
+                  }
+                ],
+                "doc": "USGS gate opening data. Parameter code 45592."
               }
             }
           }

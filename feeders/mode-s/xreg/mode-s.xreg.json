@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Mode_S.kafka"
+        "#/messagegroups/Mode_S.kafka",
+        "#/messagegroups/Mode_S.kafka.avro",
+        "#/messagegroups/Mode_S.kafka.avro.binary"
       ]
     },
     "Mode_S.Mqtt": {
@@ -36,7 +38,9 @@
         "retain": false
       },
       "messagegroups": [
-        "#/messagegroups/Mode_S.mqtt"
+        "#/messagegroups/Mode_S.mqtt",
+        "#/messagegroups/Mode_S.mqtt.avro",
+        "#/messagegroups/Mode_S.mqtt.avro.binary"
       ]
     },
     "Mode_S.Amqp": {
@@ -57,7 +61,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Mode_S.amqp"
+        "#/messagegroups/Mode_S.amqp",
+        "#/messagegroups/Mode_S.amqp.avro",
+        "#/messagegroups/Mode_S.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for mode-s CloudEvents on the configured broker address."
     }
@@ -84,6 +90,10 @@
             "subject": {
               "value": "{icao24}/{receiver_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           }
         },
@@ -106,6 +116,10 @@
             "subject": {
               "value": "{icao24}/{receiver_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           }
         },
@@ -128,6 +142,10 @@
             "subject": {
               "value": "{icao24}/{receiver_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           }
         },
@@ -150,6 +168,10 @@
             "subject": {
               "value": "{icao24}/{receiver_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           }
         },
@@ -172,6 +194,10 @@
             "subject": {
               "value": "{icao24}/{receiver_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           }
         },
@@ -194,6 +220,10 @@
             "subject": {
               "value": "{icao24}/{receiver_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           }
         }
@@ -440,6 +470,478 @@
                 "value": "{msg_type}",
                 "description": "Downlink-format family routing axis for AMQP filters without decoding the payload."
               }
+            }
+          }
+        }
+      }
+    },
+    "Mode_S.avro": {
+      "messagegroupid": "Mode_S.avro",
+      "messages": {
+        "Mode_S.ADSB": {
+          "messageid": "Mode_S.ADSB",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.AltitudeReply": {
+          "messageid": "Mode_S.AltitudeReply",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.IdentityReply": {
+          "messageid": "Mode_S.IdentityReply",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.AcquisitionReply": {
+          "messageid": "Mode_S.AcquisitionReply",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.CommBAltitude": {
+          "messageid": "Mode_S.CommBAltitude",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.CommBIdentity": {
+          "messageid": "Mode_S.CommBIdentity",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        }
+      }
+    },
+    "Mode_S.avro.binary": {
+      "messagegroupid": "Mode_S.avro.binary",
+      "messages": {
+        "Mode_S.ADSB": {
+          "messageid": "Mode_S.ADSB",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.AltitudeReply": {
+          "messageid": "Mode_S.AltitudeReply",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.IdentityReply": {
+          "messageid": "Mode_S.IdentityReply",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.AcquisitionReply": {
+          "messageid": "Mode_S.AcquisitionReply",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.CommBAltitude": {
+          "messageid": "Mode_S.CommBAltitude",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.CommBIdentity": {
+          "messageid": "Mode_S.CommBIdentity",
+          "basemessage": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Mode_S.kafka.avro": {
+      "messagegroupid": "Mode_S.kafka.avro",
+      "messages": {
+        "Mode_S.kafka.ADSB": {
+          "messageid": "Mode_S.kafka.ADSB",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.ADSB",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.kafka.AltitudeReply": {
+          "messageid": "Mode_S.kafka.AltitudeReply",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.AltitudeReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.kafka.IdentityReply": {
+          "messageid": "Mode_S.kafka.IdentityReply",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.IdentityReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.kafka.AcquisitionReply": {
+          "messageid": "Mode_S.kafka.AcquisitionReply",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.AcquisitionReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.kafka.CommBAltitude": {
+          "messageid": "Mode_S.kafka.CommBAltitude",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.CommBAltitude",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.kafka.CommBIdentity": {
+          "messageid": "Mode_S.kafka.CommBIdentity",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.CommBIdentity",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        }
+      }
+    },
+    "Mode_S.kafka.avro.binary": {
+      "messagegroupid": "Mode_S.kafka.avro.binary",
+      "messages": {
+        "Mode_S.kafka.ADSB": {
+          "messageid": "Mode_S.kafka.ADSB",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.ADSB",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.kafka.AltitudeReply": {
+          "messageid": "Mode_S.kafka.AltitudeReply",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.AltitudeReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.kafka.IdentityReply": {
+          "messageid": "Mode_S.kafka.IdentityReply",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.IdentityReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.kafka.AcquisitionReply": {
+          "messageid": "Mode_S.kafka.AcquisitionReply",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.AcquisitionReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.kafka.CommBAltitude": {
+          "messageid": "Mode_S.kafka.CommBAltitude",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.CommBAltitude",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.kafka.CommBIdentity": {
+          "messageid": "Mode_S.kafka.CommBIdentity",
+          "basemessage": "/messagegroups/Mode_S.kafka/messages/Mode_S.kafka.CommBIdentity",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Mode_S.mqtt.avro": {
+      "messagegroupid": "Mode_S.mqtt.avro",
+      "messages": {
+        "Mode_S.ADSB.mqtt": {
+          "messageid": "Mode_S.ADSB.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.ADSB.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.AltitudeReply.mqtt": {
+          "messageid": "Mode_S.AltitudeReply.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.AltitudeReply.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.IdentityReply.mqtt": {
+          "messageid": "Mode_S.IdentityReply.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.IdentityReply.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.AcquisitionReply.mqtt": {
+          "messageid": "Mode_S.AcquisitionReply.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.AcquisitionReply.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.CommBAltitude.mqtt": {
+          "messageid": "Mode_S.CommBAltitude.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.CommBAltitude.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.CommBIdentity.mqtt": {
+          "messageid": "Mode_S.CommBIdentity.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.CommBIdentity.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        }
+      }
+    },
+    "Mode_S.mqtt.avro.binary": {
+      "messagegroupid": "Mode_S.mqtt.avro.binary",
+      "messages": {
+        "Mode_S.ADSB.mqtt": {
+          "messageid": "Mode_S.ADSB.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.ADSB.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.AltitudeReply.mqtt": {
+          "messageid": "Mode_S.AltitudeReply.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.AltitudeReply.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.IdentityReply.mqtt": {
+          "messageid": "Mode_S.IdentityReply.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.IdentityReply.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.AcquisitionReply.mqtt": {
+          "messageid": "Mode_S.AcquisitionReply.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.AcquisitionReply.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.CommBAltitude.mqtt": {
+          "messageid": "Mode_S.CommBAltitude.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.CommBAltitude.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.CommBIdentity.mqtt": {
+          "messageid": "Mode_S.CommBIdentity.mqtt",
+          "basemessage": "/messagegroups/Mode_S.mqtt/messages/Mode_S.CommBIdentity.mqtt",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Mode_S.amqp.avro": {
+      "messagegroupid": "Mode_S.amqp.avro",
+      "messages": {
+        "Mode_S.amqp.ADSB": {
+          "messageid": "Mode_S.amqp.ADSB",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.ADSB",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.amqp.AltitudeReply": {
+          "messageid": "Mode_S.amqp.AltitudeReply",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.AltitudeReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.amqp.IdentityReply": {
+          "messageid": "Mode_S.amqp.IdentityReply",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.IdentityReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.amqp.AcquisitionReply": {
+          "messageid": "Mode_S.amqp.AcquisitionReply",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.AcquisitionReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.amqp.CommBAltitude": {
+          "messageid": "Mode_S.amqp.CommBAltitude",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.CommBAltitude",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        },
+        "Mode_S.amqp.CommBIdentity": {
+          "messageid": "Mode_S.amqp.CommBIdentity",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.CommBIdentity",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record"
+        }
+      }
+    },
+    "Mode_S.amqp.avro.binary": {
+      "messagegroupid": "Mode_S.amqp.avro.binary",
+      "messages": {
+        "Mode_S.amqp.ADSB": {
+          "messageid": "Mode_S.amqp.ADSB",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.ADSB",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.amqp.AltitudeReply": {
+          "messageid": "Mode_S.amqp.AltitudeReply",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.AltitudeReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.amqp.IdentityReply": {
+          "messageid": "Mode_S.amqp.IdentityReply",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.IdentityReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.amqp.AcquisitionReply": {
+          "messageid": "Mode_S.amqp.AcquisitionReply",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.AcquisitionReply",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.amqp.CommBAltitude": {
+          "messageid": "Mode_S.amqp.CommBAltitude",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.CommBAltitude",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Mode_S.amqp.CommBIdentity": {
+          "messageid": "Mode_S.amqp.CommBIdentity",
+          "basemessage": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.CommBIdentity",
+          "dataschemaformat": "Avro/1.11.1",
+          "dataschemauri": "#/schemagroups/Mode_S.avro/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

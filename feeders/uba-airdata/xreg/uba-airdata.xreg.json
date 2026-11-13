@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/de.uba.airdata"
+        "#/messagegroups/de.uba.airdata",
+        "#/messagegroups/de.uba.airdata.avro",
+        "#/messagegroups/de.uba.airdata.avro.binary"
       ],
       "description": "Kafka producer endpoint for UBA Airdata CloudEvents on the `uba-airdata` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/de.uba.airdata.components"
+        "#/messagegroups/de.uba.airdata.components",
+        "#/messagegroups/de.uba.airdata.components.avro",
+        "#/messagegroups/de.uba.airdata.components.avro.binary"
       ],
       "description": "Kafka producer endpoint for UBA Airdata CloudEvents on the `uba-airdata` topic keyed by `{component_id}`."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/de.uba.airdata.mqtt",
-        "#/messagegroups/de.uba.airdata.components.mqtt"
+        "#/messagegroups/de.uba.airdata.components.mqtt",
+        "#/messagegroups/de.uba.airdata.mqtt.avro",
+        "#/messagegroups/de.uba.airdata.mqtt.avro.binary",
+        "#/messagegroups/de.uba.airdata.components.mqtt.avro",
+        "#/messagegroups/de.uba.airdata.components.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for uba-airdata CloudEvents using the documented Unified Namespace topic hierarchy."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/de.uba.airdata.amqp",
-        "#/messagegroups/de.uba.airdata.components.amqp"
+        "#/messagegroups/de.uba.airdata.components.amqp",
+        "#/messagegroups/de.uba.airdata.amqp.avro",
+        "#/messagegroups/de.uba.airdata.amqp.avro.binary",
+        "#/messagegroups/de.uba.airdata.components.amqp.avro",
+        "#/messagegroups/de.uba.airdata.components.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for uba-airdata CloudEvents on the configured broker address."
     }
@@ -109,6 +121,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -129,6 +145,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -154,6 +174,10 @@
             "subject": {
               "value": "{component_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -285,6 +309,228 @@
                 "value": "{station_id}",
                 "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.avro": {
+      "messagegroupid": "de.uba.airdata.avro",
+      "messages": {
+        "de.uba.airdata.Station": {
+          "messageid": "de.uba.airdata.Station",
+          "basemessage": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Station"
+        },
+        "de.uba.airdata.Measure": {
+          "messageid": "de.uba.airdata.Measure",
+          "basemessage": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Measure"
+        }
+      }
+    },
+    "de.uba.airdata.avro.binary": {
+      "messagegroupid": "de.uba.airdata.avro.binary",
+      "messages": {
+        "de.uba.airdata.Station": {
+          "messageid": "de.uba.airdata.Station",
+          "basemessage": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.uba.airdata.Measure": {
+          "messageid": "de.uba.airdata.Measure",
+          "basemessage": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Measure",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.components.avro": {
+      "messagegroupid": "de.uba.airdata.components.avro",
+      "messages": {
+        "de.uba.airdata.components.Component": {
+          "messageid": "de.uba.airdata.components.Component",
+          "basemessage": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.components.Component"
+        }
+      }
+    },
+    "de.uba.airdata.components.avro.binary": {
+      "messagegroupid": "de.uba.airdata.components.avro.binary",
+      "messages": {
+        "de.uba.airdata.components.Component": {
+          "messageid": "de.uba.airdata.components.Component",
+          "basemessage": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.components.Component",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.mqtt.avro": {
+      "messagegroupid": "de.uba.airdata.mqtt.avro",
+      "messages": {
+        "de.uba.airdata.mqtt.Station": {
+          "messageid": "de.uba.airdata.mqtt.Station",
+          "basemessage": "/messagegroups/de.uba.airdata.mqtt/messages/de.uba.airdata.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Station"
+        },
+        "de.uba.airdata.mqtt.Measure": {
+          "messageid": "de.uba.airdata.mqtt.Measure",
+          "basemessage": "/messagegroups/de.uba.airdata.mqtt/messages/de.uba.airdata.mqtt.Measure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Measure"
+        }
+      }
+    },
+    "de.uba.airdata.mqtt.avro.binary": {
+      "messagegroupid": "de.uba.airdata.mqtt.avro.binary",
+      "messages": {
+        "de.uba.airdata.mqtt.Station": {
+          "messageid": "de.uba.airdata.mqtt.Station",
+          "basemessage": "/messagegroups/de.uba.airdata.mqtt/messages/de.uba.airdata.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.uba.airdata.mqtt.Measure": {
+          "messageid": "de.uba.airdata.mqtt.Measure",
+          "basemessage": "/messagegroups/de.uba.airdata.mqtt/messages/de.uba.airdata.mqtt.Measure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Measure",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.amqp.avro": {
+      "messagegroupid": "de.uba.airdata.amqp.avro",
+      "messages": {
+        "de.uba.airdata.amqp.Station": {
+          "messageid": "de.uba.airdata.amqp.Station",
+          "basemessage": "/messagegroups/de.uba.airdata.amqp/messages/de.uba.airdata.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Station"
+        },
+        "de.uba.airdata.amqp.Measure": {
+          "messageid": "de.uba.airdata.amqp.Measure",
+          "basemessage": "/messagegroups/de.uba.airdata.amqp/messages/de.uba.airdata.amqp.Measure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Measure"
+        }
+      }
+    },
+    "de.uba.airdata.amqp.avro.binary": {
+      "messagegroupid": "de.uba.airdata.amqp.avro.binary",
+      "messages": {
+        "de.uba.airdata.amqp.Station": {
+          "messageid": "de.uba.airdata.amqp.Station",
+          "basemessage": "/messagegroups/de.uba.airdata.amqp/messages/de.uba.airdata.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.uba.airdata.amqp.Measure": {
+          "messageid": "de.uba.airdata.amqp.Measure",
+          "basemessage": "/messagegroups/de.uba.airdata.amqp/messages/de.uba.airdata.amqp.Measure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.Measure",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.components.mqtt.avro": {
+      "messagegroupid": "de.uba.airdata.components.mqtt.avro",
+      "messages": {
+        "de.uba.airdata.components.mqtt.Component": {
+          "messageid": "de.uba.airdata.components.mqtt.Component",
+          "basemessage": "/messagegroups/de.uba.airdata.components.mqtt/messages/de.uba.airdata.components.mqtt.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.components.Component"
+        }
+      }
+    },
+    "de.uba.airdata.components.mqtt.avro.binary": {
+      "messagegroupid": "de.uba.airdata.components.mqtt.avro.binary",
+      "messages": {
+        "de.uba.airdata.components.mqtt.Component": {
+          "messageid": "de.uba.airdata.components.mqtt.Component",
+          "basemessage": "/messagegroups/de.uba.airdata.components.mqtt/messages/de.uba.airdata.components.mqtt.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.components.Component",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.components.amqp.avro": {
+      "messagegroupid": "de.uba.airdata.components.amqp.avro",
+      "messages": {
+        "de.uba.airdata.components.amqp.Component": {
+          "messageid": "de.uba.airdata.components.amqp.Component",
+          "basemessage": "/messagegroups/de.uba.airdata.components.amqp/messages/de.uba.airdata.components.amqp.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.components.Component"
+        }
+      }
+    },
+    "de.uba.airdata.components.amqp.avro.binary": {
+      "messagegroupid": "de.uba.airdata.components.amqp.avro.binary",
+      "messages": {
+        "de.uba.airdata.components.amqp.Component": {
+          "messageid": "de.uba.airdata.components.amqp.Component",
+          "basemessage": "/messagegroups/de.uba.airdata.components.amqp/messages/de.uba.airdata.components.amqp.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.avro/schemas/de.uba.airdata.components.Component",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -562,6 +808,229 @@
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.avro": {
+      "schemas": {
+        "de.uba.airdata.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "de.uba.airdata.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "int",
+                    "doc": "Stable numeric UBA station identifier from the 'station id' column. This is the station key used for CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "Official station code from the 'station code' column, typically the European Environment Agency style identifier such as 'DEBE021' or 'DEBB003'."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable station name from the 'station name' column as published by UBA."
+                  },
+                  {
+                    "name": "station_city",
+                    "type": "string",
+                    "doc": "City or locality from the 'station city' column where the monitoring station is located."
+                  },
+                  {
+                    "name": "station_synonym",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Legacy or alternate station short code from the 'station synonym' column. UBA may publish an empty value when no synonym exists."
+                  },
+                  {
+                    "name": "active_from",
+                    "type": "string",
+                    "doc": "Station activation date from the 'station active from' column in ISO date form 'YYYY-MM-DD'."
+                  },
+                  {
+                    "name": "active_to",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Station deactivation date from the 'station active to' column in ISO date form 'YYYY-MM-DD'. Null means the station is still active."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Station longitude from the 'station longitude' column in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Station latitude from the 'station latitude' column in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "network_id",
+                    "type": "int",
+                    "doc": "Stable numeric monitoring network identifier from the 'network id' column. This maps to the federal state or the UBA-operated network."
+                  },
+                  {
+                    "name": "network_code",
+                    "type": "string",
+                    "doc": "Short network code from the 'network code' column, usually a two-letter German state code such as 'BE' or 'BB', or 'UB' for UBA."
+                  },
+                  {
+                    "name": "network_name",
+                    "type": "string",
+                    "doc": "Monitoring network name from the 'network name' column, typically the English federal state name such as 'Berlin' or 'Brandenburg'."
+                  },
+                  {
+                    "name": "setting_name",
+                    "type": "string",
+                    "doc": "Station environment description from the 'station setting name' column, for example 'urban area'."
+                  },
+                  {
+                    "name": "setting_short",
+                    "type": "string",
+                    "doc": "Short station environment code from the 'station setting short name' column, for example 'urban'."
+                  },
+                  {
+                    "name": "type_name",
+                    "type": "string",
+                    "doc": "Station type classification from the 'station type name' column, for example 'traffic', 'background', or 'industrial'."
+                  },
+                  {
+                    "name": "street",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Street name from the 'station street' column. Null is used when UBA does not publish a street value."
+                  },
+                  {
+                    "name": "street_nr",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Street number from the 'station street nr' column. Null is used when the source publishes an empty value."
+                  },
+                  {
+                    "name": "zip_code",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Postal code from the 'station zip code' column. Null is used when the source publishes an empty value."
+                  }
+                ],
+                "doc": "Reference data for a UBA air quality monitoring station, including geographic position, station environment, and the denormalized monitoring network metadata published by the UBA air_data/v3 station catalog."
+              }
+            }
+          }
+        },
+        "de.uba.airdata.Measure": {
+          "name": "Measure",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "de.uba.airdata.Measure",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "int",
+                    "doc": "Stable numeric UBA station identifier for the station that reported the measurement."
+                  },
+                  {
+                    "name": "component_id",
+                    "type": "int",
+                    "doc": "Stable numeric UBA pollutant component identifier from the first element of the measure value array, for example 5 for NO₂."
+                  },
+                  {
+                    "name": "scope_id",
+                    "type": "int",
+                    "doc": "Stable numeric UBA averaging scope identifier from the second element of the measure value array. Scope 2 represents the one-hour average used by this bridge."
+                  },
+                  {
+                    "name": "date_start",
+                    "type": "string",
+                    "doc": "Measurement period start timestamp from the nested measures object key, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'."
+                  },
+                  {
+                    "name": "date_end",
+                    "type": "string",
+                    "doc": "Measurement period end timestamp from the fourth element of the measure value array, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Measured pollutant value from the third element of the measure value array, expressed in the unit defined by the referenced component. Null means the source returned no numeric measurement value."
+                  },
+                  {
+                    "name": "quality_index",
+                    "type": "string",
+                    "doc": "UBA quality or confidence flag from the fifth element of the measure value array. The published documentation commonly references 0 valid, 1 provisional, and 2 estimated; live payloads have also been observed with the code 3."
+                  }
+                ],
+                "doc": "Hourly one-hour-average air quality measurement for a UBA monitoring station and pollutant component as returned by the air_data/v3 measures endpoint."
+              }
+            }
+          }
+        },
+        "de.uba.airdata.components.Component": {
+          "name": "Component",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "de.uba.airdata.components.Component",
+                "fields": [
+                  {
+                    "name": "component_id",
+                    "type": "int",
+                    "doc": "Stable numeric UBA component identifier from the 'component id' column. This is the CloudEvents subject and Kafka key for component events."
+                  },
+                  {
+                    "name": "component_code",
+                    "type": "string",
+                    "doc": "Short UBA component code from the 'component code' column, such as 'PM10', 'NO2', 'O3', or 'PM2'."
+                  },
+                  {
+                    "name": "symbol",
+                    "type": "string",
+                    "doc": "Published component symbol from the 'component symbol' column. This may include Unicode subscripts, for example 'PM₁₀' or 'NO₂'."
+                  },
+                  {
+                    "name": "unit",
+                    "type": "string",
+                    "doc": "Published measurement unit string from the 'component unit' column, such as 'µg/m³', 'mg/m³', or 'ng/m³'."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "English component display name from the 'component name' column, such as 'Particulate matter' or 'Nitrogen dioxide'."
+                  }
+                ],
+                "doc": "Reference data for an air pollutant component published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol, unit, and English display name."
               }
             }
           }

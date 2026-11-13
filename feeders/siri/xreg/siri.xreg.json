@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.siri.kafka"
+        "#/messagegroups/org.siri.kafka",
+        "#/messagegroups/org.siri.kafka.avro",
+        "#/messagegroups/org.siri.kafka.avro.binary"
       ],
       "description": "Kafka producer endpoint for generic SIRI CloudEvents on the `siri` topic. Vehicle telemetry uses `{operator_ref}/{vehicle_ref}` and operator reference records use `{operator_ref}` as their stable identity."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/org.siri.mqtt"
+        "#/messagegroups/org.siri.mqtt",
+        "#/messagegroups/org.siri.mqtt.avro",
+        "#/messagegroups/org.siri.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for generic SIRI CloudEvents using a transit-oriented Unified Namespace topic tree."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/org.siri.amqp"
+        "#/messagegroups/org.siri.amqp",
+        "#/messagegroups/org.siri.amqp.avro",
+        "#/messagegroups/org.siri.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for generic SIRI CloudEvents on the configured broker address."
     }
@@ -86,6 +92,10 @@
             "subject": {
               "value": "{operator_ref}/{vehicle_ref}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -106,6 +116,10 @@
             "subject": {
               "value": "{operator_ref}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -220,6 +234,190 @@
                 "value": "{operator_ref}",
                 "description": "Service Bus / Event Hubs partition key matching the stable operator CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "org.siri.avro": {
+      "messagegroupid": "org.siri.avro",
+      "messages": {
+        "org.siri.VehiclePosition": {
+          "messageid": "org.siri.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri/messages/org.siri.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition"
+        },
+        "org.siri.Operator": {
+          "messageid": "org.siri.Operator",
+          "basemessage": "/messagegroups/org.siri/messages/org.siri.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator"
+        }
+      }
+    },
+    "org.siri.avro.binary": {
+      "messagegroupid": "org.siri.avro.binary",
+      "messages": {
+        "org.siri.VehiclePosition": {
+          "messageid": "org.siri.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri/messages/org.siri.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.siri.Operator": {
+          "messageid": "org.siri.Operator",
+          "basemessage": "/messagegroups/org.siri/messages/org.siri.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.siri.kafka.avro": {
+      "messagegroupid": "org.siri.kafka.avro",
+      "messages": {
+        "org.siri.kafka.VehiclePosition": {
+          "messageid": "org.siri.kafka.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri.kafka/messages/org.siri.kafka.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition"
+        },
+        "org.siri.kafka.Operator": {
+          "messageid": "org.siri.kafka.Operator",
+          "basemessage": "/messagegroups/org.siri.kafka/messages/org.siri.kafka.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator"
+        }
+      }
+    },
+    "org.siri.kafka.avro.binary": {
+      "messagegroupid": "org.siri.kafka.avro.binary",
+      "messages": {
+        "org.siri.kafka.VehiclePosition": {
+          "messageid": "org.siri.kafka.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri.kafka/messages/org.siri.kafka.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.siri.kafka.Operator": {
+          "messageid": "org.siri.kafka.Operator",
+          "basemessage": "/messagegroups/org.siri.kafka/messages/org.siri.kafka.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.siri.mqtt.avro": {
+      "messagegroupid": "org.siri.mqtt.avro",
+      "messages": {
+        "org.siri.mqtt.VehiclePosition": {
+          "messageid": "org.siri.mqtt.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri.mqtt/messages/org.siri.mqtt.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition"
+        },
+        "org.siri.mqtt.Operator": {
+          "messageid": "org.siri.mqtt.Operator",
+          "basemessage": "/messagegroups/org.siri.mqtt/messages/org.siri.mqtt.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator"
+        }
+      }
+    },
+    "org.siri.mqtt.avro.binary": {
+      "messagegroupid": "org.siri.mqtt.avro.binary",
+      "messages": {
+        "org.siri.mqtt.VehiclePosition": {
+          "messageid": "org.siri.mqtt.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri.mqtt/messages/org.siri.mqtt.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.siri.mqtt.Operator": {
+          "messageid": "org.siri.mqtt.Operator",
+          "basemessage": "/messagegroups/org.siri.mqtt/messages/org.siri.mqtt.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.siri.amqp.avro": {
+      "messagegroupid": "org.siri.amqp.avro",
+      "messages": {
+        "org.siri.amqp.VehiclePosition": {
+          "messageid": "org.siri.amqp.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri.amqp/messages/org.siri.amqp.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition"
+        },
+        "org.siri.amqp.Operator": {
+          "messageid": "org.siri.amqp.Operator",
+          "basemessage": "/messagegroups/org.siri.amqp/messages/org.siri.amqp.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator"
+        }
+      }
+    },
+    "org.siri.amqp.avro.binary": {
+      "messagegroupid": "org.siri.amqp.avro.binary",
+      "messages": {
+        "org.siri.amqp.VehiclePosition": {
+          "messageid": "org.siri.amqp.VehiclePosition",
+          "basemessage": "/messagegroups/org.siri.amqp/messages/org.siri.amqp.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.siri.amqp.Operator": {
+          "messageid": "org.siri.amqp.Operator",
+          "basemessage": "/messagegroups/org.siri.amqp/messages/org.siri.amqp.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.siri.avro/schemas/org.siri.Operator",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -441,6 +639,197 @@
                 "required": [
                   "operator_ref"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.siri.avro": {
+      "schemas": {
+        "org.siri.VehiclePosition": {
+          "name": "VehiclePosition",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.siri.VehiclePosition",
+                "fields": [
+                  {
+                    "name": "operator_ref",
+                    "type": "string",
+                    "doc": "Operator identifier from `MonitoredVehicleJourney/OperatorRef`. The exact coding scheme depends on the configured provider, but the value remains the stable operator identity used for reference records, CloudEvents subjects, Kafka keys, MQTT topic segments, and AMQP routing properties."
+                  },
+                  {
+                    "name": "vehicle_ref",
+                    "type": "string",
+                    "doc": "Operator-scoped vehicle identifier from `MonitoredVehicleJourney/VehicleRef`. Usually the fleet number or run identifier configured in the operator AVL system. Combined with `operator_ref` it forms the stable vehicle identity for CloudEvents subjects and transport routing."
+                  },
+                  {
+                    "name": "line_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Service or route identifier from `MonitoredVehicleJourney/LineRef`. Providers use this value to align the monitored vehicle journey with published line or trip definitions. Null when the source omits a line identifier for the monitored journey."
+                  },
+                  {
+                    "name": "direction_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Direction label from `MonitoredVehicleJourney/DirectionRef`, such as `inbound` or `outbound`. Providers use this together with line and dated journey references to align live positions with the scheduled journey pattern."
+                  },
+                  {
+                    "name": "published_line_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Public-facing route label from `MonitoredVehicleJourney/PublishedLineName`, for example `T12`. This is the human-readable service number or line name shown to passengers."
+                  },
+                  {
+                    "name": "origin_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Stop reference from `MonitoredVehicleJourney/OriginRef` naming the first advertised stop of the monitored journey. Null when the provider omits the origin stop code."
+                  },
+                  {
+                    "name": "origin_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Human-readable stop name from `MonitoredVehicleJourney/OriginName` for the first advertised stop of the monitored journey."
+                  },
+                  {
+                    "name": "destination_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Stop reference from `MonitoredVehicleJourney/DestinationRef` naming the last advertised stop of the monitored journey."
+                  },
+                  {
+                    "name": "destination_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Human-readable stop name from `MonitoredVehicleJourney/DestinationName` for the final advertised destination of the monitored journey."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "WGS84 longitude from `MonitoredVehicleJourney/VehicleLocation/Longitude` expressed in decimal degrees. Positive values are east of Greenwich. Null when the AVL feed does not provide a usable vehicle location. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "WGS84 latitude from `MonitoredVehicleJourney/VehicleLocation/Latitude` expressed in decimal degrees. Positive values are north of the equator. Null when the AVL feed does not provide a usable vehicle location. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "bearing",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Vehicle heading from `MonitoredVehicleJourney/Bearing` in whole degrees clockwise from true north. Null when the AVL producer omits heading information. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "recorded_at_time",
+                    "type": "string",
+                    "doc": "Timestamp from `VehicleActivity/RecordedAtTime` stating when the AVL system recorded this vehicle activity snapshot. Encoded as an ISO 8601 / RFC 3339 date-time string with an explicit UTC offset."
+                  },
+                  {
+                    "name": "valid_until_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Expiry timestamp from `VehicleActivity/ValidUntilTime` after which consumers should treat the vehicle activity as stale if it has not been refreshed by a newer message."
+                  },
+                  {
+                    "name": "block_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Block or duty identifier from `MonitoredVehicleJourney/BlockRef` describing the operational vehicle block used by the operator scheduling system."
+                  },
+                  {
+                    "name": "vehicle_journey_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Vehicle journey identifier from `MonitoredVehicleJourney/VehicleJourneyRef` used within the operator AVL system to refer to the monitored trip instance."
+                  },
+                  {
+                    "name": "origin_aimed_departure_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Scheduled departure time from `MonitoredVehicleJourney/OriginAimedDepartureTime` for the origin stop of the monitored journey, encoded as an ISO 8601 / RFC 3339 date-time string."
+                  },
+                  {
+                    "name": "data_frame_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Service day identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DataFrameRef`. Providers typically use this value to pair the live journey with the scheduled service-day context."
+                  },
+                  {
+                    "name": "dated_vehicle_journey_ref",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Dated journey identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DatedVehicleJourneyRef`. This value disambiguates the scheduled journey instance within the service day defined by `data_frame_ref`."
+                  },
+                  {
+                    "name": "item_identifier",
+                    "type": "string",
+                    "doc": "Unique `VehicleActivity/ItemIdentifier` value assigned by the upstream SIRI payload. The bridge uses this field for deduplication so repeated snapshots of the same unchanged vehicle activity are not re-emitted."
+                  }
+                ],
+                "doc": "Normalized payload for one SIRI 2.0 VehicleActivity element emitted by a configured provider feed. The bridge emits one event per monitored vehicle activity in each poll cycle, keyed by the stable operator code and vehicle reference."
+              }
+            }
+          }
+        },
+        "org.siri.Operator": {
+          "name": "Operator",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.siri.Operator",
+                "fields": [
+                  {
+                    "name": "operator_ref",
+                    "type": "string",
+                    "doc": "Operator identifier from `MonitoredVehicleJourney/OperatorRef`. This is the stable identity of the operator reference event and the prefix of every vehicle subject emitted by the source."
+                  }
+                ],
+                "doc": "Reference payload for a distinct operator code observed in a configured SIRI feed. The bridge emits these records so telemetry consumers can keep operator identity in-stream instead of consulting a separate registry out of band."
               }
             }
           }

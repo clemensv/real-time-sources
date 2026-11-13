@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "org.gbfs.System.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -16,12 +18,16 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.gbfs.kafka.system"
+        "#/messagegroups/org.gbfs.kafka.system",
+        "#/messagegroups/org.gbfs.kafka.system.avro",
+        "#/messagegroups/org.gbfs.kafka.system.avro.binary"
       ],
       "description": "Kafka producer endpoint for GBFS system metadata CloudEvents on the `gbfs-bikeshare` topic keyed by `{system_id}`."
     },
     "org.gbfs.Stations.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -36,12 +42,16 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.gbfs.kafka.stations"
+        "#/messagegroups/org.gbfs.kafka.stations",
+        "#/messagegroups/org.gbfs.kafka.stations.avro",
+        "#/messagegroups/org.gbfs.kafka.stations.avro.binary"
       ],
       "description": "Kafka producer endpoint for GBFS station reference and station-status CloudEvents on the `gbfs-bikeshare` topic keyed by `{system_id}/{station_id}`."
     },
     "org.gbfs.FreeBikes.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -56,12 +66,16 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.gbfs.kafka.free_bikes"
+        "#/messagegroups/org.gbfs.kafka.free_bikes",
+        "#/messagegroups/org.gbfs.kafka.free_bikes.avro",
+        "#/messagegroups/org.gbfs.kafka.free_bikes.avro.binary"
       ],
       "description": "Kafka producer endpoint for GBFS free-bike position CloudEvents on the `gbfs-bikeshare` topic keyed by `{system_id}/{bike_id}`."
     },
     "org.gbfs.Mqtt": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "MQTT/5.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -78,12 +92,20 @@
       "messagegroups": [
         "#/messagegroups/org.gbfs.mqtt.system",
         "#/messagegroups/org.gbfs.mqtt.stations",
-        "#/messagegroups/org.gbfs.mqtt.free_bikes"
+        "#/messagegroups/org.gbfs.mqtt.free_bikes",
+        "#/messagegroups/org.gbfs.mqtt.system.avro",
+        "#/messagegroups/org.gbfs.mqtt.system.avro.binary",
+        "#/messagegroups/org.gbfs.mqtt.stations.avro",
+        "#/messagegroups/org.gbfs.mqtt.stations.avro.binary",
+        "#/messagegroups/org.gbfs.mqtt.free_bikes.avro",
+        "#/messagegroups/org.gbfs.mqtt.free_bikes.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for GBFS CloudEvents using the mobility Unified Namespace topic hierarchy."
     },
     "org.gbfs.Amqp": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "AMQP/1.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -100,7 +122,13 @@
       "messagegroups": [
         "#/messagegroups/org.gbfs.amqp.system",
         "#/messagegroups/org.gbfs.amqp.stations",
-        "#/messagegroups/org.gbfs.amqp.free_bikes"
+        "#/messagegroups/org.gbfs.amqp.free_bikes",
+        "#/messagegroups/org.gbfs.amqp.system.avro",
+        "#/messagegroups/org.gbfs.amqp.system.avro.binary",
+        "#/messagegroups/org.gbfs.amqp.stations.avro",
+        "#/messagegroups/org.gbfs.amqp.stations.avro.binary",
+        "#/messagegroups/org.gbfs.amqp.free_bikes.avro",
+        "#/messagegroups/org.gbfs.amqp.free_bikes.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for GBFS CloudEvents on the configured broker address."
     }
@@ -113,7 +141,9 @@
           "envelope": "CloudEvents/1.0",
           "description": "Reference data describing one GBFS system as published in `system_information.json`, including the public system name, operator, customer-facing URL, timezone, and support metadata. Emitted at bridge startup and on reference refresh so consumers can join station and vehicle telemetry against stable system metadata.",
           "envelopemetadata": {
-            "type": { "value": "org.gbfs.SystemInformation" },
+            "type": {
+              "value": "org.gbfs.SystemInformation"
+            },
             "source": {
               "value": "{feed_url}",
               "type": "uritemplate"
@@ -121,6 +151,10 @@
             "subject": {
               "value": "{system_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -136,7 +170,9 @@
           "envelope": "CloudEvents/1.0",
           "description": "Reference data for one dock-based GBFS station from `station_information.json`. The event carries the stable station identifier, public name, WGS 84 coordinates, docking capacity, and optional address / regional context so consumers can interpret real-time availability telemetry.",
           "envelopemetadata": {
-            "type": { "value": "org.gbfs.StationInformation" },
+            "type": {
+              "value": "org.gbfs.StationInformation"
+            },
             "source": {
               "value": "{feed_url}",
               "type": "uritemplate"
@@ -144,6 +180,10 @@
             "subject": {
               "value": "{system_id}/{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -154,7 +194,9 @@
           "envelope": "CloudEvents/1.0",
           "description": "Real-time station availability telemetry from `station_status.json`. Each event describes the current rentable-bike count, dock availability, operating flags, and the upstream `last_reported` timestamp for one GBFS station.",
           "envelopemetadata": {
-            "type": { "value": "org.gbfs.StationStatus" },
+            "type": {
+              "value": "org.gbfs.StationStatus"
+            },
             "source": {
               "value": "{feed_url}",
               "type": "uritemplate"
@@ -162,6 +204,10 @@
             "subject": {
               "value": "{system_id}/{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -177,7 +223,9 @@
           "envelope": "CloudEvents/1.0",
           "description": "Real-time dockless vehicle telemetry from `free_bike_status.json` (renamed `vehicle_status.json` in GBFS v3). Each event carries the last known location, reservation and disablement state, optional vehicle type reference, and optional remaining range for a single rentable vehicle that is not currently in an active trip.",
           "envelopemetadata": {
-            "type": { "value": "org.gbfs.FreeBikeStatus" },
+            "type": {
+              "value": "org.gbfs.FreeBikeStatus"
+            },
             "source": {
               "value": "{feed_url}",
               "type": "uritemplate"
@@ -185,6 +233,10 @@
             "subject": {
               "value": "{system_id}/{bike_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -393,6 +445,414 @@
           }
         }
       }
+    },
+    "org.gbfs.system.avro": {
+      "messagegroupid": "org.gbfs.system.avro",
+      "messages": {
+        "org.gbfs.SystemInformation": {
+          "messageid": "org.gbfs.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.system/messages/org.gbfs.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation"
+        }
+      }
+    },
+    "org.gbfs.system.avro.binary": {
+      "messagegroupid": "org.gbfs.system.avro.binary",
+      "messages": {
+        "org.gbfs.SystemInformation": {
+          "messageid": "org.gbfs.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.system/messages/org.gbfs.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.stations.avro": {
+      "messagegroupid": "org.gbfs.stations.avro",
+      "messages": {
+        "org.gbfs.StationInformation": {
+          "messageid": "org.gbfs.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation"
+        },
+        "org.gbfs.StationStatus": {
+          "messageid": "org.gbfs.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus"
+        }
+      }
+    },
+    "org.gbfs.stations.avro.binary": {
+      "messagegroupid": "org.gbfs.stations.avro.binary",
+      "messages": {
+        "org.gbfs.StationInformation": {
+          "messageid": "org.gbfs.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.gbfs.StationStatus": {
+          "messageid": "org.gbfs.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.free_bikes.avro": {
+      "messagegroupid": "org.gbfs.free_bikes.avro",
+      "messages": {
+        "org.gbfs.FreeBikeStatus": {
+          "messageid": "org.gbfs.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.free_bikes/messages/org.gbfs.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus"
+        }
+      }
+    },
+    "org.gbfs.free_bikes.avro.binary": {
+      "messagegroupid": "org.gbfs.free_bikes.avro.binary",
+      "messages": {
+        "org.gbfs.FreeBikeStatus": {
+          "messageid": "org.gbfs.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.free_bikes/messages/org.gbfs.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.kafka.system.avro": {
+      "messagegroupid": "org.gbfs.kafka.system.avro",
+      "messages": {
+        "org.gbfs.kafka.SystemInformation": {
+          "messageid": "org.gbfs.kafka.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.kafka.system/messages/org.gbfs.kafka.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation"
+        }
+      }
+    },
+    "org.gbfs.kafka.system.avro.binary": {
+      "messagegroupid": "org.gbfs.kafka.system.avro.binary",
+      "messages": {
+        "org.gbfs.kafka.SystemInformation": {
+          "messageid": "org.gbfs.kafka.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.kafka.system/messages/org.gbfs.kafka.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.kafka.stations.avro": {
+      "messagegroupid": "org.gbfs.kafka.stations.avro",
+      "messages": {
+        "org.gbfs.kafka.StationInformation": {
+          "messageid": "org.gbfs.kafka.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.kafka.stations/messages/org.gbfs.kafka.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation"
+        },
+        "org.gbfs.kafka.StationStatus": {
+          "messageid": "org.gbfs.kafka.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.kafka.stations/messages/org.gbfs.kafka.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus"
+        }
+      }
+    },
+    "org.gbfs.kafka.stations.avro.binary": {
+      "messagegroupid": "org.gbfs.kafka.stations.avro.binary",
+      "messages": {
+        "org.gbfs.kafka.StationInformation": {
+          "messageid": "org.gbfs.kafka.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.kafka.stations/messages/org.gbfs.kafka.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.gbfs.kafka.StationStatus": {
+          "messageid": "org.gbfs.kafka.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.kafka.stations/messages/org.gbfs.kafka.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.kafka.free_bikes.avro": {
+      "messagegroupid": "org.gbfs.kafka.free_bikes.avro",
+      "messages": {
+        "org.gbfs.kafka.FreeBikeStatus": {
+          "messageid": "org.gbfs.kafka.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.kafka.free_bikes/messages/org.gbfs.kafka.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus"
+        }
+      }
+    },
+    "org.gbfs.kafka.free_bikes.avro.binary": {
+      "messagegroupid": "org.gbfs.kafka.free_bikes.avro.binary",
+      "messages": {
+        "org.gbfs.kafka.FreeBikeStatus": {
+          "messageid": "org.gbfs.kafka.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.kafka.free_bikes/messages/org.gbfs.kafka.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.mqtt.system.avro": {
+      "messagegroupid": "org.gbfs.mqtt.system.avro",
+      "messages": {
+        "org.gbfs.mqtt.SystemInformation": {
+          "messageid": "org.gbfs.mqtt.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.system/messages/org.gbfs.mqtt.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation"
+        }
+      }
+    },
+    "org.gbfs.mqtt.system.avro.binary": {
+      "messagegroupid": "org.gbfs.mqtt.system.avro.binary",
+      "messages": {
+        "org.gbfs.mqtt.SystemInformation": {
+          "messageid": "org.gbfs.mqtt.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.system/messages/org.gbfs.mqtt.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.mqtt.stations.avro": {
+      "messagegroupid": "org.gbfs.mqtt.stations.avro",
+      "messages": {
+        "org.gbfs.mqtt.StationInformation": {
+          "messageid": "org.gbfs.mqtt.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.stations/messages/org.gbfs.mqtt.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation"
+        },
+        "org.gbfs.mqtt.StationStatus": {
+          "messageid": "org.gbfs.mqtt.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.stations/messages/org.gbfs.mqtt.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus"
+        }
+      }
+    },
+    "org.gbfs.mqtt.stations.avro.binary": {
+      "messagegroupid": "org.gbfs.mqtt.stations.avro.binary",
+      "messages": {
+        "org.gbfs.mqtt.StationInformation": {
+          "messageid": "org.gbfs.mqtt.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.stations/messages/org.gbfs.mqtt.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.gbfs.mqtt.StationStatus": {
+          "messageid": "org.gbfs.mqtt.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.stations/messages/org.gbfs.mqtt.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.mqtt.free_bikes.avro": {
+      "messagegroupid": "org.gbfs.mqtt.free_bikes.avro",
+      "messages": {
+        "org.gbfs.mqtt.FreeBikeStatus": {
+          "messageid": "org.gbfs.mqtt.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.free_bikes/messages/org.gbfs.mqtt.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus"
+        }
+      }
+    },
+    "org.gbfs.mqtt.free_bikes.avro.binary": {
+      "messagegroupid": "org.gbfs.mqtt.free_bikes.avro.binary",
+      "messages": {
+        "org.gbfs.mqtt.FreeBikeStatus": {
+          "messageid": "org.gbfs.mqtt.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.mqtt.free_bikes/messages/org.gbfs.mqtt.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.amqp.system.avro": {
+      "messagegroupid": "org.gbfs.amqp.system.avro",
+      "messages": {
+        "org.gbfs.amqp.SystemInformation": {
+          "messageid": "org.gbfs.amqp.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.amqp.system/messages/org.gbfs.amqp.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation"
+        }
+      }
+    },
+    "org.gbfs.amqp.system.avro.binary": {
+      "messagegroupid": "org.gbfs.amqp.system.avro.binary",
+      "messages": {
+        "org.gbfs.amqp.SystemInformation": {
+          "messageid": "org.gbfs.amqp.SystemInformation",
+          "basemessage": "/messagegroups/org.gbfs.amqp.system/messages/org.gbfs.amqp.SystemInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.SystemInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.amqp.stations.avro": {
+      "messagegroupid": "org.gbfs.amqp.stations.avro",
+      "messages": {
+        "org.gbfs.amqp.StationInformation": {
+          "messageid": "org.gbfs.amqp.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.amqp.stations/messages/org.gbfs.amqp.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation"
+        },
+        "org.gbfs.amqp.StationStatus": {
+          "messageid": "org.gbfs.amqp.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.amqp.stations/messages/org.gbfs.amqp.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus"
+        }
+      }
+    },
+    "org.gbfs.amqp.stations.avro.binary": {
+      "messagegroupid": "org.gbfs.amqp.stations.avro.binary",
+      "messages": {
+        "org.gbfs.amqp.StationInformation": {
+          "messageid": "org.gbfs.amqp.StationInformation",
+          "basemessage": "/messagegroups/org.gbfs.amqp.stations/messages/org.gbfs.amqp.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.gbfs.amqp.StationStatus": {
+          "messageid": "org.gbfs.amqp.StationStatus",
+          "basemessage": "/messagegroups/org.gbfs.amqp.stations/messages/org.gbfs.amqp.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.amqp.free_bikes.avro": {
+      "messagegroupid": "org.gbfs.amqp.free_bikes.avro",
+      "messages": {
+        "org.gbfs.amqp.FreeBikeStatus": {
+          "messageid": "org.gbfs.amqp.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.amqp.free_bikes/messages/org.gbfs.amqp.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus"
+        }
+      }
+    },
+    "org.gbfs.amqp.free_bikes.avro.binary": {
+      "messagegroupid": "org.gbfs.amqp.free_bikes.avro.binary",
+      "messages": {
+        "org.gbfs.amqp.FreeBikeStatus": {
+          "messageid": "org.gbfs.amqp.FreeBikeStatus",
+          "basemessage": "/messagegroups/org.gbfs.amqp.free_bikes/messages/org.gbfs.amqp.FreeBikeStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.gbfs.avro/schemas/org.gbfs.FreeBikeStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -437,7 +897,10 @@
                     "description": "Public-facing station name from `station_information.json`. GBFS recommends mixed-case, human-readable names suitable for maps, screens, and accessibility tooling."
                   },
                   "short_name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional short station name or numbering code from the `short_name` field in `station_information.json`, such as a kiosk number or abbreviated label used on maps or in the operator app."
                   },
                   "lat": {
@@ -455,19 +918,31 @@
                     "maximum": 180
                   },
                   "capacity": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Total number of docking points or parking capacity published for the station in `station_information.json`. When omitted upstream, the bridge emits null rather than inventing a capacity."
                   },
                   "region_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional region identifier from the `region_id` field in `station_information.json`. When present, it links the station to a region published in `system_regions.json`."
                   },
                   "address": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional street address from the `address` field in `station_information.json`, as supplied by the operator for customer navigation."
                   },
                   "post_code": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional postal or ZIP code from the `post_code` field in `station_information.json`."
                   }
                 }
@@ -514,11 +989,17 @@
                     "description": "Current number of rentable bikes or vehicles available at the station from the `num_bikes_available` field in `station_status.json`."
                   },
                   "num_docks_available": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Current number of empty docks or parking spaces available for return at the station from `num_docks_available`. Some operators omit this field, in which case the bridge emits null."
                   },
                   "num_ebikes_available": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Current number of electric bikes available at the station from `num_ebikes_available` when the operator distinguishes e-bikes from the aggregate bike count."
                   },
                   "is_installed": {
@@ -576,14 +1057,20 @@
                     "description": "Unique vehicle identifier from the `bike_id` field in `free_bike_status.json`. This value is stable for the vehicle within the system and forms the second component of the CloudEvents subject and Kafka key."
                   },
                   "lat": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Optional WGS 84 latitude in decimal degrees for the vehicle's current position. GBFS allows free-bike records without coordinates when precise location is not published.",
                     "unit": "degree",
                     "minimum": -90,
                     "maximum": 90
                   },
                   "lon": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Optional WGS 84 longitude in decimal degrees for the vehicle's current position.",
                     "unit": "degree",
                     "minimum": -180,
@@ -598,16 +1085,25 @@
                     "description": "Boolean flag from `is_disabled` indicating whether the vehicle is disabled or otherwise unavailable for rental."
                   },
                   "vehicle_type_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional vehicle-type identifier from `vehicle_type_id`, used by operators that publish multiple vehicle classes such as e-bikes or scooters."
                   },
                   "current_range_meters": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Optional remaining electric range in meters from `current_range_meters`, typically published for electric vehicles.",
                     "unit": "meter"
                   },
                   "last_reported": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Optional POSIX timestamp from the `last_reported` field representing the last time the operator backend received a telemetry update for this vehicle."
                   }
                 }
@@ -646,11 +1142,17 @@
                     "description": "Public system display name from the `name` field in `system_information.json`, such as the brand name shown in the operator app and on the website."
                   },
                   "operator": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional operator company or agency name from the `operator` field in `system_information.json`."
                   },
                   "url": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional public website URL from the `url` field in `system_information.json`."
                   },
                   "timezone": {
@@ -658,14 +1160,331 @@
                     "description": "IANA timezone identifier from the `timezone` field in `system_information.json`, such as `America/New_York` or `Europe/London`."
                   },
                   "language": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional BCP-47 language tag from the `language` field in `system_information.json`, representing the primary language used in this dataset."
                   },
                   "phone_number": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Optional customer-service phone number from the `phone_number` field in `system_information.json`."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.avro": {
+      "schemas": {
+        "org.gbfs.SystemInformation": {
+          "name": "SystemInformation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.gbfs.SystemInformation",
+                "fields": [
+                  {
+                    "name": "system_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the GBFS system from the `system_id` field in `system_information.json`, or a configured override when the user supplies `GBFS_SYSTEM_IDS` to relabel systems consistently across deployments."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Public system display name from the `name` field in `system_information.json`, such as the brand name shown in the operator app and on the website."
+                  },
+                  {
+                    "name": "operator",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional operator company or agency name from the `operator` field in `system_information.json`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional public website URL from the `url` field in `system_information.json`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timezone",
+                    "type": "string",
+                    "doc": "IANA timezone identifier from the `timezone` field in `system_information.json`, such as `America/New_York` or `Europe/London`."
+                  },
+                  {
+                    "name": "language",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional BCP-47 language tag from the `language` field in `system_information.json`, representing the primary language used in this dataset. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "phone_number",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional customer-service phone number from the `phone_number` field in `system_information.json`. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference data from the GBFS `system_information.json` feed. Each record describes one bikeshare or shared-micromobility system, including the stable `system_id`, public name, operator, website, timezone, language, and customer support metadata."
+              }
+            }
+          }
+        },
+        "org.gbfs.StationInformation": {
+          "name": "StationInformation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.gbfs.StationInformation",
+                "fields": [
+                  {
+                    "name": "system_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the GBFS system that publishes this station. The bridge resolves it from `system_information.system_id`, or from operator configuration when a custom label is supplied. It is the first component of the CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Unique station identifier within the GBFS system, sourced from the `station_id` field in `station_information.json`. This identifier is stable across feed refreshes and forms the second component of the CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Public-facing station name from `station_information.json`. GBFS recommends mixed-case, human-readable names suitable for maps, screens, and accessibility tooling."
+                  },
+                  {
+                    "name": "short_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional short station name or numbering code from the `short_name` field in `station_information.json`, such as a kiosk number or abbreviated label used on maps or in the operator app. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lat",
+                    "type": "double",
+                    "doc": "WGS 84 latitude of the station in decimal degrees from `station_information.json`. GBFS recommends six decimal places of precision for latitude / longitude coordinates. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "lon",
+                    "type": "double",
+                    "doc": "WGS 84 longitude of the station in decimal degrees from `station_information.json`. Positive values are east of the prime meridian and negative values are west. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "capacity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Total number of docking points or parking capacity published for the station in `station_information.json`. When omitted upstream, the bridge emits null rather than inventing a capacity. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional region identifier from the `region_id` field in `station_information.json`. When present, it links the station to a region published in `system_regions.json`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "address",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional street address from the `address` field in `station_information.json`, as supplied by the operator for customer navigation. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "post_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional postal or ZIP code from the `post_code` field in `station_information.json`. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Dock-based station reference data from the GBFS `station_information.json` feed. Each record identifies one station in a bikeshare or scooter-share system and provides the stable station identifier, customer-facing name, WGS 84 coordinates, docking capacity, and optional regional or address context."
+              }
+            }
+          }
+        },
+        "org.gbfs.StationStatus": {
+          "name": "StationStatus",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.gbfs.StationStatus",
+                "fields": [
+                  {
+                    "name": "system_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the GBFS system that publishes this station status record."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier from the `station_id` field in `station_status.json`, matching the corresponding `StationInformation` event."
+                  },
+                  {
+                    "name": "num_bikes_available",
+                    "type": "int",
+                    "doc": "Current number of rentable bikes or vehicles available at the station from the `num_bikes_available` field in `station_status.json`."
+                  },
+                  {
+                    "name": "num_docks_available",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Current number of empty docks or parking spaces available for return at the station from `num_docks_available`. Some operators omit this field, in which case the bridge emits null. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "num_ebikes_available",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Current number of electric bikes available at the station from `num_ebikes_available` when the operator distinguishes e-bikes from the aggregate bike count. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_installed",
+                    "type": "boolean",
+                    "doc": "Boolean flag indicating whether the station is physically installed, normalized from the GBFS `is_installed` value."
+                  },
+                  {
+                    "name": "is_renting",
+                    "type": "boolean",
+                    "doc": "Boolean flag indicating whether the station is currently accepting rentals, normalized from the GBFS `is_renting` value."
+                  },
+                  {
+                    "name": "is_returning",
+                    "type": "boolean",
+                    "doc": "Boolean flag indicating whether the station is currently accepting vehicle returns, normalized from the GBFS `is_returning` value."
+                  },
+                  {
+                    "name": "last_reported",
+                    "type": "int",
+                    "doc": "POSIX timestamp from the GBFS `last_reported` field representing when the operator backend last received a status update for this station."
+                  }
+                ],
+                "doc": "Near-real-time station availability data from the GBFS `station_status.json` feed. Each record reports the current inventory of rentable vehicles and available docks together with boolean operating flags and the upstream `last_reported` timestamp for the station."
+              }
+            }
+          }
+        },
+        "org.gbfs.FreeBikeStatus": {
+          "name": "FreeBikeStatus",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.gbfs.FreeBikeStatus",
+                "fields": [
+                  {
+                    "name": "system_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the GBFS system that publishes this dockless-vehicle status record."
+                  },
+                  {
+                    "name": "bike_id",
+                    "type": "string",
+                    "doc": "Unique vehicle identifier from the `bike_id` field in `free_bike_status.json`. This value is stable for the vehicle within the system and forms the second component of the CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Optional WGS 84 latitude in decimal degrees for the vehicle's current position. GBFS allows free-bike records without coordinates when precise location is not published. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Optional WGS 84 longitude in decimal degrees for the vehicle's current position. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_reserved",
+                    "type": "boolean",
+                    "doc": "Boolean flag from `is_reserved` indicating whether the vehicle is currently reserved for a customer and therefore not immediately rentable by others."
+                  },
+                  {
+                    "name": "is_disabled",
+                    "type": "boolean",
+                    "doc": "Boolean flag from `is_disabled` indicating whether the vehicle is disabled or otherwise unavailable for rental."
+                  },
+                  {
+                    "name": "vehicle_type_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional vehicle-type identifier from `vehicle_type_id`, used by operators that publish multiple vehicle classes such as e-bikes or scooters. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "current_range_meters",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Optional remaining electric range in meters from `current_range_meters`, typically published for electric vehicles. JSON Structure annotations: {\"unit\": \"meter\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "last_reported",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Optional POSIX timestamp from the `last_reported` field representing the last time the operator backend received a telemetry update for this vehicle. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Dockless vehicle telemetry from the GBFS `free_bike_status.json` feed, which is renamed `vehicle_status.json` in GBFS v3. Each record describes a currently available vehicle that is not in an active rental and can include location, reservation state, disablement state, vehicle type reference, and remaining electric range."
               }
             }
           }

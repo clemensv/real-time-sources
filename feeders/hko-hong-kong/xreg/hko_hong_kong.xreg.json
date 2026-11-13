@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/HK.Gov.HKO.Weather"
+        "#/messagegroups/HK.Gov.HKO.Weather",
+        "#/messagegroups/HK.Gov.HKO.Weather.avro",
+        "#/messagegroups/HK.Gov.HKO.Weather.avro.binary"
       ],
       "description": "Kafka producer endpoint for Hong Kong Observatory Weather CloudEvents on the `hko-hong-kong` topic keyed by `{place_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/HK.Gov.HKO.Weather.mqtt"
+        "#/messagegroups/HK.Gov.HKO.Weather.mqtt",
+        "#/messagegroups/HK.Gov.HKO.Weather.mqtt.avro",
+        "#/messagegroups/HK.Gov.HKO.Weather.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for hko-hong-kong."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/HK.Gov.HKO.Weather.amqp"
+        "#/messagegroups/HK.Gov.HKO.Weather.amqp",
+        "#/messagegroups/HK.Gov.HKO.Weather.amqp.avro",
+        "#/messagegroups/HK.Gov.HKO.Weather.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for hko-hong-kong."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{place_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{place_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -234,6 +248,144 @@
           "envelope": "CloudEvents/1.0"
         }
       }
+    },
+    "HK.Gov.HKO.Weather.avro": {
+      "messagegroupid": "HK.Gov.HKO.Weather.avro",
+      "messages": {
+        "HK.Gov.HKO.Weather.Station": {
+          "messageid": "HK.Gov.HKO.Weather.Station",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.Station"
+        },
+        "HK.Gov.HKO.Weather.WeatherObservation": {
+          "messageid": "HK.Gov.HKO.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.WeatherObservation"
+        }
+      }
+    },
+    "HK.Gov.HKO.Weather.avro.binary": {
+      "messagegroupid": "HK.Gov.HKO.Weather.avro.binary",
+      "messages": {
+        "HK.Gov.HKO.Weather.Station": {
+          "messageid": "HK.Gov.HKO.Weather.Station",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "HK.Gov.HKO.Weather.WeatherObservation": {
+          "messageid": "HK.Gov.HKO.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "HK.Gov.HKO.Weather.mqtt.avro": {
+      "messagegroupid": "HK.Gov.HKO.Weather.mqtt.avro",
+      "messages": {
+        "HK.Gov.HKO.Weather.mqtt.Station": {
+          "messageid": "HK.Gov.HKO.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.mqtt/messages/HK.Gov.HKO.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.Station"
+        },
+        "HK.Gov.HKO.Weather.mqtt.WeatherObservation": {
+          "messageid": "HK.Gov.HKO.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.mqtt/messages/HK.Gov.HKO.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.WeatherObservation"
+        }
+      }
+    },
+    "HK.Gov.HKO.Weather.mqtt.avro.binary": {
+      "messagegroupid": "HK.Gov.HKO.Weather.mqtt.avro.binary",
+      "messages": {
+        "HK.Gov.HKO.Weather.mqtt.Station": {
+          "messageid": "HK.Gov.HKO.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.mqtt/messages/HK.Gov.HKO.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "HK.Gov.HKO.Weather.mqtt.WeatherObservation": {
+          "messageid": "HK.Gov.HKO.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.mqtt/messages/HK.Gov.HKO.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "HK.Gov.HKO.Weather.amqp.avro": {
+      "messagegroupid": "HK.Gov.HKO.Weather.amqp.avro",
+      "messages": {
+        "HK.Gov.HKO.Weather.amqp.Station": {
+          "messageid": "HK.Gov.HKO.Weather.amqp.Station",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.amqp/messages/HK.Gov.HKO.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.Station"
+        },
+        "HK.Gov.HKO.Weather.amqp.WeatherObservation": {
+          "messageid": "HK.Gov.HKO.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.amqp/messages/HK.Gov.HKO.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.WeatherObservation"
+        }
+      }
+    },
+    "HK.Gov.HKO.Weather.amqp.avro.binary": {
+      "messagegroupid": "HK.Gov.HKO.Weather.amqp.avro.binary",
+      "messages": {
+        "HK.Gov.HKO.Weather.amqp.Station": {
+          "messageid": "HK.Gov.HKO.Weather.amqp.Station",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.amqp/messages/HK.Gov.HKO.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "HK.Gov.HKO.Weather.amqp.WeatherObservation": {
+          "messageid": "HK.Gov.HKO.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/HK.Gov.HKO.Weather.amqp/messages/HK.Gov.HKO.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.avro/schemas/HK.Gov.HKO.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -271,7 +423,10 @@
                     "description": "Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'."
                   },
                   "district": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering."
                   }
                 }
@@ -353,13 +508,147 @@
                     "description": "HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'."
                   },
                   "district": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "HK.Gov.HKO.Weather.avro": {
+      "schemas": {
+        "HK.Gov.HKO.Weather.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "HK.Gov.HKO.Weather.Station",
+                "fields": [
+                  {
+                    "name": "place_id",
+                    "type": "string",
+                    "doc": "URL-safe slug identifier derived from the English place name, e.g. 'kings-park', 'central-western-district'. Used as Kafka key and CloudEvents subject."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Original English place name from the HKO rhrread API, e.g. 'King's Park', 'Central & Western District'."
+                  },
+                  {
+                    "name": "data_types",
+                    "type": "string",
+                    "doc": "Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'."
+                  },
+                  {
+                    "name": "district",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by the Hong Kong Observatory. It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "HK.Gov.HKO.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "HK.Gov.HKO.Weather.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "place_id",
+                    "type": "string",
+                    "doc": "URL-safe slug identifier for the place, matching the Kafka key."
+                  },
+                  {
+                    "name": "place_name",
+                    "type": "string",
+                    "doc": "Original English place name from the HKO API."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of the observation including Hong Kong timezone offset (+08:00), from the updateTime field."
+                  },
+                  {
+                    "name": "temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature from automatic weather stations. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rainfall_max",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum rainfall in the past hour from district-level rain gauges. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "humidity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Relative humidity, currently only from Hong Kong Observatory headquarters. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"percent\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "uv_index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "UV index during the past hour, currently only from King's Park. JSON Structure annotations: {\"unit\": \"1\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "uv_description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "district",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from the Hong Kong Observatory. It carries weather observations when the upstream feed reports a new or refreshed value."
               }
             }
           }

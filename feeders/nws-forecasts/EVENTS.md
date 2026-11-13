@@ -1,10 +1,10 @@
-# NWS Forecast Zones feeder Events
+# NWS Forecast Zones Events
 
-MQTT 5 variant of NWS forecast zone events with state, zone type, zone id, and event kind in the topic.
+<sub>configurable land and marine forecast zones · Kafka · MQTT · AMQP · <a href="https://www.weather.gov/">upstream</a> · <a href="https://www.weather.gov/documentation/services-web-api">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 3 documented event types (9 transport bindings in the manifest).
+- **Event types:** 3 documented event types (27 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
 - **Identity:** `{zone_id}` identifies the resource each event is about.
@@ -78,16 +78,16 @@ Each event identifies the real-world resource with `{zone_id}`. `{zone_id}` is N
 | --- | --- |
 | `KAFKA` | topic `nws-forecasts`, key `{zone_id}` |
 | `MQTT/5.0` | topic `weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/nws-forecasts`, message subject `{zone_id}`; application properties state `{state}`, zone_type `{zone_type}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/nws-forecasts`, message subject `{zone_id}` |
 
 #### Payload
 
-`Forecast Zone` payloads are JSON object. Required fields: `zone_id`, `zone_type`, `name`, `state`, `forecast_office_url`, `effective_date`, `expiration_date`.
+`Forecast Zone` payloads are JSON object. Required fields: `zone_id`, `zone_type`, `name`, `forecast_office_url`, `effective_date`, `expiration_date`.
 
 - **`zone_id`** (string, required): NWS forecast zone identifier from the upstream properties.id field, such as WAZ315 for the City of Seattle public forecast zone or PZZ135 for the Puget Sound and Hood Canal marine zone. Constraints: pattern `^[A-Z]{3}[0-9]{3}$`.
 - **`zone_type`** (enum, required): NWS zone category from the upstream properties.type field. Forecast-zone responses use 'public' for land forecast zones and marine-oriented values such as 'coastal', 'offshore', or 'marine' for waters forecasts.
 - **`name`** (string, required): Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'.
-- **`state`** (string, required): Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones. Constraints: pattern `^[A-Z]{2}$`.
+- **`state`** (string or null, optional): Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones. Constraints: pattern `^[A-Z]{2}$`.
 - **`forecast_office_url`** (string, required): Canonical api.weather.gov URL of the primary Weather Forecast Office responsible for the zone, from properties.forecastOffice.
 - **`grid_identifier`** (string or null, optional): Grid identifier from properties.gridIdentifier. For Seattle forecast zones this is commonly the three-letter WFO grid identifier such as SEW. Marine zones can omit this field. Constraints: pattern `^[A-Z]{3}$`.
 - **`awips_location_identifier`** (string or null, optional): AWIPS location identifier from properties.awipsLocationIdentifier when the zone has a matching AWIPS code.
@@ -157,7 +157,7 @@ Each event identifies the real-world resource with `{zone_id}`. `{zone_id}` is f
 | --- | --- |
 | `KAFKA` | topic `nws-forecasts`, key `{zone_id}` |
 | `MQTT/5.0` | topic `weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/nws-forecasts`, message subject `{zone_id}`; application properties state `{state}`, zone_type `{zone_type}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/nws-forecasts`, message subject `{zone_id}` |
 
 #### Payload
 
@@ -206,23 +206,23 @@ Each event identifies the real-world resource with `{zone_id}`. `{zone_id}` is m
 | --- | --- |
 | `KAFKA` | topic `nws-forecasts`, key `{zone_id}` |
 | `MQTT/5.0` | topic `weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/nws-forecasts`, message subject `{zone_id}`; application properties state `{state}`, zone_type `{zone_type}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/nws-forecasts`, message subject `{zone_id}` |
 
 #### Payload
 
 `Marine Zone Forecast` payloads are JSON object. Required fields: `zone_id`, `zone_name`, `issued_at_text`, `periods`, `bulletin_text`.
 
 - **`zone_id`** (string, required): Marine forecast zone identifier parsed from the bulletin zone header line, such as PZZ135 for Puget Sound and Hood Canal. Constraints: pattern `^[A-Z]{3}[0-9]{3}$`.
-- **`zone_name`** (string, required): Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin.
+- **`zone_name`** (string or null, required): Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin.
 - **`product_title`** (string or null, optional): Bulletin title line, such as 'Coastal Waters Forecast for Washington'.
 - **`office_name`** (string or null, optional): Issuing office line from the bulletin header, for example 'National Weather Service Seattle WA'.
-- **`issued_at_text`** (string, required): Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT.
+- **`issued_at_text`** (string or null, required): Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT.
 - **`expires_text`** (string or null, optional): Raw Expires header value from the bulletin preamble, preserved as text because the feed does not provide an explicit timezone annotation in ISO form.
 - **`wmo_header`** (string or null, optional): WMO abbreviated heading line from the marine bulletin, for example 'FZUS56 KSEW 132142'.
 - **`bulletin_awips_id`** (string or null, optional): AWIPS product identifier line from the bulletin, for example CWFSEW.
 - **`synopsis`** (string or null, optional): Narrative synopsis paragraph that appears before the zone-specific section and describes the broader marine area covered by the bulletin.
 - **`periods`** (array of object, required): Ordered narrative forecast periods parsed from the zone-specific section. Each element preserves the named period heading and its free-text forecast text.
-- **`bulletin_text`** (string, required): Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording.
+- **`bulletin_text`** (string or null, required): Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -265,7 +265,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -276,3 +280,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/nws-forecasts.xreg.json`](xreg/nws-forecasts.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

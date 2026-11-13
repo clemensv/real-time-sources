@@ -1,10 +1,10 @@
-# KMI Belgium feeder Events
+# KMI Belgium Events
 
 KMI Belgium Weather publishes weather observations from the Royal Meteorological Institute of Belgium (KMI/IRM) for Belgian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Event types:** 2 documented event types (18 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{station_code}` identifies the resource each event is about.
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 | --- | --- |
 | `KAFKA` | topic `kmi-belgium`, key `{station_code}` |
 | `MQTT/5.0` | topic `weather/be/kmi/kmi-belgium/{region}/{station_code}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/kmi-belgium`, message subject `{station_code}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/kmi-belgium`, message subject `{station_code}` |
 
 #### Payload
 
@@ -87,7 +87,7 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 - **`station_code`** (string, required): KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network.
 - **`latitude`** (double, required, degree (°)): Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array.
 - **`longitude`** (double, required, degree (°)): Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.
-- **`region`** (string, optional): Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.
+- **`region`** (string or null, optional): Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -123,7 +123,7 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 | --- | --- |
 | `KAFKA` | topic `kmi-belgium`, key `{station_code}` |
 | `MQTT/5.0` | topic `weather/be/kmi/kmi-belgium/{region}/{station_code}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/kmi-belgium`, message subject `{station_code}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/kmi-belgium`, message subject `{station_code}` |
 
 #### Payload
 
@@ -148,7 +148,7 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 - **`sun_duration`** (double or null, optional, min): Sunshine duration accumulated during the 10-minute observation period.
 - **`short_wave_from_sky_avg`** (double or null, optional, W/m2 (W/m²)): Average downward shortwave radiation from the sky during the observation period.
 - **`sun_int_avg`** (double or null, optional, W/m2 (W/m²)): Average direct sunshine intensity during the observation period.
-- **`region`** (string, optional): Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.
+- **`region`** (string or null, optional): Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -195,7 +195,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -206,3 +210,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/kmi_belgium.xreg.json`](xreg/kmi_belgium.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/CA.Gov.ECCC.Hydro"
+        "#/messagegroups/CA.Gov.ECCC.Hydro",
+        "#/messagegroups/CA.Gov.ECCC.Hydro.avro",
+        "#/messagegroups/CA.Gov.ECCC.Hydro.avro.binary"
       ],
       "description": "Kafka producer endpoint for ECCC Water Office CloudEvents on the `canada-eccc-wateroffice` topic keyed by `stations/{station_number}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/CA.Gov.ECCC.Hydro.mqtt"
+        "#/messagegroups/CA.Gov.ECCC.Hydro.mqtt",
+        "#/messagegroups/CA.Gov.ECCC.Hydro.mqtt.avro",
+        "#/messagegroups/CA.Gov.ECCC.Hydro.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for canada-eccc-wateroffice CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/CA.Gov.ECCC.Hydro.amqp"
+        "#/messagegroups/CA.Gov.ECCC.Hydro.amqp",
+        "#/messagegroups/CA.Gov.ECCC.Hydro.amqp.avro",
+        "#/messagegroups/CA.Gov.ECCC.Hydro.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for canada-eccc-wateroffice CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "stations/{station_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "stations/{station_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -192,6 +206,144 @@
                 "value": "stations/{station_number}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.avro": {
+      "messagegroupid": "CA.Gov.ECCC.Hydro.avro",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.Station": {
+          "messageid": "CA.Gov.ECCC.Hydro.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Station"
+        },
+        "CA.Gov.ECCC.Hydro.Observation": {
+          "messageid": "CA.Gov.ECCC.Hydro.Observation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation"
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.avro.binary": {
+      "messagegroupid": "CA.Gov.ECCC.Hydro.avro.binary",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.Station": {
+          "messageid": "CA.Gov.ECCC.Hydro.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CA.Gov.ECCC.Hydro.Observation": {
+          "messageid": "CA.Gov.ECCC.Hydro.Observation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.mqtt.avro": {
+      "messagegroupid": "CA.Gov.ECCC.Hydro.mqtt.avro",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.mqtt.Station": {
+          "messageid": "CA.Gov.ECCC.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.mqtt/messages/CA.Gov.ECCC.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Station"
+        },
+        "CA.Gov.ECCC.Hydro.mqtt.Observation": {
+          "messageid": "CA.Gov.ECCC.Hydro.mqtt.Observation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.mqtt/messages/CA.Gov.ECCC.Hydro.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation"
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.mqtt.avro.binary": {
+      "messagegroupid": "CA.Gov.ECCC.Hydro.mqtt.avro.binary",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.mqtt.Station": {
+          "messageid": "CA.Gov.ECCC.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.mqtt/messages/CA.Gov.ECCC.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CA.Gov.ECCC.Hydro.mqtt.Observation": {
+          "messageid": "CA.Gov.ECCC.Hydro.mqtt.Observation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.mqtt/messages/CA.Gov.ECCC.Hydro.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.amqp.avro": {
+      "messagegroupid": "CA.Gov.ECCC.Hydro.amqp.avro",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.amqp.Station": {
+          "messageid": "CA.Gov.ECCC.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.amqp/messages/CA.Gov.ECCC.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Station"
+        },
+        "CA.Gov.ECCC.Hydro.amqp.Observation": {
+          "messageid": "CA.Gov.ECCC.Hydro.amqp.Observation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.amqp/messages/CA.Gov.ECCC.Hydro.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation"
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.amqp.avro.binary": {
+      "messagegroupid": "CA.Gov.ECCC.Hydro.amqp.avro.binary",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.amqp.Station": {
+          "messageid": "CA.Gov.ECCC.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.amqp/messages/CA.Gov.ECCC.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CA.Gov.ECCC.Hydro.amqp.Observation": {
+          "messageid": "CA.Gov.ECCC.Hydro.amqp.Observation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Hydro.amqp/messages/CA.Gov.ECCC.Hydro.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -324,7 +476,10 @@
                     "symbol": "°"
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
                 },
@@ -435,7 +590,10 @@
                     "symbol": "°"
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
                 },
@@ -454,7 +612,7 @@
         "CA.Gov.ECCC.Hydro.Station": {
           "name": "Station",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -554,13 +712,119 @@
                 ],
                 "description": "Reference details for one monitoring station or site in the ECCC Water Office source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "CA.Gov.ECCC.Hydro.Station",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Unique WSC station identifier following the scheme 2-digit major drainage area + letter + station digits, e.g. '05BJ004'. Upstream field: STATION_NUMBER. JSON Structure annotations: {\"altnames\": [\"STATION_NUMBER\"]}"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Official name of the hydrometric station, e.g. 'ELBOW RIVER AT BRAGG CREEK'. Upstream field: STATION_NAME. JSON Structure annotations: {\"altnames\": [\"STATION_NAME\"]}"
+                  },
+                  {
+                    "name": "prov_terr_state_loc",
+                    "type": "string",
+                    "doc": "Two-letter province, territory or state location code where the station is situated, e.g. 'AB' for Alberta. Upstream field: PROV_TERR_STATE_LOC. JSON Structure annotations: {\"altnames\": [\"PROV_TERR_STATE_LOC\"]}"
+                  },
+                  {
+                    "name": "status_en",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operational status of the station in English, e.g. 'Active', 'Discontinued'. Upstream field: STATUS_EN. JSON Structure annotations: {\"altnames\": [\"STATUS_EN\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "contributor_en",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the contributing agency responsible for operating this station in English, e.g. 'Water Survey of Canada'. Upstream field: CONTRIBUTOR_EN. JSON Structure annotations: {\"altnames\": [\"CONTRIBUTOR_EN\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "drainage_area_gross",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Gross drainage area of the watershed upstream of this station in square kilometres. Upstream field: DRAINAGE_AREA_GROSS. JSON Structure annotations: {\"altnames\": [\"DRAINAGE_AREA_GROSS\"], \"symbol\": \"km²\", \"unit\": \"square kilometre\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "drainage_area_effect",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Effective (contributing) drainage area of the watershed upstream of this station in square kilometres, excluding non-contributing areas. Upstream field: DRAINAGE_AREA_EFFECT. JSON Structure annotations: {\"altnames\": [\"DRAINAGE_AREA_EFFECT\"], \"symbol\": \"km²\", \"unit\": \"square kilometre\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rhbn",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Indicates whether the station is part of the Reference Hydrometric Basin Network (RHBN), a subset of hydrologically stable, minimally disturbed basins used for climate change studies. Upstream field: RHBN. JSON Structure annotations: {\"altnames\": [\"RHBN\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "real_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Indicates whether real-time data are available for this station via the WSC real-time data service. Upstream field: REAL_TIME. JSON Structure annotations: {\"altnames\": [\"REAL_TIME\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference data for a Water Survey of Canada hydrometric monitoring station from the ECCC OGC API hydrometric-stations collection."
+              }
             }
           }
         },
         "CA.Gov.ECCC.Hydro.Observation": {
           "name": "Observation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -593,8 +857,7 @@
                   {
                     "name": "observation_datetime",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     },
                     "doc": "Timestamp of the observation in UTC. Upstream field: DATETIME."
                   },
@@ -636,6 +899,86 @@
                   }
                 ],
                 "description": "Measurement payload for observations in the ECCC Water Office source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "CA.Gov.ECCC.Hydro.Observation",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Unique WSC station identifier, e.g. '05BJ004'. Upstream field: STATION_NUMBER. JSON Structure annotations: {\"altnames\": [\"STATION_NUMBER\"]}"
+                  },
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Unique observation identifier composed of station number and ISO 8601 observation datetime, e.g. '05BJ004.2026-03-07T07:00:00Z'. Upstream field: IDENTIFIER. JSON Structure annotations: {\"altnames\": [\"IDENTIFIER\"]}"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Official name of the hydrometric station. Upstream field: STATION_NAME. JSON Structure annotations: {\"altnames\": [\"STATION_NAME\"]}"
+                  },
+                  {
+                    "name": "prov_terr_state_loc",
+                    "type": "string",
+                    "doc": "Two-letter province, territory or state location code. Upstream field: PROV_TERR_STATE_LOC. JSON Structure annotations: {\"altnames\": [\"PROV_TERR_STATE_LOC\"]}"
+                  },
+                  {
+                    "name": "observation_datetime",
+                    "type": "string",
+                    "doc": "Timestamp of the observation in UTC. Upstream field: DATETIME. JSON Structure annotations: {\"altnames\": [\"DATETIME\"]}"
+                  },
+                  {
+                    "name": "level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Water level at the station gauge in metres above the station datum. Null when not measured or unavailable. Upstream field: LEVEL. JSON Structure annotations: {\"altnames\": [\"LEVEL\"], \"symbol\": \"m\", \"unit\": \"metre\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "discharge",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Water discharge (flow rate) at the station in cubic metres per second. Null when not measured or unavailable. Upstream field: DISCHARGE. JSON Structure annotations: {\"altnames\": [\"DISCHARGE\"], \"symbol\": \"m³/s\", \"unit\": \"cubic metre per second\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Real-time hydrometric observation from the ECCC OGC API hydrometric-realtime collection. Data are provisional and updated approximately every 5 minutes."
               }
             }
           }

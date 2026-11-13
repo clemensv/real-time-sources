@@ -79,6 +79,8 @@ def test_install_partition_key_wrapper_stamps_reactor_message_subject():
     calls = []
 
     class ReactorProducer:
+        _send_queue = object()
+
         def _send_via_reactor(self, message, timeout=30.0):
             calls.append((message, timeout))
             return "reactor-sent"

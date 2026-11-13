@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/net.vatsim.pilots"
+        "#/messagegroups/net.vatsim.pilots",
+        "#/messagegroups/net.vatsim.pilots.avro",
+        "#/messagegroups/net.vatsim.pilots.avro.binary"
       ]
     },
     "net.vatsim.controllers.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/net.vatsim.controllers"
+        "#/messagegroups/net.vatsim.controllers",
+        "#/messagegroups/net.vatsim.controllers.avro",
+        "#/messagegroups/net.vatsim.controllers.avro.binary"
       ]
     },
     "net.vatsim.status.Kafka": {
@@ -60,7 +64,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/net.vatsim.status"
+        "#/messagegroups/net.vatsim.status",
+        "#/messagegroups/net.vatsim.status.avro",
+        "#/messagegroups/net.vatsim.status.avro.binary"
       ]
     },
     "net.vatsim.Mqtt": {
@@ -79,7 +85,9 @@
         }
       ],
       "messagegroups": [
-        "#/messagegroups/net.vatsim.mqtt"
+        "#/messagegroups/net.vatsim.mqtt",
+        "#/messagegroups/net.vatsim.mqtt.avro",
+        "#/messagegroups/net.vatsim.mqtt.avro.binary"
       ]
     },
     "net.vatsim.Amqp": {
@@ -100,7 +108,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/net.vatsim.amqp"
+        "#/messagegroups/net.vatsim.amqp",
+        "#/messagegroups/net.vatsim.amqp.avro",
+        "#/messagegroups/net.vatsim.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for vatsim CloudEvents on the configured broker address."
     }
@@ -122,6 +132,10 @@
             "subject": {
               "value": "{callsign}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -145,6 +159,10 @@
             "subject": {
               "value": "{callsign}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -168,6 +186,10 @@
             "subject": {
               "value": "{callsign}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -261,6 +283,218 @@
                 "value": "{facility}",
                 "description": "Routing axis 'facility' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
               }
+            }
+          }
+        }
+      }
+    },
+    "net.vatsim.pilots.avro": {
+      "messagegroupid": "net.vatsim.pilots.avro",
+      "messages": {
+        "net.vatsim.PilotPosition": {
+          "messageid": "net.vatsim.PilotPosition",
+          "basemessage": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.PilotPosition"
+        }
+      }
+    },
+    "net.vatsim.pilots.avro.binary": {
+      "messagegroupid": "net.vatsim.pilots.avro.binary",
+      "messages": {
+        "net.vatsim.PilotPosition": {
+          "messageid": "net.vatsim.PilotPosition",
+          "basemessage": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.PilotPosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "net.vatsim.controllers.avro": {
+      "messagegroupid": "net.vatsim.controllers.avro",
+      "messages": {
+        "net.vatsim.ControllerPosition": {
+          "messageid": "net.vatsim.ControllerPosition",
+          "basemessage": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.ControllerPosition"
+        }
+      }
+    },
+    "net.vatsim.controllers.avro.binary": {
+      "messagegroupid": "net.vatsim.controllers.avro.binary",
+      "messages": {
+        "net.vatsim.ControllerPosition": {
+          "messageid": "net.vatsim.ControllerPosition",
+          "basemessage": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.ControllerPosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "net.vatsim.status.avro": {
+      "messagegroupid": "net.vatsim.status.avro",
+      "messages": {
+        "net.vatsim.NetworkStatus": {
+          "messageid": "net.vatsim.NetworkStatus",
+          "basemessage": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.NetworkStatus"
+        }
+      }
+    },
+    "net.vatsim.status.avro.binary": {
+      "messagegroupid": "net.vatsim.status.avro.binary",
+      "messages": {
+        "net.vatsim.NetworkStatus": {
+          "messageid": "net.vatsim.NetworkStatus",
+          "basemessage": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.NetworkStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "net.vatsim.mqtt.avro": {
+      "messagegroupid": "net.vatsim.mqtt.avro",
+      "messages": {
+        "net.vatsim.mqtt.PilotPosition": {
+          "messageid": "net.vatsim.mqtt.PilotPosition",
+          "basemessage": "/messagegroups/net.vatsim.mqtt/messages/net.vatsim.mqtt.PilotPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.PilotPosition"
+        },
+        "net.vatsim.mqtt.ControllerPosition": {
+          "messageid": "net.vatsim.mqtt.ControllerPosition",
+          "basemessage": "/messagegroups/net.vatsim.mqtt/messages/net.vatsim.mqtt.ControllerPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.ControllerPosition"
+        },
+        "net.vatsim.mqtt.FacilityStatus": {
+          "messageid": "net.vatsim.mqtt.FacilityStatus",
+          "basemessage": "/messagegroups/net.vatsim.mqtt/messages/net.vatsim.mqtt.FacilityStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.NetworkStatus"
+        }
+      }
+    },
+    "net.vatsim.mqtt.avro.binary": {
+      "messagegroupid": "net.vatsim.mqtt.avro.binary",
+      "messages": {
+        "net.vatsim.mqtt.PilotPosition": {
+          "messageid": "net.vatsim.mqtt.PilotPosition",
+          "basemessage": "/messagegroups/net.vatsim.mqtt/messages/net.vatsim.mqtt.PilotPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.PilotPosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "net.vatsim.mqtt.ControllerPosition": {
+          "messageid": "net.vatsim.mqtt.ControllerPosition",
+          "basemessage": "/messagegroups/net.vatsim.mqtt/messages/net.vatsim.mqtt.ControllerPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.ControllerPosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "net.vatsim.mqtt.FacilityStatus": {
+          "messageid": "net.vatsim.mqtt.FacilityStatus",
+          "basemessage": "/messagegroups/net.vatsim.mqtt/messages/net.vatsim.mqtt.FacilityStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.NetworkStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "net.vatsim.amqp.avro": {
+      "messagegroupid": "net.vatsim.amqp.avro",
+      "messages": {
+        "net.vatsim.amqp.PilotPosition": {
+          "messageid": "net.vatsim.amqp.PilotPosition",
+          "basemessage": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.PilotPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.PilotPosition"
+        },
+        "net.vatsim.amqp.ControllerPosition": {
+          "messageid": "net.vatsim.amqp.ControllerPosition",
+          "basemessage": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.ControllerPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.ControllerPosition"
+        },
+        "net.vatsim.amqp.FacilityStatus": {
+          "messageid": "net.vatsim.amqp.FacilityStatus",
+          "basemessage": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.NetworkStatus"
+        }
+      }
+    },
+    "net.vatsim.amqp.avro.binary": {
+      "messagegroupid": "net.vatsim.amqp.avro.binary",
+      "messages": {
+        "net.vatsim.amqp.PilotPosition": {
+          "messageid": "net.vatsim.amqp.PilotPosition",
+          "basemessage": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.PilotPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.PilotPosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "net.vatsim.amqp.ControllerPosition": {
+          "messageid": "net.vatsim.amqp.ControllerPosition",
+          "basemessage": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.ControllerPosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.ControllerPosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "net.vatsim.amqp.FacilityStatus": {
+          "messageid": "net.vatsim.amqp.FacilityStatus",
+          "basemessage": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/net.vatsim.avro/schemas/net.vatsim.NetworkStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

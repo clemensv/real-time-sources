@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/gov.usda.nrcs.snotel"
+        "#/messagegroups/gov.usda.nrcs.snotel",
+        "#/messagegroups/gov.usda.nrcs.snotel.avro",
+        "#/messagegroups/gov.usda.nrcs.snotel.avro.binary"
       ]
     },
     "gov.usda.nrcs.snotel.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/gov.usda.nrcs.snotel.mqtt"
+        "#/messagegroups/gov.usda.nrcs.snotel.mqtt",
+        "#/messagegroups/gov.usda.nrcs.snotel.mqtt.avro",
+        "#/messagegroups/gov.usda.nrcs.snotel.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for snotel CloudEvents using the documented UNS topic hierarchy."
     },
@@ -61,7 +65,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/gov.usda.nrcs.snotel.amqp"
+        "#/messagegroups/gov.usda.nrcs.snotel.amqp",
+        "#/messagegroups/gov.usda.nrcs.snotel.amqp.avro",
+        "#/messagegroups/gov.usda.nrcs.snotel.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for snotel CloudEvents on the configured broker address."
     }
@@ -82,6 +88,10 @@
             "subject": {
               "value": "{station_triplet}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -100,6 +110,10 @@
             "subject": {
               "value": "{station_triplet}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -188,6 +202,144 @@
                 "value": "{station_triplet}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.avro": {
+      "messagegroupid": "gov.usda.nrcs.snotel.avro",
+      "messages": {
+        "gov.usda.nrcs.snotel.Station": {
+          "messageid": "gov.usda.nrcs.snotel.Station",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.Station"
+        },
+        "gov.usda.nrcs.snotel.SnowObservation": {
+          "messageid": "gov.usda.nrcs.snotel.SnowObservation",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.SnowObservation"
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.avro.binary": {
+      "messagegroupid": "gov.usda.nrcs.snotel.avro.binary",
+      "messages": {
+        "gov.usda.nrcs.snotel.Station": {
+          "messageid": "gov.usda.nrcs.snotel.Station",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.usda.nrcs.snotel.SnowObservation": {
+          "messageid": "gov.usda.nrcs.snotel.SnowObservation",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.SnowObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.mqtt.avro": {
+      "messagegroupid": "gov.usda.nrcs.snotel.mqtt.avro",
+      "messages": {
+        "gov.usda.nrcs.snotel.mqtt.Station": {
+          "messageid": "gov.usda.nrcs.snotel.mqtt.Station",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.mqtt/messages/gov.usda.nrcs.snotel.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.Station"
+        },
+        "gov.usda.nrcs.snotel.mqtt.SnowObservation": {
+          "messageid": "gov.usda.nrcs.snotel.mqtt.SnowObservation",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.mqtt/messages/gov.usda.nrcs.snotel.mqtt.SnowObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.SnowObservation"
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.mqtt.avro.binary": {
+      "messagegroupid": "gov.usda.nrcs.snotel.mqtt.avro.binary",
+      "messages": {
+        "gov.usda.nrcs.snotel.mqtt.Station": {
+          "messageid": "gov.usda.nrcs.snotel.mqtt.Station",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.mqtt/messages/gov.usda.nrcs.snotel.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.usda.nrcs.snotel.mqtt.SnowObservation": {
+          "messageid": "gov.usda.nrcs.snotel.mqtt.SnowObservation",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.mqtt/messages/gov.usda.nrcs.snotel.mqtt.SnowObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.SnowObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.amqp.avro": {
+      "messagegroupid": "gov.usda.nrcs.snotel.amqp.avro",
+      "messages": {
+        "gov.usda.nrcs.snotel.amqp.Station": {
+          "messageid": "gov.usda.nrcs.snotel.amqp.Station",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.amqp/messages/gov.usda.nrcs.snotel.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.Station"
+        },
+        "gov.usda.nrcs.snotel.amqp.SnowObservation": {
+          "messageid": "gov.usda.nrcs.snotel.amqp.SnowObservation",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.amqp/messages/gov.usda.nrcs.snotel.amqp.SnowObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.SnowObservation"
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.amqp.avro.binary": {
+      "messagegroupid": "gov.usda.nrcs.snotel.amqp.avro.binary",
+      "messages": {
+        "gov.usda.nrcs.snotel.amqp.Station": {
+          "messageid": "gov.usda.nrcs.snotel.amqp.Station",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.amqp/messages/gov.usda.nrcs.snotel.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.usda.nrcs.snotel.amqp.SnowObservation": {
+          "messageid": "gov.usda.nrcs.snotel.amqp.SnowObservation",
+          "basemessage": "/messagegroups/gov.usda.nrcs.snotel.amqp/messages/gov.usda.nrcs.snotel.amqp.SnowObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.avro/schemas/gov.usda.nrcs.snotel.SnowObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -319,6 +471,129 @@
                 },
                 "$id": "https://wcc.sc.egov.usda.gov/schemas/gov/usda/nrcs/snotel/SnowObservation",
                 "description": "Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings — the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/."
+              }
+            }
+          }
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.avro": {
+      "schemas": {
+        "gov.usda.nrcs.snotel.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "gov.usda.nrcs.snotel.Station",
+                "fields": [
+                  {
+                    "name": "station_triplet",
+                    "type": "string",
+                    "doc": "SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. This is the canonical identifier used by the USDA NRCS Water and Climate Center to uniquely reference each SNOTEL site (e.g. '838:CO:SNTL' for University Camp, Colorado)."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name assigned by the USDA NRCS (e.g. 'University Camp', 'Berthoud Summit'). Station names are generally geographic references to the site location."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "Two-letter US state or territory code where the station is located (e.g. 'CO', 'AK', 'MT'). Stations are distributed across the western United States and Alaska."
+                  },
+                  {
+                    "name": "elevation",
+                    "type": "double",
+                    "doc": "Station elevation above sea level. Reported by the NRCS in feet. SNOTEL stations are typically located at high elevations in mountainous terrain to monitor snowpack. JSON Structure annotations: {\"symbol\": \"ft\", \"unit\": \"[ft_i]\"}"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the SNOTEL station in decimal degrees north. All SNOTEL stations are in the northern hemisphere (positive values)."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the SNOTEL station in decimal degrees east. Western US stations have negative values indicating west of the Prime Meridian."
+                  }
+                ],
+                "doc": "Reference metadata for a USDA NRCS SNOTEL (SNOwpack TELemetry) station. SNOTEL is an automated system of over 900 snowpack monitoring sites in the western United States and Alaska operated by the Natural Resources Conservation Service. Each station reports snowpack, precipitation, and temperature data via satellite telemetry. This reference record provides the station identity and geographic context for the hourly telemetry observations."
+              }
+            }
+          }
+        },
+        "gov.usda.nrcs.snotel.SnowObservation": {
+          "name": "SnowObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "gov.usda.nrcs.snotel.SnowObservation",
+                "fields": [
+                  {
+                    "name": "station_triplet",
+                    "type": "string",
+                    "doc": "SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. Links this observation to the station that reported it."
+                  },
+                  {
+                    "name": "date_time",
+                    "type": "string",
+                    "doc": "Observation timestamp reported by the SNOTEL station. Hourly readings are transmitted via satellite telemetry, typically at the top of each hour. The time is in the station's local standard time as reported by the NRCS Report Generator."
+                  },
+                  {
+                    "name": "snow_water_equivalent",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "snow_depth",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "precipitation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for snotel. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings — the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie"
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie",
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro",
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro.binary"
       ],
       "description": "Kafka producer endpoint for Hub'Eau Hydrométrie CloudEvents on the `hubeau-hydrometrie` topic keyed by `{code_station}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt"
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt",
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.avro",
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for hubeau-hydrometrie CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp"
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp",
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.avro",
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for hubeau-hydrometrie CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{code_station}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{code_station}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -196,6 +210,144 @@
           }
         }
       }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.avro": {
+      "messagegroupid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.avro",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+        }
+      }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.avro.binary": {
+      "messagegroupid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.avro.binary",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.avro": {
+      "messagegroupid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.avro",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+        }
+      }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.avro.binary": {
+      "messagegroupid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.avro.binary",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.avro": {
+      "messagegroupid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.avro",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+        }
+      }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.avro.binary": {
+      "messagegroupid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.avro.binary",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation": {
+          "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation",
+          "basemessage": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -278,7 +430,10 @@
                     "description": "Date when the station began operating, when the upstream catalog provides it."
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie."
                   }
                 },
@@ -306,7 +461,10 @@
                 "name": "Observation",
                 "properties": {
                   "code_station": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations."
                   },
                   "date_obs": {
@@ -339,7 +497,10 @@
                     "description": "Provider quality label describing how Hub'Eau qualifies the observation."
                   },
                   "basin": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie."
                   }
                 },
@@ -356,7 +517,7 @@
         "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
           "name": "Station",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -433,13 +594,106 @@
                 "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie",
                 "description": "Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+                "fields": [
+                  {
+                    "name": "code_station",
+                    "type": "string",
+                    "doc": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations."
+                  },
+                  {
+                    "name": "libelle_station",
+                    "type": "string",
+                    "doc": "Display label for the hydrometry station as published by Hub'Eau. It is useful for maps and UI labels but should not be used as a stable key."
+                  },
+                  {
+                    "name": "code_site",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional Hub'Eau site code grouping one or more stations at the same monitoring location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude_station",
+                    "type": "double",
+                    "doc": "Longitude of the station in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "latitude_station",
+                    "type": "double",
+                    "doc": "Latitude of the station in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "libelle_cours_eau",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the river or watercourse monitored by the station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "libelle_commune",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Municipality where the station is located. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "code_departement",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "French department code for the station location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "en_service",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether Hub'Eau marks the station as currently in service. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "date_ouverture_station",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Date when the station began operating, when the upstream catalog provides it. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source."
+              }
             }
           }
         },
         "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
           "name": "Observation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -455,8 +709,7 @@
                   {
                     "name": "date_obs",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -486,6 +739,70 @@
                 ],
                 "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie",
                 "description": "Measurement payload for observations in the Hub'Eau Hydrométrie source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+                "fields": [
+                  {
+                    "name": "code_station",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "date_obs",
+                    "type": "string",
+                    "doc": "Observation timestamp published by Hub'Eau for this measurement."
+                  },
+                  {
+                    "name": "resultat_obs",
+                    "type": [
+                      "double",
+                      "string"
+                    ],
+                    "doc": "Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height. The upstream Hub'Eau API may return this field as a string when the value is non-numeric."
+                  },
+                  {
+                    "name": "grandeur_hydro",
+                    "type": "string",
+                    "doc": "Hydrometric quantity code identifying what `resultat_obs` measures, such as discharge or water height."
+                  },
+                  {
+                    "name": "libelle_methode_obs",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider label for the observation method used to produce the measurement. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "libelle_qualification_obs",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider quality label describing how Hub'Eau qualifies the observation. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Measurement payload for water height and discharge observations in the Hub'Eau Hydrométrie source."
               }
             }
           }

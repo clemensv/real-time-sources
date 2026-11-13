@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/ie.gov.opw.waterlevel"
+        "#/messagegroups/ie.gov.opw.waterlevel",
+        "#/messagegroups/ie.gov.opw.waterlevel.avro",
+        "#/messagegroups/ie.gov.opw.waterlevel.avro.binary"
       ],
       "description": "Kafka producer endpoint for Ireland OPW waterlevel.ie CloudEvents on the `ireland-opw-waterlevel` topic keyed by `{station_ref}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/ie.gov.opw.waterlevel.mqtt"
+        "#/messagegroups/ie.gov.opw.waterlevel.mqtt",
+        "#/messagegroups/ie.gov.opw.waterlevel.mqtt.avro",
+        "#/messagegroups/ie.gov.opw.waterlevel.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for ireland-opw-waterlevel CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/ie.gov.opw.waterlevel.amqp"
+        "#/messagegroups/ie.gov.opw.waterlevel.amqp",
+        "#/messagegroups/ie.gov.opw.waterlevel.amqp.avro",
+        "#/messagegroups/ie.gov.opw.waterlevel.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for ireland-opw-waterlevel CloudEvents on the configured broker address."
     }
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{station_ref}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -105,6 +115,10 @@
             "subject": {
               "value": "{station_ref}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -198,6 +212,144 @@
           }
         }
       }
+    },
+    "ie.gov.opw.waterlevel.avro": {
+      "messagegroupid": "ie.gov.opw.waterlevel.avro",
+      "messages": {
+        "ie.gov.opw.waterlevel.Station": {
+          "messageid": "ie.gov.opw.waterlevel.Station",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.Station"
+        },
+        "ie.gov.opw.waterlevel.WaterLevelReading": {
+          "messageid": "ie.gov.opw.waterlevel.WaterLevelReading",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.WaterLevelReading"
+        }
+      }
+    },
+    "ie.gov.opw.waterlevel.avro.binary": {
+      "messagegroupid": "ie.gov.opw.waterlevel.avro.binary",
+      "messages": {
+        "ie.gov.opw.waterlevel.Station": {
+          "messageid": "ie.gov.opw.waterlevel.Station",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ie.gov.opw.waterlevel.WaterLevelReading": {
+          "messageid": "ie.gov.opw.waterlevel.WaterLevelReading",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "ie.gov.opw.waterlevel.mqtt.avro": {
+      "messagegroupid": "ie.gov.opw.waterlevel.mqtt.avro",
+      "messages": {
+        "ie.gov.opw.waterlevel.mqtt.Station": {
+          "messageid": "ie.gov.opw.waterlevel.mqtt.Station",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.mqtt/messages/ie.gov.opw.waterlevel.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.Station"
+        },
+        "ie.gov.opw.waterlevel.mqtt.WaterLevelReading": {
+          "messageid": "ie.gov.opw.waterlevel.mqtt.WaterLevelReading",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.mqtt/messages/ie.gov.opw.waterlevel.mqtt.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.WaterLevelReading"
+        }
+      }
+    },
+    "ie.gov.opw.waterlevel.mqtt.avro.binary": {
+      "messagegroupid": "ie.gov.opw.waterlevel.mqtt.avro.binary",
+      "messages": {
+        "ie.gov.opw.waterlevel.mqtt.Station": {
+          "messageid": "ie.gov.opw.waterlevel.mqtt.Station",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.mqtt/messages/ie.gov.opw.waterlevel.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ie.gov.opw.waterlevel.mqtt.WaterLevelReading": {
+          "messageid": "ie.gov.opw.waterlevel.mqtt.WaterLevelReading",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.mqtt/messages/ie.gov.opw.waterlevel.mqtt.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "ie.gov.opw.waterlevel.amqp.avro": {
+      "messagegroupid": "ie.gov.opw.waterlevel.amqp.avro",
+      "messages": {
+        "ie.gov.opw.waterlevel.amqp.Station": {
+          "messageid": "ie.gov.opw.waterlevel.amqp.Station",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.amqp/messages/ie.gov.opw.waterlevel.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.Station"
+        },
+        "ie.gov.opw.waterlevel.amqp.WaterLevelReading": {
+          "messageid": "ie.gov.opw.waterlevel.amqp.WaterLevelReading",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.amqp/messages/ie.gov.opw.waterlevel.amqp.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.WaterLevelReading"
+        }
+      }
+    },
+    "ie.gov.opw.waterlevel.amqp.avro.binary": {
+      "messagegroupid": "ie.gov.opw.waterlevel.amqp.avro.binary",
+      "messages": {
+        "ie.gov.opw.waterlevel.amqp.Station": {
+          "messageid": "ie.gov.opw.waterlevel.amqp.Station",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.amqp/messages/ie.gov.opw.waterlevel.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ie.gov.opw.waterlevel.amqp.WaterLevelReading": {
+          "messageid": "ie.gov.opw.waterlevel.amqp.WaterLevelReading",
+          "basemessage": "/messagegroups/ie.gov.opw.waterlevel.amqp/messages/ie.gov.opw.waterlevel.amqp.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.avro/schemas/ie.gov.opw.waterlevel.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -245,7 +397,10 @@
                                 "description": "Latitude of the station location in WGS84 decimal degrees."
                               },
                               "basin": {
-                                "type": ["string", "null"],
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
                                 "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel."
                               }
                             },
@@ -317,7 +472,10 @@
                                 "description": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."
                               },
                               "basin": {
-                                "type": ["string", "null"],
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
                                 "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel."
                               }
                             },
@@ -383,9 +541,54 @@
                 ],
                 "description": "Reference details for one monitoring station or site in the Ireland OPW waterlevel.ie source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "ie.gov.opw.waterlevel.Station",
+                "fields": [
+                  {
+                    "name": "station_ref",
+                    "type": "string",
+                    "doc": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041')."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills')."
+                  },
+                  {
+                    "name": "region_id",
+                    "type": "int",
+                    "doc": "Integer identifier of the OPW hydrometric region the station belongs to."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station location in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station location in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference data for an OPW hydrometric station in Ireland, including location and region."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         },
         "ie.gov.opw.waterlevel.WaterLevelReading": {
           "versions": {
@@ -433,9 +636,62 @@
                 ],
                 "description": "Measurement payload for observations in the Ireland OPW waterlevel.ie source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "ie.gov.opw.waterlevel.WaterLevelReading",
+                "fields": [
+                  {
+                    "name": "station_ref",
+                    "type": "string",
+                    "doc": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041')."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills')."
+                  },
+                  {
+                    "name": "sensor_ref",
+                    "type": "string",
+                    "doc": "Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres)."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation."
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of the sensor reading as provided by the upstream API (e.g. '2024-01-15T12:00:00Z')."
+                  },
+                  {
+                    "name": "err_code",
+                    "type": "int",
+                    "doc": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         }
       }
     }

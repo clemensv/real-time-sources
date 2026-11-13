@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/AU.Gov.BOM.Weather"
+        "#/messagegroups/AU.Gov.BOM.Weather",
+        "#/messagegroups/AU.Gov.BOM.Weather.avro",
+        "#/messagegroups/AU.Gov.BOM.Weather.avro.binary"
       ]
     },
     "AU.Gov.BOM.Warning.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/AU.Gov.BOM.Warning"
+        "#/messagegroups/AU.Gov.BOM.Warning",
+        "#/messagegroups/AU.Gov.BOM.Warning.avro",
+        "#/messagegroups/AU.Gov.BOM.Warning.avro.binary"
       ]
     },
     "AU.Gov.BOM.Weather.Mqtt": {
@@ -61,7 +65,11 @@
       },
       "messagegroups": [
         "#/messagegroups/AU.Gov.BOM.Weather.mqtt",
-        "#/messagegroups/AU.Gov.BOM.Warning.mqtt"
+        "#/messagegroups/AU.Gov.BOM.Warning.mqtt",
+        "#/messagegroups/AU.Gov.BOM.Weather.mqtt.avro",
+        "#/messagegroups/AU.Gov.BOM.Weather.mqtt.avro.binary",
+        "#/messagegroups/AU.Gov.BOM.Warning.mqtt.avro",
+        "#/messagegroups/AU.Gov.BOM.Warning.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for bom-australia."
     },
@@ -84,7 +92,11 @@
       },
       "messagegroups": [
         "#/messagegroups/AU.Gov.BOM.Weather.amqp",
-        "#/messagegroups/AU.Gov.BOM.Warning.amqp"
+        "#/messagegroups/AU.Gov.BOM.Warning.amqp",
+        "#/messagegroups/AU.Gov.BOM.Weather.amqp.avro",
+        "#/messagegroups/AU.Gov.BOM.Weather.amqp.avro.binary",
+        "#/messagegroups/AU.Gov.BOM.Warning.amqp.avro",
+        "#/messagegroups/AU.Gov.BOM.Warning.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for bom-australia."
     }
@@ -105,6 +117,10 @@
             "subject": {
               "value": "{station_wmo}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -123,6 +139,10 @@
             "subject": {
               "value": "{station_wmo}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -145,6 +165,10 @@
             "subject": {
               "value": "{warning_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -334,6 +358,228 @@
             "application-properties": {}
           },
           "envelope": "CloudEvents/1.0"
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.avro": {
+      "messagegroupid": "AU.Gov.BOM.Weather.avro",
+      "messages": {
+        "AU.Gov.BOM.Weather.Station": {
+          "messageid": "AU.Gov.BOM.Weather.Station",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.Station"
+        },
+        "AU.Gov.BOM.Weather.WeatherObservation": {
+          "messageid": "AU.Gov.BOM.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.WeatherObservation"
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.avro.binary": {
+      "messagegroupid": "AU.Gov.BOM.Weather.avro.binary",
+      "messages": {
+        "AU.Gov.BOM.Weather.Station": {
+          "messageid": "AU.Gov.BOM.Weather.Station",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "AU.Gov.BOM.Weather.WeatherObservation": {
+          "messageid": "AU.Gov.BOM.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.avro": {
+      "messagegroupid": "AU.Gov.BOM.Warning.avro",
+      "messages": {
+        "AU.Gov.BOM.Warning.WarningBulletin": {
+          "messageid": "AU.Gov.BOM.Warning.WarningBulletin",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.avro/schemas/AU.Gov.BOM.Warning.WarningBulletin"
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.avro.binary": {
+      "messagegroupid": "AU.Gov.BOM.Warning.avro.binary",
+      "messages": {
+        "AU.Gov.BOM.Warning.WarningBulletin": {
+          "messageid": "AU.Gov.BOM.Warning.WarningBulletin",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.avro/schemas/AU.Gov.BOM.Warning.WarningBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.mqtt.avro": {
+      "messagegroupid": "AU.Gov.BOM.Weather.mqtt.avro",
+      "messages": {
+        "AU.Gov.BOM.Weather.mqtt.Station": {
+          "messageid": "AU.Gov.BOM.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.Station"
+        },
+        "AU.Gov.BOM.Weather.mqtt.WeatherObservation": {
+          "messageid": "AU.Gov.BOM.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.WeatherObservation"
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.mqtt.avro.binary": {
+      "messagegroupid": "AU.Gov.BOM.Weather.mqtt.avro.binary",
+      "messages": {
+        "AU.Gov.BOM.Weather.mqtt.Station": {
+          "messageid": "AU.Gov.BOM.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "AU.Gov.BOM.Weather.mqtt.WeatherObservation": {
+          "messageid": "AU.Gov.BOM.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.amqp.avro": {
+      "messagegroupid": "AU.Gov.BOM.Weather.amqp.avro",
+      "messages": {
+        "AU.Gov.BOM.Weather.amqp.Station": {
+          "messageid": "AU.Gov.BOM.Weather.amqp.Station",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.amqp/messages/AU.Gov.BOM.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.Station"
+        },
+        "AU.Gov.BOM.Weather.amqp.WeatherObservation": {
+          "messageid": "AU.Gov.BOM.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.amqp/messages/AU.Gov.BOM.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.WeatherObservation"
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.amqp.avro.binary": {
+      "messagegroupid": "AU.Gov.BOM.Weather.amqp.avro.binary",
+      "messages": {
+        "AU.Gov.BOM.Weather.amqp.Station": {
+          "messageid": "AU.Gov.BOM.Weather.amqp.Station",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.amqp/messages/AU.Gov.BOM.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "AU.Gov.BOM.Weather.amqp.WeatherObservation": {
+          "messageid": "AU.Gov.BOM.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Weather.amqp/messages/AU.Gov.BOM.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.avro/schemas/AU.Gov.BOM.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.mqtt.avro": {
+      "messagegroupid": "AU.Gov.BOM.Warning.mqtt.avro",
+      "messages": {
+        "AU.Gov.BOM.Warning.mqtt.WarningBulletin": {
+          "messageid": "AU.Gov.BOM.Warning.mqtt.WarningBulletin",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Warning.mqtt/messages/AU.Gov.BOM.Warning.mqtt.WarningBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.avro/schemas/AU.Gov.BOM.Warning.WarningBulletin"
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.mqtt.avro.binary": {
+      "messagegroupid": "AU.Gov.BOM.Warning.mqtt.avro.binary",
+      "messages": {
+        "AU.Gov.BOM.Warning.mqtt.WarningBulletin": {
+          "messageid": "AU.Gov.BOM.Warning.mqtt.WarningBulletin",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Warning.mqtt/messages/AU.Gov.BOM.Warning.mqtt.WarningBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.avro/schemas/AU.Gov.BOM.Warning.WarningBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.amqp.avro": {
+      "messagegroupid": "AU.Gov.BOM.Warning.amqp.avro",
+      "messages": {
+        "AU.Gov.BOM.Warning.amqp.WarningBulletin": {
+          "messageid": "AU.Gov.BOM.Warning.amqp.WarningBulletin",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Warning.amqp/messages/AU.Gov.BOM.Warning.amqp.WarningBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.avro/schemas/AU.Gov.BOM.Warning.WarningBulletin"
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.amqp.avro.binary": {
+      "messagegroupid": "AU.Gov.BOM.Warning.amqp.avro.binary",
+      "messages": {
+        "AU.Gov.BOM.Warning.amqp.WarningBulletin": {
+          "messageid": "AU.Gov.BOM.Warning.amqp.WarningBulletin",
+          "basemessage": "/messagegroups/AU.Gov.BOM.Warning.amqp/messages/AU.Gov.BOM.Warning.amqp.WarningBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.avro/schemas/AU.Gov.BOM.Warning.WarningBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -745,6 +991,463 @@
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.avro": {
+      "schemas": {
+        "AU.Gov.BOM.Weather.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "AU.Gov.BOM.Weather.Station",
+                "fields": [
+                  {
+                    "name": "station_wmo",
+                    "type": "string",
+                    "doc": "WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name as assigned by the Bureau of Meteorology, e.g. 'Sydney Airport' or 'Melbourne Airport'."
+                  },
+                  {
+                    "name": "product_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "BOM product code identifying the observation product this station belongs to, e.g. 'IDN60901' for NSW capital city observations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Australian state or territory the station is located in, as reported by BOM, e.g. 'New South Wales', 'Victoria'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "time_zone",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Abbreviation of the local time zone for the station, e.g. 'EST' for Eastern Standard Time, 'CST' for Central Standard Time. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Geographic latitude of the station in decimal degrees (negative for Southern Hemisphere). JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Geographic longitude of the station in decimal degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  }
+                ],
+                "doc": "Reference metadata for a BOM weather observation station identified by its WMO station number. Stations report half-hourly surface observations covering temperature, wind, pressure, rainfall, humidity, cloud, and visibility."
+              }
+            }
+          }
+        },
+        "AU.Gov.BOM.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "AU.Gov.BOM.Weather.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "station_wmo",
+                    "type": "string",
+                    "doc": "WMO station number identifying the reporting station."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the reporting station."
+                  },
+                  {
+                    "name": "observation_time_utc",
+                    "type": "string",
+                    "doc": "Timestamp of the observation in UTC, derived from the BOM 'aifstime_utc' field in YYYYMMDDHHmmss format."
+                  },
+                  {
+                    "name": "local_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Local date and time string as provided by BOM in 'local_date_time_full' format (YYYYMMDDHHmmss). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature measured at the station. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "apparent_temp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Apparent (feels-like) temperature combining air temperature, humidity, and wind chill effects. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dewpt",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dew point temperature at the station. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rel_hum",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Relative humidity as a percentage. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"percent\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "delta_t",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wet bulb depression (difference between dry and wet bulb temperatures), used for bushfire danger calculations. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_dir",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Compass direction the wind is blowing from, e.g. 'N', 'NNE', 'SSW', 'CALM'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_spd_kmh",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Sustained wind speed in kilometres per hour. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_spd_kt",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Sustained wind speed in knots (nautical miles per hour). JSON Structure annotations: {\"symbol\": \"kt\", \"unit\": \"knot\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gust_kmh",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Maximum wind gust speed recorded in the observation period in kilometres per hour. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gust_kt",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Maximum wind gust speed recorded in the observation period in knots. JSON Structure annotations: {\"symbol\": \"kt\", \"unit\": \"knot\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "press",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Atmospheric pressure at station level. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "press_qnh",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "QNH pressure — atmospheric pressure adjusted to mean sea level using the International Standard Atmosphere, used in aviation altimetry. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "press_msl",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Mean sea level pressure — station pressure reduced to sea level, used for synoptic weather analysis. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "press_tend",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pressure tendency description indicating whether pressure is rising, falling, or steady over the past 3 hours. May be a numeric code or textual description. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rain_trace",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Rainfall since 9am local time as reported by BOM. Value is a string that may be '0.0', a numeric amount in mm, or 'Trace' for very small amounts. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "cloud",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Textual cloud cover description, e.g. 'Partly cloudy', 'Clear', 'Overcast'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "cloud_oktas",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Cloud cover in oktas (eighths of sky covered), ranging from 0 (clear) to 8 (overcast). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "cloud_base_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Height of the lowest cloud base above ground level. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "cloud_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Cloud type classification as reported by the station, e.g. 'Cu', 'Cb', 'St'. May be '-' when not reported. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vis_km",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Horizontal visibility in kilometres. Reported as a string as BOM may include qualifiers. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "weather",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Present weather description, e.g. 'Rain', 'Fog', 'Thunderstorm'. May be '-' when no significant weather. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sea_state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Sea state description for coastal stations, e.g. 'Smooth', 'Slight', 'Moderate'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "swell_dir_worded",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Dominant swell direction as a compass bearing word for coastal stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "swell_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dominant swell height for coastal stations. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "swell_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dominant swell period for coastal stations. JSON Structure annotations: {\"symbol\": \"s\", \"unit\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the station at observation time. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the station at observation time. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product."
+              }
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.avro": {
+      "schemas": {
+        "AU.Gov.BOM.Warning.WarningBulletin": {
+          "name": "WarningBulletin",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "AU.Gov.BOM.Warning.WarningBulletin",
+                "fields": [
+                  {
+                    "name": "warning_id",
+                    "type": "string",
+                    "doc": "Stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'."
+                  },
+                  {
+                    "name": "warning_url",
+                    "type": "string",
+                    "doc": "Absolute BOM URL of the warning product page linked from the RSS item."
+                  },
+                  {
+                    "name": "feed_url",
+                    "type": "string",
+                    "doc": "Absolute BOM RSS feed URL that published this warning item."
+                  },
+                  {
+                    "name": "feed_title",
+                    "type": "string",
+                    "doc": "Title of the RSS feed channel publishing this warning bulletin."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "Normalized warning headline text from the RSS item title with line breaks collapsed to spaces."
+                  },
+                  {
+                    "name": "published_at",
+                    "type": "string",
+                    "doc": "UTC timestamp when the RSS item was created or updated, taken from the item's pubDate field."
+                  },
+                  {
+                    "name": "issued_local_time_text",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Local issuance time prefix embedded in the RSS headline, for example '08/16:29 EST', when present. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "warning_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Warning headline extracted from the RSS title before the trailing affected-area clause, for example 'Severe Weather Warning'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "affected_area_text",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "severity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'severity' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed."
               }
             }
           }

@@ -6,6 +6,7 @@ xRegistry Kafka key and JsonStructure schema declarations.
 """
 
 import glob
+import copy
 import json
 import os
 import re
@@ -354,28 +355,30 @@ def _resolve_json_pointer(document: Dict[str, Any], pointer: str) -> Any:
 def _resolve_message_inheritance(
     document: Dict[str, Any],
     message: Dict[str, Any],
-    depth: int = 0,
+    seen: Tuple[str, ...] = (),
 ) -> Dict[str, Any]:
-    """Flatten a message through any ``basemessageuri`` chain.
-
-    A messagegroup may declare transport-specific child messages that inherit
-    schema and envelope metadata from a transport-agnostic parent via
-    ``basemessageuri``. Child fields win over parent fields.
-    """
-    if depth > 5:
-        raise AssertionError('basemessageuri chain too deep')
-    base_url = message.get('basemessageuri')
-    if not base_url:
-        return message
+    """Resolve current and legacy base-message references with deep merging."""
+    base_keys = ('basemessage', 'basemessageuri', 'basemessageurl')
+    references = [message[key] for key in base_keys if key in message]
+    if len(set(references)) > 1:
+        raise AssertionError('Conflicting base-message attributes')
+    if not references:
+        return copy.deepcopy(message)
+    base_url = references[0]
     base_pointer = '#' + base_url if base_url.startswith('/') else base_url
+    if base_pointer in seen:
+        raise AssertionError(f'Cyclic message inheritance: {base_pointer}')
     base_message = _resolve_json_pointer(document, base_pointer)
-    base_resolved = _resolve_message_inheritance(document, base_message, depth + 1)
-    merged = dict(base_resolved)
-    for key, value in message.items():
-        if key == 'basemessageuri':
-            continue
-        merged[key] = value
-    return merged
+    base_resolved = _resolve_message_inheritance(document, base_message, (*seen, base_pointer))
+
+    def deep_merge(base, overlay):
+        merged = copy.deepcopy(base)
+        for key, value in overlay.items():
+            if key not in base_keys:
+                merged[key] = deep_merge(merged[key], value) if isinstance(merged.get(key), dict) and isinstance(value, dict) else copy.deepcopy(value)
+        return merged
+
+    return deep_merge(base_resolved, message)
 
 
 def _render_template(template: str, context: Mapping[str, Any]) -> str:
@@ -468,6 +471,11 @@ def _load_project_contract(project_dir: str) -> Dict[str, Dict[str, Any]]:
 
             for event_type, message in group.get('messages', {}).items():
                 resolved_message = _resolve_message_inheritance(document, message)
+                schema_format = resolved_message.get('dataschemaformat', '')
+                if schema_format.startswith('Avro/'):
+                    continue
+                if not schema_format.startswith('JsonStructure/'):
+                    raise AssertionError(f'Unsupported JSON flow schema format: {schema_format!r}')
                 dataschema_uri = resolved_message.get('dataschemauri')
                 if not dataschema_uri:
                     raise AssertionError(f'Message {event_type!r} is missing dataschemauri')
@@ -546,7 +554,7 @@ def assert_kafka_contract(
     records: List[ConsumedKafkaMessage],
     events: Optional[List[dict]] = None,
 ) -> List[dict]:
-    """Validate Kafka keys and CloudEvent payloads against the project's xreg contract."""
+    """Validate the default JSON flow, not Avro-labeled or binary payloads."""
     if events is None:
         events = assert_cloudevents([record.value for record in records])
 
@@ -555,6 +563,11 @@ def assert_kafka_contract(
     partitions_by_key: Dict[str, int] = {}
 
     for record, event in zip(records, events):
+        content_type = event.get('datacontenttype', 'application/json')
+        assert isinstance(content_type, str) and content_type.split(';', 1)[0].strip().lower() == 'application/json', (
+            f'JSON flow received unsupported datacontenttype: {content_type!r}'
+        )
+        assert 'data_base64' not in event, 'JSON flow cannot validate binary data_base64'
         event_type = event.get('type')
         contract = contracts.get(event_type)
         assert contract is not None, (

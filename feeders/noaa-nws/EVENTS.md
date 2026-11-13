@@ -1,10 +1,10 @@
-# NOAA NWS feeder Events
+# NOAA NWS Events
 
-MQTT 5 companion message group for Microsoft.OpenData.US.NOAA.NWS.Alerts.
+<sub>weather alerts, CAP · Kafka · MQTT · AMQP · <a href="https://www.weather.gov/">upstream</a> · <a href="https://www.weather.gov/documentation/services-web-api">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 4 documented event types (10 transport bindings in the manifest).
+- **Event types:** 4 documented event types (30 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
 - **Identity:** `{alert_id}`, `{zone_id}`, `{station_id}` identifies the resource each event is about.
@@ -99,8 +99,8 @@ Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is
 - **`sender_name`** (string, optional): No description provided.
 - **`headline`** (string or null, optional): No description provided.
 - **`description`** (string, optional): No description provided.
-- **`zone_id`** (string, optional): Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.
-- **`state`** (string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
+- **`zone_id`** (string or null, optional): Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.
+- **`state`** (string or null, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 - **`event_type`** (string, optional): Normalized routing field 'event_type' added for MQTT/AMQP subscriber filtering.
 ##### `status` values
 
@@ -200,12 +200,12 @@ Each event identifies the real-world resource with `{zone_id}`. `{zone_id}` is N
 
 #### Payload
 
-`Zone` payloads are JSON object. Required fields: `zone_id`, `name`, `state`.
+`Zone` payloads are JSON object. Required fields: `name`.
 
-- **`zone_id`** (string, required): NWS zone identifier, e.g. 'NYZ072' for New York City.
+- **`zone_id`** (string, optional): NWS zone identifier, e.g. 'NYZ072' for New York City.
 - **`name`** (string, required): Human-readable zone name.
 - **`type`** (string, optional): Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'.
-- **`state`** (string, required): Two-letter US state or territory abbreviation.
+- **`state`** (string or null, optional): Two-letter US state or territory abbreviation.
 - **`forecast_office`** (string, optional): NWS Weather Forecast Office (WFO) responsible for this zone, e.g. 'OKX'.
 - **`timezone`** (string, optional): IANA timezone name for the zone, e.g. 'America/New_York'.
 - **`radar_station`** (string or null, optional): Nearest NEXRAD radar station identifier, or null if none assigned.
@@ -247,7 +247,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-nws`, key `{station_id}` |
 | `MQTT/5.0` | topic `weather/us/noaa/noaa-nws/{state}/{zone_id}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-nws`, message subject `{station_id}`; application properties state `{state}`, zone_id `{zone_id}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-nws`, message subject `{station_id}` |
 
 #### Payload
 
@@ -260,8 +260,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`forecast_zone`** (string or null, optional): NWS forecast zone identifier associated with this station.
 - **`county`** (string or null, optional): NWS county zone identifier for the station's location.
 - **`fire_weather_zone`** (string or null, optional): NWS fire weather zone identifier for the station's location.
-- **`state`** (string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
-- **`zone_id`** (string, optional): Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.
+- **`state`** (string or null, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
+- **`zone_id`** (string or null, optional): Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -302,7 +302,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-nws`, key `{station_id}` |
 | `MQTT/5.0` | topic `weather/us/noaa/noaa-nws/{state}/{zone_id}/{station_id}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-nws`, message subject `{station_id}`; application properties state `{state}`, zone_id `{zone_id}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-nws`, message subject `{station_id}` |
 
 #### Payload
 
@@ -322,8 +322,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`relative_humidity`** (double or null, optional, percent (%)): Relative humidity percentage.
 - **`wind_chill`** (double or null, optional, Cel (°C)): Calculated wind chill temperature, null when conditions do not warrant it.
 - **`heat_index`** (double or null, optional, Cel (°C)): Calculated heat index temperature, null when conditions do not warrant it.
-- **`state`** (string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
-- **`zone_id`** (string, optional): Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.
+- **`state`** (string or null, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
+- **`zone_id`** (string or null, optional): Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -366,7 +366,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -377,3 +381,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/noaa-nws.xreg.json`](xreg/noaa-nws.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

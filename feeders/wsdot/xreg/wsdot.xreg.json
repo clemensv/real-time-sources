@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.traffic"
+        "#/messagegroups/us.wa.wsdot.traffic",
+        "#/messagegroups/us.wa.wsdot.traffic.avro",
+        "#/messagegroups/us.wa.wsdot.traffic.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{flow_data_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.traveltimes"
+        "#/messagegroups/us.wa.wsdot.traveltimes",
+        "#/messagegroups/us.wa.wsdot.traveltimes.avro",
+        "#/messagegroups/us.wa.wsdot.traveltimes.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{travel_time_id}`."
     },
@@ -62,7 +66,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.mountainpass"
+        "#/messagegroups/us.wa.wsdot.mountainpass",
+        "#/messagegroups/us.wa.wsdot.mountainpass.avro",
+        "#/messagegroups/us.wa.wsdot.mountainpass.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{mountain_pass_id}`."
     },
@@ -84,7 +90,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.weather"
+        "#/messagegroups/us.wa.wsdot.weather",
+        "#/messagegroups/us.wa.wsdot.weather.avro",
+        "#/messagegroups/us.wa.wsdot.weather.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{station_id}`."
     },
@@ -106,7 +114,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.tolls"
+        "#/messagegroups/us.wa.wsdot.tolls",
+        "#/messagegroups/us.wa.wsdot.tolls.avro",
+        "#/messagegroups/us.wa.wsdot.tolls.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{trip_name}`."
     },
@@ -128,7 +138,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.cvrestrictions"
+        "#/messagegroups/us.wa.wsdot.cvrestrictions",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.avro",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{state_route_id}/{bridge_number}`."
     },
@@ -150,7 +162,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.border"
+        "#/messagegroups/us.wa.wsdot.border",
+        "#/messagegroups/us.wa.wsdot.border.avro",
+        "#/messagegroups/us.wa.wsdot.border.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{crossing_name}`."
     },
@@ -172,7 +186,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.ferries"
+        "#/messagegroups/us.wa.wsdot.ferries",
+        "#/messagegroups/us.wa.wsdot.ferries.avro",
+        "#/messagegroups/us.wa.wsdot.ferries.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{vessel_id}`."
     },
@@ -194,7 +210,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.roadweather"
+        "#/messagegroups/us.wa.wsdot.roadweather",
+        "#/messagegroups/us.wa.wsdot.roadweather.avro",
+        "#/messagegroups/us.wa.wsdot.roadweather.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{station_id}`."
     },
@@ -216,7 +234,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.alerts"
+        "#/messagegroups/us.wa.wsdot.alerts",
+        "#/messagegroups/us.wa.wsdot.alerts.avro",
+        "#/messagegroups/us.wa.wsdot.alerts.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{alert_id}`."
     },
@@ -238,7 +258,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.cameras"
+        "#/messagegroups/us.wa.wsdot.cameras",
+        "#/messagegroups/us.wa.wsdot.cameras.avro",
+        "#/messagegroups/us.wa.wsdot.cameras.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{camera_id}`."
     },
@@ -260,7 +282,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.bridgeclearances"
+        "#/messagegroups/us.wa.wsdot.bridgeclearances",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.avro",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{crossing_location_id}`."
     },
@@ -282,7 +306,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/us.wa.wsdot.ferryterminals"
+        "#/messagegroups/us.wa.wsdot.ferryterminals",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.avro",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.avro.binary"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{terminal_id}`."
     },
@@ -316,7 +342,33 @@
         "#/messagegroups/us.wa.wsdot.alerts.mqtt",
         "#/messagegroups/us.wa.wsdot.cameras.mqtt",
         "#/messagegroups/us.wa.wsdot.bridgeclearances.mqtt",
-        "#/messagegroups/us.wa.wsdot.ferryterminals.mqtt"
+        "#/messagegroups/us.wa.wsdot.ferryterminals.mqtt",
+        "#/messagegroups/us.wa.wsdot.traffic.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.traffic.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.traveltimes.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.traveltimes.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.mountainpass.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.mountainpass.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.weather.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.weather.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.tolls.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.tolls.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.border.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.border.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.ferries.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.ferries.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.roadweather.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.roadweather.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.alerts.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.alerts.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.cameras.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.cameras.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.mqtt.avro.binary",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.mqtt.avro",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.mqtt.avro.binary"
       ],
       "description": "MQTT/5.0 companion producer endpoint."
     },
@@ -349,7 +401,33 @@
         "#/messagegroups/us.wa.wsdot.alerts.amqp",
         "#/messagegroups/us.wa.wsdot.cameras.amqp",
         "#/messagegroups/us.wa.wsdot.bridgeclearances.amqp",
-        "#/messagegroups/us.wa.wsdot.ferryterminals.amqp"
+        "#/messagegroups/us.wa.wsdot.ferryterminals.amqp",
+        "#/messagegroups/us.wa.wsdot.traffic.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.traffic.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.traveltimes.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.traveltimes.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.mountainpass.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.mountainpass.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.weather.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.weather.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.tolls.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.tolls.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.border.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.border.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.ferries.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.ferries.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.roadweather.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.roadweather.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.alerts.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.alerts.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.cameras.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.cameras.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.amqp.avro.binary",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.amqp.avro",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.amqp.avro.binary"
       ],
       "description": "AMQP/1.0 companion producer endpoint."
     }
@@ -372,6 +450,10 @@
             "subject": {
               "value": "{flow_data_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -392,6 +474,10 @@
             "subject": {
               "value": "{flow_data_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -417,6 +503,10 @@
             "subject": {
               "value": "{travel_time_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -442,6 +532,10 @@
             "subject": {
               "value": "{mountain_pass_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -467,6 +561,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -487,6 +585,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -512,6 +614,10 @@
             "subject": {
               "value": "{trip_name}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -537,6 +643,10 @@
             "subject": {
               "value": "{state_route_id}/{bridge_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -562,6 +672,10 @@
             "subject": {
               "value": "{crossing_name}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -587,6 +701,10 @@
             "subject": {
               "value": "{vessel_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1002,6 +1120,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1022,6 +1144,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1047,6 +1173,10 @@
             "subject": {
               "value": "{alert_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1072,6 +1202,10 @@
             "subject": {
               "value": "{camera_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1097,6 +1231,10 @@
             "subject": {
               "value": "{crossing_location_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1122,6 +1260,10 @@
             "subject": {
               "value": "{terminal_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1361,6 +1503,1260 @@
                 "value": "{terminal_id}",
                 "description": "Partition key mirrors the CloudEvents subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.avro": {
+      "messagegroupid": "us.wa.wsdot.traffic.avro",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowStation",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowStation"
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowReading",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading"
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.traffic.avro.binary",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowStation",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowReading",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.avro": {
+      "messagegroupid": "us.wa.wsdot.traveltimes.avro",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute": {
+          "messageid": "us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "basemessage": "/messagegroups/us.wa.wsdot.traveltimes/messages/us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traveltimes.avro/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute"
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.traveltimes.avro.binary",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute": {
+          "messageid": "us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "basemessage": "/messagegroups/us.wa.wsdot.traveltimes/messages/us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traveltimes.avro/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.avro": {
+      "messagegroupid": "us.wa.wsdot.mountainpass.avro",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition": {
+          "messageid": "us.wa.wsdot.mountainpass.MountainPassCondition",
+          "basemessage": "/messagegroups/us.wa.wsdot.mountainpass/messages/us.wa.wsdot.mountainpass.MountainPassCondition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.mountainpass.avro/schemas/us.wa.wsdot.mountainpass.MountainPassCondition"
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.mountainpass.avro.binary",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition": {
+          "messageid": "us.wa.wsdot.mountainpass.MountainPassCondition",
+          "basemessage": "/messagegroups/us.wa.wsdot.mountainpass/messages/us.wa.wsdot.mountainpass.MountainPassCondition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.mountainpass.avro/schemas/us.wa.wsdot.mountainpass.MountainPassCondition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.weather.avro": {
+      "messagegroupid": "us.wa.wsdot.weather.avro",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation": {
+          "messageid": "us.wa.wsdot.weather.WeatherStation",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherStation"
+        },
+        "us.wa.wsdot.weather.WeatherReading": {
+          "messageid": "us.wa.wsdot.weather.WeatherReading",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherReading"
+        }
+      }
+    },
+    "us.wa.wsdot.weather.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.weather.avro.binary",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation": {
+          "messageid": "us.wa.wsdot.weather.WeatherStation",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.weather.WeatherReading": {
+          "messageid": "us.wa.wsdot.weather.WeatherReading",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.avro": {
+      "messagegroupid": "us.wa.wsdot.tolls.avro",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate": {
+          "messageid": "us.wa.wsdot.tolls.TollRate",
+          "basemessage": "/messagegroups/us.wa.wsdot.tolls/messages/us.wa.wsdot.tolls.TollRate",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.tolls.avro/schemas/us.wa.wsdot.tolls.TollRate"
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.tolls.avro.binary",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate": {
+          "messageid": "us.wa.wsdot.tolls.TollRate",
+          "basemessage": "/messagegroups/us.wa.wsdot.tolls/messages/us.wa.wsdot.tolls.TollRate",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.tolls.avro/schemas/us.wa.wsdot.tolls.TollRate",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.avro": {
+      "messagegroupid": "us.wa.wsdot.cvrestrictions.avro",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction": {
+          "messageid": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "basemessage": "/messagegroups/us.wa.wsdot.cvrestrictions/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction"
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.cvrestrictions.avro.binary",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction": {
+          "messageid": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "basemessage": "/messagegroups/us.wa.wsdot.cvrestrictions/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.border.avro": {
+      "messagegroupid": "us.wa.wsdot.border.avro",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing": {
+          "messageid": "us.wa.wsdot.border.BorderCrossing",
+          "basemessage": "/messagegroups/us.wa.wsdot.border/messages/us.wa.wsdot.border.BorderCrossing",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.border.avro/schemas/us.wa.wsdot.border.BorderCrossing"
+        }
+      }
+    },
+    "us.wa.wsdot.border.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.border.avro.binary",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing": {
+          "messageid": "us.wa.wsdot.border.BorderCrossing",
+          "basemessage": "/messagegroups/us.wa.wsdot.border/messages/us.wa.wsdot.border.BorderCrossing",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.border.avro/schemas/us.wa.wsdot.border.BorderCrossing",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.avro": {
+      "messagegroupid": "us.wa.wsdot.ferries.avro",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation": {
+          "messageid": "us.wa.wsdot.ferries.VesselLocation",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferries/messages/us.wa.wsdot.ferries.VesselLocation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferries.avro/schemas/us.wa.wsdot.ferries.VesselLocation"
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.ferries.avro.binary",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation": {
+          "messageid": "us.wa.wsdot.ferries.VesselLocation",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferries/messages/us.wa.wsdot.ferries.VesselLocation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferries.avro/schemas/us.wa.wsdot.ferries.VesselLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.traffic.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation.mqtt": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowStation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.mqtt/messages/us.wa.wsdot.traffic.TrafficFlowStation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowStation"
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading.mqtt": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowReading.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.mqtt/messages/us.wa.wsdot.traffic.TrafficFlowReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading"
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.traffic.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation.mqtt": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowStation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.mqtt/messages/us.wa.wsdot.traffic.TrafficFlowStation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading.mqtt": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowReading.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.mqtt/messages/us.wa.wsdot.traffic.TrafficFlowReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.traveltimes.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt": {
+          "messageid": "us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.traveltimes.mqtt/messages/us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traveltimes.avro/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute"
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.traveltimes.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt": {
+          "messageid": "us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.traveltimes.mqtt/messages/us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traveltimes.avro/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.mountainpass.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition.mqtt": {
+          "messageid": "us.wa.wsdot.mountainpass.MountainPassCondition.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.mountainpass.mqtt/messages/us.wa.wsdot.mountainpass.MountainPassCondition.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.mountainpass.avro/schemas/us.wa.wsdot.mountainpass.MountainPassCondition"
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.mountainpass.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition.mqtt": {
+          "messageid": "us.wa.wsdot.mountainpass.MountainPassCondition.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.mountainpass.mqtt/messages/us.wa.wsdot.mountainpass.MountainPassCondition.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.mountainpass.avro/schemas/us.wa.wsdot.mountainpass.MountainPassCondition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.weather.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.weather.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation.mqtt": {
+          "messageid": "us.wa.wsdot.weather.WeatherStation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.mqtt/messages/us.wa.wsdot.weather.WeatherStation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherStation"
+        },
+        "us.wa.wsdot.weather.WeatherReading.mqtt": {
+          "messageid": "us.wa.wsdot.weather.WeatherReading.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.mqtt/messages/us.wa.wsdot.weather.WeatherReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherReading"
+        }
+      }
+    },
+    "us.wa.wsdot.weather.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.weather.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation.mqtt": {
+          "messageid": "us.wa.wsdot.weather.WeatherStation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.mqtt/messages/us.wa.wsdot.weather.WeatherStation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.weather.WeatherReading.mqtt": {
+          "messageid": "us.wa.wsdot.weather.WeatherReading.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.mqtt/messages/us.wa.wsdot.weather.WeatherReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.tolls.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate.mqtt": {
+          "messageid": "us.wa.wsdot.tolls.TollRate.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.tolls.mqtt/messages/us.wa.wsdot.tolls.TollRate.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.tolls.avro/schemas/us.wa.wsdot.tolls.TollRate"
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.tolls.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate.mqtt": {
+          "messageid": "us.wa.wsdot.tolls.TollRate.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.tolls.mqtt/messages/us.wa.wsdot.tolls.TollRate.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.tolls.avro/schemas/us.wa.wsdot.tolls.TollRate",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.cvrestrictions.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt": {
+          "messageid": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.cvrestrictions.mqtt/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction"
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.cvrestrictions.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt": {
+          "messageid": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.cvrestrictions.mqtt/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.border.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.border.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing.mqtt": {
+          "messageid": "us.wa.wsdot.border.BorderCrossing.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.border.mqtt/messages/us.wa.wsdot.border.BorderCrossing.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.border.avro/schemas/us.wa.wsdot.border.BorderCrossing"
+        }
+      }
+    },
+    "us.wa.wsdot.border.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.border.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing.mqtt": {
+          "messageid": "us.wa.wsdot.border.BorderCrossing.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.border.mqtt/messages/us.wa.wsdot.border.BorderCrossing.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.border.avro/schemas/us.wa.wsdot.border.BorderCrossing",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.ferries.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation.mqtt": {
+          "messageid": "us.wa.wsdot.ferries.VesselLocation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferries.mqtt/messages/us.wa.wsdot.ferries.VesselLocation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferries.avro/schemas/us.wa.wsdot.ferries.VesselLocation"
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.ferries.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation.mqtt": {
+          "messageid": "us.wa.wsdot.ferries.VesselLocation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferries.mqtt/messages/us.wa.wsdot.ferries.VesselLocation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferries.avro/schemas/us.wa.wsdot.ferries.VesselLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.traffic.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation.amqp": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowStation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.amqp/messages/us.wa.wsdot.traffic.TrafficFlowStation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowStation"
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading.amqp": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowReading.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.amqp/messages/us.wa.wsdot.traffic.TrafficFlowReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading"
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.traffic.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation.amqp": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowStation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.amqp/messages/us.wa.wsdot.traffic.TrafficFlowStation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading.amqp": {
+          "messageid": "us.wa.wsdot.traffic.TrafficFlowReading.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.traffic.amqp/messages/us.wa.wsdot.traffic.TrafficFlowReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.traveltimes.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute.amqp": {
+          "messageid": "us.wa.wsdot.traveltimes.TravelTimeRoute.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.traveltimes.amqp/messages/us.wa.wsdot.traveltimes.TravelTimeRoute.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traveltimes.avro/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute"
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.traveltimes.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute.amqp": {
+          "messageid": "us.wa.wsdot.traveltimes.TravelTimeRoute.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.traveltimes.amqp/messages/us.wa.wsdot.traveltimes.TravelTimeRoute.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traveltimes.avro/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.mountainpass.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition.amqp": {
+          "messageid": "us.wa.wsdot.mountainpass.MountainPassCondition.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.mountainpass.amqp/messages/us.wa.wsdot.mountainpass.MountainPassCondition.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.mountainpass.avro/schemas/us.wa.wsdot.mountainpass.MountainPassCondition"
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.mountainpass.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition.amqp": {
+          "messageid": "us.wa.wsdot.mountainpass.MountainPassCondition.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.mountainpass.amqp/messages/us.wa.wsdot.mountainpass.MountainPassCondition.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.mountainpass.avro/schemas/us.wa.wsdot.mountainpass.MountainPassCondition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.weather.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.weather.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation.amqp": {
+          "messageid": "us.wa.wsdot.weather.WeatherStation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherStation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherStation"
+        },
+        "us.wa.wsdot.weather.WeatherReading.amqp": {
+          "messageid": "us.wa.wsdot.weather.WeatherReading.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherReading"
+        }
+      }
+    },
+    "us.wa.wsdot.weather.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.weather.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation.amqp": {
+          "messageid": "us.wa.wsdot.weather.WeatherStation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherStation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.weather.WeatherReading.amqp": {
+          "messageid": "us.wa.wsdot.weather.WeatherReading.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.avro/schemas/us.wa.wsdot.weather.WeatherReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.tolls.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate.amqp": {
+          "messageid": "us.wa.wsdot.tolls.TollRate.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.tolls.amqp/messages/us.wa.wsdot.tolls.TollRate.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.tolls.avro/schemas/us.wa.wsdot.tolls.TollRate"
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.tolls.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate.amqp": {
+          "messageid": "us.wa.wsdot.tolls.TollRate.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.tolls.amqp/messages/us.wa.wsdot.tolls.TollRate.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.tolls.avro/schemas/us.wa.wsdot.tolls.TollRate",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.cvrestrictions.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp": {
+          "messageid": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.cvrestrictions.amqp/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction"
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.cvrestrictions.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp": {
+          "messageid": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.cvrestrictions.amqp/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.border.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.border.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing.amqp": {
+          "messageid": "us.wa.wsdot.border.BorderCrossing.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.border.amqp/messages/us.wa.wsdot.border.BorderCrossing.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.border.avro/schemas/us.wa.wsdot.border.BorderCrossing"
+        }
+      }
+    },
+    "us.wa.wsdot.border.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.border.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing.amqp": {
+          "messageid": "us.wa.wsdot.border.BorderCrossing.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.border.amqp/messages/us.wa.wsdot.border.BorderCrossing.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.border.avro/schemas/us.wa.wsdot.border.BorderCrossing",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.ferries.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation.amqp": {
+          "messageid": "us.wa.wsdot.ferries.VesselLocation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferries.amqp/messages/us.wa.wsdot.ferries.VesselLocation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferries.avro/schemas/us.wa.wsdot.ferries.VesselLocation"
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.ferries.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation.amqp": {
+          "messageid": "us.wa.wsdot.ferries.VesselLocation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferries.amqp/messages/us.wa.wsdot.ferries.VesselLocation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferries.avro/schemas/us.wa.wsdot.ferries.VesselLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.avro": {
+      "messagegroupid": "us.wa.wsdot.roadweather.avro",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherStation",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherStation"
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherReading",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherReading"
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.roadweather.avro.binary",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherStation",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherReading",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.avro": {
+      "messagegroupid": "us.wa.wsdot.alerts.avro",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert": {
+          "messageid": "us.wa.wsdot.alerts.HighwayAlert",
+          "basemessage": "/messagegroups/us.wa.wsdot.alerts/messages/us.wa.wsdot.alerts.HighwayAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.alerts.avro/schemas/us.wa.wsdot.alerts.HighwayAlert"
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.alerts.avro.binary",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert": {
+          "messageid": "us.wa.wsdot.alerts.HighwayAlert",
+          "basemessage": "/messagegroups/us.wa.wsdot.alerts/messages/us.wa.wsdot.alerts.HighwayAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.alerts.avro/schemas/us.wa.wsdot.alerts.HighwayAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.avro": {
+      "messagegroupid": "us.wa.wsdot.cameras.avro",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera": {
+          "messageid": "us.wa.wsdot.cameras.HighwayCamera",
+          "basemessage": "/messagegroups/us.wa.wsdot.cameras/messages/us.wa.wsdot.cameras.HighwayCamera",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cameras.avro/schemas/us.wa.wsdot.cameras.HighwayCamera"
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.cameras.avro.binary",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera": {
+          "messageid": "us.wa.wsdot.cameras.HighwayCamera",
+          "basemessage": "/messagegroups/us.wa.wsdot.cameras/messages/us.wa.wsdot.cameras.HighwayCamera",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cameras.avro/schemas/us.wa.wsdot.cameras.HighwayCamera",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.avro": {
+      "messagegroupid": "us.wa.wsdot.bridgeclearances.avro",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance": {
+          "messageid": "us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "basemessage": "/messagegroups/us.wa.wsdot.bridgeclearances/messages/us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.bridgeclearances.avro/schemas/us.wa.wsdot.bridgeclearances.BridgeClearance"
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.bridgeclearances.avro.binary",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance": {
+          "messageid": "us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "basemessage": "/messagegroups/us.wa.wsdot.bridgeclearances/messages/us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.bridgeclearances.avro/schemas/us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.avro": {
+      "messagegroupid": "us.wa.wsdot.ferryterminals.avro",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace": {
+          "messageid": "us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferryterminals/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferryterminals.avro/schemas/us.wa.wsdot.ferryterminals.TerminalSailingSpace"
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.ferryterminals.avro.binary",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace": {
+          "messageid": "us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferryterminals/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferryterminals.avro/schemas/us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.roadweather.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.mqtt/messages/us.wa.wsdot.roadweather.RoadWeatherStation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherStation"
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.mqtt/messages/us.wa.wsdot.roadweather.RoadWeatherReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherReading"
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.roadweather.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.mqtt/messages/us.wa.wsdot.roadweather.RoadWeatherStation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.mqtt/messages/us.wa.wsdot.roadweather.RoadWeatherReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.alerts.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert.mqtt": {
+          "messageid": "us.wa.wsdot.alerts.HighwayAlert.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.alerts.mqtt/messages/us.wa.wsdot.alerts.HighwayAlert.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.alerts.avro/schemas/us.wa.wsdot.alerts.HighwayAlert"
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.alerts.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert.mqtt": {
+          "messageid": "us.wa.wsdot.alerts.HighwayAlert.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.alerts.mqtt/messages/us.wa.wsdot.alerts.HighwayAlert.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.alerts.avro/schemas/us.wa.wsdot.alerts.HighwayAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.cameras.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera.mqtt": {
+          "messageid": "us.wa.wsdot.cameras.HighwayCamera.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.cameras.mqtt/messages/us.wa.wsdot.cameras.HighwayCamera.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cameras.avro/schemas/us.wa.wsdot.cameras.HighwayCamera"
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.cameras.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera.mqtt": {
+          "messageid": "us.wa.wsdot.cameras.HighwayCamera.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.cameras.mqtt/messages/us.wa.wsdot.cameras.HighwayCamera.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cameras.avro/schemas/us.wa.wsdot.cameras.HighwayCamera",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.bridgeclearances.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt": {
+          "messageid": "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.bridgeclearances.mqtt/messages/us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.bridgeclearances.avro/schemas/us.wa.wsdot.bridgeclearances.BridgeClearance"
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.bridgeclearances.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt": {
+          "messageid": "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.bridgeclearances.mqtt/messages/us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.bridgeclearances.avro/schemas/us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.mqtt.avro": {
+      "messagegroupid": "us.wa.wsdot.ferryterminals.mqtt.avro",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt": {
+          "messageid": "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferryterminals.mqtt/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferryterminals.avro/schemas/us.wa.wsdot.ferryterminals.TerminalSailingSpace"
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.mqtt.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.ferryterminals.mqtt.avro.binary",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt": {
+          "messageid": "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferryterminals.mqtt/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferryterminals.avro/schemas/us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.roadweather.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation.amqp": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherStation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.amqp/messages/us.wa.wsdot.roadweather.RoadWeatherStation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherStation"
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading.amqp": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherReading.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.amqp/messages/us.wa.wsdot.roadweather.RoadWeatherReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherReading"
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.roadweather.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation.amqp": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherStation.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.amqp/messages/us.wa.wsdot.roadweather.RoadWeatherStation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading.amqp": {
+          "messageid": "us.wa.wsdot.roadweather.RoadWeatherReading.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.roadweather.amqp/messages/us.wa.wsdot.roadweather.RoadWeatherReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.avro/schemas/us.wa.wsdot.roadweather.RoadWeatherReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.alerts.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert.amqp": {
+          "messageid": "us.wa.wsdot.alerts.HighwayAlert.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.alerts.amqp/messages/us.wa.wsdot.alerts.HighwayAlert.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.alerts.avro/schemas/us.wa.wsdot.alerts.HighwayAlert"
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.alerts.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert.amqp": {
+          "messageid": "us.wa.wsdot.alerts.HighwayAlert.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.alerts.amqp/messages/us.wa.wsdot.alerts.HighwayAlert.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.alerts.avro/schemas/us.wa.wsdot.alerts.HighwayAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.cameras.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera.amqp": {
+          "messageid": "us.wa.wsdot.cameras.HighwayCamera.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.cameras.amqp/messages/us.wa.wsdot.cameras.HighwayCamera.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cameras.avro/schemas/us.wa.wsdot.cameras.HighwayCamera"
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.cameras.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera.amqp": {
+          "messageid": "us.wa.wsdot.cameras.HighwayCamera.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.cameras.amqp/messages/us.wa.wsdot.cameras.HighwayCamera.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cameras.avro/schemas/us.wa.wsdot.cameras.HighwayCamera",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.bridgeclearances.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance.amqp": {
+          "messageid": "us.wa.wsdot.bridgeclearances.BridgeClearance.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.bridgeclearances.amqp/messages/us.wa.wsdot.bridgeclearances.BridgeClearance.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.bridgeclearances.avro/schemas/us.wa.wsdot.bridgeclearances.BridgeClearance"
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.bridgeclearances.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance.amqp": {
+          "messageid": "us.wa.wsdot.bridgeclearances.BridgeClearance.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.bridgeclearances.amqp/messages/us.wa.wsdot.bridgeclearances.BridgeClearance.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.bridgeclearances.avro/schemas/us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.amqp.avro": {
+      "messagegroupid": "us.wa.wsdot.ferryterminals.amqp.avro",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp": {
+          "messageid": "us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferryterminals.amqp/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferryterminals.avro/schemas/us.wa.wsdot.ferryterminals.TerminalSailingSpace"
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.amqp.avro.binary": {
+      "messagegroupid": "us.wa.wsdot.ferryterminals.amqp.avro.binary",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp": {
+          "messageid": "us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp",
+          "basemessage": "/messagegroups/us.wa.wsdot.ferryterminals.amqp/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferryterminals.avro/schemas/us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -2799,8 +4195,82 @@
                 ],
                 "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.traffic.TrafficFlowStation",
+                "fields": [
+                  {
+                    "name": "flow_data_id",
+                    "type": "string",
+                    "doc": "Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Descriptive name of the flow sensor station."
+                  },
+                  {
+                    "name": "region",
+                    "type": {
+                      "type": "enum",
+                      "name": "us.wa.wsdot.traffic.TrafficFlowStation_types.region",
+                      "symbols": [
+                        "Eastern",
+                        "Northwest",
+                        "Olympic",
+                        "Southwest"
+                      ]
+                    },
+                    "doc": "WSDOT geographic coverage region. JSON Structure annotations: {\"enum\": [\"Eastern\", \"Northwest\", \"Olympic\", \"Southwest\"]}"
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Location description. Null if not provided."
+                  },
+                  {
+                    "name": "road_name",
+                    "type": "string",
+                    "doc": "Road designation where the sensor is installed."
+                  },
+                  {
+                    "name": "direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Direction of travel monitored. Examples: NB, SB, EB, WB."
+                  },
+                  {
+                    "name": "milepost",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Milepost marker along the roadway."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84 decimal degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84 decimal degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "Metadata for a traffic flow sensor station in the Washington State DOT network. WSDOT deploys approximately 1,400 inductive loop sensors embedded in highway pavement across four geographic regions."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "us.wa.wsdot.traffic.TrafficFlowReading": {
           "format": "Avro/1.11.3",
@@ -2836,8 +4306,64 @@
                 ],
                 "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.traffic.TrafficFlowReading",
+                "fields": [
+                  {
+                    "name": "flow_data_id",
+                    "type": "string",
+                    "doc": "Sensor station identifier, stringified from upstream FlowDataID."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name."
+                  },
+                  {
+                    "name": "region",
+                    "type": {
+                      "type": "enum",
+                      "name": "us.wa.wsdot.traffic.TrafficFlowReading_types.region",
+                      "symbols": [
+                        "Eastern",
+                        "Northwest",
+                        "Olympic",
+                        "Southwest"
+                      ]
+                    },
+                    "doc": "WSDOT region. JSON Structure annotations: {\"enum\": [\"Eastern\", \"Northwest\", \"Olympic\", \"Southwest\"]}"
+                  },
+                  {
+                    "name": "flow_reading",
+                    "type": {
+                      "type": "enum",
+                      "name": "us.wa.wsdot.traffic.TrafficFlowReading_types.flow_reading",
+                      "symbols": [
+                        "Unknown",
+                        "WideOpen",
+                        "Moderate",
+                        "Heavy",
+                        "StopAndGo",
+                        "NoData"
+                      ]
+                    },
+                    "doc": "Current traffic Level of Service. Converted from upstream FlowReadingValue byte. JSON Structure annotations: {\"altenums\": {\"upstream_byte\": {\"Heavy\": \"3\", \"Moderate\": \"2\", \"NoData\": \"5\", \"StopAndGo\": \"4\", \"Unknown\": \"0\", \"WideOpen\": \"1\"}}, \"enum\": [\"Unknown\", \"WideOpen\", \"Moderate\", \"Heavy\", \"StopAndGo\", \"NoData\"]}"
+                  },
+                  {
+                    "name": "reading_time",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp of the reading."
+                  }
+                ],
+                "doc": "A traffic flow reading from a WSDOT sensor station. Updated approximately every 90 seconds, each reading reports the current Level of Service."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -2965,8 +4491,138 @@
                 ],
                 "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.traveltimes.TravelTimeRoute",
+                "fields": [
+                  {
+                    "name": "travel_time_id",
+                    "type": "string",
+                    "doc": "Unique route identifier, stringified from upstream TravelTimeID."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Short route segment name."
+                  },
+                  {
+                    "name": "description",
+                    "type": "string",
+                    "doc": "Longer description including lane type."
+                  },
+                  {
+                    "name": "distance",
+                    "type": "double",
+                    "doc": "Route distance in miles. JSON Structure annotations: {\"symbol\": \"mi\", \"unit\": \"mi\"}"
+                  },
+                  {
+                    "name": "average_time",
+                    "type": "int",
+                    "doc": "Historical average travel time in minutes. JSON Structure annotations: {\"symbol\": \"min\", \"unit\": \"min\"}"
+                  },
+                  {
+                    "name": "current_time",
+                    "type": "int",
+                    "doc": "Current real-time travel time in minutes. JSON Structure annotations: {\"symbol\": \"min\", \"unit\": \"min\"}"
+                  },
+                  {
+                    "name": "time_updated",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp of last update."
+                  },
+                  {
+                    "name": "start_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Start point description."
+                  },
+                  {
+                    "name": "start_road_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Road at start point."
+                  },
+                  {
+                    "name": "start_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Direction at start point."
+                  },
+                  {
+                    "name": "start_milepost",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Milepost at start."
+                  },
+                  {
+                    "name": "start_latitude",
+                    "type": "double",
+                    "doc": "Start latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "start_longitude",
+                    "type": "double",
+                    "doc": "Start longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "end_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "End point description."
+                  },
+                  {
+                    "name": "end_road_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Road at end point."
+                  },
+                  {
+                    "name": "end_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Direction at end point."
+                  },
+                  {
+                    "name": "end_milepost",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Milepost at end."
+                  },
+                  {
+                    "name": "end_latitude",
+                    "type": "double",
+                    "doc": "End latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "end_longitude",
+                    "type": "double",
+                    "doc": "End longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "A named travel time route monitored by WSDOT. Each route has fixed start and end points on Washington State highways with historical average and current real-time travel times."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -3062,8 +4718,104 @@
                 ],
                 "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.mountainpass.MountainPassCondition",
+                "fields": [
+                  {
+                    "name": "mountain_pass_id",
+                    "type": "string",
+                    "doc": "Unique pass identifier, stringified from upstream MountainPassId."
+                  },
+                  {
+                    "name": "mountain_pass_name",
+                    "type": "string",
+                    "doc": "Pass name with highway designation."
+                  },
+                  {
+                    "name": "elevation_in_feet",
+                    "type": "int",
+                    "doc": "Summit elevation in feet above sea level. JSON Structure annotations: {\"symbol\": \"ft\", \"unit\": \"ft\"}"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "temperature_in_fahrenheit",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Temperature at the summit in Fahrenheit. Null if not reporting. JSON Structure annotations: {\"symbol\": \"°F\", \"unit\": \"degF\"}"
+                  },
+                  {
+                    "name": "weather_condition",
+                    "type": "string",
+                    "doc": "Current weather condition text. Examples: Clear, Rain, Snow, Fog."
+                  },
+                  {
+                    "name": "road_condition",
+                    "type": "string",
+                    "doc": "Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice."
+                  },
+                  {
+                    "name": "travel_advisory_active",
+                    "type": "boolean",
+                    "doc": "True if a travel advisory is in effect."
+                  },
+                  {
+                    "name": "restriction_one_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Direction for first restriction."
+                  },
+                  {
+                    "name": "restriction_one_text",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "First restriction text."
+                  },
+                  {
+                    "name": "restriction_two_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Direction for second restriction."
+                  },
+                  {
+                    "name": "restriction_two_text",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Second restriction text."
+                  },
+                  {
+                    "name": "date_updated",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp of last update."
+                  }
+                ],
+                "doc": "Current conditions at a Washington State mountain pass including temperature, weather, road conditions, travel advisories, and directional restrictions."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -3216,8 +4968,124 @@
                 ],
                 "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.weather.WeatherReading",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Station identifier from upstream StationID."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name."
+                  },
+                  {
+                    "name": "reading_time",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "temperature_in_fahrenheit",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Air temperature in Fahrenheit. JSON Structure annotations: {\"symbol\": \"°F\", \"unit\": \"degF\"}"
+                  },
+                  {
+                    "name": "precipitation_in_inches",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Precipitation in inches. JSON Structure annotations: {\"symbol\": \"in\", \"unit\": \"in\"}"
+                  },
+                  {
+                    "name": "wind_speed_in_mph",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Wind speed in mph. JSON Structure annotations: {\"symbol\": \"mph\", \"unit\": \"mi/h\"}"
+                  },
+                  {
+                    "name": "wind_gust_speed_in_mph",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Wind gust speed in mph. JSON Structure annotations: {\"symbol\": \"mph\", \"unit\": \"mi/h\"}"
+                  },
+                  {
+                    "name": "wind_direction",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Wind direction in degrees from true north. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "wind_direction_cardinal",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Wind direction as cardinal abbreviation."
+                  },
+                  {
+                    "name": "barometric_pressure",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Barometric pressure in hPa. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"}"
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Relative humidity percentage. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"%\"}"
+                  },
+                  {
+                    "name": "visibility",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Visibility distance."
+                  },
+                  {
+                    "name": "sky_coverage",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Sky coverage description."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -3297,8 +5165,92 @@
                 ],
                 "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.tolls.TollRate",
+                "fields": [
+                  {
+                    "name": "trip_name",
+                    "type": "string",
+                    "doc": "Tolled route segment identifier."
+                  },
+                  {
+                    "name": "state_route",
+                    "type": "string",
+                    "doc": "State route number."
+                  },
+                  {
+                    "name": "travel_direction",
+                    "type": "string",
+                    "doc": "Travel direction: N, S, E, W."
+                  },
+                  {
+                    "name": "current_toll",
+                    "type": "int",
+                    "doc": "Current toll in cents."
+                  },
+                  {
+                    "name": "current_message",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Optional status message."
+                  },
+                  {
+                    "name": "time_updated",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "start_location_name",
+                    "type": "string",
+                    "doc": "Start location name."
+                  },
+                  {
+                    "name": "start_latitude",
+                    "type": "double",
+                    "doc": "Start latitude. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "start_longitude",
+                    "type": "double",
+                    "doc": "Start longitude. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "start_milepost",
+                    "type": "double",
+                    "doc": "Start milepost."
+                  },
+                  {
+                    "name": "end_location_name",
+                    "type": "string",
+                    "doc": "End location name."
+                  },
+                  {
+                    "name": "end_latitude",
+                    "type": "double",
+                    "doc": "End latitude. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "end_longitude",
+                    "type": "double",
+                    "doc": "End longitude. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "end_milepost",
+                    "type": "double",
+                    "doc": "End milepost."
+                  }
+                ],
+                "doc": "Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -3470,8 +5422,179 @@
                 ],
                 "description": "A vehicle or vessel update from Washington State Department of Transportation. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+                "fields": [
+                  {
+                    "name": "state_route_id",
+                    "type": "string",
+                    "doc": "State route identifier, first part of composite key."
+                  },
+                  {
+                    "name": "bridge_number",
+                    "type": "string",
+                    "doc": "Bridge or structure number, second part of composite key."
+                  },
+                  {
+                    "name": "bridge_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Bridge or structure name."
+                  },
+                  {
+                    "name": "location_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Location relative to landmarks."
+                  },
+                  {
+                    "name": "location_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Detailed location description."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "state",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "State abbreviation, typically WA."
+                  },
+                  {
+                    "name": "restriction_type",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Type: BridgeRestriction, RoadRestriction."
+                  },
+                  {
+                    "name": "vehicle_type",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Affected vehicle type."
+                  },
+                  {
+                    "name": "restriction_weight_in_pounds",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Axle weight limit in pounds. JSON Structure annotations: {\"symbol\": \"lbs\", \"unit\": \"lb\"}"
+                  },
+                  {
+                    "name": "maximum_gross_vehicle_weight_in_pounds",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "GVW limit in pounds. JSON Structure annotations: {\"symbol\": \"lbs\", \"unit\": \"lb\"}"
+                  },
+                  {
+                    "name": "restriction_height_in_inches",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Height limit in inches. JSON Structure annotations: {\"symbol\": \"in\", \"unit\": \"in\"}"
+                  },
+                  {
+                    "name": "restriction_width_in_inches",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Width limit in inches. JSON Structure annotations: {\"symbol\": \"in\", \"unit\": \"in\"}"
+                  },
+                  {
+                    "name": "restriction_length_in_inches",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Length limit in inches. JSON Structure annotations: {\"symbol\": \"in\", \"unit\": \"in\"}"
+                  },
+                  {
+                    "name": "is_permanent_restriction",
+                    "type": "boolean",
+                    "doc": "True if permanent."
+                  },
+                  {
+                    "name": "is_warning",
+                    "type": "boolean",
+                    "doc": "True if warning only."
+                  },
+                  {
+                    "name": "is_detour_available",
+                    "type": "boolean",
+                    "doc": "True if detour exists."
+                  },
+                  {
+                    "name": "is_exceptions_allowed",
+                    "type": "boolean",
+                    "doc": "True if permits available."
+                  },
+                  {
+                    "name": "restriction_comment",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Additional details."
+                  },
+                  {
+                    "name": "date_posted",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "ISO 8601 UTC date posted."
+                  },
+                  {
+                    "name": "date_effective",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "ISO 8601 UTC date effective."
+                  },
+                  {
+                    "name": "date_expires",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "ISO 8601 UTC date expires."
+                  }
+                ],
+                "doc": "A commercial vehicle restriction on a Washington State highway bridge or road segment. Restrictions limit vehicle weight, height, length, or width."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -3531,8 +5654,63 @@
                 ],
                 "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.border.BorderCrossing",
+                "fields": [
+                  {
+                    "name": "crossing_name",
+                    "type": "string",
+                    "doc": "Crossing lane identifier."
+                  },
+                  {
+                    "name": "wait_time",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Wait time in minutes. JSON Structure annotations: {\"symbol\": \"min\", \"unit\": \"min\"}"
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC measurement timestamp."
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Lane description."
+                  },
+                  {
+                    "name": "road_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Road designation."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -3692,8 +5870,166 @@
                 ],
                 "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.ferries.VesselLocation",
+                "fields": [
+                  {
+                    "name": "vessel_id",
+                    "type": "string",
+                    "doc": "Vessel identifier, stringified from upstream VesselID."
+                  },
+                  {
+                    "name": "vessel_name",
+                    "type": "string",
+                    "doc": "Ferry vessel name."
+                  },
+                  {
+                    "name": "mmsi",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Maritime Mobile Service Identity for AIS."
+                  },
+                  {
+                    "name": "in_service",
+                    "type": "boolean",
+                    "doc": "True if in active service."
+                  },
+                  {
+                    "name": "at_dock",
+                    "type": "boolean",
+                    "doc": "True if docked."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "speed",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Speed in knots. JSON Structure annotations: {\"symbol\": \"kn\", \"unit\": \"kn\"}"
+                  },
+                  {
+                    "name": "heading",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Heading in degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "departing_terminal_id",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Departure terminal ID."
+                  },
+                  {
+                    "name": "departing_terminal_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Departure terminal name."
+                  },
+                  {
+                    "name": "departing_terminal_abbrev",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Departure terminal abbreviation."
+                  },
+                  {
+                    "name": "arriving_terminal_id",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Arrival terminal ID."
+                  },
+                  {
+                    "name": "arriving_terminal_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Arrival terminal name."
+                  },
+                  {
+                    "name": "arriving_terminal_abbrev",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Arrival terminal abbreviation."
+                  },
+                  {
+                    "name": "scheduled_departure",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "ISO 8601 UTC scheduled departure."
+                  },
+                  {
+                    "name": "left_dock",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "ISO 8601 UTC actual departure."
+                  },
+                  {
+                    "name": "eta",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "ISO 8601 UTC estimated arrival."
+                  },
+                  {
+                    "name": "eta_basis",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "ETA calculation description."
+                  },
+                  {
+                    "name": "route_abbreviation",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Current route abbreviation."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC position timestamp."
+                  }
+                ],
+                "doc": "Real-time location and status of a Washington State Ferries vessel. WSF operates approximately 21 vessels across Puget Sound routes."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -5036,8 +7372,47 @@
                 ],
                 "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.roadweather.RoadWeatherStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name (unique across the Scanweb network)."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "elevation",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Station elevation above sea level. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                  }
+                ],
+                "doc": "Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "us.wa.wsdot.roadweather.RoadWeatherReading": {
           "format": "Avro/1.11.3",
@@ -5305,8 +7680,250 @@
                 ],
                 "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.roadweather.RoadWeatherReading",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank)."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "elevation",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Station elevation above sea level. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                  },
+                  {
+                    "name": "reading_time",
+                    "type": "string",
+                    "doc": "Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock)."
+                  },
+                  {
+                    "name": "air_temperature",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Air temperature. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"}"
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Relative humidity percentage. Upstream key is misspelled 'RelativeHumidty'. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"%\"}"
+                  },
+                  {
+                    "name": "average_wind_speed",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Average wind speed. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"}"
+                  },
+                  {
+                    "name": "average_wind_direction",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Average wind direction in degrees from true north. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "wind_gust",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Peak wind gust speed. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"}"
+                  },
+                  {
+                    "name": "visibility",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Visibility distance. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                  },
+                  {
+                    "name": "precipitation_intensity",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported."
+                  },
+                  {
+                    "name": "precipitation_type",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported."
+                  },
+                  {
+                    "name": "precipitation_past_1_hour",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 1 hour. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"}"
+                  },
+                  {
+                    "name": "precipitation_past_3_hours",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 3 hours. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"}"
+                  },
+                  {
+                    "name": "precipitation_past_6_hours",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 6 hours. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"}"
+                  },
+                  {
+                    "name": "precipitation_past_12_hours",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 12 hours. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"}"
+                  },
+                  {
+                    "name": "precipitation_past_24_hours",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 24 hours. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"}"
+                  },
+                  {
+                    "name": "precipitation_accumulation",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Cumulative precipitation accumulation reported by the gauge, or null. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"}"
+                  },
+                  {
+                    "name": "barometric_pressure",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Barometric pressure, or null when the station has no pressure sensor. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"}"
+                  },
+                  {
+                    "name": "snow_depth",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Measured snow depth, or null when the station has no snow sensor. JSON Structure annotations: {\"symbol\": \"cm\", \"unit\": \"cm\"}"
+                  },
+                  {
+                    "name": "surface_measurements",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "us.wa.wsdot.roadweather.SurfaceMeasurement",
+                        "fields": [
+                          {
+                            "name": "sensor_id",
+                            "type": "int",
+                            "doc": "Surface sensor identifier within the station."
+                          },
+                          {
+                            "name": "surface_temperature",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "doc": "Road surface temperature. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"}"
+                          },
+                          {
+                            "name": "road_freezing_temperature",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "doc": "Temperature at which the road surface is expected to freeze, accounting for residual de-icer. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"}"
+                          },
+                          {
+                            "name": "road_surface_condition",
+                            "type": [
+                              "int",
+                              "null"
+                            ],
+                            "doc": "Coded road surface condition as an opaque integer from the upstream Scanweb RoadSurfaceCondition enumeration (commonly dry, wet, snow, or ice); WSDOT does not publish the full code dictionary, so the value is passed through unmodified."
+                          }
+                        ],
+                        "doc": "A single road surface sensor measurement at a Scanweb station."
+                      }
+                    },
+                    "doc": "Per-sensor road surface measurements (temperature, freezing point, surface condition)."
+                  },
+                  {
+                    "name": "sub_surface_measurements",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "us.wa.wsdot.roadweather.SubSurfaceMeasurement",
+                        "fields": [
+                          {
+                            "name": "sensor_id",
+                            "type": "int",
+                            "doc": "Sub-surface sensor identifier within the station."
+                          },
+                          {
+                            "name": "sub_surface_temperature",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "doc": "Sub-surface (below pavement) temperature. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"}"
+                          }
+                        ],
+                        "doc": "A single sub-surface (in-pavement) sensor measurement at a Scanweb station."
+                      }
+                    },
+                    "doc": "Per-sensor sub-surface (in-pavement) temperature measurements."
+                  }
+                ],
+                "doc": "A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -5529,8 +8146,217 @@
                 ],
                 "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.alerts.HighwayAlert",
+                "fields": [
+                  {
+                    "name": "alert_id",
+                    "type": "string",
+                    "doc": "WSDOT alert identifier (stable for the life of the alert)."
+                  },
+                  {
+                    "name": "county",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "County in which the alert is located."
+                  },
+                  {
+                    "name": "region",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "WSDOT region responsible for the alert."
+                  },
+                  {
+                    "name": "priority",
+                    "type": [
+                      {
+                        "type": "enum",
+                        "name": "us.wa.wsdot.alerts.HighwayAlert_types.priority",
+                        "symbols": [
+                          "Highest",
+                          "High",
+                          "Medium",
+                          "Low",
+                          "Lowest"
+                        ]
+                      },
+                      "null"
+                    ],
+                    "doc": "Alert priority (Highest, High, Medium, Low, Lowest). JSON Structure annotations: {\"enum\": [\"Highest\", \"High\", \"Medium\", \"Low\", \"Lowest\"]}"
+                  },
+                  {
+                    "name": "event_category",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Category of the event (e.g. Collision, Construction, Special Event, Weather)."
+                  },
+                  {
+                    "name": "event_status",
+                    "type": [
+                      {
+                        "type": "enum",
+                        "name": "us.wa.wsdot.alerts.HighwayAlert_types.event_status",
+                        "symbols": [
+                          "Open",
+                          "Closed"
+                        ]
+                      },
+                      "null"
+                    ],
+                    "doc": "Current status of the event (Open or Closed). JSON Structure annotations: {\"enum\": [\"Open\", \"Closed\"]}"
+                  },
+                  {
+                    "name": "headline_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Short human-readable headline for the alert."
+                  },
+                  {
+                    "name": "extended_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Longer human-readable description with full details."
+                  },
+                  {
+                    "name": "start_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Alert start time as an ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "end_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Alert end time as an ISO 8601 UTC timestamp, or null if open-ended."
+                  },
+                  {
+                    "name": "last_updated_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Time the alert was last updated, as an ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "start_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Description of the start roadway location."
+                  },
+                  {
+                    "name": "start_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Travel direction at the start location (e.g. B, N, S, E, W)."
+                  },
+                  {
+                    "name": "start_road_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Road name/route designation at the start location."
+                  },
+                  {
+                    "name": "start_milepost",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Milepost of the start location. JSON Structure annotations: {\"symbol\": \"mi\", \"unit\": \"mi\"}"
+                  },
+                  {
+                    "name": "start_latitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Latitude of the start location in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "start_longitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Longitude of the start location in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "end_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Description of the end roadway location."
+                  },
+                  {
+                    "name": "end_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Travel direction at the end location."
+                  },
+                  {
+                    "name": "end_road_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Road name/route designation at the end location."
+                  },
+                  {
+                    "name": "end_milepost",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Milepost of the end location. JSON Structure annotations: {\"symbol\": \"mi\", \"unit\": \"mi\"}"
+                  },
+                  {
+                    "name": "end_latitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Latitude of the end location in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "end_longitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Longitude of the end location in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -5709,8 +8535,162 @@
                 ],
                 "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.cameras.HighwayCamera",
+                "fields": [
+                  {
+                    "name": "camera_id",
+                    "type": "string",
+                    "doc": "WSDOT camera identifier (stable)."
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Human-readable camera title."
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Optional camera description."
+                  },
+                  {
+                    "name": "camera_owner",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Organization that owns/operates the camera."
+                  },
+                  {
+                    "name": "owner_url",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "URL with more information from the camera owner."
+                  },
+                  {
+                    "name": "image_url",
+                    "type": "string",
+                    "doc": "Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand."
+                  },
+                  {
+                    "name": "image_width",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Width of the camera image. JSON Structure annotations: {\"symbol\": \"px\", \"unit\": \"px\"}"
+                  },
+                  {
+                    "name": "image_height",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Height of the camera image. JSON Structure annotations: {\"symbol\": \"px\", \"unit\": \"px\"}"
+                  },
+                  {
+                    "name": "is_active",
+                    "type": "boolean",
+                    "doc": "Whether the camera is currently active."
+                  },
+                  {
+                    "name": "region",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "WSDOT region (or area code) for the camera."
+                  },
+                  {
+                    "name": "sort_order",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "WSDOT display sort order."
+                  },
+                  {
+                    "name": "display_latitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Latitude used for map display, in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "display_longitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Longitude used for map display, in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "location_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Description of the camera roadway location."
+                  },
+                  {
+                    "name": "location_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Travel direction the camera faces."
+                  },
+                  {
+                    "name": "location_road_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Road name/route designation at the camera location."
+                  },
+                  {
+                    "name": "location_milepost",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Milepost of the camera location. JSON Structure annotations: {\"symbol\": \"mi\", \"unit\": \"mi\"}"
+                  },
+                  {
+                    "name": "location_latitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Latitude of the camera location in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "location_longitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Longitude of the camera location in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -5897,8 +8877,168 @@
                 ],
                 "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.bridgeclearances.BridgeClearance",
+                "fields": [
+                  {
+                    "name": "crossing_location_id",
+                    "type": "string",
+                    "doc": "Stable crossing location identifier (CrossingLocationId)."
+                  },
+                  {
+                    "name": "bridge_number",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "WSDOT bridge number of the structure."
+                  },
+                  {
+                    "name": "state_route_id",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "State route identifier the structure crosses, or null."
+                  },
+                  {
+                    "name": "state_structure_id",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Statewide structure identifier."
+                  },
+                  {
+                    "name": "crossing_description",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Human-readable description of the crossing."
+                  },
+                  {
+                    "name": "inventory_direction",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Inventory direction of the structure, or null."
+                  },
+                  {
+                    "name": "srmp",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "State route milepost of the crossing. JSON Structure annotations: {\"symbol\": \"mi\", \"unit\": \"mi\"}"
+                  },
+                  {
+                    "name": "srmp_ahead_back_indicator",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Ahead/Back indicator disambiguating the milepost, or null."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Latitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Longitude in WGS84. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "vertical_clearance_maximum_inches",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Maximum vertical clearance, in inches. JSON Structure annotations: {\"symbol\": \"in\", \"unit\": \"in\"}"
+                  },
+                  {
+                    "name": "vertical_clearance_maximum_feet_inch",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in')."
+                  },
+                  {
+                    "name": "vertical_clearance_minimum_inches",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Minimum vertical clearance, in inches. JSON Structure annotations: {\"symbol\": \"in\", \"unit\": \"in\"}"
+                  },
+                  {
+                    "name": "vertical_clearance_minimum_feet_inch",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Minimum vertical clearance as a feet-and-inches display string."
+                  },
+                  {
+                    "name": "control_entity_guid",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "GUID of the controlling entity record."
+                  },
+                  {
+                    "name": "crossing_record_guid",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "GUID of the crossing record."
+                  },
+                  {
+                    "name": "location_guid",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "GUID of the location record."
+                  },
+                  {
+                    "name": "route_date",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Effective route date as an ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "api_last_update",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp."
+                  }
+                ],
+                "doc": "Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     },
@@ -6154,8 +9294,235 @@
                 ],
                 "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+                "fields": [
+                  {
+                    "name": "terminal_id",
+                    "type": "string",
+                    "doc": "Washington State Ferries terminal identifier (stable)."
+                  },
+                  {
+                    "name": "terminal_subject_id",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "WSF terminal subject identifier."
+                  },
+                  {
+                    "name": "region_id",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "WSF region identifier."
+                  },
+                  {
+                    "name": "terminal_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Terminal name."
+                  },
+                  {
+                    "name": "terminal_abbrev",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Terminal abbreviation code."
+                  },
+                  {
+                    "name": "sort_seq",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "WSF display sort sequence."
+                  },
+                  {
+                    "name": "departing_spaces",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "us.wa.wsdot.ferryterminals.DepartingSpace",
+                        "fields": [
+                          {
+                            "name": "departure",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "doc": "Scheduled departure time as an ISO 8601 UTC timestamp."
+                          },
+                          {
+                            "name": "is_cancelled",
+                            "type": "boolean",
+                            "doc": "Whether this departure has been cancelled."
+                          },
+                          {
+                            "name": "vessel_id",
+                            "type": [
+                              "int",
+                              "null"
+                            ],
+                            "doc": "Vessel identifier assigned to the departure."
+                          },
+                          {
+                            "name": "vessel_name",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "doc": "Vessel name assigned to the departure."
+                          },
+                          {
+                            "name": "max_space_count",
+                            "type": [
+                              "int",
+                              "null"
+                            ],
+                            "doc": "Maximum vehicle space capacity of the vessel for this departure."
+                          },
+                          {
+                            "name": "space_for_arrival_terminals",
+                            "type": {
+                              "type": "array",
+                              "items": {
+                                "type": "record",
+                                "name": "us.wa.wsdot.ferryterminals.SpaceForArrivalTerminal",
+                                "fields": [
+                                  {
+                                    "name": "terminal_id",
+                                    "type": [
+                                      "int",
+                                      "null"
+                                    ],
+                                    "doc": "Departing terminal identifier for this space breakdown."
+                                  },
+                                  {
+                                    "name": "terminal_name",
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "doc": "Human-readable sailing path (departing -> arrival terminals)."
+                                  },
+                                  {
+                                    "name": "vessel_id",
+                                    "type": [
+                                      "int",
+                                      "null"
+                                    ],
+                                    "doc": "Vessel identifier assigned to the sailing."
+                                  },
+                                  {
+                                    "name": "vessel_name",
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "doc": "Vessel name assigned to the sailing."
+                                  },
+                                  {
+                                    "name": "display_reservable_space",
+                                    "type": "boolean",
+                                    "doc": "Whether reservable space should be displayed for this arrival terminal."
+                                  },
+                                  {
+                                    "name": "reservable_space_count",
+                                    "type": [
+                                      "int",
+                                      "null"
+                                    ],
+                                    "doc": "Number of reservable vehicle spaces remaining, or null when not displayed/available."
+                                  },
+                                  {
+                                    "name": "reservable_space_hex_color",
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "doc": "Hex color code WSF uses to render reservable space availability."
+                                  },
+                                  {
+                                    "name": "display_drive_up_space",
+                                    "type": "boolean",
+                                    "doc": "Whether drive-up space should be displayed for this arrival terminal."
+                                  },
+                                  {
+                                    "name": "drive_up_space_count",
+                                    "type": [
+                                      "int",
+                                      "null"
+                                    ],
+                                    "doc": "Number of drive-up vehicle spaces remaining, or null when not displayed/available."
+                                  },
+                                  {
+                                    "name": "drive_up_space_hex_color",
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "doc": "Hex color code WSF uses to render drive-up space availability."
+                                  },
+                                  {
+                                    "name": "max_space_count",
+                                    "type": [
+                                      "int",
+                                      "null"
+                                    ],
+                                    "doc": "Maximum vehicle space capacity of the vessel for this sailing."
+                                  },
+                                  {
+                                    "name": "arrival_terminal_ids",
+                                    "type": {
+                                      "type": "array",
+                                      "items": "int"
+                                    },
+                                    "doc": "Arrival terminal identifiers reachable on this sailing."
+                                  }
+                                ],
+                                "doc": "Vehicle space availability for one arrival terminal served by a sailing."
+                              }
+                            },
+                            "doc": "Per-arrival-terminal space breakdown for this departure."
+                          }
+                        ],
+                        "doc": "Space availability for one upcoming departure from the terminal."
+                      }
+                    },
+                    "doc": "Upcoming departures from this terminal with per-sailing vehicle space availability."
+                  },
+                  {
+                    "name": "is_no_fare_collected",
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "doc": "Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable."
+                  },
+                  {
+                    "name": "no_fare_collected_msg",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Message explaining the no-fare-collected status, or null."
+                  }
+                ],
+                "doc": "Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     }

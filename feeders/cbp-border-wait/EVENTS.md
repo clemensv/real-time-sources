@@ -1,10 +1,10 @@
-# US CBP Border Wait feeder Events
+# US CBP Border Wait Events
 
-MQTT/5.0 transport variants for US CBP border wait-time state. Topics are retained QoS-1 leaves under traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/{event}. The border_slug axis is lowercase kebab-case from the CBP border field (canadian-border or mexican-border); port_number preserves the Kafka key and CloudEvents subject. Wait-time snapshots use message expiry so stale retained state ages out if polling stops.
+<sub>~81 ports of entry · Kafka · MQTT · AMQP · <a href="https://bwt.cbp.gov/">upstream</a> · <a href="https://bwt.cbp.gov/api/bwtnew">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Event types:** 2 documented event types (18 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{port_number}` identifies the resource each event is about.
@@ -78,13 +78,13 @@ Each event identifies the real-world resource with `{port_number}`. `{port_numbe
 | --- | --- |
 | `KAFKA` | topic `cbp-border-wait`, key `{port_number}` |
 | `MQTT/5.0` | topic `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/cbp-border-wait`, message subject `{port_number}`; application properties border_slug `{border_slug}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/cbp-border-wait`, message subject `{port_number}` |
 
 #### Payload
 
 `Port` payloads are JSON object. Required fields: `port_number`, `port_name`, `border`, `crossing_name`, `hours`, `passenger_vehicle_max_lanes`, `commercial_vehicle_max_lanes`, `pedestrian_max_lanes`, `border_slug`.
 
-- **`port_number`** (string, required): Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups. Constraints: pattern `^[0-9]{6}$`.
+- **`port_number`** (string, required): Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups. Constraints: pattern `^[A-Za-z0-9]{6}$`.
 - **`port_name`** (string, required): Name of the city or locality where the port is located. Example: 'Blaine', 'San Ysidro'. Multiple crossings may share the same port_name.
 - **`border`** (string, required): Which international border this port serves. One of 'Canadian Border' or 'Mexican Border'.
 - **`crossing_name`** (string, required): Name of the specific border crossing facility. Example: 'Peace Arch', 'Thousand Islands Bridge', 'San Ysidro'. Distinguishes multiple crossings within the same port_name city.
@@ -137,13 +137,13 @@ Each event identifies the real-world resource with `{port_number}`. `{port_numbe
 | --- | --- |
 | `KAFKA` | topic `cbp-border-wait`, key `{port_number}` |
 | `MQTT/5.0` | topic `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/wait-time`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqp://localhost:5672/cbp-border-wait`, message subject `{port_number}`; application properties border_slug `{border_slug}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/cbp-border-wait`, message subject `{port_number}` |
 
 #### Payload
 
 `Wait Time` payloads are JSON object. Required fields: `port_number`, `port_name`, `border`, `crossing_name`, `port_status`, `date`, `time`, `passenger_vehicle_standard_delay`, `passenger_vehicle_standard_lanes_open`, `passenger_vehicle_standard_operational_status`, `passenger_vehicle_nexus_sentri_delay`, `passenger_vehicle_nexus_sentri_lanes_open`, `passenger_vehicle_nexus_sentri_operational_status`, `passenger_vehicle_ready_delay`, `passenger_vehicle_ready_lanes_open`, `passenger_vehicle_ready_operational_status`, `pedestrian_standard_delay`, `pedestrian_standard_lanes_open`, `pedestrian_standard_operational_status`, `pedestrian_ready_delay`, `pedestrian_ready_lanes_open`, `pedestrian_ready_operational_status`, `commercial_vehicle_standard_delay`, `commercial_vehicle_standard_lanes_open`, `commercial_vehicle_standard_operational_status`, `commercial_vehicle_fast_delay`, `commercial_vehicle_fast_lanes_open`, `commercial_vehicle_fast_operational_status`, `construction_notice`, `border_slug`.
 
-- **`port_number`** (string, required): Six-digit CBP port number identifying this crossing. Matches the port_number in the Port schema. Constraints: pattern `^[0-9]{6}$`.
+- **`port_number`** (string, required): Six-digit CBP port number identifying this crossing. Matches the port_number in the Port schema. Constraints: pattern `^[A-Za-z0-9]{6}$`.
 - **`port_name`** (string, required): Name of the city or locality where the port is located.
 - **`border`** (string, required): Which international border this port serves. One of 'Canadian Border' or 'Mexican Border'.
 - **`crossing_name`** (string, required): Name of the specific border crossing facility.
@@ -233,7 +233,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -245,3 +249,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
 - US CBP Border Wait Time API: <https://bwt.cbp.gov/>
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
