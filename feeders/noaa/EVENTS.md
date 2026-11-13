@@ -1,13 +1,14 @@
-# NOAA Data Poller Usage Guide Events
+# NOAA Tides & Currents Events
 
-MQTT 5 variant of noaa events with UNS topics for wildcard subscribers.
+<sub>~3,000 stations · Kafka · MQTT · AMQP · <a href="https://tidesandcurrents.noaa.gov/">upstream</a> · <a href="https://api.tidesandcurrents.noaa.gov/api/prod/">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 13 documented event types (39 transport bindings in the manifest).
+- **Event types:** 13 documented event types (117 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 12 telemetry event types.
 - **Identity:** `{station_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -77,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -91,14 +92,12 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`flat_tolerance_limit`** (boolean, required): {"description": "Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded)."}
 - **`rate_of_change_limit`** (boolean, required): {"description": "Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded)."}
 - **`max_min_expected_height`** (boolean, required): {"description": "Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded)."}
-- **`quality`** (object, required): Referenced nested object from the NOAA Tides and Currents station metadata schema. See [quality](#payload-microsoft-opendata-us-noaa-waterlevel-quality).
+- **`quality`** (enum, required): Quality Assurance/Quality Control level reported by NOAA for the water level measurement.
 - **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa.
-##### quality
-<a id="payload-microsoft-opendata-us-noaa-waterlevel-quality"></a>
+##### `quality` values
 
-Referenced nested object from the NOAA Tides and Currents station metadata schema.
-
-
+- `Preliminary`
+- `Verified`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -113,7 +112,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "flat_tolerance_limit": false,
   "rate_of_change_limit": false,
   "max_min_expected_height": false,
-  "quality": {},
+  "quality": "Preliminary",
   "region": "string"
 }
 ```
@@ -140,7 +139,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/predictions`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -185,7 +184,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/air-pressure`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -236,7 +235,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/air-temperature`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -287,7 +286,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/water-temperature`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -338,7 +337,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/wind`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -393,7 +392,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/humidity`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -444,7 +443,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/conductivity`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -495,7 +494,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/salinity`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -542,7 +541,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -587,67 +586,81 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
+- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa.
+- **`station_id`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa.
 ##### sensors
 <a id="payload-microsoft-opendata-us-noaa-station-sensors"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### floodlevels
 <a id="payload-microsoft-opendata-us-noaa-station-floodlevels"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### datums
 <a id="payload-microsoft-opendata-us-noaa-station-datums"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### supersededdatums
 <a id="payload-microsoft-opendata-us-noaa-station-supersededdatums"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### harmonicConstituents
 <a id="payload-microsoft-opendata-us-noaa-station-harmonicconstituents"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### benchmarks
 <a id="payload-microsoft-opendata-us-noaa-station-benchmarks"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### tidePredOffsets
 <a id="payload-microsoft-opendata-us-noaa-station-tidepredoffsets"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### ofsMapOffsets
 <a id="payload-microsoft-opendata-us-noaa-station-ofsmapoffsets"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### nearby
 <a id="payload-microsoft-opendata-us-noaa-station-nearby"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### products
 <a id="payload-microsoft-opendata-us-noaa-station-products"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### disclaimers
 <a id="payload-microsoft-opendata-us-noaa-station-disclaimers"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
+- **`self`** (string, required): No description provided.
 ##### notices
 <a id="payload-microsoft-opendata-us-noaa-station-notices"></a>
 
 Referenced nested object from the NOAA Tides and Currents station metadata schema.
 
-
+- **`self`** (string, required): No description provided.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -657,21 +670,43 @@ Synthetic example values are generated deterministically from the schema: consta
   "tidal": false,
   "greatlakes": false,
   "shefcode": "string",
-  "details": {},
-  "sensors": {},
-  "floodlevels": {},
-  "datums": {},
-  "supersededdatums": {},
-  "harmonicConstituents": {},
-  "benchmarks": {},
-  "tidePredOffsets": {},
-  "ofsMapOffsets": {},
+  "details": {
+    "self": "string",
+    "region": "string",
+    "station_id": "string"
+  },
+  "sensors": {
+    "self": "string"
+  },
+  "floodlevels": {
+    "self": "string"
+  },
+  "datums": {
+    "self": "string"
+  },
+  "supersededdatums": {
+    "self": "string"
+  },
+  "harmonicConstituents": {
+    "self": "string"
+  },
+  "benchmarks": {
+    "self": "string"
+  },
+  "tidePredOffsets": {
+    "self": "string"
+  },
+  "ofsMapOffsets": {
+    "self": "string"
+  },
   "state": "string",
   "timezone": "string",
   "timezonecorr": 0,
   "observedst": false,
   "stormsurge": false,
-  "nearby": {},
+  "nearby": {
+    "self": "string"
+  },
   "forecast": false,
   "outlook": false,
   "HTFhistorical": false,
@@ -682,9 +717,15 @@ Synthetic example values are generated deterministically from the schema: consta
   "lng": 0,
   "affiliations": "string",
   "portscode": "string",
-  "products": {},
-  "disclaimers": {},
-  "notices": {},
+  "products": {
+    "self": "string"
+  },
+  "disclaimers": {
+    "self": "string"
+  },
+  "notices": {
+    "self": "string"
+  },
   "self": "string",
   "expand": "string",
   "tideType": "string"
@@ -713,7 +754,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/visibility`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -764,7 +805,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/currents`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -813,7 +854,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-tides-currents`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa/{region}/{station_id}/current-predictions`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa`, message subject `{station_id}` |
 
 #### Payload
 
@@ -861,14 +902,22 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 
 - xRegistry manifest: [`xreg/noaa.xreg.json`](xreg/noaa.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- NOAA Tides and Currents API: <https://api.tidesandcurrents.noaa.gov/>
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
+- Azure Service Bus emulator: <https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator>

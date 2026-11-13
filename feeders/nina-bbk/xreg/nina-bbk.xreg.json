@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/NINA.Warnings"
+        "#/messagegroups/NINA.Warnings",
+        "#/messagegroups/NINA.Warnings.avro",
+        "#/messagegroups/NINA.Warnings.avro.binary"
       ],
       "description": "Kafka producer endpoint for NINA BBK CloudEvents on the `nina-bbk` topic keyed by `{warning_id}`."
     },
@@ -32,7 +34,9 @@
         "mode": "binary"
       },
       "messagegroups": [
-        "#/messagegroups/NINA.Warnings.mqtt"
+        "#/messagegroups/NINA.Warnings.mqtt",
+        "#/messagegroups/NINA.Warnings.mqtt.avro",
+        "#/messagegroups/NINA.Warnings.mqtt.avro.binary"
       ],
       "deployed": false,
       "endpoints": [
@@ -64,7 +68,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/NINA.Warnings.amqp"
+        "#/messagegroups/NINA.Warnings.amqp",
+        "#/messagegroups/NINA.Warnings.amqp.avro",
+        "#/messagegroups/NINA.Warnings.amqp.avro.binary"
       ]
     }
   },
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{warning_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -144,6 +154,90 @@
             }
           },
           "messageid": "NINA.Warnings.amqp.CivilWarning"
+        }
+      }
+    },
+    "NINA.Warnings.avro": {
+      "messagegroupid": "NINA.Warnings.avro",
+      "messages": {
+        "NINA.CivilWarning": {
+          "messageid": "NINA.CivilWarning",
+          "basemessage": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NINA.avro/schemas/NINA.CivilWarning"
+        }
+      }
+    },
+    "NINA.Warnings.avro.binary": {
+      "messagegroupid": "NINA.Warnings.avro.binary",
+      "messages": {
+        "NINA.CivilWarning": {
+          "messageid": "NINA.CivilWarning",
+          "basemessage": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NINA.avro/schemas/NINA.CivilWarning",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NINA.Warnings.mqtt.avro": {
+      "messagegroupid": "NINA.Warnings.mqtt.avro",
+      "messages": {
+        "NINA.Warnings.mqtt.CivilWarning": {
+          "messageid": "NINA.Warnings.mqtt.CivilWarning",
+          "basemessage": "/messagegroups/NINA.Warnings.mqtt/messages/NINA.Warnings.mqtt.CivilWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NINA.avro/schemas/NINA.CivilWarning"
+        }
+      }
+    },
+    "NINA.Warnings.mqtt.avro.binary": {
+      "messagegroupid": "NINA.Warnings.mqtt.avro.binary",
+      "messages": {
+        "NINA.Warnings.mqtt.CivilWarning": {
+          "messageid": "NINA.Warnings.mqtt.CivilWarning",
+          "basemessage": "/messagegroups/NINA.Warnings.mqtt/messages/NINA.Warnings.mqtt.CivilWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NINA.avro/schemas/NINA.CivilWarning",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NINA.Warnings.amqp.avro": {
+      "messagegroupid": "NINA.Warnings.amqp.avro",
+      "messages": {
+        "NINA.Warnings.amqp.CivilWarning": {
+          "messageid": "NINA.Warnings.amqp.CivilWarning",
+          "basemessage": "/messagegroups/NINA.Warnings.amqp/messages/NINA.Warnings.amqp.CivilWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NINA.avro/schemas/NINA.CivilWarning"
+        }
+      }
+    },
+    "NINA.Warnings.amqp.avro.binary": {
+      "messagegroupid": "NINA.Warnings.amqp.avro.binary",
+      "messages": {
+        "NINA.Warnings.amqp.CivilWarning": {
+          "messageid": "NINA.Warnings.amqp.CivilWarning",
+          "basemessage": "/messagegroups/NINA.Warnings.amqp/messages/NINA.Warnings.amqp.CivilWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NINA.avro/schemas/NINA.CivilWarning",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -407,6 +501,297 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "NINA.avro": {
+      "schemas": {
+        "NINA.CivilWarning": {
+          "name": "CivilWarning",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NINA.CivilWarning",
+                "fields": [
+                  {
+                    "name": "warning_id",
+                    "type": "string",
+                    "doc": "The unique warning identifier assigned by the NINA/BBK system (e.g., 'mow.DE-HE-DA-W184-20240723-000')."
+                  },
+                  {
+                    "name": "provider",
+                    "type": "string",
+                    "doc": "The NINA provider that issued the warning (e.g. mowas, katwarn, biwapp, dwd, lhp, police). New providers may be added by BBK at any time."
+                  },
+                  {
+                    "name": "version",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "The version number of this warning, incremented with each update. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sender",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "The identifier of the issuing authority (e.g., 'DE-HE-DA-W184')."
+                  },
+                  {
+                    "name": "sender_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The human-readable long name of the issuing authority (e.g., 'Integrierte Leitstelle Stadt Darmstadt'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sent",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "The date and time when the warning was issued, in ISO-8601 format."
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "NINA.CivilWarning_types.status",
+                        "symbols": [
+                          "Actual",
+                          "Exercise",
+                          "System",
+                          "Test",
+                          "Draft"
+                        ]
+                      }
+                    ],
+                    "doc": "The CAP alert status. JSON Structure annotations: {\"descriptions\": {\"Actual\": \"Provider value `Actual` for this coded alert field.\", \"Draft\": \"Provider value `Draft` for this coded alert field.\", \"Exercise\": \"Provider value `Exercise` for this coded alert field.\", \"System\": \"Provider value `System` for this coded alert field.\", \"Test\": \"Provider value `Test` for this coded alert field.\"}, \"enum\": [\"Actual\", \"Exercise\", \"System\", \"Test\", \"Draft\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "msg_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "NINA.CivilWarning_types.msg_type",
+                        "symbols": [
+                          "Alert",
+                          "Update",
+                          "Cancel",
+                          "Ack",
+                          "Error"
+                        ]
+                      }
+                    ],
+                    "doc": "The CAP message type indicating the nature of the warning. JSON Structure annotations: {\"descriptions\": {\"Ack\": \"Provider value `Ack` for this coded alert field.\", \"Alert\": \"Provider value `Alert` for this coded alert field.\", \"Cancel\": \"Provider value `Cancel` for this coded alert field.\", \"Error\": \"Provider value `Error` for this coded alert field.\", \"Update\": \"Provider value `Update` for this coded alert field.\"}, \"enum\": [\"Alert\", \"Update\", \"Cancel\", \"Ack\", \"Error\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "scope",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "NINA.CivilWarning_types.scope",
+                        "symbols": [
+                          "Public",
+                          "Restricted",
+                          "Private"
+                        ]
+                      }
+                    ],
+                    "doc": "The CAP scope of the warning. Typically 'Public'. JSON Structure annotations: {\"descriptions\": {\"Private\": \"Provider value `Private` for this coded alert field.\", \"Public\": \"Provider value `Public` for this coded alert field.\", \"Restricted\": \"Provider value `Restricted` for this coded alert field.\"}, \"enum\": [\"Public\", \"Restricted\", \"Private\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "references",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "CAP references to prior related warnings, in the format 'sender,identifier,sent'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event",
+                    "type": "string",
+                    "doc": "The event type description (e.g., 'Gefahreninformation', 'Hochwasserinformation')."
+                  },
+                  {
+                    "name": "event_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The BBK event code identifying the hazard type (e.g., 'BBK-EVC-067' for animal disease, 'BBK-EVC-045' for flood). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "NINA.CivilWarning_types.category",
+                        "symbols": [
+                          "Met",
+                          "Geo",
+                          "Safety",
+                          "Security",
+                          "Rescue",
+                          "Fire",
+                          "Health",
+                          "Env",
+                          "Transport",
+                          "Infra",
+                          "CBRNE",
+                          "Other"
+                        ]
+                      }
+                    ],
+                    "doc": "The CAP alert category. JSON Structure annotations: {\"descriptions\": {\"CBRNE\": \"Provider value `CBRNE` for this coded alert field.\", \"Env\": \"Provider value `Env` for this coded alert field.\", \"Fire\": \"Provider value `Fire` for this coded alert field.\", \"Geo\": \"Provider value `Geo` for this coded alert field.\", \"Health\": \"Provider value `Health` for this coded alert field.\", \"Infra\": \"Provider value `Infra` for this coded alert field.\", \"Met\": \"Provider value `Met` for this coded alert field.\", \"Other\": \"Provider value `Other` for this coded alert field.\", \"Rescue\": \"Provider value `Rescue` for this coded alert field.\", \"Safety\": \"Provider value `Safety` for this coded alert field.\", \"Security\": \"Provider value `Security` for this coded alert field.\", \"Transport\": \"Provider value `Transport` for this coded alert field.\"}, \"enum\": [\"Met\", \"Geo\", \"Safety\", \"Security\", \"Rescue\", \"Fire\", \"Health\", \"Env\", \"Transport\", \"Infra\", \"CBRNE\", \"Other\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "severity",
+                    "type": {
+                      "type": "enum",
+                      "name": "NINA.CivilWarning_types.severity",
+                      "symbols": [
+                        "Extreme",
+                        "Severe",
+                        "Moderate",
+                        "Minor",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing. JSON Structure annotations: {\"descriptions\": {\"Extreme\": \"Provider value `Extreme` for this coded alert field.\", \"Minor\": \"Provider value `Minor` for this coded alert field.\", \"Moderate\": \"Provider value `Moderate` for this coded alert field.\", \"Severe\": \"Provider value `Severe` for this coded alert field.\", \"Unknown\": \"Provider value `Unknown` for this coded alert field.\"}, \"enum\": [\"Extreme\", \"Severe\", \"Moderate\", \"Minor\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "urgency",
+                    "type": {
+                      "type": "enum",
+                      "name": "NINA.CivilWarning_types.urgency",
+                      "symbols": [
+                        "Immediate",
+                        "Expected",
+                        "Future",
+                        "Past",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "The CAP urgency level. JSON Structure annotations: {\"descriptions\": {\"Expected\": \"Provider value `Expected` for this coded alert field.\", \"Future\": \"Provider value `Future` for this coded alert field.\", \"Immediate\": \"Provider value `Immediate` for this coded alert field.\", \"Past\": \"Provider value `Past` for this coded alert field.\", \"Unknown\": \"Provider value `Unknown` for this coded alert field.\"}, \"enum\": [\"Immediate\", \"Expected\", \"Future\", \"Past\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "certainty",
+                    "type": {
+                      "type": "enum",
+                      "name": "NINA.CivilWarning_types.certainty",
+                      "symbols": [
+                        "Observed",
+                        "Likely",
+                        "Possible",
+                        "Unlikely",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "The CAP certainty level. JSON Structure annotations: {\"descriptions\": {\"Likely\": \"Provider value `Likely` for this coded alert field.\", \"Observed\": \"Provider value `Observed` for this coded alert field.\", \"Possible\": \"Provider value `Possible` for this coded alert field.\", \"Unknown\": \"Provider value `Unknown` for this coded alert field.\", \"Unlikely\": \"Provider value `Unlikely` for this coded alert field.\"}, \"enum\": [\"Observed\", \"Likely\", \"Possible\", \"Unlikely\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "headline",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A brief human-readable headline summarizing the warning. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A detailed description of the warning situation. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "instruction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Recommended protective actions for the public. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "web",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A URL to further information about the warning. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "contact",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Contact information for the issuing authority. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_desc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A textual description of the affected geographic area. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "verwaltungsbereiche",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Comma-separated German administrative area codes (Amtliche Gemeindeschlüssel) affected by the warning. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "language",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The language of the info block used to populate this event (e.g., 'de', 'EN'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "German federal-state slug derived from CAP area administrative codes (warnVerwaltungsbereiche), with sender-code fallback. Matches the {state} MQTT topic axis."
+                  }
+                ],
+                "doc": "A civil protection warning from Germany's NINA/BBK warning system. Aggregates warnings from MOWAS (federal), KATWARN (municipal), BIWAPP (municipal), DWD (weather service), LHP (flood centers), and police services. Each warning follows the CAP (Common Alerting Protocol) structure with multi-language support."
               }
             }
           }

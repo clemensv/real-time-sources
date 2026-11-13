@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.openaq.locations.kafka"
+        "#/messagegroups/org.openaq.locations.kafka",
+        "#/messagegroups/org.openaq.locations.kafka.avro",
+        "#/messagegroups/org.openaq.locations.kafka.avro.binary"
       ],
       "description": "Kafka endpoint for OpenAQ Location reference CloudEvents on topic `openaq`, keyed by stable `{location_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.openaq.sensors.kafka"
+        "#/messagegroups/org.openaq.sensors.kafka",
+        "#/messagegroups/org.openaq.sensors.kafka.avro",
+        "#/messagegroups/org.openaq.sensors.kafka.avro.binary"
       ],
       "description": "Kafka endpoint for OpenAQ Sensor reference and Measurement telemetry CloudEvents on topic `openaq`, keyed by stable `{location_id}/{sensor_id}`."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.openaq.locations.mqtt",
-        "#/messagegroups/org.openaq.sensors.mqtt"
+        "#/messagegroups/org.openaq.sensors.mqtt",
+        "#/messagegroups/org.openaq.locations.mqtt.avro",
+        "#/messagegroups/org.openaq.locations.mqtt.avro.binary",
+        "#/messagegroups/org.openaq.sensors.mqtt.avro",
+        "#/messagegroups/org.openaq.sensors.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for OpenAQ CloudEvents using an air-quality Unified Namespace topic hierarchy."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.openaq.locations.amqp",
-        "#/messagegroups/org.openaq.sensors.amqp"
+        "#/messagegroups/org.openaq.sensors.amqp",
+        "#/messagegroups/org.openaq.locations.amqp.avro",
+        "#/messagegroups/org.openaq.locations.amqp.avro.binary",
+        "#/messagegroups/org.openaq.sensors.amqp.avro",
+        "#/messagegroups/org.openaq.sensors.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for OpenAQ CloudEvents on the configured broker address."
     }
@@ -110,6 +122,10 @@
             "subject": {
               "value": "{location_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -135,6 +151,10 @@
             "subject": {
               "value": "{location_id}/{sensor_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -155,6 +175,10 @@
             "subject": {
               "value": "{location_id}/{sensor_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -346,6 +370,302 @@
             }
           },
           "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor."
+        }
+      }
+    },
+    "org.openaq.locations.avro": {
+      "messagegroupid": "org.openaq.locations.avro",
+      "messages": {
+        "org.openaq.Location": {
+          "messageid": "org.openaq.Location",
+          "basemessage": "/messagegroups/org.openaq.locations/messages/org.openaq.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location"
+        }
+      }
+    },
+    "org.openaq.locations.avro.binary": {
+      "messagegroupid": "org.openaq.locations.avro.binary",
+      "messages": {
+        "org.openaq.Location": {
+          "messageid": "org.openaq.Location",
+          "basemessage": "/messagegroups/org.openaq.locations/messages/org.openaq.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.openaq.sensors.avro": {
+      "messagegroupid": "org.openaq.sensors.avro",
+      "messages": {
+        "org.openaq.Sensor": {
+          "messageid": "org.openaq.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors/messages/org.openaq.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor"
+        },
+        "org.openaq.Measurement": {
+          "messageid": "org.openaq.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors/messages/org.openaq.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement"
+        }
+      }
+    },
+    "org.openaq.sensors.avro.binary": {
+      "messagegroupid": "org.openaq.sensors.avro.binary",
+      "messages": {
+        "org.openaq.Sensor": {
+          "messageid": "org.openaq.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors/messages/org.openaq.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.openaq.Measurement": {
+          "messageid": "org.openaq.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors/messages/org.openaq.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.openaq.locations.kafka.avro": {
+      "messagegroupid": "org.openaq.locations.kafka.avro",
+      "messages": {
+        "org.openaq.kafka.Location": {
+          "messageid": "org.openaq.kafka.Location",
+          "basemessage": "/messagegroups/org.openaq.locations.kafka/messages/org.openaq.kafka.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location"
+        }
+      }
+    },
+    "org.openaq.locations.kafka.avro.binary": {
+      "messagegroupid": "org.openaq.locations.kafka.avro.binary",
+      "messages": {
+        "org.openaq.kafka.Location": {
+          "messageid": "org.openaq.kafka.Location",
+          "basemessage": "/messagegroups/org.openaq.locations.kafka/messages/org.openaq.kafka.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.openaq.sensors.kafka.avro": {
+      "messagegroupid": "org.openaq.sensors.kafka.avro",
+      "messages": {
+        "org.openaq.kafka.Sensor": {
+          "messageid": "org.openaq.kafka.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors.kafka/messages/org.openaq.kafka.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor"
+        },
+        "org.openaq.kafka.Measurement": {
+          "messageid": "org.openaq.kafka.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors.kafka/messages/org.openaq.kafka.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement"
+        }
+      }
+    },
+    "org.openaq.sensors.kafka.avro.binary": {
+      "messagegroupid": "org.openaq.sensors.kafka.avro.binary",
+      "messages": {
+        "org.openaq.kafka.Sensor": {
+          "messageid": "org.openaq.kafka.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors.kafka/messages/org.openaq.kafka.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.openaq.kafka.Measurement": {
+          "messageid": "org.openaq.kafka.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors.kafka/messages/org.openaq.kafka.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.openaq.locations.mqtt.avro": {
+      "messagegroupid": "org.openaq.locations.mqtt.avro",
+      "messages": {
+        "org.openaq.mqtt.Location": {
+          "messageid": "org.openaq.mqtt.Location",
+          "basemessage": "/messagegroups/org.openaq.locations.mqtt/messages/org.openaq.mqtt.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location"
+        }
+      }
+    },
+    "org.openaq.locations.mqtt.avro.binary": {
+      "messagegroupid": "org.openaq.locations.mqtt.avro.binary",
+      "messages": {
+        "org.openaq.mqtt.Location": {
+          "messageid": "org.openaq.mqtt.Location",
+          "basemessage": "/messagegroups/org.openaq.locations.mqtt/messages/org.openaq.mqtt.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.openaq.sensors.mqtt.avro": {
+      "messagegroupid": "org.openaq.sensors.mqtt.avro",
+      "messages": {
+        "org.openaq.mqtt.Sensor": {
+          "messageid": "org.openaq.mqtt.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors.mqtt/messages/org.openaq.mqtt.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor"
+        },
+        "org.openaq.mqtt.Measurement": {
+          "messageid": "org.openaq.mqtt.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors.mqtt/messages/org.openaq.mqtt.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement"
+        }
+      }
+    },
+    "org.openaq.sensors.mqtt.avro.binary": {
+      "messagegroupid": "org.openaq.sensors.mqtt.avro.binary",
+      "messages": {
+        "org.openaq.mqtt.Sensor": {
+          "messageid": "org.openaq.mqtt.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors.mqtt/messages/org.openaq.mqtt.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.openaq.mqtt.Measurement": {
+          "messageid": "org.openaq.mqtt.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors.mqtt/messages/org.openaq.mqtt.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.openaq.locations.amqp.avro": {
+      "messagegroupid": "org.openaq.locations.amqp.avro",
+      "messages": {
+        "org.openaq.amqp.Location": {
+          "messageid": "org.openaq.amqp.Location",
+          "basemessage": "/messagegroups/org.openaq.locations.amqp/messages/org.openaq.amqp.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location"
+        }
+      }
+    },
+    "org.openaq.locations.amqp.avro.binary": {
+      "messagegroupid": "org.openaq.locations.amqp.avro.binary",
+      "messages": {
+        "org.openaq.amqp.Location": {
+          "messageid": "org.openaq.amqp.Location",
+          "basemessage": "/messagegroups/org.openaq.locations.amqp/messages/org.openaq.amqp.Location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Location",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.openaq.sensors.amqp.avro": {
+      "messagegroupid": "org.openaq.sensors.amqp.avro",
+      "messages": {
+        "org.openaq.amqp.Sensor": {
+          "messageid": "org.openaq.amqp.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors.amqp/messages/org.openaq.amqp.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor"
+        },
+        "org.openaq.amqp.Measurement": {
+          "messageid": "org.openaq.amqp.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors.amqp/messages/org.openaq.amqp.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement"
+        }
+      }
+    },
+    "org.openaq.sensors.amqp.avro.binary": {
+      "messagegroupid": "org.openaq.sensors.amqp.avro.binary",
+      "messages": {
+        "org.openaq.amqp.Sensor": {
+          "messageid": "org.openaq.amqp.Sensor",
+          "basemessage": "/messagegroups/org.openaq.sensors.amqp/messages/org.openaq.amqp.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.openaq.amqp.Measurement": {
+          "messageid": "org.openaq.amqp.Measurement",
+          "basemessage": "/messagegroups/org.openaq.sensors.amqp/messages/org.openaq.amqp.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.openaq.avro/schemas/org.openaq.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }

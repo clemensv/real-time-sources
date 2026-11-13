@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.datex2.measured"
+        "#/messagegroups/org.datex2.measured",
+        "#/messagegroups/org.datex2.measured.avro",
+        "#/messagegroups/org.datex2.measured.avro.binary"
       ],
       "description": "Kafka endpoint for DATEX II measured-data and measurement-site events keyed by supplier and measurement site."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.datex2.situation"
+        "#/messagegroups/org.datex2.situation",
+        "#/messagegroups/org.datex2.situation.avro",
+        "#/messagegroups/org.datex2.situation.avro.binary"
       ],
       "description": "Kafka endpoint for DATEX II situation events keyed by supplier and situation record."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.datex2.measured.mqtt",
-        "#/messagegroups/org.datex2.situation.mqtt"
+        "#/messagegroups/org.datex2.situation.mqtt",
+        "#/messagegroups/org.datex2.measured.mqtt.avro",
+        "#/messagegroups/org.datex2.measured.mqtt.avro.binary",
+        "#/messagegroups/org.datex2.situation.mqtt.avro",
+        "#/messagegroups/org.datex2.situation.mqtt.avro.binary"
       ],
       "description": "MQTT 5 binary CloudEvents companion endpoint for DATEX II UNS publication."
     },
@@ -86,7 +94,13 @@
       "messagegroups": [
         "#/messagegroups/org.datex2.measured_site.amqp",
         "#/messagegroups/org.datex2.traffic_measurement.amqp",
-        "#/messagegroups/org.datex2.situation.amqp"
+        "#/messagegroups/org.datex2.situation.amqp",
+        "#/messagegroups/org.datex2.measured_site.amqp.avro",
+        "#/messagegroups/org.datex2.measured_site.amqp.avro.binary",
+        "#/messagegroups/org.datex2.traffic_measurement.amqp.avro",
+        "#/messagegroups/org.datex2.traffic_measurement.amqp.avro.binary",
+        "#/messagegroups/org.datex2.situation.amqp.avro",
+        "#/messagegroups/org.datex2.situation.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 binary CloudEvents companion endpoint for DATEX II."
     }
@@ -109,6 +123,10 @@
             "subject": {
               "value": "{supplier_id}/{measurement_site_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -129,6 +147,10 @@
             "subject": {
               "value": "{supplier_id}/{measurement_site_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -154,6 +176,10 @@
             "subject": {
               "value": "{supplier_id}/{situation_record_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -275,6 +301,238 @@
                 "value": "{supplier_id}/{measurement_site_id}",
                 "description": "Partition key mirrors the CloudEvents subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.measured.avro": {
+      "messagegroupid": "org.datex2.measured.avro",
+      "messages": {
+        "org.datex2.measured.MeasurementSite": {
+          "messageid": "org.datex2.measured.MeasurementSite",
+          "basemessage": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.MeasurementSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.MeasurementSite"
+        },
+        "org.datex2.measured.TrafficMeasurement": {
+          "messageid": "org.datex2.measured.TrafficMeasurement",
+          "basemessage": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.TrafficMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.TrafficMeasurement"
+        }
+      }
+    },
+    "org.datex2.measured.avro.binary": {
+      "messagegroupid": "org.datex2.measured.avro.binary",
+      "messages": {
+        "org.datex2.measured.MeasurementSite": {
+          "messageid": "org.datex2.measured.MeasurementSite",
+          "basemessage": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.MeasurementSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.MeasurementSite",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.datex2.measured.TrafficMeasurement": {
+          "messageid": "org.datex2.measured.TrafficMeasurement",
+          "basemessage": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.TrafficMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.TrafficMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.situation.avro": {
+      "messagegroupid": "org.datex2.situation.avro",
+      "messages": {
+        "org.datex2.situation.SituationRecord": {
+          "messageid": "org.datex2.situation.SituationRecord",
+          "basemessage": "/messagegroups/org.datex2.situation/messages/org.datex2.situation.SituationRecord",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.situation.SituationRecord"
+        }
+      }
+    },
+    "org.datex2.situation.avro.binary": {
+      "messagegroupid": "org.datex2.situation.avro.binary",
+      "messages": {
+        "org.datex2.situation.SituationRecord": {
+          "messageid": "org.datex2.situation.SituationRecord",
+          "basemessage": "/messagegroups/org.datex2.situation/messages/org.datex2.situation.SituationRecord",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.situation.SituationRecord",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.measured.mqtt.avro": {
+      "messagegroupid": "org.datex2.measured.mqtt.avro",
+      "messages": {
+        "org.datex2.measured.MeasurementSite.mqtt": {
+          "messageid": "org.datex2.measured.MeasurementSite.mqtt",
+          "basemessage": "/messagegroups/org.datex2.measured.mqtt/messages/org.datex2.measured.MeasurementSite.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.MeasurementSite"
+        },
+        "org.datex2.measured.TrafficMeasurement.mqtt": {
+          "messageid": "org.datex2.measured.TrafficMeasurement.mqtt",
+          "basemessage": "/messagegroups/org.datex2.measured.mqtt/messages/org.datex2.measured.TrafficMeasurement.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.TrafficMeasurement"
+        }
+      }
+    },
+    "org.datex2.measured.mqtt.avro.binary": {
+      "messagegroupid": "org.datex2.measured.mqtt.avro.binary",
+      "messages": {
+        "org.datex2.measured.MeasurementSite.mqtt": {
+          "messageid": "org.datex2.measured.MeasurementSite.mqtt",
+          "basemessage": "/messagegroups/org.datex2.measured.mqtt/messages/org.datex2.measured.MeasurementSite.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.MeasurementSite",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.datex2.measured.TrafficMeasurement.mqtt": {
+          "messageid": "org.datex2.measured.TrafficMeasurement.mqtt",
+          "basemessage": "/messagegroups/org.datex2.measured.mqtt/messages/org.datex2.measured.TrafficMeasurement.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.TrafficMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.situation.mqtt.avro": {
+      "messagegroupid": "org.datex2.situation.mqtt.avro",
+      "messages": {
+        "org.datex2.situation.SituationRecord.mqtt": {
+          "messageid": "org.datex2.situation.SituationRecord.mqtt",
+          "basemessage": "/messagegroups/org.datex2.situation.mqtt/messages/org.datex2.situation.SituationRecord.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.situation.SituationRecord"
+        }
+      }
+    },
+    "org.datex2.situation.mqtt.avro.binary": {
+      "messagegroupid": "org.datex2.situation.mqtt.avro.binary",
+      "messages": {
+        "org.datex2.situation.SituationRecord.mqtt": {
+          "messageid": "org.datex2.situation.SituationRecord.mqtt",
+          "basemessage": "/messagegroups/org.datex2.situation.mqtt/messages/org.datex2.situation.SituationRecord.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.situation.SituationRecord",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.situation.amqp.avro": {
+      "messagegroupid": "org.datex2.situation.amqp.avro",
+      "messages": {
+        "org.datex2.situation.SituationRecord.amqp": {
+          "messageid": "org.datex2.situation.SituationRecord.amqp",
+          "basemessage": "/messagegroups/org.datex2.situation.amqp/messages/org.datex2.situation.SituationRecord.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.situation.SituationRecord"
+        }
+      }
+    },
+    "org.datex2.situation.amqp.avro.binary": {
+      "messagegroupid": "org.datex2.situation.amqp.avro.binary",
+      "messages": {
+        "org.datex2.situation.SituationRecord.amqp": {
+          "messageid": "org.datex2.situation.SituationRecord.amqp",
+          "basemessage": "/messagegroups/org.datex2.situation.amqp/messages/org.datex2.situation.SituationRecord.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.situation.SituationRecord",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.measured_site.amqp.avro": {
+      "messagegroupid": "org.datex2.measured_site.amqp.avro",
+      "messages": {
+        "org.datex2.measured.MeasurementSite.amqp": {
+          "messageid": "org.datex2.measured.MeasurementSite.amqp",
+          "basemessage": "/messagegroups/org.datex2.measured_site.amqp/messages/org.datex2.measured.MeasurementSite.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.MeasurementSite"
+        }
+      }
+    },
+    "org.datex2.measured_site.amqp.avro.binary": {
+      "messagegroupid": "org.datex2.measured_site.amqp.avro.binary",
+      "messages": {
+        "org.datex2.measured.MeasurementSite.amqp": {
+          "messageid": "org.datex2.measured.MeasurementSite.amqp",
+          "basemessage": "/messagegroups/org.datex2.measured_site.amqp/messages/org.datex2.measured.MeasurementSite.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.MeasurementSite",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.traffic_measurement.amqp.avro": {
+      "messagegroupid": "org.datex2.traffic_measurement.amqp.avro",
+      "messages": {
+        "org.datex2.measured.TrafficMeasurement.amqp": {
+          "messageid": "org.datex2.measured.TrafficMeasurement.amqp",
+          "basemessage": "/messagegroups/org.datex2.traffic_measurement.amqp/messages/org.datex2.measured.TrafficMeasurement.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.TrafficMeasurement"
+        }
+      }
+    },
+    "org.datex2.traffic_measurement.amqp.avro.binary": {
+      "messagegroupid": "org.datex2.traffic_measurement.amqp.avro.binary",
+      "messages": {
+        "org.datex2.measured.TrafficMeasurement.amqp": {
+          "messageid": "org.datex2.measured.TrafficMeasurement.amqp",
+          "basemessage": "/messagegroups/org.datex2.traffic_measurement.amqp/messages/org.datex2.measured.TrafficMeasurement.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.datex2.avro/schemas/org.datex2.measured.TrafficMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

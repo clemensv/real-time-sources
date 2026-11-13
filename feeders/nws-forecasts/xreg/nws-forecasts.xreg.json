@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.NWS.Forecasts.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for nws-forecasts CloudEvents."
     },
@@ -61,7 +65,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for nws-forecasts CloudEvents."
     }
@@ -82,6 +88,10 @@
             "subject": {
               "value": "{zone_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -100,6 +110,10 @@
             "subject": {
               "value": "{zone_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -118,6 +132,10 @@
             "subject": {
               "value": "{zone_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -257,6 +275,198 @@
           }
         }
       }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.ForecastZone": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.ForecastZone": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -304,7 +514,10 @@
                     "description": "Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'."
                   },
                   "state": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones.",
                     "pattern": "^[A-Z]{2}$"
                   },
@@ -552,6 +765,334 @@
                     "description": "Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.avro": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.NWS.ForecastZone": {
+          "name": "ForecastZone",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+                "fields": [
+                  {
+                    "name": "zone_id",
+                    "type": "string",
+                    "doc": "NWS forecast zone identifier from the upstream properties.id field, such as WAZ315 for the City of Seattle public forecast zone or PZZ135 for the Puget Sound and Hood Canal marine zone. JSON Structure annotations: {\"pattern\": \"^[A-Z]{3}[0-9]{3}$\"}"
+                  },
+                  {
+                    "name": "zone_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "Microsoft.OpenData.US.NOAA.NWS.ForecastZone_types.zone_type",
+                      "symbols": [
+                        "public",
+                        "coastal",
+                        "offshore",
+                        "marine"
+                      ]
+                    },
+                    "doc": "NWS zone category from the upstream properties.type field. Forecast-zone responses use 'public' for land forecast zones and marine-oriented values such as 'coastal', 'offshore', or 'marine' for waters forecasts. JSON Structure annotations: {\"enum\": [\"public\", \"coastal\", \"offshore\", \"marine\"]}"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones. JSON Structure annotations: {\"pattern\": \"^[A-Z]{2}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "forecast_office_url",
+                    "type": "string",
+                    "doc": "Canonical api.weather.gov URL of the primary Weather Forecast Office responsible for the zone, from properties.forecastOffice."
+                  },
+                  {
+                    "name": "grid_identifier",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Grid identifier from properties.gridIdentifier. For Seattle forecast zones this is commonly the three-letter WFO grid identifier such as SEW. Marine zones can omit this field. JSON Structure annotations: {\"pattern\": \"^[A-Z]{3}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "awips_location_identifier",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "AWIPS location identifier from properties.awipsLocationIdentifier when the zone has a matching AWIPS code. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "cwa_ids",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "List of Weather Forecast Office county warning area identifiers from properties.cwa. The NWS publishes this as an array because a zone can be served by one or more CWAs. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "forecast_office_urls",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "List of api.weather.gov office URLs from properties.forecastOffices. The public zone detail currently repeats the primary office here, but the endpoint models it as a list. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "time_zones",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Ordered list of IANA timezone names from properties.timeZone for the zone boundary. Most Puget Sound zones use a single entry of America/Los_Angeles. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "observation_station_ids",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Ordered list of observation station identifiers derived from the properties.observationStations URL array. The bridge strips the common URL prefix and emits only the terminal station identifier for compact reference data. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "radar_station",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Nearest NEXRAD radar station identifier from properties.radarStation, such as ATX for Seattle-area land zones, or null when the zone metadata does not declare a radar station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "effective_date",
+                    "type": "string",
+                    "doc": "Date and time at which this zone definition became effective, from properties.effectiveDate."
+                  },
+                  {
+                    "name": "expiration_date",
+                    "type": "string",
+                    "doc": "Date and time at which this zone definition expires, from properties.expirationDate. NWS currently uses a far-future sentinel date for active zone definitions."
+                  }
+                ],
+                "doc": "Reference data for an NWS forecast zone selected by the bridge. The api.weather.gov /zones/forecast/{zoneId} endpoint returns both public land forecast zones such as WAZ315 and marine forecast zones such as PZZ135. The bridge emits this reference event at startup and on periodic refresh so downstream consumers can correlate forecast snapshots with stable zone metadata."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast": {
+          "name": "LandZoneForecast",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+                "fields": [
+                  {
+                    "name": "zone_id",
+                    "type": "string",
+                    "doc": "Forecast zone identifier for the land forecast snapshot. This matches the configured zone identifier and the upstream properties.zone URL suffix. JSON Structure annotations: {\"pattern\": \"^[A-Z]{3}[0-9]{3}$\"}"
+                  },
+                  {
+                    "name": "updated",
+                    "type": "string",
+                    "doc": "Timestamp from properties.updated indicating when the NWS most recently updated this zone forecast."
+                  },
+                  {
+                    "name": "periods",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast_types.periods_item",
+                        "fields": [
+                          {
+                            "name": "period_number",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "doc": "Ordinal period number from properties.periods[].number. NWS numbers the periods in forecast order starting at 1. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "period_name",
+                            "type": "string",
+                            "doc": "Human-readable forecast period label from properties.periods[].name, for example Tonight, Tuesday, or Tuesday Night."
+                          },
+                          {
+                            "name": "detailed_forecast",
+                            "type": "string",
+                            "doc": "Full narrative forecast text from properties.periods[].detailedForecast. This text carries the forecast content including precipitation chances, temperature ranges, and wind conditions."
+                          }
+                        ],
+                        "doc": "One ordered narrative period from the NWS land zone forecast payload."
+                      }
+                    },
+                    "doc": "Ordered narrative forecast periods from properties.periods. Each element represents one named daypart or day-level outlook such as Tonight, Tuesday, or Tuesday Night."
+                  }
+                ],
+                "doc": "Public land-zone forecast snapshot from api.weather.gov /zones/forecast/{zoneId}/forecast. This endpoint returns narrative forecast periods for a land forecast zone such as Seattle or Tacoma. The bridge preserves the ordered forecast periods and emits the zone identifier as the Kafka key so each event represents the current forecast snapshot for one zone."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast": {
+          "name": "MarineZoneForecast",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+                "fields": [
+                  {
+                    "name": "zone_id",
+                    "type": "string",
+                    "doc": "Marine forecast zone identifier parsed from the bulletin zone header line, such as PZZ135 for Puget Sound and Hood Canal. JSON Structure annotations: {\"pattern\": \"^[A-Z]{3}[0-9]{3}$\"}"
+                  },
+                  {
+                    "name": "zone_name",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin."
+                  },
+                  {
+                    "name": "product_title",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Bulletin title line, such as 'Coastal Waters Forecast for Washington'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "office_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Issuing office line from the bulletin header, for example 'National Weather Service Seattle WA'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "issued_at_text",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT."
+                  },
+                  {
+                    "name": "expires_text",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Raw Expires header value from the bulletin preamble, preserved as text because the feed does not provide an explicit timezone annotation in ISO form. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wmo_header",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "WMO abbreviated heading line from the marine bulletin, for example 'FZUS56 KSEW 132142'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bulletin_awips_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "AWIPS product identifier line from the bulletin, for example CWFSEW. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "synopsis",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Narrative synopsis paragraph that appears before the zone-specific section and describes the broader marine area covered by the bulletin. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "periods",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast_types.periods_item",
+                        "fields": [
+                          {
+                            "name": "period_name",
+                            "type": "string",
+                            "doc": "Uppercase period label parsed from the leading token in the bulletin section, such as TONIGHT, TUE, or SAT NIGHT."
+                          },
+                          {
+                            "name": "forecast_text",
+                            "type": "string",
+                            "doc": "Narrative forecast text for the period, preserving the marine bulletin wording about winds, seas, waves, precipitation, and outlook conditions."
+                          }
+                        ],
+                        "doc": "One named forecast period parsed from the marine text bulletin."
+                      }
+                    },
+                    "doc": "Ordered narrative forecast periods parsed from the zone-specific section. Each element preserves the named period heading and its free-text forecast text."
+                  },
+                  {
+                    "name": "bulletin_text",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording."
+                  }
+                ],
+                "doc": "Marine forecast bulletin snapshot parsed from the NOAA/NWS coastal waters text feed under tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/. The upstream feed is plain text rather than structured JSON, so the bridge emits the bulletin metadata plus an ordered array of named narrative periods for the selected marine zone."
               }
             }
           }

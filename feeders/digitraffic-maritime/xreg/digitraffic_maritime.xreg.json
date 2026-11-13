@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.digitraffic.marine.ais"
+        "#/messagegroups/fi.digitraffic.marine.ais",
+        "#/messagegroups/fi.digitraffic.marine.ais.avro",
+        "#/messagegroups/fi.digitraffic.marine.ais.avro.binary"
       ],
       "description": "Kafka producer endpoint for Digitraffic Maritime CloudEvents on the `digitraffic-maritime` topic keyed by `{mmsi}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.digitraffic.marine.portcall"
+        "#/messagegroups/fi.digitraffic.marine.portcall",
+        "#/messagegroups/fi.digitraffic.marine.portcall.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.avro.binary"
       ],
       "description": "Kafka producer endpoint for Digitraffic Maritime CloudEvents on the `digitraffic-maritime` topic keyed by `{port_call_id}`."
     },
@@ -62,7 +66,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails"
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails",
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.avro.binary"
       ],
       "description": "Kafka producer endpoint for Digitraffic Maritime CloudEvents on the `digitraffic-maritime` topic keyed by `{vessel_id}`."
     },
@@ -84,7 +90,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation"
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation",
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.avro.binary"
       ],
       "description": "Kafka producer endpoint for Digitraffic Maritime CloudEvents on the `digitraffic-maritime` topic keyed by `{locode}`."
     },
@@ -104,7 +112,15 @@
         "#/messagegroups/fi.digitraffic.marine.ais.mqtt",
         "#/messagegroups/fi.digitraffic.marine.portcall.mqtt",
         "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.mqtt",
-        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.mqtt"
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.mqtt",
+        "#/messagegroups/fi.digitraffic.marine.ais.mqtt.avro",
+        "#/messagegroups/fi.digitraffic.marine.ais.mqtt.avro.binary",
+        "#/messagegroups/fi.digitraffic.marine.portcall.mqtt.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.mqtt.avro.binary",
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.mqtt.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.mqtt.avro.binary",
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.mqtt.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for Digitraffic Maritime CloudEvents using the UNS topic hierarchy declared in this manifest."
     },
@@ -133,7 +149,15 @@
         "#/messagegroups/fi.digitraffic.marine.ais.amqp",
         "#/messagegroups/fi.digitraffic.marine.portcall.amqp",
         "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.amqp",
-        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.amqp"
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.amqp",
+        "#/messagegroups/fi.digitraffic.marine.ais.amqp.avro",
+        "#/messagegroups/fi.digitraffic.marine.ais.amqp.avro.binary",
+        "#/messagegroups/fi.digitraffic.marine.portcall.amqp.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.amqp.avro.binary",
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.amqp.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.amqp.avro.binary",
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.amqp.avro",
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for Digitraffic Maritime CloudEvents on the configured broker address."
     }
@@ -154,6 +178,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -173,6 +201,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -197,6 +229,10 @@
             "subject": {
               "value": "{port_call_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -221,6 +257,10 @@
             "subject": {
               "value": "{vessel_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -245,6 +285,10 @@
             "subject": {
               "value": "{locode}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -456,6 +500,396 @@
             }
           },
           "description": "AMQP transport projection of port_location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message."
+        }
+      }
+    },
+    "fi.digitraffic.marine.ais.avro": {
+      "messagegroupid": "fi.digitraffic.marine.ais.avro",
+      "messages": {
+        "fi.digitraffic.marine.ais.VesselLocation": {
+          "messageid": "fi.digitraffic.marine.ais.VesselLocation",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselLocation"
+        },
+        "fi.digitraffic.marine.ais.VesselMetadata": {
+          "messageid": "fi.digitraffic.marine.ais.VesselMetadata",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselMetadata"
+        }
+      }
+    },
+    "fi.digitraffic.marine.ais.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.ais.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.ais.VesselLocation": {
+          "messageid": "fi.digitraffic.marine.ais.VesselLocation",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.digitraffic.marine.ais.VesselMetadata": {
+          "messageid": "fi.digitraffic.marine.ais.VesselMetadata",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.PortCall": {
+          "messageid": "fi.digitraffic.marine.portcall.PortCall",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.avro/schemas/fi.digitraffic.marine.portcall.PortCall"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.PortCall": {
+          "messageid": "fi.digitraffic.marine.portcall.PortCall",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.avro/schemas/fi.digitraffic.marine.portcall.PortCall",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.vesseldetails.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.VesselDetails": {
+          "messageid": "fi.digitraffic.marine.portcall.VesselDetails",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.VesselDetails"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.vesseldetails.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.VesselDetails": {
+          "messageid": "fi.digitraffic.marine.portcall.VesselDetails",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.VesselDetails",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.portlocation.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.portlocation.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.PortLocation": {
+          "messageid": "fi.digitraffic.marine.portcall.PortLocation",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.portlocation/messages/fi.digitraffic.marine.portcall.PortLocation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.PortLocation"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.portlocation.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.portlocation.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.PortLocation": {
+          "messageid": "fi.digitraffic.marine.portcall.PortLocation",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.portlocation/messages/fi.digitraffic.marine.portcall.PortLocation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.PortLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.ais.mqtt.avro": {
+      "messagegroupid": "fi.digitraffic.marine.ais.mqtt.avro",
+      "messages": {
+        "fi.digitraffic.marine.ais.mqtt.location": {
+          "messageid": "fi.digitraffic.marine.ais.mqtt.location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.mqtt/messages/fi.digitraffic.marine.ais.mqtt.location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselLocation"
+        },
+        "fi.digitraffic.marine.ais.mqtt.metadata": {
+          "messageid": "fi.digitraffic.marine.ais.mqtt.metadata",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.mqtt/messages/fi.digitraffic.marine.ais.mqtt.metadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselMetadata"
+        }
+      }
+    },
+    "fi.digitraffic.marine.ais.mqtt.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.ais.mqtt.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.ais.mqtt.location": {
+          "messageid": "fi.digitraffic.marine.ais.mqtt.location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.mqtt/messages/fi.digitraffic.marine.ais.mqtt.location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.digitraffic.marine.ais.mqtt.metadata": {
+          "messageid": "fi.digitraffic.marine.ais.mqtt.metadata",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.mqtt/messages/fi.digitraffic.marine.ais.mqtt.metadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.ais.amqp.avro": {
+      "messagegroupid": "fi.digitraffic.marine.ais.amqp.avro",
+      "messages": {
+        "fi.digitraffic.marine.ais.amqp.location": {
+          "messageid": "fi.digitraffic.marine.ais.amqp.location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselLocation"
+        },
+        "fi.digitraffic.marine.ais.amqp.metadata": {
+          "messageid": "fi.digitraffic.marine.ais.amqp.metadata",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.metadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselMetadata"
+        }
+      }
+    },
+    "fi.digitraffic.marine.ais.amqp.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.ais.amqp.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.ais.amqp.location": {
+          "messageid": "fi.digitraffic.marine.ais.amqp.location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.digitraffic.marine.ais.amqp.metadata": {
+          "messageid": "fi.digitraffic.marine.ais.amqp.metadata",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.metadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais.avro/schemas/fi.digitraffic.marine.ais.VesselMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.mqtt.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.mqtt.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.mqtt.port_call": {
+          "messageid": "fi.digitraffic.marine.portcall.mqtt.port_call",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.mqtt/messages/fi.digitraffic.marine.portcall.mqtt.port_call",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.avro/schemas/fi.digitraffic.marine.portcall.PortCall"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.mqtt.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.mqtt.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.mqtt.port_call": {
+          "messageid": "fi.digitraffic.marine.portcall.mqtt.port_call",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.mqtt/messages/fi.digitraffic.marine.portcall.mqtt.port_call",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.avro/schemas/fi.digitraffic.marine.portcall.PortCall",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.amqp.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.amqp.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.amqp.port_call": {
+          "messageid": "fi.digitraffic.marine.portcall.amqp.port_call",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.amqp/messages/fi.digitraffic.marine.portcall.amqp.port_call",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.avro/schemas/fi.digitraffic.marine.portcall.PortCall"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.amqp.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.amqp.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.amqp.port_call": {
+          "messageid": "fi.digitraffic.marine.portcall.amqp.port_call",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.amqp/messages/fi.digitraffic.marine.portcall.amqp.port_call",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.avro/schemas/fi.digitraffic.marine.portcall.PortCall",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails.mqtt.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.vesseldetails.mqtt.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details": {
+          "messageid": "fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.mqtt/messages/fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.VesselDetails"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails.mqtt.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.vesseldetails.mqtt.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details": {
+          "messageid": "fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.mqtt/messages/fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.VesselDetails",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails.amqp.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.vesseldetails.amqp.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details": {
+          "messageid": "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.amqp/messages/fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.VesselDetails"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails.amqp.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.vesseldetails.amqp.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details": {
+          "messageid": "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.amqp/messages/fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.VesselDetails",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.portlocation.mqtt.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.portlocation.mqtt.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.portlocation.mqtt.port_location": {
+          "messageid": "fi.digitraffic.marine.portcall.portlocation.mqtt.port_location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.portlocation.mqtt/messages/fi.digitraffic.marine.portcall.portlocation.mqtt.port_location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.PortLocation"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.portlocation.mqtt.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.portlocation.mqtt.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.portlocation.mqtt.port_location": {
+          "messageid": "fi.digitraffic.marine.portcall.portlocation.mqtt.port_location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.portlocation.mqtt/messages/fi.digitraffic.marine.portcall.portlocation.mqtt.port_location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.PortLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.portlocation.amqp.avro": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.portlocation.amqp.avro",
+      "messages": {
+        "fi.digitraffic.marine.portcall.portlocation.amqp.port_location": {
+          "messageid": "fi.digitraffic.marine.portcall.portlocation.amqp.port_location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.portlocation.amqp/messages/fi.digitraffic.marine.portcall.portlocation.amqp.port_location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.PortLocation"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.portlocation.amqp.avro.binary": {
+      "messagegroupid": "fi.digitraffic.marine.portcall.portlocation.amqp.avro.binary",
+      "messages": {
+        "fi.digitraffic.marine.portcall.portlocation.amqp.port_location": {
+          "messageid": "fi.digitraffic.marine.portcall.portlocation.amqp.port_location",
+          "basemessage": "/messagegroups/fi.digitraffic.marine.portcall.portlocation.amqp/messages/fi.digitraffic.marine.portcall.portlocation.amqp.port_location",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.avro/schemas/fi.digitraffic.marine.portcall.PortLocation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -1581,6 +2015,850 @@
                   }
                 ],
                 "description": "A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.avro": {
+      "schemas": {
+        "fi.digitraffic.marine.portcall.PortCall": {
+          "name": "PortCall",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.digitraffic.marine.portcall.PortCall",
+                "fields": [
+                  {
+                    "name": "port_call_id",
+                    "type": "int",
+                    "doc": "Digitraffic port call identifier for this Portnet vessel visit record."
+                  },
+                  {
+                    "name": "updated_at",
+                    "type": "string",
+                    "doc": "Timestamp when this port call record was last updated in Digitraffic, from the portCallTimestamp field."
+                  },
+                  {
+                    "name": "customs_reference",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Customs reference string carried with the port call when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "port_to_visit",
+                    "type": "string",
+                    "doc": "UN/LOCODE of the destination port that this call is scheduled to visit."
+                  },
+                  {
+                    "name": "previous_port",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UN/LOCODE of the vessel's previous port when reported by Portnet. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "next_port",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UN/LOCODE of the vessel's next announced port when reported by Portnet. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mmsi",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Maritime Mobile Service Identity associated with the visiting vessel, when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "imo_lloyds",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "IMO or Lloyd's vessel number carried with the port call when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vessel_name",
+                    "type": "string",
+                    "doc": "Reported vessel name for the visit."
+                  },
+                  {
+                    "name": "vessel_name_prefix",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Reported vessel name prefix such as 'ms' or 'mt' when present. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "radio_call_sign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Radio call sign for the visiting vessel when reported by Portnet. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nationality",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Flag or nationality code reported for the vessel. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vessel_type_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Digitraffic vessel type code for the visiting vessel. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "domestic_traffic_arrival",
+                    "type": "boolean",
+                    "doc": "True when the arrival leg is domestic traffic."
+                  },
+                  {
+                    "name": "domestic_traffic_departure",
+                    "type": "boolean",
+                    "doc": "True when the departure leg is domestic traffic."
+                  },
+                  {
+                    "name": "arrival_with_cargo",
+                    "type": "boolean",
+                    "doc": "True when the vessel is reported as arriving with cargo."
+                  },
+                  {
+                    "name": "not_loading",
+                    "type": "boolean",
+                    "doc": "True when the vessel is reported as not loading cargo at the call."
+                  },
+                  {
+                    "name": "discharge",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Digitraffic discharge indicator value for the call when reported. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "current_security_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Current ISPS security level reported for the vessel at this call. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "agents",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "fi.digitraffic.marine.portcall.PortCall_types.agents_item",
+                        "fields": [
+                          {
+                            "name": "name",
+                            "type": "string",
+                            "doc": "Organization name for the assigned ship agent or manager."
+                          },
+                          {
+                            "name": "port_call_direction",
+                            "type": "string",
+                            "doc": "Direction scope for the assignment, such as arrival, departure, or whole port call."
+                          },
+                          {
+                            "name": "role",
+                            "type": "int",
+                            "doc": "Digitraffic role code for the assignment, for example agent or ship manager."
+                          }
+                        ],
+                        "doc": "One agent or manager assignment attached to the port call."
+                      }
+                    },
+                    "doc": "Agent and manager organizations attached to the port call."
+                  },
+                  {
+                    "name": "port_areas",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "fi.digitraffic.marine.portcall.PortCall_types.port_areas_item",
+                        "fields": [
+                          {
+                            "name": "port_area_code",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Code of the destination port area when assigned. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "port_area_name",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Human-readable name of the destination port area when assigned. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "berth_code",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Berth code within the destination port area when assigned. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "berth_name",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Human-readable berth name when assigned. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "eta",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Estimated time of arrival for this port-area assignment. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "eta_source",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Source of the ETA value, for example an agent update. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "etd",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Estimated time of departure for this port-area assignment. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "etd_source",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Source of the ETD value, for example an agent update. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ata",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Actual time of arrival for this port-area assignment when recorded. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ata_source",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Source of the ATA value when recorded. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "atd",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Actual time of departure for this port-area assignment when recorded. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "atd_source",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Source of the ATD value when recorded. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "arrival_draught",
+                            "type": "double",
+                            "doc": "Arrival draught reported for this berth or port-area assignment in meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                          },
+                          {
+                            "name": "departure_draught",
+                            "type": "double",
+                            "doc": "Departure draught reported for this berth or port-area assignment in meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                          }
+                        ],
+                        "doc": "A berth or port-area schedule detail attached to the port call."
+                      }
+                    },
+                    "doc": "Planned or actual berth and port-area timing details associated with the call."
+                  }
+                ],
+                "doc": "A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels."
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.reference.avro": {
+      "schemas": {
+        "fi.digitraffic.marine.portcall.VesselDetails": {
+          "name": "VesselDetails",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.digitraffic.marine.portcall.VesselDetails",
+                "fields": [
+                  {
+                    "name": "vessel_id",
+                    "type": "int",
+                    "doc": "Digitraffic vessel identifier from the vesselId field. This is the stable identifier used as the CloudEvents subject and Kafka record key for vessel reference events."
+                  },
+                  {
+                    "name": "updated_at",
+                    "type": "string",
+                    "doc": "Timestamp when Digitraffic last updated the vessel metadata record, from the updateTimestamp field."
+                  },
+                  {
+                    "name": "mmsi",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Maritime Mobile Service Identity associated with this vessel when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Reported vessel name. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name_prefix",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Reported vessel-name prefix such as ms when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "imo_lloyds",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "IMO or Lloyd's number associated with the vessel when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "radio_call_sign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Radio call sign associated with the vessel when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "radio_call_sign_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Type of radio call sign reported by Digitraffic, for example REAL. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "data_source",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Upstream data source reported by Digitraffic for the vessel metadata, for example Portnet. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vessel_construction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "VesselConstruction",
+                        "fields": [
+                          {
+                            "name": "vessel_type_code",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "doc": "Digitraffic vessel type code from vesselConstruction.vesselTypeCode when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "vessel_type_name",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Human-readable vessel type name from vesselConstruction.vesselTypeName when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ice_class_code",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Ice class code reported for the vessel when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ice_class_issue_date",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Date when the current ice-class endorsement was issued, when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ice_class_issue_place",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Place where the ice-class endorsement was issued when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ice_class_end_date",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Date when the current ice-class endorsement ends, when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "double_bottom",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "boolean"
+                            ],
+                            "doc": "True when the vessel is reported as having a double bottom. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "inert_gas_system",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "boolean"
+                            ],
+                            "doc": "True when the vessel is reported as having an inert gas system. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ballast_tank",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "boolean"
+                            ],
+                            "doc": "True when the vessel is reported as having a ballast tank. An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Construction and classification attributes for the vessel."
+                      }
+                    ],
+                    "doc": "Construction and classification attributes for the vessel. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vessel_dimensions",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "VesselDimensions",
+                        "fields": [
+                          {
+                            "name": "tonnage_certificate_issuer",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Issuer of the vessel tonnage certificate when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "date_of_issue",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Date when the tonnage certificate was issued when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "gross_tonnage",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "doc": "Gross tonnage reported for the vessel when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "net_tonnage",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "doc": "Net tonnage reported for the vessel when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "dead_weight",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "doc": "Deadweight reported for the vessel from the deathWeight field when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "length",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Reported vessel length in meters when available. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "overall_length",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Reported vessel overall length in meters when available. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "height",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Reported vessel height in meters when available. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "breadth",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Reported vessel breadth in meters when available. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "draught",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Reported vessel draught in meters when available. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "max_speed",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Reported maximum vessel speed in knots when available. JSON Structure annotations: {\"symbol\": \"kn\", \"unit\": \"kn\"} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "engine_power",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Engine power value as reported by Digitraffic when available. An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Tonnage and dimensional attributes for the vessel."
+                      }
+                    ],
+                    "doc": "Tonnage and dimensional attributes for the vessel. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vessel_registration",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "VesselRegistration",
+                        "fields": [
+                          {
+                            "name": "nationality",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Reported nationality or flag state for the vessel when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "port_of_registry",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Reported port of registry or home port for the vessel when available. An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Registry and nationality details for the vessel."
+                      }
+                    ],
+                    "doc": "Registry and nationality details for the vessel. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vessel_system",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "VesselSystem",
+                        "fields": [
+                          {
+                            "name": "ship_owner",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Reported ship owner name when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ship_telephone_1",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Primary ship telephone number when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ship_email",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Ship email address when available. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ship_verifier",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Verifier or registry authority code carried with the vessel system record when available. An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "System and contact details carried with the vessel metadata."
+                      }
+                    ],
+                    "doc": "System and contact details carried with the vessel metadata. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.marine.portcall.PortLocation": {
+          "name": "PortLocation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.digitraffic.marine.portcall.PortLocation",
+                "fields": [
+                  {
+                    "name": "locode",
+                    "type": "string",
+                    "doc": "UN/LOCODE identifying the port location. This value is used as the CloudEvents subject and Kafka record key for port-location reference events."
+                  },
+                  {
+                    "name": "data_updated_time",
+                    "type": "string",
+                    "doc": "Timestamp when the ports snapshot used for this location was last updated in Digitraffic."
+                  },
+                  {
+                    "name": "location_name",
+                    "type": "string",
+                    "doc": "Human-readable port or location name from the ssnLocations feature properties."
+                  },
+                  {
+                    "name": "country",
+                    "type": "string",
+                    "doc": "Country name reported for the location in the ssnLocations feature properties."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the port location point in decimal degrees east when the upstream feature includes geometry. JSON Structure annotations: {\"symbol\": \"deg\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the port location point in decimal degrees north when the upstream feature includes geometry. JSON Structure annotations: {\"symbol\": \"deg\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "port_areas",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "fi.digitraffic.marine.portcall.PortLocation_types.port_areas_item",
+                        "fields": [
+                          {
+                            "name": "port_area_code",
+                            "type": "string",
+                            "doc": "Port-area code identifying one sub-area of the port location."
+                          },
+                          {
+                            "name": "port_area_name",
+                            "type": "string",
+                            "doc": "Human-readable name of the port area."
+                          },
+                          {
+                            "name": "longitude",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Longitude of the port-area point in decimal degrees east when the upstream feature includes geometry. JSON Structure annotations: {\"symbol\": \"deg\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "latitude",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Latitude of the port-area point in decimal degrees north when the upstream feature includes geometry. JSON Structure annotations: {\"symbol\": \"deg\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels."
+                      }
+                    },
+                    "doc": "Port areas associated with this location from the portAreas feature collection."
+                  },
+                  {
+                    "name": "berths",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "fi.digitraffic.marine.portcall.PortLocation_types.berths_item",
+                        "fields": [
+                          {
+                            "name": "port_area_code",
+                            "type": "string",
+                            "doc": "Code of the port area that contains this berth."
+                          },
+                          {
+                            "name": "berth_code",
+                            "type": "string",
+                            "doc": "Berth code within the port area."
+                          },
+                          {
+                            "name": "berth_name",
+                            "type": "string",
+                            "doc": "Human-readable berth name."
+                          }
+                        ],
+                        "doc": "A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels."
+                      }
+                    },
+                    "doc": "Berth catalog entries associated with this location from the berths collection."
+                  }
+                ],
+                "doc": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
             }
           }

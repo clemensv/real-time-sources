@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/UK.Co.Elexon.BMRS"
+        "#/messagegroups/UK.Co.Elexon.BMRS",
+        "#/messagegroups/UK.Co.Elexon.BMRS.avro",
+        "#/messagegroups/UK.Co.Elexon.BMRS.avro.binary"
       ]
     },
     "UK.Co.Elexon.BMRS.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/UK.Co.Elexon.BMRS.mqtt"
+        "#/messagegroups/UK.Co.Elexon.BMRS.mqtt",
+        "#/messagegroups/UK.Co.Elexon.BMRS.mqtt.avro",
+        "#/messagegroups/UK.Co.Elexon.BMRS.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for elexon-bmrs."
     },
@@ -65,7 +69,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/UK.Co.Elexon.BMRS.amqp"
+        "#/messagegroups/UK.Co.Elexon.BMRS.amqp",
+        "#/messagegroups/UK.Co.Elexon.BMRS.amqp.avro",
+        "#/messagegroups/UK.Co.Elexon.BMRS.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for elexon-bmrs."
     }
@@ -86,6 +92,10 @@
             "subject": {
               "value": "{settlement_period}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -104,6 +114,10 @@
             "subject": {
               "value": "{settlement_period}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -123,6 +137,10 @@
             "subject": {
               "value": "{settlement_period}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -228,6 +246,198 @@
                 "value": "{settlement_period}",
                 "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.avro": {
+      "messagegroupid": "UK.Co.Elexon.BMRS.avro",
+      "messages": {
+        "UK.Co.Elexon.BMRS.GenerationMix": {
+          "messageid": "UK.Co.Elexon.BMRS.GenerationMix",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.GenerationMix"
+        },
+        "UK.Co.Elexon.BMRS.DemandOutturn": {
+          "messageid": "UK.Co.Elexon.BMRS.DemandOutturn",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.DemandOutturn"
+        },
+        "UK.Co.Elexon.BMRS.Info": {
+          "messageid": "UK.Co.Elexon.BMRS.Info",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.Info"
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.avro.binary": {
+      "messagegroupid": "UK.Co.Elexon.BMRS.avro.binary",
+      "messages": {
+        "UK.Co.Elexon.BMRS.GenerationMix": {
+          "messageid": "UK.Co.Elexon.BMRS.GenerationMix",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.GenerationMix",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.DemandOutturn": {
+          "messageid": "UK.Co.Elexon.BMRS.DemandOutturn",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.DemandOutturn",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.Info": {
+          "messageid": "UK.Co.Elexon.BMRS.Info",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.mqtt.avro": {
+      "messagegroupid": "UK.Co.Elexon.BMRS.mqtt.avro",
+      "messages": {
+        "UK.Co.Elexon.BMRS.mqtt.GenerationMix": {
+          "messageid": "UK.Co.Elexon.BMRS.mqtt.GenerationMix",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.mqtt/messages/UK.Co.Elexon.BMRS.mqtt.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.GenerationMix"
+        },
+        "UK.Co.Elexon.BMRS.mqtt.DemandOutturn": {
+          "messageid": "UK.Co.Elexon.BMRS.mqtt.DemandOutturn",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.mqtt/messages/UK.Co.Elexon.BMRS.mqtt.DemandOutturn",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.DemandOutturn"
+        },
+        "UK.Co.Elexon.BMRS.mqtt.Info": {
+          "messageid": "UK.Co.Elexon.BMRS.mqtt.Info",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.mqtt/messages/UK.Co.Elexon.BMRS.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.Info"
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.mqtt.avro.binary": {
+      "messagegroupid": "UK.Co.Elexon.BMRS.mqtt.avro.binary",
+      "messages": {
+        "UK.Co.Elexon.BMRS.mqtt.GenerationMix": {
+          "messageid": "UK.Co.Elexon.BMRS.mqtt.GenerationMix",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.mqtt/messages/UK.Co.Elexon.BMRS.mqtt.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.GenerationMix",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.mqtt.DemandOutturn": {
+          "messageid": "UK.Co.Elexon.BMRS.mqtt.DemandOutturn",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.mqtt/messages/UK.Co.Elexon.BMRS.mqtt.DemandOutturn",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.DemandOutturn",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.mqtt.Info": {
+          "messageid": "UK.Co.Elexon.BMRS.mqtt.Info",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.mqtt/messages/UK.Co.Elexon.BMRS.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.amqp.avro": {
+      "messagegroupid": "UK.Co.Elexon.BMRS.amqp.avro",
+      "messages": {
+        "UK.Co.Elexon.BMRS.amqp.GenerationMix": {
+          "messageid": "UK.Co.Elexon.BMRS.amqp.GenerationMix",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.GenerationMix"
+        },
+        "UK.Co.Elexon.BMRS.amqp.DemandOutturn": {
+          "messageid": "UK.Co.Elexon.BMRS.amqp.DemandOutturn",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.DemandOutturn",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.DemandOutturn"
+        },
+        "UK.Co.Elexon.BMRS.amqp.Info": {
+          "messageid": "UK.Co.Elexon.BMRS.amqp.Info",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.Info"
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.amqp.avro.binary": {
+      "messagegroupid": "UK.Co.Elexon.BMRS.amqp.avro.binary",
+      "messages": {
+        "UK.Co.Elexon.BMRS.amqp.GenerationMix": {
+          "messageid": "UK.Co.Elexon.BMRS.amqp.GenerationMix",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.GenerationMix",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.amqp.DemandOutturn": {
+          "messageid": "UK.Co.Elexon.BMRS.amqp.DemandOutturn",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.DemandOutturn",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.DemandOutturn",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.amqp.Info": {
+          "messageid": "UK.Co.Elexon.BMRS.amqp.Info",
+          "basemessage": "/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.avro/schemas/UK.Co.Elexon.BMRS.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -589,6 +799,375 @@
                     "description": "Stable venue identifier for venue-scoped civic event topics, when applicable."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.avro": {
+      "schemas": {
+        "UK.Co.Elexon.BMRS.GenerationMix": {
+          "name": "GenerationMix",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "UK.Co.Elexon.BMRS.GenerationMix",
+                "fields": [
+                  {
+                    "name": "settlement_period",
+                    "type": "int",
+                    "doc": "GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC. Period 1 covers 00:00-00:30, period 2 covers 00:30-01:00, and so on."
+                  },
+                  {
+                    "name": "start_time",
+                    "type": "string",
+                    "doc": "UTC start time of the settlement period as reported by the BMRS generation outturn summary endpoint."
+                  },
+                  {
+                    "name": "biomass_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from biomass-fuelled power stations in megawatts (MW). Biomass includes dedicated biomass plants and biomass co-firing units. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ccgt_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from combined cycle gas turbine (CCGT) power stations in megawatts (MW). CCGT is the primary gas-fired generation technology in GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coal_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from coal-fired power stations in megawatts (MW). JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nuclear_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from nuclear power stations in megawatts (MW). JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from wind farms (onshore and offshore combined) in megawatts (MW). JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ocgt_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from open cycle gas turbine (OCGT) power stations in megawatts (MW). OCGT units are typically used for peaking and reserve. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oil_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from oil-fired power stations in megawatts (MW). JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "npshyd_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from non-pumped-storage hydroelectric power stations in megawatts (MW). JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ps_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from pumped storage hydroelectric power stations in megawatts (MW). PS units can act as both generation and demand. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "intfr_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net import via the France interconnector (IFA) in megawatts (MW). Positive values indicate import to GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "intned_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net import via the Netherlands interconnector (BritNed) in megawatts (MW). Positive values indicate import to GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "intnem_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net import via the Belgium interconnector (Nemo Link) in megawatts (MW). Positive values indicate import to GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "intelec_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net import via the East-West Interconnector (EWIC) to Ireland in megawatts (MW). Positive values indicate import to GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "intifa2_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net import via the IFA2 interconnector to France in megawatts (MW). Positive values indicate import to GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "intnsl_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net import via the North Sea Link interconnector to Norway in megawatts (MW). Positive values indicate import to GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "intvkl_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net import via the Viking Link interconnector to Denmark in megawatts (MW). Positive values indicate import to GB. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "other_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Generation output from other fuel types not individually categorised in megawatts (MW). JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Half-hourly generation outturn summary for the GB electricity system from the Elexon BMRS API. Each record represents one settlement period and contains the generation output in megawatts (MW) broken down by fuel type, including domestic generation (biomass, CCGT, coal, nuclear, wind, OCGT, oil, hydro, pumped storage) and interconnector imports (France IFA, France IFA2, Netherlands BritNed, Belgium Nemo, Ireland EWIC, Norway NSL, Denmark Viking Link). Sourced from the BMRS /generation/outturn/summary endpoint."
+              }
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.DemandOutturn": {
+          "name": "DemandOutturn",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "UK.Co.Elexon.BMRS.DemandOutturn",
+                "fields": [
+                  {
+                    "name": "settlement_period",
+                    "type": "int",
+                    "doc": "GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC."
+                  },
+                  {
+                    "name": "settlement_date",
+                    "type": "string",
+                    "doc": "Settlement date in ISO 8601 format (YYYY-MM-DD) as reported by the BMRS demand outturn endpoint."
+                  },
+                  {
+                    "name": "start_time",
+                    "type": "string",
+                    "doc": "UTC start time of the settlement period as reported by the BMRS demand outturn endpoint."
+                  },
+                  {
+                    "name": "publish_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UTC timestamp when the demand outturn data was published by Elexon. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "initial_demand_outturn_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Initial national demand outturn (INDO) in megawatts (MW). This is the metered generation output less station transformer, unit transformer, and pumped storage demand, measured at the Grid Supply Point (GSP). JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "initial_transmission_system_demand_outturn_mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Initial transmission system demand outturn (ITSDO) in megawatts (MW). This represents the national demand plus station demand, pumping, and interconnector exports. JSON Structure annotations: {\"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon."
+              }
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.Info": {
+          "name": "Info",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "UK.Co.Elexon.BMRS.Info",
+                "fields": [
+                  {
+                    "name": "info_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "city",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "City segment used in civic-events topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event category segment used in topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "price_area",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Energy market price area or bidding zone represented by this reference record, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GB settlement date for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "GB settlement period for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Electricity control area or utility service area code represented by this record when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "segment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ticketmaster classification segment used for wildcard topic routing, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "entity_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream entity identifier for reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream event identifier for event-scoped reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "venue_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable venue identifier for venue-scoped civic event topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope."
               }
             }
           }

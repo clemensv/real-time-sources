@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/JP.JMA.Volcano"
+        "#/messagegroups/JP.JMA.Volcano",
+        "#/messagegroups/JP.JMA.Volcano.avro",
+        "#/messagegroups/JP.JMA.Volcano.avro.binary"
       ],
       "description": "Kafka producer endpoint for JMA Bosai Volcano CloudEvents on the `jma-bosai-volcano` topic keyed by `jp.jma.volcano/{volcano_code}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/JP.JMA.Volcano.mqtt"
+        "#/messagegroups/JP.JMA.Volcano.mqtt",
+        "#/messagegroups/JP.JMA.Volcano.mqtt.avro",
+        "#/messagegroups/JP.JMA.Volcano.mqtt.avro.binary"
       ],
       "description": "MQTT/5.0 producer endpoint for jma-bosai-volcano CloudEvents."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/JP.JMA.Volcano.amqp"
+        "#/messagegroups/JP.JMA.Volcano.amqp",
+        "#/messagegroups/JP.JMA.Volcano.amqp.avro",
+        "#/messagegroups/JP.JMA.Volcano.amqp.avro.binary"
       ],
       "description": "AMQP/1.0 producer endpoint for jma-bosai-volcano CloudEvents."
     }
@@ -85,6 +91,10 @@
             "subject": {
               "value": "jp.jma.volcano/{volcano_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -105,6 +115,10 @@
             "subject": {
               "value": "jp.jma.volcano/{volcano_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -125,6 +139,10 @@
             "subject": {
               "value": "jp.jma.volcano/{volcano_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -246,6 +264,198 @@
                 "value": "{event}",
                 "description": "event routing axis carried in the event payload."
               }
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Volcano.avro": {
+      "messagegroupid": "JP.JMA.Volcano.avro",
+      "messages": {
+        "JP.JMA.Volcano.Volcano": {
+          "messageid": "JP.JMA.Volcano.Volcano",
+          "basemessage": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.Volcano",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.Volcano"
+        },
+        "JP.JMA.Volcano.VolcanicWarning": {
+          "messageid": "JP.JMA.Volcano.VolcanicWarning",
+          "basemessage": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicWarning"
+        },
+        "JP.JMA.Volcano.VolcanicEruption": {
+          "messageid": "JP.JMA.Volcano.VolcanicEruption",
+          "basemessage": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicEruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicEruption"
+        }
+      }
+    },
+    "JP.JMA.Volcano.avro.binary": {
+      "messagegroupid": "JP.JMA.Volcano.avro.binary",
+      "messages": {
+        "JP.JMA.Volcano.Volcano": {
+          "messageid": "JP.JMA.Volcano.Volcano",
+          "basemessage": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.Volcano",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.Volcano",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Volcano.VolcanicWarning": {
+          "messageid": "JP.JMA.Volcano.VolcanicWarning",
+          "basemessage": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicWarning",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Volcano.VolcanicEruption": {
+          "messageid": "JP.JMA.Volcano.VolcanicEruption",
+          "basemessage": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicEruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicEruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Volcano.mqtt.avro": {
+      "messagegroupid": "JP.JMA.Volcano.mqtt.avro",
+      "messages": {
+        "JP.JMA.Volcano.mqtt.Volcano": {
+          "messageid": "JP.JMA.Volcano.mqtt.Volcano",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.Volcano",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.Volcano"
+        },
+        "JP.JMA.Volcano.mqtt.VolcanicWarning": {
+          "messageid": "JP.JMA.Volcano.mqtt.VolcanicWarning",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.VolcanicWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicWarning"
+        },
+        "JP.JMA.Volcano.mqtt.VolcanicEruption": {
+          "messageid": "JP.JMA.Volcano.mqtt.VolcanicEruption",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.VolcanicEruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicEruption"
+        }
+      }
+    },
+    "JP.JMA.Volcano.mqtt.avro.binary": {
+      "messagegroupid": "JP.JMA.Volcano.mqtt.avro.binary",
+      "messages": {
+        "JP.JMA.Volcano.mqtt.Volcano": {
+          "messageid": "JP.JMA.Volcano.mqtt.Volcano",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.Volcano",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.Volcano",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Volcano.mqtt.VolcanicWarning": {
+          "messageid": "JP.JMA.Volcano.mqtt.VolcanicWarning",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.VolcanicWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicWarning",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Volcano.mqtt.VolcanicEruption": {
+          "messageid": "JP.JMA.Volcano.mqtt.VolcanicEruption",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.VolcanicEruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicEruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Volcano.amqp.avro": {
+      "messagegroupid": "JP.JMA.Volcano.amqp.avro",
+      "messages": {
+        "JP.JMA.Volcano.amqp.Volcano": {
+          "messageid": "JP.JMA.Volcano.amqp.Volcano",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.Volcano",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.Volcano"
+        },
+        "JP.JMA.Volcano.amqp.VolcanicWarning": {
+          "messageid": "JP.JMA.Volcano.amqp.VolcanicWarning",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.VolcanicWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicWarning"
+        },
+        "JP.JMA.Volcano.amqp.VolcanicEruption": {
+          "messageid": "JP.JMA.Volcano.amqp.VolcanicEruption",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.VolcanicEruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicEruption"
+        }
+      }
+    },
+    "JP.JMA.Volcano.amqp.avro.binary": {
+      "messagegroupid": "JP.JMA.Volcano.amqp.avro.binary",
+      "messages": {
+        "JP.JMA.Volcano.amqp.Volcano": {
+          "messageid": "JP.JMA.Volcano.amqp.Volcano",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.Volcano",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.Volcano",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Volcano.amqp.VolcanicWarning": {
+          "messageid": "JP.JMA.Volcano.amqp.VolcanicWarning",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.VolcanicWarning",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicWarning",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Volcano.amqp.VolcanicEruption": {
+          "messageid": "JP.JMA.Volcano.amqp.VolcanicEruption",
+          "basemessage": "/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.VolcanicEruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.jma.volcano.avro/schemas/jp.jma.volcano.VolcanicEruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -648,6 +858,367 @@
                   "JSONStructureAlternateNames",
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "jp.jma.volcano.avro": {
+      "schemas": {
+        "jp.jma.volcano.Volcano": {
+          "name": "Volcano",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "jp.jma.volcano.Volcano",
+                "fields": [
+                  {
+                    "name": "volcano_code",
+                    "type": "string",
+                    "doc": "Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]{3}$\"}"
+                  },
+                  {
+                    "name": "name_jp",
+                    "type": "string",
+                    "doc": "Japanese volcano name from the JMA Bosai volcano catalog. This is a display label and is not used as the stable identity because JMA warning records key volcanoes by code."
+                  },
+                  {
+                    "name": "name_en",
+                    "type": "string",
+                    "doc": "English volcano name from the JMA Bosai volcano catalog, used as a display label for international consumers."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the volcano in WGS84 decimal degrees. The bridge converts JMA degree-and-minute coordinates when present, and otherwise forwards the Bosai catalog decimal latitude. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the volcano in WGS84 decimal degrees. The bridge converts JMA degree-and-minute coordinates when present, and otherwise forwards the Bosai catalog decimal longitude. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "elevation_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Volcano summit elevation in metres when supplied by the JMA catalog. Some Bosai catalog entries omit elevation, so the field is null in emitted events when JMA does not provide the value. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"meter\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "level_operation",
+                    "type": "boolean",
+                    "doc": "True when JMA marks the volcano as operating under the five-level eruption alert system. False means the volcano is represented by binary issued/not-issued volcanic warnings rather than a local five-level evacuation framework."
+                  },
+                  {
+                    "name": "prefecture",
+                    "type": "string",
+                    "doc": "ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. JSON Structure annotations: {\"pattern\": \"^[a-z0-9][a-z0-9-]*$\"}"
+                  },
+                  {
+                    "name": "event",
+                    "type": {
+                      "type": "enum",
+                      "name": "jp.jma.volcano.Volcano_types.event",
+                      "symbols": [
+                        "info"
+                      ]
+                    },
+                    "doc": "Fixed topic event segment for Volcano messages. JSON Structure annotations: {\"enum\": [\"info\"], \"name\": \"VolcanoEventEnum\"}"
+                  }
+                ],
+                "doc": "JMA Bosai volcano catalog reference data emitted at startup and on monthly refresh."
+              }
+            }
+          }
+        },
+        "jp.jma.volcano.VolcanicWarning": {
+          "name": "VolcanicWarning",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "jp.jma.volcano.VolcanicWarning",
+                "fields": [
+                  {
+                    "name": "volcano_code",
+                    "type": "string",
+                    "doc": "Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]{3}$\"}"
+                  },
+                  {
+                    "name": "event_id",
+                    "type": "string",
+                    "doc": "JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano."
+                  },
+                  {
+                    "name": "report_datetime",
+                    "type": "string",
+                    "doc": "Report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp. This is the normalized time used for cross-region analytics."
+                  },
+                  {
+                    "name": "report_datetime_local",
+                    "type": "string",
+                    "doc": "Original JMA reportDatetime value in Japan Standard Time as published by the Bosai warning feed. Keeping the local timestamp preserves the official bulletin time shown by JMA."
+                  },
+                  {
+                    "name": "alert_level_code",
+                    "type": "string",
+                    "doc": "Raw JMA volcanic warning code as published in the `code` field of warning.json, emitted verbatim as a string. JMA's volcanic warning codes form an OPEN, upstream-controlled vocabulary that changes with volcanic activity, so this field is intentionally not constrained to a closed enum; consumers should treat any unlisted code as a valid JMA code and rely on the sibling `alert_level_name` field for the human-readable label JMA publishes alongside each code. Known codes observed in the live feed and JMA eruption-alert-level guidance: `02` = Crater-area warning (火口周辺警報); `03` = Eruption warning for surrounding sea area (噴火警報（周辺海域）); `04` = Eruption forecast, warning lifted (噴火予報：警報解除); `11` = Active volcano, pay attention (活動火山であることに留意); `12` = Crater area restriction (火口周辺規制); `13` = Mountain access restriction (入山規制); `22` = Crater vicinity danger (火口周辺危険); `23` = Mountain access danger (入山危険); `36` = Surrounding waters warning for submarine or island volcanoes (周辺海域警戒); `43` = Crater-area warning, entry restrictions (火口周辺警報：入山規制等); `44` = Eruption warning for surrounding sea area, sea-area warning (噴火警報（周辺海域）：周辺海域警戒); `45` = Active volcano, pay attention (活火山であることに留意); `49` = Crater-area warning, caution around the crater (火口周辺警報：火口周辺警戒). Labels for codes 11/12/13 are from JMA eruption-alert-level guidance; the remaining labels are taken from the live warning.json item `name` fields, which the Bosai JSON feed publishes directly."
+                  },
+                  {
+                    "name": "alert_level_name",
+                    "type": "string",
+                    "doc": "Japanese alert level or warning label from the target-volcano item, such as レベル３（入山規制）. JMA uses this text to communicate the public-facing warning level or restriction phrase."
+                  },
+                  {
+                    "name": "previous_level_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Previous JMA alert level or warning code from lastCode when the warning feed provides one. It allows consumers to determine whether the current report raised, lowered, continued, or newly issued a level. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "condition",
+                    "type": {
+                      "type": "enum",
+                      "name": "jp.jma.volcano.VolcanicWarning_types.condition",
+                      "symbols": [
+                        "ISSUED",
+                        "RAISED",
+                        "LOWERED",
+                        "CONTINUED",
+                        "SWITCHED",
+                        "CANCELLED"
+                      ]
+                    },
+                    "doc": "Normalized lifecycle condition derived from the Japanese JMA condition text. 発表 is mapped to ISSUED, 引上げ to RAISED, 引下げ to LOWERED, 継続 to CONTINUED, 切替 to SWITCHED, and 解除 to CANCELLED so downstream consumers can compare reports without parsing Japanese status labels. JSON Structure annotations: {\"altenums\": {\"lang:ja\": {\"CANCELLED\": \"解除\", \"CONTINUED\": \"継続\", \"ISSUED\": \"発表\", \"LOWERED\": \"引下げ\", \"RAISED\": \"引上げ\", \"SWITCHED\": \"切替\"}}, \"altnames\": {\"json\": \"condition\"}, \"descriptions\": {\"CANCELLED\": \"Provider value `CANCELLED` for this coded alert field.\", \"CONTINUED\": \"Provider value `CONTINUED` for this coded alert field.\", \"ISSUED\": \"Provider value `ISSUED` for this coded alert field.\", \"LOWERED\": \"Provider value `LOWERED` for this coded alert field.\", \"RAISED\": \"Provider value `RAISED` for this coded alert field.\", \"SWITCHED\": \"Provider value `SWITCHED` for this coded alert field.\"}, \"enum\": [\"ISSUED\", \"RAISED\", \"LOWERED\", \"CONTINUED\", \"SWITCHED\", \"CANCELLED\"]}"
+                  },
+                  {
+                    "name": "info_type_jp",
+                    "type": "string",
+                    "doc": "Japanese volcanoInfos type label from the JMA feed. For emitted warning events the bridge uses the target-volcano section, normally 噴火警報・予報（対象火山）, because that section carries the stable volcano code identity."
+                  },
+                  {
+                    "name": "area_codes",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information."
+                  },
+                  {
+                    "name": "prefecture",
+                    "type": "string",
+                    "doc": "ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. JSON Structure annotations: {\"pattern\": \"^[a-z0-9][a-z0-9-]*$\"}"
+                  },
+                  {
+                    "name": "event",
+                    "type": {
+                      "type": "enum",
+                      "name": "jp.jma.volcano.VolcanicWarning_types.event",
+                      "symbols": [
+                        "warning"
+                      ]
+                    },
+                    "doc": "Fixed topic event segment for VolcanicWarning messages. JSON Structure annotations: {\"enum\": [\"warning\"], \"name\": \"VolcanicWarningEventEnum\"}"
+                  }
+                ],
+                "doc": "JMA Bosai active volcanic warning or forecast for a target volcano."
+              }
+            }
+          }
+        },
+        "jp.jma.volcano.VolcanicEruption": {
+          "name": "VolcanicEruption",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "jp.jma.volcano.VolcanicEruption",
+                "fields": [
+                  {
+                    "name": "volcano_code",
+                    "type": "string",
+                    "doc": "Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]{3}$\"}"
+                  },
+                  {
+                    "name": "event_id",
+                    "type": "string",
+                    "doc": "JMA eventId from the Bosai eruption record. The bridge combines this identifier with reportDatetime for deduplication of eruption observations."
+                  },
+                  {
+                    "name": "report_datetime",
+                    "type": "string",
+                    "doc": "Eruption report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp."
+                  },
+                  {
+                    "name": "report_datetime_local",
+                    "type": "string",
+                    "doc": "Original JMA reportDatetime value in Japan Standard Time as published in eruption.json."
+                  },
+                  {
+                    "name": "eruption_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Observed eruption time converted to UTC when the eruption feed contains a structured eruption or observation datetime. The field is null when JMA publishes only report issue time or free text. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "eruption_datetime_local",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Observed eruption time in the original Japan Standard Time representation when present in a JMA eruption item. The field is null when the live payload does not expose a separate occurrence time. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "eruption_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "jp.jma.volcano.VolcanicEruption_types.eruption_type",
+                        "symbols": [
+                          "ERUPTION",
+                          "EXPLOSION",
+                          "CONTINUOUS_ERUPTION_CONTINUING",
+                          "CONTINUOUS_ERUPTION_STOPPED",
+                          "UNKNOWN"
+                        ]
+                      }
+                    ],
+                    "doc": "Normalized phenomenon name from JMA eruption observation bulletins. JMA documentation says the report carries the phenomenon name, with examples including eruption and continuous-eruption state changes; null means the live JSON item did not expose a recognizable phenomenon name. JSON Structure annotations: {\"altenums\": {\"lang:ja\": {\"CONTINUOUS_ERUPTION_CONTINUING\": \"連続噴火継続\", \"CONTINUOUS_ERUPTION_STOPPED\": \"連続噴火停止\", \"ERUPTION\": \"噴火\", \"EXPLOSION\": \"爆発\", \"UNKNOWN\": \"不明\"}}, \"descriptions\": {\"CONTINUOUS_ERUPTION_CONTINUING\": \"Provider value `CONTINUOUS_ERUPTION_CONTINUING` for this coded alert field.\", \"CONTINUOUS_ERUPTION_STOPPED\": \"Provider value `CONTINUOUS_ERUPTION_STOPPED` for this coded alert field.\", \"ERUPTION\": \"Provider value `ERUPTION` for this coded alert field.\", \"EXPLOSION\": \"Provider value `EXPLOSION` for this coded alert field.\", \"UNKNOWN\": \"Provider value `UNKNOWN` for this coded alert field.\"}, \"enum\": [\"ERUPTION\", \"EXPLOSION\", \"CONTINUOUS_ERUPTION_CONTINUING\", \"CONTINUOUS_ERUPTION_STOPPED\", \"UNKNOWN\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "crater_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Japanese crater name from the eruption observation report when JMA identifies the crater, such as 南岳山頂火口 in JMA bulletin examples. Null means the eruption JSON item or text did not include a crater label. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "colored_plume_height_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Height in metres of the colored volcanic plume above the crater, corresponding to the 有色噴煙 field in JMA eruption observation bulletins. Null means no colored-plume height was published or parsed. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"meter\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "white_plume_height_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Height in metres of the white volcanic plume above the crater, corresponding to the 白色噴煙 field when JMA publishes it. Null means no white-plume height was published or parsed. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"meter\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "maximum_plume_height_since_start_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum plume height in metres above the crater since the eruption began, corresponding to the JMA bulletin field 噴火開始以降の最高噴煙高度. Null means JMA did not publish this field for the observation. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"meter\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "plume_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Japanese plume flow direction from the JMA 流向 field, for example 直上 or 東. Null means the eruption item did not provide a plume direction. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ash_dispersal_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Direction or area text for ash dispersal when the eruption observation describes ash movement separately from the plume-flow direction. Null means JMA did not publish a separate ash dispersal direction in the parsed item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pyroclastic_flow_observed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "True when the eruption observation text states that a pyroclastic flow (火砕流) was observed, false when the text explicitly states no pyroclastic flow, and null when the report does not mention pyroclastic-flow status. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "plume_amount_jp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Japanese qualitative plume-amount label from JMA bulletin text, such as やや多量. Null means the observation did not include a plume-amount label. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description",
+                    "type": "string",
+                    "doc": "Japanese free-text description assembled from the JMA eruption item fields such as description, text, name, title, or content. This preserves the official observational wording when the eruption feed carries discrete eruption observations."
+                  },
+                  {
+                    "name": "info_type_jp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Japanese volcanoInfos section type from eruption.json when supplied by JMA. It identifies the official section in which the eruption observation was published. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_codes",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information."
+                  },
+                  {
+                    "name": "prefecture",
+                    "type": "string",
+                    "doc": "ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. JSON Structure annotations: {\"pattern\": \"^[a-z0-9][a-z0-9-]*$\"}"
+                  },
+                  {
+                    "name": "event",
+                    "type": {
+                      "type": "enum",
+                      "name": "jp.jma.volcano.VolcanicEruption_types.event",
+                      "symbols": [
+                        "eruption"
+                      ]
+                    },
+                    "doc": "Fixed topic event segment for VolcanicEruption messages. JSON Structure annotations: {\"enum\": [\"eruption\"], \"name\": \"VolcanicEruptionEventEnum\"}"
+                  }
+                ],
+                "doc": "JMA Bosai volcanic eruption observation report for a target volcano."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/NL.RWS.Waterwebservices"
+        "#/messagegroups/NL.RWS.Waterwebservices",
+        "#/messagegroups/NL.RWS.Waterwebservices.avro",
+        "#/messagegroups/NL.RWS.Waterwebservices.avro.binary"
       ],
       "description": "Kafka producer endpoint for RWS Waterwebservices CloudEvents on the `rws-waterwebservices` topic keyed by `{station_code}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/NL.RWS.Waterwebservices.mqtt"
+        "#/messagegroups/NL.RWS.Waterwebservices.mqtt",
+        "#/messagegroups/NL.RWS.Waterwebservices.mqtt.avro",
+        "#/messagegroups/NL.RWS.Waterwebservices.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for RWS Waterwebservices CloudEvents using the source's documented topic hierarchy and retain settings."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/NL.RWS.Waterwebservices.amqp"
+        "#/messagegroups/NL.RWS.Waterwebservices.amqp",
+        "#/messagegroups/NL.RWS.Waterwebservices.amqp.avro",
+        "#/messagegroups/NL.RWS.Waterwebservices.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for rws-waterwebservices CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -165,6 +179,144 @@
                 "value": "{station_code}",
                 "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.avro": {
+      "messagegroupid": "NL.RWS.Waterwebservices.avro",
+      "messages": {
+        "NL.RWS.Waterwebservices.Station": {
+          "messageid": "NL.RWS.Waterwebservices.Station",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.Station"
+        },
+        "NL.RWS.Waterwebservices.WaterLevelObservation": {
+          "messageid": "NL.RWS.Waterwebservices.WaterLevelObservation",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.avro.binary": {
+      "messagegroupid": "NL.RWS.Waterwebservices.avro.binary",
+      "messages": {
+        "NL.RWS.Waterwebservices.Station": {
+          "messageid": "NL.RWS.Waterwebservices.Station",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NL.RWS.Waterwebservices.WaterLevelObservation": {
+          "messageid": "NL.RWS.Waterwebservices.WaterLevelObservation",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.mqtt.avro": {
+      "messagegroupid": "NL.RWS.Waterwebservices.mqtt.avro",
+      "messages": {
+        "NL.RWS.Waterwebservices.mqtt.Station": {
+          "messageid": "NL.RWS.Waterwebservices.mqtt.Station",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.mqtt/messages/NL.RWS.Waterwebservices.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.Station"
+        },
+        "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation": {
+          "messageid": "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.mqtt/messages/NL.RWS.Waterwebservices.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.mqtt.avro.binary": {
+      "messagegroupid": "NL.RWS.Waterwebservices.mqtt.avro.binary",
+      "messages": {
+        "NL.RWS.Waterwebservices.mqtt.Station": {
+          "messageid": "NL.RWS.Waterwebservices.mqtt.Station",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.mqtt/messages/NL.RWS.Waterwebservices.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation": {
+          "messageid": "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.mqtt/messages/NL.RWS.Waterwebservices.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.amqp.avro": {
+      "messagegroupid": "NL.RWS.Waterwebservices.amqp.avro",
+      "messages": {
+        "NL.RWS.Waterwebservices.amqp.Station": {
+          "messageid": "NL.RWS.Waterwebservices.amqp.Station",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.amqp/messages/NL.RWS.Waterwebservices.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.Station"
+        },
+        "NL.RWS.Waterwebservices.amqp.WaterLevelObservation": {
+          "messageid": "NL.RWS.Waterwebservices.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.amqp/messages/NL.RWS.Waterwebservices.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.amqp.avro.binary": {
+      "messagegroupid": "NL.RWS.Waterwebservices.amqp.avro.binary",
+      "messages": {
+        "NL.RWS.Waterwebservices.amqp.Station": {
+          "messageid": "NL.RWS.Waterwebservices.amqp.Station",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.amqp/messages/NL.RWS.Waterwebservices.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NL.RWS.Waterwebservices.amqp.WaterLevelObservation": {
+          "messageid": "NL.RWS.Waterwebservices.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/NL.RWS.Waterwebservices.amqp/messages/NL.RWS.Waterwebservices.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

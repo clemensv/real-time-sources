@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/USGS.Earthquakes"
+        "#/messagegroups/USGS.Earthquakes",
+        "#/messagegroups/USGS.Earthquakes.avro",
+        "#/messagegroups/USGS.Earthquakes.avro.binary"
       ]
     },
     "USGS.Earthquakes.Mqtt": {
@@ -37,7 +39,9 @@
         }
       ],
       "messagegroups": [
-        "#/messagegroups/USGS.Earthquakes.mqtt"
+        "#/messagegroups/USGS.Earthquakes.mqtt",
+        "#/messagegroups/USGS.Earthquakes.mqtt.avro",
+        "#/messagegroups/USGS.Earthquakes.mqtt.avro.binary"
       ]
     },
     "USGS.Earthquakes.Amqp": {
@@ -58,7 +62,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/USGS.Earthquakes.amqp"
+        "#/messagegroups/USGS.Earthquakes.amqp",
+        "#/messagegroups/USGS.Earthquakes.amqp.avro",
+        "#/messagegroups/USGS.Earthquakes.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for usgs-earthquakes CloudEvents on the configured broker address."
     }
@@ -85,6 +91,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -121,6 +131,90 @@
                 "value": "{net}/{code}",
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "USGS.Earthquakes.avro": {
+      "messagegroupid": "USGS.Earthquakes.avro",
+      "messages": {
+        "USGS.Earthquakes.Event": {
+          "messageid": "USGS.Earthquakes.Event",
+          "basemessage": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Earthquakes.avro/schemas/USGS.Earthquakes.Event"
+        }
+      }
+    },
+    "USGS.Earthquakes.avro.binary": {
+      "messagegroupid": "USGS.Earthquakes.avro.binary",
+      "messages": {
+        "USGS.Earthquakes.Event": {
+          "messageid": "USGS.Earthquakes.Event",
+          "basemessage": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Earthquakes.avro/schemas/USGS.Earthquakes.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.Earthquakes.mqtt.avro": {
+      "messagegroupid": "USGS.Earthquakes.mqtt.avro",
+      "messages": {
+        "USGS.Earthquakes.mqtt.Event": {
+          "messageid": "USGS.Earthquakes.mqtt.Event",
+          "basemessage": "/messagegroups/USGS.Earthquakes.mqtt/messages/USGS.Earthquakes.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Earthquakes.avro/schemas/USGS.Earthquakes.Event"
+        }
+      }
+    },
+    "USGS.Earthquakes.mqtt.avro.binary": {
+      "messagegroupid": "USGS.Earthquakes.mqtt.avro.binary",
+      "messages": {
+        "USGS.Earthquakes.mqtt.Event": {
+          "messageid": "USGS.Earthquakes.mqtt.Event",
+          "basemessage": "/messagegroups/USGS.Earthquakes.mqtt/messages/USGS.Earthquakes.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Earthquakes.avro/schemas/USGS.Earthquakes.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.Earthquakes.amqp.avro": {
+      "messagegroupid": "USGS.Earthquakes.amqp.avro",
+      "messages": {
+        "USGS.Earthquakes.amqp.Event": {
+          "messageid": "USGS.Earthquakes.amqp.Event",
+          "basemessage": "/messagegroups/USGS.Earthquakes.amqp/messages/USGS.Earthquakes.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Earthquakes.avro/schemas/USGS.Earthquakes.Event"
+        }
+      }
+    },
+    "USGS.Earthquakes.amqp.avro.binary": {
+      "messagegroupid": "USGS.Earthquakes.amqp.avro.binary",
+      "messages": {
+        "USGS.Earthquakes.amqp.Event": {
+          "messageid": "USGS.Earthquakes.amqp.Event",
+          "basemessage": "/messagegroups/USGS.Earthquakes.amqp/messages/USGS.Earthquakes.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.Earthquakes.avro/schemas/USGS.Earthquakes.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -338,7 +432,7 @@
           "name": "Event",
           "format": "Avro/1.11.3",
           "description": "USGS earthquake event data from the Earthquake Hazards Program.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -386,13 +480,11 @@
                   {
                     "name": "event_time",
                     "type": "string",
-                    "logicalType": "timestamp-millis",
                     "doc": "Time of the earthquake event in ISO-8601 format."
                   },
                   {
                     "name": "updated",
                     "type": "string",
-                    "logicalType": "timestamp-millis",
                     "doc": "Time when the event was most recently updated in ISO-8601 format."
                   },
                   {
@@ -538,6 +630,219 @@
                     "doc": "Depth of the earthquake in kilometers."
                   }
                 ]
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.Earthquakes.Event",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "string",
+                    "doc": "Unique identifier for the earthquake event."
+                  },
+                  {
+                    "name": "magnitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Magnitude of the earthquake. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mag_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "place",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Textual description of the named geographic region near the event. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string",
+                    "doc": "Time of the earthquake event in ISO-8601 format."
+                  },
+                  {
+                    "name": "updated",
+                    "type": "string",
+                    "doc": "Time when the event was most recently updated in ISO-8601 format."
+                  },
+                  {
+                    "name": "url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Link to USGS Event Page for this event. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "detail_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Link to GeoJSON detail feed for this event. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "felt",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of felt reports submitted to the DYFI system. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "cdi",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum reported community determined intensity (DYFI). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mmi",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum estimated instrumental intensity (ShakeMap). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "alert",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "PAGER alert level (green, yellow, orange, red). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "doc": "Review status of the event (automatic, reviewed, deleted)."
+                  },
+                  {
+                    "name": "tsunami",
+                    "type": "int",
+                    "doc": "Flag indicating whether the event has a tsunami advisory (1=yes, 0=no)."
+                  },
+                  {
+                    "name": "sig",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Significance of the event, a number describing how significant the event is (0-1000). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "net",
+                    "type": "string",
+                    "doc": "ID of the data contributor network."
+                  },
+                  {
+                    "name": "code",
+                    "type": "string",
+                    "doc": "Identifying code assigned by the corresponding source for the event."
+                  },
+                  {
+                    "name": "sources",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Comma-separated list of network contributors. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nst",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of seismic stations used to determine earthquake location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dmin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Horizontal distance from the epicenter to the nearest station (degrees). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rms",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Root-mean-square travel time residual (seconds). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gap",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Largest azimuthal gap between azimuthally adjacent stations (degrees). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Type of seismic event (earthquake, quarry blast, etc.). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the earthquake epicenter in decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the earthquake epicenter in decimal degrees."
+                  },
+                  {
+                    "name": "depth",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Depth of the earthquake in kilometers. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "magnitude_bucket",
+                    "type": "string",
+                    "doc": "Topic-safe magnitude bucket: m0 for magnitude <1 or unknown, m1..m6 for [1,7), and m7plus for magnitude >=7."
+                  }
+                ],
+                "doc": "USGS earthquake event data from the Earthquake Hazards Program."
               }
             }
           }

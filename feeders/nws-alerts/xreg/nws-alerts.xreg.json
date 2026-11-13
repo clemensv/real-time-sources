@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/NWS.Alerts"
+        "#/messagegroups/NWS.Alerts",
+        "#/messagegroups/NWS.Alerts.avro",
+        "#/messagegroups/NWS.Alerts.avro.binary"
       ],
       "description": "Kafka producer endpoint for NWS Alerts CloudEvents on the `nws-alerts` topic keyed by `{alert_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/NWS.Alerts.mqtt"
+        "#/messagegroups/NWS.Alerts.mqtt",
+        "#/messagegroups/NWS.Alerts.mqtt.avro",
+        "#/messagegroups/NWS.Alerts.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for NWS Alerts CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     },
@@ -66,7 +70,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/NWS.Alerts"
+        "#/messagegroups/NWS.Alerts",
+        "#/messagegroups/NWS.Alerts.avro",
+        "#/messagegroups/NWS.Alerts.avro.binary"
       ],
       "description": "AMQP producer endpoint for NWS Alerts CloudEvents on the `nws-alerts` address, using the same base CloudEvent contract as Kafka."
     }
@@ -88,6 +94,10 @@
             "subject": {
               "value": "{alert_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -147,6 +157,134 @@
             "topic_name": "alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert",
             "qos": 1,
             "retain": false
+          }
+        }
+      }
+    },
+    "NWS.Alerts.avro": {
+      "messagegroupid": "NWS.Alerts.avro",
+      "messages": {
+        "NWS.WeatherAlert": {
+          "messageid": "NWS.WeatherAlert",
+          "basemessage": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert"
+        }
+      }
+    },
+    "NWS.Alerts.avro.binary": {
+      "messagegroupid": "NWS.Alerts.avro.binary",
+      "messages": {
+        "NWS.WeatherAlert": {
+          "messageid": "NWS.WeatherAlert",
+          "basemessage": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NWS.Alerts.mqtt.avro": {
+      "messagegroupid": "NWS.Alerts.mqtt.avro",
+      "messages": {
+        "NWS.WeatherAlert.Minor.mqtt": {
+          "messageid": "NWS.WeatherAlert.Minor.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Minor.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert"
+        },
+        "NWS.WeatherAlert.Moderate.mqtt": {
+          "messageid": "NWS.WeatherAlert.Moderate.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Moderate.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert"
+        },
+        "NWS.WeatherAlert.Severe.mqtt": {
+          "messageid": "NWS.WeatherAlert.Severe.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Severe.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert"
+        },
+        "NWS.WeatherAlert.Extreme.mqtt": {
+          "messageid": "NWS.WeatherAlert.Extreme.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Extreme.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert"
+        },
+        "NWS.WeatherAlert.Unknown.mqtt": {
+          "messageid": "NWS.WeatherAlert.Unknown.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Unknown.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert"
+        }
+      }
+    },
+    "NWS.Alerts.mqtt.avro.binary": {
+      "messagegroupid": "NWS.Alerts.mqtt.avro.binary",
+      "messages": {
+        "NWS.WeatherAlert.Minor.mqtt": {
+          "messageid": "NWS.WeatherAlert.Minor.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Minor.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NWS.WeatherAlert.Moderate.mqtt": {
+          "messageid": "NWS.WeatherAlert.Moderate.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Moderate.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NWS.WeatherAlert.Severe.mqtt": {
+          "messageid": "NWS.WeatherAlert.Severe.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Severe.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NWS.WeatherAlert.Extreme.mqtt": {
+          "messageid": "NWS.WeatherAlert.Extreme.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Extreme.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NWS.WeatherAlert.Unknown.mqtt": {
+          "messageid": "NWS.WeatherAlert.Unknown.mqtt",
+          "basemessage": "/messagegroups/NWS.Alerts.mqtt/messages/NWS.WeatherAlert.Unknown.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NWS.avro/schemas/NWS.WeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
           }
         }
       }
@@ -372,6 +510,298 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "NWS.avro": {
+      "schemas": {
+        "NWS.WeatherAlert": {
+          "name": "WeatherAlert",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NWS.WeatherAlert",
+                "fields": [
+                  {
+                    "name": "alert_id",
+                    "type": "string",
+                    "doc": "The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert."
+                  },
+                  {
+                    "name": "area_desc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A textual description of the affected geographic area (e.g., county names). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "same_codes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugc_codes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sent",
+                    "type": "string",
+                    "doc": "The date and time when the alert was sent, in ISO-8601 format."
+                  },
+                  {
+                    "name": "effective",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The date and time when the alert becomes effective. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "onset",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The expected date and time of onset of the weather event. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "expires",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The date and time when the alert expires. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ends",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The expected end time of the weather event. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status",
+                    "type": {
+                      "type": "enum",
+                      "name": "NWS.WeatherAlert_types.status",
+                      "symbols": [
+                        "Actual",
+                        "Exercise",
+                        "System",
+                        "Test",
+                        "Draft"
+                      ]
+                    },
+                    "doc": "The CAP alert status. JSON Structure annotations: {\"descriptions\": {\"Actual\": \"Provider value `Actual` for this coded alert field.\", \"Draft\": \"Provider value `Draft` for this coded alert field.\", \"Exercise\": \"Provider value `Exercise` for this coded alert field.\", \"System\": \"Provider value `System` for this coded alert field.\", \"Test\": \"Provider value `Test` for this coded alert field.\"}, \"enum\": [\"Actual\", \"Exercise\", \"System\", \"Test\", \"Draft\"]}"
+                  },
+                  {
+                    "name": "message_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "NWS.WeatherAlert_types.message_type",
+                      "symbols": [
+                        "Alert",
+                        "Update",
+                        "Cancel",
+                        "Ack",
+                        "Error"
+                      ]
+                    },
+                    "doc": "The CAP message type. JSON Structure annotations: {\"descriptions\": {\"Ack\": \"Provider value `Ack` for this coded alert field.\", \"Alert\": \"Provider value `Alert` for this coded alert field.\", \"Cancel\": \"Provider value `Cancel` for this coded alert field.\", \"Error\": \"Provider value `Error` for this coded alert field.\", \"Update\": \"Provider value `Update` for this coded alert field.\"}, \"enum\": [\"Alert\", \"Update\", \"Cancel\", \"Ack\", \"Error\"]}"
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The CAP alert category (e.g., 'Met' for meteorological). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "severity",
+                    "type": {
+                      "type": "enum",
+                      "name": "NWS.WeatherAlert_types.severity",
+                      "symbols": [
+                        "Extreme",
+                        "Severe",
+                        "Moderate",
+                        "Minor",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "The CAP severity level. JSON Structure annotations: {\"descriptions\": {\"Extreme\": \"Provider value `Extreme` for this coded alert field.\", \"Minor\": \"Provider value `Minor` for this coded alert field.\", \"Moderate\": \"Provider value `Moderate` for this coded alert field.\", \"Severe\": \"Provider value `Severe` for this coded alert field.\", \"Unknown\": \"Provider value `Unknown` for this coded alert field.\"}, \"enum\": [\"Extreme\", \"Severe\", \"Moderate\", \"Minor\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "certainty",
+                    "type": {
+                      "type": "enum",
+                      "name": "NWS.WeatherAlert_types.certainty",
+                      "symbols": [
+                        "Observed",
+                        "Likely",
+                        "Possible",
+                        "Unlikely",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "The CAP certainty level. JSON Structure annotations: {\"descriptions\": {\"Likely\": \"Provider value `Likely` for this coded alert field.\", \"Observed\": \"Provider value `Observed` for this coded alert field.\", \"Possible\": \"Provider value `Possible` for this coded alert field.\", \"Unknown\": \"Provider value `Unknown` for this coded alert field.\", \"Unlikely\": \"Provider value `Unlikely` for this coded alert field.\"}, \"enum\": [\"Observed\", \"Likely\", \"Possible\", \"Unlikely\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "urgency",
+                    "type": {
+                      "type": "enum",
+                      "name": "NWS.WeatherAlert_types.urgency",
+                      "symbols": [
+                        "Immediate",
+                        "Expected",
+                        "Future",
+                        "Past",
+                        "Unknown"
+                      ]
+                    },
+                    "doc": "The CAP urgency level. JSON Structure annotations: {\"descriptions\": {\"Expected\": \"Provider value `Expected` for this coded alert field.\", \"Future\": \"Provider value `Future` for this coded alert field.\", \"Immediate\": \"Provider value `Immediate` for this coded alert field.\", \"Past\": \"Provider value `Past` for this coded alert field.\", \"Unknown\": \"Provider value `Unknown` for this coded alert field.\"}, \"enum\": [\"Immediate\", \"Expected\", \"Future\", \"Past\", \"Unknown\"]}"
+                  },
+                  {
+                    "name": "event",
+                    "type": "string",
+                    "doc": "The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory')."
+                  },
+                  {
+                    "name": "sender",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The email address or identifier of the alert sender. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sender_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The human-readable name of the sender (e.g., 'NWS Tulsa OK'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "headline",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A brief headline summarizing the alert. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The full textual description of the alert. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "instruction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Recommended protective actions. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "response",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The recommended response type (e.g., 'Shelter', 'Evacuate', 'None'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "scope",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The CAP scope of the alert. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The IPAWS code (e.g., 'IPAWSv1.0'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nws_headline",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The NWS-specific headline from the parameters block. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vtec",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The P-VTEC (Valid Time Event Code) string for NWS event tracking. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "web",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A URL to the full alert details. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved."
+                  },
+                  {
+                    "name": "event_type",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case slug derived from the CAP event field for topic partitioning."
+                  }
+                ],
+                "doc": "A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard."
               }
             }
           }

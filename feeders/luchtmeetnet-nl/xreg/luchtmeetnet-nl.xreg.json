@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/nl.rivm.luchtmeetnet"
+        "#/messagegroups/nl.rivm.luchtmeetnet",
+        "#/messagegroups/nl.rivm.luchtmeetnet.avro",
+        "#/messagegroups/nl.rivm.luchtmeetnet.avro.binary"
       ],
       "description": "Kafka producer endpoint for Luchtmeetnet NL CloudEvents on the `luchtmeetnet-nl` topic keyed by `{station_number}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/nl.rivm.luchtmeetnet.components"
+        "#/messagegroups/nl.rivm.luchtmeetnet.components",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.avro",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.avro.binary"
       ],
       "description": "Kafka producer endpoint for Luchtmeetnet NL CloudEvents on the `luchtmeetnet-nl` topic keyed by `{formula}`."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/nl.rivm.luchtmeetnet.mqtt",
-        "#/messagegroups/nl.rivm.luchtmeetnet.components.mqtt"
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.mqtt",
+        "#/messagegroups/nl.rivm.luchtmeetnet.mqtt.avro",
+        "#/messagegroups/nl.rivm.luchtmeetnet.mqtt.avro.binary",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.mqtt.avro",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for luchtmeetnet-nl CloudEvents using the documented Unified Namespace topic hierarchy."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/nl.rivm.luchtmeetnet.amqp",
-        "#/messagegroups/nl.rivm.luchtmeetnet.components.amqp"
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.amqp",
+        "#/messagegroups/nl.rivm.luchtmeetnet.amqp.avro",
+        "#/messagegroups/nl.rivm.luchtmeetnet.amqp.avro.binary",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.amqp.avro",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for luchtmeetnet-nl CloudEvents on the configured broker address."
     }
@@ -108,6 +120,10 @@
             "subject": {
               "value": "{station_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -127,6 +143,10 @@
             "subject": {
               "value": "{station_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -146,6 +166,10 @@
             "subject": {
               "value": "{station_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -170,6 +194,10 @@
             "subject": {
               "value": "{formula}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -337,6 +365,282 @@
                 "value": "{station_number}",
                 "description": "Routing attribute `station_number` used in the MQTT topic hierarchy and AMQP subscription filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.avro": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.avro",
+      "messages": {
+        "nl.rivm.luchtmeetnet.Station": {
+          "messageid": "nl.rivm.luchtmeetnet.Station",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Station"
+        },
+        "nl.rivm.luchtmeetnet.Measurement": {
+          "messageid": "nl.rivm.luchtmeetnet.Measurement",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement"
+        },
+        "nl.rivm.luchtmeetnet.LKI": {
+          "messageid": "nl.rivm.luchtmeetnet.LKI",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.LKI"
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.avro.binary": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.avro.binary",
+      "messages": {
+        "nl.rivm.luchtmeetnet.Station": {
+          "messageid": "nl.rivm.luchtmeetnet.Station",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.Measurement": {
+          "messageid": "nl.rivm.luchtmeetnet.Measurement",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.LKI": {
+          "messageid": "nl.rivm.luchtmeetnet.LKI",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.LKI",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.avro": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.components.avro",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.Component": {
+          "messageid": "nl.rivm.luchtmeetnet.components.Component",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.components.Component"
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.avro.binary": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.components.avro.binary",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.Component": {
+          "messageid": "nl.rivm.luchtmeetnet.components.Component",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.components.Component",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.mqtt.avro": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.mqtt.avro",
+      "messages": {
+        "nl.rivm.luchtmeetnet.mqtt.Station": {
+          "messageid": "nl.rivm.luchtmeetnet.mqtt.Station",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.mqtt/messages/nl.rivm.luchtmeetnet.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Station"
+        },
+        "nl.rivm.luchtmeetnet.mqtt.Measurement": {
+          "messageid": "nl.rivm.luchtmeetnet.mqtt.Measurement",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.mqtt/messages/nl.rivm.luchtmeetnet.mqtt.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement"
+        },
+        "nl.rivm.luchtmeetnet.mqtt.LKI": {
+          "messageid": "nl.rivm.luchtmeetnet.mqtt.LKI",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.mqtt/messages/nl.rivm.luchtmeetnet.mqtt.LKI",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.LKI"
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.mqtt.avro.binary": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.mqtt.avro.binary",
+      "messages": {
+        "nl.rivm.luchtmeetnet.mqtt.Station": {
+          "messageid": "nl.rivm.luchtmeetnet.mqtt.Station",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.mqtt/messages/nl.rivm.luchtmeetnet.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.mqtt.Measurement": {
+          "messageid": "nl.rivm.luchtmeetnet.mqtt.Measurement",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.mqtt/messages/nl.rivm.luchtmeetnet.mqtt.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.mqtt.LKI": {
+          "messageid": "nl.rivm.luchtmeetnet.mqtt.LKI",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.mqtt/messages/nl.rivm.luchtmeetnet.mqtt.LKI",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.LKI",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.amqp.avro": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.amqp.avro",
+      "messages": {
+        "nl.rivm.luchtmeetnet.amqp.Station": {
+          "messageid": "nl.rivm.luchtmeetnet.amqp.Station",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.amqp/messages/nl.rivm.luchtmeetnet.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Station"
+        },
+        "nl.rivm.luchtmeetnet.amqp.Measurement": {
+          "messageid": "nl.rivm.luchtmeetnet.amqp.Measurement",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.amqp/messages/nl.rivm.luchtmeetnet.amqp.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement"
+        },
+        "nl.rivm.luchtmeetnet.amqp.LKI": {
+          "messageid": "nl.rivm.luchtmeetnet.amqp.LKI",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.amqp/messages/nl.rivm.luchtmeetnet.amqp.LKI",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.LKI"
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.amqp.avro.binary": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.amqp.avro.binary",
+      "messages": {
+        "nl.rivm.luchtmeetnet.amqp.Station": {
+          "messageid": "nl.rivm.luchtmeetnet.amqp.Station",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.amqp/messages/nl.rivm.luchtmeetnet.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.amqp.Measurement": {
+          "messageid": "nl.rivm.luchtmeetnet.amqp.Measurement",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.amqp/messages/nl.rivm.luchtmeetnet.amqp.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.amqp.LKI": {
+          "messageid": "nl.rivm.luchtmeetnet.amqp.LKI",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.amqp/messages/nl.rivm.luchtmeetnet.amqp.LKI",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.LKI",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.mqtt.avro": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.components.mqtt.avro",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.mqtt.Component": {
+          "messageid": "nl.rivm.luchtmeetnet.components.mqtt.Component",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.components.mqtt/messages/nl.rivm.luchtmeetnet.components.mqtt.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.components.Component"
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.mqtt.avro.binary": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.components.mqtt.avro.binary",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.mqtt.Component": {
+          "messageid": "nl.rivm.luchtmeetnet.components.mqtt.Component",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.components.mqtt/messages/nl.rivm.luchtmeetnet.components.mqtt.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.components.Component",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.amqp.avro": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.components.amqp.avro",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.amqp.Component": {
+          "messageid": "nl.rivm.luchtmeetnet.components.amqp.Component",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.components.Component"
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.amqp.avro.binary": {
+      "messagegroupid": "nl.rivm.luchtmeetnet.components.amqp.avro.binary",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.amqp.Component": {
+          "messageid": "nl.rivm.luchtmeetnet.components.amqp.Component",
+          "basemessage": "/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.components.Component",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -611,7 +915,7 @@
         "nl.rivm.luchtmeetnet.Station": {
           "name": "Station",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -695,13 +999,82 @@
                 ],
                 "description": "Reference details for one station, monitoring site, or forecast area in the Luchtmeetnet NL source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "nl.rivm.luchtmeetnet.Station",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests."
+                  },
+                  {
+                    "name": "location",
+                    "type": "string",
+                    "doc": "Human-readable station location label published by Luchtmeetnet."
+                  },
+                  {
+                    "name": "type",
+                    "type": "string",
+                    "doc": "Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional."
+                  },
+                  {
+                    "name": "organisation",
+                    "type": "string",
+                    "doc": "Organisation operating or publishing the station in the Luchtmeetnet network, such as RIVM or a regional environmental agency."
+                  },
+                  {
+                    "name": "municipality",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Municipality name for the station location when present in the detail response; null when the API does not provide one."
+                  },
+                  {
+                    "name": "province",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Province name for the station location when present in the detail response; null when the API omits it."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[0]."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[1]."
+                  },
+                  {
+                    "name": "year_start",
+                    "type": "string",
+                    "doc": "Year in which the station became operational according to the detail response. The upstream can return an empty string when the start year is not populated."
+                  },
+                  {
+                    "name": "components",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Ordered list of formula codes measured at the station, as returned by the station detail endpoint."
+                  }
+                ],
+                "doc": "Luchtmeetnet station metadata with location, operator, coordinates, and the formulas measured at the station."
+              }
             }
           }
         },
         "nl.rivm.luchtmeetnet.Measurement": {
           "name": "Measurement",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -738,13 +1111,46 @@
                 ],
                 "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "nl.rivm.luchtmeetnet.Measurement",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Stable Luchtmeetnet station code identifying where the measurement was taken."
+                  },
+                  {
+                    "name": "formula",
+                    "type": "string",
+                    "doc": "Component formula code identifying what was measured, for example NO2, O3, PM10, or FN."
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Numeric measurement value published by the API for the station and formula at the given timestamp. Standard gaseous and particulate concentration formulas are expressed in micrograms per cubic meter; some specialised formulas such as particle counts or black-carbon indicators may use different domain-specific units, so consumers should interpret the formula-specific semantics together with the component catalog. JSON Structure annotations: {\"unit\": \"ugm-3\"}"
+                  },
+                  {
+                    "name": "timestamp_measured",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset."
+                  }
+                ],
+                "doc": "Hourly Luchtmeetnet measurement for a station and component formula."
+              }
             }
           }
         },
         "nl.rivm.luchtmeetnet.LKI": {
           "name": "LKI",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -774,6 +1180,34 @@
                   }
                 ],
                 "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "nl.rivm.luchtmeetnet.LKI",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated."
+                  },
+                  {
+                    "name": "value",
+                    "type": "int",
+                    "doc": "Luchtkwaliteitsindex value on the Dutch 1 to 11 scale, where 1 to 3 is good, 4 to 6 is moderate, 7 to 9 is bad, and 10 to 11 is very bad. JSON Structure annotations: {\"unit\": \"1\"}"
+                  },
+                  {
+                    "name": "timestamp_measured",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset."
+                  }
+                ],
+                "doc": "Hourly Dutch Luchtkwaliteitsindex value for a station."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/uk.gov.defra.aurn.Stations"
+        "#/messagegroups/uk.gov.defra.aurn.Stations",
+        "#/messagegroups/uk.gov.defra.aurn.Stations.avro",
+        "#/messagegroups/uk.gov.defra.aurn.Stations.avro.binary"
       ],
       "description": "Kafka producer endpoint for DEFRA AURN CloudEvents on the `defra-aurn` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/uk.gov.defra.aurn.Timeseries"
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.avro",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.avro.binary"
       ],
       "description": "Kafka producer endpoint for DEFRA AURN CloudEvents on the `defra-aurn` topic keyed by `{timeseries_id}`."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/uk.gov.defra.aurn.Stations.mqtt",
-        "#/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt"
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt",
+        "#/messagegroups/uk.gov.defra.aurn.Stations.mqtt.avro",
+        "#/messagegroups/uk.gov.defra.aurn.Stations.mqtt.avro.binary",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt.avro",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for defra-aurn CloudEvents using the documented Unified Namespace topic hierarchy."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/uk.gov.defra.aurn.Stations.amqp",
-        "#/messagegroups/uk.gov.defra.aurn.Timeseries.amqp"
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.amqp",
+        "#/messagegroups/uk.gov.defra.aurn.Stations.amqp.avro",
+        "#/messagegroups/uk.gov.defra.aurn.Stations.amqp.avro.binary",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.amqp.avro",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for defra-aurn CloudEvents on the configured broker address."
     }
@@ -108,6 +120,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -132,6 +148,10 @@
             "subject": {
               "value": "{timeseries_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -151,6 +171,10 @@
             "subject": {
               "value": "{timeseries_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -292,6 +316,228 @@
                 "value": "{pollutant}",
                 "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Stations.avro": {
+      "messagegroupid": "uk.gov.defra.aurn.Stations.avro",
+      "messages": {
+        "uk.gov.defra.aurn.Station": {
+          "messageid": "uk.gov.defra.aurn.Station",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Station"
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Stations.avro.binary": {
+      "messagegroupid": "uk.gov.defra.aurn.Stations.avro.binary",
+      "messages": {
+        "uk.gov.defra.aurn.Station": {
+          "messageid": "uk.gov.defra.aurn.Station",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.avro": {
+      "messagegroupid": "uk.gov.defra.aurn.Timeseries.avro",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries": {
+          "messageid": "uk.gov.defra.aurn.Timeseries",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Timeseries"
+        },
+        "uk.gov.defra.aurn.Observation": {
+          "messageid": "uk.gov.defra.aurn.Observation",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Observation"
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.avro.binary": {
+      "messagegroupid": "uk.gov.defra.aurn.Timeseries.avro.binary",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries": {
+          "messageid": "uk.gov.defra.aurn.Timeseries",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Observation": {
+          "messageid": "uk.gov.defra.aurn.Observation",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Stations.mqtt.avro": {
+      "messagegroupid": "uk.gov.defra.aurn.Stations.mqtt.avro",
+      "messages": {
+        "uk.gov.defra.aurn.Stations.mqtt.Station": {
+          "messageid": "uk.gov.defra.aurn.Stations.mqtt.Station",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Stations.mqtt/messages/uk.gov.defra.aurn.Stations.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Station"
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Stations.mqtt.avro.binary": {
+      "messagegroupid": "uk.gov.defra.aurn.Stations.mqtt.avro.binary",
+      "messages": {
+        "uk.gov.defra.aurn.Stations.mqtt.Station": {
+          "messageid": "uk.gov.defra.aurn.Stations.mqtt.Station",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Stations.mqtt/messages/uk.gov.defra.aurn.Stations.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Stations.amqp.avro": {
+      "messagegroupid": "uk.gov.defra.aurn.Stations.amqp.avro",
+      "messages": {
+        "uk.gov.defra.aurn.Stations.amqp.Station": {
+          "messageid": "uk.gov.defra.aurn.Stations.amqp.Station",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Stations.amqp/messages/uk.gov.defra.aurn.Stations.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Station"
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Stations.amqp.avro.binary": {
+      "messagegroupid": "uk.gov.defra.aurn.Stations.amqp.avro.binary",
+      "messages": {
+        "uk.gov.defra.aurn.Stations.amqp.Station": {
+          "messageid": "uk.gov.defra.aurn.Stations.amqp.Station",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Stations.amqp/messages/uk.gov.defra.aurn.Stations.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.mqtt.avro": {
+      "messagegroupid": "uk.gov.defra.aurn.Timeseries.mqtt.avro",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries.mqtt.Timeseries": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.mqtt.Timeseries",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt/messages/uk.gov.defra.aurn.Timeseries.mqtt.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Timeseries"
+        },
+        "uk.gov.defra.aurn.Timeseries.mqtt.Observation": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.mqtt.Observation",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt/messages/uk.gov.defra.aurn.Timeseries.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Observation"
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.mqtt.avro.binary": {
+      "messagegroupid": "uk.gov.defra.aurn.Timeseries.mqtt.avro.binary",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries.mqtt.Timeseries": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.mqtt.Timeseries",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt/messages/uk.gov.defra.aurn.Timeseries.mqtt.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Timeseries.mqtt.Observation": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.mqtt.Observation",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt/messages/uk.gov.defra.aurn.Timeseries.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.amqp.avro": {
+      "messagegroupid": "uk.gov.defra.aurn.Timeseries.amqp.avro",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries.amqp.Timeseries": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.amqp.Timeseries",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.amqp/messages/uk.gov.defra.aurn.Timeseries.amqp.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Timeseries"
+        },
+        "uk.gov.defra.aurn.Timeseries.amqp.Observation": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.amqp.Observation",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.amqp/messages/uk.gov.defra.aurn.Timeseries.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Observation"
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.amqp.avro.binary": {
+      "messagegroupid": "uk.gov.defra.aurn.Timeseries.amqp.avro.binary",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries.amqp.Timeseries": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.amqp.Timeseries",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.amqp/messages/uk.gov.defra.aurn.Timeseries.amqp.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Timeseries.amqp.Observation": {
+          "messageid": "uk.gov.defra.aurn.Timeseries.amqp.Observation",
+          "basemessage": "/messagegroups/uk.gov.defra.aurn.Timeseries.amqp/messages/uk.gov.defra.aurn.Timeseries.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.avro/schemas/uk.gov.defra.aurn.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -703,7 +949,7 @@
         "uk.gov.defra.aurn.Observation": {
           "name": "Observation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -743,6 +989,39 @@
                   }
                 ],
                 "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "uk.gov.defra.aurn.Observation",
+                "fields": [
+                  {
+                    "name": "timeseries_id",
+                    "type": "string",
+                    "doc": "Stable numeric timeseries identifier for the series that produced this observation. This field is the Kafka key and CloudEvents subject for both the reference timeseries event and the observation event. JSON Structure annotations: {\"pattern\": \"^[0-9]+$\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp encoded as an ISO 8601 UTC string. The bridge converts the upstream GET /timeseries/{id}/getData values[].timestamp Unix millisecond value with datetime.fromtimestamp(timestamp/1000, tz=timezone.utc).isoformat()."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Measured pollutant concentration or other reported numeric reading from values[].value in GET /timeseries/{id}/getData. The field is nullable because the API can represent missing or flagged values with null."
+                  },
+                  {
+                    "name": "uom",
+                    "type": "string",
+                    "doc": "Unit of measurement for the observation, copied from the parent timeseries uom field so each telemetry event remains self-describing."
+                  }
+                ],
+                "doc": "Hourly or near-hourly Defra AURN observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window."
               }
             }
           }

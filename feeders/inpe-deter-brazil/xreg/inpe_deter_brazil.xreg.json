@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/BR.INPE.DETER"
+        "#/messagegroups/BR.INPE.DETER",
+        "#/messagegroups/BR.INPE.DETER.avro",
+        "#/messagegroups/BR.INPE.DETER.avro.binary"
       ],
       "description": "Kafka producer endpoint for INPE DETER Brazil CloudEvents on the `inpe-deter-brazil` topic keyed by `{biome}/{alert_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BR.INPE.DETER.mqtt"
+        "#/messagegroups/BR.INPE.DETER.mqtt",
+        "#/messagegroups/BR.INPE.DETER.mqtt.avro",
+        "#/messagegroups/BR.INPE.DETER.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for INPE DETER Brazil CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BR.INPE.DETER.amqp"
+        "#/messagegroups/BR.INPE.DETER.amqp",
+        "#/messagegroups/BR.INPE.DETER.amqp.avro",
+        "#/messagegroups/BR.INPE.DETER.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for inpe-deter-brazil CloudEvents on the configured broker address."
     }
@@ -89,6 +95,10 @@
             "time": {
               "value": "{view_date}T00:00:00Z",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -127,6 +137,90 @@
                 "value": "{biome}/{alert_id}",
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "BR.INPE.DETER.avro": {
+      "messagegroupid": "BR.INPE.DETER.avro",
+      "messages": {
+        "BR.INPE.DETER.DeforestationAlert": {
+          "messageid": "BR.INPE.DETER.DeforestationAlert",
+          "basemessage": "/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BR.INPE.DETER.avro/schemas/BR.INPE.DETER.DeforestationAlert"
+        }
+      }
+    },
+    "BR.INPE.DETER.avro.binary": {
+      "messagegroupid": "BR.INPE.DETER.avro.binary",
+      "messages": {
+        "BR.INPE.DETER.DeforestationAlert": {
+          "messageid": "BR.INPE.DETER.DeforestationAlert",
+          "basemessage": "/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BR.INPE.DETER.avro/schemas/BR.INPE.DETER.DeforestationAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "BR.INPE.DETER.mqtt.avro": {
+      "messagegroupid": "BR.INPE.DETER.mqtt.avro",
+      "messages": {
+        "BR.INPE.DETER.mqtt.DeforestationAlert": {
+          "messageid": "BR.INPE.DETER.mqtt.DeforestationAlert",
+          "basemessage": "/messagegroups/BR.INPE.DETER.mqtt/messages/BR.INPE.DETER.mqtt.DeforestationAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BR.INPE.DETER.avro/schemas/BR.INPE.DETER.DeforestationAlert"
+        }
+      }
+    },
+    "BR.INPE.DETER.mqtt.avro.binary": {
+      "messagegroupid": "BR.INPE.DETER.mqtt.avro.binary",
+      "messages": {
+        "BR.INPE.DETER.mqtt.DeforestationAlert": {
+          "messageid": "BR.INPE.DETER.mqtt.DeforestationAlert",
+          "basemessage": "/messagegroups/BR.INPE.DETER.mqtt/messages/BR.INPE.DETER.mqtt.DeforestationAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BR.INPE.DETER.avro/schemas/BR.INPE.DETER.DeforestationAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "BR.INPE.DETER.amqp.avro": {
+      "messagegroupid": "BR.INPE.DETER.amqp.avro",
+      "messages": {
+        "BR.INPE.DETER.amqp.DeforestationAlert": {
+          "messageid": "BR.INPE.DETER.amqp.DeforestationAlert",
+          "basemessage": "/messagegroups/BR.INPE.DETER.amqp/messages/BR.INPE.DETER.amqp.DeforestationAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BR.INPE.DETER.avro/schemas/BR.INPE.DETER.DeforestationAlert"
+        }
+      }
+    },
+    "BR.INPE.DETER.amqp.avro.binary": {
+      "messagegroupid": "BR.INPE.DETER.amqp.avro.binary",
+      "messages": {
+        "BR.INPE.DETER.amqp.DeforestationAlert": {
+          "messageid": "BR.INPE.DETER.amqp.DeforestationAlert",
+          "basemessage": "/messagegroups/BR.INPE.DETER.amqp/messages/BR.INPE.DETER.amqp.DeforestationAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BR.INPE.DETER.avro/schemas/BR.INPE.DETER.DeforestationAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -275,7 +369,7 @@
           "name": "DeforestationAlert",
           "format": "Avro/1.11.3",
           "description": "INPE DETER deforestation alert for Amazon and Cerrado biomes.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -376,6 +470,125 @@
                   }
                 ],
                 "description": "Payload for an official alert or bulletin from Brazil's National Institute for Space Research (INPE). It carries DETER deforestation alerts for the affected area and validity period published by the upstream source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BR.INPE.DETER.DeforestationAlert",
+                "fields": [
+                  {
+                    "name": "alert_id",
+                    "type": "string",
+                    "doc": "Stable reference ID from INPE (gid)."
+                  },
+                  {
+                    "name": "biome",
+                    "type": {
+                      "type": "enum",
+                      "name": "BR.INPE.DETER.DeforestationAlert_types.biome",
+                      "symbols": [
+                        "amazon",
+                        "cerrado"
+                      ]
+                    },
+                    "doc": "Biome of the alert: amazon or cerrado. JSON Structure annotations: {\"enum\": [\"amazon\", \"cerrado\"]}"
+                  },
+                  {
+                    "name": "classname",
+                    "type": "string",
+                    "doc": "Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc."
+                  },
+                  {
+                    "name": "view_date",
+                    "type": "string",
+                    "doc": "Observation date in YYYY-MM-DD format."
+                  },
+                  {
+                    "name": "satellite",
+                    "type": "string",
+                    "doc": "Satellite name (CBERS-4, Amazonia-1, etc.)."
+                  },
+                  {
+                    "name": "sensor",
+                    "type": "string",
+                    "doc": "Sensor name (AWFI, WFI, MSI)."
+                  },
+                  {
+                    "name": "area_km2",
+                    "type": "double",
+                    "doc": "Area of the deforestation polygon in square kilometers."
+                  },
+                  {
+                    "name": "municipality",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Municipality name. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Brazilian state code (UF), e.g. PA, MT, when provided by INPE; null when omitted. The topic-safe state_slug field is used for MQTT routing. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "path_row",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Satellite path/row identifier. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "publish_month",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Publication month in YYYY-MM-DD format. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "centroid_latitude",
+                    "type": "double",
+                    "doc": "Latitude of the polygon centroid in decimal degrees."
+                  },
+                  {
+                    "name": "centroid_longitude",
+                    "type": "double",
+                    "doc": "Longitude of the polygon centroid in decimal degrees."
+                  },
+                  {
+                    "name": "state_slug",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lowercased Brazilian state code (UF), e.g. pa, mt, used as a topic-safe MQTT routing axis; unknown when INPE omits the UF. JSON Structure annotations: {\"pattern\": \"^([a-z]{2}|unknown)$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "class_slug",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"desmatamento-cr\", \"desmatamento-veg\", \"degradacao\", \"mineracao\", \"cs-desordenado\", \"cs-geometrico\", \"cicatriz-de-queimada\", \"corte-seletivo\", \"unknown\"]"
+                      }
+                    ],
+                    "doc": "Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis, e.g. desmatamento-cr, degradacao, mineracao. JSON Structure annotations: {\"enum\": [\"desmatamento-cr\", \"desmatamento-veg\", \"degradacao\", \"mineracao\", \"cs-desordenado\", \"cs-geometrico\", \"cicatriz-de-queimada\", \"corte-seletivo\", \"unknown\"], \"pattern\": \"^[a-z0-9][a-z0-9-]*$\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "INPE DETER deforestation alert for Amazon and Cerrado biomes."
               }
             }
           }

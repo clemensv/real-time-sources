@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/es.madrid.informo"
+        "#/messagegroups/es.madrid.informo",
+        "#/messagegroups/es.madrid.informo.avro",
+        "#/messagegroups/es.madrid.informo.avro.binary"
       ],
       "description": "Kafka producer endpoint for Madrid Traffic CloudEvents on the `madrid-traffic` topic keyed by `{sensor_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/es.madrid.informo.mqtt"
+        "#/messagegroups/es.madrid.informo.mqtt",
+        "#/messagegroups/es.madrid.informo.mqtt.avro",
+        "#/messagegroups/es.madrid.informo.mqtt.avro.binary"
       ],
       "description": "MQTT/5.0 companion producer endpoint."
     },
@@ -61,7 +65,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/es.madrid.informo.amqp"
+        "#/messagegroups/es.madrid.informo.amqp",
+        "#/messagegroups/es.madrid.informo.amqp.avro",
+        "#/messagegroups/es.madrid.informo.amqp.avro.binary"
       ],
       "description": "AMQP/1.0 companion producer endpoint."
     }
@@ -82,6 +88,10 @@
             "subject": {
               "value": "{sensor_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -101,6 +111,10 @@
             "subject": {
               "value": "{sensor_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -177,6 +191,144 @@
                 "value": "{sensor_id}",
                 "description": "Partition key mirrors the CloudEvents subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "es.madrid.informo.avro": {
+      "messagegroupid": "es.madrid.informo.avro",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint": {
+          "messageid": "es.madrid.informo.MeasurementPoint",
+          "basemessage": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.MeasurementPoint"
+        },
+        "es.madrid.informo.TrafficReading": {
+          "messageid": "es.madrid.informo.TrafficReading",
+          "basemessage": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.TrafficReading"
+        }
+      }
+    },
+    "es.madrid.informo.avro.binary": {
+      "messagegroupid": "es.madrid.informo.avro.binary",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint": {
+          "messageid": "es.madrid.informo.MeasurementPoint",
+          "basemessage": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.MeasurementPoint",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "es.madrid.informo.TrafficReading": {
+          "messageid": "es.madrid.informo.TrafficReading",
+          "basemessage": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.TrafficReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "es.madrid.informo.mqtt.avro": {
+      "messagegroupid": "es.madrid.informo.mqtt.avro",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint.mqtt": {
+          "messageid": "es.madrid.informo.MeasurementPoint.mqtt",
+          "basemessage": "/messagegroups/es.madrid.informo.mqtt/messages/es.madrid.informo.MeasurementPoint.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.MeasurementPoint"
+        },
+        "es.madrid.informo.TrafficReading.mqtt": {
+          "messageid": "es.madrid.informo.TrafficReading.mqtt",
+          "basemessage": "/messagegroups/es.madrid.informo.mqtt/messages/es.madrid.informo.TrafficReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.TrafficReading"
+        }
+      }
+    },
+    "es.madrid.informo.mqtt.avro.binary": {
+      "messagegroupid": "es.madrid.informo.mqtt.avro.binary",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint.mqtt": {
+          "messageid": "es.madrid.informo.MeasurementPoint.mqtt",
+          "basemessage": "/messagegroups/es.madrid.informo.mqtt/messages/es.madrid.informo.MeasurementPoint.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.MeasurementPoint",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "es.madrid.informo.TrafficReading.mqtt": {
+          "messageid": "es.madrid.informo.TrafficReading.mqtt",
+          "basemessage": "/messagegroups/es.madrid.informo.mqtt/messages/es.madrid.informo.TrafficReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.TrafficReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "es.madrid.informo.amqp.avro": {
+      "messagegroupid": "es.madrid.informo.amqp.avro",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint.amqp": {
+          "messageid": "es.madrid.informo.MeasurementPoint.amqp",
+          "basemessage": "/messagegroups/es.madrid.informo.amqp/messages/es.madrid.informo.MeasurementPoint.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.MeasurementPoint"
+        },
+        "es.madrid.informo.TrafficReading.amqp": {
+          "messageid": "es.madrid.informo.TrafficReading.amqp",
+          "basemessage": "/messagegroups/es.madrid.informo.amqp/messages/es.madrid.informo.TrafficReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.TrafficReading"
+        }
+      }
+    },
+    "es.madrid.informo.amqp.avro.binary": {
+      "messagegroupid": "es.madrid.informo.amqp.avro.binary",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint.amqp": {
+          "messageid": "es.madrid.informo.MeasurementPoint.amqp",
+          "basemessage": "/messagegroups/es.madrid.informo.amqp/messages/es.madrid.informo.MeasurementPoint.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.MeasurementPoint",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "es.madrid.informo.TrafficReading.amqp": {
+          "messageid": "es.madrid.informo.TrafficReading.amqp",
+          "basemessage": "/messagegroups/es.madrid.informo.amqp/messages/es.madrid.informo.TrafficReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.avro/schemas/es.madrid.informo.TrafficReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -334,6 +486,154 @@
                   "JSONStructureAlternateNames",
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "es.madrid.informo.avro": {
+      "schemas": {
+        "es.madrid.informo.MeasurementPoint": {
+          "name": "MeasurementPoint",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "es.madrid.informo.MeasurementPoint",
+                "fields": [
+                  {
+                    "name": "sensor_id",
+                    "type": "string",
+                    "doc": "Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point."
+                  },
+                  {
+                    "name": "description",
+                    "type": "string",
+                    "doc": "Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish."
+                  },
+                  {
+                    "name": "element_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subarea",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Traffic management zone code for this sensor. Corresponds to 'subarea' in the upstream XML. Used by Madrid's traffic management center for geographic grouping of sensors. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM easting in 'st_x' in the upstream XML, which uses European comma decimal separators. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM northing in 'st_y' in the upstream XML, which uses European comma decimal separators. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "saturation_intensity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios. JSON Structure annotations: {\"symbol\": \"veh/h\", \"unit\": \"1/h\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "es.madrid.informo.TrafficReading": {
+          "name": "TrafficReading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "es.madrid.informo.TrafficReading",
+                "fields": [
+                  {
+                    "name": "sensor_id",
+                    "type": "string",
+                    "doc": "Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data."
+                  },
+                  {
+                    "name": "intensity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode. JSON Structure annotations: {\"symbol\": \"veh/h\", \"unit\": \"1/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "occupancy",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "load",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "service_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "error_flag",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Error status flag for this reading. Corresponds to 'error' in the upstream XML. 'N' indicates a normal reading, 'S' or 'Y' indicates the sensor is reporting an error and the data may be unreliable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Timestamp of the traffic reading in UTC. Since the upstream XML does not include per-sensor timestamps, this is derived from the poll time rounded to the nearest 5-minute interval, reflecting the upstream update cadence."
+                  }
+                ],
+                "doc": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value."
               }
             }
           }

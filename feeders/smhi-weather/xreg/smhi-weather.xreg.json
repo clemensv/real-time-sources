@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/SE.Gov.SMHI.Weather"
+        "#/messagegroups/SE.Gov.SMHI.Weather",
+        "#/messagegroups/SE.Gov.SMHI.Weather.avro",
+        "#/messagegroups/SE.Gov.SMHI.Weather.avro.binary"
       ],
       "description": "Kafka producer endpoint for SMHI Weather CloudEvents on the `smhi-weather` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/SE.Gov.SMHI.Weather.mqtt"
+        "#/messagegroups/SE.Gov.SMHI.Weather.mqtt",
+        "#/messagegroups/SE.Gov.SMHI.Weather.mqtt.avro",
+        "#/messagegroups/SE.Gov.SMHI.Weather.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for smhi-weather."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/SE.Gov.SMHI.Weather.amqp"
+        "#/messagegroups/SE.Gov.SMHI.Weather.amqp",
+        "#/messagegroups/SE.Gov.SMHI.Weather.amqp.avro",
+        "#/messagegroups/SE.Gov.SMHI.Weather.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for smhi-weather."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -234,6 +248,144 @@
           "envelope": "CloudEvents/1.0"
         }
       }
+    },
+    "SE.Gov.SMHI.Weather.avro": {
+      "messagegroupid": "SE.Gov.SMHI.Weather.avro",
+      "messages": {
+        "SE.Gov.SMHI.Weather.Station": {
+          "messageid": "SE.Gov.SMHI.Weather.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.Station"
+        },
+        "SE.Gov.SMHI.Weather.WeatherObservation": {
+          "messageid": "SE.Gov.SMHI.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.WeatherObservation"
+        }
+      }
+    },
+    "SE.Gov.SMHI.Weather.avro.binary": {
+      "messagegroupid": "SE.Gov.SMHI.Weather.avro.binary",
+      "messages": {
+        "SE.Gov.SMHI.Weather.Station": {
+          "messageid": "SE.Gov.SMHI.Weather.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SE.Gov.SMHI.Weather.WeatherObservation": {
+          "messageid": "SE.Gov.SMHI.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Weather.mqtt.avro": {
+      "messagegroupid": "SE.Gov.SMHI.Weather.mqtt.avro",
+      "messages": {
+        "SE.Gov.SMHI.Weather.mqtt.Station": {
+          "messageid": "SE.Gov.SMHI.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.mqtt/messages/SE.Gov.SMHI.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.Station"
+        },
+        "SE.Gov.SMHI.Weather.mqtt.WeatherObservation": {
+          "messageid": "SE.Gov.SMHI.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.mqtt/messages/SE.Gov.SMHI.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.WeatherObservation"
+        }
+      }
+    },
+    "SE.Gov.SMHI.Weather.mqtt.avro.binary": {
+      "messagegroupid": "SE.Gov.SMHI.Weather.mqtt.avro.binary",
+      "messages": {
+        "SE.Gov.SMHI.Weather.mqtt.Station": {
+          "messageid": "SE.Gov.SMHI.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.mqtt/messages/SE.Gov.SMHI.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SE.Gov.SMHI.Weather.mqtt.WeatherObservation": {
+          "messageid": "SE.Gov.SMHI.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.mqtt/messages/SE.Gov.SMHI.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Weather.amqp.avro": {
+      "messagegroupid": "SE.Gov.SMHI.Weather.amqp.avro",
+      "messages": {
+        "SE.Gov.SMHI.Weather.amqp.Station": {
+          "messageid": "SE.Gov.SMHI.Weather.amqp.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.amqp/messages/SE.Gov.SMHI.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.Station"
+        },
+        "SE.Gov.SMHI.Weather.amqp.WeatherObservation": {
+          "messageid": "SE.Gov.SMHI.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.amqp/messages/SE.Gov.SMHI.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.WeatherObservation"
+        }
+      }
+    },
+    "SE.Gov.SMHI.Weather.amqp.avro.binary": {
+      "messagegroupid": "SE.Gov.SMHI.Weather.amqp.avro.binary",
+      "messages": {
+        "SE.Gov.SMHI.Weather.amqp.Station": {
+          "messageid": "SE.Gov.SMHI.Weather.amqp.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.amqp/messages/SE.Gov.SMHI.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SE.Gov.SMHI.Weather.amqp.WeatherObservation": {
+          "messageid": "SE.Gov.SMHI.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Weather.amqp/messages/SE.Gov.SMHI.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.avro/schemas/SE.Gov.SMHI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -298,7 +450,10 @@
                     "symbol": "°"
                   },
                   "lan": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -478,13 +633,287 @@
                     "description": "Quality flag for the observation as assigned by SMHI: 'G' for approved, 'Y' for suspect."
                   },
                   "lan": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Weather.avro": {
+      "schemas": {
+        "SE.Gov.SMHI.Weather.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SE.Gov.SMHI.Weather.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "SMHI numeric station identifier, unique within the SMHI observation network."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name as assigned by SMHI, e.g. 'Abisko Aut' or 'Stockholm-Arlanda'."
+                  },
+                  {
+                    "name": "owner",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Organization or entity that owns and operates the station, e.g. 'SMHI' or 'Polarforskningssekretariatet'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "owner_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Category of station ownership, e.g. 'CLIMATE' for long-running climate stations or 'AVIATION' for airport stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "measuring_stations",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Station classification within SMHI's measuring station network, e.g. 'CORE' for primary network stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sensor height above ground in meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Geographic latitude of the station in decimal degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Geographic longitude of the station in decimal degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "lan",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by the Swedish Meteorological and Hydrological Institute (SMHI). It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "SE.Gov.SMHI.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SE.Gov.SMHI.Weather.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "SMHI station identifier for the reporting station."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the reporting station."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "Timestamp of the observation in UTC, derived from the SMHI epoch millisecond value."
+                  },
+                  {
+                    "name": "air_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Instantaneous air temperature, reported hourly (SMHI parameter 1). JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_gust",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum wind gust speed, reported hourly (SMHI parameter 21). JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dew_point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dew point temperature, reported hourly (SMHI parameter 39). JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Atmospheric pressure reduced to mean sea level, reported hourly (SMHI parameter 9). JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Relative humidity as a percentage, reported hourly (SMHI parameter 6). JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"percent\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "precipitation_last_hour",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total precipitation in the last hour, reported hourly (SMHI parameter 7). JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction in degrees from which the wind is blowing, measured at 10 m height, reported hourly (SMHI parameter 3). JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Mean wind speed over 10 minutes measured at 10 m height, reported hourly (SMHI parameter 4). JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "max_wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum of 10-minute mean wind speed during the hour, measured at 10 m height (SMHI parameter 25). JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "visibility",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Horizontal visibility, reported hourly (SMHI parameter 12). JSON Structure annotations: {\"symbol\": \"km\", \"unit\": \"km\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "total_cloud_cover",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Total cloud cover in oktas (eighths of sky covered), reported hourly (SMHI parameter 16). JSON Structure annotations: {\"symbol\": \"okta\", \"unit\": \"okta\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "present_weather",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "WMO present weather code (ww table 4677) describing current weather phenomena at the time of observation (SMHI parameter 13). Values range from 0 (clear) to 99 (thunderstorm with hail). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sunshine_duration",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Duration of sunshine during the last hour in seconds (SMHI parameter 10). JSON Structure annotations: {\"symbol\": \"s\", \"unit\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "global_irradiance",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Global solar irradiance (direct + diffuse), average over the hour, measured by pyranometer (SMHI parameter 11). JSON Structure annotations: {\"symbol\": \"W/m²\", \"unit\": \"W/m2\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "precipitation_intensity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Instantaneous precipitation intensity measured by optical or weighing gauge (SMHI parameter 38). JSON Structure annotations: {\"symbol\": \"mm/h\", \"unit\": \"mm/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "quality",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Quality flag for the observation as assigned by SMHI: 'G' for approved, 'Y' for suspect. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lan",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from the Swedish Meteorological and Hydrological Institute (SMHI). It carries weather observations when the upstream feed reports a new or refreshed value."
               }
             }
           }

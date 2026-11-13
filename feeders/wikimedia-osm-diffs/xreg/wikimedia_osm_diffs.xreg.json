@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Org.OpenStreetMap.Diffs"
+        "#/messagegroups/Org.OpenStreetMap.Diffs",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.avro",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.avro.binary"
       ]
     },
     "Org.OpenStreetMap.Diffs.State.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Org.OpenStreetMap.Diffs.State"
+        "#/messagegroups/Org.OpenStreetMap.Diffs.State",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.State.avro",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.State.avro.binary"
       ]
     },
     "WikimediaOsmDiffs.Mqtt": {
@@ -60,7 +64,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Org.OpenStreetMap.Diffs.mqtt"
+        "#/messagegroups/Org.OpenStreetMap.Diffs.mqtt",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.mqtt.avro",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.mqtt.avro.binary"
       ]
     },
     "Org.OpenStreetMap.Diffs.Amqp": {
@@ -81,7 +87,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Org.OpenStreetMap.Diffs.amqp"
+        "#/messagegroups/Org.OpenStreetMap.Diffs.amqp",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.amqp.avro",
+        "#/messagegroups/Org.OpenStreetMap.Diffs.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for wikimedia-osm-diffs CloudEvents on the configured broker address."
     }
@@ -103,6 +111,10 @@
             "subject": {
               "value": "{element_type}/{element_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -126,6 +138,10 @@
             "subject": {
               "value": "replication_state",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -258,6 +274,190 @@
                 "value": "replication_state",
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.avro": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.avro",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.MapChange": {
+          "messageid": "Org.OpenStreetMap.Diffs.MapChange",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange"
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.avro.binary": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.avro.binary",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.MapChange": {
+          "messageid": "Org.OpenStreetMap.Diffs.MapChange",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.State.avro": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.State.avro",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.ReplicationState": {
+          "messageid": "Org.OpenStreetMap.Diffs.ReplicationState",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.ReplicationState"
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.State.avro.binary": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.State.avro.binary",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.ReplicationState": {
+          "messageid": "Org.OpenStreetMap.Diffs.ReplicationState",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.ReplicationState",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.mqtt.avro": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.mqtt.avro",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.mqtt.Node": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.Node",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange"
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.Way": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.Way",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Way",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange"
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.Relation": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.Relation",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Relation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange"
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.ReplicationState": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.ReplicationState",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.ReplicationState",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.ReplicationState"
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.mqtt.avro.binary": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.mqtt.avro.binary",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.mqtt.Node": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.Node",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Node",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.Way": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.Way",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Way",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.Relation": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.Relation",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Relation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.ReplicationState": {
+          "messageid": "Org.OpenStreetMap.Diffs.mqtt.ReplicationState",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.ReplicationState",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.ReplicationState",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.amqp.avro": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.amqp.avro",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.amqp.MapChange": {
+          "messageid": "Org.OpenStreetMap.Diffs.amqp.MapChange",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.amqp/messages/Org.OpenStreetMap.Diffs.amqp.MapChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange"
+        },
+        "Org.OpenStreetMap.Diffs.amqp.ReplicationState": {
+          "messageid": "Org.OpenStreetMap.Diffs.amqp.ReplicationState",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.amqp/messages/Org.OpenStreetMap.Diffs.amqp.ReplicationState",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.ReplicationState"
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.amqp.avro.binary": {
+      "messagegroupid": "Org.OpenStreetMap.Diffs.amqp.avro.binary",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.amqp.MapChange": {
+          "messageid": "Org.OpenStreetMap.Diffs.amqp.MapChange",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.amqp/messages/Org.OpenStreetMap.Diffs.amqp.MapChange",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.MapChange",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Org.OpenStreetMap.Diffs.amqp.ReplicationState": {
+          "messageid": "Org.OpenStreetMap.Diffs.amqp.ReplicationState",
+          "basemessage": "/messagegroups/Org.OpenStreetMap.Diffs.amqp/messages/Org.OpenStreetMap.Diffs.amqp.ReplicationState",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.avro/schemas/Org.OpenStreetMap.Diffs.ReplicationState",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -395,6 +595,144 @@
                   "sequence_number",
                   "timestamp"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.avro": {
+      "schemas": {
+        "Org.OpenStreetMap.Diffs.MapChange": {
+          "name": "MapChange",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Org.OpenStreetMap.Diffs.MapChange",
+                "fields": [
+                  {
+                    "name": "change_type",
+                    "type": "string",
+                    "doc": "The type of change applied to the element in this replication diff: create, modify, or delete, corresponding to the OsmChange XML sections."
+                  },
+                  {
+                    "name": "element_type",
+                    "type": "string",
+                    "doc": "The OSM element type: node, way, or relation. Nodes carry geographic coordinates; ways and relations reference other elements."
+                  },
+                  {
+                    "name": "element_id",
+                    "type": "long",
+                    "doc": "The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity."
+                  },
+                  {
+                    "name": "geohash5",
+                    "type": "string",
+                    "doc": "Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment."
+                  },
+                  {
+                    "name": "version",
+                    "type": "int",
+                    "doc": "The version number of this element. Each edit to an element increments the version by one."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "The UTC timestamp when this element version was created or last modified in the OSM database, as recorded in the OsmChange XML."
+                  },
+                  {
+                    "name": "changeset_id",
+                    "type": "long",
+                    "doc": "The numeric identifier of the OSM changeset that contains this element change. A changeset groups related edits by a single user."
+                  },
+                  {
+                    "name": "user_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The display name of the OSM user who made this edit. May be null for redacted or anonymous edits. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "user_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "doc": "The numeric user identifier of the OSM contributor. May be null for redacted or anonymous edits. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "The WGS-84 latitude of the node in decimal degrees. Present only when element_type is node; null for ways and relations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "The WGS-84 longitude of the node in decimal degrees. Present only when element_type is node; null for ways and relations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tags",
+                    "type": "string",
+                    "doc": "JSON-encoded object of key-value tag pairs attached to this element. Tags describe the element's real-world features such as name, highway type, or building classification. Encoded as a JSON string because xreg does not natively support map types."
+                  },
+                  {
+                    "name": "sequence_number",
+                    "type": "long",
+                    "doc": "The replication sequence number of the minutely diff file that contained this change. Useful for correlating changes back to specific replication state."
+                  }
+                ],
+                "doc": "An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively. The geohash5 axis is the 5-character base32 geohash of the element's representative coordinate; relations without a derivable bounding box receive the sentinel 'nogeo' so they still publish onto the UNS tree."
+              }
+            }
+          }
+        },
+        "Org.OpenStreetMap.Diffs.ReplicationState": {
+          "name": "ReplicationState",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Org.OpenStreetMap.Diffs.ReplicationState",
+                "fields": [
+                  {
+                    "name": "sequence_number",
+                    "type": "long",
+                    "doc": "The monotonically increasing sequence number of the latest processed minutely diff file. Each diff file corresponds to exactly one sequence number."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "The UTC timestamp associated with the replication state, indicating the point in time up to which the diff file covers OSM edits."
+                  },
+                  {
+                    "name": "source_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "The replication state document URL from which this snapshot was parsed. Useful so subscribers can re-derive the diff file URL or compare across mirror feeds. Null when the bridge does not record the URL. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "The current replication state of the OpenStreetMap minutely diff feed. Published once per poll cycle. The sequence_number and timestamp are parsed from the Java-properties-style state.txt file at https://planet.openstreetmap.org/replication/minute/state.txt."
               }
             }
           }

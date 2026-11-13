@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/de.bfs.odl"
+        "#/messagegroups/de.bfs.odl",
+        "#/messagegroups/de.bfs.odl.avro",
+        "#/messagegroups/de.bfs.odl.avro.binary"
       ]
     },
     "de.bfs.odl.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/de.bfs.odl.mqtt"
+        "#/messagegroups/de.bfs.odl.mqtt",
+        "#/messagegroups/de.bfs.odl.mqtt.avro",
+        "#/messagegroups/de.bfs.odl.mqtt.avro.binary"
       ]
     },
     "de.bfs.odl.Amqp": {
@@ -60,7 +64,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/de.bfs.odl.amqp"
+        "#/messagegroups/de.bfs.odl.amqp",
+        "#/messagegroups/de.bfs.odl.amqp.avro",
+        "#/messagegroups/de.bfs.odl.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for bfs-odl CloudEvents on the configured broker address."
     }
@@ -108,6 +114,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -128,6 +138,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -163,6 +177,144 @@
                 "value": "{station_id}",
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "de.bfs.odl.mqtt.avro": {
+      "messagegroupid": "de.bfs.odl.mqtt.avro",
+      "messages": {
+        "de.bfs.odl.mqtt.Station": {
+          "messageid": "de.bfs.odl.mqtt.Station",
+          "basemessage": "/messagegroups/de.bfs.odl.mqtt/messages/de.bfs.odl.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.Station"
+        },
+        "de.bfs.odl.mqtt.DoseRateMeasurement": {
+          "messageid": "de.bfs.odl.mqtt.DoseRateMeasurement",
+          "basemessage": "/messagegroups/de.bfs.odl.mqtt/messages/de.bfs.odl.mqtt.DoseRateMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.DoseRateMeasurement"
+        }
+      }
+    },
+    "de.bfs.odl.mqtt.avro.binary": {
+      "messagegroupid": "de.bfs.odl.mqtt.avro.binary",
+      "messages": {
+        "de.bfs.odl.mqtt.Station": {
+          "messageid": "de.bfs.odl.mqtt.Station",
+          "basemessage": "/messagegroups/de.bfs.odl.mqtt/messages/de.bfs.odl.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.bfs.odl.mqtt.DoseRateMeasurement": {
+          "messageid": "de.bfs.odl.mqtt.DoseRateMeasurement",
+          "basemessage": "/messagegroups/de.bfs.odl.mqtt/messages/de.bfs.odl.mqtt.DoseRateMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.DoseRateMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.bfs.odl.avro": {
+      "messagegroupid": "de.bfs.odl.avro",
+      "messages": {
+        "de.bfs.odl.Station": {
+          "messageid": "de.bfs.odl.Station",
+          "basemessage": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.Station"
+        },
+        "de.bfs.odl.DoseRateMeasurement": {
+          "messageid": "de.bfs.odl.DoseRateMeasurement",
+          "basemessage": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.DoseRateMeasurement"
+        }
+      }
+    },
+    "de.bfs.odl.avro.binary": {
+      "messagegroupid": "de.bfs.odl.avro.binary",
+      "messages": {
+        "de.bfs.odl.Station": {
+          "messageid": "de.bfs.odl.Station",
+          "basemessage": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.bfs.odl.DoseRateMeasurement": {
+          "messageid": "de.bfs.odl.DoseRateMeasurement",
+          "basemessage": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.DoseRateMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.bfs.odl.amqp.avro": {
+      "messagegroupid": "de.bfs.odl.amqp.avro",
+      "messages": {
+        "de.bfs.odl.amqp.Station": {
+          "messageid": "de.bfs.odl.amqp.Station",
+          "basemessage": "/messagegroups/de.bfs.odl.amqp/messages/de.bfs.odl.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.Station"
+        },
+        "de.bfs.odl.amqp.DoseRateMeasurement": {
+          "messageid": "de.bfs.odl.amqp.DoseRateMeasurement",
+          "basemessage": "/messagegroups/de.bfs.odl.amqp/messages/de.bfs.odl.amqp.DoseRateMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.DoseRateMeasurement"
+        }
+      }
+    },
+    "de.bfs.odl.amqp.avro.binary": {
+      "messagegroupid": "de.bfs.odl.amqp.avro.binary",
+      "messages": {
+        "de.bfs.odl.amqp.Station": {
+          "messageid": "de.bfs.odl.amqp.Station",
+          "basemessage": "/messagegroups/de.bfs.odl.amqp/messages/de.bfs.odl.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.bfs.odl.amqp.DoseRateMeasurement": {
+          "messageid": "de.bfs.odl.amqp.DoseRateMeasurement",
+          "basemessage": "/messagegroups/de.bfs.odl.amqp/messages/de.bfs.odl.amqp.DoseRateMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.avro/schemas/de.bfs.odl.DoseRateMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -451,9 +603,78 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "de.bfs.odl.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit station identifier (Kennziffer) assigned by BfS in the IMIS network. Composed of the official municipality key (AGS) prefix and a station sequence number. Example: '033510091'. This is the stable key used for timeseries retrieval."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "German federal state (Bundesland) derived from the first two digits of the station Kennziffer (AGS prefix). Normalized to lowercase kebab-case for use as the {state} segment in the MQTT/UNS topic. Example: 'niedersachsen', 'bayern', 'nordrhein-westfalen'."
+                  },
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "Short alphanumeric station code assigned by BfS, consisting of a 'DEZ' prefix followed by a four-digit number. Example: 'DEZ0305'. Used in the BfS web interface and download area."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name of the station location, typically a German municipality or locality name. Example: 'Flensburg'."
+                  },
+                  {
+                    "name": "postal_code",
+                    "type": "string",
+                    "doc": "German postal code (Postleitzahl / PLZ) of the station location. Five digits as a string."
+                  },
+                  {
+                    "name": "site_status",
+                    "type": "int",
+                    "doc": "Numeric operational status code. 1 = in operation (in Betrieb), 0 or other values indicate the station is decommissioned or under maintenance. JSON Structure annotations: {\"altnames\": {\"json\": \"site_status\"}}"
+                  },
+                  {
+                    "name": "site_status_text",
+                    "type": "string",
+                    "doc": "Human-readable German text describing the operational status. Example: 'in Betrieb' (in operation)."
+                  },
+                  {
+                    "name": "kid",
+                    "type": "int",
+                    "doc": "Numeric region identifier (Kreis-ID) used internally by BfS to group stations into geographic regions."
+                  },
+                  {
+                    "name": "height_above_sea",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Elevation of the station above mean sea level in meters (Normalhöhennull / NHN). Determines the cosmic radiation component. Null if unknown. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "Metadata for a BfS ODL gamma dose rate monitoring station. Each station is a stationary probe in the IMIS (Integrated Measuring and Information System) network operated by the German Federal Office for Radiation Protection (Bundesamt für Strahlenschutz). Stations continuously measure ambient gamma dose rate and report hourly averaged values."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         },
         "de.bfs.odl.DoseRateMeasurement": {
           "versions": {
@@ -524,9 +745,89 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "de.bfs.odl.DoseRateMeasurement",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "German federal state (Bundesland) derived from the station Kennziffer. Propagated from station catalog so subscribers can route by state without a catalog join. Used as the {state} segment of the MQTT/UNS topic."
+                  },
+                  {
+                    "name": "start_measure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "end_measure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval. JSON Structure annotations: {\"symbol\": \"µSv/h\", \"unit\": \"uSv/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "value_cosmic",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Cosmic radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Estimated from the station's altitude using a standard model. Null when the BfS system has not yet computed the decomposition for this measurement. JSON Structure annotations: {\"symbol\": \"µSv/h\", \"unit\": \"uSv/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "value_terrestrial",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available. JSON Structure annotations: {\"symbol\": \"µSv/h\", \"unit\": \"uSv/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "validated",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nuclide",
+                    "type": "string",
+                    "doc": "Nuclide identifier describing the type of radiation measured. For standard ODL probes this is always 'Gamma-ODL-Brutto' (gross gamma ambient dose rate)."
+                  }
+                ],
+                "doc": "A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station. The gross dose rate value is the total ambient dose equivalent rate H*(10) at 1 meter above ground, expressed in microsieverts per hour (µSv/h). It may be decomposed into a cosmic component (secondary cosmic radiation, altitude-dependent) and a terrestrial component (naturally occurring radionuclides in soil, geology-dependent). Normal background levels in Germany range from approximately 0.05 to 0.18 µSv/h depending on local geology and altitude."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         }
       }
     }

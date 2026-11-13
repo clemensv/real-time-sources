@@ -1,14 +1,14 @@
-# Canada ECCC Water Office Hydrometric Bridge Events
+# Canada ECCC Water Office Events
 
 ECCC Water Office publishes real-time water level and flow observations from Environment and Climate Change Canada Water Survey of Canada for Canadian hydrometric stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Event types:** 2 documented event types (18 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `stations/{station_number}` identifies the resource each event is about.
-- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `stations/{station_number}`. 
 | --- | --- |
 | `KAFKA` | topic `canada-eccc-wateroffice`, key `stations/{station_number}` |
 | `MQTT/5.0` | topic `hydro/ca/eccc/canada-eccc-wateroffice/{basin}/{station_number}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/canada-eccc-wateroffice`, message subject `stations/{station_number}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/canada-eccc-wateroffice`, message subject `stations/{station_number}` |
 
 #### Payload
 
@@ -95,7 +95,7 @@ Each event identifies the real-world resource with `stations/{station_number}`. 
 - **`real_time`** (boolean or null, optional): Indicates whether real-time data are available for this station via the WSC real-time data service. Upstream field: REAL_TIME.
 - **`latitude`** (double or null, optional, degree (°)): Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.
 - **`longitude`** (double or null, optional, degree (°)): Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -139,7 +139,7 @@ Each event identifies the real-world resource with `stations/{station_number}`. 
 | --- | --- |
 | `KAFKA` | topic `canada-eccc-wateroffice`, key `stations/{station_number}` |
 | `MQTT/5.0` | topic `hydro/ca/eccc/canada-eccc-wateroffice/{basin}/{station_number}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/canada-eccc-wateroffice`, message subject `stations/{station_number}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/canada-eccc-wateroffice`, message subject `stations/{station_number}` |
 
 #### Payload
 
@@ -154,7 +154,7 @@ Each event identifies the real-world resource with `stations/{station_number}`. 
 - **`discharge`** (double or null, optional, cubic metre per second (m³/s)): Water discharge (flow rate) at the station in cubic metres per second. Null when not measured or unavailable. Upstream field: DISCHARGE.
 - **`latitude`** (double or null, optional, degree (°)): Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.
 - **`longitude`** (double or null, optional, degree (°)): Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -191,10 +191,16 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 - Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
@@ -202,3 +208,5 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/canada-eccc-wateroffice.xreg.json`](xreg/canada-eccc-wateroffice.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
+- Azure Service Bus emulator: <https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator>

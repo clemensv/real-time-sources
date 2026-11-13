@@ -1,10 +1,10 @@
 # FDSN Seismology Events
 
-Federated FDSN event-service bridge over eight pre-configured earthquake nodes (EMSC, GFZ, INGV, ETHZ/SED, RESIF, IPGP, NIEP, USGS). Upstream surface reviewed from the FDSN Event WADL plus live node probes: query (kept, telemetry), catalogs (dropped as duplicate index metadata), contributors (dropped as duplicate contributor listings), version (dropped as operational metadata), and application.wadl (dropped as static service description). The feeder emits node reference records and earthquake telemetry on a single topic family.
+<sub>federated earthquake detections, 7 FDSN nodes · Kafka · MQTT · AMQP · <a href="https://www.fdsn.org/webservices/">upstream</a> · <a href="https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 2 documented event types (8 transport bindings in the manifest).
+- **Event types:** 2 documented event types (24 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{contributor}/{event_id}`, `{node_id}` identifies the resource each event is about.
@@ -187,7 +187,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 

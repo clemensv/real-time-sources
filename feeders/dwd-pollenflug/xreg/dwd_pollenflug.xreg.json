@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.DWD.Pollenflug"
+        "#/messagegroups/DE.DWD.Pollenflug",
+        "#/messagegroups/DE.DWD.Pollenflug.avro",
+        "#/messagegroups/DE.DWD.Pollenflug.avro.binary"
       ],
       "description": "Kafka producer endpoint for DWD Pollenflug CloudEvents on the `dwd-pollenflug` topic keyed by `{region_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/DE.DWD.Pollenflug.mqtt"
+        "#/messagegroups/DE.DWD.Pollenflug.mqtt",
+        "#/messagegroups/DE.DWD.Pollenflug.mqtt.avro",
+        "#/messagegroups/DE.DWD.Pollenflug.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for dwd-pollenflug."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/DE.DWD.Pollenflug.amqp"
+        "#/messagegroups/DE.DWD.Pollenflug.amqp",
+        "#/messagegroups/DE.DWD.Pollenflug.amqp.avro",
+        "#/messagegroups/DE.DWD.Pollenflug.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for dwd-pollenflug."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{region_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{region_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -220,6 +234,144 @@
             "application-properties": {}
           },
           "envelope": "CloudEvents/1.0"
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.avro": {
+      "messagegroupid": "DE.DWD.Pollenflug.avro",
+      "messages": {
+        "DE.DWD.Pollenflug.Region": {
+          "messageid": "DE.DWD.Pollenflug.Region",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.Region"
+        },
+        "DE.DWD.Pollenflug.PollenForecast": {
+          "messageid": "DE.DWD.Pollenflug.PollenForecast",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.PollenForecast"
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.avro.binary": {
+      "messagegroupid": "DE.DWD.Pollenflug.avro.binary",
+      "messages": {
+        "DE.DWD.Pollenflug.Region": {
+          "messageid": "DE.DWD.Pollenflug.Region",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.Region",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Pollenflug.PollenForecast": {
+          "messageid": "DE.DWD.Pollenflug.PollenForecast",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.PollenForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.mqtt.avro": {
+      "messagegroupid": "DE.DWD.Pollenflug.mqtt.avro",
+      "messages": {
+        "DE.DWD.Pollenflug.mqtt.Region": {
+          "messageid": "DE.DWD.Pollenflug.mqtt.Region",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.mqtt/messages/DE.DWD.Pollenflug.mqtt.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.Region"
+        },
+        "DE.DWD.Pollenflug.mqtt.PollenForecast": {
+          "messageid": "DE.DWD.Pollenflug.mqtt.PollenForecast",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.mqtt/messages/DE.DWD.Pollenflug.mqtt.PollenForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.PollenForecast"
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.mqtt.avro.binary": {
+      "messagegroupid": "DE.DWD.Pollenflug.mqtt.avro.binary",
+      "messages": {
+        "DE.DWD.Pollenflug.mqtt.Region": {
+          "messageid": "DE.DWD.Pollenflug.mqtt.Region",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.mqtt/messages/DE.DWD.Pollenflug.mqtt.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.Region",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Pollenflug.mqtt.PollenForecast": {
+          "messageid": "DE.DWD.Pollenflug.mqtt.PollenForecast",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.mqtt/messages/DE.DWD.Pollenflug.mqtt.PollenForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.PollenForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.amqp.avro": {
+      "messagegroupid": "DE.DWD.Pollenflug.amqp.avro",
+      "messages": {
+        "DE.DWD.Pollenflug.amqp.Region": {
+          "messageid": "DE.DWD.Pollenflug.amqp.Region",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.amqp/messages/DE.DWD.Pollenflug.amqp.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.Region"
+        },
+        "DE.DWD.Pollenflug.amqp.PollenForecast": {
+          "messageid": "DE.DWD.Pollenflug.amqp.PollenForecast",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.amqp/messages/DE.DWD.Pollenflug.amqp.PollenForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.PollenForecast"
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.amqp.avro.binary": {
+      "messagegroupid": "DE.DWD.Pollenflug.amqp.avro.binary",
+      "messages": {
+        "DE.DWD.Pollenflug.amqp.Region": {
+          "messageid": "DE.DWD.Pollenflug.amqp.Region",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.amqp/messages/DE.DWD.Pollenflug.amqp.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.Region",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Pollenflug.amqp.PollenForecast": {
+          "messageid": "DE.DWD.Pollenflug.amqp.PollenForecast",
+          "basemessage": "/messagegroups/DE.DWD.Pollenflug.amqp/messages/DE.DWD.Pollenflug.amqp.PollenForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.avro/schemas/DE.DWD.Pollenflug.PollenForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -495,6 +647,326 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.avro": {
+      "schemas": {
+        "DE.DWD.Pollenflug.Region": {
+          "name": "Region",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.Pollenflug.Region",
+                "fields": [
+                  {
+                    "name": "region_id",
+                    "type": "string",
+                    "doc": "Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id."
+                  },
+                  {
+                    "name": "region_name",
+                    "type": "string",
+                    "doc": "Name of the main geographic region as published by DWD (e.g. 'Schleswig-Holstein und Hamburg', 'Bayern'). Sourced from the 'region_name' field in the DWD API response."
+                  },
+                  {
+                    "name": "partregion_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric identifier of the sub-region within the parent region. Set to -1 by DWD when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_id' field in the DWD API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "partregion_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the sub-region (e.g. 'Inseln und Marschen', 'Geest,Schleswig-Holstein und Hamburg'). Empty string in the DWD response when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_name' field in the DWD API response. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "DE.DWD.Pollenflug.PollenForecast": {
+          "name": "PollenForecast",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.Pollenflug.PollenForecast",
+                "fields": [
+                  {
+                    "name": "region_id",
+                    "type": "string",
+                    "doc": "Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id."
+                  },
+                  {
+                    "name": "region_name",
+                    "type": "string",
+                    "doc": "Display name of the forecast area. Uses partregion_name when available, otherwise region_name."
+                  },
+                  {
+                    "name": "last_update",
+                    "type": "string",
+                    "doc": "Timestamp of the last forecast update as published by DWD, e.g. '2025-04-08 11:00 Uhr'. Retained as a string because the upstream format includes the German suffix 'Uhr'."
+                  },
+                  {
+                    "name": "next_update",
+                    "type": "string",
+                    "doc": "Timestamp of the next expected forecast update as published by DWD, e.g. '2025-04-09 11:00 Uhr'."
+                  },
+                  {
+                    "name": "sender",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Issuing organization as stated in the DWD API response, typically 'Deutscher Wetterdienst - Medizin-Meteorologie'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hazel_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Hasel (hazel) today. Values: '0' (none), '0-1' (none to low), '1' (low), '1-2' (low to medium), '2' (medium), '2-3' (medium to high), '3' (high). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hazel_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Hasel (hazel) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hazel_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Hasel (hazel) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "alder_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Erle (alder) today. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "alder_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Erle (alder) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "alder_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Erle (alder) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "birch_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Birke (birch) today. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "birch_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Birke (birch) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "birch_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Birke (birch) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ash_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Esche (ash) today. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ash_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Esche (ash) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ash_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Esche (ash) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "grasses_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Gräser (grasses) today. In the upstream API this field is named 'Graeser'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "grasses_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Gräser (grasses) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "grasses_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Gräser (grasses) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rye_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Roggen (rye) today. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rye_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Roggen (rye) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rye_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Roggen (rye) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mugwort_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Beifuß (mugwort) today. In the upstream API this field is named 'Beifuss'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mugwort_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Beifuß (mugwort) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mugwort_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Beifuß (mugwort) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ragweed_today",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Ambrosia (ragweed) today. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ragweed_tomorrow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Ambrosia (ragweed) tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ragweed_dayafter_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Pollen intensity for Ambrosia (ragweed) the day after tomorrow. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pollen_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'pollen_type' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source."
               }
             }
           }

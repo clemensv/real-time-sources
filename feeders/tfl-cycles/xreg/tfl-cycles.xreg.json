@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "UK.Gov.TfL.Cycles.Stations.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -16,12 +18,16 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/UK.Gov.TfL.Cycles.kafka.stations"
+        "#/messagegroups/UK.Gov.TfL.Cycles.kafka.stations",
+        "#/messagegroups/UK.Gov.TfL.Cycles.kafka.stations.avro",
+        "#/messagegroups/UK.Gov.TfL.Cycles.kafka.stations.avro.binary"
       ],
       "description": "Kafka producer endpoint for Transport for London Santander Cycles docking-station reference and availability CloudEvents on the `tfl-cycles` topic, keyed by the stable BikePoint identifier `{station_id}` so every event for one docking station lands on the same partition in emission order."
     },
     "UK.Gov.TfL.Cycles.Mqtt": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "MQTT/5.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -36,12 +42,16 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations"
+        "#/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations",
+        "#/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations.avro",
+        "#/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for Transport for London Santander Cycles CloudEvents published in binary content mode into a mobility Unified Namespace topic hierarchy rooted at `mobility/tfl-cycles`."
     },
     "UK.Gov.TfL.Cycles.Amqp": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "AMQP/1.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -56,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/UK.Gov.TfL.Cycles.amqp.stations"
+        "#/messagegroups/UK.Gov.TfL.Cycles.amqp.stations",
+        "#/messagegroups/UK.Gov.TfL.Cycles.amqp.stations.avro",
+        "#/messagegroups/UK.Gov.TfL.Cycles.amqp.stations.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for Transport for London Santander Cycles CloudEvents published in binary content mode to the configured broker address (RabbitMQ AMQP 1.0, ActiveMQ Artemis, or Azure Service Bus / Event Hubs)."
     }
@@ -70,7 +82,9 @@
           "envelope": "CloudEvents/1.0",
           "description": "Reference data describing one Transport for London cycle-hire docking station (BikePoint), sourced from the TfL Unified API `GET /BikePoint` response `Place` object. Carries the stable BikePoint identifier, customer-facing name, WGS 84 coordinates, legacy terminal identifier, physical docking capacity, and provisioning lifecycle flags. Emitted at bridge startup and on periodic reference refresh so consumers can join StationStatus availability records against stable station metadata.",
           "envelopemetadata": {
-            "type": { "value": "UK.Gov.TfL.Cycles.StationInformation" },
+            "type": {
+              "value": "UK.Gov.TfL.Cycles.StationInformation"
+            },
             "source": {
               "value": "{feedurl}",
               "type": "uritemplate"
@@ -78,6 +92,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -88,7 +106,9 @@
           "envelope": "CloudEvents/1.0",
           "description": "Near-real-time availability telemetry for one Transport for London cycle-hire docking station (BikePoint), derived from the `additionalProperties` key/value entries of the TfL Unified API `GET /BikePoint` response. Reports the current count of rentable standard bikes and e-bikes, empty docks available for returns, total docks, and the operating flags together with the most recent upstream modification timestamp for the station.",
           "envelopemetadata": {
-            "type": { "value": "UK.Gov.TfL.Cycles.StationStatus" },
+            "type": {
+              "value": "UK.Gov.TfL.Cycles.StationStatus"
+            },
             "source": {
               "value": "{feedurl}",
               "type": "uritemplate"
@@ -96,6 +116,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -195,6 +219,190 @@
           }
         }
       }
+    },
+    "UK.Gov.TfL.Cycles.stations.avro": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.stations.avro",
+      "messages": {
+        "UK.Gov.TfL.Cycles.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation"
+        },
+        "UK.Gov.TfL.Cycles.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus"
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.stations.avro.binary": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.stations.avro.binary",
+      "messages": {
+        "UK.Gov.TfL.Cycles.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Gov.TfL.Cycles.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.stations/messages/UK.Gov.TfL.Cycles.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.kafka.stations.avro": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.kafka.stations.avro",
+      "messages": {
+        "UK.Gov.TfL.Cycles.kafka.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.kafka.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.kafka.stations/messages/UK.Gov.TfL.Cycles.kafka.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation"
+        },
+        "UK.Gov.TfL.Cycles.kafka.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.kafka.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.kafka.stations/messages/UK.Gov.TfL.Cycles.kafka.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus"
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.kafka.stations.avro.binary": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.kafka.stations.avro.binary",
+      "messages": {
+        "UK.Gov.TfL.Cycles.kafka.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.kafka.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.kafka.stations/messages/UK.Gov.TfL.Cycles.kafka.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Gov.TfL.Cycles.kafka.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.kafka.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.kafka.stations/messages/UK.Gov.TfL.Cycles.kafka.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.mqtt.stations.avro": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.mqtt.stations.avro",
+      "messages": {
+        "UK.Gov.TfL.Cycles.mqtt.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.mqtt.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations/messages/UK.Gov.TfL.Cycles.mqtt.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation"
+        },
+        "UK.Gov.TfL.Cycles.mqtt.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.mqtt.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations/messages/UK.Gov.TfL.Cycles.mqtt.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus"
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.mqtt.stations.avro.binary": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.mqtt.stations.avro.binary",
+      "messages": {
+        "UK.Gov.TfL.Cycles.mqtt.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.mqtt.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations/messages/UK.Gov.TfL.Cycles.mqtt.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Gov.TfL.Cycles.mqtt.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.mqtt.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.mqtt.stations/messages/UK.Gov.TfL.Cycles.mqtt.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.amqp.stations.avro": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.amqp.stations.avro",
+      "messages": {
+        "UK.Gov.TfL.Cycles.amqp.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.amqp.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.amqp.stations/messages/UK.Gov.TfL.Cycles.amqp.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation"
+        },
+        "UK.Gov.TfL.Cycles.amqp.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.amqp.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.amqp.stations/messages/UK.Gov.TfL.Cycles.amqp.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus"
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.amqp.stations.avro.binary": {
+      "messagegroupid": "UK.Gov.TfL.Cycles.amqp.stations.avro.binary",
+      "messages": {
+        "UK.Gov.TfL.Cycles.amqp.StationInformation": {
+          "messageid": "UK.Gov.TfL.Cycles.amqp.StationInformation",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.amqp.stations/messages/UK.Gov.TfL.Cycles.amqp.StationInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationInformation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Gov.TfL.Cycles.amqp.StationStatus": {
+          "messageid": "UK.Gov.TfL.Cycles.amqp.StationStatus",
+          "basemessage": "/messagegroups/UK.Gov.TfL.Cycles.amqp.stations/messages/UK.Gov.TfL.Cycles.amqp.StationStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.TfL.Cycles.avro/schemas/UK.Gov.TfL.Cycles.StationStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -262,14 +470,20 @@
                     }
                   },
                   "terminal_name": {
-                    "type": ["null", "string"],
+                    "type": [
+                      "null",
+                      "string"
+                    ],
                     "description": "Legacy terminal identifier from the `TerminalName` entry in `additionalProperties`, for example `001023`. This is the numbering used by the original cycle-hire terminal hardware and the legacy `livecyclehireupdates.xml` feed; the bridge emits null when the entry is absent.",
                     "altnames": {
                       "tfl-api": "TerminalName"
                     }
                   },
                   "capacity": {
-                    "type": ["null", "int32"],
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
                     "description": "Total number of physical docking points at the station, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Represents the fixed physical size of the docking station; the bridge emits null when `NbDocks` is absent or non-numeric.",
                     "minimum": 0,
                     "altnames": {
@@ -277,21 +491,30 @@
                     }
                   },
                   "temporary": {
-                    "type": ["null", "boolean"],
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
                     "description": "Whether the docking station is a temporary installation, parsed from the string-valued `Temporary` entry in `additionalProperties` (`true`/`false`). Temporary stations are deployed for events or roadworks and may be removed; the bridge emits null when the entry is absent.",
                     "altnames": {
                       "tfl-api": "Temporary"
                     }
                   },
                   "install_date": {
-                    "type": ["null", "datetime"],
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
                     "description": "Timestamp at which the docking station was installed, in ISO 8601 / RFC 3339 UTC. The upstream `InstallDate` entry in `additionalProperties` is a string of Unix epoch milliseconds (for example `1278947280000`); the bridge converts it to an absolute UTC instant and emits null when the entry is empty or absent.",
                     "altnames": {
                       "tfl-api": "InstallDate"
                     }
                   },
                   "removal_date": {
-                    "type": ["null", "datetime"],
+                    "type": [
+                      "null",
+                      "datetime"
+                    ],
                     "description": "Timestamp at which the docking station is scheduled to be, or was, removed, in ISO 8601 / RFC 3339 UTC. The upstream `RemovalDate` entry in `additionalProperties` is a string of Unix epoch milliseconds or an empty string; the bridge converts a populated value to an absolute UTC instant and emits null for active stations with no removal scheduled.",
                     "altnames": {
                       "tfl-api": "RemovalDate"
@@ -344,7 +567,10 @@
                     }
                   },
                   "num_standard_bikes_available": {
-                    "type": ["null", "int32"],
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
                     "description": "Number of mechanical (non-electric) pedal cycles currently available at the station, parsed from the string-valued `NbStandardBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station.",
                     "minimum": 0,
                     "altnames": {
@@ -352,7 +578,10 @@
                     }
                   },
                   "num_ebikes_available": {
-                    "type": ["null", "int32"],
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
                     "description": "Number of electrically assisted cycles (e-bikes) currently available at the station, parsed from the string-valued `NbEBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station.",
                     "minimum": 0,
                     "altnames": {
@@ -368,7 +597,10 @@
                     }
                   },
                   "num_docks": {
-                    "type": ["null", "int32"],
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
                     "description": "Total number of docking points reported live for the station in this poll, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Under normal operation this equals `num_bikes_available` plus `num_empty_docks` plus any broken docks; the bridge emits null when `NbDocks` is absent or non-numeric.",
                     "minimum": 0,
                     "altnames": {
@@ -394,6 +626,166 @@
                     "description": "Most recent modification timestamp among the station's `additionalProperties` entries, in ISO 8601 / RFC 3339 UTC. Each availability property on the TfL `Place` object carries its own `modified` timestamp; the bridge takes the newest of these as the point in time at which TfL last updated this station's availability counts."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UK.Gov.TfL.Cycles.avro": {
+      "schemas": {
+        "UK.Gov.TfL.Cycles.StationInformation": {
+          "name": "StationInformation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "UK.Gov.TfL.Cycles.StationInformation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable BikePoint identifier from the `id` field of the TfL `Place` object, for example `BikePoints_1`. It is unique within the London cycle-hire scheme, persists across API refreshes, appears in the `/Place/{id}` resource URL, and forms the single component of both the CloudEvents subject and the Kafka key. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"id\"}}"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Customer-facing station name from the `commonName` field of the TfL `Place` object, for example `River Street , Clerkenwell`. Intended for maps, screens, and accessibility tooling. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"commonName\"}}"
+                  },
+                  {
+                    "name": "lat",
+                    "type": "double",
+                    "doc": "WGS 84 latitude of the docking station in decimal degrees from the `lat` field of the TfL `Place` object. Positive values are north of the equator. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"lat\"}, \"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "lon",
+                    "type": "double",
+                    "doc": "WGS 84 longitude of the docking station in decimal degrees from the `lon` field of the TfL `Place` object. Positive values are east of the prime meridian and negative values are west; all London BikePoints are slightly west or east of Greenwich. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"lon\"}, \"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "terminal_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Legacy terminal identifier from the `TerminalName` entry in `additionalProperties`, for example `001023`. This is the numbering used by the original cycle-hire terminal hardware and the legacy `livecyclehireupdates.xml` feed; the bridge emits null when the entry is absent. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"TerminalName\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "capacity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Total number of physical docking points at the station, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Represents the fixed physical size of the docking station; the bridge emits null when `NbDocks` is absent or non-numeric. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"NbDocks\"}, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temporary",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the docking station is a temporary installation, parsed from the string-valued `Temporary` entry in `additionalProperties` (`true`/`false`). Temporary stations are deployed for events or roadworks and may be removed; the bridge emits null when the entry is absent. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"Temporary\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "install_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp at which the docking station was installed, in ISO 8601 / RFC 3339 UTC. The upstream `InstallDate` entry in `additionalProperties` is a string of Unix epoch milliseconds (for example `1278947280000`); the bridge converts it to an absolute UTC instant and emits null when the entry is empty or absent. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"InstallDate\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "removal_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp at which the docking station is scheduled to be, or was, removed, in ISO 8601 / RFC 3339 UTC. The upstream `RemovalDate` entry in `additionalProperties` is a string of Unix epoch milliseconds or an empty string; the bridge converts a populated value to an absolute UTC instant and emits null for active stations with no removal scheduled. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"RemovalDate\"}} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record for one Transport for London cycle-hire docking station (BikePoint) as returned by the TfL Unified API `GET /BikePoint`. Identity, location, legacy terminal reference, physical docking capacity, and provisioning lifecycle flags. The bridge derives capacity and the lifecycle flags from the string-typed `additionalProperties` key/value entries on the BikePoint `Place` object."
+              }
+            }
+          }
+        },
+        "UK.Gov.TfL.Cycles.StationStatus": {
+          "name": "StationStatus",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "UK.Gov.TfL.Cycles.StationStatus",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable BikePoint identifier from the `id` field of the TfL `Place` object, for example `BikePoints_1`. Matches the `station_id` of the corresponding `StationInformation` event and forms the CloudEvents subject and Kafka key. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"id\"}}"
+                  },
+                  {
+                    "name": "num_bikes_available",
+                    "type": "int",
+                    "doc": "Total number of rentable cycles currently docked and available at the station (standard pedal bikes plus e-bikes), parsed from the string-valued `NbBikes` entry in `additionalProperties`. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"NbBikes\"}, \"minimum\": 0}"
+                  },
+                  {
+                    "name": "num_standard_bikes_available",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of mechanical (non-electric) pedal cycles currently available at the station, parsed from the string-valued `NbStandardBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"NbStandardBikes\"}, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "num_ebikes_available",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of electrically assisted cycles (e-bikes) currently available at the station, parsed from the string-valued `NbEBikes` entry in `additionalProperties`. The bridge emits null when the operator does not report the standard/e-bike split for the station. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"NbEBikes\"}, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "num_empty_docks",
+                    "type": "int",
+                    "doc": "Number of empty docking points currently available for returning a cycle at the station, parsed from the string-valued `NbEmptyDocks` entry in `additionalProperties`. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"NbEmptyDocks\"}, \"minimum\": 0}"
+                  },
+                  {
+                    "name": "num_docks",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Total number of docking points reported live for the station in this poll, parsed from the string-valued `NbDocks` entry in `additionalProperties`. Under normal operation this equals `num_bikes_available` plus `num_empty_docks` plus any broken docks; the bridge emits null when `NbDocks` is absent or non-numeric. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"NbDocks\"}, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_installed",
+                    "type": "boolean",
+                    "doc": "Whether the station is currently installed and in service, parsed from the string-valued `Installed` entry in `additionalProperties` (`true`/`false`). A value of false indicates the station is not physically present or is decommissioned. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"Installed\"}}"
+                  },
+                  {
+                    "name": "is_locked",
+                    "type": "boolean",
+                    "doc": "Whether the station is currently locked and temporarily out of service, parsed from the string-valued `Locked` entry in `additionalProperties` (`true`/`false`). A locked station accepts neither rentals nor returns even when it reports available bikes or docks. JSON Structure annotations: {\"altnames\": {\"tfl-api\": \"Locked\"}}"
+                  },
+                  {
+                    "name": "modified",
+                    "type": "string",
+                    "doc": "Most recent modification timestamp among the station's `additionalProperties` entries, in ISO 8601 / RFC 3339 UTC. Each availability property on the TfL `Place` object carries its own `modified` timestamp; the bridge takes the newest of these as the point in time at which TfL last updated this station's availability counts."
+                  }
+                ],
+                "doc": "Near-real-time availability record for one Transport for London cycle-hire docking station (BikePoint), derived from the string-valued `additionalProperties` key/value entries on the TfL `Place` object returned by `GET /BikePoint`. The bridge parses the numeric availability counts and boolean operating flags from their string representations and derives the modification timestamp from the newest per-property `modified` value."
               }
             }
           }

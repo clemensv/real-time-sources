@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring"
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring",
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.avro",
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.avro.binary"
       ],
       "description": "Kafka producer endpoint for UK Environment Agency Flood Monitoring CloudEvents on the `uk-ea-flood-monitoring` topic keyed by `{station_reference}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt"
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt",
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt.avro",
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for uk-ea-flood-monitoring CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp"
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp",
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp.avro",
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for uk-ea-flood-monitoring CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_reference}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_reference}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -196,6 +210,144 @@
           }
         }
       }
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.avro": {
+      "messagegroupid": "UK.Gov.Environment.EA.FloodMonitoring.avro",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.Station": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station"
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.Reading": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading"
+        }
+      }
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.avro.binary": {
+      "messagegroupid": "UK.Gov.Environment.EA.FloodMonitoring.avro.binary",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.Station": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.Reading": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.mqtt.avro": {
+      "messagegroupid": "UK.Gov.Environment.EA.FloodMonitoring.mqtt.avro",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt/messages/UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station"
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt/messages/UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading"
+        }
+      }
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.mqtt.avro.binary": {
+      "messagegroupid": "UK.Gov.Environment.EA.FloodMonitoring.mqtt.avro.binary",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt/messages/UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt/messages/UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.amqp.avro": {
+      "messagegroupid": "UK.Gov.Environment.EA.FloodMonitoring.amqp.avro",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station"
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading"
+        }
+      }
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.amqp.avro.binary": {
+      "messagegroupid": "UK.Gov.Environment.EA.FloodMonitoring.amqp.avro.binary",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading": {
+          "messageid": "UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading",
+          "basemessage": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.avro/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -276,7 +428,10 @@
                     "description": "Provider-supplied date opened value for this record."
                   },
                   "river": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring."
                   }
                 },
@@ -321,7 +476,10 @@
                     "description": "Measured value reported by the upstream provider."
                   },
                   "river": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring."
                   }
                 },
@@ -338,7 +496,7 @@
         "UK.Gov.Environment.EA.FloodMonitoring.Station": {
           "name": "Station",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -411,13 +569,102 @@
                 "namespace": "UK.Gov.Environment.EA.FloodMonitoring",
                 "description": "Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "UK.Gov.Environment.EA.FloodMonitoring.Station",
+                "fields": [
+                  {
+                    "name": "station_reference",
+                    "type": "string",
+                    "doc": "Provider-supplied station reference value for this record."
+                  },
+                  {
+                    "name": "label",
+                    "type": "string",
+                    "doc": "Provider-supplied label value for this record."
+                  },
+                  {
+                    "name": "river_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the river or watercourse observed at the station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "catchment_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable name of the catchment. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "town",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied town value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lat",
+                    "type": "double",
+                    "doc": "Provider-supplied lat value for this record."
+                  },
+                  {
+                    "name": "long",
+                    "type": "double",
+                    "doc": "Provider-supplied long value for this record."
+                  },
+                  {
+                    "name": "notation",
+                    "type": "string",
+                    "doc": "Provider-supplied notation value for this record."
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider status value for the station, measurement, or alert. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "date_opened",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied date opened value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "river",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source."
+              }
             }
           }
         },
         "UK.Gov.Environment.EA.FloodMonitoring.Reading": {
           "name": "Reading",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -433,8 +680,7 @@
                   {
                     "name": "date_time",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -448,6 +694,45 @@
                 ],
                 "namespace": "UK.Gov.Environment.EA.FloodMonitoring",
                 "description": "Measurement payload for observations in the UK Environment Agency Flood Monitoring source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "UK.Gov.Environment.EA.FloodMonitoring.Reading",
+                "fields": [
+                  {
+                    "name": "station_reference",
+                    "type": "string",
+                    "doc": "Provider-supplied station reference value for this record."
+                  },
+                  {
+                    "name": "date_time",
+                    "type": "string",
+                    "doc": "Time associated with the date time value."
+                  },
+                  {
+                    "name": "measure",
+                    "type": "string",
+                    "doc": "Provider-supplied measure value for this record."
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Measured value reported by the upstream provider."
+                  },
+                  {
+                    "name": "river",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Payload record for reading events in the UK Environment Agency Flood Monitoring source."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.oasis.cap.alerts.alerts"
+        "#/messagegroups/org.oasis.cap.alerts.alerts",
+        "#/messagegroups/org.oasis.cap.alerts.alerts.avro",
+        "#/messagegroups/org.oasis.cap.alerts.alerts.avro.binary"
       ],
       "description": "Kafka producer endpoint for generalized CAP alert messages keyed by configured source id and CAP identifier."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.oasis.cap.alerts.zones"
+        "#/messagegroups/org.oasis.cap.alerts.zones",
+        "#/messagegroups/org.oasis.cap.alerts.zones.avro",
+        "#/messagegroups/org.oasis.cap.alerts.zones.avro.binary"
       ],
       "description": "Kafka producer endpoint for CAP source zone reference records keyed by configured source id and zone id."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.oasis.cap.alerts.alerts.mqtt",
-        "#/messagegroups/org.oasis.cap.alerts.zones.mqtt"
+        "#/messagegroups/org.oasis.cap.alerts.zones.mqtt",
+        "#/messagegroups/org.oasis.cap.alerts.alerts.mqtt.avro",
+        "#/messagegroups/org.oasis.cap.alerts.alerts.mqtt.avro.binary",
+        "#/messagegroups/org.oasis.cap.alerts.zones.mqtt.avro",
+        "#/messagegroups/org.oasis.cap.alerts.zones.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for generalized CAP alert and zone events."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.oasis.cap.alerts.alerts.amqp",
-        "#/messagegroups/org.oasis.cap.alerts.zones.amqp"
+        "#/messagegroups/org.oasis.cap.alerts.zones.amqp",
+        "#/messagegroups/org.oasis.cap.alerts.alerts.amqp.avro",
+        "#/messagegroups/org.oasis.cap.alerts.alerts.amqp.avro.binary",
+        "#/messagegroups/org.oasis.cap.alerts.zones.amqp.avro",
+        "#/messagegroups/org.oasis.cap.alerts.zones.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for generalized CAP alert and zone events."
     }
@@ -110,6 +122,10 @@
             "subject": {
               "value": "{cap_source_id}/{identifier}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -135,6 +151,10 @@
             "subject": {
               "value": "{cap_source_id}/{zone_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -255,6 +275,230 @@
                 "value": "{zone_type}",
                 "description": "Provider zone type for broker filtering."
               }
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.avro",
+      "messages": {
+        "org.oasis.cap.alerts.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts/messages/org.oasis.cap.alerts.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts/messages/org.oasis.cap.alerts.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.avro",
+      "messages": {
+        "org.oasis.cap.alerts.CapZone": {
+          "messageid": "org.oasis.cap.alerts.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones/messages/org.oasis.cap.alerts.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.CapZone": {
+          "messageid": "org.oasis.cap.alerts.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones/messages/org.oasis.cap.alerts.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.kafka.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.kafka.avro",
+      "messages": {
+        "org.oasis.cap.alerts.kafka.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.kafka.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts.kafka/messages/org.oasis.cap.alerts.kafka.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.kafka.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.kafka.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.kafka.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.kafka.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts.kafka/messages/org.oasis.cap.alerts.kafka.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.kafka.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.kafka.avro",
+      "messages": {
+        "org.oasis.cap.alerts.kafka.CapZone": {
+          "messageid": "org.oasis.cap.alerts.kafka.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones.kafka/messages/org.oasis.cap.alerts.kafka.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.kafka.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.kafka.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.kafka.CapZone": {
+          "messageid": "org.oasis.cap.alerts.kafka.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones.kafka/messages/org.oasis.cap.alerts.kafka.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.mqtt.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.mqtt.avro",
+      "messages": {
+        "org.oasis.cap.alerts.mqtt.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.mqtt.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts.mqtt/messages/org.oasis.cap.alerts.mqtt.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.mqtt.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.mqtt.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.mqtt.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.mqtt.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts.mqtt/messages/org.oasis.cap.alerts.mqtt.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.mqtt.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.mqtt.avro",
+      "messages": {
+        "org.oasis.cap.alerts.mqtt.CapZone": {
+          "messageid": "org.oasis.cap.alerts.mqtt.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones.mqtt/messages/org.oasis.cap.alerts.mqtt.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.mqtt.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.mqtt.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.mqtt.CapZone": {
+          "messageid": "org.oasis.cap.alerts.mqtt.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones.mqtt/messages/org.oasis.cap.alerts.mqtt.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.amqp.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.amqp.avro",
+      "messages": {
+        "org.oasis.cap.alerts.amqp.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.amqp.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts.amqp/messages/org.oasis.cap.alerts.amqp.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.alerts.amqp.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.alerts.amqp.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.amqp.CapAlert": {
+          "messageid": "org.oasis.cap.alerts.amqp.CapAlert",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.alerts.amqp/messages/org.oasis.cap.alerts.amqp.CapAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.amqp.avro": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.amqp.avro",
+      "messages": {
+        "org.oasis.cap.alerts.amqp.CapZone": {
+          "messageid": "org.oasis.cap.alerts.amqp.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones.amqp/messages/org.oasis.cap.alerts.amqp.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone"
+        }
+      }
+    },
+    "org.oasis.cap.alerts.zones.amqp.avro.binary": {
+      "messagegroupid": "org.oasis.cap.alerts.zones.amqp.avro.binary",
+      "messages": {
+        "org.oasis.cap.alerts.amqp.CapZone": {
+          "messageid": "org.oasis.cap.alerts.amqp.CapZone",
+          "basemessage": "/messagegroups/org.oasis.cap.alerts.zones.amqp/messages/org.oasis.cap.alerts.amqp.CapZone",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.oasis.cap.alerts.avro/schemas/org.oasis.cap.alerts.CapZone",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -1637,8 +1881,772 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.oasis.cap.alerts.CapAlert",
+                "fields": [
+                  {
+                    "name": "cap_source_id",
+                    "type": "string",
+                    "doc": "Configuration-assigned stable source identifier qualifying CAP alert identifiers across agencies. Examples: nws-us, meteoalarm-belgium, dwd-germany. This value is the first segment of the CloudEvent subject and Kafka key."
+                  },
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "CAP identifier assigned by the sender to this alert message. Unique only within the sender/source, so the feeder qualifies it with cap_source_id for keys. Updates and cancellations use their own identifier; the CAP references field points to prior messages."
+                  },
+                  {
+                    "name": "sender",
+                    "type": "string",
+                    "doc": "CAP sender identifier for the originating alerting authority, such as w-nws.webmaster@noaa.gov or opendata@dwd.de."
+                  },
+                  {
+                    "name": "sent",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "CAP sent timestamp when the message was issued by the sender, parsed as an ISO 8601 datetime."
+                  },
+                  {
+                    "name": "status",
+                    "type": {
+                      "type": "enum",
+                      "name": "org.oasis.cap.alerts.CapAlert_types.status",
+                      "symbols": [
+                        "Actual",
+                        "Exercise",
+                        "System",
+                        "Test",
+                        "Draft"
+                      ]
+                    },
+                    "doc": "CAP status for operational state of this message. JSON Structure annotations: {\"descriptions\": {\"Actual\": \"CAP 1.2 `Actual` value: CAP status for operational state of this message.\", \"Draft\": \"CAP 1.2 `Draft` value: CAP status for operational state of this message.\", \"Exercise\": \"CAP 1.2 `Exercise` value: CAP status for operational state of this message.\", \"System\": \"CAP 1.2 `System` value: CAP status for operational state of this message.\", \"Test\": \"CAP 1.2 `Test` value: CAP status for operational state of this message.\"}, \"enum\": [\"Actual\", \"Exercise\", \"System\", \"Test\", \"Draft\"]}"
+                  },
+                  {
+                    "name": "msg_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "org.oasis.cap.alerts.CapAlert_types.msg_type",
+                      "symbols": [
+                        "Alert",
+                        "Update",
+                        "Cancel",
+                        "Ack",
+                        "Error"
+                      ]
+                    },
+                    "doc": "CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error. JSON Structure annotations: {\"descriptions\": {\"Ack\": \"CAP 1.2 `Ack` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.\", \"Alert\": \"CAP 1.2 `Alert` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.\", \"Cancel\": \"CAP 1.2 `Cancel` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.\", \"Error\": \"CAP 1.2 `Error` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.\", \"Update\": \"CAP 1.2 `Update` value: CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.\"}, \"enum\": [\"Alert\", \"Update\", \"Cancel\", \"Ack\", \"Error\"]}"
+                  },
+                  {
+                    "name": "source",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "CAP source: particular source of this alert message when supplied separately from sender. Null when omitted. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "scope",
+                    "type": {
+                      "type": "enum",
+                      "name": "org.oasis.cap.alerts.CapAlert_types.scope",
+                      "symbols": [
+                        "Public",
+                        "Restricted",
+                        "Private"
+                      ]
+                    },
+                    "doc": "CAP scope indicating intended distribution: Public, Restricted, or Private. JSON Structure annotations: {\"descriptions\": {\"Private\": \"CAP 1.2 `Private` value: CAP scope indicating intended distribution: Public, Restricted, or Private.\", \"Public\": \"CAP 1.2 `Public` value: CAP scope indicating intended distribution: Public, Restricted, or Private.\", \"Restricted\": \"CAP 1.2 `Restricted` value: CAP scope indicating intended distribution: Public, Restricted, or Private.\"}, \"enum\": [\"Public\", \"Restricted\", \"Private\"]}"
+                  },
+                  {
+                    "name": "restriction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "CAP restriction text describing distribution limits for Restricted scope messages. Null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "addresses",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "CAP addresses list for Private messages, split into individual address tokens. Empty for Public and most Restricted alerts. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "org.oasis.cap.alerts.AlertCodePair",
+                          "fields": [
+                            {
+                              "name": "value_name",
+                              "type": "string",
+                              "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                            },
+                            {
+                              "name": "value",
+                              "type": "string",
+                              "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                            }
+                          ],
+                          "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless."
+                        }
+                      }
+                    ],
+                    "doc": "CAP code elements and code-like provider values preserved as name/value pairs. Used for source-specific routing or profile markers. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "note",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "CAP note: message note intended for alert handling, not necessarily public display. Null when omitted. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "references",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "CAP references entries identifying related prior messages that this message updates or cancels. Preserved as strings; not used as the CloudEvent key. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "incidents",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "CAP incidents identifiers listing incident(s) this alert message concerns. Empty when omitted. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "info",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "org.oasis.cap.alerts.CapInfo",
+                        "fields": [
+                          {
+                            "name": "language",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP language code for this info block, normally an RFC 3066/BCP 47 language tag such as en-US, de-DE, fr, or nl. Null when omitted. JSON Structure annotations: {\"altnames\": {\"json\": \"language\", \"xml\": \"language\"}} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "category",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "enum",
+                                  "name": "org.oasis.cap.alerts.CapAlert_types.info_item_types.category_item",
+                                  "symbols": [
+                                    "Geo",
+                                    "Met",
+                                    "Safety",
+                                    "Security",
+                                    "Rescue",
+                                    "Fire",
+                                    "Health",
+                                    "Env",
+                                    "Transport",
+                                    "Infra",
+                                    "CBRNE",
+                                    "Other"
+                                  ]
+                                }
+                              }
+                            ],
+                            "doc": "CAP category list classifying the subject domain of the alert. CAP 1.2 defines values such as Met, Safety, Fire, Health, Env, Transport, Infra, CBRNE, and Other. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "event",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP event: human-readable event type such as Flood Warning, Wind, Thunderstorm, or DWD warning label. Null only for incomplete upstream records. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "response_type",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "enum",
+                                  "name": "org.oasis.cap.alerts.CapAlert_types.info_item_types.response_type_item",
+                                  "symbols": [
+                                    "Shelter",
+                                    "Evacuate",
+                                    "Prepare",
+                                    "Execute",
+                                    "Avoid",
+                                    "Monitor",
+                                    "Assess",
+                                    "AllClear",
+                                    "None"
+                                  ]
+                                }
+                              }
+                            ],
+                            "doc": "CAP responseType values indicating recommended response actions. CAP 1.2 defines Shelter, Evacuate, Prepare, Execute, Avoid, Monitor, Assess, AllClear, and None. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "urgency",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "enum",
+                                "name": "org.oasis.cap.alerts.CapAlert_types.info_item_types.urgency",
+                                "symbols": [
+                                  "Immediate",
+                                  "Expected",
+                                  "Future",
+                                  "Past",
+                                  "Unknown"
+                                ]
+                              }
+                            ],
+                            "doc": "CAP urgency indicating how soon responsive action should be taken. JSON Structure annotations: {\"descriptions\": {\"Expected\": \"CAP 1.2 `Expected` value: CAP urgency indicating how soon responsive action should be taken.\", \"Future\": \"CAP 1.2 `Future` value: CAP urgency indicating how soon responsive action should be taken.\", \"Immediate\": \"CAP 1.2 `Immediate` value: CAP urgency indicating how soon responsive action should be taken.\", \"Past\": \"CAP 1.2 `Past` value: CAP urgency indicating how soon responsive action should be taken.\", \"Unknown\": \"CAP 1.2 `Unknown` value: CAP urgency indicating how soon responsive action should be taken.\"}, \"enum\": [\"Immediate\", \"Expected\", \"Future\", \"Past\", \"Unknown\"]} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "severity",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "enum",
+                                "name": "org.oasis.cap.alerts.CapAlert_types.info_item_types.severity",
+                                "symbols": [
+                                  "Extreme",
+                                  "Severe",
+                                  "Moderate",
+                                  "Minor",
+                                  "Unknown"
+                                ]
+                              }
+                            ],
+                            "doc": "CAP severity indicating the intensity of the impact. JSON Structure annotations: {\"descriptions\": {\"Extreme\": \"CAP 1.2 `Extreme` value: CAP severity indicating the intensity of the impact.\", \"Minor\": \"CAP 1.2 `Minor` value: CAP severity indicating the intensity of the impact.\", \"Moderate\": \"CAP 1.2 `Moderate` value: CAP severity indicating the intensity of the impact.\", \"Severe\": \"CAP 1.2 `Severe` value: CAP severity indicating the intensity of the impact.\", \"Unknown\": \"CAP 1.2 `Unknown` value: CAP severity indicating the intensity of the impact.\"}, \"enum\": [\"Extreme\", \"Severe\", \"Moderate\", \"Minor\", \"Unknown\"]} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "certainty",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "enum",
+                                "name": "org.oasis.cap.alerts.CapAlert_types.info_item_types.certainty",
+                                "symbols": [
+                                  "Observed",
+                                  "Likely",
+                                  "Possible",
+                                  "Unlikely",
+                                  "Unknown"
+                                ]
+                              }
+                            ],
+                            "doc": "CAP certainty indicating confidence in the event. JSON Structure annotations: {\"descriptions\": {\"Likely\": \"CAP 1.2 `Likely` value: CAP certainty indicating confidence in the event.\", \"Observed\": \"CAP 1.2 `Observed` value: CAP certainty indicating confidence in the event.\", \"Possible\": \"CAP 1.2 `Possible` value: CAP certainty indicating confidence in the event.\", \"Unknown\": \"CAP 1.2 `Unknown` value: CAP certainty indicating confidence in the event.\", \"Unlikely\": \"CAP 1.2 `Unlikely` value: CAP certainty indicating confidence in the event.\"}, \"enum\": [\"Observed\", \"Likely\", \"Possible\", \"Unlikely\", \"Unknown\"]} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "audience",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP audience: intended audience for the alert information, if supplied by the sender. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "event_code",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "org.oasis.cap.alerts.InfoEventCodePair",
+                                  "fields": [
+                                    {
+                                      "name": "value_name",
+                                      "type": "string",
+                                      "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                                    },
+                                    {
+                                      "name": "value",
+                                      "type": "string",
+                                      "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                                    }
+                                  ],
+                                  "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless."
+                                }
+                              }
+                            ],
+                            "doc": "CAP eventCode pairs. Used by DWD and other authorities to publish warning codes; preserved alongside any typed convenience fields. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "effective",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "doc": "CAP effective date/time when this info block becomes effective. Null when omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "onset",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "doc": "CAP onset date/time when the hazard is expected to begin. Null when unknown or omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "expires",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "doc": "CAP expires date/time after which the info block should be considered stale. Null when open-ended or omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "sender_name",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP senderName: human-readable issuing organization name such as National Weather Service or Deutscher Wetterdienst. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "headline",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP headline: short public headline for display and alert summaries. Null when omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "description",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP description: detailed public description of the hazard, impacts, and affected area. Null when omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "instruction",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP instruction: recommended protective actions. Null when omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "web",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP web: public URL for additional information about this alert. Null when omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "contact",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CAP contact: contact information for the issuer. Null when omitted. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "parameter",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "org.oasis.cap.alerts.InfoParameterPair",
+                                  "fields": [
+                                    {
+                                      "name": "value_name",
+                                      "type": "string",
+                                      "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                                    },
+                                    {
+                                      "name": "value",
+                                      "type": "string",
+                                      "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                                    }
+                                  ],
+                                  "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless."
+                                }
+                              }
+                            ],
+                            "doc": "CAP parameter name/value pairs. This is the standardized CAP extension surface. NWS VTEC/SAME/UGC/eventCode, MeteoAlarm awareness_level/awareness_type, DWD event codes, and any other source-specific values are also preserved here even when surfaced as typed fields. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "resource",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "org.oasis.cap.alerts.CapResource",
+                                  "fields": [
+                                    {
+                                      "name": "resource_desc",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "CAP resourceDesc: human-readable description of the resource. Null when omitted by the sender. An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "mime_type",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "CAP mimeType: media type of the resource such as image/png or application/pdf. Null when omitted. An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "size",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "int"
+                                      ],
+                                      "doc": "CAP size: approximate resource size in octets. Null when the upstream feed omits size. JSON Structure annotations: {\"altnames\": {\"json\": \"size\", \"xml\": \"size\"}} An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "uri",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "CAP uri: URI where the resource can be retrieved. Null when the resource is embedded through derefUri only. JSON Structure annotations: {\"altnames\": {\"json\": \"uri\", \"xml\": \"uri\"}} An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "deref_uri",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "bytes"
+                                      ],
+                                      "doc": "CAP derefUri: base64-encoded inline resource payload. Preserved as text and null when omitted; consumers should decode according to mime_type. An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "digest",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "CAP digest: digest value for resource integrity verification, normally a SHA-1 hash in CAP 1.2 feeds. Null when omitted. JSON Structure annotations: {\"altnames\": {\"json\": \"digest\", \"xml\": \"digest\"}} An absent JSON property uses the declared default in Avro."
+                                    }
+                                  ],
+                                  "doc": "CAP 1.2 info/resource object describing an external resource attached to an alert, such as an image, audio file, document, or dereferenced binary payload. All standard CAP resource children are represented so alert attachments can be preserved."
+                                }
+                              }
+                            ],
+                            "doc": "CAP resource blocks attached to this info block. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "area",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "org.oasis.cap.alerts.CapArea",
+                                  "fields": [
+                                    {
+                                      "name": "area_desc",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "CAP areaDesc: text description of the affected area, often a county, forecast zone, MeteoAlarm region, or DWD commune list. Null only for malformed upstream records. An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "polygon",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "array",
+                                          "items": "string"
+                                        }
+                                      ],
+                                      "doc": "CAP polygon elements as whitespace-delimited latitude,longitude coordinate strings. Multiple polygons are preserved in upstream order. An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "circle",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "array",
+                                          "items": "string"
+                                        }
+                                      ],
+                                      "doc": "CAP circle elements as latitude,longitude radius strings. Multiple circles are preserved in upstream order. An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "geocode",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "record",
+                                            "name": "org.oasis.cap.alerts.AreaGeocodePair",
+                                            "fields": [
+                                              {
+                                                "name": "value_name",
+                                                "type": "string",
+                                                "doc": "CAP valueName element or JSON property name identifying the code system, parameter name, or geocode namespace. Examples observed in public feeds include SAME, UGC, VTEC, AWIPSidentifier, awareness_level, awareness_type, profile:CAP-DE:1.0, and DWDII."
+                                              },
+                                              {
+                                                "name": "value",
+                                                "type": "string",
+                                                "doc": "CAP value element paired with valueName. The feeder does not interpret or discard provider-specific values; consumers can parse known value_name namespaces while retaining all original upstream content."
+                                              }
+                                            ],
+                                            "doc": "CAP name/value extension pair as used by eventCode, parameter, code, and geocode elements. CAP 1.2 uses valueName to identify the authority-defined code system and value to carry the corresponding code or parameter value; the bridge preserves these pairs exactly so source-specific fields such as NWS VTEC/SAME/UGC, MeteoAlarm awareness values, and DWD warning codes remain lossless."
+                                          }
+                                        }
+                                      ],
+                                      "doc": "CAP geocode name/value pairs. This is where NWS SAME and UGC zone codes, MeteoAlarm EMMA/NUTS regions, and DWD regional codes are preserved losslessly. An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "altitude",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "double"
+                                      ],
+                                      "doc": "CAP altitude: lower altitude bound for the area in feet above WGS-84 datum per CAP 1.2. Null when not supplied. JSON Structure annotations: {\"altnames\": {\"json\": \"altitude\", \"xml\": \"altitude\"}} An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "ceiling",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "double"
+                                      ],
+                                      "doc": "CAP ceiling: upper altitude bound for the area in feet above WGS-84 datum per CAP 1.2. Null when not supplied. JSON Structure annotations: {\"altnames\": {\"json\": \"ceiling\", \"xml\": \"ceiling\"}} An absent JSON property uses the declared default in Avro."
+                                    }
+                                  ],
+                                  "doc": "CAP 1.2 info/area object describing one affected geographic area. It preserves textual descriptions, polygons, circles, geocodes, and altitude/ceiling constraints so consumers can display and spatially filter alerts without re-fetching the original XML."
+                                }
+                              }
+                            ],
+                            "doc": "CAP area blocks attached to this info block. Multi-area alerts preserve all areas in upstream order. An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "ends",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "doc": "NWS CAP-equivalent ends timestamp indicating the expected end of the event when distinct from CAP expires. Native CAP XML does not define ends, so this is null unless supplied by JSON-derived sources. An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "CAP 1.2 info block containing audience-facing alert content in a specific language and for one set of areas/resources. CAP permits multiple info blocks, commonly for multilingual MeteoAlarm alerts or updated instructions; the feeder preserves all blocks in order."
+                      }
+                    },
+                    "doc": "All CAP info blocks attached to the alert. Multiple blocks are common for multilingual or multi-instruction alerts and are preserved losslessly."
+                  },
+                  {
+                    "name": "provider_url",
+                    "type": "string",
+                    "doc": "URL of the configured feed or detail resource from which this alert was acquired. Used as CloudEvent source template and for traceability."
+                  },
+                  {
+                    "name": "raw_cap_xml",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Original CAP XML document text when the source supplied XML. Null for JSON-only sources such as api.weather.gov active alerts unless a raw CAP detail URL was fetched. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_desc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Convenience copy of the first info/area/areaDesc or NWS areaDesc used by existing bespoke feeders. The complete area list is still preserved under info[].area[]. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "same_codes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Convenience extraction of NWS SAME geocodes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugc_codes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Convenience extraction of NWS UGC zone codes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vtec",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Convenience extraction of NWS VTEC tracking strings from CAP parameters. The original VTEC values are also present in info[].parameter[]. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "awareness_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Convenience extraction of MeteoAlarm awareness_level CAP parameter. The original name/value pair is also preserved in info[].parameter[]. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "awareness_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Convenience extraction of MeteoAlarm awareness_type CAP parameter. The original name/value pair is also preserved in info[].parameter[]. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized lower-case event or hazard token for routing and legacy feeder compatibility, derived from CAP info.event when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-specific state, territory, country, or administrative routing token when present in the upstream feed. Null when not derivable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "affected_zones",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "NWS API affectedZones URI list and equivalent zone references from JSON CAP-equivalent sources. CAP XML feeds generally express the same information as area/geocode entries; this array preserves JSON-native zone URI references for lossless future folds. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "raw_source_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Raw upstream JSON object serialized as compact JSON when the source is a CAP-equivalent JSON API such as api.weather.gov. Null for native CAP XML feeds; retained as an escape hatch so future bespoke folds can prove no source-specific field was lost. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Generalized Common Alerting Protocol (CAP) 1.2 alert message. It preserves the full alert -> info[] -> area[]/resource[] CAP hierarchy plus standardized CAP extension arrays (eventCode, parameter, geocode) so national weather and emergency alert feeds can be represented losslessly. Convenience fields mirror typed fields emitted by existing DWD, MeteoAlarm, NOAA NWS, and NWS Alerts bespoke feeders while keeping the original CAP name/value pairs."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "org.oasis.cap.alerts.CapZone": {
           "format": "Avro/1.11.3",
@@ -1722,8 +2730,91 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.oasis.cap.alerts.CapZone",
+                "fields": [
+                  {
+                    "name": "cap_source_id",
+                    "type": "string",
+                    "doc": "Configuration-assigned stable source identifier qualifying zone identifiers across agencies and used as the first subject/key segment."
+                  },
+                  {
+                    "name": "zone_id",
+                    "type": "string",
+                    "doc": "Stable upstream zone or region identifier, such as an NWS UGC zone code, county zone id, MeteoAlarm region code, or DWD area code."
+                  },
+                  {
+                    "name": "name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable zone or region name supplied by the source metadata endpoint. Null when the source exposes only codes. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "zone_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider zone type or category, for example NWS public, marine, county, fire, forecast, or MeteoAlarm region class. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "State, country, or regional routing token associated with the zone, if supplied by the metadata endpoint. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "forecast_office",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Responsible office or authority URL/code for this zone, such as an NWS Weather Forecast Office. Null when not supplied. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "time_zones",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "IANA time-zone names associated with the zone when supplied by the metadata endpoint. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geometry",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GeoJSON geometry serialized as compact JSON text when supplied by the metadata endpoint. Null when no geometry is published or when disabled for payload-size reasons. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "provider_url",
+                    "type": "string",
+                    "doc": "Metadata endpoint URL from which this zone reference was acquired. Used as CloudEvent source template and traceability link."
+                  }
+                ],
+                "doc": "Reference event for an alerting zone, forecast zone, MeteoAlarm region, or other area catalog entry exposed by a configured CAP source. The feeder emits zone reference data before alerts when the source exposes metadata such as api.weather.gov /zones, enabling consumers to interpret alert geocodes temporally."
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     }

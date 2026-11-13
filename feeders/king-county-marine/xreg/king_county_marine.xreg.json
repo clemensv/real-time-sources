@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/US.WA.KingCounty.Marine"
+        "#/messagegroups/US.WA.KingCounty.Marine",
+        "#/messagegroups/US.WA.KingCounty.Marine.avro",
+        "#/messagegroups/US.WA.KingCounty.Marine.avro.binary"
       ],
       "description": "Kafka producer endpoint for King County Marine CloudEvents on the `king-county-marine` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/US.WA.KingCounty.Marine.mqtt"
+        "#/messagegroups/US.WA.KingCounty.Marine.mqtt",
+        "#/messagegroups/US.WA.KingCounty.Marine.mqtt.avro",
+        "#/messagegroups/US.WA.KingCounty.Marine.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for King County Marine CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/US.WA.KingCounty.Marine.amqp"
+        "#/messagegroups/US.WA.KingCounty.Marine.amqp",
+        "#/messagegroups/US.WA.KingCounty.Marine.amqp.avro",
+        "#/messagegroups/US.WA.KingCounty.Marine.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for king-county-marine CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -168,6 +182,144 @@
               }
             },
             "application-properties": {}
+          }
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.avro": {
+      "messagegroupid": "US.WA.KingCounty.Marine.avro",
+      "messages": {
+        "US.WA.KingCounty.Marine.Station": {
+          "messageid": "US.WA.KingCounty.Marine.Station",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.Station"
+        },
+        "US.WA.KingCounty.Marine.WaterQualityReading": {
+          "messageid": "US.WA.KingCounty.Marine.WaterQualityReading",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.WaterQualityReading"
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.avro.binary": {
+      "messagegroupid": "US.WA.KingCounty.Marine.avro.binary",
+      "messages": {
+        "US.WA.KingCounty.Marine.Station": {
+          "messageid": "US.WA.KingCounty.Marine.Station",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "US.WA.KingCounty.Marine.WaterQualityReading": {
+          "messageid": "US.WA.KingCounty.Marine.WaterQualityReading",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.WaterQualityReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.mqtt.avro": {
+      "messagegroupid": "US.WA.KingCounty.Marine.mqtt.avro",
+      "messages": {
+        "US.WA.KingCounty.Marine.mqtt.Station": {
+          "messageid": "US.WA.KingCounty.Marine.mqtt.Station",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.Station"
+        },
+        "US.WA.KingCounty.Marine.mqtt.WaterQualityReading": {
+          "messageid": "US.WA.KingCounty.Marine.mqtt.WaterQualityReading",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.WaterQualityReading"
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.mqtt.avro.binary": {
+      "messagegroupid": "US.WA.KingCounty.Marine.mqtt.avro.binary",
+      "messages": {
+        "US.WA.KingCounty.Marine.mqtt.Station": {
+          "messageid": "US.WA.KingCounty.Marine.mqtt.Station",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "US.WA.KingCounty.Marine.mqtt.WaterQualityReading": {
+          "messageid": "US.WA.KingCounty.Marine.mqtt.WaterQualityReading",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.WaterQualityReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.amqp.avro": {
+      "messagegroupid": "US.WA.KingCounty.Marine.amqp.avro",
+      "messages": {
+        "US.WA.KingCounty.Marine.amqp.Station": {
+          "messageid": "US.WA.KingCounty.Marine.amqp.Station",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.amqp/messages/US.WA.KingCounty.Marine.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.Station"
+        },
+        "US.WA.KingCounty.Marine.amqp.WaterQualityReading": {
+          "messageid": "US.WA.KingCounty.Marine.amqp.WaterQualityReading",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.amqp/messages/US.WA.KingCounty.Marine.amqp.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.WaterQualityReading"
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.amqp.avro.binary": {
+      "messagegroupid": "US.WA.KingCounty.Marine.amqp.avro.binary",
+      "messages": {
+        "US.WA.KingCounty.Marine.amqp.Station": {
+          "messageid": "US.WA.KingCounty.Marine.amqp.Station",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.amqp/messages/US.WA.KingCounty.Marine.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "US.WA.KingCounty.Marine.amqp.WaterQualityReading": {
+          "messageid": "US.WA.KingCounty.Marine.amqp.WaterQualityReading",
+          "basemessage": "/messagegroups/US.WA.KingCounty.Marine.amqp/messages/US.WA.KingCounty.Marine.amqp.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.avro/schemas/US.WA.KingCounty.Marine.WaterQualityReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
           }
         }
       }
@@ -279,7 +431,7 @@
                     ],
                     "description": "Water temperature in degrees Celsius.",
                     "unit": "Cel",
-                    "symbol": "Â°C"
+                    "symbol": "°C"
                   },
                   "conductivity_s_m": {
                     "type": [
@@ -322,7 +474,7 @@
                     ],
                     "description": "Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter.",
                     "unit": "ug/L",
-                    "symbol": "Âµg/L"
+                    "symbol": "µg/L"
                   },
                   "turbidity_ntu": {
                     "type": [
@@ -340,7 +492,7 @@
                     ],
                     "description": "Standard deviation of chlorophyll fluorescence in micrograms per liter.",
                     "unit": "ug/L",
-                    "symbol": "Âµg/L"
+                    "symbol": "µg/L"
                   },
                   "turbidity_stddev_ntu": {
                     "type": [
@@ -385,7 +537,7 @@
                     ],
                     "description": "Nitrate or nitrate-plus-nitrite concentration in micromoles.",
                     "unit": "umol",
-                    "symbol": "Âµmol"
+                    "symbol": "µmol"
                   },
                   "nitrate_mg_l": {
                     "type": [
@@ -403,7 +555,7 @@
                     ],
                     "description": "Wind direction in degrees at the buoy surface.",
                     "unit": "deg",
-                    "symbol": "Â°"
+                    "symbol": "°"
                   },
                   "wind_speed_m_s": {
                     "type": [
@@ -421,7 +573,7 @@
                     ],
                     "description": "Photosynthetically active radiation in micromoles per second per square meter.",
                     "unit": "umol/s/m2",
-                    "symbol": "Âµmol/s/mÂ²"
+                    "symbol": "µmol/s/m²"
                   },
                   "air_temperature_f": {
                     "type": [
@@ -430,7 +582,7 @@
                     ],
                     "description": "Air temperature in degrees Fahrenheit.",
                     "unit": "[degF]",
-                    "symbol": "Â°F"
+                    "symbol": "°F"
                   },
                   "air_humidity_pct": {
                     "type": [
@@ -472,6 +624,305 @@
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.avro": {
+      "schemas": {
+        "US.WA.KingCounty.Marine.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "US.WA.KingCounty.Marine.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable bridge identifier for the buoy or mooring dataset."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable station name derived from the dataset title."
+                  },
+                  {
+                    "name": "dataset_id",
+                    "type": "string",
+                    "doc": "Socrata dataset identifier for the source dataset."
+                  },
+                  {
+                    "name": "dataset_name",
+                    "type": "string",
+                    "doc": "Original King County dataset title."
+                  },
+                  {
+                    "name": "dataset_url",
+                    "type": "string",
+                    "doc": "Dataset page URL on data.kingcounty.gov."
+                  },
+                  {
+                    "name": "sensor_level",
+                    "type": "string",
+                    "doc": "Sensor position classification inferred from the dataset title, such as surface, bottom, or water-column."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station latitude in decimal degrees north, parsed from the dataset description. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station longitude in decimal degrees east of Greenwich; King County locations are negative because they lie west of Greenwich. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record from King County Metro marine feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
+              }
+            }
+          }
+        },
+        "US.WA.KingCounty.Marine.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "US.WA.KingCounty.Marine.WaterQualityReading",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable bridge identifier for the buoy or mooring dataset."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable station name derived from the dataset title."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "Observation timestamp normalized to UTC ISO 8601 form."
+                  },
+                  {
+                    "name": "water_temperature_c",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Water temperature in degrees Celsius. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "conductivity_s_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electrical conductivity in siemens per meter. JSON Structure annotations: {\"symbol\": \"S/m\", \"unit\": \"S/m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pressure_dbar",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Water pressure in decibar as published by the raw datasets. JSON Structure annotations: {\"symbol\": \"dbar\", \"unit\": \"dbar\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dissolved_oxygen_mg_l",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dissolved oxygen concentration in milligrams per liter. JSON Structure annotations: {\"symbol\": \"mg/L\", \"unit\": \"mg/L\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ph",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measured pH value. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "chlorophyll_ug_l",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter. JSON Structure annotations: {\"symbol\": \"µg/L\", \"unit\": \"ug/L\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "turbidity_ntu",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Turbidity in nephelometric turbidity units. JSON Structure annotations: {\"symbol\": \"NTU\", \"unit\": \"NTU\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "chlorophyll_stddev_ug_l",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Standard deviation of chlorophyll fluorescence in micrograms per liter. JSON Structure annotations: {\"symbol\": \"µg/L\", \"unit\": \"ug/L\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "turbidity_stddev_ntu",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Standard deviation of turbidity in nephelometric turbidity units. JSON Structure annotations: {\"symbol\": \"NTU\", \"unit\": \"NTU\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "salinity_psu",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Salinity in practical salinity units. JSON Structure annotations: {\"symbol\": \"PSU\", \"unit\": \"PSU\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "specific_conductivity_s_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Specific conductivity in siemens per meter. JSON Structure annotations: {\"symbol\": \"S/m\", \"unit\": \"S/m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dissolved_oxygen_saturation_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dissolved oxygen saturation as a percentage. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"P1\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nitrate_umol",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Nitrate or nitrate-plus-nitrite concentration in micromoles. JSON Structure annotations: {\"symbol\": \"µmol\", \"unit\": \"umol\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nitrate_mg_l",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Nitrate or nitrate-plus-nitrite concentration in milligrams per liter. JSON Structure annotations: {\"symbol\": \"mg/L\", \"unit\": \"mg/L\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction_deg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction in degrees at the buoy surface. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed_m_s",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind speed in meters per second at the buoy surface. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "photosynthetically_active_radiation_umol_s_m2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Photosynthetically active radiation in micromoles per second per square meter. JSON Structure annotations: {\"symbol\": \"µmol/s/m²\", \"unit\": \"umol/s/m2\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temperature_f",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature in degrees Fahrenheit. JSON Structure annotations: {\"symbol\": \"°F\", \"unit\": \"[degF]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_humidity_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Relative humidity percentage. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"P1\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_pressure_in_hg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air pressure in inches of mercury. JSON Structure annotations: {\"symbol\": \"inHg\", \"unit\": \"[in_i'Hg]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "system_battery_v",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "System battery voltage in volts. JSON Structure annotations: {\"symbol\": \"V\", \"unit\": \"V\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sensor_battery_v",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sensor or sonde battery voltage in volts. JSON Structure annotations: {\"symbol\": \"V\", \"unit\": \"V\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from King County Metro marine feeds. It carries marine transit schedule and status updates for King County water-taxi routes and sailings."
               }
             }
           }

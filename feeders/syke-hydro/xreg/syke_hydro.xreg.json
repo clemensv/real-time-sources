@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/FI.SYKE.Hydrology"
+        "#/messagegroups/FI.SYKE.Hydrology",
+        "#/messagegroups/FI.SYKE.Hydrology.avro",
+        "#/messagegroups/FI.SYKE.Hydrology.avro.binary"
       ],
       "description": "Kafka producer endpoint for SYKE Hydrology CloudEvents on the `syke-hydro` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/FI.SYKE.Hydrology.mqtt"
+        "#/messagegroups/FI.SYKE.Hydrology.mqtt",
+        "#/messagegroups/FI.SYKE.Hydrology.mqtt.avro",
+        "#/messagegroups/FI.SYKE.Hydrology.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for syke-hydro CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/FI.SYKE.Hydrology.amqp"
+        "#/messagegroups/FI.SYKE.Hydrology.amqp",
+        "#/messagegroups/FI.SYKE.Hydrology.amqp.avro",
+        "#/messagegroups/FI.SYKE.Hydrology.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for syke-hydro CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -192,6 +206,144 @@
                 "value": "{station_id}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.avro": {
+      "messagegroupid": "FI.SYKE.Hydrology.avro",
+      "messages": {
+        "FI.SYKE.Hydrology.Station": {
+          "messageid": "FI.SYKE.Hydrology.Station",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.Station"
+        },
+        "FI.SYKE.Hydrology.WaterLevelObservation": {
+          "messageid": "FI.SYKE.Hydrology.WaterLevelObservation",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.avro.binary": {
+      "messagegroupid": "FI.SYKE.Hydrology.avro.binary",
+      "messages": {
+        "FI.SYKE.Hydrology.Station": {
+          "messageid": "FI.SYKE.Hydrology.Station",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FI.SYKE.Hydrology.WaterLevelObservation": {
+          "messageid": "FI.SYKE.Hydrology.WaterLevelObservation",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.mqtt.avro": {
+      "messagegroupid": "FI.SYKE.Hydrology.mqtt.avro",
+      "messages": {
+        "FI.SYKE.Hydrology.mqtt.Station": {
+          "messageid": "FI.SYKE.Hydrology.mqtt.Station",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.mqtt/messages/FI.SYKE.Hydrology.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.Station"
+        },
+        "FI.SYKE.Hydrology.mqtt.WaterLevelObservation": {
+          "messageid": "FI.SYKE.Hydrology.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.mqtt/messages/FI.SYKE.Hydrology.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.mqtt.avro.binary": {
+      "messagegroupid": "FI.SYKE.Hydrology.mqtt.avro.binary",
+      "messages": {
+        "FI.SYKE.Hydrology.mqtt.Station": {
+          "messageid": "FI.SYKE.Hydrology.mqtt.Station",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.mqtt/messages/FI.SYKE.Hydrology.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FI.SYKE.Hydrology.mqtt.WaterLevelObservation": {
+          "messageid": "FI.SYKE.Hydrology.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.mqtt/messages/FI.SYKE.Hydrology.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.amqp.avro": {
+      "messagegroupid": "FI.SYKE.Hydrology.amqp.avro",
+      "messages": {
+        "FI.SYKE.Hydrology.amqp.Station": {
+          "messageid": "FI.SYKE.Hydrology.amqp.Station",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.amqp/messages/FI.SYKE.Hydrology.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.Station"
+        },
+        "FI.SYKE.Hydrology.amqp.WaterLevelObservation": {
+          "messageid": "FI.SYKE.Hydrology.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.amqp/messages/FI.SYKE.Hydrology.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.amqp.avro.binary": {
+      "messagegroupid": "FI.SYKE.Hydrology.amqp.avro.binary",
+      "messages": {
+        "FI.SYKE.Hydrology.amqp.Station": {
+          "messageid": "FI.SYKE.Hydrology.amqp.Station",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.amqp/messages/FI.SYKE.Hydrology.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FI.SYKE.Hydrology.amqp.WaterLevelObservation": {
+          "messageid": "FI.SYKE.Hydrology.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/FI.SYKE.Hydrology.amqp/messages/FI.SYKE.Hydrology.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.avro/schemas/FI.SYKE.Hydrology.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -349,7 +501,7 @@
         "FI.SYKE.Hydrology.Station": {
           "name": "Station",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -402,13 +554,79 @@
                 "namespace": "FI.SYKE.Hydrology",
                 "description": "Reference details for one monitoring station or site in the SYKE Hydrology source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "FI.SYKE.Hydrology.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the monitoring station or site."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name of the station, site, or location."
+                  },
+                  {
+                    "name": "river_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the river or watercourse observed at the station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_area_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable name of the water area. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "municipality",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied municipality value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference details for one monitoring station or site in the SYKE Hydrology source."
+              }
             }
           }
         },
         "FI.SYKE.Hydrology.WaterLevelObservation": {
           "name": "WaterLevelObservation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -442,8 +660,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null
@@ -469,8 +686,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null
@@ -478,6 +694,84 @@
                 ],
                 "namespace": "FI.SYKE.Hydrology",
                 "description": "Measurement payload for observations in the SYKE Hydrology source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "FI.SYKE.Hydrology.WaterLevelObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the monitoring station or site."
+                  },
+                  {
+                    "name": "water_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Water level reading value in centimetres. Null when the station does not report a water level in the current polling window. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_level_unit",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_level_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "discharge",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "discharge_unit",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "discharge_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro. May be null when the upstream API does not classify the station into a drainage basin. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Measurement payload for water level and discharge observations in the SYKE Hydrology source."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/CZ.Gov.CHMI.Hydro"
+        "#/messagegroups/CZ.Gov.CHMI.Hydro",
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.avro",
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.avro.binary"
       ],
       "description": "Kafka producer endpoint for ČHMÚ Hydrological Data CloudEvents on the `chmi-hydro` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/CZ.Gov.CHMI.Hydro.mqtt"
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.mqtt",
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.mqtt.avro",
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for ČHMÚ Hydrological Data CloudEvents using the source's documented topic hierarchy and retain settings."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/CZ.Gov.CHMI.Hydro.amqp"
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.amqp",
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.amqp.avro",
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for chmi-hydro CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -178,6 +192,144 @@
                 "value": "{stream_name}",
                 "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (stream_name)."
               }
+            }
+          }
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.avro": {
+      "messagegroupid": "CZ.Gov.CHMI.Hydro.avro",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.Station": {
+          "messageid": "CZ.Gov.CHMI.Hydro.Station",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.Station"
+        },
+        "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
+          "messageid": "CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation"
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.avro.binary": {
+      "messagegroupid": "CZ.Gov.CHMI.Hydro.avro.binary",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.Station": {
+          "messageid": "CZ.Gov.CHMI.Hydro.Station",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
+          "messageid": "CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.mqtt.avro": {
+      "messagegroupid": "CZ.Gov.CHMI.Hydro.mqtt.avro",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.mqtt.Station": {
+          "messageid": "CZ.Gov.CHMI.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.mqtt/messages/CZ.Gov.CHMI.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.Station"
+        },
+        "CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation": {
+          "messageid": "CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.mqtt/messages/CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation"
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.mqtt.avro.binary": {
+      "messagegroupid": "CZ.Gov.CHMI.Hydro.mqtt.avro.binary",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.mqtt.Station": {
+          "messageid": "CZ.Gov.CHMI.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.mqtt/messages/CZ.Gov.CHMI.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation": {
+          "messageid": "CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.mqtt/messages/CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.amqp.avro": {
+      "messagegroupid": "CZ.Gov.CHMI.Hydro.amqp.avro",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.amqp.Station": {
+          "messageid": "CZ.Gov.CHMI.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.Station"
+        },
+        "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation": {
+          "messageid": "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation"
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.amqp.avro.binary": {
+      "messagegroupid": "CZ.Gov.CHMI.Hydro.amqp.avro.binary",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.amqp.Station": {
+          "messageid": "CZ.Gov.CHMI.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation": {
+          "messageid": "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.avro/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -482,8 +634,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null
@@ -501,8 +652,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null
@@ -520,8 +670,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null

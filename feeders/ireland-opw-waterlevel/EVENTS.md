@@ -1,10 +1,10 @@
-# Ireland OPW Water Level feeder Events
+# Ireland OPW Water Level Events
 
 Ireland OPW waterlevel.ie publishes water level, temperature, and sensor voltage observations from Ireland's Office of Public Works (OPW) for Irish hydrometric stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Event types:** 2 documented event types (18 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_ref}` identifies the resource each event is about.
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_ref}`. `{station_re
 | --- | --- |
 | `KAFKA` | topic `ireland-opw-waterlevel`, key `{station_ref}` |
 | `MQTT/5.0` | topic `hydro/ie/opw/ireland-opw-waterlevel/{basin}/{station_ref}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/ireland-opw-waterlevel`, message subject `{station_ref}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/ireland-opw-waterlevel`, message subject `{station_ref}` |
 
 #### Payload
 
@@ -89,7 +89,7 @@ Each event identifies the real-world resource with `{station_ref}`. `{station_re
 - **`region_id`** (int32, required): Integer identifier of the OPW hydrometric region the station belongs to.
 - **`longitude`** (double, required): Longitude of the station location in WGS84 decimal degrees.
 - **`latitude`** (double, required): Latitude of the station location in WGS84 decimal degrees.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -127,7 +127,7 @@ Each event identifies the real-world resource with `{station_ref}`. `{station_re
 | --- | --- |
 | `KAFKA` | topic `ireland-opw-waterlevel`, key `{station_ref}` |
 | `MQTT/5.0` | topic `hydro/ie/opw/ireland-opw-waterlevel/{basin}/{station_ref}/water-level`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/ireland-opw-waterlevel`, message subject `{station_ref}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/ireland-opw-waterlevel`, message subject `{station_ref}` |
 
 #### Payload
 
@@ -139,7 +139,7 @@ Each event identifies the real-world resource with `{station_ref}`. `{station_re
 - **`value`** (double or null, required): Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation.
 - **`datetime`** (string, required): ISO 8601 timestamp of the sensor reading as provided by the upstream API (e.g. '2024-01-15T12:00:00Z').
 - **`err_code`** (int32, required): Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -173,7 +173,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -184,3 +188,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/ireland_opw_waterlevel.xreg.json`](xreg/ireland_opw_waterlevel.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/CA.Gov.ECCC.Weather"
+        "#/messagegroups/CA.Gov.ECCC.Weather",
+        "#/messagegroups/CA.Gov.ECCC.Weather.avro",
+        "#/messagegroups/CA.Gov.ECCC.Weather.avro.binary"
       ],
       "description": "Kafka producer endpoint for Environment Canada Weather CloudEvents on the `environment-canada` topic keyed by `{msc_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/CA.Gov.ECCC.Weather.mqtt"
+        "#/messagegroups/CA.Gov.ECCC.Weather.mqtt",
+        "#/messagegroups/CA.Gov.ECCC.Weather.mqtt.avro",
+        "#/messagegroups/CA.Gov.ECCC.Weather.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for environment-canada."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/CA.Gov.ECCC.Weather.amqp"
+        "#/messagegroups/CA.Gov.ECCC.Weather.amqp",
+        "#/messagegroups/CA.Gov.ECCC.Weather.amqp.avro",
+        "#/messagegroups/CA.Gov.ECCC.Weather.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for environment-canada."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{msc_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{msc_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -232,6 +246,144 @@
             }
           },
           "envelope": "CloudEvents/1.0"
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.avro": {
+      "messagegroupid": "CA.Gov.ECCC.Weather.avro",
+      "messages": {
+        "CA.Gov.ECCC.Weather.Station": {
+          "messageid": "CA.Gov.ECCC.Weather.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.Station"
+        },
+        "CA.Gov.ECCC.Weather.WeatherObservation": {
+          "messageid": "CA.Gov.ECCC.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.WeatherObservation"
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.avro.binary": {
+      "messagegroupid": "CA.Gov.ECCC.Weather.avro.binary",
+      "messages": {
+        "CA.Gov.ECCC.Weather.Station": {
+          "messageid": "CA.Gov.ECCC.Weather.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CA.Gov.ECCC.Weather.WeatherObservation": {
+          "messageid": "CA.Gov.ECCC.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.mqtt.avro": {
+      "messagegroupid": "CA.Gov.ECCC.Weather.mqtt.avro",
+      "messages": {
+        "CA.Gov.ECCC.Weather.mqtt.Station": {
+          "messageid": "CA.Gov.ECCC.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.mqtt/messages/CA.Gov.ECCC.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.Station"
+        },
+        "CA.Gov.ECCC.Weather.mqtt.WeatherObservation": {
+          "messageid": "CA.Gov.ECCC.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.mqtt/messages/CA.Gov.ECCC.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.WeatherObservation"
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.mqtt.avro.binary": {
+      "messagegroupid": "CA.Gov.ECCC.Weather.mqtt.avro.binary",
+      "messages": {
+        "CA.Gov.ECCC.Weather.mqtt.Station": {
+          "messageid": "CA.Gov.ECCC.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.mqtt/messages/CA.Gov.ECCC.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CA.Gov.ECCC.Weather.mqtt.WeatherObservation": {
+          "messageid": "CA.Gov.ECCC.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.mqtt/messages/CA.Gov.ECCC.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.amqp.avro": {
+      "messagegroupid": "CA.Gov.ECCC.Weather.amqp.avro",
+      "messages": {
+        "CA.Gov.ECCC.Weather.amqp.Station": {
+          "messageid": "CA.Gov.ECCC.Weather.amqp.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.amqp/messages/CA.Gov.ECCC.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.Station"
+        },
+        "CA.Gov.ECCC.Weather.amqp.WeatherObservation": {
+          "messageid": "CA.Gov.ECCC.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.amqp/messages/CA.Gov.ECCC.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.WeatherObservation"
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.amqp.avro.binary": {
+      "messagegroupid": "CA.Gov.ECCC.Weather.amqp.avro.binary",
+      "messages": {
+        "CA.Gov.ECCC.Weather.amqp.Station": {
+          "messageid": "CA.Gov.ECCC.Weather.amqp.Station",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.amqp/messages/CA.Gov.ECCC.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "CA.Gov.ECCC.Weather.amqp.WeatherObservation": {
+          "messageid": "CA.Gov.ECCC.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/CA.Gov.ECCC.Weather.amqp/messages/CA.Gov.ECCC.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.avro/schemas/CA.Gov.ECCC.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -546,6 +698,339 @@
                   "JSONStructureAlternateNames",
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.avro": {
+      "schemas": {
+        "CA.Gov.ECCC.Weather.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "CA.Gov.ECCC.Weather.Station",
+                "fields": [
+                  {
+                    "name": "msc_id",
+                    "type": "string",
+                    "doc": "MSC station identifier (Meteorological Service of Canada ID), also known as Climate ID. Used as Kafka key."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Station name as listed in the SWOB station registry, e.g. 'TORONTO PEARSON INTL A', 'VANCOUVER INTL A'."
+                  },
+                  {
+                    "name": "iata_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "IATA station code, e.g. 'CYYZ' for Toronto Pearson. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wmo_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "WMO synoptic station identifier, e.g. 71624 for Toronto Pearson. Null for stations without a WMO assignment. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "province_territory",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Canadian province or territory where the station is located, e.g. 'Ontario', 'British Columbia'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "data_provider",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Organization providing the data, typically 'MSC' for Meteorological Service of Canada. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dataset_network",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Network identifier, typically 'CA' for Canadian stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "auto_man",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Station type: 'AUTO' for automatic, 'MAN' for manual, or combination. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude of the station in decimal degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude of the station in decimal degrees. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "elevation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station elevation above sea level in meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "province",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'province' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by Environment and Climate Change Canada (ECCC). It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "CA.Gov.ECCC.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "CA.Gov.ECCC.Weather.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "msc_id",
+                    "type": "string",
+                    "doc": "MSC station identifier."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name from the SWOB record."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC from the obs_date_tm field."
+                  },
+                  {
+                    "name": "air_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Instantaneous air temperature from the air_temp field. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dew_point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dew point temperature from the dwpt_temp field. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Relative humidity from the rel_hum field. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"percent\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station-level atmospheric pressure from the stn_pres field. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average wind speed at 10m over the last 1 minute from avg_wnd_spd_10m_pst1mt. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Average wind direction at 10m over the last 1 minute from avg_wnd_dir_10m_pst1mt, in degrees clockwise from true north. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_gust",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum wind speed at 10m in the last 1 minute from max_wnd_spd_10m_pst1mt. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "precipitation_1hr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total precipitation in the last hour from pcpn_amt_pst1hr. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mean_sea_level_pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Mean sea-level pressure (MSLP) from the mslp field. Available on synoptic and hourly reporting stations. Null on minutely auto-only stations. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "visibility",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Horizontal visibility from the vis field. Primarily available on staffed and NAV CANADA stations. JSON Structure annotations: {\"symbol\": \"km\", \"unit\": \"km\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "snow_depth",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Snow depth on the ground from the snw_dpth field. Available on stations equipped with ultrasonic snow depth sensors. JSON Structure annotations: {\"symbol\": \"cm\", \"unit\": \"cm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "total_cloud_cover",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Total cloud amount code from the tot_cld_amt field. Reports cloud cover in tenths (0-10) or oktas depending on reporting convention. Available on staffed and select automated stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pressure_tendency_3hr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Change in station pressure over the preceding 3 hours from pres_tend_amt_pst3hrs. Positive values indicate rising pressure. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "max_temperature_24hr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum air temperature in the past 24 hours from max_air_temp_pst24hrs. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "min_temperature_24hr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Minimum air temperature in the past 24 hours from min_air_temp_pst24hrs. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed_1hr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average wind speed at 10m over the past hour from avg_wnd_spd_10m_pst1hr. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_gust_1hr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum wind speed at 10m in the past hour from max_wnd_spd_10m_pst1hr. JSON Structure annotations: {\"symbol\": \"km/h\", \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "precipitation_24hr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total precipitation in the past 24 hours from pcpn_amt_pst24hrs. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "altimeter_setting",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Altimeter setting from the altmetr_setng field. Used in aviation. JSON Structure annotations: {\"symbol\": \"inHg\", \"unit\": \"[in_i'Hg]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "province",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'province' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Environment and Climate Change Canada (ECCC). It carries current weather observations when the upstream feed reports a new or refreshed value."
               }
             }
           }

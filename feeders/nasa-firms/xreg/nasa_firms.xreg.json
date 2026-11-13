@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/NASA.FIRMS"
+        "#/messagegroups/NASA.FIRMS",
+        "#/messagegroups/NASA.FIRMS.avro",
+        "#/messagegroups/NASA.FIRMS.avro.binary"
       ]
     },
     "NASA.FIRMS.Mqtt": {
@@ -37,7 +39,9 @@
         }
       ],
       "messagegroups": [
-        "#/messagegroups/NASA.FIRMS.mqtt"
+        "#/messagegroups/NASA.FIRMS.mqtt",
+        "#/messagegroups/NASA.FIRMS.mqtt.avro",
+        "#/messagegroups/NASA.FIRMS.mqtt.avro.binary"
       ]
     },
     "NASA.FIRMS.Amqp": {
@@ -58,7 +62,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/NASA.FIRMS.amqp"
+        "#/messagegroups/NASA.FIRMS.amqp",
+        "#/messagegroups/NASA.FIRMS.amqp.avro",
+        "#/messagegroups/NASA.FIRMS.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for NASA FIRMS CloudEvents."
     }
@@ -85,6 +91,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -109,6 +119,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -169,6 +183,144 @@
                 "value": "{source}/{record_id}",
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvents subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "NASA.FIRMS.avro": {
+      "messagegroupid": "NASA.FIRMS.avro",
+      "messages": {
+        "NASA.FIRMS.FireDetection": {
+          "messageid": "NASA.FIRMS.FireDetection",
+          "basemessage": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.FireDetection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.FireDetection"
+        },
+        "NASA.FIRMS.DataAvailability": {
+          "messageid": "NASA.FIRMS.DataAvailability",
+          "basemessage": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.DataAvailability",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.DataAvailability"
+        }
+      }
+    },
+    "NASA.FIRMS.avro.binary": {
+      "messagegroupid": "NASA.FIRMS.avro.binary",
+      "messages": {
+        "NASA.FIRMS.FireDetection": {
+          "messageid": "NASA.FIRMS.FireDetection",
+          "basemessage": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.FireDetection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.FireDetection",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NASA.FIRMS.DataAvailability": {
+          "messageid": "NASA.FIRMS.DataAvailability",
+          "basemessage": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.DataAvailability",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.DataAvailability",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NASA.FIRMS.mqtt.avro": {
+      "messagegroupid": "NASA.FIRMS.mqtt.avro",
+      "messages": {
+        "NASA.FIRMS.mqtt.FireDetection": {
+          "messageid": "NASA.FIRMS.mqtt.FireDetection",
+          "basemessage": "/messagegroups/NASA.FIRMS.mqtt/messages/NASA.FIRMS.mqtt.FireDetection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.FireDetection"
+        },
+        "NASA.FIRMS.mqtt.DataAvailability": {
+          "messageid": "NASA.FIRMS.mqtt.DataAvailability",
+          "basemessage": "/messagegroups/NASA.FIRMS.mqtt/messages/NASA.FIRMS.mqtt.DataAvailability",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.DataAvailability"
+        }
+      }
+    },
+    "NASA.FIRMS.mqtt.avro.binary": {
+      "messagegroupid": "NASA.FIRMS.mqtt.avro.binary",
+      "messages": {
+        "NASA.FIRMS.mqtt.FireDetection": {
+          "messageid": "NASA.FIRMS.mqtt.FireDetection",
+          "basemessage": "/messagegroups/NASA.FIRMS.mqtt/messages/NASA.FIRMS.mqtt.FireDetection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.FireDetection",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NASA.FIRMS.mqtt.DataAvailability": {
+          "messageid": "NASA.FIRMS.mqtt.DataAvailability",
+          "basemessage": "/messagegroups/NASA.FIRMS.mqtt/messages/NASA.FIRMS.mqtt.DataAvailability",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.DataAvailability",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NASA.FIRMS.amqp.avro": {
+      "messagegroupid": "NASA.FIRMS.amqp.avro",
+      "messages": {
+        "NASA.FIRMS.amqp.FireDetection": {
+          "messageid": "NASA.FIRMS.amqp.FireDetection",
+          "basemessage": "/messagegroups/NASA.FIRMS.amqp/messages/NASA.FIRMS.amqp.FireDetection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.FireDetection"
+        },
+        "NASA.FIRMS.amqp.DataAvailability": {
+          "messageid": "NASA.FIRMS.amqp.DataAvailability",
+          "basemessage": "/messagegroups/NASA.FIRMS.amqp/messages/NASA.FIRMS.amqp.DataAvailability",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.DataAvailability"
+        }
+      }
+    },
+    "NASA.FIRMS.amqp.avro.binary": {
+      "messagegroupid": "NASA.FIRMS.amqp.avro.binary",
+      "messages": {
+        "NASA.FIRMS.amqp.FireDetection": {
+          "messageid": "NASA.FIRMS.amqp.FireDetection",
+          "basemessage": "/messagegroups/NASA.FIRMS.amqp/messages/NASA.FIRMS.amqp.FireDetection",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.FireDetection",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NASA.FIRMS.amqp.DataAvailability": {
+          "messageid": "NASA.FIRMS.amqp.DataAvailability",
+          "basemessage": "/messagegroups/NASA.FIRMS.amqp/messages/NASA.FIRMS.amqp.DataAvailability",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.avro/schemas/NASA.FIRMS.DataAvailability",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -527,6 +679,287 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "NASA.FIRMS.avro": {
+      "schemas": {
+        "NASA.FIRMS.FireDetection": {
+          "name": "FireDetection",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NASA.FIRMS.FireDetection",
+                "fields": [
+                  {
+                    "name": "source",
+                    "type": "string",
+                    "doc": "FIRMS product source identifier for the satellite/sensor that produced this detection, e.g. `VIIRS_SNPP_NRT`, `VIIRS_NOAA20_NRT`, `VIIRS_NOAA21_NRT`, `MODIS_NRT` (and the `*_SP` standard-processing variants). First segment of the stable identity key `{source}/{record_id}` and the leading MQTT topic level. Populated by the bridge from the requested FIRMS Area API source, not from a CSV column."
+                  },
+                  {
+                    "name": "record_id",
+                    "type": "string",
+                    "doc": "Deterministic detection identifier — second segment of the identity key `{source}/{record_id}`. Computed by the bridge as a stable 16-hex-character SHA-1 digest over the immutable detection tuple (source, latitude, longitude, acq_date, acq_time, satellite). Stable across polling cycles so the same fire pixel re-detected in overlapping day-range windows resolves to the same key and is de-duplicated downstream."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the centre of the nominal ~375 m (VIIRS) or ~1 km (MODIS) fire pixel, in decimal degrees (WGS84, positive north). Note this is the pixel centroid, not the precise location of the thermal anomaly within the pixel. JSON Structure annotations: {\"altnames\": {\"json\": \"latitude\"}, \"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the centre of the nominal fire pixel, in decimal degrees (WGS84, positive east). Pixel centroid, not the precise anomaly location. JSON Structure annotations: {\"altnames\": {\"json\": \"longitude\"}, \"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "brightness",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "MODIS only: brightness temperature of the fire pixel measured in MODIS channel 21/22 (~4 µm), in Kelvin. Null for VIIRS detections (which report `bright_ti4`/`bright_ti5` instead). Sourced from the MODIS CSV `brightness` column. JSON Structure annotations: {\"altnames\": {\"json\": \"brightness\"}, \"symbol\": \"K\", \"unit\": \"K\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bright_t31",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "MODIS only: brightness temperature of the fire pixel measured in MODIS channel 31 (~11 µm), in Kelvin. Used with `brightness` to characterise fire intensity and screen false alarms. Null for VIIRS detections. Sourced from the MODIS CSV `bright_t31` column. JSON Structure annotations: {\"altnames\": {\"json\": \"bright_t31\"}, \"symbol\": \"K\", \"unit\": \"K\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bright_ti4",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "VIIRS only: brightness temperature of the fire pixel measured in VIIRS I-4 channel (~3.74 µm), in Kelvin. Primary fire channel for VIIRS. Null for MODIS detections (which report `brightness` instead). Sourced from the VIIRS CSV `bright_ti4` column. JSON Structure annotations: {\"altnames\": {\"json\": \"bright_ti4\"}, \"symbol\": \"K\", \"unit\": \"K\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bright_ti5",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "VIIRS only: brightness temperature of the fire pixel measured in VIIRS I-5 channel (~11.45 µm), in Kelvin. Background/context channel paired with `bright_ti4`. Null for MODIS detections. Sourced from the VIIRS CSV `bright_ti5` column. JSON Structure annotations: {\"altnames\": {\"json\": \"bright_ti5\"}, \"symbol\": \"K\", \"unit\": \"K\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "scan",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Along-scan ground dimension of the detected pixel, in kilometres. Grows from nadir toward the swath edge; combined with `track` it gives the actual ground footprint (375 m / 1 km is the nominal nadir resolution only). Sourced from the CSV `scan` column. JSON Structure annotations: {\"altnames\": {\"json\": \"scan\"}, \"symbol\": \"km\", \"unit\": \"km\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "track",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Along-track ground dimension of the detected pixel, in kilometres. Combined with `scan` it gives the actual ground footprint of the detection. Sourced from the CSV `track` column. JSON Structure annotations: {\"altnames\": {\"json\": \"track\"}, \"symbol\": \"km\", \"unit\": \"km\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "acq_date",
+                    "type": "string",
+                    "doc": "UTC acquisition date of the satellite overpass that produced the detection, formatted `YYYY-MM-DD`. Sourced from the CSV `acq_date` column. JSON Structure annotations: {\"altnames\": {\"json\": \"acq_date\"}}"
+                  },
+                  {
+                    "name": "acq_time",
+                    "type": "string",
+                    "doc": "UTC acquisition time of the satellite overpass, formatted as a zero-padded `HHMM` string (e.g. `0218` = 02:18 UTC). Sourced from the CSV `acq_time` column. JSON Structure annotations: {\"altnames\": {\"json\": \"acq_time\"}, \"pattern\": \"^([01][0-9]|2[0-3])[0-5][0-9]$\"}"
+                  },
+                  {
+                    "name": "acq_datetime",
+                    "type": "string",
+                    "doc": "UTC acquisition timestamp combining `acq_date` and `acq_time` into an ISO-8601 instant (`YYYY-MM-DDTHH:MM:00Z`). Derived by the bridge."
+                  },
+                  {
+                    "name": "satellite",
+                    "type": "string",
+                    "doc": "Short platform code of the acquiring satellite as reported by FIRMS, e.g. `N` (Suomi-NPP), `1` (NOAA-20/JPSS-1), `2` (NOAA-21/JPSS-2) for VIIRS, and `T` (Terra) / `A` (Aqua) for MODIS. Sourced from the CSV `satellite` column. JSON Structure annotations: {\"altnames\": {\"json\": \"satellite\"}}"
+                  },
+                  {
+                    "name": "instrument",
+                    "type": {
+                      "type": "enum",
+                      "name": "NASA.FIRMS.FireDetection_types.instrument",
+                      "symbols": [
+                        "VIIRS",
+                        "MODIS"
+                      ]
+                    },
+                    "doc": "Sensor that produced the detection: `VIIRS` or `MODIS`. Discriminates which of the brightness fields are populated. Sourced from the CSV `instrument` column. JSON Structure annotations: {\"altnames\": {\"json\": \"instrument\"}, \"enum\": [\"VIIRS\", \"MODIS\"]}"
+                  },
+                  {
+                    "name": "confidence",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Raw upstream detection confidence exactly as delivered by FIRMS, kept verbatim for fidelity. For VIIRS this is a class letter `l` (low), `n` (nominal) or `h` (high); for MODIS it is an integer 0–100 (percent) rendered as a string. Use the normalised `confidence_level` for filtering across sensors. Sourced from the CSV `confidence` column. JSON Structure annotations: {\"altnames\": {\"json\": \"confidence\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "confidence_level",
+                    "type": {
+                      "type": "enum",
+                      "name": "NASA.FIRMS.FireDetection_types.confidence_level",
+                      "symbols": [
+                        "low",
+                        "nominal",
+                        "high"
+                      ]
+                    },
+                    "doc": "Sensor-normalised detection confidence as a routing-safe class: `low`, `nominal`, or `high`. Derived by the bridge: VIIRS `l`/`n`/`h` map directly; MODIS integer maps <30 → `low`, 30–80 → `nominal`, >80 → `high`. Used as an MQTT topic level so consumers can subscribe by confidence. JSON Structure annotations: {\"enum\": [\"low\", \"nominal\", \"high\"]}"
+                  },
+                  {
+                    "name": "version",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Collection and source-processing version of the detection, e.g. `2.0NRT` (Collection 2, near-real-time) or `2.0` (standard processing). Sourced from the CSV `version` column. JSON Structure annotations: {\"altnames\": {\"json\": \"version\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "frp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Fire Radiative Power in megawatts — the radiative energy release rate of the detected fire within the pixel, a proxy for combustion intensity and a key OSINT discriminator (a multi-hundred-MW spike differs sharply from routine agricultural burning). Sourced from the CSV `frp` column. JSON Structure annotations: {\"altnames\": {\"json\": \"frp\"}, \"symbol\": \"MW\", \"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "daynight",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "NASA.FIRMS.FireDetection_types.daynight",
+                        "symbols": [
+                          "D",
+                          "N"
+                        ]
+                      }
+                    ],
+                    "doc": "Day/Night flag for the overpass: `D` (daytime) or `N` (nighttime), based on solar elevation at the pixel. Night detections are less prone to solar false alarms. Sourced from the CSV `daynight` column. JSON Structure annotations: {\"altnames\": {\"json\": \"daynight\"}, \"enum\": [\"D\", \"N\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tile",
+                    "type": "string",
+                    "doc": "Coarse 10° × 10° geographic tile label of the form `lat<LL>_lon<LL>` (south-west corner, e.g. `lat30_lon-120`) covering the detection. Derived by the bridge purely as an MQTT topic level so consumers can geofence a region of interest without per-message coordinate parsing."
+                  }
+                ],
+                "doc": "A single active-fire / thermal-anomaly pixel detection from a NASA FIRMS satellite product (VIIRS or MODIS), normalised across sensors. Each event is one detection in one satellite overpass; the brightness fields populated depend on `instrument`."
+              }
+            }
+          }
+        },
+        "NASA.FIRMS.DataAvailability": {
+          "name": "DataAvailability",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NASA.FIRMS.DataAvailability",
+                "fields": [
+                  {
+                    "name": "source",
+                    "type": "string",
+                    "doc": "FIRMS product source identifier this coverage record describes, e.g. `VIIRS_SNPP_NRT`, `VIIRS_NOAA20_NRT`, `VIIRS_NOAA21_NRT`, `MODIS_NRT`. First segment of the identity key `{source}/{record_id}`; joins to `FireDetection.source`."
+                  },
+                  {
+                    "name": "record_id",
+                    "type": "string",
+                    "doc": "Constant literal `coverage` — the second identity-key segment for the single reference record per source (`{source}/coverage`). Keeps the reference family on the same `{source}/{record_id}` shape and topic as telemetry while remaining a stable, idempotent per-source key."
+                  },
+                  {
+                    "name": "data_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Raw FIRMS data-availability product identifier as returned by the `/api/data_availability` endpoint (the CSV `data_id` column), e.g. `VIIRS_SNPP_NRT`. Usually equal to `source`; preserved verbatim. JSON Structure annotations: {\"altnames\": {\"json\": \"data_id\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "min_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Earliest UTC date (`YYYY-MM-DD`) for which this FIRMS source currently has data available via the Area API, from the `min_date` column of the data-availability response. JSON Structure annotations: {\"altnames\": {\"json\": \"min_date\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "max_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Most recent UTC date (`YYYY-MM-DD`) for which this FIRMS source currently has data available — the effective freshness horizon of the source, from the `max_date` column. JSON Structure annotations: {\"altnames\": {\"json\": \"max_date\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "instrument",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "NASA.FIRMS.DataAvailability_types.instrument",
+                        "symbols": [
+                          "VIIRS",
+                          "MODIS"
+                        ]
+                      }
+                    ],
+                    "doc": "Sensor family of the source: `VIIRS` or `MODIS`. Derived by the bridge from the source identifier. JSON Structure annotations: {\"enum\": [\"VIIRS\", \"MODIS\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "satellite",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable platform name(s) carried by the source, e.g. `Suomi-NPP`, `NOAA-20`, `NOAA-21`, `Terra`, `Aqua`. Derived by the bridge from the source identifier. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "resolution_m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Nominal nadir spatial resolution of the source sensor in metres (375 for VIIRS I-band fire product, 1000 for MODIS). Static sensor fact supplied by the bridge for downstream scaling/symbology. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "retrieved_at",
+                    "type": "string",
+                    "doc": "UTC ISO-8601 timestamp at which the bridge fetched this availability record."
+                  }
+                ],
+                "doc": "Reference record describing one FIRMS product source: its current data-availability window (min/max date), sensor family, platform, and nominal resolution. Emitted at bridge startup and refreshed periodically so consumers can interpret detection freshness and coverage on the same topic as the telemetry."
               }
             }
           }

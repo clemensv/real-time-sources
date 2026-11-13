@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/ca.gc.weather.aqhi"
+        "#/messagegroups/ca.gc.weather.aqhi",
+        "#/messagegroups/ca.gc.weather.aqhi.avro",
+        "#/messagegroups/ca.gc.weather.aqhi.avro.binary"
       ],
       "description": "Kafka producer endpoint for Canada AQHI CloudEvents on the `canada-aqhi` topic keyed by `{province}/{community_name}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/ca.gc.weather.aqhi.mqtt"
+        "#/messagegroups/ca.gc.weather.aqhi.mqtt",
+        "#/messagegroups/ca.gc.weather.aqhi.mqtt.avro",
+        "#/messagegroups/ca.gc.weather.aqhi.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for canada-aqhi CloudEvents using the documented Unified Namespace topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/ca.gc.weather.aqhi.amqp"
+        "#/messagegroups/ca.gc.weather.aqhi.amqp",
+        "#/messagegroups/ca.gc.weather.aqhi.amqp.avro",
+        "#/messagegroups/ca.gc.weather.aqhi.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for canada-aqhi CloudEvents on the configured broker address."
     }
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{province}/{community_name}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -105,6 +115,10 @@
             "subject": {
               "value": "{province}/{community_name}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -125,6 +139,10 @@
             "subject": {
               "value": "{province}/{community_name}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -246,6 +264,198 @@
                 "value": "{community_name}",
                 "description": "Routing attribute `community_name` used in the MQTT topic hierarchy and AMQP subscription filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.avro": {
+      "messagegroupid": "ca.gc.weather.aqhi.avro",
+      "messages": {
+        "ca.gc.weather.aqhi.Community": {
+          "messageid": "ca.gc.weather.aqhi.Community",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Community"
+        },
+        "ca.gc.weather.aqhi.Observation": {
+          "messageid": "ca.gc.weather.aqhi.Observation",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Observation"
+        },
+        "ca.gc.weather.aqhi.Forecast": {
+          "messageid": "ca.gc.weather.aqhi.Forecast",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Forecast"
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.avro.binary": {
+      "messagegroupid": "ca.gc.weather.aqhi.avro.binary",
+      "messages": {
+        "ca.gc.weather.aqhi.Community": {
+          "messageid": "ca.gc.weather.aqhi.Community",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Community",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.Observation": {
+          "messageid": "ca.gc.weather.aqhi.Observation",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.Forecast": {
+          "messageid": "ca.gc.weather.aqhi.Forecast",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Forecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.mqtt.avro": {
+      "messagegroupid": "ca.gc.weather.aqhi.mqtt.avro",
+      "messages": {
+        "ca.gc.weather.aqhi.mqtt.Community": {
+          "messageid": "ca.gc.weather.aqhi.mqtt.Community",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Community",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Community"
+        },
+        "ca.gc.weather.aqhi.mqtt.Observation": {
+          "messageid": "ca.gc.weather.aqhi.mqtt.Observation",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Observation"
+        },
+        "ca.gc.weather.aqhi.mqtt.Forecast": {
+          "messageid": "ca.gc.weather.aqhi.mqtt.Forecast",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Forecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Forecast"
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.mqtt.avro.binary": {
+      "messagegroupid": "ca.gc.weather.aqhi.mqtt.avro.binary",
+      "messages": {
+        "ca.gc.weather.aqhi.mqtt.Community": {
+          "messageid": "ca.gc.weather.aqhi.mqtt.Community",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Community",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Community",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.mqtt.Observation": {
+          "messageid": "ca.gc.weather.aqhi.mqtt.Observation",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.mqtt.Forecast": {
+          "messageid": "ca.gc.weather.aqhi.mqtt.Forecast",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Forecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Forecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.amqp.avro": {
+      "messagegroupid": "ca.gc.weather.aqhi.amqp.avro",
+      "messages": {
+        "ca.gc.weather.aqhi.amqp.Community": {
+          "messageid": "ca.gc.weather.aqhi.amqp.Community",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Community",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Community"
+        },
+        "ca.gc.weather.aqhi.amqp.Observation": {
+          "messageid": "ca.gc.weather.aqhi.amqp.Observation",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Observation"
+        },
+        "ca.gc.weather.aqhi.amqp.Forecast": {
+          "messageid": "ca.gc.weather.aqhi.amqp.Forecast",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Forecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Forecast"
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.amqp.avro.binary": {
+      "messagegroupid": "ca.gc.weather.aqhi.amqp.avro.binary",
+      "messages": {
+        "ca.gc.weather.aqhi.amqp.Community": {
+          "messageid": "ca.gc.weather.aqhi.amqp.Community",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Community",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Community",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.amqp.Observation": {
+          "messageid": "ca.gc.weather.aqhi.amqp.Observation",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.amqp.Forecast": {
+          "messageid": "ca.gc.weather.aqhi.amqp.Forecast",
+          "basemessage": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Forecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.avro/schemas/ca.gc.weather.aqhi.Forecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
