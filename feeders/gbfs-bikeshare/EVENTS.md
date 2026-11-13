@@ -1,15 +1,14 @@
-<!-- xreg-generator:hand-maintained — hand-polished beyond tools/printdoc.py output (README/CONTAINER link-triangle). tools/generate-events-md.ps1 skips this file. To refresh from the manifest: remove this line, regenerate, then re-apply the hand sections. -->
-# GBFS Bikeshare event reference
+# GBFS Bikeshare Events
 
-This document defines the CloudEvents contract emitted by the GBFS bikeshare feeder. For the project overview see README.md; for the published container images and runtime configuration see CONTAINER.md.
+<sub>Global - user-configured GBFS micromobility systems · Kafka · MQTT · AMQP</sub>
 
 ## At a glance
 
-- **Event types:** 4 documented event types (16 transport bindings in the manifest).
+- **Event types:** 4 documented event types (48 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
 - **Identity:** `{system_id}`, `{system_id}/{station_id}`, `{system_id}/{bike_id}` identifies the resource each event is about.
-- **Operations:** The checked-in guide documents a default polling interval of 60 seconds.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -140,8 +139,8 @@ Each event identifies the real-world resource with `{system_id}/{station_id}`. `
 - **`station_id`** (string, required): Unique station identifier within the GBFS system, sourced from the `station_id` field in `station_information.json`. This identifier is stable across feed refreshes and forms the second component of the CloudEvents subject and Kafka key.
 - **`name`** (string, required): Public-facing station name from `station_information.json`. GBFS recommends mixed-case, human-readable names suitable for maps, screens, and accessibility tooling.
 - **`short_name`** (string or null, optional): Optional short station name or numbering code from the `short_name` field in `station_information.json`, such as a kiosk number or abbreviated label used on maps or in the operator app.
-- **`lat`** (number, required, degree): WGS 84 latitude of the station in decimal degrees from `station_information.json`. GBFS recommends six decimal places of precision for latitude / longitude coordinates. Constraints: minimum `-90`, maximum `90`.
-- **`lon`** (number, required, degree): WGS 84 longitude of the station in decimal degrees from `station_information.json`. Positive values are east of the prime meridian and negative values are west. Constraints: minimum `-180`, maximum `180`.
+- **`lat`** (double, required, degree): WGS 84 latitude of the station in decimal degrees from `station_information.json`. GBFS recommends six decimal places of precision for latitude / longitude coordinates. Constraints: minimum `-90`, maximum `90`.
+- **`lon`** (double, required, degree): WGS 84 longitude of the station in decimal degrees from `station_information.json`. Positive values are east of the prime meridian and negative values are west. Constraints: minimum `-180`, maximum `180`.
 - **`capacity`** (integer or null, optional): Total number of docking points or parking capacity published for the station in `station_information.json`. When omitted upstream, the bridge emits null rather than inventing a capacity.
 - **`region_id`** (string or null, optional): Optional region identifier from the `region_id` field in `station_information.json`. When present, it links the station to a region published in `system_regions.json`.
 - **`address`** (string or null, optional): Optional street address from the `address` field in `station_information.json`, as supplied by the operator for customer navigation.
@@ -250,12 +249,12 @@ Each event identifies the real-world resource with `{system_id}/{bike_id}`. `{sy
 
 - **`system_id`** (string, required): Stable identifier for the GBFS system that publishes this dockless-vehicle status record.
 - **`bike_id`** (string, required): Unique vehicle identifier from the `bike_id` field in `free_bike_status.json`. This value is stable for the vehicle within the system and forms the second component of the CloudEvents subject and Kafka key.
-- **`lat`** (number or null, optional, degree): Optional WGS 84 latitude in decimal degrees for the vehicle's current position. GBFS allows free-bike records without coordinates when precise location is not published. Constraints: minimum `-90`, maximum `90`.
-- **`lon`** (number or null, optional, degree): Optional WGS 84 longitude in decimal degrees for the vehicle's current position. Constraints: minimum `-180`, maximum `180`.
+- **`lat`** (double or null, optional, degree): Optional WGS 84 latitude in decimal degrees for the vehicle's current position. GBFS allows free-bike records without coordinates when precise location is not published. Constraints: minimum `-90`, maximum `90`.
+- **`lon`** (double or null, optional, degree): Optional WGS 84 longitude in decimal degrees for the vehicle's current position. Constraints: minimum `-180`, maximum `180`.
 - **`is_reserved`** (boolean, required): Boolean flag from `is_reserved` indicating whether the vehicle is currently reserved for a customer and therefore not immediately rentable by others.
 - **`is_disabled`** (boolean, required): Boolean flag from `is_disabled` indicating whether the vehicle is disabled or otherwise unavailable for rental.
 - **`vehicle_type_id`** (string or null, optional): Optional vehicle-type identifier from `vehicle_type_id`, used by operators that publish multiple vehicle classes such as e-bikes or scooters.
-- **`current_range_meters`** (number or null, optional, meter): Optional remaining electric range in meters from `current_range_meters`, typically published for electric vehicles.
+- **`current_range_meters`** (double or null, optional, meter): Optional remaining electric range in meters from `current_range_meters`, typically published for electric vehicles.
 - **`last_reported`** (integer or null, optional): Optional POSIX timestamp from the `last_reported` field representing the last time the operator backend received a telemetry update for this vehicle.
 #### Example payload
 
@@ -292,11 +291,14 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
-- The checked-in guide documents a default polling interval of 60 seconds.
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
@@ -304,3 +306,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/gbfs-bikeshare.xreg.json`](xreg/gbfs-bikeshare.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- ![Deploy Service Bus AMQP: <https://aka.ms/deploytoazurebutton>

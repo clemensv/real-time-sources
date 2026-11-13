@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.erddap.kafka.dataset"
+        "#/messagegroups/org.erddap.kafka.dataset",
+        "#/messagegroups/org.erddap.kafka.dataset.avro",
+        "#/messagegroups/org.erddap.kafka.dataset.avro.binary"
       ],
       "description": "Kafka producer endpoint for ERDDAP dataset reference CloudEvents keyed by {erddap_id}/{dataset_id}."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.erddap.kafka.station"
+        "#/messagegroups/org.erddap.kafka.station",
+        "#/messagegroups/org.erddap.kafka.station.avro",
+        "#/messagegroups/org.erddap.kafka.station.avro.binary"
       ],
       "description": "Kafka producer endpoint for ERDDAP station reference and observation CloudEvents keyed by {erddap_id}/{dataset_id}/{station_id}."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.erddap.mqtt.dataset",
-        "#/messagegroups/org.erddap.mqtt.station"
+        "#/messagegroups/org.erddap.mqtt.station",
+        "#/messagegroups/org.erddap.mqtt.dataset.avro",
+        "#/messagegroups/org.erddap.mqtt.dataset.avro.binary",
+        "#/messagegroups/org.erddap.mqtt.station.avro",
+        "#/messagegroups/org.erddap.mqtt.station.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for ERDDAP events using a marine/global/erddap Unified Namespace topic hierarchy."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.erddap.amqp.dataset",
-        "#/messagegroups/org.erddap.amqp.station"
+        "#/messagegroups/org.erddap.amqp.station",
+        "#/messagegroups/org.erddap.amqp.dataset.avro",
+        "#/messagegroups/org.erddap.amqp.dataset.avro.binary",
+        "#/messagegroups/org.erddap.amqp.station.avro",
+        "#/messagegroups/org.erddap.amqp.station.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for ERDDAP CloudEvents on the configured broker address."
     }
@@ -110,6 +122,10 @@
             "subject": {
               "value": "{erddap_id}/{dataset_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -135,6 +151,10 @@
             "subject": {
               "value": "{erddap_id}/{dataset_id}/{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -155,6 +175,10 @@
             "subject": {
               "value": "{erddap_id}/{dataset_id}/{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -319,6 +343,302 @@
                 "value": "{dataset_id}",
                 "description": "ERDDAP datasetID for broker filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.dataset.avro": {
+      "messagegroupid": "org.erddap.dataset.avro",
+      "messages": {
+        "org.erddap.DatasetMetadata": {
+          "messageid": "org.erddap.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.dataset/messages/org.erddap.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata"
+        }
+      }
+    },
+    "org.erddap.dataset.avro.binary": {
+      "messagegroupid": "org.erddap.dataset.avro.binary",
+      "messages": {
+        "org.erddap.DatasetMetadata": {
+          "messageid": "org.erddap.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.dataset/messages/org.erddap.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.station.avro": {
+      "messagegroupid": "org.erddap.station.avro",
+      "messages": {
+        "org.erddap.StationMetadata": {
+          "messageid": "org.erddap.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.station/messages/org.erddap.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata"
+        },
+        "org.erddap.Observation": {
+          "messageid": "org.erddap.Observation",
+          "basemessage": "/messagegroups/org.erddap.station/messages/org.erddap.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation"
+        }
+      }
+    },
+    "org.erddap.station.avro.binary": {
+      "messagegroupid": "org.erddap.station.avro.binary",
+      "messages": {
+        "org.erddap.StationMetadata": {
+          "messageid": "org.erddap.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.station/messages/org.erddap.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.erddap.Observation": {
+          "messageid": "org.erddap.Observation",
+          "basemessage": "/messagegroups/org.erddap.station/messages/org.erddap.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.kafka.dataset.avro": {
+      "messagegroupid": "org.erddap.kafka.dataset.avro",
+      "messages": {
+        "org.erddap.kafka.DatasetMetadata": {
+          "messageid": "org.erddap.kafka.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.kafka.dataset/messages/org.erddap.kafka.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata"
+        }
+      }
+    },
+    "org.erddap.kafka.dataset.avro.binary": {
+      "messagegroupid": "org.erddap.kafka.dataset.avro.binary",
+      "messages": {
+        "org.erddap.kafka.DatasetMetadata": {
+          "messageid": "org.erddap.kafka.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.kafka.dataset/messages/org.erddap.kafka.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.kafka.station.avro": {
+      "messagegroupid": "org.erddap.kafka.station.avro",
+      "messages": {
+        "org.erddap.kafka.StationMetadata": {
+          "messageid": "org.erddap.kafka.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.kafka.station/messages/org.erddap.kafka.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata"
+        },
+        "org.erddap.kafka.Observation": {
+          "messageid": "org.erddap.kafka.Observation",
+          "basemessage": "/messagegroups/org.erddap.kafka.station/messages/org.erddap.kafka.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation"
+        }
+      }
+    },
+    "org.erddap.kafka.station.avro.binary": {
+      "messagegroupid": "org.erddap.kafka.station.avro.binary",
+      "messages": {
+        "org.erddap.kafka.StationMetadata": {
+          "messageid": "org.erddap.kafka.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.kafka.station/messages/org.erddap.kafka.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.erddap.kafka.Observation": {
+          "messageid": "org.erddap.kafka.Observation",
+          "basemessage": "/messagegroups/org.erddap.kafka.station/messages/org.erddap.kafka.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.mqtt.dataset.avro": {
+      "messagegroupid": "org.erddap.mqtt.dataset.avro",
+      "messages": {
+        "org.erddap.mqtt.DatasetMetadata": {
+          "messageid": "org.erddap.mqtt.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.mqtt.dataset/messages/org.erddap.mqtt.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata"
+        }
+      }
+    },
+    "org.erddap.mqtt.dataset.avro.binary": {
+      "messagegroupid": "org.erddap.mqtt.dataset.avro.binary",
+      "messages": {
+        "org.erddap.mqtt.DatasetMetadata": {
+          "messageid": "org.erddap.mqtt.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.mqtt.dataset/messages/org.erddap.mqtt.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.mqtt.station.avro": {
+      "messagegroupid": "org.erddap.mqtt.station.avro",
+      "messages": {
+        "org.erddap.mqtt.StationMetadata": {
+          "messageid": "org.erddap.mqtt.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.mqtt.station/messages/org.erddap.mqtt.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata"
+        },
+        "org.erddap.mqtt.Observation": {
+          "messageid": "org.erddap.mqtt.Observation",
+          "basemessage": "/messagegroups/org.erddap.mqtt.station/messages/org.erddap.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation"
+        }
+      }
+    },
+    "org.erddap.mqtt.station.avro.binary": {
+      "messagegroupid": "org.erddap.mqtt.station.avro.binary",
+      "messages": {
+        "org.erddap.mqtt.StationMetadata": {
+          "messageid": "org.erddap.mqtt.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.mqtt.station/messages/org.erddap.mqtt.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.erddap.mqtt.Observation": {
+          "messageid": "org.erddap.mqtt.Observation",
+          "basemessage": "/messagegroups/org.erddap.mqtt.station/messages/org.erddap.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.amqp.dataset.avro": {
+      "messagegroupid": "org.erddap.amqp.dataset.avro",
+      "messages": {
+        "org.erddap.amqp.DatasetMetadata": {
+          "messageid": "org.erddap.amqp.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.amqp.dataset/messages/org.erddap.amqp.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata"
+        }
+      }
+    },
+    "org.erddap.amqp.dataset.avro.binary": {
+      "messagegroupid": "org.erddap.amqp.dataset.avro.binary",
+      "messages": {
+        "org.erddap.amqp.DatasetMetadata": {
+          "messageid": "org.erddap.amqp.DatasetMetadata",
+          "basemessage": "/messagegroups/org.erddap.amqp.dataset/messages/org.erddap.amqp.DatasetMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.DatasetMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.amqp.station.avro": {
+      "messagegroupid": "org.erddap.amqp.station.avro",
+      "messages": {
+        "org.erddap.amqp.StationMetadata": {
+          "messageid": "org.erddap.amqp.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.amqp.station/messages/org.erddap.amqp.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata"
+        },
+        "org.erddap.amqp.Observation": {
+          "messageid": "org.erddap.amqp.Observation",
+          "basemessage": "/messagegroups/org.erddap.amqp.station/messages/org.erddap.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation"
+        }
+      }
+    },
+    "org.erddap.amqp.station.avro.binary": {
+      "messagegroupid": "org.erddap.amqp.station.avro.binary",
+      "messages": {
+        "org.erddap.amqp.StationMetadata": {
+          "messageid": "org.erddap.amqp.StationMetadata",
+          "basemessage": "/messagegroups/org.erddap.amqp.station/messages/org.erddap.amqp.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.StationMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.erddap.amqp.Observation": {
+          "messageid": "org.erddap.amqp.Observation",
+          "basemessage": "/messagegroups/org.erddap.amqp.station/messages/org.erddap.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.erddap.avro/schemas/org.erddap.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

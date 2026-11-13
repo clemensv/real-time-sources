@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/AU.Gov.Emergency.Wildfires"
+        "#/messagegroups/AU.Gov.Emergency.Wildfires",
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.avro",
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.avro.binary"
       ],
       "description": "Kafka producer endpoint for Australia Wildfires CloudEvents on the `australia-wildfires` topic keyed by `{state}/{incident_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/AU.Gov.Emergency.Wildfires.mqtt"
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.mqtt",
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.mqtt.avro",
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for Australia Wildfires CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/AU.Gov.Emergency.Wildfires.amqp"
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.amqp",
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.amqp.avro",
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for australia-wildfires CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{state}/{incident_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -122,6 +132,90 @@
                 "value": "{state}/{incident_id}",
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.avro": {
+      "messagegroupid": "AU.Gov.Emergency.Wildfires.avro",
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.FireIncident": {
+          "messageid": "AU.Gov.Emergency.Wildfires.FireIncident",
+          "basemessage": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.avro/schemas/AU.Gov.Emergency.Wildfires.FireIncident"
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.avro.binary": {
+      "messagegroupid": "AU.Gov.Emergency.Wildfires.avro.binary",
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.FireIncident": {
+          "messageid": "AU.Gov.Emergency.Wildfires.FireIncident",
+          "basemessage": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.avro/schemas/AU.Gov.Emergency.Wildfires.FireIncident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.mqtt.avro": {
+      "messagegroupid": "AU.Gov.Emergency.Wildfires.mqtt.avro",
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.mqtt.FireIncident": {
+          "messageid": "AU.Gov.Emergency.Wildfires.mqtt.FireIncident",
+          "basemessage": "/messagegroups/AU.Gov.Emergency.Wildfires.mqtt/messages/AU.Gov.Emergency.Wildfires.mqtt.FireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.avro/schemas/AU.Gov.Emergency.Wildfires.FireIncident"
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.mqtt.avro.binary": {
+      "messagegroupid": "AU.Gov.Emergency.Wildfires.mqtt.avro.binary",
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.mqtt.FireIncident": {
+          "messageid": "AU.Gov.Emergency.Wildfires.mqtt.FireIncident",
+          "basemessage": "/messagegroups/AU.Gov.Emergency.Wildfires.mqtt/messages/AU.Gov.Emergency.Wildfires.mqtt.FireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.avro/schemas/AU.Gov.Emergency.Wildfires.FireIncident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.amqp.avro": {
+      "messagegroupid": "AU.Gov.Emergency.Wildfires.amqp.avro",
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.amqp.FireIncident": {
+          "messageid": "AU.Gov.Emergency.Wildfires.amqp.FireIncident",
+          "basemessage": "/messagegroups/AU.Gov.Emergency.Wildfires.amqp/messages/AU.Gov.Emergency.Wildfires.amqp.FireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.avro/schemas/AU.Gov.Emergency.Wildfires.FireIncident"
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.amqp.avro.binary": {
+      "messagegroupid": "AU.Gov.Emergency.Wildfires.amqp.avro.binary",
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.amqp.FireIncident": {
+          "messageid": "AU.Gov.Emergency.Wildfires.amqp.FireIncident",
+          "basemessage": "/messagegroups/AU.Gov.Emergency.Wildfires.amqp/messages/AU.Gov.Emergency.Wildfires.amqp.FireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.avro/schemas/AU.Gov.Emergency.Wildfires.FireIncident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -238,6 +332,119 @@
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.avro": {
+      "schemas": {
+        "AU.Gov.Emergency.Wildfires.FireIncident": {
+          "name": "FireIncident",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "AU.Gov.Emergency.Wildfires.FireIncident",
+                "fields": [
+                  {
+                    "name": "incident_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the fire incident, derived from the source system. NSW: numeric incident ID extracted from the RFS GUID URL. VIC: numeric sourceId from the VicEmergency feed. QLD: alphanumeric UniqueID from the QFD feed (e.g. 'IF39-5661721')."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "Australian state abbreviation indicating which emergency service reported this incident. One of 'NSW' (New South Wales Rural Fire Service), 'VIC' (VicEmergency / Country Fire Authority / Fire Rescue Victoria), or 'QLD' (Queensland Fire Department)."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "Human-readable title or headline for the incident as provided by the source agency. NSW: location-based title from the RFS feed (e.g. '(GWYDIR HWY), MATHESON'). VIC: warning name or sourceTitle from VicEmergency. QLD: WarningTitle from the QFD feed."
+                  },
+                  {
+                    "name": "alert_level",
+                    "type": "string",
+                    "doc": "Fire danger alert level as classified by the issuing agency. Common values across states: 'Advice' (fire is under control or low threat), 'Watch and Act' (conditions are changing, prepare to leave), 'Emergency Warning' (immediate danger, take action now). NSW uses 'category' field, VIC uses 'action' or category1, QLD uses 'WarningLevel'."
+                  },
+                  {
+                    "name": "status",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Topic-safe lowercase-kebab operational status for the incident (e.g. under-control, being-controlled, out-of-control, unknown). The MQTT feeder maps missing upstream status values to unknown so the {status} topic segment is never null or empty. JSON Structure annotations: {\"pattern\": \"^[a-z0-9][a-z0-9-]*$\"}"
+                  },
+                  {
+                    "name": "location",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable location description for the incident. NSW: full location string extracted from the HTML description (e.g. 'B76 (GWYDIR HWY), MATHESON 2370'). VIC: locality names from the location field. QLD: derived from the WarningTitle or Header text. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry. Negative values indicate Southern Hemisphere. JSON Structure annotations: {\"symbol\": \"\\\\u00b0\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry. JSON Structure annotations: {\"symbol\": \"\\\\u00b0\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "size_hectares",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Estimated area of the fire in hectares as reported by the source agency. NSW: extracted from the SIZE field in the HTML description. VIC: parsed from sizeFmt if available. QLD: not typically provided, may be null. JSON Structure annotations: {\"symbol\": \"ha\", \"unit\": \"hectare\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Classification of the fire type as reported by the source agency. NSW: extracted from the TYPE field in the HTML description (e.g. 'Bush Fire', 'Grass Fire', 'Hazard Reduction'). VIC: event field from the CAP envelope (e.g. 'Grass Fire', 'Scrub Fire', 'Bush Fire'). QLD: derived from CallToAction text. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "responsible_agency",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the fire-fighting agency responsible for the incident. NSW: extracted from RESPONSIBLE AGENCY in the HTML description (e.g. 'Rural Fire Service', 'Fire and Rescue NSW'). VIC: senderName from the CAP envelope (e.g. 'Country Fire Authority', 'Fire Rescue Victoria'). QLD: defaults to 'Queensland Fire Department'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "updated",
+                    "type": "string",
+                    "doc": "Timestamp when the incident record was last updated by the source agency, in ISO 8601 format with UTC timezone. NSW: parsed from the UPDATED field in the HTML description or pubDate. VIC: 'updated' field from the VicEmergency feed. QLD: parsed from the WarningTitle date reference or current fetch time."
+                  },
+                  {
+                    "name": "source_url",
+                    "type": "string",
+                    "doc": "URL pointing to the original incident details or the source feed. NSW: GUID permalink from the RFS feed (e.g. 'https://incidents.rfs.nsw.gov.au/api/v1/incidents/653509'). VIC: constructed URL to the VicEmergency warning page. QLD: static URL of the QFD bushfire alert feed."
+                  }
+                ],
+                "doc": "An incident update from Australian emergency-services incident feeds. It reports the current status, location, and classification for a wildfire or emergency incident."
               }
             }
           }

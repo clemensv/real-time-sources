@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.Autobahn"
+        "#/messagegroups/DE.Autobahn",
+        "#/messagegroups/DE.Autobahn.avro",
+        "#/messagegroups/DE.Autobahn.avro.binary"
       ],
       "description": "Kafka producer endpoint for Autobahn CloudEvents on the `autobahn` topic keyed by `{identifier}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/DE.Autobahn.mqtt"
+        "#/messagegroups/DE.Autobahn.mqtt",
+        "#/messagegroups/DE.Autobahn.mqtt.avro",
+        "#/messagegroups/DE.Autobahn.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for Autobahn CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
@@ -66,7 +70,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.Autobahn.amqp"
+        "#/messagegroups/DE.Autobahn.amqp",
+        "#/messagegroups/DE.Autobahn.amqp.avro",
+        "#/messagegroups/DE.Autobahn.amqp.avro.binary"
       ]
     }
   },
@@ -90,6 +96,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -113,6 +123,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -136,6 +150,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -159,6 +177,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -182,6 +204,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -205,6 +231,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -228,6 +258,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -251,6 +285,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -274,6 +312,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -297,6 +339,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -320,6 +366,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -343,6 +393,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -366,6 +420,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -389,6 +447,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -412,6 +474,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -435,6 +501,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -458,6 +528,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -481,6 +555,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -504,6 +582,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -527,6 +609,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -550,6 +636,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -573,6 +663,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -596,6 +690,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -619,6 +717,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -642,6 +744,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -665,6 +771,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -688,6 +798,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -711,6 +825,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -734,6 +852,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -757,6 +879,10 @@
             "time": {
               "value": "{event_time}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1976,6 +2102,1656 @@
           "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationResolved"
         }
       }
+    },
+    "DE.Autobahn.avro": {
+      "messagegroupid": "DE.Autobahn.avro",
+      "messages": {
+        "DE.Autobahn.RoadworkAppeared": {
+          "messageid": "DE.Autobahn.RoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.RoadworkUpdated": {
+          "messageid": "DE.Autobahn.RoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.RoadworkResolved": {
+          "messageid": "DE.Autobahn.RoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkAppeared": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkUpdated": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkResolved": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WarningAppeared": {
+          "messageid": "DE.Autobahn.WarningAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.WarningUpdated": {
+          "messageid": "DE.Autobahn.WarningUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.WarningResolved": {
+          "messageid": "DE.Autobahn.WarningResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.ClosureAppeared": {
+          "messageid": "DE.Autobahn.ClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ClosureUpdated": {
+          "messageid": "DE.Autobahn.ClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ClosureResolved": {
+          "messageid": "DE.Autobahn.ClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureAppeared": {
+          "messageid": "DE.Autobahn.EntryExitClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureUpdated": {
+          "messageid": "DE.Autobahn.EntryExitClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureResolved": {
+          "messageid": "DE.Autobahn.EntryExitClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionAppeared": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionUpdated": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionResolved": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ParkingLorryAppeared": {
+          "messageid": "DE.Autobahn.ParkingLorryAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ParkingLorryUpdated": {
+          "messageid": "DE.Autobahn.ParkingLorryUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ParkingLorryResolved": {
+          "messageid": "DE.Autobahn.ParkingLorryResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.ElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.ElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.ElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.ElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.ElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.WebcamAppeared": {
+          "messageid": "DE.Autobahn.WebcamAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.WebcamUpdated": {
+          "messageid": "DE.Autobahn.WebcamUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.WebcamResolved": {
+          "messageid": "DE.Autobahn.WebcamResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        }
+      }
+    },
+    "DE.Autobahn.avro.binary": {
+      "messagegroupid": "DE.Autobahn.avro.binary",
+      "messages": {
+        "DE.Autobahn.RoadworkAppeared": {
+          "messageid": "DE.Autobahn.RoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.RoadworkUpdated": {
+          "messageid": "DE.Autobahn.RoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.RoadworkResolved": {
+          "messageid": "DE.Autobahn.RoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkAppeared": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkUpdated": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkResolved": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WarningAppeared": {
+          "messageid": "DE.Autobahn.WarningAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WarningUpdated": {
+          "messageid": "DE.Autobahn.WarningUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WarningResolved": {
+          "messageid": "DE.Autobahn.WarningResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ClosureAppeared": {
+          "messageid": "DE.Autobahn.ClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ClosureUpdated": {
+          "messageid": "DE.Autobahn.ClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ClosureResolved": {
+          "messageid": "DE.Autobahn.ClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureAppeared": {
+          "messageid": "DE.Autobahn.EntryExitClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureUpdated": {
+          "messageid": "DE.Autobahn.EntryExitClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureResolved": {
+          "messageid": "DE.Autobahn.EntryExitClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionAppeared": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionUpdated": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionResolved": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryAppeared": {
+          "messageid": "DE.Autobahn.ParkingLorryAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryUpdated": {
+          "messageid": "DE.Autobahn.ParkingLorryUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryResolved": {
+          "messageid": "DE.Autobahn.ParkingLorryResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.ElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.ElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.ElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WebcamAppeared": {
+          "messageid": "DE.Autobahn.WebcamAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WebcamUpdated": {
+          "messageid": "DE.Autobahn.WebcamUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WebcamResolved": {
+          "messageid": "DE.Autobahn.WebcamResolved",
+          "basemessage": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.Autobahn.mqtt.avro": {
+      "messagegroupid": "DE.Autobahn.mqtt.avro",
+      "messages": {
+        "DE.Autobahn.RoadworkAppeared.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.RoadworkAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.RoadworkUpdated.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.RoadworkUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.RoadworkResolved.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.RoadworkResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ShortTermRoadworkAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ShortTermRoadworkUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkResolved.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ShortTermRoadworkResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ClosureAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ClosureAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ClosureUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ClosureUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ClosureResolved.mqtt": {
+          "messageid": "DE.Autobahn.ClosureResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureAppeared.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.EntryExitClosureAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureUpdated.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.EntryExitClosureUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureResolved.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.EntryExitClosureResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WarningAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WarningAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WarningAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.WarningUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WarningUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WarningUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.WarningResolved.mqtt": {
+          "messageid": "DE.Autobahn.WarningResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WarningResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WeightLimit35RestrictionResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WebcamAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WebcamAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WebcamAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.WebcamUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WebcamUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WebcamUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.WebcamResolved.mqtt": {
+          "messageid": "DE.Autobahn.WebcamResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WebcamResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.ParkingLorryAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ParkingLorryAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ParkingLorryUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ParkingLorryUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ParkingLorryResolved.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ParkingLorryResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ElectricChargingStationAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ElectricChargingStationAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.ElectricChargingStationUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ElectricChargingStationUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.ElectricChargingStationResolved.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ElectricChargingStationResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.StrongElectricChargingStationAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.StrongElectricChargingStationUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationResolved.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.StrongElectricChargingStationResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        }
+      }
+    },
+    "DE.Autobahn.mqtt.avro.binary": {
+      "messagegroupid": "DE.Autobahn.mqtt.avro.binary",
+      "messages": {
+        "DE.Autobahn.RoadworkAppeared.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.RoadworkAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.RoadworkUpdated.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.RoadworkUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.RoadworkResolved.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.RoadworkResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ShortTermRoadworkAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ShortTermRoadworkUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkResolved.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ShortTermRoadworkResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ClosureAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ClosureAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ClosureUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ClosureUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ClosureResolved.mqtt": {
+          "messageid": "DE.Autobahn.ClosureResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureAppeared.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.EntryExitClosureAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureUpdated.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.EntryExitClosureUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureResolved.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.EntryExitClosureResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WarningAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WarningAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WarningAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WarningUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WarningUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WarningUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WarningResolved.mqtt": {
+          "messageid": "DE.Autobahn.WarningResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WarningResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WeightLimit35RestrictionResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WebcamAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WebcamAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WebcamAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WebcamUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WebcamUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WebcamUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.WebcamResolved.mqtt": {
+          "messageid": "DE.Autobahn.WebcamResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.WebcamResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ParkingLorryAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ParkingLorryUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryResolved.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ParkingLorryResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ElectricChargingStationAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ElectricChargingStationUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationResolved.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ElectricChargingStationResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.StrongElectricChargingStationAppeared.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.StrongElectricChargingStationUpdated.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationResolved.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationResolved.mqtt",
+          "basemessage": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.StrongElectricChargingStationResolved.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.Autobahn.amqp.avro": {
+      "messagegroupid": "DE.Autobahn.amqp.avro",
+      "messages": {
+        "DE.Autobahn.amqp.RoadworkAppeared": {
+          "messageid": "DE.Autobahn.amqp.RoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.RoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.RoadworkUpdated": {
+          "messageid": "DE.Autobahn.amqp.RoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.RoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.RoadworkResolved": {
+          "messageid": "DE.Autobahn.amqp.RoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.RoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.ShortTermRoadworkAppeared": {
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ShortTermRoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.ShortTermRoadworkUpdated": {
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ShortTermRoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.ShortTermRoadworkResolved": {
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ShortTermRoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.ClosureAppeared": {
+          "messageid": "DE.Autobahn.amqp.ClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.ClosureUpdated": {
+          "messageid": "DE.Autobahn.amqp.ClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.ClosureResolved": {
+          "messageid": "DE.Autobahn.amqp.ClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.EntryExitClosureAppeared": {
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.EntryExitClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.EntryExitClosureUpdated": {
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.EntryExitClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.EntryExitClosureResolved": {
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.EntryExitClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.WarningAppeared": {
+          "messageid": "DE.Autobahn.amqp.WarningAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WarningAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.amqp.WarningUpdated": {
+          "messageid": "DE.Autobahn.amqp.WarningUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WarningUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.amqp.WarningResolved": {
+          "messageid": "DE.Autobahn.amqp.WarningResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WarningResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared": {
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WeightLimit35RestrictionAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated": {
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WeightLimit35RestrictionUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.WeightLimit35RestrictionResolved": {
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WeightLimit35RestrictionResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.amqp.WebcamAppeared": {
+          "messageid": "DE.Autobahn.amqp.WebcamAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WebcamAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.amqp.WebcamUpdated": {
+          "messageid": "DE.Autobahn.amqp.WebcamUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WebcamUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.amqp.WebcamResolved": {
+          "messageid": "DE.Autobahn.amqp.WebcamResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WebcamResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.amqp.ParkingLorryAppeared": {
+          "messageid": "DE.Autobahn.amqp.ParkingLorryAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ParkingLorryAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.amqp.ParkingLorryUpdated": {
+          "messageid": "DE.Autobahn.amqp.ParkingLorryUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ParkingLorryUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.amqp.ParkingLorryResolved": {
+          "messageid": "DE.Autobahn.amqp.ParkingLorryResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ParkingLorryResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.amqp.ElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.amqp.ElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.amqp.ElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.amqp.StrongElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.StrongElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.amqp.StrongElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.StrongElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.amqp.StrongElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.StrongElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation"
+        }
+      }
+    },
+    "DE.Autobahn.amqp.avro.binary": {
+      "messagegroupid": "DE.Autobahn.amqp.avro.binary",
+      "messages": {
+        "DE.Autobahn.amqp.RoadworkAppeared": {
+          "messageid": "DE.Autobahn.amqp.RoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.RoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.RoadworkUpdated": {
+          "messageid": "DE.Autobahn.amqp.RoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.RoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.RoadworkResolved": {
+          "messageid": "DE.Autobahn.amqp.RoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.RoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ShortTermRoadworkAppeared": {
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ShortTermRoadworkAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ShortTermRoadworkUpdated": {
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ShortTermRoadworkUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ShortTermRoadworkResolved": {
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ShortTermRoadworkResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ClosureAppeared": {
+          "messageid": "DE.Autobahn.amqp.ClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ClosureUpdated": {
+          "messageid": "DE.Autobahn.amqp.ClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ClosureResolved": {
+          "messageid": "DE.Autobahn.amqp.ClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.EntryExitClosureAppeared": {
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.EntryExitClosureAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.EntryExitClosureUpdated": {
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.EntryExitClosureUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.EntryExitClosureResolved": {
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.EntryExitClosureResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WarningAppeared": {
+          "messageid": "DE.Autobahn.amqp.WarningAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WarningAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WarningUpdated": {
+          "messageid": "DE.Autobahn.amqp.WarningUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WarningUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WarningResolved": {
+          "messageid": "DE.Autobahn.amqp.WarningResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WarningResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.WarningEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared": {
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WeightLimit35RestrictionAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated": {
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WeightLimit35RestrictionUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WeightLimit35RestrictionResolved": {
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WeightLimit35RestrictionResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.RoadEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WebcamAppeared": {
+          "messageid": "DE.Autobahn.amqp.WebcamAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WebcamAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WebcamUpdated": {
+          "messageid": "DE.Autobahn.amqp.WebcamUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WebcamUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.WebcamResolved": {
+          "messageid": "DE.Autobahn.amqp.WebcamResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.WebcamResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ParkingLorryAppeared": {
+          "messageid": "DE.Autobahn.amqp.ParkingLorryAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ParkingLorryAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ParkingLorryUpdated": {
+          "messageid": "DE.Autobahn.amqp.ParkingLorryUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ParkingLorryUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ParkingLorryResolved": {
+          "messageid": "DE.Autobahn.amqp.ParkingLorryResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ParkingLorryResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ParkingLorry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.ElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.ElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.StrongElectricChargingStationAppeared": {
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationAppeared",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.StrongElectricChargingStationAppeared",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.StrongElectricChargingStationUpdated": {
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationUpdated",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.StrongElectricChargingStationUpdated",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Autobahn.amqp.StrongElectricChargingStationResolved": {
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationResolved",
+          "basemessage": "/messagegroups/DE.Autobahn.amqp/messages/DE.Autobahn.amqp.StrongElectricChargingStationResolved",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.ChargingStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -3120,7 +4896,7 @@
           "name": "RoadEvent",
           "format": "Avro/1.11.3",
           "description": "Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -3310,6 +5086,225 @@
                 ],
                 "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.Autobahn.RoadEvent",
+                "fields": [
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Stable Autobahn item identifier used for the CloudEvents subject and Kafka key. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"identifier\"}}"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness. JSON Structure annotations: {\"pattern\": \"^[a-z0-9-]+$\"}"
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families. JSON Structure annotations: {\"minItems\": 1, \"uniqueItems\": true}"
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string",
+                    "doc": "CloudEvents event time for the emitted record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp."
+                  },
+                  {
+                    "name": "display_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "DE.Autobahn.RoadEvent_types.display_type",
+                      "symbols": [
+                        "ROADWORKS",
+                        "SHORT_TERM_ROADWORKS",
+                        "CLOSURE",
+                        "CLOSURE_ENTRY_EXIT",
+                        "WEIGHT_LIMIT_35"
+                      ]
+                    },
+                    "doc": "Autobahn API display_type value that identifies the road-event subtype. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"display_type\"}, \"descriptions\": {\"CLOSURE\": \"Provider coded value `CLOSURE` for this field.\", \"CLOSURE_ENTRY_EXIT\": \"Provider coded value `CLOSURE_ENTRY_EXIT` for this field.\", \"ROADWORKS\": \"Provider coded value `ROADWORKS` for this field.\", \"SHORT_TERM_ROADWORKS\": \"Provider coded value `SHORT_TERM_ROADWORKS` for this field.\", \"WEIGHT_LIMIT_35\": \"Provider coded value `WEIGHT_LIMIT_35` for this field.\"}, \"enum\": [\"ROADWORKS\", \"SHORT_TERM_ROADWORKS\", \"CLOSURE\", \"CLOSURE_ENTRY_EXIT\", \"WEIGHT_LIMIT_35\"]}"
+                  },
+                  {
+                    "name": "title",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable title from the Autobahn API item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subtitle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable subtitle from the Autobahn API item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Description lines from the Autobahn API description array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "future",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the item as a future event. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"future\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_blocked",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the affected road segment as blocked. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "icon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API icon identifier for the item. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"icon\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_lc_position",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the affected segment. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "startTimestamp value from the Autobahn API when the item includes a scheduled or known start time. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "extent",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API extent text for the affected road segment. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"extent\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API point text that identifies the affected point on the road segment. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"point\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geometry_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized Autobahn API geometry object for the affected road segment. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "impact_lower",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lower bound from the Autobahn API impact object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "impact_upper",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Upper bound from the Autobahn API impact object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "impact_symbols",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Impact symbols from the Autobahn API impact.symbols array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized Autobahn API routeRecommendation object when rerouting advice is available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "footer_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Footer lines from the Autobahn API footer array. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
+              }
             }
           }
         },
@@ -3317,7 +5312,7 @@
           "name": "WarningEvent",
           "format": "Avro/1.11.3",
           "description": "Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -3539,6 +5534,257 @@
                 ],
                 "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.Autobahn.WarningEvent",
+                "fields": [
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Stable Autobahn warning identifier used for the CloudEvents subject and Kafka key. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"identifier\"}}"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness. JSON Structure annotations: {\"pattern\": \"^[a-z0-9-]+$\"}"
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Autobahn road identifiers for the road query that yielded this warning item. JSON Structure annotations: {\"minItems\": 1, \"uniqueItems\": true}"
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string",
+                    "doc": "CloudEvents event time for the emitted warning record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp."
+                  },
+                  {
+                    "name": "display_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "DE.Autobahn.WarningEvent_types.display_type",
+                      "symbols": [
+                        "WARNING"
+                      ]
+                    },
+                    "doc": "Autobahn API display_type for warning items. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"display_type\"}, \"descriptions\": {\"WARNING\": \"Provider coded value `WARNING` for this field.\"}, \"enum\": [\"WARNING\"]}"
+                  },
+                  {
+                    "name": "title",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable title from the Autobahn API warning item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subtitle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable subtitle from the Autobahn API warning item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Description lines from the Autobahn API description array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "future",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the warning as a future event. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"future\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_blocked",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the warning segment as blocked. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "icon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API icon identifier for the warning item. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"icon\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_lc_position",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the warning segment. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "startTimestamp value from the Autobahn API when the warning includes a scheduled or known start time. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "extent",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API extent text for the affected road segment. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"extent\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API point text that identifies the affected point on the road segment. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"point\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geometry_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized Autobahn API geometry object for the affected road segment. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "impact_lower",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lower bound from the Autobahn API impact object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "impact_upper",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Upper bound from the Autobahn API impact object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "impact_symbols",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Impact symbols from the Autobahn API impact.symbols array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized Autobahn API routeRecommendation object when rerouting advice is available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "footer_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Footer lines from the Autobahn API footer array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "delay_minutes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "delayTimeValue from the Autobahn warning item, expressed in minutes. JSON Structure annotations: {\"minimum\": 0, \"unit\": \"min\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "average_speed_kmh",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "averageSpeed from the Autobahn warning item, expressed in kilometers per hour. JSON Structure annotations: {\"minimum\": 0, \"unit\": \"km/h\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "abnormal_traffic_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "abnormalTrafficType code from the Autobahn warning item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "source_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "source value from the Autobahn warning item that identifies the origin of the warning. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
+              }
             }
           }
         },
@@ -3546,7 +5792,7 @@
           "name": "ParkingLorry",
           "format": "Avro/1.11.3",
           "description": "Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -3720,6 +5966,203 @@
                 ],
                 "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.Autobahn.ParkingLorry",
+                "fields": [
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Stable Autobahn parking identifier used for the CloudEvents subject and Kafka key. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"identifier\"}}"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness. JSON Structure annotations: {\"pattern\": \"^[a-z0-9-]+$\"}"
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Autobahn road identifiers for the road query that yielded this parking item. JSON Structure annotations: {\"minItems\": 1, \"uniqueItems\": true}"
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string",
+                    "doc": "CloudEvents event time for the emitted parking record. The bridge uses the poll timestamp because parking items do not expose startTimestamp in the normalized payload."
+                  },
+                  {
+                    "name": "display_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "DE.Autobahn.ParkingLorry_types.display_type",
+                      "symbols": [
+                        "PARKING"
+                      ]
+                    },
+                    "doc": "Autobahn API display_type for lorry parking items. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"display_type\"}, \"descriptions\": {\"PARKING\": \"Provider coded value `PARKING` for this field.\"}, \"enum\": [\"PARKING\"]}"
+                  },
+                  {
+                    "name": "title",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable title from the Autobahn API parking item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subtitle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable subtitle from the Autobahn API parking item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Description lines from the Autobahn API description array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "future",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the parking item as a future entry. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"future\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_blocked",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the parking site as blocked. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "icon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API icon identifier for the parking item. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"icon\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_lc_position",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric startLcPosition value emitted by the Autobahn API for the parking site location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "extent",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API extent text for the parking site. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"extent\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API point text that identifies the parking site location. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"point\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the parking location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "footer_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Footer lines from the Autobahn API footer array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "amenity_descriptions",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "car_space_count",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of passenger-car spaces parsed from description lines that contain PKW Stellplätze. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lorry_space_count",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of lorry spaces parsed from description lines that contain LKW Stellplätze. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
+              }
             }
           }
         },
@@ -3727,7 +6170,7 @@
           "name": "ChargingStation",
           "format": "Avro/1.11.3",
           "description": "Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -3890,6 +6333,192 @@
                 ],
                 "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.Autobahn.ChargingStation",
+                "fields": [
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Stable Autobahn charging-station identifier used for the CloudEvents subject and Kafka key. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"identifier\"}}"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness. JSON Structure annotations: {\"pattern\": \"^[a-z0-9-]+$\"}"
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Autobahn road identifiers for the road query that yielded this charging station item. JSON Structure annotations: {\"minItems\": 1, \"uniqueItems\": true}"
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string",
+                    "doc": "CloudEvents event time for the emitted charging-station record. The bridge uses the poll timestamp because charging station items do not expose startTimestamp in the normalized payload."
+                  },
+                  {
+                    "name": "display_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "DE.Autobahn.ChargingStation_types.display_type",
+                      "symbols": [
+                        "ELECTRIC_CHARGING_STATION",
+                        "STRONG_ELECTRIC_CHARGING_STATION"
+                      ]
+                    },
+                    "doc": "Autobahn API display_type for charging-station items. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"display_type\"}, \"descriptions\": {\"ELECTRIC_CHARGING_STATION\": \"Provider coded value `ELECTRIC_CHARGING_STATION` for this field.\", \"STRONG_ELECTRIC_CHARGING_STATION\": \"Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field.\"}, \"enum\": [\"ELECTRIC_CHARGING_STATION\", \"STRONG_ELECTRIC_CHARGING_STATION\"]}"
+                  },
+                  {
+                    "name": "title",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable title from the Autobahn API charging-station item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subtitle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable subtitle from the Autobahn API charging-station item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Description lines from the Autobahn API description array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "future",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the charging station item as a future entry. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"future\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_blocked",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the charging station site as blocked. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "icon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API icon identifier for the charging station item. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"icon\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "extent",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API extent text for the charging station site. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"extent\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API point text that identifies the charging station site. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"point\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "address_line",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Address line parsed from the first Autobahn API description line for the charging station site. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "charging_point_count",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of parsed charging point entries derived from the Autobahn API description lines. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "charging_points_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized array of normalized charging point entries parsed from the Autobahn API description lines. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the charging station site. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "footer_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Footer lines from the Autobahn API footer array. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
+              }
             }
           }
         },
@@ -3897,7 +6526,7 @@
           "name": "Webcam",
           "format": "Avro/1.11.3",
           "description": "Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -4059,6 +6688,191 @@
                   }
                 ],
                 "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.Autobahn.Webcam",
+                "fields": [
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Stable Autobahn webcam identifier used for the CloudEvents subject and Kafka key. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"identifier\"}}"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness. JSON Structure annotations: {\"pattern\": \"^[a-z0-9-]+$\"}"
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Autobahn road identifiers for the road query that yielded this webcam item. JSON Structure annotations: {\"minItems\": 1, \"uniqueItems\": true}"
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string",
+                    "doc": "CloudEvents event time for the emitted webcam record. The bridge uses the poll timestamp because webcam items do not expose startTimestamp in the normalized payload."
+                  },
+                  {
+                    "name": "display_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "DE.Autobahn.Webcam_types.display_type",
+                      "symbols": [
+                        "WEBCAM"
+                      ]
+                    },
+                    "doc": "Autobahn API display_type for webcam items. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"display_type\"}, \"descriptions\": {\"WEBCAM\": \"Provider coded value `WEBCAM` for this field.\"}, \"enum\": [\"WEBCAM\"]}"
+                  },
+                  {
+                    "name": "title",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable title from the Autobahn API webcam item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subtitle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable subtitle from the Autobahn API webcam item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Description lines from the Autobahn API description array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "future",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the webcam item as a future entry. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"future\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_blocked",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the Autobahn API marks the webcam location as blocked. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "icon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API icon identifier for the webcam item. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"icon\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "extent",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API extent text for the webcam location. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"extent\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Autobahn API point text that identifies the webcam location. JSON Structure annotations: {\"altnames\": {\"autobahn-api\": \"point\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the webcam location. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "footer_lines",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Footer lines from the Autobahn API footer array. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "operator_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "operator value from the Autobahn API webcam item. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "image_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "imageurl value from the Autobahn API webcam item for the still image. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stream_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "linkurl value from the Autobahn API webcam item for the linked stream or detail page. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }

@@ -1,13 +1,14 @@
-# Digitraffic Maritime feeder Events
+# Digitraffic Maritime Events
 
 Digitraffic Maritime publishes maritime traffic and fairway updates from Fintraffic Digitraffic for Finnish maritime fairways and vessels. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
-- **Event types:** 15 documented event types.
+- **Event types:** 15 documented event types (45 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 2 reference/catalog event types and 13 telemetry event types.
 - **Identity:** `{mmsi}`, `{port_call_id}`, `{vessel_id}`, `{locode}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -488,7 +489,7 @@ CloudEvents type: `fi.digitraffic.marine.ais.mqtt.location`
 
 #### What it tells you
 
-MQTT transport projection of location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+MQTT transport projection of location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message. A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -502,7 +503,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Location` payloads are JSON schema. No required field list is declared.
+`Location` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -510,7 +511,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -523,7 +524,7 @@ CloudEvents type: `fi.digitraffic.marine.ais.mqtt.metadata`
 
 #### What it tells you
 
-MQTT transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+MQTT transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime message. A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
 
 #### Identity
 
@@ -537,7 +538,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Metadata` payloads are JSON schema. No required field list is declared.
+`Metadata` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -545,7 +546,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -558,7 +559,7 @@ CloudEvents type: `fi.digitraffic.marine.ais.amqp.location`
 
 #### What it tells you
 
-AMQP transport projection of location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+AMQP transport projection of location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message. A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -572,7 +573,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Location` payloads are JSON schema. No required field list is declared.
+`Location` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -580,7 +581,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -593,7 +594,7 @@ CloudEvents type: `fi.digitraffic.marine.ais.amqp.metadata`
 
 #### What it tells you
 
-AMQP transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+AMQP transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime message. A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
 
 #### Identity
 
@@ -607,7 +608,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Metadata` payloads are JSON schema. No required field list is declared.
+`Metadata` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -615,7 +616,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -642,7 +643,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Port Call` payloads are JSON schema. No required field list is declared.
+`Port Call` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -650,7 +651,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -677,7 +678,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Port Call` payloads are JSON schema. No required field list is declared.
+`Port Call` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -685,7 +686,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -712,7 +713,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Vessel Details` payloads are JSON schema. No required field list is declared.
+`Vessel Details` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -720,7 +721,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -747,7 +748,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Vessel Details` payloads are JSON schema. No required field list is declared.
+`Vessel Details` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -755,7 +756,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -782,7 +783,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Port Location` payloads are JSON schema. No required field list is declared.
+`Port Location` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -790,7 +791,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -817,7 +818,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 #### Payload
 
-`Port Location` payloads are JSON schema. No required field list is declared.
+`Port Location` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -825,7 +826,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -845,15 +846,19 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/digitraffic_maritime.xreg.json`](xreg/digitraffic_maritime.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP + Service Bus: <https://img.shields.io/badge/Azure-AMQP%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

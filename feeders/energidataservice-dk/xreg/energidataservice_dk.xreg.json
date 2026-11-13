@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/dk.energinet.energidataservice"
+        "#/messagegroups/dk.energinet.energidataservice",
+        "#/messagegroups/dk.energinet.energidataservice.avro",
+        "#/messagegroups/dk.energinet.energidataservice.avro.binary"
       ]
     },
     "dk.energinet.energidataservice.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/dk.energinet.energidataservice.mqtt"
+        "#/messagegroups/dk.energinet.energidataservice.mqtt",
+        "#/messagegroups/dk.energinet.energidataservice.mqtt.avro",
+        "#/messagegroups/dk.energinet.energidataservice.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for energidataservice-dk."
     },
@@ -65,7 +69,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/dk.energinet.energidataservice.amqp"
+        "#/messagegroups/dk.energinet.energidataservice.amqp",
+        "#/messagegroups/dk.energinet.energidataservice.amqp.avro",
+        "#/messagegroups/dk.energinet.energidataservice.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for energidataservice-dk."
     }
@@ -87,6 +93,10 @@
             "subject": {
               "value": "{price_area}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -106,6 +116,10 @@
             "subject": {
               "value": "{price_area}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -125,6 +139,10 @@
             "subject": {
               "value": "{price_area}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -230,6 +248,198 @@
                 "value": "{price_area}",
                 "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "dk.energinet.energidataservice.avro": {
+      "messagegroupid": "dk.energinet.energidataservice.avro",
+      "messages": {
+        "dk.energinet.energidataservice.PowerSystemSnapshot": {
+          "messageid": "dk.energinet.energidataservice.PowerSystemSnapshot",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.PowerSystemSnapshot"
+        },
+        "dk.energinet.energidataservice.SpotPrice": {
+          "messageid": "dk.energinet.energidataservice.SpotPrice",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.SpotPrice"
+        },
+        "dk.energinet.energidataservice.Info": {
+          "messageid": "dk.energinet.energidataservice.Info",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.Info"
+        }
+      }
+    },
+    "dk.energinet.energidataservice.avro.binary": {
+      "messagegroupid": "dk.energinet.energidataservice.avro.binary",
+      "messages": {
+        "dk.energinet.energidataservice.PowerSystemSnapshot": {
+          "messageid": "dk.energinet.energidataservice.PowerSystemSnapshot",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.energinet.energidataservice.SpotPrice": {
+          "messageid": "dk.energinet.energidataservice.SpotPrice",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.SpotPrice",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.energinet.energidataservice.Info": {
+          "messageid": "dk.energinet.energidataservice.Info",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.energinet.energidataservice.mqtt.avro": {
+      "messagegroupid": "dk.energinet.energidataservice.mqtt.avro",
+      "messages": {
+        "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot": {
+          "messageid": "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.mqtt/messages/dk.energinet.energidataservice.mqtt.PowerSystemSnapshot",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.PowerSystemSnapshot"
+        },
+        "dk.energinet.energidataservice.mqtt.SpotPrice": {
+          "messageid": "dk.energinet.energidataservice.mqtt.SpotPrice",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.mqtt/messages/dk.energinet.energidataservice.mqtt.SpotPrice",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.SpotPrice"
+        },
+        "dk.energinet.energidataservice.mqtt.Info": {
+          "messageid": "dk.energinet.energidataservice.mqtt.Info",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.mqtt/messages/dk.energinet.energidataservice.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.Info"
+        }
+      }
+    },
+    "dk.energinet.energidataservice.mqtt.avro.binary": {
+      "messagegroupid": "dk.energinet.energidataservice.mqtt.avro.binary",
+      "messages": {
+        "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot": {
+          "messageid": "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.mqtt/messages/dk.energinet.energidataservice.mqtt.PowerSystemSnapshot",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.energinet.energidataservice.mqtt.SpotPrice": {
+          "messageid": "dk.energinet.energidataservice.mqtt.SpotPrice",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.mqtt/messages/dk.energinet.energidataservice.mqtt.SpotPrice",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.SpotPrice",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.energinet.energidataservice.mqtt.Info": {
+          "messageid": "dk.energinet.energidataservice.mqtt.Info",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.mqtt/messages/dk.energinet.energidataservice.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.energinet.energidataservice.amqp.avro": {
+      "messagegroupid": "dk.energinet.energidataservice.amqp.avro",
+      "messages": {
+        "dk.energinet.energidataservice.amqp.PowerSystemSnapshot": {
+          "messageid": "dk.energinet.energidataservice.amqp.PowerSystemSnapshot",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.amqp/messages/dk.energinet.energidataservice.amqp.PowerSystemSnapshot",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.PowerSystemSnapshot"
+        },
+        "dk.energinet.energidataservice.amqp.SpotPrice": {
+          "messageid": "dk.energinet.energidataservice.amqp.SpotPrice",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.amqp/messages/dk.energinet.energidataservice.amqp.SpotPrice",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.SpotPrice"
+        },
+        "dk.energinet.energidataservice.amqp.Info": {
+          "messageid": "dk.energinet.energidataservice.amqp.Info",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.amqp/messages/dk.energinet.energidataservice.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.Info"
+        }
+      }
+    },
+    "dk.energinet.energidataservice.amqp.avro.binary": {
+      "messagegroupid": "dk.energinet.energidataservice.amqp.avro.binary",
+      "messages": {
+        "dk.energinet.energidataservice.amqp.PowerSystemSnapshot": {
+          "messageid": "dk.energinet.energidataservice.amqp.PowerSystemSnapshot",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.amqp/messages/dk.energinet.energidataservice.amqp.PowerSystemSnapshot",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.energinet.energidataservice.amqp.SpotPrice": {
+          "messageid": "dk.energinet.energidataservice.amqp.SpotPrice",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.amqp/messages/dk.energinet.energidataservice.amqp.SpotPrice",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.SpotPrice",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.energinet.energidataservice.amqp.Info": {
+          "messageid": "dk.energinet.energidataservice.amqp.Info",
+          "basemessage": "/messagegroups/dk.energinet.energidataservice.amqp/messages/dk.energinet.energidataservice.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.avro/schemas/dk.energinet.energidataservice.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -661,7 +871,7 @@
           "name": "PowerSystemSnapshot",
           "format": "Avro/1.11.3",
           "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet).",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -864,6 +1074,229 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.energinet.energidataservice.PowerSystemSnapshot",
+                "fields": [
+                  {
+                    "name": "minutes1_utc",
+                    "type": "string",
+                    "doc": "UTC timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1UTC' field."
+                  },
+                  {
+                    "name": "minutes1_dk",
+                    "type": "string",
+                    "doc": "Danish local-time timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1DK' field."
+                  },
+                  {
+                    "name": "price_area",
+                    "type": "string",
+                    "doc": "Price area code. Set to 'DK' for system-wide power system snapshots that cover the entire Danish grid (both DK1 and DK2)."
+                  },
+                  {
+                    "name": "co2_emission",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "CO2 emission intensity of electricity consumed in Denmark at the time of the snapshot, measured in grams of CO2 per kWh (g/kWh). Sourced from 'CO2Emission'. JSON Structure annotations: {\"unit\": \"g/kWh\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "production_ge_100mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total electricity production from centralized power plants with capacity >= 100 MW, in megawatts (MW). Sourced from 'ProductionGe100MW'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "production_lt_100mw",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total electricity production from decentralized power plants with capacity < 100 MW, in megawatts (MW). Sourced from 'ProductionLt100MW'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "solar_power",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Estimated total solar photovoltaic power production in Denmark, in megawatts (MW). Sourced from 'SolarPower'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "offshore_wind_power",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total offshore wind power production in Denmark, in megawatts (MW). Sourced from 'OffshoreWindPower'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "onshore_wind_power",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Total onshore wind power production in Denmark, in megawatts (MW). Sourced from 'OnshoreWindPower'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_sum",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net total cross-border electricity exchange for all Danish interconnectors, in megawatts (MW). Positive values indicate net import; negative values indicate net export. Sourced from 'Exchange_Sum'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk1_de",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK1–Germany interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_DE'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk1_nl",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK1–Netherlands (COBRAcable) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NL'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk1_gb",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK1–Great Britain (Viking Link) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_GB'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk1_no",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK1–Norway (Skagerrak) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NO'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk1_se",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK1–Sweden interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_SE'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk1_dk2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK1–DK2 (Great Belt) interconnector, in megawatts (MW). Positive = flow from DK1 to DK2, negative = flow from DK2 to DK1. Sourced from 'Exchange_DK1_DK2'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk2_de",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK2–Germany (Kontek) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_DE'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_dk2_se",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the DK2–Sweden (Øresund) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_SE'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "exchange_bornholm_se",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electricity exchange flow on the Bornholm–Sweden interconnector, in megawatts (MW). Positive = import to Bornholm, negative = export from Bornholm. Sourced from 'Exchange_Bornholm_SE'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "afrr_activated_dk1",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Automatic Frequency Restoration Reserve (aFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK1'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "afrr_activated_dk2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Automatic Frequency Restoration Reserve (aFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK2'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mfrr_activated_dk1",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Manual Frequency Restoration Reserve (mFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK1'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mfrr_activated_dk2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Manual Frequency Restoration Reserve (mFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK2'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "imbalance_dk1",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net power imbalance in price area DK1, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK1'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "imbalance_dk2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Net power imbalance in price area DK2, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK2'. JSON Structure annotations: {\"unit\": \"MW\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet). Published by the PowerSystemRightNow dataset at approximately 1-minute intervals."
+              }
             }
           }
         },
@@ -871,7 +1304,7 @@
           "name": "SpotPrice",
           "format": "Avro/1.11.3",
           "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool).",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -913,6 +1346,175 @@
                     "doc": "Day-ahead spot price in EUR/MWh."
                   }
                 ]
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.energinet.energidataservice.SpotPrice",
+                "fields": [
+                  {
+                    "name": "hour_utc",
+                    "type": "string",
+                    "doc": "UTC hour for which the spot price applies, in ISO 8601 format. Each price applies to the full 60-minute interval starting at this timestamp. Sourced from 'HourUTC'."
+                  },
+                  {
+                    "name": "hour_dk",
+                    "type": "string",
+                    "doc": "Danish local-time hour for which the spot price applies, in ISO 8601 format. Sourced from 'HourDK'."
+                  },
+                  {
+                    "name": "price_area",
+                    "type": "string",
+                    "doc": "Nord Pool bidding zone code. 'DK1' is Western Denmark (Jutland and Funen); 'DK2' is Eastern Denmark (Zealand, Lolland-Falster, and Bornholm). Sourced from 'PriceArea'."
+                  },
+                  {
+                    "name": "spot_price_dkk",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Day-ahead spot price in Danish Kroner per megawatt-hour (DKK/MWh). Sourced from 'SpotPriceDKK'. JSON Structure annotations: {\"unit\": \"DKK/MWh\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "spot_price_eur",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Day-ahead spot price in Euros per megawatt-hour (EUR/MWh). Sourced from 'SpotPriceEUR'. JSON Structure annotations: {\"unit\": \"EUR/MWh\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area."
+              }
+            }
+          }
+        },
+        "dk.energinet.energidataservice.Info": {
+          "name": "Info",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.energinet.energidataservice.Info",
+                "fields": [
+                  {
+                    "name": "info_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "city",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "City segment used in civic-events topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event category segment used in topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "price_area",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Energy market price area or bidding zone represented by this reference record, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GB settlement date for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "GB settlement period for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Electricity control area or utility service area code represented by this record when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "segment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ticketmaster classification segment used for wildcard topic routing, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "entity_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream entity identifier for reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream event identifier for event-scoped reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "venue_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable venue identifier for venue-scoped civic event topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope."
               }
             }
           }

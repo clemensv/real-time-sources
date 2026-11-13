@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/uk.org.carbonintensity"
+        "#/messagegroups/uk.org.carbonintensity",
+        "#/messagegroups/uk.org.carbonintensity.avro",
+        "#/messagegroups/uk.org.carbonintensity.avro.binary"
       ]
     },
     "uk.org.carbonintensity.Regional.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/uk.org.carbonintensity.Regional"
+        "#/messagegroups/uk.org.carbonintensity.Regional",
+        "#/messagegroups/uk.org.carbonintensity.Regional.avro",
+        "#/messagegroups/uk.org.carbonintensity.Regional.avro.binary"
       ]
     },
     "uk.org.carbonintensity.Mqtt": {
@@ -60,7 +64,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/uk.org.carbonintensity.mqtt"
+        "#/messagegroups/uk.org.carbonintensity.mqtt",
+        "#/messagegroups/uk.org.carbonintensity.mqtt.avro",
+        "#/messagegroups/uk.org.carbonintensity.mqtt.avro.binary"
       ]
     },
     "uk.org.carbonintensity.Amqp": {
@@ -81,7 +87,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/uk.org.carbonintensity.amqp"
+        "#/messagegroups/uk.org.carbonintensity.amqp",
+        "#/messagegroups/uk.org.carbonintensity.amqp.avro",
+        "#/messagegroups/uk.org.carbonintensity.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for carbon-intensity CloudEvents on the configured broker address."
     }
@@ -106,6 +114,10 @@
             "id": {
               "value": "{ce_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -128,6 +140,10 @@
             "id": {
               "value": "{ce_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -154,6 +170,10 @@
             "id": {
               "value": "{ce_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -238,6 +258,208 @@
                 "value": "{region_id}",
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "uk.org.carbonintensity.avro": {
+      "messagegroupid": "uk.org.carbonintensity.avro",
+      "messages": {
+        "uk.org.carbonintensity.Intensity": {
+          "messageid": "uk.org.carbonintensity.Intensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.Intensity"
+        },
+        "uk.org.carbonintensity.GenerationMix": {
+          "messageid": "uk.org.carbonintensity.GenerationMix",
+          "basemessage": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.GenerationMix"
+        }
+      }
+    },
+    "uk.org.carbonintensity.avro.binary": {
+      "messagegroupid": "uk.org.carbonintensity.avro.binary",
+      "messages": {
+        "uk.org.carbonintensity.Intensity": {
+          "messageid": "uk.org.carbonintensity.Intensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.Intensity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.org.carbonintensity.GenerationMix": {
+          "messageid": "uk.org.carbonintensity.GenerationMix",
+          "basemessage": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.GenerationMix",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.org.carbonintensity.Regional.avro": {
+      "messagegroupid": "uk.org.carbonintensity.Regional.avro",
+      "messages": {
+        "uk.org.carbonintensity.RegionalIntensity": {
+          "messageid": "uk.org.carbonintensity.RegionalIntensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.RegionalIntensity"
+        }
+      }
+    },
+    "uk.org.carbonintensity.Regional.avro.binary": {
+      "messagegroupid": "uk.org.carbonintensity.Regional.avro.binary",
+      "messages": {
+        "uk.org.carbonintensity.RegionalIntensity": {
+          "messageid": "uk.org.carbonintensity.RegionalIntensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.RegionalIntensity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.org.carbonintensity.mqtt.avro": {
+      "messagegroupid": "uk.org.carbonintensity.mqtt.avro",
+      "messages": {
+        "uk.org.carbonintensity.mqtt.Intensity": {
+          "messageid": "uk.org.carbonintensity.mqtt.Intensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.mqtt/messages/uk.org.carbonintensity.mqtt.Intensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.Intensity"
+        },
+        "uk.org.carbonintensity.mqtt.GenerationMix": {
+          "messageid": "uk.org.carbonintensity.mqtt.GenerationMix",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.mqtt/messages/uk.org.carbonintensity.mqtt.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.GenerationMix"
+        },
+        "uk.org.carbonintensity.mqtt.RegionalIntensity": {
+          "messageid": "uk.org.carbonintensity.mqtt.RegionalIntensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.mqtt/messages/uk.org.carbonintensity.mqtt.RegionalIntensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.RegionalIntensity"
+        }
+      }
+    },
+    "uk.org.carbonintensity.mqtt.avro.binary": {
+      "messagegroupid": "uk.org.carbonintensity.mqtt.avro.binary",
+      "messages": {
+        "uk.org.carbonintensity.mqtt.Intensity": {
+          "messageid": "uk.org.carbonintensity.mqtt.Intensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.mqtt/messages/uk.org.carbonintensity.mqtt.Intensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.Intensity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.org.carbonintensity.mqtt.GenerationMix": {
+          "messageid": "uk.org.carbonintensity.mqtt.GenerationMix",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.mqtt/messages/uk.org.carbonintensity.mqtt.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.GenerationMix",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.org.carbonintensity.mqtt.RegionalIntensity": {
+          "messageid": "uk.org.carbonintensity.mqtt.RegionalIntensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.mqtt/messages/uk.org.carbonintensity.mqtt.RegionalIntensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.RegionalIntensity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.org.carbonintensity.amqp.avro": {
+      "messagegroupid": "uk.org.carbonintensity.amqp.avro",
+      "messages": {
+        "uk.org.carbonintensity.amqp.Intensity": {
+          "messageid": "uk.org.carbonintensity.amqp.Intensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.amqp/messages/uk.org.carbonintensity.amqp.Intensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.Intensity"
+        },
+        "uk.org.carbonintensity.amqp.GenerationMix": {
+          "messageid": "uk.org.carbonintensity.amqp.GenerationMix",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.amqp/messages/uk.org.carbonintensity.amqp.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.GenerationMix"
+        },
+        "uk.org.carbonintensity.amqp.RegionalIntensity": {
+          "messageid": "uk.org.carbonintensity.amqp.RegionalIntensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.amqp/messages/uk.org.carbonintensity.amqp.RegionalIntensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.RegionalIntensity"
+        }
+      }
+    },
+    "uk.org.carbonintensity.amqp.avro.binary": {
+      "messagegroupid": "uk.org.carbonintensity.amqp.avro.binary",
+      "messages": {
+        "uk.org.carbonintensity.amqp.Intensity": {
+          "messageid": "uk.org.carbonintensity.amqp.Intensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.amqp/messages/uk.org.carbonintensity.amqp.Intensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.Intensity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.org.carbonintensity.amqp.GenerationMix": {
+          "messageid": "uk.org.carbonintensity.amqp.GenerationMix",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.amqp/messages/uk.org.carbonintensity.amqp.GenerationMix",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.GenerationMix",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.org.carbonintensity.amqp.RegionalIntensity": {
+          "messageid": "uk.org.carbonintensity.amqp.RegionalIntensity",
+          "basemessage": "/messagegroups/uk.org.carbonintensity.amqp/messages/uk.org.carbonintensity.amqp.RegionalIntensity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.avro/schemas/uk.org.carbonintensity.RegionalIntensity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -591,6 +813,361 @@
           },
           "name": "RegionalIntensity",
           "defaultversionid": "1"
+        }
+      }
+    },
+    "uk.org.carbonintensity.avro": {
+      "schemas": {
+        "uk.org.carbonintensity.Intensity": {
+          "name": "Intensity",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "uk.org.carbonintensity.Intensity",
+                "fields": [
+                  {
+                    "name": "period_from",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period (e.g. 2026-04-06T09:30Z)."
+                  },
+                  {
+                    "name": "period_to",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period (e.g. 2026-04-06T10:00Z)."
+                  },
+                  {
+                    "name": "forecast",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Forecast carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh), computed ahead of real-time by National Grid ESO. JSON Structure annotations: {\"unit\": \"gCO2/kWh\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "actual",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Actual (metered) carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh). May be null when the period has not yet completed. JSON Structure annotations: {\"unit\": \"gCO2/kWh\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Qualitative index band for the carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "type": "string",
+                    "doc": "Topic-safe MQTT/UNS region segment. National GB-wide records use the literal national."
+                  },
+                  {
+                    "name": "ce_id",
+                    "type": "string",
+                    "doc": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, national region, and event leaf."
+                  }
+                ],
+                "doc": "National half-hourly carbon intensity for the Great Britain electricity grid, published by National Grid ESO. Contains the forecast and actual carbon dioxide emission intensity in grams of CO2 per kilowatt-hour, along with a qualitative index band."
+              }
+            }
+          }
+        },
+        "uk.org.carbonintensity.GenerationMix": {
+          "name": "GenerationMix",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "uk.org.carbonintensity.GenerationMix",
+                "fields": [
+                  {
+                    "name": "period_from",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period."
+                  },
+                  {
+                    "name": "period_to",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period."
+                  },
+                  {
+                    "name": "biomass_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from biomass (wood pellets, energy crops, and other organic matter) during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coal_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from coal-fired power stations during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gas_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from natural gas (CCGT and OCGT) during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hydro_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from hydroelectric power stations during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "imports_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity supplied via interconnector imports from continental Europe and Ireland during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nuclear_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from nuclear power stations during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oil_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from oil-fired power stations during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "other_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from other or unclassified fuel sources during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "solar_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from solar photovoltaic installations during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from onshore and offshore wind turbines during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "type": "string",
+                    "doc": "Topic-safe MQTT/UNS region segment. National GB-wide records use the literal national."
+                  },
+                  {
+                    "name": "ce_id",
+                    "type": "string",
+                    "doc": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, national region, and event leaf."
+                  }
+                ],
+                "doc": "National half-hourly electricity generation fuel mix for Great Britain, published by National Grid ESO. Each field represents the percentage contribution of a specific fuel type to total generation during the settlement period."
+              }
+            }
+          }
+        },
+        "uk.org.carbonintensity.RegionalIntensity": {
+          "name": "RegionalIntensity",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "uk.org.carbonintensity.RegionalIntensity",
+                "fields": [
+                  {
+                    "name": "region_id",
+                    "type": "int",
+                    "doc": "Numeric identifier for the DNO region as assigned by the Carbon Intensity API (1-17)."
+                  },
+                  {
+                    "name": "dnoregion",
+                    "type": "string",
+                    "doc": "Full name of the Distribution Network Operator region (e.g. 'Scottish Hydro Electric Power Distribution')."
+                  },
+                  {
+                    "name": "shortname",
+                    "type": "string",
+                    "doc": "Short display name for the DNO region (e.g. 'North Scotland')."
+                  },
+                  {
+                    "name": "period_from",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period."
+                  },
+                  {
+                    "name": "period_to",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period."
+                  },
+                  {
+                    "name": "forecast",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Forecast carbon intensity for this region and settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh). JSON Structure annotations: {\"unit\": \"gCO2/kWh\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Qualitative index band for the regional carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "biomass_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from biomass in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coal_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from coal in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gas_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from natural gas in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hydro_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from hydroelectric power in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "imports_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity supplied via interconnector imports in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nuclear_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from nuclear power in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oil_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from oil in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "other_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from other or unclassified fuel sources in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "solar_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from solar photovoltaic installations in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_pct",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of electricity generated from wind turbines in this region during this settlement period. JSON Structure annotations: {\"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "type": "string",
+                    "doc": "Stable topic-safe MQTT/UNS region segment from the version-pinned DNO region_id lookup table, for example north-scotland for region_id 1. Falls back to region-{region_id} if an unknown future id appears."
+                  },
+                  {
+                    "name": "ce_id",
+                    "type": "string",
+                    "doc": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, DNO region_id, and regional-intensity leaf."
+                  }
+                ],
+                "doc": "Half-hourly carbon intensity and generation mix for one of the 17 GB Distribution Network Operator (DNO) regions, published by National Grid ESO. Each record covers a specific DNO region identified by its numeric region ID."
+              }
+            }
+          }
         }
       }
     }

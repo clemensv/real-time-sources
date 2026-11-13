@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/SE.Gov.SMHI.Hydro"
+        "#/messagegroups/SE.Gov.SMHI.Hydro",
+        "#/messagegroups/SE.Gov.SMHI.Hydro.avro",
+        "#/messagegroups/SE.Gov.SMHI.Hydro.avro.binary"
       ],
       "description": "Kafka producer endpoint for SMHI Hydrological Data CloudEvents on the `smhi-hydro` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/SE.Gov.SMHI.Hydro.mqtt"
+        "#/messagegroups/SE.Gov.SMHI.Hydro.mqtt",
+        "#/messagegroups/SE.Gov.SMHI.Hydro.mqtt.avro",
+        "#/messagegroups/SE.Gov.SMHI.Hydro.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for SMHI Hydrological Data CloudEvents using the source's documented topic hierarchy and retain settings."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/SE.Gov.SMHI.Hydro.amqp"
+        "#/messagegroups/SE.Gov.SMHI.Hydro.amqp",
+        "#/messagegroups/SE.Gov.SMHI.Hydro.amqp.avro",
+        "#/messagegroups/SE.Gov.SMHI.Hydro.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for smhi-hydro CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -178,6 +192,144 @@
                 "value": "{catchment_name}",
                 "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (catchment_name)."
               }
+            }
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.avro": {
+      "messagegroupid": "SE.Gov.SMHI.Hydro.avro",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.Station": {
+          "messageid": "SE.Gov.SMHI.Hydro.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.Station"
+        },
+        "SE.Gov.SMHI.Hydro.DischargeObservation": {
+          "messageid": "SE.Gov.SMHI.Hydro.DischargeObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.DischargeObservation"
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.avro.binary": {
+      "messagegroupid": "SE.Gov.SMHI.Hydro.avro.binary",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.Station": {
+          "messageid": "SE.Gov.SMHI.Hydro.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SE.Gov.SMHI.Hydro.DischargeObservation": {
+          "messageid": "SE.Gov.SMHI.Hydro.DischargeObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.mqtt.avro": {
+      "messagegroupid": "SE.Gov.SMHI.Hydro.mqtt.avro",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.mqtt.Station": {
+          "messageid": "SE.Gov.SMHI.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.mqtt/messages/SE.Gov.SMHI.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.Station"
+        },
+        "SE.Gov.SMHI.Hydro.mqtt.DischargeObservation": {
+          "messageid": "SE.Gov.SMHI.Hydro.mqtt.DischargeObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.mqtt/messages/SE.Gov.SMHI.Hydro.mqtt.DischargeObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.DischargeObservation"
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.mqtt.avro.binary": {
+      "messagegroupid": "SE.Gov.SMHI.Hydro.mqtt.avro.binary",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.mqtt.Station": {
+          "messageid": "SE.Gov.SMHI.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.mqtt/messages/SE.Gov.SMHI.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SE.Gov.SMHI.Hydro.mqtt.DischargeObservation": {
+          "messageid": "SE.Gov.SMHI.Hydro.mqtt.DischargeObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.mqtt/messages/SE.Gov.SMHI.Hydro.mqtt.DischargeObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.amqp.avro": {
+      "messagegroupid": "SE.Gov.SMHI.Hydro.amqp.avro",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.amqp.Station": {
+          "messageid": "SE.Gov.SMHI.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.amqp/messages/SE.Gov.SMHI.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.Station"
+        },
+        "SE.Gov.SMHI.Hydro.amqp.DischargeObservation": {
+          "messageid": "SE.Gov.SMHI.Hydro.amqp.DischargeObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.amqp/messages/SE.Gov.SMHI.Hydro.amqp.DischargeObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.DischargeObservation"
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.amqp.avro.binary": {
+      "messagegroupid": "SE.Gov.SMHI.Hydro.amqp.avro.binary",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.amqp.Station": {
+          "messageid": "SE.Gov.SMHI.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.amqp/messages/SE.Gov.SMHI.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SE.Gov.SMHI.Hydro.amqp.DischargeObservation": {
+          "messageid": "SE.Gov.SMHI.Hydro.amqp.DischargeObservation",
+          "basemessage": "/messagegroups/SE.Gov.SMHI.Hydro.amqp/messages/SE.Gov.SMHI.Hydro.amqp.DischargeObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.avro/schemas/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -415,8 +567,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {

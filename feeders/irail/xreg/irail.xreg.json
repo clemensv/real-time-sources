@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/be.irail"
+        "#/messagegroups/be.irail",
+        "#/messagegroups/be.irail.avro",
+        "#/messagegroups/be.irail.avro.binary"
       ],
       "description": "Kafka producer endpoint for iRail CloudEvents on the `irail` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/be.irail.mqtt"
+        "#/messagegroups/be.irail.mqtt",
+        "#/messagegroups/be.irail.mqtt.avro",
+        "#/messagegroups/be.irail.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for iRail CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
@@ -66,7 +70,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/be.irail.amqp"
+        "#/messagegroups/be.irail.amqp",
+        "#/messagegroups/be.irail.amqp.avro",
+        "#/messagegroups/be.irail.amqp.avro.binary"
       ]
     }
   },
@@ -87,6 +93,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -106,6 +116,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -125,6 +139,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -241,6 +259,198 @@
             }
           },
           "messageid": "be.irail.amqp.ArrivalBoard"
+        }
+      }
+    },
+    "be.irail.avro": {
+      "messagegroupid": "be.irail.avro",
+      "messages": {
+        "be.irail.Station": {
+          "messageid": "be.irail.Station",
+          "basemessage": "/messagegroups/be.irail/messages/be.irail.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.Station"
+        },
+        "be.irail.StationBoard": {
+          "messageid": "be.irail.StationBoard",
+          "basemessage": "/messagegroups/be.irail/messages/be.irail.StationBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.StationBoard"
+        },
+        "be.irail.ArrivalBoard": {
+          "messageid": "be.irail.ArrivalBoard",
+          "basemessage": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.ArrivalBoard"
+        }
+      }
+    },
+    "be.irail.avro.binary": {
+      "messagegroupid": "be.irail.avro.binary",
+      "messages": {
+        "be.irail.Station": {
+          "messageid": "be.irail.Station",
+          "basemessage": "/messagegroups/be.irail/messages/be.irail.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irail.StationBoard": {
+          "messageid": "be.irail.StationBoard",
+          "basemessage": "/messagegroups/be.irail/messages/be.irail.StationBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.StationBoard",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irail.ArrivalBoard": {
+          "messageid": "be.irail.ArrivalBoard",
+          "basemessage": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.ArrivalBoard",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.irail.mqtt.avro": {
+      "messagegroupid": "be.irail.mqtt.avro",
+      "messages": {
+        "be.irail.mqtt.Station": {
+          "messageid": "be.irail.mqtt.Station",
+          "basemessage": "/messagegroups/be.irail.mqtt/messages/be.irail.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.Station"
+        },
+        "be.irail.mqtt.StationBoard": {
+          "messageid": "be.irail.mqtt.StationBoard",
+          "basemessage": "/messagegroups/be.irail.mqtt/messages/be.irail.mqtt.StationBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.StationBoard"
+        },
+        "be.irail.mqtt.ArrivalBoard": {
+          "messageid": "be.irail.mqtt.ArrivalBoard",
+          "basemessage": "/messagegroups/be.irail.mqtt/messages/be.irail.mqtt.ArrivalBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.ArrivalBoard"
+        }
+      }
+    },
+    "be.irail.mqtt.avro.binary": {
+      "messagegroupid": "be.irail.mqtt.avro.binary",
+      "messages": {
+        "be.irail.mqtt.Station": {
+          "messageid": "be.irail.mqtt.Station",
+          "basemessage": "/messagegroups/be.irail.mqtt/messages/be.irail.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irail.mqtt.StationBoard": {
+          "messageid": "be.irail.mqtt.StationBoard",
+          "basemessage": "/messagegroups/be.irail.mqtt/messages/be.irail.mqtt.StationBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.StationBoard",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irail.mqtt.ArrivalBoard": {
+          "messageid": "be.irail.mqtt.ArrivalBoard",
+          "basemessage": "/messagegroups/be.irail.mqtt/messages/be.irail.mqtt.ArrivalBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.ArrivalBoard",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.irail.amqp.avro": {
+      "messagegroupid": "be.irail.amqp.avro",
+      "messages": {
+        "be.irail.amqp.Station": {
+          "messageid": "be.irail.amqp.Station",
+          "basemessage": "/messagegroups/be.irail.amqp/messages/be.irail.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.Station"
+        },
+        "be.irail.amqp.StationBoard": {
+          "messageid": "be.irail.amqp.StationBoard",
+          "basemessage": "/messagegroups/be.irail.amqp/messages/be.irail.amqp.StationBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.StationBoard"
+        },
+        "be.irail.amqp.ArrivalBoard": {
+          "messageid": "be.irail.amqp.ArrivalBoard",
+          "basemessage": "/messagegroups/be.irail.amqp/messages/be.irail.amqp.ArrivalBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.ArrivalBoard"
+        }
+      }
+    },
+    "be.irail.amqp.avro.binary": {
+      "messagegroupid": "be.irail.amqp.avro.binary",
+      "messages": {
+        "be.irail.amqp.Station": {
+          "messageid": "be.irail.amqp.Station",
+          "basemessage": "/messagegroups/be.irail.amqp/messages/be.irail.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irail.amqp.StationBoard": {
+          "messageid": "be.irail.amqp.StationBoard",
+          "basemessage": "/messagegroups/be.irail.amqp/messages/be.irail.amqp.StationBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.StationBoard",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.irail.amqp.ArrivalBoard": {
+          "messageid": "be.irail.amqp.ArrivalBoard",
+          "basemessage": "/messagegroups/be.irail.amqp/messages/be.irail.amqp.ArrivalBoard",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.irail.avro/schemas/be.irail.ArrivalBoard",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -802,9 +1012,141 @@
                 ],
                 "description": "A reference record from the Belgian iRail train data API for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "be.irail.StationBoard",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Display name of the station this board belongs to."
+                  },
+                  {
+                    "name": "retrieved_at",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field."
+                  },
+                  {
+                    "name": "departure_count",
+                    "type": "int",
+                    "doc": "Number of departures in this board snapshot. Matches the length of the departures array."
+                  },
+                  {
+                    "name": "departures",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "be.irail.Departure",
+                        "fields": [
+                          {
+                            "name": "destination_station_id",
+                            "type": "string",
+                            "doc": "Nine-digit UIC-derived numeric identifier of the destination station, extracted from the stationinfo.id field by stripping the 'BE.NMBS.' prefix. Example: '008821006' for Antwerp-Central."
+                          },
+                          {
+                            "name": "destination_name",
+                            "type": "string",
+                            "doc": "Display name of the destination station. Example: 'Antwerp-Central'."
+                          },
+                          {
+                            "name": "scheduled_time",
+                            "type": "string",
+                            "doc": "Scheduled departure time in ISO 8601 UTC format, converted from the iRail Unix timestamp. Example: '2026-04-07T14:00:00Z'."
+                          },
+                          {
+                            "name": "delay_seconds",
+                            "type": "int",
+                            "doc": "Current delay in seconds relative to the scheduled departure time. 0 indicates the train is on time. Negative values do not occur."
+                          },
+                          {
+                            "name": "is_canceled",
+                            "type": "boolean",
+                            "doc": "True if this departure has been canceled by NMBS/SNCB. Converted from the iRail 'canceled' field where '1' means canceled."
+                          },
+                          {
+                            "name": "has_left",
+                            "type": "boolean",
+                            "doc": "True if the train has already departed from this station. Converted from the iRail 'left' field where '1' means departed."
+                          },
+                          {
+                            "name": "is_extra_stop",
+                            "type": "boolean",
+                            "doc": "True if this stop was added to the original schedule by traffic control and is not part of the normal timetable. Converted from the iRail 'isExtra' field."
+                          },
+                          {
+                            "name": "vehicle_id",
+                            "type": "string",
+                            "doc": "Full iRail vehicle identifier including the NMBS prefix. Example: 'BE.NMBS.IC2117'. Encodes the train type and number."
+                          },
+                          {
+                            "name": "vehicle_short_name",
+                            "type": "string",
+                            "doc": "Human-readable short name of the train service. Example: 'IC 2117'. Includes the service type abbreviation and number separated by a space."
+                          },
+                          {
+                            "name": "vehicle_type",
+                            "type": "string",
+                            "doc": "NMBS/SNCB train service type abbreviation. Common values: 'IC' (InterCity), 'S' (S-trein/suburban), 'L' (Local), 'P' (Peak-hour), 'THA' (Thalys), 'EUR' (Eurostar), 'EXT' (Extra)."
+                          },
+                          {
+                            "name": "vehicle_number",
+                            "type": "string",
+                            "doc": "Numeric part of the vehicle identifier. Example: '2117' for IC 2117."
+                          },
+                          {
+                            "name": "platform",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "doc": "Platform number or name from which the train departs. Null if platform has not been assigned yet."
+                          },
+                          {
+                            "name": "is_normal_platform",
+                            "type": "boolean",
+                            "doc": "True if the assigned platform is the normally scheduled platform for this service. False indicates a platform change. Converted from the iRail platforminfo.normal field where '1' means normal."
+                          },
+                          {
+                            "name": "occupancy",
+                            "type": {
+                              "type": "enum",
+                              "name": "be.irail.Departure_types.occupancy",
+                              "symbols": [
+                                "low",
+                                "medium",
+                                "high",
+                                "unknown"
+                              ]
+                            },
+                            "doc": "Crowd-sourced occupancy estimate for this train. Based on aggregated user feedback submitted through the iRail occupancy API. JSON Structure annotations: {\"enum\": [\"low\", \"medium\", \"high\", \"unknown\"]}"
+                          },
+                          {
+                            "name": "departure_connection_uri",
+                            "type": "string",
+                            "doc": "Stable linked-data URI uniquely identifying this departure. Composed of the origin station UIC code, date, and vehicle short name. Example: 'http://irail.be/connections/8814001/20260407/IC2117'. This URI can be used to post occupancy feedback."
+                          }
+                        ],
+                        "doc": "A single scheduled departure from a Belgian railway station with real-time status. Represents a train service leaving the station at a scheduled time, possibly with a delay. The departure is identified by the combination of origin station, date, and vehicle identifier encoded in the departure connection URI."
+                      }
+                    },
+                    "doc": "Array of departure entries currently shown on the station's departure board. Each entry represents a train service scheduled to depart from this station, enriched with real-time delay and cancellation information."
+                  }
+                ],
+                "doc": "A real-time departure board snapshot for a Belgian railway station from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event replaces the previous board state for the same station."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         },
         "be.irail.ArrivalBoard": {
           "versions": {
@@ -932,9 +1274,141 @@
                 ],
                 "description": "A transport update from the Belgian iRail train data API. It carries train departure, arrival, and connection updates for Belgian railway stations, vehicles, and connections."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "be.irail.ArrivalBoard",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Display name of the station this board belongs to."
+                  },
+                  {
+                    "name": "retrieved_at",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field."
+                  },
+                  {
+                    "name": "arrival_count",
+                    "type": "int",
+                    "doc": "Number of arrivals in this board snapshot. Matches the length of the arrivals array."
+                  },
+                  {
+                    "name": "arrivals",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "be.irail.Arrival",
+                        "fields": [
+                          {
+                            "name": "origin_station_id",
+                            "type": "string",
+                            "doc": "Nine-digit UIC-derived numeric identifier of the origin station, extracted from the stationinfo.id field by stripping the 'BE.NMBS.' prefix. Example: '008821006' for Antwerp-Central."
+                          },
+                          {
+                            "name": "origin_name",
+                            "type": "string",
+                            "doc": "Display name of the origin station. Example: 'Antwerp-Central'."
+                          },
+                          {
+                            "name": "scheduled_time",
+                            "type": "string",
+                            "doc": "Scheduled arrival time in ISO 8601 UTC format, converted from the iRail Unix timestamp. Example: '2026-04-07T14:00:00Z'."
+                          },
+                          {
+                            "name": "delay_seconds",
+                            "type": "int",
+                            "doc": "Current delay in seconds relative to the scheduled arrival time. 0 indicates the train is on time. Negative values do not occur."
+                          },
+                          {
+                            "name": "is_canceled",
+                            "type": "boolean",
+                            "doc": "True if this arrival has been canceled by NMBS/SNCB. Converted from the iRail 'canceled' field where '1' means canceled."
+                          },
+                          {
+                            "name": "has_arrived",
+                            "type": "boolean",
+                            "doc": "True if the train has already arrived at this station. Converted from the iRail 'arrived' field where '1' means arrived."
+                          },
+                          {
+                            "name": "is_extra_stop",
+                            "type": "boolean",
+                            "doc": "True if this stop was added to the original schedule by traffic control and is not part of the normal timetable. Converted from the iRail 'isExtra' field."
+                          },
+                          {
+                            "name": "vehicle_id",
+                            "type": "string",
+                            "doc": "Full iRail vehicle identifier including the NMBS prefix. Example: 'BE.NMBS.IC2117'. Encodes the train type and number."
+                          },
+                          {
+                            "name": "vehicle_short_name",
+                            "type": "string",
+                            "doc": "Human-readable short name of the train service. Example: 'IC 2117'. Includes the service type abbreviation and number separated by a space."
+                          },
+                          {
+                            "name": "vehicle_type",
+                            "type": "string",
+                            "doc": "NMBS/SNCB train service type abbreviation. Common values: 'IC' (InterCity), 'S' (S-trein/suburban), 'L' (Local), 'P' (Peak-hour), 'THA' (Thalys), 'EUR' (Eurostar), 'EXT' (Extra)."
+                          },
+                          {
+                            "name": "vehicle_number",
+                            "type": "string",
+                            "doc": "Numeric part of the vehicle identifier. Example: '2117' for IC 2117."
+                          },
+                          {
+                            "name": "platform",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "doc": "Platform number or name at which the train arrives. Null if platform has not been assigned yet."
+                          },
+                          {
+                            "name": "is_normal_platform",
+                            "type": "boolean",
+                            "doc": "True if the assigned platform is the normally scheduled platform for this service. False indicates a platform change. Converted from the iRail platforminfo.normal field where '1' means normal."
+                          },
+                          {
+                            "name": "occupancy",
+                            "type": {
+                              "type": "enum",
+                              "name": "be.irail.Arrival_types.occupancy",
+                              "symbols": [
+                                "low",
+                                "medium",
+                                "high",
+                                "unknown"
+                              ]
+                            },
+                            "doc": "Crowd-sourced occupancy estimate for this train. Based on aggregated user feedback submitted through the iRail occupancy API. JSON Structure annotations: {\"enum\": [\"low\", \"medium\", \"high\", \"unknown\"]}"
+                          },
+                          {
+                            "name": "connection_uri",
+                            "type": "string",
+                            "doc": "Stable linked-data URI uniquely identifying this arrival within the current train service flow. Sourced from the iRail 'departureConnection' field because the same connection URI is shared between departure and arrival views for the service."
+                          }
+                        ],
+                        "doc": "A single scheduled arrival at a Belgian railway station with real-time status. Represents a train service reaching the station at a scheduled time, possibly with a delay. The arrival is identified by the combination of station, date, and vehicle identifier encoded in the connection URI."
+                      }
+                    },
+                    "doc": "Array of arrival entries currently shown on the station's arrival board. Each entry represents a train service scheduled to arrive at this station, enriched with real-time delay and cancellation information."
+                  }
+                ],
+                "doc": "A real-time arrival board snapshot for a Belgian railway station from the iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event replaces the previous arrival-board state for the same station."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         }
       }
     }

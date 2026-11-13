@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/gov.noaa.aviationweather"
+        "#/messagegroups/gov.noaa.aviationweather",
+        "#/messagegroups/gov.noaa.aviationweather.avro",
+        "#/messagegroups/gov.noaa.aviationweather.avro.binary"
       ]
     },
     "gov.noaa.aviationweather.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/gov.noaa.aviationweather.mqtt"
+        "#/messagegroups/gov.noaa.aviationweather.mqtt",
+        "#/messagegroups/gov.noaa.aviationweather.mqtt.avro",
+        "#/messagegroups/gov.noaa.aviationweather.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for aviationweather."
     },
@@ -61,7 +65,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/gov.noaa.aviationweather.amqp"
+        "#/messagegroups/gov.noaa.aviationweather.amqp",
+        "#/messagegroups/gov.noaa.aviationweather.amqp.avro",
+        "#/messagegroups/gov.noaa.aviationweather.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for aviationweather."
     }
@@ -82,6 +88,10 @@
             "subject": {
               "value": "{icao_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -100,6 +110,10 @@
             "subject": {
               "value": "{icao_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -118,6 +132,10 @@
             "subject": {
               "value": "{icao_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -285,6 +303,198 @@
             "application-properties": {}
           },
           "envelope": "CloudEvents/1.0"
+        }
+      }
+    },
+    "gov.noaa.aviationweather.avro": {
+      "messagegroupid": "gov.noaa.aviationweather.avro",
+      "messages": {
+        "gov.noaa.aviationweather.Station": {
+          "messageid": "gov.noaa.aviationweather.Station",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Station"
+        },
+        "gov.noaa.aviationweather.Metar": {
+          "messageid": "gov.noaa.aviationweather.Metar",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Metar"
+        },
+        "gov.noaa.aviationweather.Sigmet": {
+          "messageid": "gov.noaa.aviationweather.Sigmet",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Sigmet"
+        }
+      }
+    },
+    "gov.noaa.aviationweather.avro.binary": {
+      "messagegroupid": "gov.noaa.aviationweather.avro.binary",
+      "messages": {
+        "gov.noaa.aviationweather.Station": {
+          "messageid": "gov.noaa.aviationweather.Station",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.noaa.aviationweather.Metar": {
+          "messageid": "gov.noaa.aviationweather.Metar",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Metar",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.noaa.aviationweather.Sigmet": {
+          "messageid": "gov.noaa.aviationweather.Sigmet",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Sigmet",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "gov.noaa.aviationweather.mqtt.avro": {
+      "messagegroupid": "gov.noaa.aviationweather.mqtt.avro",
+      "messages": {
+        "gov.noaa.aviationweather.mqtt.Station": {
+          "messageid": "gov.noaa.aviationweather.mqtt.Station",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Station"
+        },
+        "gov.noaa.aviationweather.mqtt.Metar": {
+          "messageid": "gov.noaa.aviationweather.mqtt.Metar",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Metar",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Metar"
+        },
+        "gov.noaa.aviationweather.mqtt.Sigmet": {
+          "messageid": "gov.noaa.aviationweather.mqtt.Sigmet",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Sigmet",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Sigmet"
+        }
+      }
+    },
+    "gov.noaa.aviationweather.mqtt.avro.binary": {
+      "messagegroupid": "gov.noaa.aviationweather.mqtt.avro.binary",
+      "messages": {
+        "gov.noaa.aviationweather.mqtt.Station": {
+          "messageid": "gov.noaa.aviationweather.mqtt.Station",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.noaa.aviationweather.mqtt.Metar": {
+          "messageid": "gov.noaa.aviationweather.mqtt.Metar",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Metar",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Metar",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.noaa.aviationweather.mqtt.Sigmet": {
+          "messageid": "gov.noaa.aviationweather.mqtt.Sigmet",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Sigmet",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Sigmet",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "gov.noaa.aviationweather.amqp.avro": {
+      "messagegroupid": "gov.noaa.aviationweather.amqp.avro",
+      "messages": {
+        "gov.noaa.aviationweather.amqp.Station": {
+          "messageid": "gov.noaa.aviationweather.amqp.Station",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.amqp/messages/gov.noaa.aviationweather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Station"
+        },
+        "gov.noaa.aviationweather.amqp.Metar": {
+          "messageid": "gov.noaa.aviationweather.amqp.Metar",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.amqp/messages/gov.noaa.aviationweather.amqp.Metar",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Metar"
+        },
+        "gov.noaa.aviationweather.amqp.Sigmet": {
+          "messageid": "gov.noaa.aviationweather.amqp.Sigmet",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.amqp/messages/gov.noaa.aviationweather.amqp.Sigmet",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Sigmet"
+        }
+      }
+    },
+    "gov.noaa.aviationweather.amqp.avro.binary": {
+      "messagegroupid": "gov.noaa.aviationweather.amqp.avro.binary",
+      "messages": {
+        "gov.noaa.aviationweather.amqp.Station": {
+          "messageid": "gov.noaa.aviationweather.amqp.Station",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.amqp/messages/gov.noaa.aviationweather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.noaa.aviationweather.amqp.Metar": {
+          "messageid": "gov.noaa.aviationweather.amqp.Metar",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.amqp/messages/gov.noaa.aviationweather.amqp.Metar",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Metar",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "gov.noaa.aviationweather.amqp.Sigmet": {
+          "messageid": "gov.noaa.aviationweather.amqp.Sigmet",
+          "basemessage": "/messagegroups/gov.noaa.aviationweather.amqp/messages/gov.noaa.aviationweather.amqp.Sigmet",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.avro/schemas/gov.noaa.aviationweather.Sigmet",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -698,6 +908,449 @@
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "gov.noaa.aviationweather.avro": {
+      "schemas": {
+        "gov.noaa.aviationweather.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "gov.noaa.aviationweather.Station",
+                "fields": [
+                  {
+                    "name": "icao_id",
+                    "type": "string",
+                    "doc": "ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport)."
+                  },
+                  {
+                    "name": "iata_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "faa_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wmo_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "WMO station identifier. Five-digit numeric code assigned by the World Meteorological Organization. May be null. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable site name from the AviationWeather station database, e.g. 'New York/JF Kennedy Intl'."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Station latitude in decimal degrees north. Negative values indicate southern hemisphere. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Station longitude in decimal degrees east. Negative values indicate western hemisphere. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "elevation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station field elevation in meters above mean sea level. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "State or province code where the station is located (e.g. 'NY'). May be null for non-US stations. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Two-character ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "site_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Comma-separated list of data products available at this station from the siteType array (e.g. 'METAR,TAF'). An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products."
+              }
+            }
+          }
+        },
+        "gov.noaa.aviationweather.Metar": {
+          "name": "Metar",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "gov.noaa.aviationweather.Metar",
+                "fields": [
+                  {
+                    "name": "icao_id",
+                    "type": "string",
+                    "doc": "ICAO station identifier for the reporting station (e.g. 'KJFK')."
+                  },
+                  {
+                    "name": "obs_time",
+                    "type": "string",
+                    "doc": "Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response."
+                  },
+                  {
+                    "name": "report_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature at the station. Unit: degrees Celsius. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"CEL\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dewp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dewpoint temperature at the station. Unit: degrees Celsius. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"CEL\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wdir",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Wind direction in degrees true (the direction from which the wind is blowing), averaged over the observation period. Value of 0 indicates variable or calm. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wspd",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Sustained wind speed in knots. JSON Structure annotations: {\"symbol\": \"kt\", \"unit\": \"[kn_i]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wgst",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Wind gust speed in knots. Null if no gusts reported. JSON Structure annotations: {\"symbol\": \"kt\", \"unit\": \"[kn_i]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "visib",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Prevailing visibility as reported. Value is a string because it can contain qualifiers like '10+' (greater than 10 statute miles) or fractional values. Unit: statute miles. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "altim",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Altimeter setting (QNH) in hectopascals. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "slp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sea level pressure in hectopascals. May be null if not reported. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qc_field",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality control flag bitmask from the qcField in the API response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wx_string",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Present weather string using standard METAR codes (e.g. '-RA' for light rain, 'BR' for mist). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "metar_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "METAR report type: 'METAR' for routine, 'SPECI' for special observation. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "raw_ob",
+                    "type": "string",
+                    "doc": "The full raw METAR observation text as received, e.g. 'METAR KJFK 061051Z 32013KT 10SM SCT050 05/M05 A3001'."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station latitude in decimal degrees north from the METAR response. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station longitude in decimal degrees east from the METAR response. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "elevation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station elevation in meters above mean sea level from the METAR response. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "flt_cat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Flight category derived from ceiling and visibility: VFR, MVFR, IFR, or LIFR. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "clouds",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "JSON-encoded array of cloud layer objects. Each object has 'cover' (string: SKC, CLR, FEW, SCT, BKN, OVC) and 'base' (integer or null: cloud base in feet AGL). Example: '[{\"cover\":\"SCT\",\"base\":5000}]'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable station name included in the METAR response (e.g. 'New York/JF Kennedy Intl, NY, US'). An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station."
+              }
+            }
+          }
+        },
+        "gov.noaa.aviationweather.Sigmet": {
+          "name": "Sigmet",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "gov.noaa.aviationweather.Sigmet",
+                "fields": [
+                  {
+                    "name": "icao_id",
+                    "type": "string",
+                    "doc": "ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs."
+                  },
+                  {
+                    "name": "series_id",
+                    "type": "string",
+                    "doc": "SIGMET series identifier combining alphanumeric sequence (e.g. '6W' for domestic, '8' for international)."
+                  },
+                  {
+                    "name": "valid_time_from",
+                    "type": "string",
+                    "doc": "Start of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z)."
+                  },
+                  {
+                    "name": "valid_time_to",
+                    "type": "string",
+                    "doc": "End of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z)."
+                  },
+                  {
+                    "name": "hazard",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Weather hazard type: 'CONVECTIVE' for US convective SIGMETs, 'TS' (thunderstorm), 'TURB' (turbulence), 'ICE' (icing), 'VA' (volcanic ash), 'MTW' (mountain wave), etc. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "qualifier",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Hazard qualifier for international SIGMETs (e.g. 'EMBD' for embedded, 'SEV' for severe, 'OBSC' for obscured). Null for US domestic SIGMETs. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sigmet_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "SIGMET classification: 'SIGMET' for US domestic, 'ISIGMET' for international SIGMETs. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "altitude_hi",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Upper altitude limit of the hazard area in feet. From altitudeHi1 for US SIGMETs or top for international SIGMETs. JSON Structure annotations: {\"symbol\": \"ft\", \"unit\": \"[ft_i]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "altitude_low",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs. JSON Structure annotations: {\"symbol\": \"ft\", \"unit\": \"[ft_i]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "movement_dir",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "movement_spd",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "severity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "raw_sigmet",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Full raw SIGMET text as received from the upstream source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "coords",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{\"lat\":41.88,\"lon\":-123.70},{\"lat\":40.00,\"lon\":-124.23}]'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sigmet_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'sigmet_id' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash."
               }
             }
           }

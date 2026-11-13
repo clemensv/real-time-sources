@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/JP.TEPCO.Denkiyoho.kafka"
+        "#/messagegroups/JP.TEPCO.Denkiyoho.kafka",
+        "#/messagegroups/JP.TEPCO.Denkiyoho.kafka.avro",
+        "#/messagegroups/JP.TEPCO.Denkiyoho.kafka.avro.binary"
       ]
     },
     "JP.TEPCO.Denkiyoho.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/JP.TEPCO.Denkiyoho.mqtt"
+        "#/messagegroups/JP.TEPCO.Denkiyoho.mqtt",
+        "#/messagegroups/JP.TEPCO.Denkiyoho.mqtt.avro",
+        "#/messagegroups/JP.TEPCO.Denkiyoho.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for tepco-denkiyoho."
     },
@@ -65,7 +69,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/JP.TEPCO.Denkiyoho.amqp"
+        "#/messagegroups/JP.TEPCO.Denkiyoho.amqp",
+        "#/messagegroups/JP.TEPCO.Denkiyoho.amqp.avro",
+        "#/messagegroups/JP.TEPCO.Denkiyoho.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for tepco-denkiyoho."
     }
@@ -88,6 +94,10 @@
             "subject": {
               "value": "{area_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -108,6 +118,10 @@
             "subject": {
               "value": "{area_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -128,6 +142,10 @@
             "subject": {
               "value": "{area_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -148,6 +166,10 @@
             "subject": {
               "value": "{area_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -167,6 +189,10 @@
             "subject": {
               "value": "{area_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -378,6 +404,406 @@
                 "value": "{area_code}",
                 "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.avro": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.avro",
+      "messages": {
+        "jp.tepco.denkiyoho.SupplyCapacity": {
+          "messageid": "jp.tepco.denkiyoho.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity"
+        },
+        "jp.tepco.denkiyoho.PeakDemandForecast": {
+          "messageid": "jp.tepco.denkiyoho.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast"
+        },
+        "jp.tepco.denkiyoho.DemandActual": {
+          "messageid": "jp.tepco.denkiyoho.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual"
+        },
+        "jp.tepco.denkiyoho.DemandForecast": {
+          "messageid": "jp.tepco.denkiyoho.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast"
+        },
+        "JP.TEPCO.Denkiyoho.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/JP.TEPCO.Denkiyoho.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info"
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.avro.binary": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.avro.binary",
+      "messages": {
+        "jp.tepco.denkiyoho.SupplyCapacity": {
+          "messageid": "jp.tepco.denkiyoho.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.PeakDemandForecast": {
+          "messageid": "jp.tepco.denkiyoho.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.DemandActual": {
+          "messageid": "jp.tepco.denkiyoho.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.DemandForecast": {
+          "messageid": "jp.tepco.denkiyoho.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho/messages/JP.TEPCO.Denkiyoho.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.kafka.avro": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.kafka.avro",
+      "messages": {
+        "JP.TEPCO.Denkiyoho.kafka.SupplyCapacity": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity"
+        },
+        "JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast"
+        },
+        "JP.TEPCO.Denkiyoho.kafka.DemandActual": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual"
+        },
+        "JP.TEPCO.Denkiyoho.kafka.DemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast"
+        },
+        "JP.TEPCO.Denkiyoho.kafka.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info"
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.kafka.avro.binary": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.kafka.avro.binary",
+      "messages": {
+        "JP.TEPCO.Denkiyoho.kafka.SupplyCapacity": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.DemandActual": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.DemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.kafka.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.kafka/messages/JP.TEPCO.Denkiyoho.kafka.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.mqtt.avro": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.mqtt.avro",
+      "messages": {
+        "JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity"
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast"
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.DemandActual": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual"
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.DemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast"
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info"
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.mqtt.avro.binary": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.mqtt.avro.binary",
+      "messages": {
+        "JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.DemandActual": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.DemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.mqtt.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.mqtt.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.mqtt/messages/JP.TEPCO.Denkiyoho.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.amqp.avro": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.amqp.avro",
+      "messages": {
+        "JP.TEPCO.Denkiyoho.amqp.SupplyCapacity": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity"
+        },
+        "JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast"
+        },
+        "JP.TEPCO.Denkiyoho.amqp.DemandActual": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual"
+        },
+        "JP.TEPCO.Denkiyoho.amqp.DemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast"
+        },
+        "JP.TEPCO.Denkiyoho.amqp.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info"
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.amqp.avro.binary": {
+      "messagegroupid": "JP.TEPCO.Denkiyoho.amqp.avro.binary",
+      "messages": {
+        "JP.TEPCO.Denkiyoho.amqp.SupplyCapacity": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.SupplyCapacity",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.SupplyCapacity",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.SupplyCapacity",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.amqp.DemandActual": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.DemandActual",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.DemandActual",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandActual",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.amqp.DemandForecast": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.DemandForecast",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.DemandForecast",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.DemandForecast",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.TEPCO.Denkiyoho.amqp.Info": {
+          "messageid": "JP.TEPCO.Denkiyoho.amqp.Info",
+          "basemessage": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.avro/schemas/JP.TEPCO.Denkiyoho.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -1072,8 +1498,96 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "jp.tepco.denkiyoho.SupplyCapacity",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD). This date is a stable key component for all records from the same operating day."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Record time component retained in the payload for dedupe and downstream interpretation. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while Kafka partitioning and CloudEvent subjects use the stable area_code identity. JSON Structure annotations: {\"pattern\": \"^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$\"}"
+                  },
+                  {
+                    "name": "peak_supply_capacity_mw",
+                    "type": "double",
+                    "doc": "Peak-time available supply capability for the Tokyo service area shown by TEPCO as ピーク時供給力(万kW). The bridge converts the published 10,000-kilowatt unit to megawatts by multiplying the source value by 10. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"MW\", \"unit\": \"MW\"}"
+                  },
+                  {
+                    "name": "peak_supply_capacity_jp_unit_value",
+                    "type": "int",
+                    "doc": "Original integer value from TEPCO's ピーク時供給力(万kW) header field. TEPCO publishes demand and supply values in 万kW, where one unit is 10,000 kilowatts, equal to 10 megawatts. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"万kW\", \"unit\": \"10MW\"}"
+                  },
+                  {
+                    "name": "peak_time_slot",
+                    "type": "string",
+                    "doc": "Local Japan Standard Time hour range from TEPCO's section 1 時間帯 column indicating the peak supply-capability time slot, normalized to an ASCII hyphen such as 13:00-14:00. JSON Structure annotations: {\"pattern\": \"^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$\"}"
+                  },
+                  {
+                    "name": "peak_reserve_margin_pct",
+                    "type": "double",
+                    "doc": "Peak-time reserve margin percentage from TEPCO's section 1 ピーク時予備率(%) column for the published peak supply-capability slot. JSON Structure annotations: {\"maximum\": 100, \"minimum\": 0, \"symbol\": \"%\", \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "peak_usage_pct",
+                    "type": "double",
+                    "doc": "Peak-time usage percentage from TEPCO's section 1 ピーク時使用率(%) column for the published peak supply-capability slot. JSON Structure annotations: {\"maximum\": 100, \"minimum\": 0, \"symbol\": \"%\", \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "daily_max_usage_pct",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Daily maximum usage percentage from TEPCO's section 4 最大使用率(%) summary row. The field is null when that section is absent or blank in the CSV. JSON Structure annotations: {\"maximum\": 100, \"minimum\": 0, \"symbol\": \"%\", \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "daily_max_usage_time_slot",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Local Japan Standard Time hour range from TEPCO's section 4 時間帯 column for the daily maximum usage percentage, normalized to an ASCII hyphen such as 4:00-5:00. The field is null when that section is absent or blank. JSON Structure annotations: {\"pattern\": \"^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$\"}"
+                  },
+                  {
+                    "name": "update_datetime",
+                    "type": "string",
+                    "doc": "Section 1 supply-capability information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 供給力情報更新日 and 供給力情報更新時刻."
+                  },
+                  {
+                    "name": "update_datetime_local",
+                    "type": "string",
+                    "doc": "Section 1 supply-capability information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 供給力情報更新日 and 供給力情報更新時刻 columns."
+                  },
+                  {
+                    "name": "area_code",
+                    "type": "string",
+                    "doc": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page."
+                  },
+                  {
+                    "name": "area_name_jp",
+                    "type": "string",
+                    "doc": "Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River."
+                  },
+                  {
+                    "name": "area_name_en",
+                    "type": "string",
+                    "doc": "English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto)."
+                  }
+                ],
+                "doc": "Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area."
+              }
             }
-          }
+          },
+          "defaultversionid": "2",
+          "format": "Avro/1.11.3"
         },
         "jp.tepco.denkiyoho.PeakDemandForecast": {
           "versions": {
@@ -1241,8 +1755,103 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "jp.tepco.denkiyoho.DemandActual",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. This is the second stable key component. JSON Structure annotations: {\"pattern\": \"^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics."
+                  },
+                  {
+                    "name": "datetime_local",
+                    "type": "string",
+                    "doc": "Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row."
+                  },
+                  {
+                    "name": "actual_demand_mw",
+                    "type": "double",
+                    "doc": "Actual electricity demand for the Tokyo service area, converted to megawatts from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column by multiplying by 10. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"MW\", \"unit\": \"MW\"}"
+                  },
+                  {
+                    "name": "actual_demand_jp_unit_value",
+                    "type": "int",
+                    "doc": "Original integer value from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column. Rows with 0 or blank actual-demand values are future or unavailable measurements and are skipped by the bridge. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"万kW\", \"unit\": \"10MW\"}"
+                  },
+                  {
+                    "name": "solar_generation_mw",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Solar generation actual value converted to megawatts from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"MW\", \"unit\": \"MW\"}"
+                  },
+                  {
+                    "name": "solar_generation_jp_unit_value",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Original integer solar generation actual value from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"万kW\", \"unit\": \"10MW\"}"
+                  },
+                  {
+                    "name": "solar_share_pct",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Solar generation percentage of electricity usage from TEPCO's section 5 太陽光発電量(電力使用量に対する割合)(%) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar-share cell. JSON Structure annotations: {\"maximum\": 100, \"minimum\": 0, \"symbol\": \"%\", \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "usage_pct",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandActual rows derived from section 3; it is null for five-minute rows derived from section 5. TEPCO may leave future-hour usage blank until actual demand is available. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"%\", \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "supply_capacity_mw",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"MW\", \"unit\": \"MW\"}"
+                  },
+                  {
+                    "name": "supply_capacity_jp_unit_value",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"万kW\", \"unit\": \"10MW\"}"
+                  },
+                  {
+                    "name": "area_code",
+                    "type": "string",
+                    "doc": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page."
+                  }
+                ],
+                "doc": "Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context."
+              }
             }
-          }
+          },
+          "defaultversionid": "2",
+          "format": "Avro/1.11.3"
         },
         "jp.tepco.denkiyoho.DemandForecast": {
           "versions": {
@@ -1317,6 +1926,203 @@
                     "doc": "Constant TEPCO area code."
                   }
                 ]
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "jp.tepco.denkiyoho.DemandForecast",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. This is the second stable key component. JSON Structure annotations: {\"pattern\": \"^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$\"}"
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics."
+                  },
+                  {
+                    "name": "datetime_local",
+                    "type": "string",
+                    "doc": "Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row."
+                  },
+                  {
+                    "name": "forecast_demand_mw",
+                    "type": "double",
+                    "doc": "Hourly forecast electricity demand for the Tokyo service area, converted to megawatts from TEPCO's section 3 予測値(万kW) column by multiplying by 10. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"MW\", \"unit\": \"MW\"}"
+                  },
+                  {
+                    "name": "forecast_demand_jp_unit_value",
+                    "type": "int",
+                    "doc": "Original integer value from TEPCO's section 3 予測値(万kW) hourly forecast column. The bridge uses this value in forecast de-duplication so revised forecasts for the same date and hour are emitted again. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"万kW\", \"unit\": \"10MW\"}"
+                  },
+                  {
+                    "name": "usage_pct",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3 and can be null when TEPCO leaves future-hour usage blank until actual demand is available. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"%\", \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "supply_capacity_mw",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"MW\", \"unit\": \"MW\"}"
+                  },
+                  {
+                    "name": "supply_capacity_jp_unit_value",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"万kW\", \"unit\": \"10MW\"}"
+                  },
+                  {
+                    "name": "area_code",
+                    "type": "string",
+                    "doc": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page."
+                  }
+                ],
+                "doc": "Hourly telemetry schema for TEPCO electricity demand forecasts in the Tokyo Electric Power Company service area, including usage and supply-capacity context from section 3."
+              }
+            }
+          },
+          "defaultversionid": "2",
+          "format": "Avro/1.11.3"
+        },
+        "JP.TEPCO.Denkiyoho.Info": {
+          "name": "Info",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "JP.TEPCO.Denkiyoho.Info",
+                "fields": [
+                  {
+                    "name": "info_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "city",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "City segment used in civic-events topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event category segment used in topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "price_area",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Energy market price area or bidding zone represented by this reference record, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GB settlement date for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "GB settlement period for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Electricity control area or utility service area code represented by this record when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "segment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ticketmaster classification segment used for wildcard topic routing, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "entity_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream entity identifier for reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream event identifier for event-scoped reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "venue_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable venue identifier for venue-scoped civic event topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope."
               }
             }
           }

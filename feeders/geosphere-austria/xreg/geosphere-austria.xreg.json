@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/at.geosphere.tawes"
+        "#/messagegroups/at.geosphere.tawes",
+        "#/messagegroups/at.geosphere.tawes.avro",
+        "#/messagegroups/at.geosphere.tawes.avro.binary"
       ],
       "description": "Kafka producer endpoint for GeoSphere Austria Weather CloudEvents on the `geosphere-austria-tawes` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/at.geosphere.tawes.mqtt"
+        "#/messagegroups/at.geosphere.tawes.mqtt",
+        "#/messagegroups/at.geosphere.tawes.mqtt.avro",
+        "#/messagegroups/at.geosphere.tawes.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for geosphere-austria."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/at.geosphere.tawes.amqp"
+        "#/messagegroups/at.geosphere.tawes.amqp",
+        "#/messagegroups/at.geosphere.tawes.amqp.avro",
+        "#/messagegroups/at.geosphere.tawes.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for geosphere-austria."
     }
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -105,6 +115,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -238,6 +252,144 @@
             }
           },
           "envelope": "CloudEvents/1.0"
+        }
+      }
+    },
+    "at.geosphere.tawes.avro": {
+      "messagegroupid": "at.geosphere.tawes.avro",
+      "messages": {
+        "at.geosphere.tawes.WeatherStation": {
+          "messageid": "at.geosphere.tawes.WeatherStation",
+          "basemessage": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherStation"
+        },
+        "at.geosphere.tawes.WeatherObservation": {
+          "messageid": "at.geosphere.tawes.WeatherObservation",
+          "basemessage": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherObservation"
+        }
+      }
+    },
+    "at.geosphere.tawes.avro.binary": {
+      "messagegroupid": "at.geosphere.tawes.avro.binary",
+      "messages": {
+        "at.geosphere.tawes.WeatherStation": {
+          "messageid": "at.geosphere.tawes.WeatherStation",
+          "basemessage": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "at.geosphere.tawes.WeatherObservation": {
+          "messageid": "at.geosphere.tawes.WeatherObservation",
+          "basemessage": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "at.geosphere.tawes.mqtt.avro": {
+      "messagegroupid": "at.geosphere.tawes.mqtt.avro",
+      "messages": {
+        "at.geosphere.tawes.mqtt.WeatherStation": {
+          "messageid": "at.geosphere.tawes.mqtt.WeatherStation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.mqtt/messages/at.geosphere.tawes.mqtt.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherStation"
+        },
+        "at.geosphere.tawes.mqtt.WeatherObservation": {
+          "messageid": "at.geosphere.tawes.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.mqtt/messages/at.geosphere.tawes.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherObservation"
+        }
+      }
+    },
+    "at.geosphere.tawes.mqtt.avro.binary": {
+      "messagegroupid": "at.geosphere.tawes.mqtt.avro.binary",
+      "messages": {
+        "at.geosphere.tawes.mqtt.WeatherStation": {
+          "messageid": "at.geosphere.tawes.mqtt.WeatherStation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.mqtt/messages/at.geosphere.tawes.mqtt.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "at.geosphere.tawes.mqtt.WeatherObservation": {
+          "messageid": "at.geosphere.tawes.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.mqtt/messages/at.geosphere.tawes.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "at.geosphere.tawes.amqp.avro": {
+      "messagegroupid": "at.geosphere.tawes.amqp.avro",
+      "messages": {
+        "at.geosphere.tawes.amqp.WeatherStation": {
+          "messageid": "at.geosphere.tawes.amqp.WeatherStation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.amqp/messages/at.geosphere.tawes.amqp.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherStation"
+        },
+        "at.geosphere.tawes.amqp.WeatherObservation": {
+          "messageid": "at.geosphere.tawes.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.amqp/messages/at.geosphere.tawes.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherObservation"
+        }
+      }
+    },
+    "at.geosphere.tawes.amqp.avro.binary": {
+      "messagegroupid": "at.geosphere.tawes.amqp.avro.binary",
+      "messages": {
+        "at.geosphere.tawes.amqp.WeatherStation": {
+          "messageid": "at.geosphere.tawes.amqp.WeatherStation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.amqp/messages/at.geosphere.tawes.amqp.WeatherStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "at.geosphere.tawes.amqp.WeatherObservation": {
+          "messageid": "at.geosphere.tawes.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/at.geosphere.tawes.amqp/messages/at.geosphere.tawes.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.avro/schemas/at.geosphere.tawes.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -631,7 +783,7 @@
         "at.geosphere.tawes.WeatherStation": {
           "name": "WeatherStation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -684,13 +836,65 @@
                 ],
                 "description": "Reference details for one station, monitoring site, or forecast area in the GeoSphere Austria Weather source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "at.geosphere.tawes.WeatherStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable GeoSphere Austria station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name from the GeoSphere metadata, for example 'WIEN HOHE WARTE' or 'INNSBRUCK FLUGHAFEN'. Mapped from the upstream 'name' field."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "WGS84 latitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lat' field. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "WGS84 longitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lon' field. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "altitude",
+                    "type": "double",
+                    "doc": "Station altitude above sea level in meters, sourced from the GeoSphere metadata 'altitude' field. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"meter\"}"
+                  },
+                  {
+                    "name": "state",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Austrian federal state (Bundesland) where the station is located, for example 'Wien', 'Tirol', 'Steiermark'. Sourced from the GeoSphere metadata 'state' field. Null when the metadata does not include a state."
+                  },
+                  {
+                    "name": "bundesland",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'bundesland' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference data for a GeoSphere Austria TAWES automatic weather station, including location, elevation, and federal state."
+              }
             }
           }
         },
         "at.geosphere.tawes.WeatherObservation": {
           "name": "WeatherObservation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -794,6 +998,99 @@
                   }
                 ],
                 "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "at.geosphere.tawes.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "GeoSphere Austria numeric station identifier for the observing station. Mapped from the upstream 'station' property in the GeoJSON features. JSON Structure annotations: {\"pattern\": \"^[0-9]+$\"}"
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC from the GeoSphere API 'timestamps' array, formatted as an ISO-8601 instant such as '2024-01-15T13:00:00+00:00'."
+                  },
+                  {
+                    "name": "temperature",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Air temperature (Lufttemperatur) in degrees Celsius over the 10-minute interval, from the GeoSphere TL parameter. Null when the station does not report this parameter. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"°C\", \"unit\": \"degree Celsius\"}"
+                  },
+                  {
+                    "name": "humidity",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Relative humidity (Relative Feuchte) as a percentage over the 10-minute interval, from the GeoSphere RF parameter. Null when not reported. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"%\", \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "precipitation",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Precipitation (Niederschlag) in millimeters accumulated during the 10-minute interval, from the GeoSphere RR parameter. Null when not reported. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"mm\", \"unit\": \"millimeter\"}"
+                  },
+                  {
+                    "name": "wind_direction",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Wind direction (Windrichtung) in degrees over the 10-minute interval, from the GeoSphere DD parameter. 0 indicates north, 90 east, 180 south, 270 west. Null when not reported. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "wind_speed",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Wind speed (Windgeschwindigkeit) in meters per second over the 10-minute interval, from the GeoSphere FF parameter. Null when not reported. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"m/s\", \"unit\": \"meter per second\"}"
+                  },
+                  {
+                    "name": "pressure",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Atmospheric pressure (Luftdruck) in hectopascals at station level over the 10-minute interval, from the GeoSphere P parameter. Null when not reported. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"hPa\", \"unit\": \"hectopascal\"}"
+                  },
+                  {
+                    "name": "sunshine_duration",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Sunshine duration (Sonnenscheindauer) in seconds during the 10-minute interval, from the GeoSphere SO parameter. Null when the station does not have a sunshine sensor (has_sunshine=false) or the value is missing. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"s\", \"unit\": \"second\"}"
+                  },
+                  {
+                    "name": "global_radiation",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Global radiation (Globalstrahlung) in watts per square meter during the 10-minute interval, from the GeoSphere GLOW parameter. Null when the station does not have a radiation sensor (has_global_radiation=false) or the value is missing. JSON Structure annotations: {\"nullable\": true, \"symbol\": \"W/m²\", \"unit\": \"watt per square meter\"}"
+                  },
+                  {
+                    "name": "bundesland",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'bundesland' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "10-minute weather observation from a GeoSphere Austria TAWES station, including temperature, humidity, precipitation, wind, pressure, sunshine duration, and global radiation."
               }
             }
           }

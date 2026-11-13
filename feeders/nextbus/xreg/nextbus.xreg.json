@@ -19,7 +19,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/nextbus.kafka"
+        "#/messagegroups/nextbus.kafka",
+        "#/messagegroups/nextbus.kafka.avro",
+        "#/messagegroups/nextbus.kafka.avro.binary"
       ],
       "description": "Kafka endpoint for Nextbus events. Per-message partition keys are declared on the messages of the nextbus.kafka overlay group and mirror each message's CloudEvents subject."
     },
@@ -41,7 +43,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/nextbus.mqtt"
+        "#/messagegroups/nextbus.mqtt",
+        "#/messagegroups/nextbus.mqtt.avro",
+        "#/messagegroups/nextbus.mqtt.avro.binary"
       ],
       "description": "MQTT/5.0 companion producer endpoint."
     },
@@ -62,7 +66,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/nextbus.amqp"
+        "#/messagegroups/nextbus.amqp",
+        "#/messagegroups/nextbus.amqp.avro",
+        "#/messagegroups/nextbus.amqp.avro.binary"
       ],
       "description": "AMQP/1.0 companion producer endpoint."
     }
@@ -88,6 +94,10 @@
             "time": {
               "value": "{timestamp}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -111,6 +121,10 @@
             "time": {
               "value": "{timestamp}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -134,6 +148,10 @@
             "time": {
               "value": "{timestamp}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -157,6 +175,10 @@
             "time": {
               "value": "{timestamp}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -332,6 +354,334 @@
           "protocol": "KAFKA",
           "protocoloptions": {
             "key": "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}"
+          }
+        }
+      }
+    },
+    "nextbus.avro": {
+      "messagegroupid": "nextbus.avro",
+      "messages": {
+        "nextbus.VehiclePosition": {
+          "messageid": "nextbus.VehiclePosition",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition"
+        },
+        "nextbus.RouteConfig": {
+          "messageid": "nextbus.RouteConfig",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig"
+        },
+        "nextbus.Schedule": {
+          "messageid": "nextbus.Schedule",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.Schedule",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule"
+        },
+        "nextbus.Message": {
+          "messageid": "nextbus.Message",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.Message",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message"
+        }
+      }
+    },
+    "nextbus.avro.binary": {
+      "messagegroupid": "nextbus.avro.binary",
+      "messages": {
+        "nextbus.VehiclePosition": {
+          "messageid": "nextbus.VehiclePosition",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.RouteConfig": {
+          "messageid": "nextbus.RouteConfig",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.Schedule": {
+          "messageid": "nextbus.Schedule",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.Schedule",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.Message": {
+          "messageid": "nextbus.Message",
+          "basemessage": "/messagegroups/nextbus/messages/nextbus.Message",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nextbus.mqtt.avro": {
+      "messagegroupid": "nextbus.mqtt.avro",
+      "messages": {
+        "nextbus.VehiclePosition.mqtt": {
+          "messageid": "nextbus.VehiclePosition.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.VehiclePosition.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition"
+        },
+        "nextbus.RouteConfig.mqtt": {
+          "messageid": "nextbus.RouteConfig.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.RouteConfig.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig"
+        },
+        "nextbus.Schedule.mqtt": {
+          "messageid": "nextbus.Schedule.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.Schedule.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule"
+        },
+        "nextbus.Message.mqtt": {
+          "messageid": "nextbus.Message.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.Message.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message"
+        }
+      }
+    },
+    "nextbus.mqtt.avro.binary": {
+      "messagegroupid": "nextbus.mqtt.avro.binary",
+      "messages": {
+        "nextbus.VehiclePosition.mqtt": {
+          "messageid": "nextbus.VehiclePosition.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.VehiclePosition.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.RouteConfig.mqtt": {
+          "messageid": "nextbus.RouteConfig.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.RouteConfig.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.Schedule.mqtt": {
+          "messageid": "nextbus.Schedule.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.Schedule.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.Message.mqtt": {
+          "messageid": "nextbus.Message.mqtt",
+          "basemessage": "/messagegroups/nextbus.mqtt/messages/nextbus.Message.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nextbus.amqp.avro": {
+      "messagegroupid": "nextbus.amqp.avro",
+      "messages": {
+        "nextbus.VehiclePosition.amqp": {
+          "messageid": "nextbus.VehiclePosition.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.VehiclePosition.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition"
+        },
+        "nextbus.RouteConfig.amqp": {
+          "messageid": "nextbus.RouteConfig.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.RouteConfig.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig"
+        },
+        "nextbus.Schedule.amqp": {
+          "messageid": "nextbus.Schedule.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.Schedule.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule"
+        },
+        "nextbus.Message.amqp": {
+          "messageid": "nextbus.Message.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.Message.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message"
+        }
+      }
+    },
+    "nextbus.amqp.avro.binary": {
+      "messagegroupid": "nextbus.amqp.avro.binary",
+      "messages": {
+        "nextbus.VehiclePosition.amqp": {
+          "messageid": "nextbus.VehiclePosition.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.VehiclePosition.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.RouteConfig.amqp": {
+          "messageid": "nextbus.RouteConfig.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.RouteConfig.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.Schedule.amqp": {
+          "messageid": "nextbus.Schedule.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.Schedule.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.Message.amqp": {
+          "messageid": "nextbus.Message.amqp",
+          "basemessage": "/messagegroups/nextbus.amqp/messages/nextbus.Message.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "nextbus.kafka.avro": {
+      "messagegroupid": "nextbus.kafka.avro",
+      "messages": {
+        "nextbus.kafka.VehiclePosition": {
+          "messageid": "nextbus.kafka.VehiclePosition",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition"
+        },
+        "nextbus.kafka.RouteConfig": {
+          "messageid": "nextbus.kafka.RouteConfig",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.RouteConfig",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig"
+        },
+        "nextbus.kafka.Schedule": {
+          "messageid": "nextbus.kafka.Schedule",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.Schedule",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule"
+        },
+        "nextbus.kafka.Message": {
+          "messageid": "nextbus.kafka.Message",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.Message",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message"
+        }
+      }
+    },
+    "nextbus.kafka.avro.binary": {
+      "messagegroupid": "nextbus.kafka.avro.binary",
+      "messages": {
+        "nextbus.kafka.VehiclePosition": {
+          "messageid": "nextbus.kafka.VehiclePosition",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.VehiclePosition",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.VehiclePosition",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.kafka.RouteConfig": {
+          "messageid": "nextbus.kafka.RouteConfig",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.RouteConfig",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.RouteConfig",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.kafka.Schedule": {
+          "messageid": "nextbus.kafka.Schedule",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.Schedule",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Schedule",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "nextbus.kafka.Message": {
+          "messageid": "nextbus.kafka.Message",
+          "basemessage": "/messagegroups/nextbus.kafka/messages/nextbus.kafka.Message",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/nextbus.avro/schemas/nextbus.Message",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
           }
         }
       }
@@ -532,6 +882,205 @@
                     "description": "message value from the Nextbus XML feed."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "nextbus.avro": {
+      "schemas": {
+        "nextbus.VehiclePosition": {
+          "name": "VehiclePosition",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "nextbus.VehiclePosition",
+                "fields": [
+                  {
+                    "name": "agency_id",
+                    "type": "string",
+                    "doc": "agency_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "route_tag",
+                    "type": "string",
+                    "doc": "route_tag value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "vehicle_id",
+                    "type": "string",
+                    "doc": "vehicle_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "stop_or_vehicle_id",
+                    "type": "string",
+                    "doc": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "event_type",
+                    "type": "string",
+                    "doc": "event_type value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "lat value from the Nextbus XML feed. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "lon value from the Nextbus XML feed. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "timestamp value from the Nextbus XML feed. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Nextbus XML feed event payload."
+              }
+            }
+          }
+        },
+        "nextbus.RouteConfig": {
+          "name": "RouteConfig",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "nextbus.RouteConfig",
+                "fields": [
+                  {
+                    "name": "agency_id",
+                    "type": "string",
+                    "doc": "agency_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "route_tag",
+                    "type": "string",
+                    "doc": "route_tag value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "stop_or_vehicle_id",
+                    "type": "string",
+                    "doc": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "event_type",
+                    "type": "string",
+                    "doc": "event_type value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "route_config",
+                    "type": "string",
+                    "doc": "route_config value from the Nextbus XML feed."
+                  }
+                ],
+                "doc": "Nextbus XML feed event payload."
+              }
+            }
+          }
+        },
+        "nextbus.Schedule": {
+          "name": "Schedule",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "nextbus.Schedule",
+                "fields": [
+                  {
+                    "name": "agency_id",
+                    "type": "string",
+                    "doc": "agency_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "route_tag",
+                    "type": "string",
+                    "doc": "route_tag value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "stop_or_vehicle_id",
+                    "type": "string",
+                    "doc": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "event_type",
+                    "type": "string",
+                    "doc": "event_type value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "schedule",
+                    "type": "string",
+                    "doc": "schedule value from the Nextbus XML feed."
+                  }
+                ],
+                "doc": "Nextbus XML feed event payload."
+              }
+            }
+          }
+        },
+        "nextbus.Message": {
+          "name": "Message",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "nextbus.Message",
+                "fields": [
+                  {
+                    "name": "agency_id",
+                    "type": "string",
+                    "doc": "agency_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "route_tag",
+                    "type": "string",
+                    "doc": "route_tag value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "stop_or_vehicle_id",
+                    "type": "string",
+                    "doc": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "event_type",
+                    "type": "string",
+                    "doc": "event_type value from the Nextbus XML feed."
+                  },
+                  {
+                    "name": "message",
+                    "type": "string",
+                    "doc": "message value from the Nextbus XML feed."
+                  }
+                ],
+                "doc": "Nextbus XML feed event payload."
               }
             }
           }

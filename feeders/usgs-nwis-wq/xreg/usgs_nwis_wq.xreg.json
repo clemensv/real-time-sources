@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/USGS.WaterQuality.Sites"
+        "#/messagegroups/USGS.WaterQuality.Sites",
+        "#/messagegroups/USGS.WaterQuality.Sites.avro",
+        "#/messagegroups/USGS.WaterQuality.Sites.avro.binary"
       ],
       "description": "Kafka producer endpoint for USGS NWIS Water Quality CloudEvents on the `usgs-nwis-wq` topic keyed by `{site_number}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/USGS.WaterQuality.Readings"
+        "#/messagegroups/USGS.WaterQuality.Readings",
+        "#/messagegroups/USGS.WaterQuality.Readings.avro",
+        "#/messagegroups/USGS.WaterQuality.Readings.avro.binary"
       ],
       "description": "Kafka producer endpoint for USGS NWIS Water Quality CloudEvents on the `usgs-nwis-wq` topic keyed by `{site_number}/{parameter_code}`."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/USGS.WaterQuality.Sites.mqtt",
-        "#/messagegroups/USGS.WaterQuality.Readings.mqtt"
+        "#/messagegroups/USGS.WaterQuality.Readings.mqtt",
+        "#/messagegroups/USGS.WaterQuality.Sites.mqtt.avro",
+        "#/messagegroups/USGS.WaterQuality.Sites.mqtt.avro.binary",
+        "#/messagegroups/USGS.WaterQuality.Readings.mqtt.avro",
+        "#/messagegroups/USGS.WaterQuality.Readings.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for usgs-nwis-wq CloudEvents using the documented UNS topic hierarchy."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/USGS.WaterQuality.Sites.amqp",
-        "#/messagegroups/USGS.WaterQuality.Readings.amqp"
+        "#/messagegroups/USGS.WaterQuality.Readings.amqp",
+        "#/messagegroups/USGS.WaterQuality.Sites.amqp.avro",
+        "#/messagegroups/USGS.WaterQuality.Sites.amqp.avro.binary",
+        "#/messagegroups/USGS.WaterQuality.Readings.amqp.avro",
+        "#/messagegroups/USGS.WaterQuality.Readings.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for usgs-nwis-wq CloudEvents on the configured broker address."
     }
@@ -109,6 +121,10 @@
             "subject": {
               "value": "{site_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -134,6 +150,10 @@
             "subject": {
               "value": "{site_number}/{parameter_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -238,6 +258,174 @@
                 "value": "{site_number}/{parameter_code}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.avro": {
+      "messagegroupid": "USGS.WaterQuality.Sites.avro",
+      "messages": {
+        "USGS.WaterQuality.Sites.MonitoringSite": {
+          "messageid": "USGS.WaterQuality.Sites.MonitoringSite",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.avro/schemas/USGS.WaterQuality.Sites.MonitoringSite"
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.avro.binary": {
+      "messagegroupid": "USGS.WaterQuality.Sites.avro.binary",
+      "messages": {
+        "USGS.WaterQuality.Sites.MonitoringSite": {
+          "messageid": "USGS.WaterQuality.Sites.MonitoringSite",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.avro/schemas/USGS.WaterQuality.Sites.MonitoringSite",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.avro": {
+      "messagegroupid": "USGS.WaterQuality.Readings.avro",
+      "messages": {
+        "USGS.WaterQuality.Readings.WaterQualityReading": {
+          "messageid": "USGS.WaterQuality.Readings.WaterQualityReading",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.avro/schemas/USGS.WaterQuality.Readings.WaterQualityReading"
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.avro.binary": {
+      "messagegroupid": "USGS.WaterQuality.Readings.avro.binary",
+      "messages": {
+        "USGS.WaterQuality.Readings.WaterQualityReading": {
+          "messageid": "USGS.WaterQuality.Readings.WaterQualityReading",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.avro/schemas/USGS.WaterQuality.Readings.WaterQualityReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.mqtt.avro": {
+      "messagegroupid": "USGS.WaterQuality.Sites.mqtt.avro",
+      "messages": {
+        "USGS.WaterQuality.Sites.mqtt.MonitoringSite": {
+          "messageid": "USGS.WaterQuality.Sites.mqtt.MonitoringSite",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Sites.mqtt/messages/USGS.WaterQuality.Sites.mqtt.MonitoringSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.avro/schemas/USGS.WaterQuality.Sites.MonitoringSite"
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.mqtt.avro.binary": {
+      "messagegroupid": "USGS.WaterQuality.Sites.mqtt.avro.binary",
+      "messages": {
+        "USGS.WaterQuality.Sites.mqtt.MonitoringSite": {
+          "messageid": "USGS.WaterQuality.Sites.mqtt.MonitoringSite",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Sites.mqtt/messages/USGS.WaterQuality.Sites.mqtt.MonitoringSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.avro/schemas/USGS.WaterQuality.Sites.MonitoringSite",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.amqp.avro": {
+      "messagegroupid": "USGS.WaterQuality.Sites.amqp.avro",
+      "messages": {
+        "USGS.WaterQuality.Sites.amqp.MonitoringSite": {
+          "messageid": "USGS.WaterQuality.Sites.amqp.MonitoringSite",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Sites.amqp/messages/USGS.WaterQuality.Sites.amqp.MonitoringSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.avro/schemas/USGS.WaterQuality.Sites.MonitoringSite"
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.amqp.avro.binary": {
+      "messagegroupid": "USGS.WaterQuality.Sites.amqp.avro.binary",
+      "messages": {
+        "USGS.WaterQuality.Sites.amqp.MonitoringSite": {
+          "messageid": "USGS.WaterQuality.Sites.amqp.MonitoringSite",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Sites.amqp/messages/USGS.WaterQuality.Sites.amqp.MonitoringSite",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.avro/schemas/USGS.WaterQuality.Sites.MonitoringSite",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.mqtt.avro": {
+      "messagegroupid": "USGS.WaterQuality.Readings.mqtt.avro",
+      "messages": {
+        "USGS.WaterQuality.Readings.mqtt.WaterQualityReading": {
+          "messageid": "USGS.WaterQuality.Readings.mqtt.WaterQualityReading",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Readings.mqtt/messages/USGS.WaterQuality.Readings.mqtt.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.avro/schemas/USGS.WaterQuality.Readings.WaterQualityReading"
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.mqtt.avro.binary": {
+      "messagegroupid": "USGS.WaterQuality.Readings.mqtt.avro.binary",
+      "messages": {
+        "USGS.WaterQuality.Readings.mqtt.WaterQualityReading": {
+          "messageid": "USGS.WaterQuality.Readings.mqtt.WaterQualityReading",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Readings.mqtt/messages/USGS.WaterQuality.Readings.mqtt.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.avro/schemas/USGS.WaterQuality.Readings.WaterQualityReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.amqp.avro": {
+      "messagegroupid": "USGS.WaterQuality.Readings.amqp.avro",
+      "messages": {
+        "USGS.WaterQuality.Readings.amqp.WaterQualityReading": {
+          "messageid": "USGS.WaterQuality.Readings.amqp.WaterQualityReading",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Readings.amqp/messages/USGS.WaterQuality.Readings.amqp.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.avro/schemas/USGS.WaterQuality.Readings.WaterQualityReading"
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.amqp.avro.binary": {
+      "messagegroupid": "USGS.WaterQuality.Readings.amqp.avro.binary",
+      "messages": {
+        "USGS.WaterQuality.Readings.amqp.WaterQualityReading": {
+          "messageid": "USGS.WaterQuality.Readings.amqp.WaterQualityReading",
+          "basemessage": "/messagegroups/USGS.WaterQuality.Readings.amqp/messages/USGS.WaterQuality.Readings.amqp.WaterQualityReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.avro/schemas/USGS.WaterQuality.Readings.WaterQualityReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -379,6 +567,192 @@
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.avro": {
+      "schemas": {
+        "USGS.WaterQuality.Sites.MonitoringSite": {
+          "name": "MonitoringSite",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.WaterQuality.Sites.MonitoringSite",
+                "fields": [
+                  {
+                    "name": "site_number",
+                    "type": "string",
+                    "doc": "USGS site identification number. A unique 8-to-15-digit number assigned by the USGS to each monitoring location (e.g. '01646500')."
+                  },
+                  {
+                    "name": "site_name",
+                    "type": "string",
+                    "doc": "Official USGS station name describing the monitoring location (e.g. 'POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA')."
+                  },
+                  {
+                    "name": "agency_code",
+                    "type": "string",
+                    "doc": "Code identifying the agency responsible for the site. Typically 'USGS' for United States Geological Survey."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Decimal latitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Decimal longitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "site_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "USGS site type code indicating the category of the monitoring location. Common values include 'ST' (stream), 'LK' (lake), 'GW' (groundwater), 'ES' (estuary). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Two-digit FIPS state code for the state or territory where the site is located (e.g. '24' for Maryland). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "county_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Five-digit FIPS county code for the county where the site is located (e.g. '24031' for Montgomery County, MD). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "huc_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Hydrologic Unit Code (HUC) identifying the watershed or drainage basin containing the site. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "USGS water quality monitoring site. Describes a physical surface-water or groundwater monitoring location equipped with continuous water quality sensors. Site metadata is extracted from the WaterML 2.0 JSON response sourceInfo block returned by the USGS Instantaneous Values Service."
+              }
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.avro": {
+      "schemas": {
+        "USGS.WaterQuality.Readings.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "USGS.WaterQuality.Readings.WaterQualityReading",
+                "fields": [
+                  {
+                    "name": "site_number",
+                    "type": "string",
+                    "doc": "USGS site identification number for the monitoring location that produced this reading (e.g. '01646500')."
+                  },
+                  {
+                    "name": "site_name",
+                    "type": "string",
+                    "doc": "Official USGS station name for the monitoring location."
+                  },
+                  {
+                    "name": "parameter_code",
+                    "type": "string",
+                    "doc": "Five-digit USGS parameter code identifying the measured quantity. Key water quality codes: 00010 (water temperature °C), 00300 (dissolved oxygen mg/L), 00400 (pH), 00095 (specific conductance µS/cm), 63680 (turbidity FNU), 99133 (nitrate+nitrite mg/L as N)."
+                  },
+                  {
+                    "name": "parameter_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the measured parameter as provided in the USGS variable description (e.g. 'Temperature, water, degrees Celsius')."
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Numeric sensor reading for the parameter at the given date_time. Null when the sensor did not return a valid numeric value (e.g. equipment malfunction, ice-affected, or the USGS noDataValue sentinel -999999.0). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "unit",
+                    "type": "string",
+                    "doc": "Unit of measurement for the reading as reported by the USGS (e.g. 'deg C', 'mg/l', 'uS/cm @25C', 'FNU', 'mg/l as N')."
+                  },
+                  {
+                    "name": "qualifier",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "USGS data qualifier code indicating the quality or status of the reading. Common values: 'P' (provisional), 'A' (approved), 'e' (estimated). Null when no qualifier is provided. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "date_time",
+                    "type": "string",
+                    "doc": "ISO 8601 date-time string of the observation in UTC (e.g. '2024-11-15T16:45:00+00:00'). Converted from the site-local timestamp using the timezone information provided in the WaterML 2.0 response."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A single water quality observation from a USGS continuous monitoring sensor. The USGS Instantaneous Values Service returns time series of sensor readings in WaterML 2.0 JSON format. Each reading represents one measurement at a specific date_time for one parameter at one site."
               }
             }
           }

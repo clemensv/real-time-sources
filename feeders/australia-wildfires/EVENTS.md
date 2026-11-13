@@ -1,10 +1,10 @@
-# Australian Wildfires feeder Events
+# Australian Wildfires Events
 
 Australia Wildfires publishes bushfire incident status updates from Australian emergency-services incident feeds for Australian wildfire incidents. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
-- **Event types:** 1 documented event type (3 transport bindings in the manifest).
+- **Event types:** 1 documented event type (9 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{state}/{incident_id}` identifies the resource each event is about.
@@ -88,7 +88,7 @@ Each event identifies the real-world resource with `{state}/{incident_id}`. `{st
 - **`state`** (string, required): Australian state abbreviation indicating which emergency service reported this incident. One of 'NSW' (New South Wales Rural Fire Service), 'VIC' (VicEmergency / Country Fire Authority / Fire Rescue Victoria), or 'QLD' (Queensland Fire Department).
 - **`title`** (string, required): Human-readable title or headline for the incident as provided by the source agency. NSW: location-based title from the RFS feed (e.g. '(GWYDIR HWY), MATHESON'). VIC: warning name or sourceTitle from VicEmergency. QLD: WarningTitle from the QFD feed.
 - **`alert_level`** (string, required): Fire danger alert level as classified by the issuing agency. Common values across states: 'Advice' (fire is under control or low threat), 'Watch and Act' (conditions are changing, prepare to leave), 'Emergency Warning' (immediate danger, take action now). NSW uses 'category' field, VIC uses 'action' or category1, QLD uses 'WarningLevel'.
-- **`status`** (string, required): Topic-safe lowercase-kebab operational status for the incident (e.g. under-control, being-controlled, out-of-control, unknown). The MQTT feeder maps missing upstream status values to unknown so the {status} topic segment is never null or empty. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`status`** (string or null, required): Topic-safe lowercase-kebab operational status for the incident (e.g. under-control, being-controlled, out-of-control, unknown). The MQTT feeder maps missing upstream status values to unknown so the {status} topic segment is never null or empty. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
 - **`location`** (string or null, optional): Human-readable location description for the incident. NSW: full location string extracted from the HTML description (e.g. 'B76 (GWYDIR HWY), MATHESON 2370'). VIC: locality names from the location field. QLD: derived from the WarningTitle or Header text.
 - **`latitude`** (double or null, optional, degree (\u00b0)): Latitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry. Negative values indicate Southern Hemisphere.
 - **`longitude`** (double or null, optional, degree (\u00b0)): Longitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry.
@@ -136,7 +136,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -147,3 +151,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/australia_wildfires.xreg.json`](xreg/australia_wildfires.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

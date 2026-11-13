@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Ticketmaster.Events"
+        "#/messagegroups/Ticketmaster.Events",
+        "#/messagegroups/Ticketmaster.Events.avro",
+        "#/messagegroups/Ticketmaster.Events.avro.binary"
       ]
     },
     "Ticketmaster.Reference.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Ticketmaster.Reference"
+        "#/messagegroups/Ticketmaster.Reference",
+        "#/messagegroups/Ticketmaster.Reference.avro",
+        "#/messagegroups/Ticketmaster.Reference.avro.binary"
       ]
     },
     "Ticketmaster.Events.Mqtt": {
@@ -61,7 +65,11 @@
       },
       "messagegroups": [
         "#/messagegroups/Ticketmaster.Events.mqtt",
-        "#/messagegroups/Ticketmaster.Reference.mqtt"
+        "#/messagegroups/Ticketmaster.Reference.mqtt",
+        "#/messagegroups/Ticketmaster.Events.mqtt.avro",
+        "#/messagegroups/Ticketmaster.Events.mqtt.avro.binary",
+        "#/messagegroups/Ticketmaster.Reference.mqtt.avro",
+        "#/messagegroups/Ticketmaster.Reference.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for ticketmaster."
     },
@@ -88,7 +96,11 @@
       },
       "messagegroups": [
         "#/messagegroups/Ticketmaster.Events.amqp",
-        "#/messagegroups/Ticketmaster.Reference.amqp"
+        "#/messagegroups/Ticketmaster.Reference.amqp",
+        "#/messagegroups/Ticketmaster.Events.amqp.avro",
+        "#/messagegroups/Ticketmaster.Events.amqp.avro.binary",
+        "#/messagegroups/Ticketmaster.Reference.amqp.avro",
+        "#/messagegroups/Ticketmaster.Reference.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for ticketmaster."
     }
@@ -115,6 +127,10 @@
             "time": {
               "value": "{start_datetime_utc}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -139,6 +155,10 @@
             "subject": {
               "value": "{entity_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -159,6 +179,10 @@
             "subject": {
               "value": "{entity_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -179,6 +203,10 @@
             "subject": {
               "value": "{entity_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -198,6 +226,10 @@
             "subject": {
               "value": "{entity_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -375,6 +407,336 @@
                 "value": "{entity_id}",
                 "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "Ticketmaster.Events.avro": {
+      "messagegroupid": "Ticketmaster.Events.avro",
+      "messages": {
+        "Ticketmaster.Events.Event": {
+          "messageid": "Ticketmaster.Events.Event",
+          "basemessage": "/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Events.Event"
+        }
+      }
+    },
+    "Ticketmaster.Events.avro.binary": {
+      "messagegroupid": "Ticketmaster.Events.avro.binary",
+      "messages": {
+        "Ticketmaster.Events.Event": {
+          "messageid": "Ticketmaster.Events.Event",
+          "basemessage": "/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Events.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Ticketmaster.Reference.avro": {
+      "messagegroupid": "Ticketmaster.Reference.avro",
+      "messages": {
+        "Ticketmaster.Reference.Venue": {
+          "messageid": "Ticketmaster.Reference.Venue",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Venue"
+        },
+        "Ticketmaster.Reference.Attraction": {
+          "messageid": "Ticketmaster.Reference.Attraction",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Attraction"
+        },
+        "Ticketmaster.Reference.Classification": {
+          "messageid": "Ticketmaster.Reference.Classification",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Classification"
+        },
+        "Ticketmaster.Reference.Info": {
+          "messageid": "Ticketmaster.Reference.Info",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Info"
+        }
+      }
+    },
+    "Ticketmaster.Reference.avro.binary": {
+      "messagegroupid": "Ticketmaster.Reference.avro.binary",
+      "messages": {
+        "Ticketmaster.Reference.Venue": {
+          "messageid": "Ticketmaster.Reference.Venue",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Venue",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.Attraction": {
+          "messageid": "Ticketmaster.Reference.Attraction",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Attraction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.Classification": {
+          "messageid": "Ticketmaster.Reference.Classification",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Classification",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.Info": {
+          "messageid": "Ticketmaster.Reference.Info",
+          "basemessage": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Ticketmaster.Events.mqtt.avro": {
+      "messagegroupid": "Ticketmaster.Events.mqtt.avro",
+      "messages": {
+        "Ticketmaster.Events.mqtt.Event": {
+          "messageid": "Ticketmaster.Events.mqtt.Event",
+          "basemessage": "/messagegroups/Ticketmaster.Events.mqtt/messages/Ticketmaster.Events.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Events.Event"
+        }
+      }
+    },
+    "Ticketmaster.Events.mqtt.avro.binary": {
+      "messagegroupid": "Ticketmaster.Events.mqtt.avro.binary",
+      "messages": {
+        "Ticketmaster.Events.mqtt.Event": {
+          "messageid": "Ticketmaster.Events.mqtt.Event",
+          "basemessage": "/messagegroups/Ticketmaster.Events.mqtt/messages/Ticketmaster.Events.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Events.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Ticketmaster.Events.amqp.avro": {
+      "messagegroupid": "Ticketmaster.Events.amqp.avro",
+      "messages": {
+        "Ticketmaster.Events.amqp.Event": {
+          "messageid": "Ticketmaster.Events.amqp.Event",
+          "basemessage": "/messagegroups/Ticketmaster.Events.amqp/messages/Ticketmaster.Events.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Events.Event"
+        }
+      }
+    },
+    "Ticketmaster.Events.amqp.avro.binary": {
+      "messagegroupid": "Ticketmaster.Events.amqp.avro.binary",
+      "messages": {
+        "Ticketmaster.Events.amqp.Event": {
+          "messageid": "Ticketmaster.Events.amqp.Event",
+          "basemessage": "/messagegroups/Ticketmaster.Events.amqp/messages/Ticketmaster.Events.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Events.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Ticketmaster.Reference.mqtt.avro": {
+      "messagegroupid": "Ticketmaster.Reference.mqtt.avro",
+      "messages": {
+        "Ticketmaster.Reference.mqtt.Venue": {
+          "messageid": "Ticketmaster.Reference.mqtt.Venue",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Venue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Venue"
+        },
+        "Ticketmaster.Reference.mqtt.Attraction": {
+          "messageid": "Ticketmaster.Reference.mqtt.Attraction",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Attraction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Attraction"
+        },
+        "Ticketmaster.Reference.mqtt.Classification": {
+          "messageid": "Ticketmaster.Reference.mqtt.Classification",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Classification",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Classification"
+        },
+        "Ticketmaster.Reference.mqtt.Info": {
+          "messageid": "Ticketmaster.Reference.mqtt.Info",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Info"
+        }
+      }
+    },
+    "Ticketmaster.Reference.mqtt.avro.binary": {
+      "messagegroupid": "Ticketmaster.Reference.mqtt.avro.binary",
+      "messages": {
+        "Ticketmaster.Reference.mqtt.Venue": {
+          "messageid": "Ticketmaster.Reference.mqtt.Venue",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Venue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Venue",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.mqtt.Attraction": {
+          "messageid": "Ticketmaster.Reference.mqtt.Attraction",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Attraction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Attraction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.mqtt.Classification": {
+          "messageid": "Ticketmaster.Reference.mqtt.Classification",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Classification",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Classification",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.mqtt.Info": {
+          "messageid": "Ticketmaster.Reference.mqtt.Info",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.mqtt/messages/Ticketmaster.Reference.mqtt.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Ticketmaster.Reference.amqp.avro": {
+      "messagegroupid": "Ticketmaster.Reference.amqp.avro",
+      "messages": {
+        "Ticketmaster.Reference.amqp.Venue": {
+          "messageid": "Ticketmaster.Reference.amqp.Venue",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Venue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Venue"
+        },
+        "Ticketmaster.Reference.amqp.Attraction": {
+          "messageid": "Ticketmaster.Reference.amqp.Attraction",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Attraction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Attraction"
+        },
+        "Ticketmaster.Reference.amqp.Classification": {
+          "messageid": "Ticketmaster.Reference.amqp.Classification",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Classification",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Classification"
+        },
+        "Ticketmaster.Reference.amqp.Info": {
+          "messageid": "Ticketmaster.Reference.amqp.Info",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Info"
+        }
+      }
+    },
+    "Ticketmaster.Reference.amqp.avro.binary": {
+      "messagegroupid": "Ticketmaster.Reference.amqp.avro.binary",
+      "messages": {
+        "Ticketmaster.Reference.amqp.Venue": {
+          "messageid": "Ticketmaster.Reference.amqp.Venue",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Venue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Venue",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.amqp.Attraction": {
+          "messageid": "Ticketmaster.Reference.amqp.Attraction",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Attraction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Attraction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.amqp.Classification": {
+          "messageid": "Ticketmaster.Reference.amqp.Classification",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Classification",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Classification",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Ticketmaster.Reference.amqp.Info": {
+          "messageid": "Ticketmaster.Reference.amqp.Info",
+          "basemessage": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Info",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Ticketmaster.avro/schemas/Ticketmaster.Reference.Info",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -969,6 +1331,132 @@
                     "doc": "Human-readable primary subgenre name."
                   }
                 ]
+              }
+            }
+          }
+        },
+        "Ticketmaster.Reference.Info": {
+          "name": "Info",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Ticketmaster.Reference.Info",
+                "fields": [
+                  {
+                    "name": "info_id",
+                    "type": "string",
+                    "doc": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "city",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "City segment used in civic-events topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event category segment used in topic routing, or null when not applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "price_area",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Energy market price area or bidding zone represented by this reference record, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GB settlement date for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "settlement_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "GB settlement period for Elexon retained information topics when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Electricity control area or utility service area code represented by this record when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "segment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ticketmaster classification segment used for wildcard topic routing, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "entity_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream entity identifier for reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable upstream event identifier for event-scoped reference topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "venue_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable venue identifier for venue-scoped civic event topics, when applicable. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope."
               }
             }
           }

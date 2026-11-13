@@ -1,10 +1,10 @@
-# NOAA NDBC feeder Events
+# NOAA NDBC Events
 
-MQTT 5 variant of noaa-ndbc events with UNS topics for wildcard subscribers.
+<sub>buoy observations · Kafka · MQTT · AMQP · <a href="https://www.ndbc.noaa.gov/">upstream</a> · <a href="https://www.ndbc.noaa.gov/realtime.shtml">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 9 documented event types (27 transport bindings in the manifest).
+- **Event types:** 9 documented event types (81 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 8 telemetry event types.
 - **Identity:** `{station_id}` identifies the resource each event is about.
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -102,7 +102,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`pressure_tendency`** (double or null, optional, hPa): Pressure tendency — the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals.
 - **`visibility`** (double or null, optional, [nmi_i] (nmi)): Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles.
 - **`tide`** (double or null, optional, [ft_i] (ft)): Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -153,7 +153,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -167,7 +167,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`latitude`** (double or null, optional, deg): Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere.
 - **`longitude`** (double or null, optional, deg): Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere.
 - **`timezone`** (string or null, optional): Single-letter time-zone code carried in the NDBC station table for display and forecast products.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -208,7 +208,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/solar-radiation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -219,7 +219,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`shortwave_radiation_licor`** (double or null, optional, W/m2): Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter.
 - **`shortwave_radiation_eppley`** (double or null, optional, W/m2): Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter.
 - **`longwave_radiation`** (double or null, optional, W/m2): Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -257,7 +257,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/oceanographic`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -275,7 +275,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`turbidity`** (double or null, optional, FTU): Turbidity from the TURB column. Unit: Formazin Turbidity Units.
 - **`ph`** (double or null, optional): Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless.
 - **`redox_potential`** (double or null, optional, mV): Oxidation-reduction potential of seawater from the EH column. Unit: millivolts.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -320,7 +320,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/dart-measurement`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -330,7 +330,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file.
 - **`measurement_type_code`** (integer, required): Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement.
 - **`water_column_height`** (double, required, m): Height of the measured water column from the HEIGHT column in the DART file. Unit: meters.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -367,7 +367,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/continuous-wind`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -380,7 +380,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`gust_direction`** (double or null, optional, deg (°)): Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true.
 - **`gust`** (double or null, optional, m/s): Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second.
 - **`gust_time_code`** (string or null, optional): HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day. Constraints: pattern `^[0-9]{4}$`.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -420,7 +420,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/supplemental`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -433,7 +433,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`highest_wind_speed`** (double or null, optional, m/s): Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second.
 - **`highest_wind_direction`** (double or null, optional, deg (°)): Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true.
 - **`highest_wind_time_code`** (string or null, optional): HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day. Constraints: pattern `^[0-9]{4}$`.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -473,7 +473,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/detailed-wave-summary`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -491,7 +491,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`steepness`** (string or null, optional): Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP.
 - **`average_wave_period`** (double or null, optional, s): Average wave period from the APD column. Unit: seconds.
 - **`mean_wave_direction`** (double or null, optional, deg (°)): Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -536,7 +536,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 | `MQTT/5.0` | topic `maritime/us/noaa/noaa-ndbc/{region}/{station_id}/hourly-rain`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}`; application properties region `{region}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/noaa-ndbc`, message subject `{station_id}` |
 
 #### Payload
 
@@ -545,7 +545,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): NDBC station identifier for the station publishing the .rain realtime2 file.
 - **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file.
 - **`accumulation`** (double or null, optional, mm): Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters.
-- **`region`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
+- **`region`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -576,7 +576,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -587,3 +591,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/noaa-ndbc.xreg.json`](xreg/noaa-ndbc.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/FR.Paris.OpenData.Velo"
+        "#/messagegroups/FR.Paris.OpenData.Velo",
+        "#/messagegroups/FR.Paris.OpenData.Velo.avro",
+        "#/messagegroups/FR.Paris.OpenData.Velo.avro.binary"
       ],
       "description": "Kafka producer endpoint for Paris Bicycle Counters CloudEvents on the `paris-bicycle-counters` topic keyed by `{counter_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/FR.Paris.OpenData.Velo.mqtt"
+        "#/messagegroups/FR.Paris.OpenData.Velo.mqtt",
+        "#/messagegroups/FR.Paris.OpenData.Velo.mqtt.avro",
+        "#/messagegroups/FR.Paris.OpenData.Velo.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for Paris Bicycle Counters CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
@@ -66,7 +70,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/FR.Paris.OpenData.Velo.amqp"
+        "#/messagegroups/FR.Paris.OpenData.Velo.amqp",
+        "#/messagegroups/FR.Paris.OpenData.Velo.amqp.avro",
+        "#/messagegroups/FR.Paris.OpenData.Velo.amqp.avro.binary"
       ]
     }
   },
@@ -90,6 +96,10 @@
             "id": {
               "value": "{ce_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -117,6 +127,10 @@
             "time": {
               "value": "{date}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -199,6 +213,144 @@
             }
           },
           "messageid": "FR.Paris.OpenData.Velo.amqp.BicycleCount"
+        }
+      }
+    },
+    "FR.Paris.OpenData.Velo.avro": {
+      "messagegroupid": "FR.Paris.OpenData.Velo.avro",
+      "messages": {
+        "FR.Paris.OpenData.Velo.Counter": {
+          "messageid": "FR.Paris.OpenData.Velo.Counter",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.Counter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.Counter"
+        },
+        "FR.Paris.OpenData.Velo.BicycleCount": {
+          "messageid": "FR.Paris.OpenData.Velo.BicycleCount",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.BicycleCount"
+        }
+      }
+    },
+    "FR.Paris.OpenData.Velo.avro.binary": {
+      "messagegroupid": "FR.Paris.OpenData.Velo.avro.binary",
+      "messages": {
+        "FR.Paris.OpenData.Velo.Counter": {
+          "messageid": "FR.Paris.OpenData.Velo.Counter",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.Counter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.Counter",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FR.Paris.OpenData.Velo.BicycleCount": {
+          "messageid": "FR.Paris.OpenData.Velo.BicycleCount",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.BicycleCount",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "FR.Paris.OpenData.Velo.mqtt.avro": {
+      "messagegroupid": "FR.Paris.OpenData.Velo.mqtt.avro",
+      "messages": {
+        "FR.Paris.OpenData.Velo.mqtt.Counter": {
+          "messageid": "FR.Paris.OpenData.Velo.mqtt.Counter",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.mqtt/messages/FR.Paris.OpenData.Velo.mqtt.Counter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.Counter"
+        },
+        "FR.Paris.OpenData.Velo.mqtt.BicycleCount": {
+          "messageid": "FR.Paris.OpenData.Velo.mqtt.BicycleCount",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.mqtt/messages/FR.Paris.OpenData.Velo.mqtt.BicycleCount",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.BicycleCount"
+        }
+      }
+    },
+    "FR.Paris.OpenData.Velo.mqtt.avro.binary": {
+      "messagegroupid": "FR.Paris.OpenData.Velo.mqtt.avro.binary",
+      "messages": {
+        "FR.Paris.OpenData.Velo.mqtt.Counter": {
+          "messageid": "FR.Paris.OpenData.Velo.mqtt.Counter",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.mqtt/messages/FR.Paris.OpenData.Velo.mqtt.Counter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.Counter",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FR.Paris.OpenData.Velo.mqtt.BicycleCount": {
+          "messageid": "FR.Paris.OpenData.Velo.mqtt.BicycleCount",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.mqtt/messages/FR.Paris.OpenData.Velo.mqtt.BicycleCount",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.BicycleCount",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "FR.Paris.OpenData.Velo.amqp.avro": {
+      "messagegroupid": "FR.Paris.OpenData.Velo.amqp.avro",
+      "messages": {
+        "FR.Paris.OpenData.Velo.amqp.Counter": {
+          "messageid": "FR.Paris.OpenData.Velo.amqp.Counter",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.amqp/messages/FR.Paris.OpenData.Velo.amqp.Counter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.Counter"
+        },
+        "FR.Paris.OpenData.Velo.amqp.BicycleCount": {
+          "messageid": "FR.Paris.OpenData.Velo.amqp.BicycleCount",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.amqp/messages/FR.Paris.OpenData.Velo.amqp.BicycleCount",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.BicycleCount"
+        }
+      }
+    },
+    "FR.Paris.OpenData.Velo.amqp.avro.binary": {
+      "messagegroupid": "FR.Paris.OpenData.Velo.amqp.avro.binary",
+      "messages": {
+        "FR.Paris.OpenData.Velo.amqp.Counter": {
+          "messageid": "FR.Paris.OpenData.Velo.amqp.Counter",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.amqp/messages/FR.Paris.OpenData.Velo.amqp.Counter",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.Counter",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "FR.Paris.OpenData.Velo.amqp.BicycleCount": {
+          "messageid": "FR.Paris.OpenData.Velo.amqp.BicycleCount",
+          "basemessage": "/messagegroups/FR.Paris.OpenData.Velo.amqp/messages/FR.Paris.OpenData.Velo.amqp.BicycleCount",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.avro/schemas/FR.Paris.OpenData.Velo.BicycleCount",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -364,6 +516,142 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "FR.Paris.OpenData.Velo.avro": {
+      "schemas": {
+        "FR.Paris.OpenData.Velo.Counter": {
+          "name": "Counter",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "FR.Paris.OpenData.Velo.Counter",
+                "fields": [
+                  {
+                    "name": "counter_id",
+                    "type": "string",
+                    "doc": "Unique identifier for the counting channel, combining the site ID and channel ID (mapped from 'id_compteur'). JSON Structure annotations: {\"alternates\": [{\"description\": \"Original French field name in the Paris Open Data API.\", \"name\": \"id_compteur\"}]}"
+                  },
+                  {
+                    "name": "counter_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur'). JSON Structure annotations: {\"alternates\": [{\"description\": \"Original French field name in the Paris Open Data API.\", \"name\": \"nom_compteur\"}]}"
+                  },
+                  {
+                    "name": "channel_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Directional channel label for the counter, e.g. 'SE-NO' or 'E-O' (mapped from 'channel_name'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "installation_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Date when the counter was installed, in ISO 8601 date format (YYYY-MM-DD). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the counter location in decimal degrees (WGS 84). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the counter location in decimal degrees (WGS 84). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ce_id",
+                    "type": "string",
+                    "doc": "Deterministic CloudEvents id for the retained counter reference record."
+                  }
+                ],
+                "doc": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "FR.Paris.OpenData.Velo.BicycleCount": {
+          "name": "BicycleCount",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "FR.Paris.OpenData.Velo.BicycleCount",
+                "fields": [
+                  {
+                    "name": "counter_id",
+                    "type": "string",
+                    "doc": "Unique identifier for the counting channel (mapped from 'id_compteur'). JSON Structure annotations: {\"alternates\": [{\"description\": \"Original French field name in the Paris Open Data API.\", \"name\": \"id_compteur\"}]}"
+                  },
+                  {
+                    "name": "counter_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur'). JSON Structure annotations: {\"alternates\": [{\"description\": \"Original French field name in the Paris Open Data API.\", \"name\": \"nom_compteur\"}]}"
+                  },
+                  {
+                    "name": "count",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of bicycles counted during the one-hour window (mapped from 'sum_counts'). JSON Structure annotations: {\"alternates\": [{\"description\": \"Original French field name in the Paris Open Data API.\", \"name\": \"sum_counts\"}]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Start of the one-hour counting window in ISO 8601 format with timezone offset."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the counter location in decimal degrees (WGS 84). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the counter location in decimal degrees (WGS 84). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ce_id",
+                    "type": "string",
+                    "doc": "Deterministic CloudEvents id composed from counter_id and hourly count date for subscriber deduplication."
+                  }
+                ],
+                "doc": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value."
               }
             }
           }

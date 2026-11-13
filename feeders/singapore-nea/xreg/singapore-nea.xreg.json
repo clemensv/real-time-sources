@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/SG.Gov.NEA.Weather"
+        "#/messagegroups/SG.Gov.NEA.Weather",
+        "#/messagegroups/SG.Gov.NEA.Weather.avro",
+        "#/messagegroups/SG.Gov.NEA.Weather.avro.binary"
       ],
       "description": "Kafka producer endpoint for Singapore NEA Environment CloudEvents on the `singapore-nea` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/SG.Gov.NEA.AirQuality"
+        "#/messagegroups/SG.Gov.NEA.AirQuality",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.avro",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.avro.binary"
       ],
       "description": "Kafka producer endpoint for Singapore NEA Environment CloudEvents on the `singapore-nea-airquality` topic keyed by `{region}`."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/SG.Gov.NEA.Weather.mqtt",
-        "#/messagegroups/SG.Gov.NEA.AirQuality.mqtt"
+        "#/messagegroups/SG.Gov.NEA.AirQuality.mqtt",
+        "#/messagegroups/SG.Gov.NEA.Weather.mqtt.avro",
+        "#/messagegroups/SG.Gov.NEA.Weather.mqtt.avro.binary",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.mqtt.avro",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for singapore-nea CloudEvents."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/SG.Gov.NEA.Weather.amqp",
-        "#/messagegroups/SG.Gov.NEA.AirQuality.amqp"
+        "#/messagegroups/SG.Gov.NEA.AirQuality.amqp",
+        "#/messagegroups/SG.Gov.NEA.Weather.amqp.avro",
+        "#/messagegroups/SG.Gov.NEA.Weather.amqp.avro.binary",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.amqp.avro",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for singapore-nea CloudEvents."
     }
@@ -107,6 +119,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -126,6 +142,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -150,6 +170,10 @@
             "subject": {
               "value": "{region}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -169,6 +193,10 @@
             "subject": {
               "value": "{region}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -188,6 +216,10 @@
             "subject": {
               "value": "{region}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -392,6 +424,336 @@
                 "value": "{event}",
                 "description": "Routing property event copied from the event payload or derived routing context."
               }
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.avro": {
+      "messagegroupid": "SG.Gov.NEA.Weather.avro",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station": {
+          "messageid": "SG.Gov.NEA.Weather.Station",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.Station"
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation": {
+          "messageid": "SG.Gov.NEA.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.WeatherObservation"
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.avro.binary": {
+      "messagegroupid": "SG.Gov.NEA.Weather.avro.binary",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station": {
+          "messageid": "SG.Gov.NEA.Weather.Station",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation": {
+          "messageid": "SG.Gov.NEA.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.avro": {
+      "messagegroupid": "SG.Gov.NEA.AirQuality.avro",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region": {
+          "messageid": "SG.Gov.NEA.AirQuality.Region",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.Region"
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading": {
+          "messageid": "SG.Gov.NEA.AirQuality.PSIReading",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PSIReading"
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading": {
+          "messageid": "SG.Gov.NEA.AirQuality.PM25Reading",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PM25Reading"
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.avro.binary": {
+      "messagegroupid": "SG.Gov.NEA.AirQuality.avro.binary",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region": {
+          "messageid": "SG.Gov.NEA.AirQuality.Region",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.Region",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading": {
+          "messageid": "SG.Gov.NEA.AirQuality.PSIReading",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PSIReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading": {
+          "messageid": "SG.Gov.NEA.AirQuality.PM25Reading",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PM25Reading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.mqtt.avro": {
+      "messagegroupid": "SG.Gov.NEA.Weather.mqtt.avro",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station.mqtt": {
+          "messageid": "SG.Gov.NEA.Weather.Station.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.mqtt/messages/SG.Gov.NEA.Weather.Station.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.Station"
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation.mqtt": {
+          "messageid": "SG.Gov.NEA.Weather.WeatherObservation.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.mqtt/messages/SG.Gov.NEA.Weather.WeatherObservation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.WeatherObservation"
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.mqtt.avro.binary": {
+      "messagegroupid": "SG.Gov.NEA.Weather.mqtt.avro.binary",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station.mqtt": {
+          "messageid": "SG.Gov.NEA.Weather.Station.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.mqtt/messages/SG.Gov.NEA.Weather.Station.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation.mqtt": {
+          "messageid": "SG.Gov.NEA.Weather.WeatherObservation.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.mqtt/messages/SG.Gov.NEA.Weather.WeatherObservation.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.mqtt.avro": {
+      "messagegroupid": "SG.Gov.NEA.AirQuality.mqtt.avro",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region.mqtt": {
+          "messageid": "SG.Gov.NEA.AirQuality.Region.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.mqtt/messages/SG.Gov.NEA.AirQuality.Region.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.Region"
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading.mqtt": {
+          "messageid": "SG.Gov.NEA.AirQuality.PSIReading.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.mqtt/messages/SG.Gov.NEA.AirQuality.PSIReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PSIReading"
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading.mqtt": {
+          "messageid": "SG.Gov.NEA.AirQuality.PM25Reading.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.mqtt/messages/SG.Gov.NEA.AirQuality.PM25Reading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PM25Reading"
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.mqtt.avro.binary": {
+      "messagegroupid": "SG.Gov.NEA.AirQuality.mqtt.avro.binary",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region.mqtt": {
+          "messageid": "SG.Gov.NEA.AirQuality.Region.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.mqtt/messages/SG.Gov.NEA.AirQuality.Region.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.Region",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading.mqtt": {
+          "messageid": "SG.Gov.NEA.AirQuality.PSIReading.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.mqtt/messages/SG.Gov.NEA.AirQuality.PSIReading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PSIReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading.mqtt": {
+          "messageid": "SG.Gov.NEA.AirQuality.PM25Reading.mqtt",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.mqtt/messages/SG.Gov.NEA.AirQuality.PM25Reading.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PM25Reading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.amqp.avro": {
+      "messagegroupid": "SG.Gov.NEA.Weather.amqp.avro",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station.amqp": {
+          "messageid": "SG.Gov.NEA.Weather.Station.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.amqp/messages/SG.Gov.NEA.Weather.Station.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.Station"
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation.amqp": {
+          "messageid": "SG.Gov.NEA.Weather.WeatherObservation.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.amqp/messages/SG.Gov.NEA.Weather.WeatherObservation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.WeatherObservation"
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.amqp.avro.binary": {
+      "messagegroupid": "SG.Gov.NEA.Weather.amqp.avro.binary",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station.amqp": {
+          "messageid": "SG.Gov.NEA.Weather.Station.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.amqp/messages/SG.Gov.NEA.Weather.Station.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation.amqp": {
+          "messageid": "SG.Gov.NEA.Weather.WeatherObservation.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.Weather.amqp/messages/SG.Gov.NEA.Weather.WeatherObservation.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.avro/schemas/SG.Gov.NEA.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.amqp.avro": {
+      "messagegroupid": "SG.Gov.NEA.AirQuality.amqp.avro",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region.amqp": {
+          "messageid": "SG.Gov.NEA.AirQuality.Region.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.Region.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.Region"
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading.amqp": {
+          "messageid": "SG.Gov.NEA.AirQuality.PSIReading.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PSIReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PSIReading"
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading.amqp": {
+          "messageid": "SG.Gov.NEA.AirQuality.PM25Reading.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PM25Reading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PM25Reading"
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.amqp.avro.binary": {
+      "messagegroupid": "SG.Gov.NEA.AirQuality.amqp.avro.binary",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region.amqp": {
+          "messageid": "SG.Gov.NEA.AirQuality.Region.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.Region.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.Region",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading.amqp": {
+          "messageid": "SG.Gov.NEA.AirQuality.PSIReading.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PSIReading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PSIReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading.amqp": {
+          "messageid": "SG.Gov.NEA.AirQuality.PM25Reading.amqp",
+          "basemessage": "/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PM25Reading.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.avro/schemas/SG.Gov.NEA.AirQuality.PM25Reading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -806,6 +1168,357 @@
                   "JSONStructureAlternateNames",
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.avro": {
+      "schemas": {
+        "SG.Gov.NEA.Weather.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SG.Gov.NEA.Weather.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NEA station identifier, e.g. 'S109', 'S50'. Matches the device_id field in the NEA API metadata."
+                  },
+                  {
+                    "name": "device_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Device identifier, typically identical to station_id. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name describing the location, e.g. 'Ang Mo Kio Avenue 5', 'Changi'."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "WGS84 latitude of the station. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "WGS84 longitude of the station. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "data_types",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Comma-separated list of observation types this station reports. Values: 'air_temperature', 'rainfall', 'relative_humidity', 'wind_speed', 'wind_direction'. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SG.Gov.NEA.Weather.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NEA station identifier."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station location name."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "Timestamp of the observation in ISO 8601 with Singapore timezone (+08:00)."
+                  },
+                  {
+                    "name": "air_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature from the air-temperature endpoint. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rainfall",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Rainfall amount in the last 5 minutes from the rainfall endpoint. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Relative humidity from the relative-humidity endpoint. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"percent\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind speed from the wind-speed endpoint. JSON Structure annotations: {\"symbol\": \"kn\", \"unit\": \"kn\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction in degrees clockwise from true north, from the wind-direction endpoint. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.avro": {
+      "schemas": {
+        "SG.Gov.NEA.AirQuality.Region": {
+          "name": "Region",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SG.Gov.NEA.AirQuality.Region",
+                "fields": [
+                  {
+                    "name": "region",
+                    "type": "string",
+                    "doc": "Region identifier. One of: west, east, central, south, north. JSON Structure annotations: {\"altenums\": [\"west\", \"east\", \"central\", \"south\", \"north\"]}"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "WGS84 latitude of the region label location as published by the NEA API. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "WGS84 longitude of the region label location as published by the NEA API. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  }
+                ],
+                "doc": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading": {
+          "name": "PSIReading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SG.Gov.NEA.AirQuality.PSIReading",
+                "fields": [
+                  {
+                    "name": "region",
+                    "type": "string",
+                    "doc": "Region identifier (west/east/central/south/north). JSON Structure annotations: {\"altenums\": [\"west\", \"east\", \"central\", \"south\", \"north\"]}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation period start timestamp in ISO 8601 with timezone."
+                  },
+                  {
+                    "name": "update_timestamp",
+                    "type": "string",
+                    "doc": "Timestamp when the NEA API last updated this reading."
+                  },
+                  {
+                    "name": "psi_twenty_four_hourly",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "24-hour PSI value. The overall Pollutant Standards Index for the region. Scale: 0-50 Good, 51-100 Moderate, 101-200 Unhealthy, 201-300 Very Unhealthy, above 300 Hazardous. JSON Structure annotations: {\"minimum\": 0}"
+                  },
+                  {
+                    "name": "o3_sub_index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Ozone (O3) sub-index component of PSI. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_sub_index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "PM10 sub-index component of PSI. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_twenty_four_hourly",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "PM10 24-hour concentration used to calculate the PM10 PSI sub-index. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"µg/m³\", \"unit\": \"ug/m3\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25_sub_index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "PM2.5 sub-index component of PSI. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25_twenty_four_hourly",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "PM2.5 24-hour concentration. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"µg/m³\", \"unit\": \"ug/m3\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "co_sub_index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Carbon monoxide (CO) sub-index component of PSI. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "co_eight_hour_max",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "CO 8-hour maximum concentration. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"mg/m³\", \"unit\": \"mg/m3\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "so2_sub_index",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Sulphur dioxide (SO2) sub-index component of PSI. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "so2_twenty_four_hourly",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "SO2 24-hour concentration. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"µg/m³\", \"unit\": \"ug/m3\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no2_one_hour_max",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Nitrogen dioxide (NO2) 1-hour maximum concentration. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"µg/m³\", \"unit\": \"ug/m3\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3_eight_hour_max",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Ozone (O3) 8-hour maximum concentration. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"µg/m³\", \"unit\": \"ug/m3\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading": {
+          "name": "PM25Reading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SG.Gov.NEA.AirQuality.PM25Reading",
+                "fields": [
+                  {
+                    "name": "region",
+                    "type": "string",
+                    "doc": "Region identifier (west/east/central/south/north). JSON Structure annotations: {\"altenums\": [\"west\", \"east\", \"central\", \"south\", \"north\"]}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation period start timestamp in ISO 8601 with timezone."
+                  },
+                  {
+                    "name": "update_timestamp",
+                    "type": "string",
+                    "doc": "Timestamp when the NEA API last updated this reading."
+                  },
+                  {
+                    "name": "pm25_one_hourly",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "PM2.5 1-hour concentration for the region. JSON Structure annotations: {\"minimum\": 0, \"symbol\": \"µg/m³\", \"unit\": \"ug/m3\"}"
+                  }
+                ],
+                "doc": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value."
               }
             }
           }

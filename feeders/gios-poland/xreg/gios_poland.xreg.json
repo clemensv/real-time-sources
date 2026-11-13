@@ -17,7 +17,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/pl.gov.gios.airquality.kafka"
+        "#/messagegroups/pl.gov.gios.airquality.kafka",
+        "#/messagegroups/pl.gov.gios.airquality.kafka.avro",
+        "#/messagegroups/pl.gov.gios.airquality.kafka.avro.binary"
       ],
       "description": "Kafka producer endpoint for GIOŚ Poland Air Quality CloudEvents on the `gios-poland` topic with per-message keys matching CloudEvent subjects."
     },
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/pl.gov.gios.airquality.mqtt"
+        "#/messagegroups/pl.gov.gios.airquality.mqtt",
+        "#/messagegroups/pl.gov.gios.airquality.mqtt.avro",
+        "#/messagegroups/pl.gov.gios.airquality.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for gios-poland CloudEvents using the documented Unified Namespace topic hierarchy."
     },
@@ -61,7 +65,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/pl.gov.gios.airquality.amqp"
+        "#/messagegroups/pl.gov.gios.airquality.amqp",
+        "#/messagegroups/pl.gov.gios.airquality.amqp.avro",
+        "#/messagegroups/pl.gov.gios.airquality.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for gios-poland CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}/{sensor_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -121,6 +135,10 @@
             "subject": {
               "value": "{station_id}/{sensor_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -140,6 +158,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -344,6 +366,334 @@
                 "value": "{pollutant}",
                 "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "pl.gov.gios.airquality.avro": {
+      "messagegroupid": "pl.gov.gios.airquality.avro",
+      "messages": {
+        "pl.gov.gios.airquality.Station": {
+          "messageid": "pl.gov.gios.airquality.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station"
+        },
+        "pl.gov.gios.airquality.Sensor": {
+          "messageid": "pl.gov.gios.airquality.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor"
+        },
+        "pl.gov.gios.airquality.Measurement": {
+          "messageid": "pl.gov.gios.airquality.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement"
+        },
+        "pl.gov.gios.airquality.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex"
+        }
+      }
+    },
+    "pl.gov.gios.airquality.avro.binary": {
+      "messagegroupid": "pl.gov.gios.airquality.avro.binary",
+      "messages": {
+        "pl.gov.gios.airquality.Station": {
+          "messageid": "pl.gov.gios.airquality.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.Sensor": {
+          "messageid": "pl.gov.gios.airquality.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.Measurement": {
+          "messageid": "pl.gov.gios.airquality.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "pl.gov.gios.airquality.kafka.avro": {
+      "messagegroupid": "pl.gov.gios.airquality.kafka.avro",
+      "messages": {
+        "pl.gov.gios.airquality.kafka.Station": {
+          "messageid": "pl.gov.gios.airquality.kafka.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station"
+        },
+        "pl.gov.gios.airquality.kafka.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.kafka.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex"
+        },
+        "pl.gov.gios.airquality.kafka.Sensor": {
+          "messageid": "pl.gov.gios.airquality.kafka.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor"
+        },
+        "pl.gov.gios.airquality.kafka.Measurement": {
+          "messageid": "pl.gov.gios.airquality.kafka.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement"
+        }
+      }
+    },
+    "pl.gov.gios.airquality.kafka.avro.binary": {
+      "messagegroupid": "pl.gov.gios.airquality.kafka.avro.binary",
+      "messages": {
+        "pl.gov.gios.airquality.kafka.Station": {
+          "messageid": "pl.gov.gios.airquality.kafka.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.kafka.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.kafka.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.kafka.Sensor": {
+          "messageid": "pl.gov.gios.airquality.kafka.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.kafka.Measurement": {
+          "messageid": "pl.gov.gios.airquality.kafka.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.kafka/messages/pl.gov.gios.airquality.kafka.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "pl.gov.gios.airquality.mqtt.avro": {
+      "messagegroupid": "pl.gov.gios.airquality.mqtt.avro",
+      "messages": {
+        "pl.gov.gios.airquality.mqtt.Station": {
+          "messageid": "pl.gov.gios.airquality.mqtt.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station"
+        },
+        "pl.gov.gios.airquality.mqtt.Sensor": {
+          "messageid": "pl.gov.gios.airquality.mqtt.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor"
+        },
+        "pl.gov.gios.airquality.mqtt.Measurement": {
+          "messageid": "pl.gov.gios.airquality.mqtt.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement"
+        },
+        "pl.gov.gios.airquality.mqtt.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.mqtt.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex"
+        }
+      }
+    },
+    "pl.gov.gios.airquality.mqtt.avro.binary": {
+      "messagegroupid": "pl.gov.gios.airquality.mqtt.avro.binary",
+      "messages": {
+        "pl.gov.gios.airquality.mqtt.Station": {
+          "messageid": "pl.gov.gios.airquality.mqtt.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.mqtt.Sensor": {
+          "messageid": "pl.gov.gios.airquality.mqtt.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.mqtt.Measurement": {
+          "messageid": "pl.gov.gios.airquality.mqtt.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.mqtt.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.mqtt.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.mqtt/messages/pl.gov.gios.airquality.mqtt.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "pl.gov.gios.airquality.amqp.avro": {
+      "messagegroupid": "pl.gov.gios.airquality.amqp.avro",
+      "messages": {
+        "pl.gov.gios.airquality.amqp.Station": {
+          "messageid": "pl.gov.gios.airquality.amqp.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station"
+        },
+        "pl.gov.gios.airquality.amqp.Sensor": {
+          "messageid": "pl.gov.gios.airquality.amqp.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor"
+        },
+        "pl.gov.gios.airquality.amqp.Measurement": {
+          "messageid": "pl.gov.gios.airquality.amqp.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement"
+        },
+        "pl.gov.gios.airquality.amqp.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.amqp.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex"
+        }
+      }
+    },
+    "pl.gov.gios.airquality.amqp.avro.binary": {
+      "messagegroupid": "pl.gov.gios.airquality.amqp.avro.binary",
+      "messages": {
+        "pl.gov.gios.airquality.amqp.Station": {
+          "messageid": "pl.gov.gios.airquality.amqp.Station",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.amqp.Sensor": {
+          "messageid": "pl.gov.gios.airquality.amqp.Sensor",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Sensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.amqp.Measurement": {
+          "messageid": "pl.gov.gios.airquality.amqp.Measurement",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.Measurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "pl.gov.gios.airquality.amqp.AirQualityIndex": {
+          "messageid": "pl.gov.gios.airquality.amqp.AirQualityIndex",
+          "basemessage": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.AirQualityIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.avro/schemas/pl.gov.gios.airquality.AirQualityIndex",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -762,6 +1112,467 @@
                 },
                 "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/AirQualityIndex",
                 "description": "Current Polish Air Quality Index for a station, including the overall index and sub-indices for individual pollutants (SO₂, NO₂, PM10, PM2.5, O₃)."
+              }
+            }
+          }
+        }
+      }
+    },
+    "pl.gov.gios.airquality.avro": {
+      "schemas": {
+        "pl.gov.gios.airquality.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "pl.gov.gios.airquality.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "int",
+                    "doc": "Unique numeric identifier of the monitoring station assigned by GIOŚ. Mapped from the Polish field 'Identyfikator stacji'."
+                  },
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "Short alphanumeric code uniquely identifying the station, e.g. 'DsLegAlRzecz'. Mapped from 'Kod stacji'."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name of the monitoring station, typically including city and street. Mapped from 'Nazwa stacji'."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the station in decimal degrees north (WGS84). Mapped from 'WGS84 φ N'. JSON Structure annotations: {\"symbol\": \"°N\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the station in decimal degrees east (WGS84). Mapped from 'WGS84 λ E'. JSON Structure annotations: {\"symbol\": \"°E\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "city_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric identifier of the city where the station is located. Mapped from 'Identyfikator miasta'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "city_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the city where the station is located. Mapped from 'Nazwa miasta'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "commune",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the commune (gmina) where the station is located. Mapped from 'Gmina'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "district",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the district (powiat) where the station is located. Mapped from 'Powiat'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "voivodeship",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the voivodeship (province) where the station is located, in uppercase Polish. Mapped from 'Województwo'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "street",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Street address of the station, if available. Mapped from 'Ulica'. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship."
+              }
+            }
+          }
+        },
+        "pl.gov.gios.airquality.Sensor": {
+          "name": "Sensor",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "pl.gov.gios.airquality.Sensor",
+                "fields": [
+                  {
+                    "name": "sensor_id",
+                    "type": "int",
+                    "doc": "Unique numeric identifier of the sensor (measurement point) assigned by GIOŚ. Mapped from 'Identyfikator stanowiska'."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "int",
+                    "doc": "Numeric identifier of the parent monitoring station. Mapped from 'Identyfikator stacji'."
+                  },
+                  {
+                    "name": "parameter_name",
+                    "type": "string",
+                    "doc": "Polish-language name of the measured pollutant, e.g. 'pył zawieszony PM10', 'dwutlenek azotu'. Mapped from 'Wskaźnik'."
+                  },
+                  {
+                    "name": "parameter_formula",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Chemical formula of the measured pollutant, e.g. 'PM10', 'NO2', 'SO2', 'O3', 'CO', 'C6H6', 'PM2.5'. Mapped from 'Wskaźnik - wzór'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter_code",
+                    "type": "string",
+                    "doc": "Short code identifying the pollutant parameter, e.g. 'PM10', 'NO2'. Mapped from 'Wskaźnik - kod'."
+                  },
+                  {
+                    "name": "parameter_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric identifier of the pollutant parameter in the GIOŚ system. Mapped from 'Id wskaźnika'. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures."
+              }
+            }
+          }
+        },
+        "pl.gov.gios.airquality.Measurement": {
+          "name": "Measurement",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "pl.gov.gios.airquality.Measurement",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "int",
+                    "doc": "Numeric identifier of the monitoring station that owns this sensor."
+                  },
+                  {
+                    "name": "sensor_id",
+                    "type": "int",
+                    "doc": "Numeric identifier of the sensor that produced this measurement."
+                  },
+                  {
+                    "name": "sensor_code",
+                    "type": "string",
+                    "doc": "Code identifying the sensor and its aggregation period, e.g. 'DsLegAlRzecz-NO2-1g'. Mapped from 'Kod stanowiska'."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Measurement timestamp in local Polish time (ISO 8601 format). Mapped from 'Data'."
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measured pollutant concentration. Unit: micrograms per cubic meter (µg/m³). Null when the measurement is missing or invalid. Mapped from 'Wartość'. JSON Structure annotations: {\"symbol\": \"µg/m³\", \"unit\": \"ug/m3\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³."
+              }
+            }
+          }
+        },
+        "pl.gov.gios.airquality.AirQualityIndex": {
+          "name": "AirQualityIndex",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "pl.gov.gios.airquality.AirQualityIndex",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "int",
+                    "doc": "Numeric identifier of the monitoring station. Mapped from 'Identyfikator stacji pomiarowej'."
+                  },
+                  {
+                    "name": "calculation_timestamp",
+                    "type": "string",
+                    "doc": "Timestamp when the overall index was calculated (ISO 8601 in local Polish time). Mapped from 'Data wykonania obliczeń indeksu'."
+                  },
+                  {
+                    "name": "index_value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Overall air quality index value: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Zły (Bad), 5=Bardzo zły (Very bad). Mapped from 'Wartość indeksu'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "index_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Polish-language category name of the overall index, e.g. 'Bardzo dobry', 'Dobry', 'Umiarkowany'. Mapped from 'Nazwa kategorii indeksu'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "source_data_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp of the source measurement data used for the overall index calculation. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika st'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "so2_calculation_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when the SO₂ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika SO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "so2_index_value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "SO₂ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika SO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "so2_index_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Polish-language category name for the SO₂ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika SO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "so2_source_data_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp of the source data used for the SO₂ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika SO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no2_calculation_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when the NO₂ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika NO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no2_index_value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NO₂ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika NO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no2_index_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Polish-language category name for the NO₂ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika NO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no2_source_data_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp of the source data used for the NO₂ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika NO2'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_calculation_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when the PM10 sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika PM10'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_index_value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "PM10 sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika PM10'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_index_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Polish-language category name for the PM10 sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika PM10'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_source_data_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp of the source data used for the PM10 sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika PM10'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25_calculation_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when the PM2.5 sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika PM2.5'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25_index_value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "PM2.5 sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika PM2.5'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25_index_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Polish-language category name for the PM2.5 sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika PM2.5'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25_source_data_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp of the source data used for the PM2.5 sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika PM2.5'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3_calculation_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when the O₃ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika O3'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3_index_value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "O₃ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika O3'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3_index_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Polish-language category name for the O₃ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika O3'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3_source_data_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp of the source data used for the O₃ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika O3'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "overall_status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the overall air quality index is currently valid for this station. Mapped from 'Status indeksu ogólnego dla stacji pomiarowej'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "critical_pollutant_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Code of the pollutant that determined the overall index value, e.g. 'OZON', 'PM10'. Mapped from 'Kod zanieczyszczenia krytycznego'. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Current Polish Air Quality Index for a station, including the overall index and sub-indices for individual pollutants (SO₂, NO₂, PM10, PM2.5, O₃)."
               }
             }
           }
