@@ -190,6 +190,45 @@ different docs shape per source.
 
 ## Fabric Notebook Hosting (required for poll-based sources)
 
+### Schematized Fabric pipelines
+
+Prefer the Fabric workspace's managed identity for authentication whenever
+the selected service, API and transport support it. Verify the actual runtime
+principal, required token audience and least-privilege role assignments;
+workspace identity support in one component does not establish support in
+another. A delegated notebook/user token is not proof of workspace-identity
+authentication. Do not fetch SAS keys as the default connection path.
+If workspace identity is unsupported, document the specific limitation and
+obtain approval for the fallback; prefer another supported Entra flow before
+SAS. Never enable local/key authentication or broaden permissions silently.
+
+For registered-schema ingestion, Eventstream creates and owns the KQL base
+tables. Do not apply feeder base-table DDL, ingestion mappings or
+dispatch-to-base update policies to that path. Read back the actual table
+names and types before configuring downstream analytics or Maps. Preserve
+generated KQL artifacts required by non-Fabric deployments.
+
+Broker acknowledgement, a published schema and a notebook job marked
+`Completed` are separate observations, not end-to-end acceptance. Require
+a successful OneLake runtime log and fresh events from every selected family
+in typed history, correlated by event ID, payload and envelope with custom
+output. Verify output `dataschema` against the pinned registered versions.
+If scheduling is requested, observe an actual scheduled invocation too.
+Persist sanitized evidence, hashes and resource IDs; never credentials.
+
+Preserve dedupe state and existing history. Do not clear state to manufacture
+fresh-event acceptance. A separately named state file for a changed binding
+requires an explicit replay decision, with the old file retained.
+Approve and read back schedule cadence and expiry. Measure whole-job time,
+including compute startup; schedule interval is not a freshness guarantee.
+
+The shared notebook deployer is not yet compatible with the schematized
+Pegelonline pilot: it forces a Python kernel, clears the Environment binding
+and invokes legacy ingestion setup. Do not run it against migrated items
+until those behaviors are corrected and verified. Do not copy the pilot
+notebook through the mechanical retrofit workflow below without reviewing
+its registered-schema parameters, transport and Environment requirements.
+
 Every poll-based source ships a Fabric notebook feeder under
 `<source>/notebook/<source>-feed.ipynb` and sets `notebook: true` in its
 `catalog.json` entry. Streaming bridges (WebSocket / MQTT / raw TCP /
@@ -211,7 +250,9 @@ schedules the notebook. Three non-obvious rules apply:
   does not expose cell output.
 
 Full playbook: `.github/skills/fabric-notebook-deployment/SKILL.md`.
-Reference implementation: `pegelonline/notebook/pegelonline-feed.ipynb`.
+Notebook location: `feeders/pegelonline/notebook/pegelonline-feed.ipynb`.
+The isolated schematized pilot and its receipts are separate work; do not
+assume that notebook has migrated merely because this guidance is present.
 
 ### Retrofitting existing pollers (fleet operation)
 
