@@ -15,6 +15,10 @@ Ask for the approved workspace, producer or feeder, authoritative event contract
 Identify existing items and obtain explicit permission for resource creation or changes.
 Do not replace an existing pipeline, change capacity or reuse a consumer group without approval.
 Keep credentials in operator/server-owned configuration and preserve unrelated resources.
+Prefer the workspace managed identity wherever the selected API, service and transport support it.
+Verify the effective runtime principal, token audiences and least-privilege roles; delegated user credentials are not workspace-identity proof.
+Do not fetch SAS keys by default. Document any identity-support limitation and obtain approval for a fallback, with a supported Entra flow preferred over SAS.
+Never enable key authentication or broaden permissions silently.
 
 ## Build and verify
 
@@ -31,6 +35,8 @@ Read [schema-first authoring](./references/index.md), then only the references n
 4. Establish [source readiness](./references/source-readiness.md) and verify [wire admission](./references/ingestion.md).
    Setup probes do not count as final destination acceptance.
 5. Configure the [paired KQL destination](./references/destination.md), including explicit registered schema/version selection.
+   Let Eventstream create the schematized base tables; do not apply feeder base-table DDL, ingestion mappings or dispatch-to-base update policies.
+   Read back actual names and types before adding downstream analytics or Maps.
    Complete [fresh-event storage verification](./references/verification.md).
 6. Publish a custom output endpoint on the intended event path.
    Read back its actual listen binding, protocol, consumer group and routed contracts.
@@ -41,6 +47,12 @@ Read [schema-first authoring](./references/index.md), then only the references n
 Keep schema registration, broker acceptance, source recognition, physical storage and output consumption as separate results.
 Use bounded genuine events and finite deadlines.
 Record exact blockers instead of substituting synthetic data or untyped ingestion.
+
+For notebook-hosted sources, also follow the [notebook skill](../fabric-notebook-deployment/SKILL.md).
+Preserve Spark Environment bindings, verify native TLS support, select the exact named source and retain dedupe state.
+A notebook job marked `Completed` does not prove runtime success or downstream ingestion.
+Require its OneLake log and fresh output/history correlation; when scheduling is requested, approve/read back cadence and expiry and observe an actual scheduled invocation.
+Do not invoke a legacy deployer that overwrites these bindings or applies base-ingestion KQL.
 
 ## Related skills
 

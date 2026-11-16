@@ -33,6 +33,26 @@ Preserve the producer's required encoding; do not switch a structured-JSON contr
 
 ## Separate observations
 
+In the 2026-11-16 feeder pilot, structured Kafka messages were broker-accepted
+but rejected by the registered receiver for missing transport-level `type`.
+The source's separately declared AMQP binary binding passed acceptance.
+The Kafka custom output retained AMQP-encoded `cloudEvents:` header values;
+it did not establish a native Kafka `ce_` binding. These are observations
+of that tested provider configuration, not universal transport restrictions.
+Inspect the real output with its codec instead of assuming UTF-8 header values.
+
+Generated producers can omit schema metadata despite schema references in the
+manifest. Track the fix in
+[xregistry/codegen#693](https://github.com/xregistry/codegen/issues/693);
+do not assume an issue under development is released. File-backed relative
+schema references and API-backed absolute references must retain their intended
+resolution semantics. Fabric admission may separately require the actual
+service-issued registered version URI. Never invent its base URL.
+An approved deployment-boundary adaptation must be explicit, tested and linked
+to its removal condition; do not make a temporary producer subclass the fleet
+architecture or patch generated source. Remove it only after regeneration and
+fresh output/history proof with the supported generator.
+
 Publish a small authorized probe with new IDs after the source is ready.
 Use real measurements when the scenario requires them; do not synthesize telemetry.
 Inspect the actual upstream source/default stream, not an unsaved destination's test preview.

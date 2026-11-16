@@ -34,6 +34,17 @@ A database, table-name template or untyped input does not establish schema-quali
 
 Save, publish, and complete the [registered-schema storage verification](./verification.md).
 
+## Let Eventstream create schematized base tables
+
+Eventstream owns base-table creation for this registered-schema path.
+Do not apply feeder base-table DDL, ingestion mappings or dispatch-to-base
+update policies. Read back the actual created table names, column types and
+registered schema/version selections before configuring downstream analytics
+or Maps. Preserve generated KQL artifacts required by non-Fabric deployments.
+Do not use legacy dispatch-table counts as acceptance for this path.
+Record storage normalization observed in the selected destination, including
+nullable strings represented as empty strings.
+
 ## Keep setup repeatable
 
 Maintain an application-local setup runbook and a progress record of created item IDs, schema associations and outstanding checks.

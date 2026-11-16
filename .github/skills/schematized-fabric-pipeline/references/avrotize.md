@@ -40,6 +40,25 @@ Verify compatibility with Fabric and the consuming application's codecs; retain 
 Never relabel JSON Structure or JSON Schema as Avro without conversion, or silently change the producer's payload to fit the result.
 Store the validated Avro schema text in the definition and keep the original contract and conversion provenance.
 
+### Verified compatibility limits
+
+The 2026-11-16 pilot found existing Avro timestamps represented as longs while
+the actual generated JSON serializer emitted strings; nullability also differed.
+An existing variant is reusable only after comparison with actual serialized
+payloads, not because its resource name contains `avro`.
+
+Fabric rejected Avrotize 3.9.1's `rfc3339-timestamp-millis` logical-type
+extension. Track this at
+[clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571).
+The isolated compatibility projection retained the string wire representation,
+preserved the original version, and registered a new version with the original
+annotation recorded as `x-original-logical-type`. This is a declared projection,
+not a generator fix or permission to strip unsupported annotations silently.
+Record the loss of datetime validation and downstream `todatetime` requirements.
+Generic Avro validation also does not enforce every original enum or numeric
+constraint. Keep authoritative validation and retest provider compatibility
+before removing any workaround.
+
 ## Construct missing xRegistry Avro variants
 
 Missing Avro variants are authoring work for this skill, not a reason to stop at an untyped Fabric route.

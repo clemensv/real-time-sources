@@ -46,4 +46,12 @@ Do not add an application-side unwrap or manually create a matching table to con
 
 Keep a small sanitized receipt with owned resource IDs, schema/version identities, published selection, exact probe IDs, physical storage/readback and cleanup outcome.
 Exclude tokens, SAS keys, connection strings and machine/user identifiers not needed for correlation.
+For notebook sources, retain per-run evidence rather than overwriting manual
+acceptance when a scheduled run is verified. Record definition/package hashes,
+job IDs, runtime-log outcome and exact output/history match counts for each
+selected family. Notebook `Completed` and broker sends are not runtime or
+ingestion acceptance. Require the exact output `dataschema` to match its pinned
+registered version URI. If scheduling is in scope, capture approval, cadence,
+expiry and the first actual scheduled run; measure total job duration,
+including startup. Do not clear dedupe state to produce acceptance events.
 Only after these checks pass should you [prepare the application handoff](./handoff.md).
