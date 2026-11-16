@@ -58,6 +58,41 @@ az deployment group create \
     --parameters connectionStringSecret="Endpoint=sb://..."
 ```
 
+## Deploy to Azure Kubernetes Service
+
+> [!IMPORTANT]
+> The AKS tooling is proposed in [PR #1656](https://github.com/clemensv/real-time-sources/pull/1656)
+> and is not on `main` yet. The commands in this section require that PR's
+> `tools/eurowater/aks` directory. They do not work from a `main` checkout
+> until the tooling is merged.
+
+The proposed 12-container Deployment references an existing `eurowater-secret`
+and `eurowater-pvc`; credentials and storage keys stay outside the manifest.
+Its resource requests total 1.3 CPU cores and about 3.9 GiB of memory. Check
+available cluster capacity before deployment.
+
+```powershell
+.\aks\deploy-aks.ps1 `
+    -ResourceGroupName '<resource-group>' `
+    -ClusterName '<cluster-name>' `
+    -NodePoolName nodepool1 `
+    -NodeCount 3
+```
+
+Omit `-NodeCount` to apply the manifest without changing cluster capacity.
+The script uses the `az_m` profile shim, validates the Secret and PVC, performs
+client-side and server-side dry runs, applies the Deployment, and waits for all
+12 containers to become ready.
+
+Run the secret-safe health check after deployment:
+
+```powershell
+.\aks\health-check-aks.ps1 -Namespace feeders -StateFreshnessMinutes 120
+```
+
+The check reports container readiness, restarts, image references, and shared
+state-file ages. It never reads or prints Secret contents.
+
 ## Run with Docker Compose
 
 All containers share the same Kafka target via environment variables.
