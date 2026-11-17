@@ -114,7 +114,22 @@ upstream option without local patches. Use
 validation does not enforce the original datetime, enum or numeric-range
 constraints; retain JSON Structure validation.
 
-## Runtime schema URI discovery
+## Deployment-time schema URI binding
+
+The intended deployment path resolves schema URLs **during notebook deployment**.
+After registration and source association, verify versions/fingerprints and
+inject a code cell containing the literal `dataschema_overrides` dictionary into
+the deployed notebook. Keep that cell's concrete URLs and all generated
+deployment copies outside Git. Refresh it when bindings or selected versions
+change. Portable `SCHEMA_BINDINGS` remains the contract selection, not a table
+of deployed URLs.
+
+The portable notebook now has a dedicated mapping placeholder. During deployment,
+the operator resolves and verifies the map with the existing resolver, then uses
+the [shared notebook binder](../../../../tools/deploy-fabric/bind_notebook_schemas.py)
+to replace that cell in an external deployment copy. The unbound template fails
+explicitly before connecting. The legacy deployer is still not schematized-safe.
+Connection credential discovery remains separate from schema URL mapping.
 
 The [notebook](../../notebook/pegelonline-feed.ipynb) passes
 `dataschema_overrides` to the generated producer constructor.
@@ -149,7 +164,7 @@ including `+json` media types, while retaining binary-mode bytes and
 structured non-JSON base64 encoding. The source regression tests enforce
 this wire shape; a matching version number alone does not establish it.
 
-At startup, [the resolver](../../pegelonline_core/pegelonline_core/fabric.py)
+During deployment, [the resolver](../../pegelonline_core/pegelonline_core/fabric.py)
 reads the selected source's event types and versions, resolves canonical
 schema IDs, and obtains service-issued version `selfUrl` values. The map is
 keyed by original generated `xreg://./` URIs, not event types. Station source
@@ -160,13 +175,23 @@ The notebook's `SCHEMA_BINDINGS` pins expected versions and SHA-256
 fingerprints. Tests compare these directly with the canonical source
 identities and selected schemas in the registry and Fabric definition;
 there is no provenance sidecar.
+The shared generator reproduces the selected schema strings byte for byte.
+If regeneration changes those bytes, deliberately refresh the expected
+fingerprints and repeat contract review and acceptance before deployment;
+semantic similarity is not a fingerprint match.
 Missing or duplicate selections, conflicting mappings, schema drift and
-unexpected routing hosts fail startup. The read-only resolver currently
+unexpected routing hosts fail deployment. The read-only resolver currently
 supports schema sets in the Eventstream's workspace only. Schema lookup uses
 provider metadata APIs and scoped token exchange, not source connection keys.
 Connection-string lookup uses the public Topology API.
 
-Override tables exist only in memory. An unmapped URI retains its original
+The verified map is serialized as Python literals in the deployed notebook's
+`deployment-dataschema-overrides` cell. It is not resolved anew on each run.
+Use the [binding command](../../../../tools/deploy-fabric/schema-set-authoring.md#bind-a-deployed-notebook)
+after metadata verification, then read the uploaded cell back before scheduling.
+Keep all intermediate files outside the checkout.
+
+At runtime, an unmapped URI retains its original
 value; mappings are exact, copied per producer instance, and are not applied
 recursively. No target schema URI belongs in a checked-in table.
 
@@ -195,6 +220,8 @@ requires an explicitly approved fallback.
 4. Create or update a source-specific Fabric Environment. Upload feeder and
    Proton wheels plus [notebook-environment.yml](./notebook-environment.yml)
    through multipart upload. Publish, wait for `Success`, and read back.
+   Verify loaded package versions inside the running notebook against the
+   intended wheel set; upload and publication alone do not prove activation.
 5. Bind the Spark kernel to the Environment, Lakehouse and paired KQL database.
    Preserve existing bindings and state; do not use the legacy deployer if
    it clears them.
@@ -203,6 +230,9 @@ requires an explicitly approved fallback.
    artifacts. Definition assembly and datetime-compatible variant generation
    use the shared CLI and pinned Avrotize option described above.
    Target URIs are discovered, not checked in.
+   Resolve and fingerprint-check selected schema URLs, inject the dedicated
+   mapping cell with the shared binder and read it back in the deployed
+   definition. The template's unbound placeholder must not reach a scheduled run.
 7. Use bounded one-shot polling with `ONCE_MODE=True` and a finite
    `RUN_DURATION`. Preserve the configured dedupe file. A new state path
    requires an explicit replay decision.
@@ -211,6 +241,12 @@ requires an explicitly approved fallback.
    envelopes and registered `dataschema`. Store evidence outside the repo.
    Enable scheduling only after approval for interval and expiry; read back
    and verify an actual scheduled run. Startup time counts toward job duration.
+
+For in-place replacement, retain the existing definition/bindings, state path
+and approved schedule in external operator records. Pause scheduling only with
+approval and reconcile that notebook's active invocation before replacement.
+After readback and manual acceptance, restore the approved interval/expiry and
+observe an actual scheduled invocation. Do not interrupt unrelated jobs.
 
 ## Validation and remaining work
 

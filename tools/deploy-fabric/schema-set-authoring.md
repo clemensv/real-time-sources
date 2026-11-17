@@ -103,6 +103,41 @@ Review generated contracts and verify genuine events at the registered receiver,
 paired KQL database and custom output before accepting a new projection. Keep
 workspace IDs, schema URLs, schedules and acceptance evidence outside the checkout.
 
+## Bind a deployed notebook
+
+Schema generation does not bind physical schema URLs. After registration and
+association with the exact Eventstream source, the deployment operator resolves
+the selected versions, verifies their fingerprints and obtains exact
+service-issued version URLs. For the pilot, the existing
+`pegelonline_core.fabric.lookup_dataschema_overrides` resolver performs that
+read-only check during deployment with the approved operator credential.
+
+Write the resulting original-URI-keyed map to an external operator file, then:
+
+```powershell
+python tools\deploy-fabric\bind_notebook_schemas.py `
+  --notebook feeders\pegelonline\notebook\pegelonline-feed.ipynb `
+  --resolved-map <operator-directory>\resolved-map.json `
+  --output <operator-directory>\deployed-notebook.ipynb
+```
+
+The binder validates exact source-URI coverage and HTTPS version-URL shape,
+replaces the single `deployment-dataschema-overrides` code cell and compiles
+all code cells. It does not resolve service metadata or verify fingerprints
+itself; those checks must succeed before supplying the map. Redeployment
+replaces rather than duplicates the cell. Never edit the checked-in notebook
+with physical URLs or put credentials in the mapping file.
+
+The portable notebook has an unbound placeholder and fails explicitly if
+executed without deployment injection. The deployed run cell uses the literal
+map without a schema catalog lookup. Connection credentials still come from
+the public Topology API at runtime. Refresh and read back the cell when the
+target source, schema set or selected versions change.
+
+This helper does not make the legacy shared deployer schematized-safe; preserve
+the registered pipeline and Spark Environment bindings when uploading the
+external deployment copy.
+
 ## Tests
 
 ```powershell

@@ -91,8 +91,6 @@ def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_pat
     monkeypatch.setitem(sys.modules, "pegelonline_amqp.app", SimpleNamespace(feed=feed))
     monkeypatch.setitem(sys.modules, "pegelonline_core", SimpleNamespace(PegelOnlineAPI=lambda: None))
     overrides = {"xreg://./schemas/Station/versions/1": "https://catalog.example/schemas/Station/versions/1"}
-    monkeypatch.setitem(sys.modules, "pegelonline_core.fabric", SimpleNamespace(
-        lookup_dataschema_overrides=lambda *args: overrides))
     constructed = []
 
     def producer(**kwargs):
@@ -107,7 +105,8 @@ def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_pat
         LOG_PATH=str(tmp_path / "last-run.log"), STATE_FILE=str(state),
         RUN_DURATION=5, POLLING_INTERVAL=60, ONCE_MODE=True,
         WORKSPACE_ID="ws", EVENTSTREAM_NAME="pilot", SOURCE_NAME="input",
-        SCHEMA_BINDINGS={},
+        SCHEMA_BINDINGS={"Station": {"source_uri": next(iter(overrides))}},
+        dataschema_overrides=overrides,
         lookup_es_binding=lambda *args: ("es", "source",
             "Endpoint=sb://test.servicebus.windows.net/;EntityPath=input;"
             "SharedAccessKeyName=send;SharedAccessKey=abc==",
@@ -115,13 +114,31 @@ def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_pat
         notebookutils=SimpleNamespace(notebook=SimpleNamespace(exit=exits.append)),
     )
     cells = json.loads(NOTEBOOK.read_text())["cells"]
-    exec(compile("".join(cells[3]["source"]), str(NOTEBOOK), "exec"), namespace)
+    exec(compile("".join(cells[4]["source"]), str(NOTEBOOK), "exec"), namespace)
     assert state.read_text() == '{"existing": true}'
     assert exits[0].startswith("FAIL:") if send_error else exits == ["OK"]
     log = (tmp_path / "last-run.log").read_text()
     assert ("Publish rejected" in log) == send_error
     assert "abc==" not in log
     assert constructed[0]["dataschema_overrides"] == overrides
+
+
+@pytest.mark.unit
+def test_unbound_notebook_fails_before_connection_lookup(monkeypatch, tmp_path):
+    namespace = helpers(monkeypatch, None)
+    monkeypatch.setitem(sys.modules, "proton", SimpleNamespace(SSL=SimpleNamespace(present=lambda: True)))
+    namespace["requests"].certs = SimpleNamespace(where=lambda: "test-ca-bundle")
+    exits = []
+    namespace.update(
+        LOG_PATH=str(tmp_path / "last-run.log"), RUN_DURATION=5, POLLING_INTERVAL=60,
+        WORKSPACE_ID="ws", SCHEMA_BINDINGS={"Station": {"source_uri": "xreg://./station"}},
+        notebookutils=SimpleNamespace(notebook=SimpleNamespace(exit=exits.append)),
+    )
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+    exec("".join(cells[3]["source"]), namespace)
+    exec("".join(cells[4]["source"]), namespace)
+    assert exits[0].startswith("FAIL:")
+    assert "verified schema mapping cell" in (tmp_path / "last-run.log").read_text()
 
 
 @pytest.mark.unit
