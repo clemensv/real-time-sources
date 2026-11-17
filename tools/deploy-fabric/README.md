@@ -9,6 +9,13 @@ image anywhere (laptop, on-prem, ACI, Kubernetes, …) using the connection
 string this script writes out, or deploy the Fabric-notebook feeder via
 the sibling `deploy-feeder-notebook.ps1`.
 
+## Schematized schema authoring
+
+Use the separate [schema-set authoring CLI](./schema-set-authoring.md) to generate
+Event Schema Set definitions from xRegistry and construct missing Avro variants
+through Avrotize. It does not deploy resources or invoke the legacy dispatch-table
+pipeline described below. Do not apply that legacy pipeline to schematized items.
+
 ## What it does
 
 ```

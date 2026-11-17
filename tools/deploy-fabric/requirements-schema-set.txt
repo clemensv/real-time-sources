@@ -1,0 +1,2 @@
+avrotize==3.9.1
+fastavro>=1.9.4,<2

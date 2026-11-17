@@ -27,23 +27,39 @@ from the JSON Structure contract. The projection derives both records from
 the authoritative JSON Structure schemas and inlines named dependencies.
 Both event families are preserved.
 
-### Generation status
+### Shared generation
 
-The checked-in definition was produced during the pilot with Avrotize 3.9.1
-`s2a`, followed by a source-local script that inlined named records, adjusted
-the datetime annotation and assembled the Fabric envelope and schema arrays.
-That script has been removed. These conversions belong in Avrotize;
-[clemensv/avrotize#581](https://github.com/clemensv/avrotize/issues/581)
-requests native xRegistry-to-Event-Schema-Set generation and portable
-JSON-wire projections. The datetime option is tracked separately in
+Registry selection, inheritance and Fabric definition assembly belong in this
+repository's [shared CLI](../../../../tools/deploy-fabric/generate_schema_set.py).
+[clemensv/avrotize#581](https://github.com/clemensv/avrotize/issues/581) was closed
+because it assigned those tasks to the wrong repository. Avrotize owns schema
+conversion; its portable datetime option remains tracked in
 [clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571).
 
-**Regeneration is blocked on upstream support.** The checked-in registry and
-definition retain the already validated schemas; do not hand-patch them or
-introduce another local converter. Once the upstream command is available,
-document its exact version and invocation, compare its output with the
-validated contract, and rerun schema reviews and live acceptance before
-replacing these artifacts.
+Generate a definition from the retained, validated Avro variants:
+
+```powershell
+python -m pip install -r tools\deploy-fabric\requirements-schema-set.txt
+python tools\deploy-fabric\generate_schema_set.py `
+  --registry feeders\pegelonline\fabric\schematized\pegelonline.fabric.xreg.json `
+  --messagegroup de.wsv.pegelonline.avro `
+  --include-history `
+  --definition <operator-directory>\EventSchemaSetDefinition.json
+```
+
+The schema strings reproduce the checked-in definition byte for byte, including
+historical versions and the selected Measurement version `2`. Wire types inherit
+from the base messages; URI templates become concrete Fabric attribute types,
+not fixed template values. The shared tool does not modify the input registry,
+publish items, or generate a provenance sidecar.
+
+The [shared authoring guide](../../../../tools/deploy-fabric/schema-set-authoring.md)
+also covers creating missing parallel Avro variants through Avrotize. It does
+not rewrite payload types or logical annotations. **Recreating Measurement
+projection version `2` from JSON Structure still requires the converter option
+in clemensv/avrotize#571.** Until that ships, retain the already validated variant instead of
+reintroducing local datetime patches. New converter output requires schema
+review and live acceptance before replacing these artifacts.
 
 Validate the retained artifacts from the repository root:
 
@@ -105,7 +121,7 @@ try { .\generate_producer.ps1 } finally { Pop-Location }
 
 The local checkout must report version 0.11.1 and satisfy its declared
 dependencies, including Avrotize >=3.9.5. Client generation does not generate
-the Fabric schema-set definition or resolve the upstream projection gap. Do not
+the Fabric schema-set definition or resolve the upstream datetime gap. Do not
 hand-edit generated clients or relax dependency requirements. Rebuild all
 affected wheels before updating a Fabric Environment; regeneration does
 not update already deployed libraries.
@@ -169,8 +185,9 @@ requires an explicitly approved fallback.
    it clears them.
 6. Supply `EVENTSTREAM_NAME`, `WORKSPACE_ID` and `SOURCE_NAME` at deployment.
    Keep the validated `SCHEMA_BINDINGS` aligned with the selected contract
-   artifacts. Schema regeneration and binding refresh await the upstream
-   generator support described above. Target URIs are discovered, not checked in.
+   artifacts. Definition assembly uses the shared CLI; rebuilding the
+   datetime-compatible variant awaits the upstream option described above.
+   Target URIs are discovered, not checked in.
 7. Use bounded one-shot polling with `ONCE_MODE=True` and a finite
    `RUN_DURATION`. Preserve the configured dedupe file. A new state path
    requires an explicit replay decision.
