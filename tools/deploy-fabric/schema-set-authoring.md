@@ -63,34 +63,41 @@ python tools\deploy-fabric\generate_schema_set.py `
 
 Supply a projected version for every converted schema. Versions are explicit
 contract decisions, never inferred from event names. The tool runs the pinned
-Avrotize `s2a` converter and adds `<base-message-group>.avro` messages and
+Avrotize 3.9.6 `s2a --no-custom-logical-types` converter and adds
+`<base-message-group>.avro` messages and
 `<base-message-group>.avro.json` schemas. Each variant inherits its base message,
 pins the new schema version and retains JSON content type. Original collections,
 endpoints, key templates and subjects are unchanged. Existing target groups are
 never overwritten; select them directly instead.
 
 Use the base schema's `name`, or `--root-record` for ambiguous conversion bundles.
-No custom datatype, enum, nullability or datetime transformations run here.
+The upstream option moves custom logical-type annotations to
+`x-original-logical-type` without changing the underlying Avro types. Standard
+logical types remain intact. No local datatype, enum, nullability or datetime
+transformations run here.
 JSON Structure remains authoritative for constraints not enforced by Avro readers.
 There is no provenance sidecar.
 
 ## Converter and Fabric limitations
 
-Nonstandard Avro logical types remain unchanged and produce an explicit warning
-for the selected version. Avro requires readers to ignore unknown logical types,
+For existing Avro inputs, nonstandard logical types remain unchanged and produce
+an explicit warning for the selected version. Avro requires readers to ignore unknown logical types,
 but Fabric has rejected `rfc3339-timestamp-millis`. A successful generation command
 is not proof of Fabric ingestion.
 
-[clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571) tracks an
-explicit portable datetime projection option. Until available, retain a reviewed
-compatible Avro variant rather than adding a local logical-type rewrite.
+[clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571) is resolved
+in Avrotize 3.9.6 by `--no-custom-logical-types`. JSON Structure conversion uses
+that option automatically because this command targets Fabric JSON-wire schemas.
 [clemensv/avrotize#581](https://github.com/clemensv/avrotize/issues/581) was closed:
 xRegistry selection and Fabric definition assembly are implemented here instead.
 
 For the retained Pegelonline pilot, use the existing
 [derived registry](../../feeders/pegelonline/fabric/schematized/pegelonline.fabric.xreg.json).
 The shared command reproduces its schema strings without altering fingerprints.
-It does not recreate that pilot's historical datetime annotation adjustment.
+The same schema strings can now also be regenerated directly from the canonical
+JSON Structure schemas, including the datetime annotation, without local patches.
+Use projected versions `1` for Station and `2` for CurrentMeasurement as documented
+in the [pilot guide](../../feeders/pegelonline/fabric/schematized/README.md).
 
 Review generated contracts and verify genuine events at the registered receiver,
 paired KQL database and custom output before accepting a new projection. Keep

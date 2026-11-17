@@ -33,7 +33,7 @@ Registry selection, inheritance and Fabric definition assembly belong in this
 repository's [shared CLI](../../../../tools/deploy-fabric/generate_schema_set.py).
 [clemensv/avrotize#581](https://github.com/clemensv/avrotize/issues/581) was closed
 because it assigned those tasks to the wrong repository. Avrotize owns schema
-conversion; its portable datetime option remains tracked in
+conversion; its portable datetime option shipped in Avrotize 3.9.6 and resolves
 [clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571).
 
 Generate a definition from the retained, validated Avro variants:
@@ -54,12 +54,26 @@ not fixed template values. The shared tool does not modify the input registry,
 publish items, or generate a provenance sidecar.
 
 The [shared authoring guide](../../../../tools/deploy-fabric/schema-set-authoring.md)
-also covers creating missing parallel Avro variants through Avrotize. It does
-not rewrite payload types or logical annotations. **Recreating Measurement
-projection version `2` from JSON Structure still requires the converter option
-in clemensv/avrotize#571.** Until that ships, retain the already validated variant instead of
-reintroducing local datetime patches. New converter output requires schema
-review and live acceptance before replacing these artifacts.
+also covers creating missing parallel Avro variants through Avrotize. Conversion
+uses upstream `s2a --no-custom-logical-types`; no local datetime patch is applied.
+Regenerate both selected schemas directly from the canonical JSON Structure:
+
+```powershell
+python tools\deploy-fabric\generate_schema_set.py `
+  --registry feeders\pegelonline\xreg\pegelonline.xreg.json `
+  --messagegroup de.wsv.pegelonline `
+  --create-avro-variants `
+  --projected-version "#/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.Station=1" `
+  --projected-version "#/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement=2" `
+  --output-registry <operator-directory>\pegelonline.fabric.xreg.json `
+  --definition <operator-directory>\EventSchemaSetDefinition.json
+```
+
+Tests verify byte-for-byte equality of the selected schema strings with the
+retained artifacts. This path creates the selected versions only, not the
+historical Measurement version `1`. It does not replace checked-in artifacts
+or refresh notebook bindings. New contract output still requires schema review
+and live acceptance before replacing validated artifacts.
 
 Validate the retained artifacts from the repository root:
 
@@ -94,7 +108,8 @@ Fabric rejected Avrotize 3.9.1's `rfc3339-timestamp-millis` extension.
 Measurement projection version `2` preserves the string payload and moves
 the annotation to `x-original-logical-type`. See
 [clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571).
-This is a compatibility projection, not a generator fix. Use
+Avrotize 3.9.6 now produces this compatibility projection through its explicit
+upstream option without local patches. Use
 `todatetime(timestamp)` explicitly in downstream analytics. Generic Avro
 validation does not enforce the original datetime, enum or numeric-range
 constraints; retain JSON Structure validation.
@@ -121,7 +136,7 @@ try { .\generate_producer.ps1 } finally { Pop-Location }
 
 The local checkout must report version 0.11.1 and satisfy its declared
 dependencies, including Avrotize >=3.9.5. Client generation does not generate
-the Fabric schema-set definition or resolve the upstream datetime gap. Do not
+the Fabric schema-set definition; use the shared authoring command above. Do not
 hand-edit generated clients or relax dependency requirements. Rebuild all
 affected wheels before updating a Fabric Environment; regeneration does
 not update already deployed libraries.
@@ -185,8 +200,8 @@ requires an explicitly approved fallback.
    it clears them.
 6. Supply `EVENTSTREAM_NAME`, `WORKSPACE_ID` and `SOURCE_NAME` at deployment.
    Keep the validated `SCHEMA_BINDINGS` aligned with the selected contract
-   artifacts. Definition assembly uses the shared CLI; rebuilding the
-   datetime-compatible variant awaits the upstream option described above.
+   artifacts. Definition assembly and datetime-compatible variant generation
+   use the shared CLI and pinned Avrotize option described above.
    Target URIs are discovered, not checked in.
 7. Use bounded one-shot polling with `ONCE_MODE=True` and a finite
    `RUN_DURATION`. Preserve the configured dedupe file. A new state path

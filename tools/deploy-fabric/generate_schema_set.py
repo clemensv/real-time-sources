@@ -126,7 +126,8 @@ def convert_structure(schema: Json, root_name: str | None) -> Json:
         target = Path(directory) / "schema.avsc"
         source.write_text(json.dumps(schema), encoding="utf-8")
         subprocess.run(
-            [sys.executable, "-m", "avrotize", "s2a", str(source), "--out", str(target)],
+            [sys.executable, "-m", "avrotize", "s2a", str(source), "--out", str(target),
+             "--no-custom-logical-types"],
             check=True,
         )
         return avro_record(json.loads(target.read_text(encoding="utf-8")), root_name or schema.get("name"))
@@ -176,7 +177,8 @@ def warn_logical_types(node: Any) -> None:
             warnings.warn(
                 f"Nonstandard logicalType {logical_type!r} preserved unchanged. "
                 "Avro readers must ignore unknown logical types, but Fabric may reject this "
-                "schema; see clemensv/avrotize#571. Generation is not live acceptance.",
+                "schema. Reconvert JSON Structure with Avrotize's --no-custom-logical-types "
+                "option; existing Avro schemas are not rewritten. Generation is not live acceptance.",
                 stacklevel=2,
             )
         for value in node.values():

@@ -111,7 +111,7 @@ def test_multiple_families_nondefault_version_and_unknown_logical_type():
     second = copy.deepcopy(message)
     second["envelopemetadata"]["type"]["value"] = "example.Other"
     document["messagegroups"]["base"]["messages"]["other"] = second
-    with pytest.warns(UserWarning, match="clemensv/avrotize#571"):
+    with pytest.warns(UserWarning, match="--no-custom-logical-types"):
         _, definition = generator.generate(document, ["base"])
     assert len(definition["schemas"]) == 1
     assert len(definition["eventTypes"]) == 2
@@ -179,6 +179,56 @@ def test_bundle_inlining_and_explicit_root():
     assert validate({"location": {"latitude": 51.0}}, record)
     with pytest.raises(ValueError, match="does not match"):
         generator.avro_record(record, "WrongRoot")
+
+
+def test_portable_conversion_reproduces_pilot_records_from_canonical_structure():
+    source = ROOT / "feeders" / "pegelonline"
+    canonical = json.loads((source / "xreg" / "pegelonline.xreg.json").read_text(encoding="utf-8"))
+    retained = json.loads(
+        (source / "fabric" / "schematized" / "EventSchemaSetDefinition.json").read_text(encoding="utf-8"))
+    versions = {
+        "#/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.Station": "1",
+        "#/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement": "2",
+    }
+    _, definition = generator.generate(
+        canonical, ["de.wsv.pegelonline"], create_avro_variants=True,
+        projected_versions=versions,
+    )
+    for generated in definition["schemas"]:
+        historical = next(item for item in retained["schemas"] if item["id"] == generated["id"])
+        version = generated["versions"][0]
+        previous = next(item for item in historical["versions"] if item["id"] == version["id"])
+        assert version["schema"] == previous["schema"]
+    measurement = next(item for item in definition["schemas"] if item["id"].endswith(".CurrentMeasurement"))
+    record = json.loads(measurement["versions"][0]["schema"])
+    timestamp = next(field for field in record["fields"] if field["name"] == "timestamp")
+    assert timestamp["type"] == {
+        "type": "string", "x-original-logical-type": "rfc3339-timestamp-millis",
+    }
+    payload = {
+        "station_id": "sensor1", "timestamp": "2026-01-01T10:20:30.123456+01:00",
+        "value": 1.0, "stateMnwMhw": None, "stateNswHsw": None, "trend": None,
+    }
+    assert validate(payload, record, strict=True)
+    assert not validate({**payload, "timestamp": 1}, record, strict=True, raise_errors=False)
+
+
+def test_portable_conversion_preserves_standard_logical_types():
+    record = generator.convert_structure({
+        "name": "Reading", "type": "object",
+        "properties": {
+            "timestamp": {"type": "datetime"},
+            "date": {"type": "date"},
+            "id": {"type": "uuid"},
+        },
+        "required": ["timestamp", "date", "id"],
+    }, None)
+    fields = {field["name"]: field["type"] for field in record["fields"]}
+    assert fields["timestamp"] == {
+        "type": "string", "x-original-logical-type": "rfc3339-timestamp-millis",
+    }
+    assert fields["date"] == {"type": "string", "x-original-logical-type": "rfc3339-date"}
+    assert fields["id"] == {"type": "string", "logicalType": "uuid"}
 
 
 def test_cli_reproduces_pilot_schema_bytes_without_touching_inputs(tmp_path):
