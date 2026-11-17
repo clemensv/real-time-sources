@@ -10,12 +10,80 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-from marshmallow import fields
+from marshmallow import fields, ValidationError
 import json
 from pegelonline_amqp_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
-from pegelonline_amqp_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 from pegelonline_amqp_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
+from pegelonline_amqp_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 import datetime
+
+
+
+
+
+def _normalize_iso_string(value: str) -> str:
+    """ Normalizes an RFC 3339 string into a form datetime.fromisoformat accepts.
+
+    A trailing 'Z' is rewritten to '+00:00' and fractional seconds are padded or
+    truncated to exactly microsecond precision, because fromisoformat only
+    accepts the 'Z' designator and arbitrary fraction lengths from Python 3.11
+    onwards, and this package supports Python 3.10.
+
+    A non-string value raises ValueError so that callers report it the same way
+    they report a malformed string, rather than leaking an AttributeError.
+    """
+    if not isinstance(value, str):
+        raise ValueError(f'expected an ISO 8601 string, got {type(value).__name__}')
+    text = value[:-1] + '+00:00' if value.endswith(('Z', 'z')) else value
+    dot = text.find('.')
+    if dot != -1:
+        end = dot + 1
+        while end < len(text) and text[end].isdigit():
+            end += 1
+        digits = text[dot + 1:end]
+        if digits and len(digits) != 6:
+            text = text[:dot + 1] + digits[:6].ljust(6, '0') + text[end:]
+    return text
+
+
+
+def _parse_iso_datetime(value: str, field_name: str) -> datetime.datetime:
+    """ Parses an ISO 8601 / RFC 3339 datetime string, raising ValueError if it is malformed. """
+    try:
+        return datetime.datetime.fromisoformat(_normalize_iso_string(value))
+    except ValueError as error:
+        raise ValueError(
+            f"Invalid ISO 8601 datetime for field '{field_name}': {value!r}") from error
+
+
+
+
+
+class _IsoDateTimeField(fields.DateTime):
+    """ A marshmallow datetime field that shares the module's ISO datetime parser. """
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        if value is None:
+            return None
+        # datetime.date is accepted as well because marshmallow's own
+        # DateTime(format='iso') serialized anything with an isoformat().
+        if isinstance(value, (datetime.datetime, datetime.date)):
+            return value.isoformat()
+        return value
+
+    def _deserialize(self, value, attr, data, **kwargs):
+        if value is None:
+            return None
+        try:
+            return _parse_iso_datetime(value, self.data_key or attr or 'value')
+        except ValueError as error:
+            raise ValidationError(str(error)) from error
+
+
+
+
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -34,12 +102,14 @@ class CurrentMeasurement:
     """
     
     
+    
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda v: v.isoformat() if isinstance(v, datetime.datetime) else v, decoder=lambda v: _parse_iso_datetime(v, 'timestamp') if isinstance(v, str) else v, mm_field=_IsoDateTimeField(data_key='timestamp', required=True)))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     stateMnwMhw: typing.Optional[StateMnwMhwEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
     stateNswHsw: typing.Optional[StateNswHswEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
     trend: typing.Optional[TrendEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'CurrentMeasurement':
@@ -52,6 +122,9 @@ class CurrentMeasurement:
         Returns:
             The dataclass representation of the dataclass.
         """
+        data = dict(data)
+        if 'timestamp' in data:
+            data['timestamp'] = (lambda v: _parse_iso_datetime(v, 'timestamp') if isinstance(v, str) else v)(data['timestamp'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -157,6 +230,7 @@ class CurrentMeasurement:
                 return CurrentMeasurement.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -168,9 +242,9 @@ class CurrentMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='keptvbvtpalhixabfgtj',
+            station_id='trdpnvztspxsjalmwvws',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(46.32331692666581),
+            value=float(34.870051443645714),
             stateMnwMhw=StateMnwMhwEnum.low,
             stateNswHsw=StateNswHswEnum.normal,
             trend=TrendEnum.VALUE_NEG_1

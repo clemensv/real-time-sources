@@ -1,87 +1,159 @@
 
 """
-This is sample code to use the MQTT client contained in this project.
+Sample usage of pegelonline_mqtt_producer_mqtt_client.
 
-The sample demonstrates both publishing and subscribing to MQTT messages with
-the
-producer and dispatcher functionality.
+This example shows how to consume and publish MQTT messages with the generated
+client. Each message group has a
+`<Group>MqttClient` that wraps a paho-mqtt client and both dispatches received
+messages to async handlers you register and exposes `publish_<message>`
+coroutines to send messages.
 
-There is a handler for each defined message type. The handler is an async
-function that takes the following parameters:
-- mqtt_message: The paho.mqtt.client.MQTTMessage object (message context).
-- cloud_event: The CloudEvent data (if using CloudEvents).
-- message_data: The deserialized message data.The main function creates a client
-that can both produce and consume messages.
-It starts a dispatcher to handle incoming messages and then publishes sample
-messages.
+Message handlers are async functions. CloudEvents message handlers receive
+`(mqtt_message, cloud_event, data, topic_params)`; plain (non-CloudEvents)
+message handlers receive `(mqtt_message, data, topic_params)` where:
+  - mqtt_message: the paho.mqtt.client.MQTTMessage (raw message context),
+  - cloud_event: the CloudEvent envelope (CloudEvents messages only),
+  - data: the deserialized, strongly-typed message data,
+  - topic_params: dict of URI-template placeholders extracted from the topic.
 
-The script either reads the configuration from the command line or uses the
-environment variables. The following environment variables are recognized:
+Configuration is read from the command line or these environment variables:
+  - MQTT_BROKER_HOST: broker hostname (default: localhost),
+  - MQTT_BROKER_PORT: broker port (default: 1883),
+  - MQTT_USERNAME: username (optional),
+  - MQTT_PASSWORD: password (optional).
 
-- MQTT_BROKER_HOST: The MQTT broker hostname.
-- MQTT_BROKER_PORT: The MQTT broker port (default: 1883).
-- MQTT_TOPIC: The MQTT topic to publish/subscribe to.
-- MQTT_USERNAME: The MQTT username (optional).
-- MQTT_PASSWORD: The MQTT password (optional).
+    python sample.py --broker-host <host> --broker-port <port>
 
-Alternatively, you can pass the configuration as command-line arguments.
-
-python sample.py --broker-host <broker_host> --broker-port <broker_port> --topic
-<topic>
-
-The main function waits for a signal (Press Ctrl+C) to stop.
+The sample connects, subscribes, publishes one example of each message, then
+waits for incoming messages until interrupted (press Ctrl+C to stop).
 """
 
 import argparse
 import asyncio
 import os
 import signal
+
+import paho.mqtt.client as mqtt
+
 from pegelonline_mqtt_producer_data import *
-from pegelonline_mqtt_producer_mqtt_client.client import DeWsvPegelonlineMqttProducer, DeWsvPegelonlineMqttDispatcher
+from pegelonline_mqtt_producer_mqtt_client.client import DeWsvPegelonlineMqttMqttClient
 
-async def handle_de_wsv_pegelonline_mqtt_station(mqtt_msg,cloud_event, de_wsv_pegelonline_mqtt_station_data):
-    """ Handles the de.wsv.pegelonline.mqtt.Station message """
-    print(f"Received de.wsv.pegelonline.mqtt.Station on topic {mqtt_msg.topic}")
-    if cloud_event:
-        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
-    print(f"  Data: {de_wsv_pegelonline_mqtt_station_data}")
 
-async def handle_de_wsv_pegelonline_mqtt_current_measurement(mqtt_msg,cloud_event, de_wsv_pegelonline_mqtt_current_measurement_data):
-    """ Handles the de.wsv.pegelonline.mqtt.CurrentMeasurement message """
-    print(f"Received de.wsv.pegelonline.mqtt.CurrentMeasurement on topic {mqtt_msg.topic}")
-    if cloud_event:
-        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
-    print(f"  Data: {de_wsv_pegelonline_mqtt_current_measurement_data}")
+async def handle_de_wsv_pegelonline_mqtt_station(mqtt_message, cloud_event, data, topic_params):
+    """Handle the CloudEvents 'de.wsv.pegelonline.mqtt.Station' message."""
+    print(f"Received de.wsv.pegelonline.mqtt.Station on topic {mqtt_message.topic}")
+    print(f"  CloudEvent: id={cloud_event['id']} source={cloud_event['source']} type={cloud_event['type']}")
+    print(f"  Data: {data}")
+    if topic_params:
+        print(f"  Topic params: {topic_params}")
 
-async def main(broker_host, broker_port, topic, username=None, password=None):
-    """ Main function for MQTT client """
-    print(f"Connecting to {broker_host}:{broker_port}...")
-    print(f"Topic: {topic}")
-    print("Press Ctrl+C to stop\n")
-    
-    stop_event = asyncio.Event()
+
+async def handle_de_wsv_pegelonline_mqtt_current_measurement(mqtt_message, cloud_event, data, topic_params):
+    """Handle the CloudEvents 'de.wsv.pegelonline.mqtt.CurrentMeasurement' message."""
+    print(f"Received de.wsv.pegelonline.mqtt.CurrentMeasurement on topic {mqtt_message.topic}")
+    print(f"  CloudEvent: id={cloud_event['id']} source={cloud_event['source']} type={cloud_event['type']}")
+    print(f"  Data: {data}")
+    if topic_params:
+        print(f"  Topic params: {topic_params}")
+
+
+
+def _make_paho_client(client_id):
+    """Create a paho-mqtt client compatible with paho-mqtt 1.x and 2.x.
+
+    The generated client callbacks use the VERSION1 callback signatures, so we
+    request that API version when running on paho-mqtt 2.x.
+    """
+    try:
+        return mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id=client_id)
+    except (AttributeError, TypeError):
+        return mqtt.Client(client_id=client_id)
+
+
+async def publish_samples(clients):
+    """Publish one example of each message type using generated test data."""
+    client = clients["de.wsv.pegelonline.mqtt"]
+    try:
+        await client.publish_de_wsv_pegelonline_mqtt_station(
+            feedurl="sample",
+            station_id="sample",
+            water_shortname="sample",
+            data=Station.create_instance(),
+        )
+        print("Published de.wsv.pegelonline.mqtt.Station")
+    except Exception as exc:
+        print(f"Could not publish de.wsv.pegelonline.mqtt.Station: {exc}")
+    try:
+        await client.publish_de_wsv_pegelonline_mqtt_current_measurement(
+            feedurl="sample",
+            station_id="sample",
+            water_shortname="sample",
+            data=CurrentMeasurement.create_instance(),
+        )
+        print("Published de.wsv.pegelonline.mqtt.CurrentMeasurement")
+    except Exception as exc:
+        print(f"Could not publish de.wsv.pegelonline.mqtt.CurrentMeasurement: {exc}")
+
+
+async def main(broker_host, broker_port, username=None, password=None):
+    """Set up the client(s), connect, subscribe, publish samples, then listen."""
     loop = asyncio.get_running_loop()
-    loop.add_signal_handler(signal.SIGTERM, lambda: stop_event.set())
-    loop.add_signal_handler(signal.SIGINT, lambda: stop_event.set())
+    clients = {}
+
     
-    await stop_event.wait()
+    _paho = _make_paho_client("sample-de_wsv_pegelonline_mqtt")
+    if username:
+        _paho.username_pw_set(username, password)
+    _client = DeWsvPegelonlineMqttMqttClient(_paho, content_mode='structured', loop=loop)
+    _client.de_wsv_pegelonline_mqtt_station_async = handle_de_wsv_pegelonline_mqtt_station
+    _client.de_wsv_pegelonline_mqtt_current_measurement_async = handle_de_wsv_pegelonline_mqtt_current_measurement
+    clients["de.wsv.pegelonline.mqtt"] = _client
+    
+
+    print(f"Connecting to {broker_host}:{broker_port} ...")
+    for client in clients.values():
+        await client.connect(broker_host, broker_port)
+        await client.subscribe()
+    print("Connected and subscribed.")
+
+    # Give subscriptions a moment to take effect, then publish a sample of each message.
+    await asyncio.sleep(1)
+    await publish_samples(clients)
+
+    stop_event = asyncio.Event()
+    try:
+        loop.add_signal_handler(signal.SIGINT, stop_event.set)
+        loop.add_signal_handler(signal.SIGTERM, stop_event.set)
+    except NotImplementedError:
+        # Signal handlers are not available on this platform (e.g. Windows).
+        pass
+
+    print("Listening for messages. Press Ctrl+C to stop.")
+    try:
+        await stop_event.wait()
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        pass
+
     print("\nStopping...")
+    for client in clients.values():
+        await client.disconnect()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="MQTT Client")
+    parser = argparse.ArgumentParser(description="MQTT Client sample")
     parser.add_argument('--broker-host', default=os.getenv('MQTT_BROKER_HOST', 'localhost'), help='MQTT broker hostname')
     parser.add_argument('--broker-port', type=int, default=int(os.getenv('MQTT_BROKER_PORT', '1883')), help='MQTT broker port')
-    parser.add_argument('--topic', default=os.getenv('MQTT_TOPIC', 'testtopic'), help='MQTT topic')
     parser.add_argument('--username', default=os.getenv('MQTT_USERNAME'), help='MQTT username (optional)')
     parser.add_argument('--password', default=os.getenv('MQTT_PASSWORD'), help='MQTT password (optional)')
 
     args = parser.parse_args()
 
-    asyncio.run(main(
-        args.broker_host,
-        args.broker_port,
-        args.topic,
-        args.username,
-        args.password
-    ))
+    try:
+        asyncio.run(main(
+            args.broker_host,
+            args.broker_port,
+            args.username,
+            args.password
+        ))
+    except KeyboardInterrupt:
+        print("\nStopped.")

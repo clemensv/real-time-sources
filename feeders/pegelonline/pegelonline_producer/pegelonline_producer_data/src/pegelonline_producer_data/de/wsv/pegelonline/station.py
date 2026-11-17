@@ -14,6 +14,11 @@ import json
 from pegelonline_producer_data.de.wsv.pegelonline.water import Water
 
 
+
+
+
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Station:
@@ -33,6 +38,7 @@ class Station:
     """
     
     
+    
     station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     number: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="number"))
     shortname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
@@ -42,6 +48,7 @@ class Station:
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     water: Water=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -54,6 +61,7 @@ class Station:
         Returns:
             The dataclass representation of the dataclass.
         """
+        data = dict(data)
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -159,6 +167,7 @@ class Station:
                 return Station.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -170,13 +179,13 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='tjwhrlkulscqknabgltq',
-            number='qxtotrjhdakjtopfmlfo',
-            shortname='gzvvcwcshfpynwriqnzd',
-            longname='uyhylhpwjsenlzrudcyq',
-            km=float(64.08756811300127),
-            agency='mdpbhusbjpyqbdfzyoyu',
-            longitude=float(51.40230176096638),
-            latitude=float(24.12710768829902),
+            station_id='czhhwdzmjoepvdrhohhv',
+            number='idrwlukdaeblwlmzxsmg',
+            shortname='vyxcoeldlxiiiiqjfeqa',
+            longname='yupcndmsskftmytielaw',
+            km=float(75.57097113374137),
+            agency='kbduobjxwngitynwmydc',
+            longitude=float(92.88080001909165),
+            latitude=float(46.32756773701703),
             water=None
         )

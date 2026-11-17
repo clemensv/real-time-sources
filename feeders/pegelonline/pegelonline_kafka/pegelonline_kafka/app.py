@@ -69,13 +69,17 @@ async def feed(
     polling_interval: int,
     state_file: str = "",
     once: bool = False,
+    *,
+    dataschema_overrides: Optional[Dict[str, str]] = None,
 ) -> None:
     """Feed stations and measurements as CloudEvents to Kafka."""
 
     previous_readings: Dict[str, Dict[str, Any]] = load_state(state_file)
 
     producer = Producer(kafka_config)
-    pegelonline_producer = DeWsvPegelonlineKafkaEventProducer(producer, kafka_topic)
+    pegelonline_producer = DeWsvPegelonlineKafkaEventProducer(
+        producer, kafka_topic, dataschema_overrides=dataschema_overrides,
+    )
 
     logger.info(
         "Starting to feed stations to Kafka topic %s at bootstrap servers %s",

@@ -4,6 +4,8 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+import weakref
+import time
 from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
@@ -157,6 +159,69 @@ def _mqtt5_properties_to_ce_headers(properties) -> Dict[str, str]:
     return headers
 
 
+class _MqttCallbackMultiplexer:
+    """Fan paho ``on_connect``/``on_disconnect``/``on_message`` callbacks out to
+    every generated client instance that shares a single paho client.
+
+    Multiple generated ``*MqttClient`` classes are designed to share one
+    ``paho.mqtt.client.Client`` (one connection per multi-messagegroup source).
+    Paho stores only ONE callback per event, so without multiplexing the
+    last-instantiated client would silently steal ``on_connect``/``on_message``
+    from every earlier client -- making their ``connect()`` hang forever because
+    the CONNACK resolves the wrong instance's waiter. See issue #485.
+
+    Instances are held weakly so the multiplexer never keeps a dropped client
+    alive; dead references are pruned on registration and on every dispatch.
+    """
+
+    _ATTR = "_xrcg_callback_multiplexer"
+
+    def __init__(self) -> None:
+        self._instances: List["weakref.ReferenceType"] = []
+
+    @classmethod
+    def attach(cls, client: "mqtt.Client", instance: object) -> None:
+        """Register ``instance`` for shared callbacks on ``client``.
+
+        The first instance to attach installs the multiplexer as the client's
+        callback and stores it on the client object; later instances that share
+        the same client reuse it instead of overwriting the callbacks.
+        """
+        mux = getattr(client, cls._ATTR, None)
+        if not isinstance(mux, _MqttCallbackMultiplexer):
+            mux = cls()
+            setattr(client, cls._ATTR, mux)
+            client.on_connect = mux._dispatch_connect
+            client.on_disconnect = mux._dispatch_disconnect
+            client.on_message = mux._dispatch_message
+        mux._register(instance)
+
+    def _register(self, instance: object) -> None:
+        self._instances = [ref for ref in self._instances if ref() is not None]
+        if all(ref() is not instance for ref in self._instances):
+            self._instances.append(weakref.ref(instance))
+
+    def _live(self) -> List[object]:
+        live: List[object] = []
+        for ref in list(self._instances):
+            inst = ref()
+            if inst is not None:
+                live.append(inst)
+        return live
+
+    def _dispatch_connect(self, client, userdata, flags, reason_code=0, properties=None) -> None:
+        for inst in self._live():
+            inst._on_connect(client, userdata, flags, reason_code, properties)
+
+    def _dispatch_disconnect(self, client, userdata, *args) -> None:
+        for inst in self._live():
+            inst._on_disconnect(client, userdata, *args)
+
+    def _dispatch_message(self, client, userdata, message) -> None:
+        for inst in self._live():
+            inst._on_message(client, userdata, message)
+
+
 class _ClientBase:
     """Base class for MQTT client with CloudEvent detection."""
     
@@ -265,7 +330,8 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         client: mqtt.Client, 
         topic_mappings: Optional[Dict[str, str]] = None,
         content_mode: typing.Literal['structured', 'binary'] = 'structured', 
-        loop: Optional[asyncio.AbstractEventLoop] = None
+        loop: Optional[asyncio.AbstractEventLoop] = None,
+        dataschema_overrides: typing.Optional[typing.Mapping[str, str]] = None
     ):
         """
         Initialize the MQTT client.
@@ -281,11 +347,16 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         """
         self.client = client
         self.content_mode = content_mode
+        self._dataschema_overrides = dict(dataschema_overrides) if dataschema_overrides is not None else {}
+        if any(not isinstance(key, str) or not key or not isinstance(value, str) or not value
+               for key, value in self._dataschema_overrides.items()):
+            raise ValueError("dataschema_overrides must map nonempty URI strings to nonempty URI strings")
         self.loop = loop
         self._topic_mappings = topic_mappings or get_default_topic_mappings_de_wsv_pegelonline_mqtt()
         self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
         self._connect_waiter: Optional[asyncio.Future[None]] = None
         self._connected = False
+        self._inflight: List[mqtt.MQTTMessageInfo] = []
         
         # Message handler callbacks (Dispatcher pattern)
         
@@ -294,10 +365,11 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         self.de_wsv_pegelonline_mqtt_current_measurement_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, pegelonline_mqtt_producer_data.CurrentMeasurement, Dict[str, str]], Awaitable[None]]] = None
         
         
-        # Attach message callback
-        self.client.on_message = self._on_message
-        self.client.on_connect = self._on_connect
-        self.client.on_disconnect = self._on_disconnect
+        
+        # Multiplex paho callbacks so several generated clients can safely share
+        # one paho client (issue #485) instead of overwriting each other's
+        # on_connect/on_disconnect/on_message registrations.
+        _MqttCallbackMultiplexer.attach(self.client, self)
 
     @staticmethod
     def _mqtt_reason_code_value(reason_code) -> Optional[int]:
@@ -386,8 +458,7 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
                 if cloud_event:
                     await self._dispatch_cloud_event(message, cloud_event)
             else:
-                # Handle plain MQTT messages (if needed)
-                pass
+                await self._dispatch_plain_message(message)
         except Exception as e:
             print(f"Error processing message: {e}")
     
@@ -425,6 +496,10 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
                 except Exception as e:
                     print(f"Error in de_wsv_pegelonline_mqtt_current_measurement handler: {e}")
             return
+        
+    
+    async def _dispatch_plain_message(self, mqtt_message: mqtt.MQTTMessage):
+        """Dispatch a plain (non-CloudEvents) MQTT message by matching its topic to a known message id."""
         
     
     async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
@@ -535,11 +610,59 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
                 await asyncio.to_thread(self.client.loop_stop)
             raise
     
+    def _track_inflight(self, info: Optional[mqtt.MQTTMessageInfo]) -> None:
+        """Record an outstanding publish so ``disconnect()`` can flush it.
+
+        Already-delivered handles are pruned first so the list stays bounded to
+        genuinely in-flight messages in long-running producers.
+        """
+        if info is None:
+            return
+        self._inflight = [i for i in self._inflight if not self._is_published(i)]
+        self._inflight.append(info)
+
+    @staticmethod
+    def _is_published(info: mqtt.MQTTMessageInfo) -> bool:
+        """Best-effort check whether a publish handle has been delivered."""
+        try:
+            return bool(info.is_published())
+        except (ValueError, RuntimeError):
+            # Treat unknown/torn-down handles as done so they are pruned.
+            return True
+
+    async def _flush_inflight(self, timeout: float = 10.0) -> None:
+        """Bound-wait for outstanding QoS>0 publishes to be acknowledged.
+
+        The blocking paho wait runs off the event-loop thread so the asyncio
+        loop is never stalled.
+        """
+        if not self._inflight:
+            return
+        deadline = time.monotonic() + timeout
+        for info in self._inflight:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            try:
+                await asyncio.to_thread(info.wait_for_publish, remaining)
+            except (ValueError, RuntimeError):
+                # ValueError: nothing to wait for (already delivered/removed).
+                # RuntimeError: network loop no longer running.
+                pass
+        self._inflight.clear()
+
     async def disconnect(self):
-        """Disconnect from MQTT broker."""
+        """Disconnect from the MQTT broker after flushing queued publishes.
+
+        QoS>0 PUBLISH packets may still sit in paho's out-queue when a
+        short-lived ('--once') producer disconnects. Stopping the network loop
+        first would silently drop them, so we bound-wait for in-flight delivery
+        (PUBACK) before sending DISCONNECT and stopping the loop off-thread.
+        """
         self._connected = False
-        self.client.loop_stop()
+        await self._flush_inflight()
         self.client.disconnect()
+        await asyncio.to_thread(self.client.loop_stop)
 
     # Producer methods
     
@@ -552,7 +675,7 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
-        content_type: str = "application/json") -> None:
+        content_type: str = 'application/json') -> None:
         """
         Publish the 'de.wsv.pegelonline.mqtt.Station' event to an MQTT topic.
 
@@ -581,11 +704,12 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         attributes = {
              "type":"de.wsv.pegelonline.Station",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{station_id}".format(station_id = station_id)
+             "subject":"{station_id}".format(station_id = station_id),
+             "dataschema":"xreg://./schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.Station/versions/1"
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        byte_data = data.to_byte_array(content_type.replace("application/vnd.apache.org.avro+avro", "application/vnd.apache.avro+avro", 1)) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
         # to_binary/to_structured embed the str directly which then becomes
@@ -593,6 +717,8 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         # bytes up-front so receivers can json.loads(payload) once.
         if isinstance(byte_data, str):
             byte_data = byte_data.encode('utf-8')
+        if "dataschema" in attributes:
+            attributes["dataschema"] = self._dataschema_overrides.get(attributes["dataschema"], attributes["dataschema"])
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -622,7 +748,7 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         elif isinstance(payload, str):
             payload = payload.encode('utf-8')
 
-        self.client.publish(target_topic, payload, **publish_kwargs)
+        self._track_inflight(self.client.publish(target_topic, payload, **publish_kwargs))
 
     
     async def publish_de_wsv_pegelonline_mqtt_current_measurement(self,
@@ -634,7 +760,7 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
-        content_type: str = "application/json") -> None:
+        content_type: str = 'application/json') -> None:
         """
         Publish the 'de.wsv.pegelonline.mqtt.CurrentMeasurement' event to an MQTT topic.
 
@@ -663,11 +789,12 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         attributes = {
              "type":"de.wsv.pegelonline.CurrentMeasurement",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{station_id}".format(station_id = station_id)
+             "subject":"{station_id}".format(station_id = station_id),
+             "dataschema":"xreg://./schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement/versions/1"
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        byte_data = data.to_byte_array(content_type.replace("application/vnd.apache.org.avro+avro", "application/vnd.apache.avro+avro", 1)) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
         # to_binary/to_structured embed the str directly which then becomes
@@ -675,6 +802,8 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         # bytes up-front so receivers can json.loads(payload) once.
         if isinstance(byte_data, str):
             byte_data = byte_data.encode('utf-8')
+        if "dataschema" in attributes:
+            attributes["dataschema"] = self._dataschema_overrides.get(attributes["dataschema"], attributes["dataschema"])
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -704,6 +833,7 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         elif isinstance(payload, str):
             payload = payload.encode('utf-8')
 
-        self.client.publish(target_topic, payload, **publish_kwargs)
+        self._track_inflight(self.client.publish(target_topic, payload, **publish_kwargs))
 
+    
     

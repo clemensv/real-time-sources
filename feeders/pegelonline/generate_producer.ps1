@@ -1,11 +1,11 @@
 # The checked-in xreg manifest is authoritative. Regenerate both producers
-# from it: one per transport endpoint (Kafka and MQTT). Each pass uses
+# from it: one per transport endpoint (Kafka, MQTT and AMQP). Each pass uses
 # --endpoint to scope generation to a single endpoint and its derived
 # messagegroup; the shared base messagegroup is pulled in transitively via
 # basemessageurl resolution.
 
 . (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
-Assert-XrcgVersion
+Assert-XrcgVersion -RequiredVersion '0.11.1'
 
 xrcg generate `
     --style kafkaproducer `

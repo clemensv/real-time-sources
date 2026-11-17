@@ -13,6 +13,11 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
+
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Water:
@@ -25,8 +30,10 @@ class Water:
     """
     
     
+    
     shortname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
     longname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
+
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Water':
@@ -39,6 +46,7 @@ class Water:
         Returns:
             The dataclass representation of the dataclass.
         """
+        data = dict(data)
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -144,6 +152,7 @@ class Water:
                 return Water.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
@@ -155,6 +164,6 @@ class Water:
             An instance of the dataclass.
         """
         return cls(
-            shortname='mddblmlucoqovxbaugrz',
-            longname='xofphwsxlaexuwvobovd'
+            shortname='vyxcoeldlxiiiiqjfeqa',
+            longname='yupcndmsskftmytielaw'
         )
