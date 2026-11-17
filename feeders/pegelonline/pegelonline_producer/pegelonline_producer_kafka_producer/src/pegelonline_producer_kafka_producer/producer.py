@@ -58,7 +58,7 @@ from pegelonline_producer_data import Station
 from pegelonline_producer_data import CurrentMeasurement
 
 class DeWsvPegelonlineKafkaEventProducer:
-    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured', dataschema_overrides: typing.Optional[typing.Mapping[str, str]] = None):
         """
         Initializes the Kafka producer
 
@@ -70,6 +70,10 @@ class DeWsvPegelonlineKafkaEventProducer:
         self.producer = producer
         self.topic = topic
         self.content_mode = content_mode
+        self._dataschema_overrides = dict(dataschema_overrides) if dataschema_overrides is not None else {}
+        if any(not isinstance(key, str) or not key or not isinstance(value, str) or not value
+               for key, value in self._dataschema_overrides.items()):
+            raise ValueError("dataschema_overrides must map nonempty URI strings to nonempty URI strings")
 
     @staticmethod
     def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
@@ -90,13 +94,15 @@ class DeWsvPegelonlineKafkaEventProducer:
 
     @staticmethod
     def __binary_data_marshaller(data: typing.Any) -> bytes:
-        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        """Return pre-serialized bytes or serialize legacy JSON payload objects."""
+        if isinstance(data, (bytes, bytearray, memoryview)):
+            return bytes(data)
         payload = data.to_byte_array("application/json")
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
 
-    def send_de_wsv_pegelonline_kafka_station(self,_feedurl : str, _station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_de_wsv_pegelonline_kafka_station(self,_feedurl : str, _station_id : str, data: Station, content_type: str = 'application/json', _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'de.wsv.pegelonline.kafka.Station' event to the Kafka topic
 
@@ -114,13 +120,27 @@ class DeWsvPegelonlineKafkaEventProducer:
         attributes = {
              "type":"de.wsv.pegelonline.Station",
              "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"{station_id}".format(station_id = _station_id)
+             "subject":"{station_id}".format(station_id = _station_id),
+             "dataschema":"xreg://./schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.Station/versions/1"
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        event = CloudEvent.create(attributes, data)
+        byte_data = data.to_byte_array(content_type.replace("application/vnd.apache.org.avro+avro", "application/vnd.apache.avro+avro", 1)) if data is not None else b''
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        if "dataschema" in attributes:
+            attributes["dataschema"] = self._dataschema_overrides.get(attributes["dataschema"], attributes["dataschema"])
+        event = CloudEvent.create(attributes, byte_data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            media_type = content_type.split(";", 1)[0].strip().lower()
+            if byte_data and (media_type == "application/json" or media_type.endswith("+json")):
+                event = CloudEvent.create(attributes, json.loads(byte_data))
+            message = to_structured(
+                event,
+                data_marshaller=lambda x: x,
+                envelope_marshaller=lambda envelope: json.dumps({**envelope, "datacontenttype": content_type}),
+                key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key),
+            )
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -128,10 +148,10 @@ class DeWsvPegelonlineKafkaEventProducer:
             message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
-            self.producer.flush()
+            self.flush()
 
 
-    def send_de_wsv_pegelonline_kafka_current_measurement(self,_feedurl : str, _station_id : str, data: CurrentMeasurement, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentMeasurement], str]=None) -> None:
+    def send_de_wsv_pegelonline_kafka_current_measurement(self,_feedurl : str, _station_id : str, data: CurrentMeasurement, content_type: str = 'application/json', _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentMeasurement], str]=None) -> None:
         """
         Sends the 'de.wsv.pegelonline.kafka.CurrentMeasurement' event to the Kafka topic
 
@@ -149,13 +169,27 @@ class DeWsvPegelonlineKafkaEventProducer:
         attributes = {
              "type":"de.wsv.pegelonline.CurrentMeasurement",
              "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"{station_id}".format(station_id = _station_id)
+             "subject":"{station_id}".format(station_id = _station_id),
+             "dataschema":"xreg://./schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement/versions/1"
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        event = CloudEvent.create(attributes, data)
+        byte_data = data.to_byte_array(content_type.replace("application/vnd.apache.org.avro+avro", "application/vnd.apache.avro+avro", 1)) if data is not None else b''
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        if "dataschema" in attributes:
+            attributes["dataschema"] = self._dataschema_overrides.get(attributes["dataschema"], attributes["dataschema"])
+        event = CloudEvent.create(attributes, byte_data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            media_type = content_type.split(";", 1)[0].strip().lower()
+            if byte_data and (media_type == "application/json" or media_type.endswith("+json")):
+                event = CloudEvent.create(attributes, json.loads(byte_data))
+            message = to_structured(
+                event,
+                data_marshaller=lambda x: x,
+                envelope_marshaller=lambda envelope: json.dumps({**envelope, "datacontenttype": content_type}),
+                key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key),
+            )
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -163,7 +197,7 @@ class DeWsvPegelonlineKafkaEventProducer:
             message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
-            self.producer.flush()
+            self.flush()
 
 
     def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:

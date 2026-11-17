@@ -464,6 +464,7 @@ class DeWsvPegelonlineAmqpProducer:
                  sas_key: typing.Optional[str] = None,
                  sas_token_ttl_seconds: int = 3600,
                  use_tls: bool = True,
+                 dataschema_overrides: typing.Optional[typing.Mapping[str, str]] = None,
                  ):
         """
         Initialize the AMQP producer
@@ -502,6 +503,10 @@ class DeWsvPegelonlineAmqpProducer:
         self.username = username
         self.password = password
         self.content_mode = content_mode
+        self._dataschema_overrides = dict(dataschema_overrides) if dataschema_overrides is not None else {}
+        if any(not isinstance(key, str) or not key or not isinstance(value, str) or not value
+               for key, value in self._dataschema_overrides.items()):
+            raise ValueError("dataschema_overrides must map nonempty URI strings to nonempty URI strings")
         self.format_type = format_type
         self._credential = credential
         self._entra_audience = entra_audience
@@ -633,6 +638,7 @@ class DeWsvPegelonlineAmqpProducer:
         if data is None:
             return b''
         if hasattr(data, 'to_byte_array'):
+            content_type = content_type.replace("application/vnd.apache.org.avro+avro", "application/vnd.apache.avro+avro", 1)
             payload = data.to_byte_array(content_type)
         elif hasattr(data, 'to_dict'):
             payload = json.dumps(data.to_dict())
@@ -714,6 +720,8 @@ class DeWsvPegelonlineAmqpProducer:
             "{feedurl}".format(feedurl=_feedurl),
             "subject":
             "{station_id}".format(station_id=_station_id),
+            "dataschema":
+            "xreg://./schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.Station/versions/1",
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -724,6 +732,8 @@ class DeWsvPegelonlineAmqpProducer:
         byte_data = self._serialize_payload(data, content_type)
         
         # Create CloudEvent
+        if "dataschema" in attributes:
+            attributes["dataschema"] = self._dataschema_overrides.get(attributes["dataschema"], attributes["dataschema"])
         cloud_event = CloudEvent(attributes, byte_data)
         
         # Convert to AMQP message based on content mode
@@ -825,6 +835,8 @@ class DeWsvPegelonlineAmqpProducer:
             "{feedurl}".format(feedurl=_feedurl),
             "subject":
             "{station_id}".format(station_id=_station_id),
+            "dataschema":
+            "xreg://./schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement/versions/1",
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -835,6 +847,8 @@ class DeWsvPegelonlineAmqpProducer:
         byte_data = self._serialize_payload(data, content_type)
         
         # Create CloudEvent
+        if "dataschema" in attributes:
+            attributes["dataschema"] = self._dataschema_overrides.get(attributes["dataschema"], attributes["dataschema"])
         cloud_event = CloudEvent(attributes, byte_data)
         
         # Convert to AMQP message based on content mode

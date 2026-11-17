@@ -1,5 +1,9 @@
 # pegelonline Fabric assets
 
+The isolated [schematized pilot](./schematized/README.md) uses
+Eventstream-created base tables. The instructions below describe the legacy
+path; do not apply its table definitions or Map hook to schematized items.
+
 Post-deploy artefacts for the **pegelonline** real-time-sources bridge: an
 8-layer Fabric Map that visualises the live state of the German Federal
 Waterways gauge network (~800 stations along the Rhein, Elbe, Donau, Main,

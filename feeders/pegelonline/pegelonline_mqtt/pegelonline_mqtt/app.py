@@ -193,6 +193,7 @@ async def feed(
     auth_mode: str = "password",
     entra_audience: str = DEFAULT_ENTRA_AUDIENCE,
     entra_client_id: Optional[str] = None,
+    dataschema_overrides: Optional[Dict[str, str]] = None,
 ) -> None:
     previous_readings: Dict[str, Dict[str, Any]] = load_state(state_file)
 
@@ -226,6 +227,7 @@ async def feed(
         client=paho_client,
         content_mode=content_mode,  # type: ignore[arg-type]
         loop=loop,
+        dataschema_overrides=dataschema_overrides,
     )
 
     logger.info(

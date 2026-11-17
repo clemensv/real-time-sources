@@ -129,6 +129,7 @@ def _build_producer(
     entra_client_id: Optional[str],
     sas_key_name: Optional[str],
     sas_key: Optional[str],
+    dataschema_overrides: Optional[Dict[str, str]] = None,
 ) -> DeWsvPegelonlineAmqpProducer:
     if auth_mode == "entra":
         # Lazy import so the package still installs when azure-identity
@@ -156,6 +157,7 @@ def _build_producer(
             port=port,
             content_mode=content_mode,  # type: ignore[arg-type]
             credential=credential,
+            dataschema_overrides=dataschema_overrides,
             entra_audience=entra_audience,
             use_tls=use_tls,
         )
@@ -177,6 +179,7 @@ def _build_producer(
             content_mode=content_mode,  # type: ignore[arg-type]
             sas_key_name=sas_key_name,
             sas_key=sas_key,
+            dataschema_overrides=dataschema_overrides,
             use_tls=use_tls,
         )
 
@@ -192,6 +195,7 @@ def _build_producer(
         password=password,
         content_mode=content_mode,  # type: ignore[arg-type]
         use_tls=use_tls,
+        dataschema_overrides=dataschema_overrides,
     )
 
 

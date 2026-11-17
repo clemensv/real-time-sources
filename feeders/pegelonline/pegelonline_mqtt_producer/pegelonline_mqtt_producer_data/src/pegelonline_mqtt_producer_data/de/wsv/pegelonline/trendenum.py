@@ -9,6 +9,7 @@ class TrendEnum(IntEnum):
     VALUE_0 = 0
     VALUE_1 = 1
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'TrendEnum':
         """

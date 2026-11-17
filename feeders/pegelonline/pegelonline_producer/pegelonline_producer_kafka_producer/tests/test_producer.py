@@ -48,10 +48,10 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
             if 'datacontenttype' not in ce:
                 ce['datacontenttype'] = 'application/json'
         else:
-            ce = from_binary(message)
+            ce = from_binary(message, data_unmarshaller=lambda data: data)
             ce['datacontenttype'] = message.headers['content-type'].decode()
     else:
-        ce = from_binary(message)
+        ce = from_binary(message, data_unmarshaller=lambda data: data)
         ce['datacontenttype'] = 'application/json'
     return ce
 
