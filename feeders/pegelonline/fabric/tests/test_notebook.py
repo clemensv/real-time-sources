@@ -1,6 +1,7 @@
 """Notebook boundary checks without a Fabric kernel or broker."""
 
 import json
+import hashlib
 import logging
 import sys
 from pathlib import Path
@@ -124,13 +125,28 @@ def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_pat
 
 
 @pytest.mark.unit
-def test_notebook_bindings_match_projection_provenance():
+def test_notebook_bindings_match_canonical_identities_and_selected_schemas():
     cells = json.loads(NOTEBOOK.read_text())["cells"]
     namespace = {}
     exec("".join(cells[1]["source"]), namespace)
-    provenance = json.loads((NOTEBOOK.parents[1] / "fabric" / "schematized" / "projection-provenance.json").read_text())
-    for item in provenance["messages"]:
-        binding = namespace["SCHEMA_BINDINGS"][item["wire_type"]]
-        assert binding["source_uri"] == "xreg://./" + item["source_schema"][2:] + "/versions/" + item["source_version"]
-        assert binding["projected_version"] == item["projected_version"]
-        assert binding["schema_sha256"] == item["schema_sha256"]
+    source = NOTEBOOK.parents[1]
+    registry = json.loads((source / "xreg" / "pegelonline.xreg.json").read_text())
+    derived = json.loads((source / "fabric" / "schematized" / "pegelonline.fabric.xreg.json").read_text())
+    definition = json.loads((source / "fabric" / "schematized" / "EventSchemaSetDefinition.json").read_text())
+    messages = registry["messagegroups"]["de.wsv.pegelonline"]["messages"]
+    assert set(namespace["SCHEMA_BINDINGS"]) == {event["id"] for event in definition["eventTypes"]}
+    for event in definition["eventTypes"]:
+        message = messages[event["id"]]
+        binding = namespace["SCHEMA_BINDINGS"][event["id"]]
+        schema_resource = registry
+        for part in message["dataschemauri"].removeprefix("#/").split("/"):
+            schema_resource = schema_resource[part]
+        assert binding["source_uri"] == (
+            "xreg://./" + message["dataschemauri"].removeprefix("#/")
+            + "/versions/" + schema_resource["defaultversionid"])
+        variant = derived["messagegroups"]["de.wsv.pegelonline.avro"]["messages"][event["id"]]
+        assert binding["projected_version"] == variant["dataschemauri"].rsplit("/", 1)[1]
+        schema = next(s for s in definition["schemas"] if s["id"] == event["schemaUrl"].removeprefix("#/schemas/"))
+        version = next(v for v in schema["versions"] if v["id"] == binding["projected_version"])
+        canonical_schema = json.dumps(json.loads(version["schema"]), ensure_ascii=True, separators=(",", ":"))
+        assert binding["schema_sha256"] == hashlib.sha256(canonical_schema.encode()).hexdigest()

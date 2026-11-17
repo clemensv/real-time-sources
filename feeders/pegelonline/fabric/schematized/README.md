@@ -20,9 +20,6 @@ bindings.
   under `.avro.json`. Canonical producer migration remains separate work.
 - [Event Schema Set definition](./EventSchemaSetDefinition.json) projects
   CloudEvents wire types and pinned Avro schemas.
-- [Projection provenance](./projection-provenance.json) records conversion
-  version, source identity, projected versions, schema digests and limits.
-  These are contract identities, not deployed resource identities.
 
 The older canonical Avro measurement schema uses a long timestamp, while the
 JSON serializer emits an ISO-8601 string. Station nullability also differs
@@ -30,16 +27,33 @@ from the JSON Structure contract. The projection derives both records from
 the authoritative JSON Structure schemas and inlines named dependencies.
 Both event families are preserved.
 
-Regenerate from the repository root:
+### Generation status
+
+The checked-in definition was produced during the pilot with Avrotize 3.9.1
+`s2a`, followed by a source-local script that inlined named records, adjusted
+the datetime annotation and assembled the Fabric envelope and schema arrays.
+That script has been removed. These conversions belong in Avrotize;
+[clemensv/avrotize#581](https://github.com/clemensv/avrotize/issues/581)
+requests native xRegistry-to-Event-Schema-Set generation and portable
+JSON-wire projections. The datetime option is tracked separately in
+[clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571).
+
+**Regeneration is blocked on upstream support.** The checked-in registry and
+definition retain the already validated schemas; do not hand-patch them or
+introduce another local converter. Once the upstream command is available,
+document its exact version and invocation, compare its output with the
+validated contract, and rerun schema reviews and live acceptance before
+replacing these artifacts.
+
+Validate the retained artifacts from the repository root:
 
 ```powershell
-python -m pip install -r feeders\pegelonline\fabric\requirements-authoring.txt
-python feeders\pegelonline\fabric\project_schemas.py
-python -m pytest feeders\pegelonline\fabric\tests\test_projection.py --no-cov -q
+python -m pip install -r feeders\pegelonline\fabric\requirements-validation.txt
+python -m pytest feeders\pegelonline\fabric\tests\test_projection.py feeders\pegelonline\fabric\tests\test_notebook.py --no-cov -q
 ```
 
-These commands author local files only. They do not provision resources or
-publish events.
+These checks compare the registry, Fabric definition and notebook bindings
+directly. They do not regenerate files, provision resources or publish events.
 
 ## Wire and storage requirements
 
@@ -90,8 +104,8 @@ try { .\generate_producer.ps1 } finally { Pop-Location }
 ```
 
 The local checkout must report version 0.11.1 and satisfy its declared
-dependencies, including Avrotize >=3.9.5. This generator environment is
-separate from the pinned projection-authoring environment above. Do not
+dependencies, including Avrotize >=3.9.5. Client generation does not generate
+the Fabric schema-set definition or resolve the upstream projection gap. Do not
 hand-edit generated clients or relax dependency requirements. Rebuild all
 affected wheels before updating a Fabric Environment; regeneration does
 not update already deployed libraries.
@@ -111,7 +125,10 @@ keyed by original generated `xreg://./` URIs, not event types. Station source
 version `1` maps to projection version `1`; Measurement source version `1`
 maps to projection version `2`. Do not infer catalog hosts or schema-set IDs.
 
-Expected versions and SHA-256 fingerprints come from projection provenance.
+The notebook's `SCHEMA_BINDINGS` pins expected versions and SHA-256
+fingerprints. Tests compare these directly with the canonical source
+identities and selected schemas in the registry and Fabric definition;
+there is no provenance sidecar.
 Missing or duplicate selections, conflicting mappings, schema drift and
 unexpected routing hosts fail startup. The read-only resolver currently
 supports schema sets in the Eventstream's workspace only. Schema lookup uses
@@ -151,9 +168,9 @@ requires an explicitly approved fallback.
    Preserve existing bindings and state; do not use the legacy deployer if
    it clears them.
 6. Supply `EVENTSTREAM_NAME`, `WORKSPACE_ID` and `SOURCE_NAME` at deployment.
-   Refresh generated `SCHEMA_BINDINGS` with
-   [project_schemas.py](../project_schemas.py). Target URIs are discovered,
-   not checked in.
+   Keep the validated `SCHEMA_BINDINGS` aligned with the selected contract
+   artifacts. Schema regeneration and binding refresh await the upstream
+   generator support described above. Target URIs are discovered, not checked in.
 7. Use bounded one-shot polling with `ONCE_MODE=True` and a finite
    `RUN_DURATION`. Preserve the configured dedupe file. A new state path
    requires an explicit replay decision.
@@ -165,12 +182,12 @@ requires an explicitly approved fallback.
 
 ## Validation and remaining work
 
-Run source and authoring tests with the local split-package roots on
+Run source and artifact-validation tests with the local split-package roots on
 `PYTHONPATH`:
 
 ```powershell
 python -m pytest feeders\pegelonline\tests feeders\pegelonline\fabric\tests -x -q --no-cov
-python -m mypy feeders\pegelonline\fabric\project_schemas.py feeders\pegelonline\pegelonline_core\pegelonline_core\fabric.py --config-file mypy.ini
+python -m mypy feeders\pegelonline\pegelonline_core\pegelonline_core\fabric.py --config-file mypy.ini
 pwsh tools\validate-fabric-deployment.ps1 -FeederSlug pegelonline
 ```
 

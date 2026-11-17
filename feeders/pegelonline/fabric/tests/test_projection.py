@@ -1,6 +1,5 @@
 """Contract checks for the schematized Fabric pilot."""
 
-import importlib.util
 import json
 from pathlib import Path
 
@@ -13,23 +12,32 @@ FABRIC = SOURCE / "fabric"
 
 
 @pytest.mark.unit
-def test_projection_rebuild_preserves_contracts_and_inlines_dependencies():
-    spec = importlib.util.spec_from_file_location("project_schemas", FABRIC / "project_schemas.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+def test_checked_projection_preserves_contracts_and_resolves_selected_schemas():
     original = json.loads((SOURCE / "xreg" / "pegelonline.xreg.json").read_text(encoding="utf-8"))
-    derived, definition, provenance = module.build(original)
+    derived = json.loads((FABRIC / "schematized" / "pegelonline.fabric.xreg.json").read_text())
+    definition = json.loads((FABRIC / "schematized" / "EventSchemaSetDefinition.json").read_text())
     assert derived["endpoints"] == original["endpoints"]
-    for group, value in original["schemagroups"].items():
-        assert derived["schemagroups"][group] == value
-    for filename, actual in (
-        ("pegelonline.fabric.xreg.json", derived),
-        ("EventSchemaSetDefinition.json", definition),
-        ("projection-provenance.json", provenance),
-    ):
-        assert json.loads((FABRIC / "schematized" / filename).read_text(encoding="utf-8")) == actual
+    for collection in ("schemagroups", "messagegroups"):
+        for key, value in original[collection].items():
+            assert derived[collection][key] == value
+    variants = derived["messagegroups"]["de.wsv.pegelonline.avro"]["messages"]
+    assert {event["id"] for event in definition["eventTypes"]} == set(variants)
+    assert {schema["id"] for schema in definition["schemas"]} == set(variants)
     for event_type in definition["eventTypes"]:
-        schema = next(s for s in definition["schemas"] if s["id"] == event_type["id"])
+        message = variants[event_type["id"]]
+        inherited = derived
+        for part in message["basemessageuri"].strip("/").split("/"):
+            inherited = inherited[part]
+        assert event_type["id"] == inherited["envelopemetadata"]["type"]["value"]
+        projected = derived
+        for part in message["dataschemauri"].removeprefix("#/").split("/"):
+            projected = projected[part]
+        schema_id = event_type["schemaUrl"].removeprefix("#/schemas/")
+        schema = next(s for s in definition["schemas"] if s["id"] == schema_id)
+        selected_version = message["dataschemauri"].rsplit("/", 1)[1]
+        selected = next(v for v in schema["versions"] if v["id"] == selected_version)
+        assert selected["format"] == projected["format"] == event_type["schemaFormat"]
+        assert json.loads(selected["schema"]) == projected["schema"]
         for version in schema["versions"]:
             record = json.loads(version["schema"])
             assert record["type"] == "record"
