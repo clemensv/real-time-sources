@@ -19,6 +19,10 @@ Prefer the workspace managed identity wherever the selected API, service and tra
 Verify the effective runtime principal, token audiences and least-privilege roles; delegated user credentials are not workspace-identity proof.
 Do not fetch SAS keys by default. Document any identity-support limitation and obtain approval for a fallback, with a supported Entra flow preferred over SAS.
 Never enable key authentication or broaden permissions silently.
+Keep concrete deployment coordinates outside Git, including non-secret
+workspace/item names and IDs, registered URLs, schedules and run receipts.
+Use portable contracts and placeholders in repository files; retain operator
+configuration and acceptance evidence externally.
 
 ## Build and verify
 
@@ -28,10 +32,17 @@ Read [schema-first authoring](./references/index.md), then only the references n
    [Reuse an existing feeder](./references/external-feeders.md) and resolve [xRegistry references](./references/xregistry-projection.md), including inherited Avro message-group variants.
    Reuse matching Avro variants; when missing, [construct and validate them with Avrotize](./references/avrotize.md#construct-missing-xregistry-avro-variants) before Fabric registration.
    Keep Avro schema representation, payload encoding and CloudEvents envelope mode separate; an Avro schema does not require Avro binary events.
+   Use shared repository tooling for registry/Fabric assembly and Avrotize
+   for datatype conversion; do not introduce a source-local converter.
 2. Create and read back the Event Schema Set and its pinned versions.
    Use [CLI or approved REST](./references/programmatic.md), not browser automation or guessed fields.
 3. Create the schema-aware Eventstream and associate registered versions with its exact source node.
    For explicitly approved provider-specific APIs, follow the versioned [native contract](./references/native-api.md); revalidate its availability and never use it to bypass denied public access.
+   When deploying the notebook, discover exact registered version URLs, verify
+   versions/fingerprints and inject an original-schema-URI-keyed override map
+   in a generated cell. The deployed run cell passes it to the producer.
+   Concrete URLs and generated deployment copies stay outside Git; regenerate
+   the cell when the target binding or selected schemas change.
 4. Establish [source readiness](./references/source-readiness.md) and verify [wire admission](./references/ingestion.md).
    Setup probes do not count as final destination acceptance.
 5. Configure the [paired KQL destination](./references/destination.md), including explicit registered schema/version selection.

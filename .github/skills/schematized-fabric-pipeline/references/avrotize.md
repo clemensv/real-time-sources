@@ -11,14 +11,14 @@ Do not write a replacement schema converter or add it to the browser runtime.
 Install it in the project's Python tooling environment and record the tool version with the source schema and generated artifact:
 
 ```sh
-python -m pip install avrotize
+python -m pip install avrotize==3.9.6
 python -m pip show avrotize
 ```
 
 For JSON Structure, convert the resolved payload schema, not the whole xRegistry document:
 
 ```sh
-python -m avrotize s2a DeviceReading.jstruct.json --out DeviceReading.avsc
+python -m avrotize s2a DeviceReading.jstruct.json --out DeviceReading.avsc --no-custom-logical-types
 ```
 
 For JSON Schema, use the alternative command:
@@ -48,18 +48,41 @@ An existing variant is reusable only after comparison with actual serialized
 payloads, not because its resource name contains `avro`.
 
 Fabric rejected Avrotize 3.9.1's `rfc3339-timestamp-millis` logical-type
-extension. Track this at
-[clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571).
-The isolated compatibility projection retained the string wire representation,
-preserved the original version, and registered a new version with the original
-annotation recorded as `x-original-logical-type`. This is a declared projection,
-not a generator fix or permission to strip unsupported annotations silently.
+extension. Avro explicitly requires readers to ignore unknown logical types and
+use the underlying Avro type. Registration and broker acceptance did not expose
+this Fabric runtime compatibility defect; the emitted Avro was not invalid merely
+because Fabric rejected it.
+
+Avrotize 3.9.6 resolves
+[clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571) with
+`s2a --no-custom-logical-types`. Use that explicit option for Fabric JSON-wire
+projections. It retains string payloads and moves custom RFC3339 annotations to
+`x-original-logical-type`; standard logical types such as UUID remain intact.
+Do not implement that transformation locally or rewrite existing Avro inputs
+silently. Both selected Pegelonline schemas reproduce the retained schema strings
+byte for byte through this upstream option.
 Record the loss of datetime validation and downstream `todatetime` requirements.
 Generic Avro validation also does not enforce every original enum or numeric
 constraint. Keep authoritative validation and retest provider compatibility
 before removing any workaround.
 
 ## Construct missing xRegistry Avro variants
+
+Use the shared `tools/deploy-fabric/generate_schema_set.py` command and its
+[authoring guide](../../../../tools/deploy-fabric/schema-set-authoring.md)
+when available on the target branch (introduced with #1747). It owns local
+xRegistry selection/inheritance, missing parallel variants and Fabric definition
+assembly; Avrotize owns datatype conversion and named-record inlining. Do not
+reintroduce a source-specific converter if integrating that shared tool is needed.
+The tool does not fetch remote references or deploy resources; resolve unsupported
+references through the approved path before invoking it.
+
+Pin source versions and require explicit projected versions. Never infer a
+version bump from an event-name suffix or select the highest map entry.
+Preserve canonical resources, endpoints, key templates, subjects and inherited
+wire types. No separate projection-provenance sidecar is required: contract
+identities and versions are in the registry, schema text is in the definition,
+and notebook selections pin fingerprints. Keep operational evidence external.
 
 Missing Avro variants are authoring work for this skill, not a reason to stop at an untyped Fabric route.
 Use the [Bluesky variant pattern](./xregistry-projection.md#select-the-avro-message-group-variant).
@@ -71,7 +94,7 @@ If the upstream registry is read-only, save a derived registry in the approved p
    Convert each missing representation with Avrotize's `s2a` or `j2a`, as appropriate.
    Do not infer schemas from samples when an authoritative contract exists.
 2. Add a sibling `<base-group>.avro` schema group containing the converted records, explicit schema/version IDs and the supported Avro format.
-   Preserve existing version IDs when they identify the converted source version unambiguously; otherwise record the source-to-derived version mapping.
+   Require explicit projected version IDs and record the source-to-derived mapping.
    Keep nested named-type dependencies resolvable in the schema registered with Fabric.
    Do not replace the original JSON Structure or JSON Schema resources.
 3. Add a sibling `<base-group>.avro` message group with one variant per selected base message.

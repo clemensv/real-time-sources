@@ -44,8 +44,10 @@ An event found only in `Unschematized_NoSchema`, an untyped/default route, or a 
 For structured input, a complete CloudEvent stored inside the payload's `data` is a decoding/layout mismatch to investigate, not proof of successful schema application.
 Do not add an application-side unwrap or manually create a matching table to conceal an upstream classification failure.
 
-Keep a small sanitized receipt with owned resource IDs, schema/version identities, published selection, exact probe IDs, physical storage/readback and cleanup outcome.
+Keep a small external operator receipt with owned resource IDs, schema/version identities, published selection, exact probe IDs, physical storage/readback and cleanup outcome.
 Exclude tokens, SAS keys, connection strings and machine/user identifiers not needed for correlation.
+Never commit that receipt: removing credentials does not make deployment
+coordinates publishable. Repository docs and PRs record verdicts, not coordinates.
 For notebook sources, retain per-run evidence rather than overwriting manual
 acceptance when a scheduled run is verified. Record definition/package hashes,
 job IDs, runtime-log outcome and exact output/history match counts for each
@@ -54,4 +56,8 @@ ingestion acceptance. Require the exact output `dataschema` to match its pinned
 registered version URI. If scheduling is in scope, capture approval, cadence,
 expiry and the first actual scheduled run; measure total job duration,
 including startup. Do not clear dedupe state to produce acceptance events.
+Require fresh events from every selected reference and telemetry family and
+attribute them to the invocation's ID/time boundary. A nonzero count from an old
+run proves nothing about the new invocation. Read active runtime package versions
+as well as Environment publish state; uploaded wheels may not be the loaded ones.
 Only after these checks pass should you [prepare the application handoff](./handoff.md).

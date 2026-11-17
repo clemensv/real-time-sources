@@ -68,3 +68,41 @@ Use the official [xRegistry documentation](https://xregistry.io/), [core specifi
 Pin the source model/specification version; registries can use different revisions.
 
 If the payload format needs conversion, read the [Avrotize guidance](./avrotize.md).
+
+## Generate the notebook schema URL cell during deployment
+
+Keep authoring, deployment and runtime binding separate:
+
+1. Author portable schema identities, explicit versions and expected fingerprints.
+2. Deploy/register the schemas and associate the selected versions with the exact
+   Eventstream source. Supply workspace/Eventstream/source bindings externally.
+3. During notebook deployment, read that source's associated schema metadata and
+   retrieve exact service-issued schema-version URLs. Verify versions and
+   fingerprints, then inject the resolved mapping as a literal code cell in
+   the deployed notebook before the feeder run cell.
+
+Build an override table keyed by each original generated
+`xreg://./.../versions/...` URI. Values are the exact registered version URLs,
+not inferred URL templates. Preserve the generated client's behavior for
+unmapped URIs; maps are instance-local, exact and nonrecursive. Reject missing
+or ambiguous selections, conflicting mappings and schema drift before upload.
+Do not guess catalog hosts or internal schema-group names/GUIDs.
+
+Checked-in `SCHEMA_BINDINGS` represents portable contract selections, not the
+physical URL map. Persist the resolved table only in the deployed notebook and
+external operator artifacts, never Git. The run cell passes it to the producer;
+schema catalog discovery need not run on each invocation. Keep credentials
+separate. Use safe Python-literal serialization, replace rather than duplicate
+the dedicated cell on redeployment, and read it back before scheduling.
+Regenerate after source/schema-set/version changes.
+
+The pilot uses `tools/deploy-fabric/bind_notebook_schemas.py` for cell injection
+after operator-side resolution and fingerprint verification. Its portable
+template fails explicitly when the cell is unbound. The legacy shared deployer
+is not yet schematized-safe. Verify resolver scope explicitly; that pilot supports
+schema sets in the Eventstream's workspace only.
+
+Serialize schema text deterministically and compare bytes/fingerprints when
+regenerating. Identical schema strings retain existing fingerprints. Changed
+bytes require deliberate selection/binding updates and renewed acceptance;
+semantic similarity alone is not a fingerprint match.
