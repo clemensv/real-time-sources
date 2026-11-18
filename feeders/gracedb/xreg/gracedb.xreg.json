@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.ligo.gracedb"
+        "#/messagegroups/org.ligo.gracedb",
+        "#/messagegroups/org.ligo.gracedb.avro",
+        "#/messagegroups/org.ligo.gracedb.avro.binary"
       ],
       "description": "Kafka producer endpoint for GraceDB CloudEvents on the `gracedb` topic keyed by `{superevent_id}`."
     },
@@ -38,7 +40,9 @@
         }
       ],
       "messagegroups": [
-        "#/messagegroups/org.ligo.gracedb.mqtt"
+        "#/messagegroups/org.ligo.gracedb.mqtt",
+        "#/messagegroups/org.ligo.gracedb.mqtt.avro",
+        "#/messagegroups/org.ligo.gracedb.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for GraceDB CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     },
@@ -60,7 +64,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/org.ligo.gracedb.amqp"
+        "#/messagegroups/org.ligo.gracedb.amqp",
+        "#/messagegroups/org.ligo.gracedb.amqp.avro",
+        "#/messagegroups/org.ligo.gracedb.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for gracedb CloudEvents on the configured broker address."
     }
@@ -87,6 +93,10 @@
             "time": {
               "value": "{created}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -124,6 +134,90 @@
                 "value": "{superevent_id}",
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "org.ligo.gracedb.avro": {
+      "messagegroupid": "org.ligo.gracedb.avro",
+      "messages": {
+        "org.ligo.gracedb.Superevent": {
+          "messageid": "org.ligo.gracedb.Superevent",
+          "basemessage": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.ligo.gracedb.avro/schemas/org.ligo.gracedb.Superevent"
+        }
+      }
+    },
+    "org.ligo.gracedb.avro.binary": {
+      "messagegroupid": "org.ligo.gracedb.avro.binary",
+      "messages": {
+        "org.ligo.gracedb.Superevent": {
+          "messageid": "org.ligo.gracedb.Superevent",
+          "basemessage": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.ligo.gracedb.avro/schemas/org.ligo.gracedb.Superevent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.ligo.gracedb.mqtt.avro": {
+      "messagegroupid": "org.ligo.gracedb.mqtt.avro",
+      "messages": {
+        "org.ligo.gracedb.mqtt.Superevent": {
+          "messageid": "org.ligo.gracedb.mqtt.Superevent",
+          "basemessage": "/messagegroups/org.ligo.gracedb.mqtt/messages/org.ligo.gracedb.mqtt.Superevent",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.ligo.gracedb.avro/schemas/org.ligo.gracedb.Superevent"
+        }
+      }
+    },
+    "org.ligo.gracedb.mqtt.avro.binary": {
+      "messagegroupid": "org.ligo.gracedb.mqtt.avro.binary",
+      "messages": {
+        "org.ligo.gracedb.mqtt.Superevent": {
+          "messageid": "org.ligo.gracedb.mqtt.Superevent",
+          "basemessage": "/messagegroups/org.ligo.gracedb.mqtt/messages/org.ligo.gracedb.mqtt.Superevent",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.ligo.gracedb.avro/schemas/org.ligo.gracedb.Superevent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.ligo.gracedb.amqp.avro": {
+      "messagegroupid": "org.ligo.gracedb.amqp.avro",
+      "messages": {
+        "org.ligo.gracedb.amqp.Superevent": {
+          "messageid": "org.ligo.gracedb.amqp.Superevent",
+          "basemessage": "/messagegroups/org.ligo.gracedb.amqp/messages/org.ligo.gracedb.amqp.Superevent",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.ligo.gracedb.avro/schemas/org.ligo.gracedb.Superevent"
+        }
+      }
+    },
+    "org.ligo.gracedb.amqp.avro.binary": {
+      "messagegroupid": "org.ligo.gracedb.amqp.avro.binary",
+      "messages": {
+        "org.ligo.gracedb.amqp.Superevent": {
+          "messageid": "org.ligo.gracedb.amqp.Superevent",
+          "basemessage": "/messagegroups/org.ligo.gracedb.amqp/messages/org.ligo.gracedb.amqp.Superevent",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.ligo.gracedb.avro/schemas/org.ligo.gracedb.Superevent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -299,7 +393,7 @@
           "name": "Superevent",
           "format": "Avro/1.11.3",
           "description": "A gravitational wave candidate superevent from the LIGO/Virgo/KAGRA collaboration, published via GraceDB.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -446,6 +540,161 @@
                   }
                 ],
                 "description": "Payload for an emergency or hazard event from the LIGO/Virgo/KAGRPayload for a GraceDB service. It carries superevent alerts and classifications for gravitational-wave candidate events."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.ligo.gracedb.Superevent",
+                "fields": [
+                  {
+                    "name": "superevent_id",
+                    "type": "string",
+                    "doc": "Unique identifier for the superevent assigned by GraceDB, e.g. 'S240414a' for production events or 'MS260408x' for MDC (mock data challenge) events."
+                  },
+                  {
+                    "name": "category",
+                    "type": "string",
+                    "doc": "Category of the superevent. 'Production' for real observing-run candidates, 'MDC' for mock data challenge injections, 'Test' for engineering/test events."
+                  },
+                  {
+                    "name": "created",
+                    "type": "string",
+                    "doc": "ISO-8601 UTC timestamp when the superevent was first created in GraceDB, e.g. '2026-04-08 23:59:34 UTC'."
+                  },
+                  {
+                    "name": "t_start",
+                    "type": "double",
+                    "doc": "GPS time (seconds since 1980-01-06T00:00:00 UTC) marking the start of the superevent time window."
+                  },
+                  {
+                    "name": "t_0",
+                    "type": "double",
+                    "doc": "GPS time (seconds since 1980-01-06T00:00:00 UTC) of the central trigger time for this superevent."
+                  },
+                  {
+                    "name": "t_end",
+                    "type": "double",
+                    "doc": "GPS time (seconds since 1980-01-06T00:00:00 UTC) marking the end of the superevent time window."
+                  },
+                  {
+                    "name": "far",
+                    "type": "double",
+                    "doc": "False alarm rate in Hz. Lower values indicate a more significant event. For example, 1e-14 Hz corresponds to roughly one false alarm per 3 million years."
+                  },
+                  {
+                    "name": "time_coinc_far",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Time-coincidence false alarm rate in Hz from the RAVEN pipeline, representing the probability of a temporal coincidence with an external trigger. Null if no external coincidence was evaluated. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "space_coinc_far",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Space-and-time-coincidence false alarm rate in Hz from the RAVEN pipeline, incorporating both temporal and spatial overlap with an external trigger. Null if no external coincidence was evaluated. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "labels_json",
+                    "type": "string",
+                    "doc": "JSON-encoded array of label strings attached to this superevent, e.g. '[\"EM_READY\",\"GCN_PRELIM_SENT\",\"SKYMAP_READY\"]'. Labels track alert lifecycle: EM_READY (electromagnetic follow-up viable), GCN_PRELIM_SENT (GCN preliminary notice sent), SKYMAP_READY (sky localization map available), EMBRIGHT_READY (source classification available), PASTRO_READY (probability of astrophysical origin available), ADVOK/ADVNO (advocate approval/rejection), SIGNIF_LOCKED (significance frozen), DQR_REQUEST (data quality review requested), HIGH_PROFILE (high-profile candidate), RAVEN_ALERT (external trigger coincidence found)."
+                  },
+                  {
+                    "name": "preferred_event_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GraceDB event ID of the preferred pipeline event (the best detection) associated with this superevent, e.g. 'M632680'. Null if no preferred event has been selected. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pipeline",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the detection pipeline that produced the preferred event, e.g. 'gstlal', 'MBTAOnline', 'SPIIR', 'PyCBC'. Null if no preferred event has been set. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "group",
+                    "type": "string",
+                    "doc": "Physics group of the preferred event: 'CBC' (compact binary coalescence), 'Burst' (unmodeled transient), 'Test', or 'unknown' when GraceDB has not supplied preferred-event group data."
+                  },
+                  {
+                    "name": "instruments",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Comma-separated list of detector instruments that contributed to the preferred event, e.g. 'H1,L1,V1' for LIGO Hanford, LIGO Livingston, and Virgo. Null if no preferred event has been set. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gw_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Official gravitational wave event name assigned after confirmation, e.g. 'GW200115'. Null if the event has not been confirmed or named. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "submitter",
+                    "type": "string",
+                    "doc": "Username or service account that submitted the superevent to GraceDB, e.g. 'read-cvmfs-emfollow'."
+                  },
+                  {
+                    "name": "em_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Identifier of the associated electromagnetic event from an external trigger (e.g. a Fermi GBM or Swift trigger ID). Null if no external EM association exists. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "search",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Search type of the preferred event: 'AllSky' (standard all-sky search), 'MDC' (mock data challenge), 'BBH' (binary black hole targeted), 'EarlyWarning' (pre-merger alert). Null if no preferred event has been set. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "far_is_upper_limit",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the reported FAR value is an upper limit rather than an exact estimate. True indicates the actual false alarm rate may be lower. Null if no preferred event has been set. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "nevents",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of pipeline events aggregated into this superevent. Null if the preferred event data is not available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "self_uri",
+                    "type": "string",
+                    "doc": "HATEOAS self link for the superevent resource in the GraceDB REST API, e.g. 'https://gracedb.ligo.org/api/superevents/MS260408x/'."
+                  }
+                ],
+                "doc": "A gravitational wave candidate superevent from the LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a single candidate and carries significance, classification, and alert-lifecycle metadata."
               }
             }
           }

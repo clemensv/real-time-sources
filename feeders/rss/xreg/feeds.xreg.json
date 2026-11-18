@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.RssFeeds"
+        "#/messagegroups/Microsoft.OpenData.RssFeeds",
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.avro",
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.avro.binary"
       ]
     },
     "Microsoft.OpenData.RssFeeds.Mqtt": {
@@ -37,7 +39,9 @@
         }
       ],
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.RssFeeds.mqtt"
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.mqtt",
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.mqtt.avro",
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.mqtt.avro.binary"
       ]
     },
     "Microsoft.OpenData.RssFeeds.Amqp": {
@@ -58,7 +62,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.RssFeeds.amqp"
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.amqp",
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.amqp.avro",
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for rss CloudEvents on the configured broker address."
     }
@@ -81,6 +87,10 @@
             "subject": {
               "value": "{item_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -99,8 +109,7 @@
             "topic_name": "news/intl/rss/rss/{feed_slug}/{item}",
             "qos": 1,
             "retain": false
-          },
-          "basemessageuri": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem"
+          }
         }
       }
     },
@@ -118,6 +127,90 @@
                 "value": "{item_id}",
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.avro": {
+      "messagegroupid": "Microsoft.OpenData.RssFeeds.avro",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.FeedItem": {
+          "messageid": "Microsoft.OpenData.RssFeeds.FeedItem",
+          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.avro/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.RssFeeds.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.FeedItem": {
+          "messageid": "Microsoft.OpenData.RssFeeds.FeedItem",
+          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.avro/schemas/Microsoft.OpenData.RssFeeds.FeedItem",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.mqtt.avro": {
+      "messagegroupid": "Microsoft.OpenData.RssFeeds.mqtt.avro",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.mqtt.FeedItem": {
+          "messageid": "Microsoft.OpenData.RssFeeds.mqtt.FeedItem",
+          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds.mqtt/messages/Microsoft.OpenData.RssFeeds.mqtt.FeedItem",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.avro/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.mqtt.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.RssFeeds.mqtt.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.mqtt.FeedItem": {
+          "messageid": "Microsoft.OpenData.RssFeeds.mqtt.FeedItem",
+          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds.mqtt/messages/Microsoft.OpenData.RssFeeds.mqtt.FeedItem",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.avro/schemas/Microsoft.OpenData.RssFeeds.FeedItem",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.amqp.avro": {
+      "messagegroupid": "Microsoft.OpenData.RssFeeds.amqp.avro",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.amqp.FeedItem": {
+          "messageid": "Microsoft.OpenData.RssFeeds.amqp.FeedItem",
+          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds.amqp/messages/Microsoft.OpenData.RssFeeds.amqp.FeedItem",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.avro/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.amqp.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.RssFeeds.amqp.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.amqp.FeedItem": {
+          "messageid": "Microsoft.OpenData.RssFeeds.amqp.FeedItem",
+          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds.amqp/messages/Microsoft.OpenData.RssFeeds.amqp.FeedItem",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.avro/schemas/Microsoft.OpenData.RssFeeds.FeedItem",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -558,7 +651,7 @@
           "name": "FeedItem",
           "format": "Avro/1.11.3",
           "description": "Schema for the FeedItem event in the RssFeeds message group.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1147,6 +1240,584 @@
                     "doc": "A collection of links related to the feed item."
                   }
                 ]
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.RssFeeds.FeedItem",
+                "fields": [
+                  {
+                    "name": "feed_slug",
+                    "type": "string",
+                    "doc": "Topic-safe stable slug derived from the configured feed URL. JSON Structure annotations: {\"minLength\": 1, \"pattern\": \"^[A-Za-z0-9._-]+$\"}"
+                  },
+                  {
+                    "name": "item",
+                    "type": "string",
+                    "doc": "Topic-safe stable item token derived from the feed entry id/link/title and used for MQTT routing. JSON Structure annotations: {\"minLength\": 1, \"pattern\": \"^[A-Za-z0-9._-]+$\"}"
+                  },
+                  {
+                    "name": "author",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "Microsoft.OpenData.RssFeeds.FeedItemAuthor",
+                        "fields": [
+                          {
+                            "name": "name",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The full name of the author. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "href",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "A URL associated with the author, such as a personal website or profile. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "email",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The author's email address. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Contains information about the author of the feed item."
+                      }
+                    ],
+                    "doc": "Information about the feed item's author. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "publisher",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "Microsoft.OpenData.RssFeeds.FeedItemPublisher",
+                        "fields": [
+                          {
+                            "name": "name",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The name of the publisher. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "href",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "A URL associated with the publisher. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "email",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The publisher's email address. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Contains information about the publisher of the feed item."
+                      }
+                    ],
+                    "doc": "Information about the feed item's publisher. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "summary",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "Microsoft.OpenData.RssFeeds.FeedItemSummary",
+                        "fields": [
+                          {
+                            "name": "value",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The text content of the summary. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "type",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The content type of the summary, such as 'text/plain' or 'text/html'. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "language",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The language of the summary content. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "base",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The base URI for resolving relative URIs within the summary. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "A brief summary or abstract of the feed item."
+                      }
+                    ],
+                    "doc": "A short summary of the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "title",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "Microsoft.OpenData.RssFeeds.FeedItemTitle",
+                        "fields": [
+                          {
+                            "name": "value",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The text content of the title. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "type",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The content type of the title. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "language",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The language of the title. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "base",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The base URI for resolving relative URIs within the title. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "The title of the feed item."
+                      }
+                    ],
+                    "doc": "The feed item's title. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "source",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "Microsoft.OpenData.RssFeeds.FeedItemSource",
+                        "fields": [
+                          {
+                            "name": "author",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The name of the original author. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "author_detail",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
+                            ],
+                            "doc": "Detailed information about the original author. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "contributors",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
+                              }
+                            ],
+                            "doc": "A list of contributors to the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "icon",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "An icon image associated with the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "id",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "A unique identifier for the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "link",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "A link to the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "links",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "Microsoft.OpenData.RssFeeds.Link",
+                                  "fields": [
+                                    {
+                                      "name": "rel",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "The relationship type of the link, such as 'alternate' or 'self'. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "href",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "The URL of the link. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "type",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "The MIME type of the linked resource. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                                    },
+                                    {
+                                      "name": "title",
+                                      "default": null,
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "doc": "The title or description of the link. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                                    }
+                                  ],
+                                  "doc": "Represents a hyperlink associated with the feed or feed item."
+                                }
+                              }
+                            ],
+                            "doc": "A collection of links related to the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "logo",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "A logo image associated with the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "rights",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Rights information for the source feed, such as copyright notices. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "subtitle",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "A secondary title or tagline for the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "title",
+                            "default": null,
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "The title of the source feed. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                          },
+                          {
+                            "name": "updated",
+                            "default": null,
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "doc": "The last updated timestamp of the source feed. JSON Structure annotations: {\"default\": null, \"logicalType\": \"timestampMillis\"} An absent JSON property uses the declared default in Avro."
+                          }
+                        ],
+                        "doc": "Metadata about the original source feed, useful if the item was republished from another feed."
+                      }
+                    ],
+                    "doc": "Information about the source feed of the item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "content",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "Microsoft.OpenData.RssFeeds.FeedItemContent",
+                          "fields": [
+                            {
+                              "name": "value",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "The actual content of the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "type",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "The content type, such as 'text/html' or 'text/plain'. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "language",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "The language of the content. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "base",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "The base URI for resolving relative URIs within the content. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                            }
+                          ],
+                          "doc": "Represents the main content of the feed item."
+                        }
+                      }
+                    ],
+                    "doc": "The content of the feed item, potentially including multiple formats. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "enclosures",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "Microsoft.OpenData.RssFeeds.FeedItemEnclosure",
+                          "fields": [
+                            {
+                              "name": "href",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "The URL of the enclosure. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "length",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "long"
+                              ],
+                              "doc": "The size of the enclosure in bytes. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "type",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "The MIME type of the enclosure content. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                            }
+                          ],
+                          "doc": "Represents media content attached to the feed item, such as audio or video files."
+                        }
+                      }
+                    ],
+                    "doc": "Media attachments associated with the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "published",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "The publication date and time of the feed item. JSON Structure annotations: {\"default\": null, \"logicalType\": \"timestampMillis\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "updated",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "The last updated date and time of the feed item. JSON Structure annotations: {\"default\": null, \"logicalType\": \"timestampMillis\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "created",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "The creation date and time of the feed item. JSON Structure annotations: {\"default\": null, \"logicalType\": \"timestampMillis\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "expired",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "The expiration date and time of the feed item. JSON Structure annotations: {\"default\": null, \"logicalType\": \"timestampMillis\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A unique identifier for the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "license",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "License information for the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "comments",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "A link to comments or feedback related to the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "contributors",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
+                      }
+                    ],
+                    "doc": "A list of individuals who contributed to the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "links",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "Microsoft.OpenData.RssFeeds.Link"
+                      }
+                    ],
+                    "doc": "A collection of links related to the feed item. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Represents an item in an RSS feed, containing metadata such as the author, title, and content."
               }
             }
           }

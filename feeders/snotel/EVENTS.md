@@ -1,10 +1,10 @@
-# SNOTEL Snow feeder Events
+# SNOTEL Snow Events
 
-MQTT 5 variant of snotel events with UNS topics for wildcard subscribers.
+<sub>~900 snowpack stations, NRCS · Kafka · MQTT · AMQP · <a href="https://www.nrcs.usda.gov/wps/portal/wcc/home/">upstream</a> · <a href="https://wcc.sc.egov.usda.gov/awdbRestWebService/swagger-ui/index.html">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Event types:** 2 documented event types (18 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_triplet}` identifies the resource each event is about.
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_triplet}`. `{statio
 | --- | --- |
 | `KAFKA` | topic `snotel`, key `{station_triplet}` |
 | `MQTT/5.0` | topic `hydro/us/usda/snotel/{state}/{station_triplet}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/snotel`, message subject `{station_triplet}`; application properties state `{state}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/snotel`, message subject `{station_triplet}` |
 
 #### Payload
 
@@ -127,7 +127,7 @@ Each event identifies the real-world resource with `{station_triplet}`. `{statio
 | --- | --- |
 | `KAFKA` | topic `snotel`, key `{station_triplet}` |
 | `MQTT/5.0` | topic `hydro/us/usda/snotel/{state}/{station_triplet}/snow-observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/snotel`, message subject `{station_triplet}`; application properties state `{state}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/snotel`, message subject `{station_triplet}` |
 
 #### Payload
 
@@ -135,10 +135,10 @@ Each event identifies the real-world resource with `{station_triplet}`. `{statio
 
 - **`station_triplet`** (string, required): SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. Links this observation to the station that reported it.
 - **`date_time`** (datetime, required): Observation timestamp reported by the SNOTEL station. Hourly readings are transmitted via satellite telemetry, typically at the top of each hour. The time is in the station's local standard time as reported by the NRCS Report Generator.
-- **`snow_water_equivalent`** (double or null, optional, [in_i] (in)): Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.
-- **`snow_depth`** (double or null, optional, [in_i] (in)): Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise.
-- **`precipitation`** (double or null, optional, [in_i] (in)): Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year.
-- **`air_temperature`** (double or null, optional, [degF] (°F)): Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit.
+- **`snow_water_equivalent`** (double or null, optional): Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.
+- **`snow_depth`** (double or null, optional): Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise.
+- **`precipitation`** (double or null, optional): Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year.
+- **`air_temperature`** (double or null, optional): Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit.
 - **`state`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for snotel.
 #### Example payload
 
@@ -173,7 +173,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -184,3 +188,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/snotel.xreg.json`](xreg/snotel.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Billetto.Events"
+        "#/messagegroups/Billetto.Events",
+        "#/messagegroups/Billetto.Events.avro",
+        "#/messagegroups/Billetto.Events.avro.binary"
       ]
     },
     "Billetto.Events.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Billetto.Events.mqtt"
+        "#/messagegroups/Billetto.Events.mqtt",
+        "#/messagegroups/Billetto.Events.mqtt.avro",
+        "#/messagegroups/Billetto.Events.mqtt.avro.binary"
       ],
       "description": "MQTT 5.0 producer endpoint for billetto."
     },
@@ -65,7 +69,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Billetto.Events.amqp"
+        "#/messagegroups/Billetto.Events.amqp",
+        "#/messagegroups/Billetto.Events.amqp.avro",
+        "#/messagegroups/Billetto.Events.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for billetto."
     }
@@ -91,6 +97,10 @@
             "time": {
               "value": "{startdate}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -134,6 +144,90 @@
                 "value": "{event_id}",
                 "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "Billetto.Events.avro": {
+      "messagegroupid": "Billetto.Events.avro",
+      "messages": {
+        "Billetto.Events.Event": {
+          "messageid": "Billetto.Events.Event",
+          "basemessage": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Billetto.Events.avro/schemas/Billetto.Events.Event"
+        }
+      }
+    },
+    "Billetto.Events.avro.binary": {
+      "messagegroupid": "Billetto.Events.avro.binary",
+      "messages": {
+        "Billetto.Events.Event": {
+          "messageid": "Billetto.Events.Event",
+          "basemessage": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Billetto.Events.avro/schemas/Billetto.Events.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Billetto.Events.mqtt.avro": {
+      "messagegroupid": "Billetto.Events.mqtt.avro",
+      "messages": {
+        "Billetto.Events.mqtt.Event": {
+          "messageid": "Billetto.Events.mqtt.Event",
+          "basemessage": "/messagegroups/Billetto.Events.mqtt/messages/Billetto.Events.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Billetto.Events.avro/schemas/Billetto.Events.Event"
+        }
+      }
+    },
+    "Billetto.Events.mqtt.avro.binary": {
+      "messagegroupid": "Billetto.Events.mqtt.avro.binary",
+      "messages": {
+        "Billetto.Events.mqtt.Event": {
+          "messageid": "Billetto.Events.mqtt.Event",
+          "basemessage": "/messagegroups/Billetto.Events.mqtt/messages/Billetto.Events.mqtt.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Billetto.Events.avro/schemas/Billetto.Events.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Billetto.Events.amqp.avro": {
+      "messagegroupid": "Billetto.Events.amqp.avro",
+      "messages": {
+        "Billetto.Events.amqp.Event": {
+          "messageid": "Billetto.Events.amqp.Event",
+          "basemessage": "/messagegroups/Billetto.Events.amqp/messages/Billetto.Events.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Billetto.Events.avro/schemas/Billetto.Events.Event"
+        }
+      }
+    },
+    "Billetto.Events.amqp.avro.binary": {
+      "messagegroupid": "Billetto.Events.amqp.avro.binary",
+      "messages": {
+        "Billetto.Events.amqp.Event": {
+          "messageid": "Billetto.Events.amqp.Event",
+          "basemessage": "/messagegroups/Billetto.Events.amqp/messages/Billetto.Events.amqp.Event",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Billetto.Events.avro/schemas/Billetto.Events.Event",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -305,6 +399,195 @@
                   "JSONStructureAlternateNames",
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "Billetto.Events.avro": {
+      "schemas": {
+        "Billetto.Events.Event": {
+          "name": "Event",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Billetto.Events.Event",
+                "fields": [
+                  {
+                    "name": "event_id",
+                    "type": "int",
+                    "doc": "Unique numeric identifier for the event on the Billetto platform, assigned at event creation. Used as the Kafka key and CloudEvents subject for stable event identity across polls."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "Event title as set by the organizer."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Full event description in HTML format as provided by the organizer. May be null if not set. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "startdate",
+                    "type": "string",
+                    "doc": "Event start date and time in ISO 8601 format (e.g. '2026-06-15T19:00:00'). Used as the CloudEvents time attribute. JSON Structure annotations: {\"altnames\": {\"upstream\": \"startdate\"}}"
+                  },
+                  {
+                    "name": "enddate",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event end date and time in ISO 8601 format. Null when no end time is specified by the organizer. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Canonical URL of the event page on the Billetto platform. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "image_link",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL of the cover image for the event as uploaded by the organizer. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Event lifecycle status as reported by the Billetto platform. Common values include 'published', 'cancelled', and 'postponed'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_city",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "City where the event is held, from the event location object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Venue name where the event is held, from the event location object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_address",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Street address of the event venue, from the event location object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_zip_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Postal code of the event venue, from the event location object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_country_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ISO 3166-1 alpha-2 country code of the event venue (e.g. 'DK' for Denmark, 'GB' for Great Britain, 'DE' for Germany). From the event location object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 latitude of the event venue in decimal degrees. From the event location object. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 longitude of the event venue in decimal degrees. From the event location object. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "organiser_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Unique numeric identifier for the event organizer on the Billetto platform. From the event organiser object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "organiser_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Display name of the event organizer as registered on the Billetto platform. From the event organiser object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "minimum_price_amount_in_cents",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Minimum ticket price across all available ticket types, expressed in the smallest currency unit (e.g. pence for GBP, øre for DKK, cent for EUR). Zero indicates a free event. From the event minimum_price object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "minimum_price_currency",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ISO 4217 currency code for the minimum ticket price (e.g. 'GBP', 'DKK', 'EUR', 'NOK', 'SEK'). From the event minimum_price object. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "availability",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ticket availability status for the event. 'available' means tickets are currently on sale. 'sold_out' means all tickets have been sold. 'unavailable' means ticket sales are not yet open or have closed. Null when not determinable from the API response. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A public ticketed event from the Billetto platform. Each record represents a single upcoming or ongoing public event with schedule, venue, organizer, pricing, and availability information."
               }
             }
           }

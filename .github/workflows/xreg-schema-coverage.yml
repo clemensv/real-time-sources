@@ -1,0 +1,41 @@
+name: xRegistry schema coverage
+
+on:
+  pull_request:
+    paths:
+      - "**/xreg/*.xreg.json"
+      - "tools/xreg_schema_coverage.py"
+      - "tools/tests/test_xreg_schema_coverage.py"
+      - "tools/ci/requirements-xreg.txt"
+      - ".github/workflows/xreg-schema-coverage.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**/xreg/*.xreg.json"
+      - "tools/xreg_schema_coverage.py"
+      - "tools/tests/test_xreg_schema_coverage.py"
+      - "tools/ci/requirements-xreg.txt"
+      - ".github/workflows/xreg-schema-coverage.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: tools/ci/requirements-xreg.txt
+      - run: python -m pip install -r tools/ci/requirements-xreg.txt
+      - run: python -m unittest discover -s tools/tests -p test_xreg_schema_coverage.py
+      - run: python tools/xreg_schema_coverage.py --report xreg-coverage.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: xreg-schema-coverage
+          path: xreg-coverage.json

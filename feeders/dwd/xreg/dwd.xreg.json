@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.DWD.CDC"
+        "#/messagegroups/DE.DWD.CDC",
+        "#/messagegroups/DE.DWD.CDC.avro",
+        "#/messagegroups/DE.DWD.CDC.avro.binary"
       ],
       "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.DWD.Weather"
+        "#/messagegroups/DE.DWD.Weather",
+        "#/messagegroups/DE.DWD.Weather.avro",
+        "#/messagegroups/DE.DWD.Weather.avro.binary"
       ],
       "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{identifier}`."
     },
@@ -62,7 +66,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.DWD.Radar"
+        "#/messagegroups/DE.DWD.Radar",
+        "#/messagegroups/DE.DWD.Radar.avro",
+        "#/messagegroups/DE.DWD.Radar.avro.binary"
       ],
       "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{file_url}`."
     },
@@ -84,7 +90,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.DWD.Forecast"
+        "#/messagegroups/DE.DWD.Forecast",
+        "#/messagegroups/DE.DWD.Forecast.avro",
+        "#/messagegroups/DE.DWD.Forecast.avro.binary"
       ],
       "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{file_url}`."
     },
@@ -109,7 +117,15 @@
         "#/messagegroups/DE.DWD.CDC.mqtt",
         "#/messagegroups/DE.DWD.Weather.mqtt",
         "#/messagegroups/DE.DWD.Radar.mqtt",
-        "#/messagegroups/DE.DWD.Forecast.mqtt"
+        "#/messagegroups/DE.DWD.Forecast.mqtt",
+        "#/messagegroups/DE.DWD.CDC.mqtt.avro",
+        "#/messagegroups/DE.DWD.CDC.mqtt.avro.binary",
+        "#/messagegroups/DE.DWD.Weather.mqtt.avro",
+        "#/messagegroups/DE.DWD.Weather.mqtt.avro.binary",
+        "#/messagegroups/DE.DWD.Radar.mqtt.avro",
+        "#/messagegroups/DE.DWD.Radar.mqtt.avro.binary",
+        "#/messagegroups/DE.DWD.Forecast.mqtt.avro",
+        "#/messagegroups/DE.DWD.Forecast.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for dwd."
     },
@@ -134,7 +150,15 @@
         "#/messagegroups/DE.DWD.CDC.amqp",
         "#/messagegroups/DE.DWD.Weather.amqp",
         "#/messagegroups/DE.DWD.Radar.amqp",
-        "#/messagegroups/DE.DWD.Forecast.amqp"
+        "#/messagegroups/DE.DWD.Forecast.amqp",
+        "#/messagegroups/DE.DWD.CDC.amqp.avro",
+        "#/messagegroups/DE.DWD.CDC.amqp.avro.binary",
+        "#/messagegroups/DE.DWD.Weather.amqp.avro",
+        "#/messagegroups/DE.DWD.Weather.amqp.avro.binary",
+        "#/messagegroups/DE.DWD.Radar.amqp.avro",
+        "#/messagegroups/DE.DWD.Radar.amqp.avro.binary",
+        "#/messagegroups/DE.DWD.Forecast.amqp.avro",
+        "#/messagegroups/DE.DWD.Forecast.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for dwd."
     }
@@ -155,6 +179,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -174,6 +202,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -193,6 +225,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -212,6 +248,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -231,6 +271,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -250,6 +294,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -269,6 +317,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -288,6 +340,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -312,6 +368,10 @@
             "subject": {
               "value": "{identifier}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -336,6 +396,10 @@
             "subject": {
               "value": "{file_url}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -355,6 +419,10 @@
             "subject": {
               "value": "{file_url}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -379,6 +447,10 @@
             "subject": {
               "value": "{file_url}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -398,6 +470,10 @@
             "subject": {
               "value": "{file_url}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1155,6 +1231,828 @@
             "application-properties": {}
           },
           "envelope": "CloudEvents/1.0"
+        }
+      }
+    },
+    "DE.DWD.CDC.avro": {
+      "messagegroupid": "DE.DWD.CDC.avro",
+      "messages": {
+        "DE.DWD.CDC.StationMetadata": {
+          "messageid": "DE.DWD.CDC.StationMetadata",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.StationMetadata"
+        },
+        "DE.DWD.CDC.AirTemperature10Min": {
+          "messageid": "DE.DWD.CDC.AirTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.AirTemperature10Min"
+        },
+        "DE.DWD.CDC.Precipitation10Min": {
+          "messageid": "DE.DWD.CDC.Precipitation10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Precipitation10Min"
+        },
+        "DE.DWD.CDC.Wind10Min": {
+          "messageid": "DE.DWD.CDC.Wind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Wind10Min"
+        },
+        "DE.DWD.CDC.Solar10Min": {
+          "messageid": "DE.DWD.CDC.Solar10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Solar10Min"
+        },
+        "DE.DWD.CDC.HourlyObservation": {
+          "messageid": "DE.DWD.CDC.HourlyObservation",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.HourlyObservation"
+        },
+        "DE.DWD.CDC.ExtremeWind10Min": {
+          "messageid": "DE.DWD.CDC.ExtremeWind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeWind10Min"
+        },
+        "DE.DWD.CDC.ExtremeTemperature10Min": {
+          "messageid": "DE.DWD.CDC.ExtremeTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeTemperature10Min"
+        }
+      }
+    },
+    "DE.DWD.CDC.avro.binary": {
+      "messagegroupid": "DE.DWD.CDC.avro.binary",
+      "messages": {
+        "DE.DWD.CDC.StationMetadata": {
+          "messageid": "DE.DWD.CDC.StationMetadata",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.StationMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.AirTemperature10Min": {
+          "messageid": "DE.DWD.CDC.AirTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.AirTemperature10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.Precipitation10Min": {
+          "messageid": "DE.DWD.CDC.Precipitation10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Precipitation10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.Wind10Min": {
+          "messageid": "DE.DWD.CDC.Wind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Wind10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.Solar10Min": {
+          "messageid": "DE.DWD.CDC.Solar10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Solar10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.HourlyObservation": {
+          "messageid": "DE.DWD.CDC.HourlyObservation",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.HourlyObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.ExtremeWind10Min": {
+          "messageid": "DE.DWD.CDC.ExtremeWind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeWind10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.ExtremeTemperature10Min": {
+          "messageid": "DE.DWD.CDC.ExtremeTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeTemperature10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Weather.avro": {
+      "messagegroupid": "DE.DWD.Weather.avro",
+      "messages": {
+        "DE.DWD.Weather.Alert": {
+          "messageid": "DE.DWD.Weather.Alert",
+          "basemessage": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.Weather.Alert"
+        }
+      }
+    },
+    "DE.DWD.Weather.avro.binary": {
+      "messagegroupid": "DE.DWD.Weather.avro.binary",
+      "messages": {
+        "DE.DWD.Weather.Alert": {
+          "messageid": "DE.DWD.Weather.Alert",
+          "basemessage": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.Weather.Alert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Radar.avro": {
+      "messagegroupid": "DE.DWD.Radar.avro",
+      "messages": {
+        "DE.DWD.Radar.RadarProductCatalog": {
+          "messageid": "DE.DWD.Radar.RadarProductCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarProductCatalog"
+        },
+        "DE.DWD.Radar.RadarFileProduct": {
+          "messageid": "DE.DWD.Radar.RadarFileProduct",
+          "basemessage": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarFileProduct"
+        }
+      }
+    },
+    "DE.DWD.Radar.avro.binary": {
+      "messagegroupid": "DE.DWD.Radar.avro.binary",
+      "messages": {
+        "DE.DWD.Radar.RadarProductCatalog": {
+          "messageid": "DE.DWD.Radar.RadarProductCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarProductCatalog",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Radar.RadarFileProduct": {
+          "messageid": "DE.DWD.Radar.RadarFileProduct",
+          "basemessage": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarFileProduct",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.avro": {
+      "messagegroupid": "DE.DWD.Forecast.avro",
+      "messages": {
+        "DE.DWD.Forecast.ForecastModelCatalog": {
+          "messageid": "DE.DWD.Forecast.ForecastModelCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.ForecastModelCatalog"
+        },
+        "DE.DWD.Forecast.IconD2ForecastFile": {
+          "messageid": "DE.DWD.Forecast.IconD2ForecastFile",
+          "basemessage": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.IconD2ForecastFile"
+        }
+      }
+    },
+    "DE.DWD.Forecast.avro.binary": {
+      "messagegroupid": "DE.DWD.Forecast.avro.binary",
+      "messages": {
+        "DE.DWD.Forecast.ForecastModelCatalog": {
+          "messageid": "DE.DWD.Forecast.ForecastModelCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.ForecastModelCatalog",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Forecast.IconD2ForecastFile": {
+          "messageid": "DE.DWD.Forecast.IconD2ForecastFile",
+          "basemessage": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.IconD2ForecastFile",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.CDC.mqtt.avro": {
+      "messagegroupid": "DE.DWD.CDC.mqtt.avro",
+      "messages": {
+        "DE.DWD.CDC.mqtt.StationMetadata": {
+          "messageid": "DE.DWD.CDC.mqtt.StationMetadata",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.StationMetadata"
+        },
+        "DE.DWD.CDC.mqtt.AirTemperature10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.AirTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.AirTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.AirTemperature10Min"
+        },
+        "DE.DWD.CDC.mqtt.Precipitation10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.Precipitation10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.Precipitation10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Precipitation10Min"
+        },
+        "DE.DWD.CDC.mqtt.Wind10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.Wind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.Wind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Wind10Min"
+        },
+        "DE.DWD.CDC.mqtt.Solar10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.Solar10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.Solar10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Solar10Min"
+        },
+        "DE.DWD.CDC.mqtt.HourlyObservation": {
+          "messageid": "DE.DWD.CDC.mqtt.HourlyObservation",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.HourlyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.HourlyObservation"
+        },
+        "DE.DWD.CDC.mqtt.ExtremeWind10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.ExtremeWind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.ExtremeWind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeWind10Min"
+        },
+        "DE.DWD.CDC.mqtt.ExtremeTemperature10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.ExtremeTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.ExtremeTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeTemperature10Min"
+        }
+      }
+    },
+    "DE.DWD.CDC.mqtt.avro.binary": {
+      "messagegroupid": "DE.DWD.CDC.mqtt.avro.binary",
+      "messages": {
+        "DE.DWD.CDC.mqtt.StationMetadata": {
+          "messageid": "DE.DWD.CDC.mqtt.StationMetadata",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.StationMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.mqtt.AirTemperature10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.AirTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.AirTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.AirTemperature10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.mqtt.Precipitation10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.Precipitation10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.Precipitation10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Precipitation10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.mqtt.Wind10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.Wind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.Wind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Wind10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.mqtt.Solar10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.Solar10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.Solar10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Solar10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.mqtt.HourlyObservation": {
+          "messageid": "DE.DWD.CDC.mqtt.HourlyObservation",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.HourlyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.HourlyObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.mqtt.ExtremeWind10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.ExtremeWind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.ExtremeWind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeWind10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.mqtt.ExtremeTemperature10Min": {
+          "messageid": "DE.DWD.CDC.mqtt.ExtremeTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.ExtremeTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeTemperature10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.CDC.amqp.avro": {
+      "messagegroupid": "DE.DWD.CDC.amqp.avro",
+      "messages": {
+        "DE.DWD.CDC.amqp.StationMetadata": {
+          "messageid": "DE.DWD.CDC.amqp.StationMetadata",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.StationMetadata"
+        },
+        "DE.DWD.CDC.amqp.AirTemperature10Min": {
+          "messageid": "DE.DWD.CDC.amqp.AirTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.AirTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.AirTemperature10Min"
+        },
+        "DE.DWD.CDC.amqp.Precipitation10Min": {
+          "messageid": "DE.DWD.CDC.amqp.Precipitation10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.Precipitation10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Precipitation10Min"
+        },
+        "DE.DWD.CDC.amqp.Wind10Min": {
+          "messageid": "DE.DWD.CDC.amqp.Wind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.Wind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Wind10Min"
+        },
+        "DE.DWD.CDC.amqp.Solar10Min": {
+          "messageid": "DE.DWD.CDC.amqp.Solar10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.Solar10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Solar10Min"
+        },
+        "DE.DWD.CDC.amqp.HourlyObservation": {
+          "messageid": "DE.DWD.CDC.amqp.HourlyObservation",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.HourlyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.HourlyObservation"
+        },
+        "DE.DWD.CDC.amqp.ExtremeWind10Min": {
+          "messageid": "DE.DWD.CDC.amqp.ExtremeWind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.ExtremeWind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeWind10Min"
+        },
+        "DE.DWD.CDC.amqp.ExtremeTemperature10Min": {
+          "messageid": "DE.DWD.CDC.amqp.ExtremeTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.ExtremeTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeTemperature10Min"
+        }
+      }
+    },
+    "DE.DWD.CDC.amqp.avro.binary": {
+      "messagegroupid": "DE.DWD.CDC.amqp.avro.binary",
+      "messages": {
+        "DE.DWD.CDC.amqp.StationMetadata": {
+          "messageid": "DE.DWD.CDC.amqp.StationMetadata",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.StationMetadata",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.StationMetadata",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.AirTemperature10Min": {
+          "messageid": "DE.DWD.CDC.amqp.AirTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.AirTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.AirTemperature10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.Precipitation10Min": {
+          "messageid": "DE.DWD.CDC.amqp.Precipitation10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.Precipitation10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Precipitation10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.Wind10Min": {
+          "messageid": "DE.DWD.CDC.amqp.Wind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.Wind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Wind10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.Solar10Min": {
+          "messageid": "DE.DWD.CDC.amqp.Solar10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.Solar10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.Solar10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.HourlyObservation": {
+          "messageid": "DE.DWD.CDC.amqp.HourlyObservation",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.HourlyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.HourlyObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.ExtremeWind10Min": {
+          "messageid": "DE.DWD.CDC.amqp.ExtremeWind10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.ExtremeWind10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeWind10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.ExtremeTemperature10Min": {
+          "messageid": "DE.DWD.CDC.amqp.ExtremeTemperature10Min",
+          "basemessage": "/messagegroups/DE.DWD.CDC.amqp/messages/DE.DWD.CDC.amqp.ExtremeTemperature10Min",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.CDC.ExtremeTemperature10Min",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Weather.mqtt.avro": {
+      "messagegroupid": "DE.DWD.Weather.mqtt.avro",
+      "messages": {
+        "DE.DWD.Weather.mqtt.Alert": {
+          "messageid": "DE.DWD.Weather.mqtt.Alert",
+          "basemessage": "/messagegroups/DE.DWD.Weather.mqtt/messages/DE.DWD.Weather.mqtt.Alert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.Weather.Alert"
+        }
+      }
+    },
+    "DE.DWD.Weather.mqtt.avro.binary": {
+      "messagegroupid": "DE.DWD.Weather.mqtt.avro.binary",
+      "messages": {
+        "DE.DWD.Weather.mqtt.Alert": {
+          "messageid": "DE.DWD.Weather.mqtt.Alert",
+          "basemessage": "/messagegroups/DE.DWD.Weather.mqtt/messages/DE.DWD.Weather.mqtt.Alert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.Weather.Alert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Weather.amqp.avro": {
+      "messagegroupid": "DE.DWD.Weather.amqp.avro",
+      "messages": {
+        "DE.DWD.Weather.amqp.Alert": {
+          "messageid": "DE.DWD.Weather.amqp.Alert",
+          "basemessage": "/messagegroups/DE.DWD.Weather.amqp/messages/DE.DWD.Weather.amqp.Alert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.Weather.Alert"
+        }
+      }
+    },
+    "DE.DWD.Weather.amqp.avro.binary": {
+      "messagegroupid": "DE.DWD.Weather.amqp.avro.binary",
+      "messages": {
+        "DE.DWD.Weather.amqp.Alert": {
+          "messageid": "DE.DWD.Weather.amqp.Alert",
+          "basemessage": "/messagegroups/DE.DWD.Weather.amqp/messages/DE.DWD.Weather.amqp.Alert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.avro/schemas/DE.DWD.Weather.Alert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Radar.mqtt.avro": {
+      "messagegroupid": "DE.DWD.Radar.mqtt.avro",
+      "messages": {
+        "DE.DWD.Radar.mqtt.RadarProductCatalog": {
+          "messageid": "DE.DWD.Radar.mqtt.RadarProductCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Radar.mqtt/messages/DE.DWD.Radar.mqtt.RadarProductCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarProductCatalog"
+        },
+        "DE.DWD.Radar.mqtt.RadarFileProduct": {
+          "messageid": "DE.DWD.Radar.mqtt.RadarFileProduct",
+          "basemessage": "/messagegroups/DE.DWD.Radar.mqtt/messages/DE.DWD.Radar.mqtt.RadarFileProduct",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarFileProduct"
+        }
+      }
+    },
+    "DE.DWD.Radar.mqtt.avro.binary": {
+      "messagegroupid": "DE.DWD.Radar.mqtt.avro.binary",
+      "messages": {
+        "DE.DWD.Radar.mqtt.RadarProductCatalog": {
+          "messageid": "DE.DWD.Radar.mqtt.RadarProductCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Radar.mqtt/messages/DE.DWD.Radar.mqtt.RadarProductCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarProductCatalog",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Radar.mqtt.RadarFileProduct": {
+          "messageid": "DE.DWD.Radar.mqtt.RadarFileProduct",
+          "basemessage": "/messagegroups/DE.DWD.Radar.mqtt/messages/DE.DWD.Radar.mqtt.RadarFileProduct",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarFileProduct",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Radar.amqp.avro": {
+      "messagegroupid": "DE.DWD.Radar.amqp.avro",
+      "messages": {
+        "DE.DWD.Radar.amqp.RadarProductCatalog": {
+          "messageid": "DE.DWD.Radar.amqp.RadarProductCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarProductCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarProductCatalog"
+        },
+        "DE.DWD.Radar.amqp.RadarFileProduct": {
+          "messageid": "DE.DWD.Radar.amqp.RadarFileProduct",
+          "basemessage": "/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarFileProduct",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarFileProduct"
+        }
+      }
+    },
+    "DE.DWD.Radar.amqp.avro.binary": {
+      "messagegroupid": "DE.DWD.Radar.amqp.avro.binary",
+      "messages": {
+        "DE.DWD.Radar.amqp.RadarProductCatalog": {
+          "messageid": "DE.DWD.Radar.amqp.RadarProductCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarProductCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarProductCatalog",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Radar.amqp.RadarFileProduct": {
+          "messageid": "DE.DWD.Radar.amqp.RadarFileProduct",
+          "basemessage": "/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarFileProduct",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.avro/schemas/DE.DWD.Radar.RadarFileProduct",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.mqtt.avro": {
+      "messagegroupid": "DE.DWD.Forecast.mqtt.avro",
+      "messages": {
+        "DE.DWD.Forecast.mqtt.ForecastModelCatalog": {
+          "messageid": "DE.DWD.Forecast.mqtt.ForecastModelCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.mqtt/messages/DE.DWD.Forecast.mqtt.ForecastModelCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.ForecastModelCatalog"
+        },
+        "DE.DWD.Forecast.mqtt.IconD2ForecastFile": {
+          "messageid": "DE.DWD.Forecast.mqtt.IconD2ForecastFile",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.mqtt/messages/DE.DWD.Forecast.mqtt.IconD2ForecastFile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.IconD2ForecastFile"
+        }
+      }
+    },
+    "DE.DWD.Forecast.mqtt.avro.binary": {
+      "messagegroupid": "DE.DWD.Forecast.mqtt.avro.binary",
+      "messages": {
+        "DE.DWD.Forecast.mqtt.ForecastModelCatalog": {
+          "messageid": "DE.DWD.Forecast.mqtt.ForecastModelCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.mqtt/messages/DE.DWD.Forecast.mqtt.ForecastModelCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.ForecastModelCatalog",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Forecast.mqtt.IconD2ForecastFile": {
+          "messageid": "DE.DWD.Forecast.mqtt.IconD2ForecastFile",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.mqtt/messages/DE.DWD.Forecast.mqtt.IconD2ForecastFile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.IconD2ForecastFile",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.amqp.avro": {
+      "messagegroupid": "DE.DWD.Forecast.amqp.avro",
+      "messages": {
+        "DE.DWD.Forecast.amqp.ForecastModelCatalog": {
+          "messageid": "DE.DWD.Forecast.amqp.ForecastModelCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.amqp/messages/DE.DWD.Forecast.amqp.ForecastModelCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.ForecastModelCatalog"
+        },
+        "DE.DWD.Forecast.amqp.IconD2ForecastFile": {
+          "messageid": "DE.DWD.Forecast.amqp.IconD2ForecastFile",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.amqp/messages/DE.DWD.Forecast.amqp.IconD2ForecastFile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.IconD2ForecastFile"
+        }
+      }
+    },
+    "DE.DWD.Forecast.amqp.avro.binary": {
+      "messagegroupid": "DE.DWD.Forecast.amqp.avro.binary",
+      "messages": {
+        "DE.DWD.Forecast.amqp.ForecastModelCatalog": {
+          "messageid": "DE.DWD.Forecast.amqp.ForecastModelCatalog",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.amqp/messages/DE.DWD.Forecast.amqp.ForecastModelCatalog",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.ForecastModelCatalog",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.DWD.Forecast.amqp.IconD2ForecastFile": {
+          "messageid": "DE.DWD.Forecast.amqp.IconD2ForecastFile",
+          "basemessage": "/messagegroups/DE.DWD.Forecast.amqp/messages/DE.DWD.Forecast.amqp.IconD2ForecastFile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.avro/schemas/DE.DWD.Forecast.IconD2ForecastFile",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -2070,6 +2968,1036 @@
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/IconD2ForecastFile",
                 "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source."
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.CDC.avro": {
+      "schemas": {
+        "DE.DWD.CDC.StationMetadata": {
+          "name": "StationMetadata",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.StationMetadata",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the station or monitoring site."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station or site in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station or site in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "elevation",
+                    "type": "double",
+                    "doc": "Elevation of the station above mean sea level or the provider datum."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "State, province, or administrative region for the station or area. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "from_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Start date when the station, product, or metadata record is valid. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "to_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "End date when the station, product, or metadata record is valid, when known. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.AirTemperature10Min": {
+          "name": "AirTemperature10Min",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.AirTemperature10Min",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the value."
+                  },
+                  {
+                    "name": "quality_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pressure_station_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Reference details for a station, monitoring site, or reporting area in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temperature_2m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temperature_5cm",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dew_point_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.Precipitation10Min": {
+          "name": "Precipitation10Min",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.Precipitation10Min",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the value."
+                  },
+                  {
+                    "name": "quality_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "precipitation_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "precipitation_indicator",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.Wind10Min": {
+          "name": "Wind10Min",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.Wind10Min",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the value."
+                  },
+                  {
+                    "name": "quality_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind speed reported by the station. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction reported by the station. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.Solar10Min": {
+          "name": "Solar10Min",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.Solar10Min",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the value."
+                  },
+                  {
+                    "name": "quality_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "global_radiation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sunshine_duration",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "diffuse_radiation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longwave_radiation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.HourlyObservation": {
+          "name": "HourlyObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.HourlyObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the value."
+                  },
+                  {
+                    "name": "quality_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter",
+                    "type": "string",
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  {
+                    "name": "value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measured or forecast value reported by the upstream provider. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "unit",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Unit used for the reported value. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.ExtremeWind10Min": {
+          "name": "ExtremeWind10Min",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.ExtremeWind10Min",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the value."
+                  },
+                  {
+                    "name": "quality_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed_maximum",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed_minimum",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction_at_maximum",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.ExtremeTemperature10Min": {
+          "name": "ExtremeTemperature10Min",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.CDC.ExtremeTemperature10Min",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the station or monitoring site."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the value."
+                  },
+                  {
+                    "name": "quality_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temperature_maximum_2m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temperature_minimum_5cm",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.Weather.Alert": {
+          "name": "Alert",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.Weather.Alert",
+                "fields": [
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  {
+                    "name": "sender",
+                    "type": "string",
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  {
+                    "name": "sent",
+                    "type": "string",
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider status value for the station, product, warning, or measurement. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "msg_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "severity",
+                    "type": "string",
+                    "doc": "Provider severity level for a warning or alert."
+                  },
+                  {
+                    "name": "urgency",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "certainty",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "event",
+                    "type": "string",
+                    "doc": "Provider event type, warning type, or product event category."
+                  },
+                  {
+                    "name": "headline",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "effective",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "onset",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "expires",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "area_desc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geocodes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A weather or environmental alert from Germany's Deutscher Wetterdienst (DWD). It fires when the upstream source publishes or updates a warning that may affect the covered area."
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Radar.avro": {
+      "schemas": {
+        "DE.DWD.Radar.RadarProductCatalog": {
+          "name": "RadarProductCatalog",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.Radar.RadarProductCatalog",
+                "fields": [
+                  {
+                    "name": "product",
+                    "type": "string",
+                    "doc": "Short identifier of the DWD radar composite product family (for example 'wn', 'rv', 'rs', 'dmax', 'hg', 'hx', 'pg', 'vii', 'hymecng'). Derived from the first-level directory name under https://opendata.dwd.de/weather/radar/composite/. All RadarFileProduct events for files inside this directory carry the same product value."
+                  },
+                  {
+                    "name": "file_url",
+                    "type": "string",
+                    "doc": "Absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing, so consumers can enumerate current and historical product files without credentials. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/'."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "kind",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "DE.DWD.Radar.RadarFileProduct": {
+          "name": "RadarFileProduct",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.Radar.RadarFileProduct",
+                "fields": [
+                  {
+                    "name": "file_url",
+                    "type": "string",
+                    "doc": "Absolute HTTPS URL of a single DWD radar product file on the DWD Open Data server. The URL is publicly fetchable with an unauthenticated HTTP GET and supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event by performing a plain GET against this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key, which guarantees per-file ordering. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/composite_wn_20260517_2005-hd5'."
+                  },
+                  {
+                    "name": "product",
+                    "type": "string",
+                    "doc": "Short identifier of the radar product family this file belongs to (for example 'wn', 'rv', 'dmax'); matches the 'product' field of the corresponding RadarProductCatalog event."
+                  },
+                  {
+                    "name": "file_name",
+                    "type": "string",
+                    "doc": "Bare file name (no directory component) as listed in the DWD Apache directory index. Convenient for parsing the embedded product code and observation timestamp without having to split file_url."
+                  },
+                  {
+                    "name": "modified",
+                    "type": "string",
+                    "doc": "Upstream Last-Modified timestamp of the file as reported by the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new RadarFileProduct event whenever this value changes for a known file_url, so consumers can use it for change detection and de-duplication."
+                  },
+                  {
+                    "name": "size_bytes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "doc": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "file_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "product_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'product_type' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.avro": {
+      "schemas": {
+        "DE.DWD.Forecast.ForecastModelCatalog": {
+          "name": "ForecastModelCatalog",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.Forecast.ForecastModelCatalog",
+                "fields": [
+                  {
+                    "name": "model",
+                    "type": "string",
+                    "doc": "Identifier of the numerical weather prediction (NWP) model. For this bridge release the value is 'icon-d2', referring to the DWD ICON-D2 convection-permitting regional model covering Germany and surrounding areas with ~2 km horizontal resolution and forecast lead times up to 48 hours."
+                  },
+                  {
+                    "name": "file_url",
+                    "type": "string",
+                    "doc": "Absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing. Run-hour subdirectories (e.g. '00/', '03/', '06/', ...) and per-variable subdirectories live below this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "kind",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source."
+              }
+            }
+          }
+        },
+        "DE.DWD.Forecast.IconD2ForecastFile": {
+          "name": "IconD2ForecastFile",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DE.DWD.Forecast.IconD2ForecastFile",
+                "fields": [
+                  {
+                    "name": "file_url",
+                    "type": "string",
+                    "doc": "Absolute HTTPS URL of a single ICON-D2 GRIB2 forecast file on the DWD Open Data server. The file is bzip2-compressed GRIB2 (.grib2.bz2) and can be fetched with an unauthenticated HTTP GET; the server supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event with a plain GET against this URL. Each file holds a single variable at a single vertical level for a single forecast lead hour, which keeps per-file payloads small (typically a few hundred KB compressed). Also used verbatim as the CloudEvents 'subject' and the Kafka partition key. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t/icon-d2_germany_icosahedral_model-level_2026051700_003_10_t.grib2.bz2'."
+                  },
+                  {
+                    "name": "model",
+                    "type": "string",
+                    "doc": "Identifier of the source forecast model; matches the 'model' field of the corresponding ForecastModelCatalog event. Currently always 'icon-d2'."
+                  },
+                  {
+                    "name": "file_name",
+                    "type": "string",
+                    "doc": "Bare file name as listed in the DWD Apache directory index, following the DWD convention 'icon-d2_<grid>_<level_type>_<run>_<lead>_<level>_<parameter>.grib2.bz2'. Convenient for parsing without splitting file_url."
+                  },
+                  {
+                    "name": "run",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Model run cycle in 'YYYYMMDDHH' UTC form, parsed from file_name (e.g. '2026051700' for the 00 UTC run on 2026-05-17). ICON-D2 is run every three hours. Null when the file name does not match the expected pattern (for example time-invariant or auxiliary files). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "forecast_hour",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Forecast lead time in whole hours from the start of the run, parsed from file_name. For ICON-D2 this ranges from 0 to 48. Null when the file name does not match the expected pattern. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Short ICON-D2 parameter identifier parsed from file_name (for example 't' for temperature, 'u'/'v' for wind components, 'tot_prec' for total precipitation, 'clct' for total cloud cover, 'alb_rad' for shortwave albedo). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "level_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Vertical level encoding parsed from file_name. Common values are 'single-level' (surface and 2D fields), 'model-level' (native ICON hybrid levels indexed 1..65 from top to bottom), 'pressure-level' (interpolated to fixed pressure surfaces, in hPa), and 'time-invariant' (constant fields such as orography). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Vertical level value token parsed from file_name. The interpretation depends on level_type: model-level uses an integer level index, pressure-level uses pressure in hPa, single-level may carry a short surface tag or be omitted. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "modified",
+                    "type": "string",
+                    "doc": "Upstream Last-Modified timestamp from the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new IconD2ForecastFile event whenever this value changes for a known file_url, enabling change detection and de-duplication."
+                  },
+                  {
+                    "name": "size_bytes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "doc": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering. JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "variable",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'variable' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "file_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source."
               }
             }
           }

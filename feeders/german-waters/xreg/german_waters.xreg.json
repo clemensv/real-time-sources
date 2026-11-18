@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/DE.Waters.Hydrology"
+        "#/messagegroups/DE.Waters.Hydrology",
+        "#/messagegroups/DE.Waters.Hydrology.avro",
+        "#/messagegroups/DE.Waters.Hydrology.avro.binary"
       ],
       "description": "Kafka producer endpoint for German Waters CloudEvents on the `german-waters` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/DE.Waters.Hydrology.mqtt"
+        "#/messagegroups/DE.Waters.Hydrology.mqtt",
+        "#/messagegroups/DE.Waters.Hydrology.mqtt.avro",
+        "#/messagegroups/DE.Waters.Hydrology.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for German Waters CloudEvents using the source's documented topic hierarchy and retain settings."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/DE.Waters.Hydrology.amqp"
+        "#/messagegroups/DE.Waters.Hydrology.amqp",
+        "#/messagegroups/DE.Waters.Hydrology.amqp.avro",
+        "#/messagegroups/DE.Waters.Hydrology.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for german-waters CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -178,6 +192,144 @@
                 "value": "{water_body}",
                 "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (water_body)."
               }
+            }
+          }
+        }
+      }
+    },
+    "DE.Waters.Hydrology.avro": {
+      "messagegroupid": "DE.Waters.Hydrology.avro",
+      "messages": {
+        "DE.Waters.Hydrology.Station": {
+          "messageid": "DE.Waters.Hydrology.Station",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.Station"
+        },
+        "DE.Waters.Hydrology.WaterLevelObservation": {
+          "messageid": "DE.Waters.Hydrology.WaterLevelObservation",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "DE.Waters.Hydrology.avro.binary": {
+      "messagegroupid": "DE.Waters.Hydrology.avro.binary",
+      "messages": {
+        "DE.Waters.Hydrology.Station": {
+          "messageid": "DE.Waters.Hydrology.Station",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Waters.Hydrology.WaterLevelObservation": {
+          "messageid": "DE.Waters.Hydrology.WaterLevelObservation",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.Waters.Hydrology.mqtt.avro": {
+      "messagegroupid": "DE.Waters.Hydrology.mqtt.avro",
+      "messages": {
+        "DE.Waters.Hydrology.mqtt.Station": {
+          "messageid": "DE.Waters.Hydrology.mqtt.Station",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.mqtt/messages/DE.Waters.Hydrology.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.Station"
+        },
+        "DE.Waters.Hydrology.mqtt.WaterLevelObservation": {
+          "messageid": "DE.Waters.Hydrology.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.mqtt/messages/DE.Waters.Hydrology.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "DE.Waters.Hydrology.mqtt.avro.binary": {
+      "messagegroupid": "DE.Waters.Hydrology.mqtt.avro.binary",
+      "messages": {
+        "DE.Waters.Hydrology.mqtt.Station": {
+          "messageid": "DE.Waters.Hydrology.mqtt.Station",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.mqtt/messages/DE.Waters.Hydrology.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Waters.Hydrology.mqtt.WaterLevelObservation": {
+          "messageid": "DE.Waters.Hydrology.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.mqtt/messages/DE.Waters.Hydrology.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "DE.Waters.Hydrology.amqp.avro": {
+      "messagegroupid": "DE.Waters.Hydrology.amqp.avro",
+      "messages": {
+        "DE.Waters.Hydrology.amqp.Station": {
+          "messageid": "DE.Waters.Hydrology.amqp.Station",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.Station"
+        },
+        "DE.Waters.Hydrology.amqp.WaterLevelObservation": {
+          "messageid": "DE.Waters.Hydrology.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "DE.Waters.Hydrology.amqp.avro.binary": {
+      "messagegroupid": "DE.Waters.Hydrology.amqp.avro.binary",
+      "messages": {
+        "DE.Waters.Hydrology.amqp.Station": {
+          "messageid": "DE.Waters.Hydrology.amqp.Station",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "DE.Waters.Hydrology.amqp.WaterLevelObservation": {
+          "messageid": "DE.Waters.Hydrology.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.avro/schemas/DE.Waters.Hydrology.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -546,8 +698,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null
@@ -573,8 +724,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null

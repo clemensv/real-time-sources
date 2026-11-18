@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/de.wsv.pegelonline.kafka"
+        "#/messagegroups/de.wsv.pegelonline.kafka",
+        "#/messagegroups/de.wsv.pegelonline.kafka.avro",
+        "#/messagegroups/de.wsv.pegelonline.kafka.avro.binary"
       ],
       "description": "Kafka producer endpoint for PegelOnline CloudEvents on the `pegelonline` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/de.wsv.pegelonline.mqtt"
+        "#/messagegroups/de.wsv.pegelonline.mqtt",
+        "#/messagegroups/de.wsv.pegelonline.mqtt.avro",
+        "#/messagegroups/de.wsv.pegelonline.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for PegelOnline CloudEvents using the source's documented topic hierarchy and retain settings."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/de.wsv.pegelonline.amqp"
+        "#/messagegroups/de.wsv.pegelonline.amqp",
+        "#/messagegroups/de.wsv.pegelonline.amqp.avro",
+        "#/messagegroups/de.wsv.pegelonline.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for PegelOnline CloudEvents on the configured broker address."
     }
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -105,6 +115,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -201,6 +215,190 @@
                 "value": "{water_shortname}",
                 "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); supplied by the bridge from the station catalog so message routers / filters can route by waterway without cracking the JSON body."
               }
+            }
+          }
+        }
+      }
+    },
+    "de.wsv.pegelonline.avro": {
+      "messagegroupid": "de.wsv.pegelonline.avro",
+      "messages": {
+        "de.wsv.pegelonline.Station": {
+          "messageid": "de.wsv.pegelonline.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station"
+        },
+        "de.wsv.pegelonline.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement"
+        }
+      }
+    },
+    "de.wsv.pegelonline.avro.binary": {
+      "messagegroupid": "de.wsv.pegelonline.avro.binary",
+      "messages": {
+        "de.wsv.pegelonline.Station": {
+          "messageid": "de.wsv.pegelonline.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.wsv.pegelonline.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.wsv.pegelonline.kafka.avro": {
+      "messagegroupid": "de.wsv.pegelonline.kafka.avro",
+      "messages": {
+        "de.wsv.pegelonline.kafka.Station": {
+          "messageid": "de.wsv.pegelonline.kafka.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.kafka/messages/de.wsv.pegelonline.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station"
+        },
+        "de.wsv.pegelonline.kafka.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.kafka.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.kafka/messages/de.wsv.pegelonline.kafka.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement"
+        }
+      }
+    },
+    "de.wsv.pegelonline.kafka.avro.binary": {
+      "messagegroupid": "de.wsv.pegelonline.kafka.avro.binary",
+      "messages": {
+        "de.wsv.pegelonline.kafka.Station": {
+          "messageid": "de.wsv.pegelonline.kafka.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.kafka/messages/de.wsv.pegelonline.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.wsv.pegelonline.kafka.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.kafka.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.kafka/messages/de.wsv.pegelonline.kafka.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.wsv.pegelonline.mqtt.avro": {
+      "messagegroupid": "de.wsv.pegelonline.mqtt.avro",
+      "messages": {
+        "de.wsv.pegelonline.mqtt.Station": {
+          "messageid": "de.wsv.pegelonline.mqtt.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.mqtt/messages/de.wsv.pegelonline.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station"
+        },
+        "de.wsv.pegelonline.mqtt.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.mqtt.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.mqtt/messages/de.wsv.pegelonline.mqtt.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement"
+        }
+      }
+    },
+    "de.wsv.pegelonline.mqtt.avro.binary": {
+      "messagegroupid": "de.wsv.pegelonline.mqtt.avro.binary",
+      "messages": {
+        "de.wsv.pegelonline.mqtt.Station": {
+          "messageid": "de.wsv.pegelonline.mqtt.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.mqtt/messages/de.wsv.pegelonline.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.wsv.pegelonline.mqtt.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.mqtt.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.mqtt/messages/de.wsv.pegelonline.mqtt.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "de.wsv.pegelonline.amqp.avro": {
+      "messagegroupid": "de.wsv.pegelonline.amqp.avro",
+      "messages": {
+        "de.wsv.pegelonline.amqp.Station": {
+          "messageid": "de.wsv.pegelonline.amqp.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.amqp/messages/de.wsv.pegelonline.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station"
+        },
+        "de.wsv.pegelonline.amqp.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.amqp.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.amqp/messages/de.wsv.pegelonline.amqp.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement"
+        }
+      }
+    },
+    "de.wsv.pegelonline.amqp.avro.binary": {
+      "messagegroupid": "de.wsv.pegelonline.amqp.avro.binary",
+      "messages": {
+        "de.wsv.pegelonline.amqp.Station": {
+          "messageid": "de.wsv.pegelonline.amqp.Station",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.amqp/messages/de.wsv.pegelonline.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "de.wsv.pegelonline.amqp.CurrentMeasurement": {
+          "messageid": "de.wsv.pegelonline.amqp.CurrentMeasurement",
+          "basemessage": "/messagegroups/de.wsv.pegelonline.amqp/messages/de.wsv.pegelonline.amqp.CurrentMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/de.wsv.pegelonline.avro/schemas/de.wsv.pegelonline.CurrentMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -548,9 +746,106 @@
                 ],
                 "description": "Reference details for one monitoring station or site in the PegelOnline source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "de.wsv.pegelonline.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. Sourced from the upstream `uuid` field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic `{station_id}` segment, and the AMQP message subject for every event emitted by this source."
+                  },
+                  {
+                    "name": "number",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Official PegelOnline station number. Carries multiple agency-scoped numbering schemes within the same field: WSV Pegelmessstellennummer (6–8 digits) for German federal gauges; partner-agency identifiers such as Austrian via-donau station numbers (4–5 digits), small Regierungspräsidium-IDs for Bodensee gauges (3-digit numbers e.g. '906' KONSTANZ), and German state-agency IDs (e.g. Ruhrverband 13-digit Messstellennummer). Numeric-only across all observed providers; length is provider-specific. National / agency-scoped identifier — not globally unique across data providers; prefer `station_id` (UUID) for cross-system joins. JSON Structure annotations: {\"pattern\": \"^[0-9]+$\"}"
+                  },
+                  {
+                    "name": "shortname",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Operator-assigned display label for the gauge (≤40 characters). May differ from the town name when multiple gauges share a town. Mutable — do not use as a routing key or stable identifier."
+                  },
+                  {
+                    "name": "longname",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Canonical gauge name as used in WSV publications (≤255 characters). Mutable — do not use as a routing key."
+                  },
+                  {
+                    "name": "km",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Ohře gauge LOUNY at km -61.4 of the Elbe/Ohře system). **Optional**: absent or null for tidal / coastal gauges (Küstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "agency",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "Free-form name of the Wasserstraßen- und Schifffahrtsamt (WSA) operating the gauge — e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream `agency` field. Provided so downstream consumers can attribute observations to the operating authority; not a stable identifier and not suitable as a routing key."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "WGS84 decimal-degree longitude of the gauge installation; positive east of the prime meridian. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `longitude` field. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "WGS84 decimal-degree latitude of the gauge installation; positive north of the equator. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `latitude` field. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "water",
+                    "type": {
+                      "type": "record",
+                      "name": "de.wsv.pegelonline.Water",
+                      "fields": [
+                        {
+                          "name": "shortname",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "doc": "Lowercase routing token for the waterway as published by WSV — e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII-normalization for non-ASCII characters such as 'ß' → 'ss' or umlauts) as the `{water_shortname}` template variable on the MQTT topic and the AMQP application property. Sourced from the upstream `water.shortname` key. Maximum 40 characters."
+                        },
+                        {
+                          "name": "longname",
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "doc": "Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream `water.longname` key. Maximum 255 characters."
+                        }
+                      ],
+                      "doc": "Federal waterway / water body the gauge measures, as returned in the nested `water` object of `GET /stations.json` on the PegelOnline REST API v2. Acts as the routing hierarchy for the MQTT Unified Namespace topology."
+                    },
+                    "doc": "Federal waterway the gauge measures. See the nested Water schema for routing semantics."
+                  }
+                ],
+                "doc": "WSV PegelOnline gauge installation. Each instance represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from `GET /stations.json` on the PegelOnline REST API v2 (https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Emitted as reference data at bridge startup and re-emitted periodically."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         },
         "de.wsv.pegelonline.CurrentMeasurement": {
           "versions": {

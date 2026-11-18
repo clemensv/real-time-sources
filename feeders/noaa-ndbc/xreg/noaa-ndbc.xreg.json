@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.NDBC.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for noaa-ndbc CloudEvents using the documented UNS topic hierarchy."
     },
@@ -61,7 +65,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for noaa-ndbc CloudEvents on the configured broker address."
     }
@@ -82,6 +88,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -100,6 +110,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -118,6 +132,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -136,6 +154,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -154,6 +176,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -172,6 +198,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -190,6 +220,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -208,6 +242,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -226,6 +264,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -584,6 +626,522 @@
           }
         }
       }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NDBC.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NDBC.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.mqtt.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.mqtt.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt/messages/Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.amqp.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.amqp.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement": {
+          "messageid": "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp/messages/Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.avro/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -750,7 +1308,10 @@
                     "symbol": "ft"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -834,7 +1395,10 @@
                     "description": "Single-letter time-zone code carried in the NDBC station table for display and forecast products."
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -899,7 +1463,10 @@
                     "symbol": "W/m2"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -1023,7 +1590,10 @@
                     "symbol": "mV"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -1073,7 +1643,10 @@
                     "symbol": "m"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -1155,7 +1728,10 @@
                     "pattern": "^[0-9]{4}$"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -1236,7 +1812,10 @@
                     "pattern": "^[0-9]{4}$"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -1358,7 +1937,10 @@
                     "symbol": "°"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -1405,7 +1987,10 @@
                     "symbol": "mm"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
@@ -1425,7 +2010,7 @@
         "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
           "name": "BuoyObservation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1449,8 +2034,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -1568,13 +2152,178 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier. Five-character alphanumeric code assigned by NDBC (e.g. '41001' for deep-ocean buoys, 'BURL1' for C-MAN stations)."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the observing platform in decimal degrees north. Negative values indicate southern hemisphere."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the observing platform in decimal degrees east. Negative values indicate western hemisphere."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC data."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction (the direction the wind is coming from) averaged over an 8-minute period for buoys or a 2-minute period for land stations. Unit: degrees true. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average wind speed during the observation period: 8 minutes for buoys, 2 minutes for land stations. Unit: meters per second. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gust",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Peak 5-second or 8-second gust speed during the observation period. Unit: meters per second. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wave_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Significant wave height — the average of the highest one-third of all wave heights during a 20-minute sampling period. Unit: meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dominant_wave_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dominant wave period — the period (in seconds) of the wave band with the maximum energy in the spectral wave analysis. Unit: seconds. JSON Structure annotations: {\"symbol\": \"s\", \"unit\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "average_wave_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average wave period of all waves during the 20-minute sampling period. Unit: seconds. JSON Structure annotations: {\"symbol\": \"s\", \"unit\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mean_wave_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Mean wave direction corresponding to the energy at the dominant wave period (DPD). Unit: degrees true. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sea-level pressure reduced using the standard atmosphere from the station elevation. Unit: hectopascals. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "air_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature measured at the station. Unit: degrees Celsius. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"CEL\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sea surface temperature. For buoys, measured by a hull-contact sensor near the waterline. Unit: degrees Celsius. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"CEL\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dewpoint",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dewpoint temperature computed from air temperature and relative humidity. Unit: degrees Celsius. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"CEL\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pressure_tendency",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Pressure tendency — the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "visibility",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles. JSON Structure annotations: {\"symbol\": \"nmi\", \"unit\": \"[nmi_i]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tide",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet. JSON Structure annotations: {\"symbol\": \"ft\", \"unit\": \"[ft_i]\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
           "name": "BuoyStation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1642,13 +2391,96 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products."
+                  },
+                  {
+                    "name": "owner",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Platform type from the station table, such as Weather Buoy or C-MAN Station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hull",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Hull or platform class reported in the station table, for example DISCUS or 3-meter. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name from the NDBC station table."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere. JSON Structure annotations: {\"symbol\": \"deg\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere. JSON Structure annotations: {\"symbol\": \"deg\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timezone",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Single-letter time-zone code carried in the NDBC station table for display and forecast products. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation": {
           "name": "BuoySolarRadiationObservation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1664,8 +2496,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -1695,13 +2526,69 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier. The .srad realtime2 file is published per station and keyed by this identifier."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file."
+                  },
+                  {
+                    "name": "shortwave_radiation_licor",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter. JSON Structure annotations: {\"symbol\": \"W/m2\", \"unit\": \"W/m2\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "shortwave_radiation_eppley",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter. JSON Structure annotations: {\"symbol\": \"W/m2\", \"unit\": \"W/m2\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longwave_radiation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter. JSON Structure annotations: {\"symbol\": \"W/m2\", \"unit\": \"W/m2\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation": {
           "name": "BuoyOceanographicObservation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1717,8 +2604,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -1800,13 +2686,128 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier. The .ocean realtime2 file is published per station and keyed by this identifier."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .ocean realtime2 file."
+                  },
+                  {
+                    "name": "depth",
+                    "type": "double",
+                    "doc": "Depth in meters at which the oceanographic measurements in this record were taken. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                  },
+                  {
+                    "name": "ocean_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Direct ocean temperature measurement from the OTMP column. Unit: degrees Celsius. JSON Structure annotations: {\"symbol\": \"degC\", \"unit\": \"CEL\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "conductivity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Electrical conductivity of seawater from the COND column. Unit: millisiemens per centimeter. JSON Structure annotations: {\"symbol\": \"mS/cm\", \"unit\": \"mS/cm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "salinity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Practical salinity computed from conductivity, temperature, and pressure using the Practical Salinity Scale of 1978. Unit: practical salinity units. JSON Structure annotations: {\"symbol\": \"psu\", \"unit\": \"psu\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oxygen_saturation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dissolved oxygen saturation percentage from the O2% column. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oxygen_concentration",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Dissolved oxygen concentration from the O2PPM column. Unit: parts per million. JSON Structure annotations: {\"symbol\": \"ppm\", \"unit\": \"ppm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "chlorophyll_concentration",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Chlorophyll concentration from the CLCON column. Unit: micrograms per liter. JSON Structure annotations: {\"symbol\": \"ug/L\", \"unit\": \"ug/L\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "turbidity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Turbidity from the TURB column. Unit: Formazin Turbidity Units. JSON Structure annotations: {\"symbol\": \"FTU\", \"unit\": \"FTU\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ph",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "redox_potential",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Oxidation-reduction potential of seawater from the EH column. Unit: millivolts. JSON Structure annotations: {\"symbol\": \"mV\", \"unit\": \"mV\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement": {
           "name": "BuoyDartMeasurement",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1822,8 +2823,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -1837,13 +2837,52 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file."
+                  },
+                  {
+                    "name": "measurement_type_code",
+                    "type": "int",
+                    "doc": "Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement."
+                  },
+                  {
+                    "name": "water_column_height",
+                    "type": "double",
+                    "doc": "Height of the measured water column from the HEIGHT column in the DART file. Unit: meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
           "name": "BuoyContinuousWindObservation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1859,8 +2898,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -1906,13 +2944,87 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier for the station publishing the .cwind realtime2 file."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Ten-minute average wind speed from the WSPD column. Unit: meters per second. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gust_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gust",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gust_time_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
           "name": "BuoySupplementalMeasurement",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1928,8 +3040,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -1975,13 +3086,87 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier for the station publishing the .supl realtime2 file."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file."
+                  },
+                  {
+                    "name": "lowest_pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lowest_pressure_time_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HHMM UTC time code from the PTIME column indicating when the lowest one-minute pressure occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "highest_wind_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "highest_wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "highest_wind_time_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
           "name": "BuoyDetailedWaveSummary",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -1997,8 +3182,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -2084,13 +3268,132 @@
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier for the station publishing the .spec realtime2 file."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file."
+                  },
+                  {
+                    "name": "significant_wave_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "swell_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Swell-wave height from the SwH column. Unit: meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "swell_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Swell-wave period from the SwP column. Unit: seconds. JSON Structure annotations: {\"symbol\": \"s\", \"unit\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_wave_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind-wave height from the WWH column. Unit: meters. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_wave_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind-wave period from the WWP column. Unit: seconds. JSON Structure annotations: {\"symbol\": \"s\", \"unit\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "swell_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Swell direction from the SwD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_wave_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Wind-wave direction from the WWD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "steepness",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "average_wave_period",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average wave period from the APD column. Unit: seconds. JSON Structure annotations: {\"symbol\": \"s\", \"unit\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mean_wave_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp."
+              }
             }
           }
         },
         "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
           "name": "BuoyHourlyRainMeasurement",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -2106,8 +3409,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -2120,6 +3422,44 @@
                   }
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "NDBC station identifier for the station publishing the .rain realtime2 file."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file."
+                  },
+                  {
+                    "name": "accumulation",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp."
               }
             }
           }

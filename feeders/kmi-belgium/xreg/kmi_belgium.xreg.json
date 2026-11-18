@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/BE.Gov.KMI.Weather"
+        "#/messagegroups/BE.Gov.KMI.Weather",
+        "#/messagegroups/BE.Gov.KMI.Weather.avro",
+        "#/messagegroups/BE.Gov.KMI.Weather.avro.binary"
       ],
       "description": "Kafka producer endpoint for KMI Belgium Weather CloudEvents on the `kmi-belgium` topic keyed by `{station_code}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BE.Gov.KMI.Weather.mqtt"
+        "#/messagegroups/BE.Gov.KMI.Weather.mqtt",
+        "#/messagegroups/BE.Gov.KMI.Weather.mqtt.avro",
+        "#/messagegroups/BE.Gov.KMI.Weather.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for kmi-belgium."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BE.Gov.KMI.Weather.amqp"
+        "#/messagegroups/BE.Gov.KMI.Weather.amqp",
+        "#/messagegroups/BE.Gov.KMI.Weather.amqp.avro",
+        "#/messagegroups/BE.Gov.KMI.Weather.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for kmi-belgium."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -234,6 +248,144 @@
           "envelope": "CloudEvents/1.0"
         }
       }
+    },
+    "BE.Gov.KMI.Weather.avro": {
+      "messagegroupid": "BE.Gov.KMI.Weather.avro",
+      "messages": {
+        "BE.Gov.KMI.Weather.Station": {
+          "messageid": "BE.Gov.KMI.Weather.Station",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.Station"
+        },
+        "BE.Gov.KMI.Weather.WeatherObservation": {
+          "messageid": "BE.Gov.KMI.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.WeatherObservation"
+        }
+      }
+    },
+    "BE.Gov.KMI.Weather.avro.binary": {
+      "messagegroupid": "BE.Gov.KMI.Weather.avro.binary",
+      "messages": {
+        "BE.Gov.KMI.Weather.Station": {
+          "messageid": "BE.Gov.KMI.Weather.Station",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BE.Gov.KMI.Weather.WeatherObservation": {
+          "messageid": "BE.Gov.KMI.Weather.WeatherObservation",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "BE.Gov.KMI.Weather.mqtt.avro": {
+      "messagegroupid": "BE.Gov.KMI.Weather.mqtt.avro",
+      "messages": {
+        "BE.Gov.KMI.Weather.mqtt.Station": {
+          "messageid": "BE.Gov.KMI.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.Station"
+        },
+        "BE.Gov.KMI.Weather.mqtt.WeatherObservation": {
+          "messageid": "BE.Gov.KMI.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.WeatherObservation"
+        }
+      }
+    },
+    "BE.Gov.KMI.Weather.mqtt.avro.binary": {
+      "messagegroupid": "BE.Gov.KMI.Weather.mqtt.avro.binary",
+      "messages": {
+        "BE.Gov.KMI.Weather.mqtt.Station": {
+          "messageid": "BE.Gov.KMI.Weather.mqtt.Station",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BE.Gov.KMI.Weather.mqtt.WeatherObservation": {
+          "messageid": "BE.Gov.KMI.Weather.mqtt.WeatherObservation",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "BE.Gov.KMI.Weather.amqp.avro": {
+      "messagegroupid": "BE.Gov.KMI.Weather.amqp.avro",
+      "messages": {
+        "BE.Gov.KMI.Weather.amqp.Station": {
+          "messageid": "BE.Gov.KMI.Weather.amqp.Station",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.Station"
+        },
+        "BE.Gov.KMI.Weather.amqp.WeatherObservation": {
+          "messageid": "BE.Gov.KMI.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.WeatherObservation"
+        }
+      }
+    },
+    "BE.Gov.KMI.Weather.amqp.avro.binary": {
+      "messagegroupid": "BE.Gov.KMI.Weather.amqp.avro.binary",
+      "messages": {
+        "BE.Gov.KMI.Weather.amqp.Station": {
+          "messageid": "BE.Gov.KMI.Weather.amqp.Station",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BE.Gov.KMI.Weather.amqp.WeatherObservation": {
+          "messageid": "BE.Gov.KMI.Weather.amqp.WeatherObservation",
+          "basemessage": "/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.WeatherObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.avro/schemas/BE.Gov.KMI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -275,7 +427,10 @@
                     "symbol": "°"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -466,13 +621,250 @@
                     "symbol": "W/m²"
                   },
                   "region": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$uses": [
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "BE.Gov.KMI.Weather.avro": {
+      "schemas": {
+        "BE.Gov.KMI.Weather.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BE.Gov.KMI.Weather.Station",
+                "fields": [
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by the Royal Meteorological Institute of Belgium (KMI/IRM). It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "BE.Gov.KMI.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BE.Gov.KMI.Weather.WeatherObservation",
+                "fields": [
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "KMI/RMI automatic weather station code from the `code` property of the reporting observation feature."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC from the feature property `timestamp`."
+                  },
+                  {
+                    "name": "precip_quantity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Precipitation quantity reported for the 10-minute observation period. JSON Structure annotations: {\"symbol\": \"mm\", \"unit\": \"mm\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp_dry_shelter_avg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average air temperature measured in the 2 m dry shelter during the observation period. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp_grass_pt100_avg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average grass-level temperature measured by the Pt100 sensor during the observation period. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp_soil_avg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average soil surface temperature during the observation period. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp_soil_avg_5cm",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average soil temperature measured at 5 cm depth during the observation period. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp_soil_avg_10cm",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average soil temperature measured at 10 cm depth during the observation period. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp_soil_avg_20cm",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average soil temperature measured at 20 cm depth during the observation period. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "temp_soil_avg_50cm",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average soil temperature measured at 50 cm depth during the observation period. JSON Structure annotations: {\"symbol\": \"°C\", \"unit\": \"Cel\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed_10m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind speed measured at 10 m above ground level. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_speed_avg_30m",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average wind speed measured at 30 m above ground level. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction in degrees from which the wind is blowing. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wind_gusts_speed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum wind gust speed observed during the 10-minute period. JSON Structure annotations: {\"symbol\": \"m/s\", \"unit\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "humidity_rel_shelter_avg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average relative humidity measured in the shelter during the observation period. JSON Structure annotations: {\"symbol\": \"%\", \"unit\": \"percent\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pressure",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station-level atmospheric pressure reported by the automatic weather station. JSON Structure annotations: {\"symbol\": \"hPa\", \"unit\": \"hPa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sun_duration",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sunshine duration accumulated during the 10-minute observation period. JSON Structure annotations: {\"symbol\": \"min\", \"unit\": \"min\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "short_wave_from_sky_avg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average downward shortwave radiation from the sky during the observation period. JSON Structure annotations: {\"symbol\": \"W/m²\", \"unit\": \"W/m2\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sun_int_avg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average direct sunshine intensity during the observation period. JSON Structure annotations: {\"symbol\": \"W/m²\", \"unit\": \"W/m2\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from the Royal Meteorological Institute of Belgium (KMI/IRM). It carries weather observations when the upstream feed reports a new or refreshed value."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM"
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM",
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.avro",
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.avro.binary"
       ],
       "description": "Kafka producer endpoint for Waterinfo VMM CloudEvents on the `waterinfo-vmm` topic keyed by `{station_no}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt"
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt",
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt.avro",
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for waterinfo-vmm CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp"
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp",
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp.avro",
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for waterinfo-vmm CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_no}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_no}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -192,6 +206,144 @@
                 "value": "{station_no}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.avro": {
+      "messagegroupid": "BE.Vlaanderen.Waterinfo.VMM.avro",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.Station": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.Station",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station"
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.avro.binary": {
+      "messagegroupid": "BE.Vlaanderen.Waterinfo.VMM.avro.binary",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.Station": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.Station",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.mqtt.avro": {
+      "messagegroupid": "BE.Vlaanderen.Waterinfo.VMM.mqtt.avro",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.mqtt.Station": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.mqtt.Station",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt/messages/BE.Vlaanderen.Waterinfo.VMM.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station"
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt/messages/BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.mqtt.avro.binary": {
+      "messagegroupid": "BE.Vlaanderen.Waterinfo.VMM.mqtt.avro.binary",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.mqtt.Station": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.mqtt.Station",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt/messages/BE.Vlaanderen.Waterinfo.VMM.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt/messages/BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.amqp.avro": {
+      "messagegroupid": "BE.Vlaanderen.Waterinfo.VMM.amqp.avro",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.amqp.Station": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.amqp.Station",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station"
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.amqp.avro.binary": {
+      "messagegroupid": "BE.Vlaanderen.Waterinfo.VMM.amqp.avro.binary",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.amqp.Station": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.amqp.Station",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading": {
+          "messageid": "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading",
+          "basemessage": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -342,7 +494,7 @@
         "BE.Vlaanderen.Waterinfo.VMM.Station": {
           "name": "Station",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -411,13 +563,97 @@
                 "namespace": "BE.Vlaanderen.Waterinfo.VMM",
                 "description": "Reference details for one monitoring station or site in the Waterinfo VMM source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BE.Vlaanderen.Waterinfo.VMM.Station",
+                "fields": [
+                  {
+                    "name": "station_no",
+                    "type": "string",
+                    "doc": "Provider-supplied station no value for this record."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the monitoring station."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable identifier assigned by the upstream provider for the monitoring station or site. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_latitude",
+                    "type": "double",
+                    "doc": "Provider-supplied station latitude value for this record."
+                  },
+                  {
+                    "name": "station_longitude",
+                    "type": "double",
+                    "doc": "Provider-supplied station longitude value for this record."
+                  },
+                  {
+                    "name": "river_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the river or watercourse observed at the station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stationparameter_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable name of the stationparameter. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ts_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable identifier assigned by the upstream provider for the ts. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ts_unitname",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied ts unitname value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_body",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference details for one monitoring station or site in the Waterinfo VMM source."
+              }
             }
           }
         },
         "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
           "name": "WaterLevelReading",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -445,8 +681,7 @@
                   {
                     "name": "timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -472,6 +707,72 @@
                 ],
                 "namespace": "BE.Vlaanderen.Waterinfo.VMM",
                 "description": "Measurement payload for observations in the Waterinfo VMM source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+                "fields": [
+                  {
+                    "name": "ts_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the ts."
+                  },
+                  {
+                    "name": "station_no",
+                    "type": "string",
+                    "doc": "Provider-supplied station no value for this record."
+                  },
+                  {
+                    "name": "station_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable name of the monitoring station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the observation."
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Measured value reported by the upstream provider."
+                  },
+                  {
+                    "name": "unit_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable name of the unit. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Plain-language name of the measured parameter. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_body",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "WaterLevelReading"
               }
             }
           }

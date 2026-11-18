@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/np.gov.bipad.hydrology"
+        "#/messagegroups/np.gov.bipad.hydrology",
+        "#/messagegroups/np.gov.bipad.hydrology.avro",
+        "#/messagegroups/np.gov.bipad.hydrology.avro.binary"
       ],
       "description": "Kafka producer endpoint for Nepal BIPAD River Monitoring CloudEvents on the `nepal-bipad-hydrology` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/np.gov.bipad.hydrology.mqtt"
+        "#/messagegroups/np.gov.bipad.hydrology.mqtt",
+        "#/messagegroups/np.gov.bipad.hydrology.mqtt.avro",
+        "#/messagegroups/np.gov.bipad.hydrology.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for nepal-bipad-hydrology CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/np.gov.bipad.hydrology.amqp"
+        "#/messagegroups/np.gov.bipad.hydrology.amqp",
+        "#/messagegroups/np.gov.bipad.hydrology.amqp.avro",
+        "#/messagegroups/np.gov.bipad.hydrology.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for nepal-bipad-hydrology CloudEvents on the configured broker address."
     }
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -105,6 +115,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -194,6 +208,144 @@
                 "value": "{station_id}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "np.gov.bipad.hydrology.avro": {
+      "messagegroupid": "np.gov.bipad.hydrology.avro",
+      "messages": {
+        "np.gov.bipad.hydrology.RiverStation": {
+          "messageid": "np.gov.bipad.hydrology.RiverStation",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.RiverStation"
+        },
+        "np.gov.bipad.hydrology.WaterLevelReading": {
+          "messageid": "np.gov.bipad.hydrology.WaterLevelReading",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.WaterLevelReading"
+        }
+      }
+    },
+    "np.gov.bipad.hydrology.avro.binary": {
+      "messagegroupid": "np.gov.bipad.hydrology.avro.binary",
+      "messages": {
+        "np.gov.bipad.hydrology.RiverStation": {
+          "messageid": "np.gov.bipad.hydrology.RiverStation",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.RiverStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "np.gov.bipad.hydrology.WaterLevelReading": {
+          "messageid": "np.gov.bipad.hydrology.WaterLevelReading",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "np.gov.bipad.hydrology.mqtt.avro": {
+      "messagegroupid": "np.gov.bipad.hydrology.mqtt.avro",
+      "messages": {
+        "np.gov.bipad.hydrology.mqtt.RiverStation": {
+          "messageid": "np.gov.bipad.hydrology.mqtt.RiverStation",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.mqtt/messages/np.gov.bipad.hydrology.mqtt.RiverStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.RiverStation"
+        },
+        "np.gov.bipad.hydrology.mqtt.WaterLevelReading": {
+          "messageid": "np.gov.bipad.hydrology.mqtt.WaterLevelReading",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.mqtt/messages/np.gov.bipad.hydrology.mqtt.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.WaterLevelReading"
+        }
+      }
+    },
+    "np.gov.bipad.hydrology.mqtt.avro.binary": {
+      "messagegroupid": "np.gov.bipad.hydrology.mqtt.avro.binary",
+      "messages": {
+        "np.gov.bipad.hydrology.mqtt.RiverStation": {
+          "messageid": "np.gov.bipad.hydrology.mqtt.RiverStation",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.mqtt/messages/np.gov.bipad.hydrology.mqtt.RiverStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.RiverStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "np.gov.bipad.hydrology.mqtt.WaterLevelReading": {
+          "messageid": "np.gov.bipad.hydrology.mqtt.WaterLevelReading",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.mqtt/messages/np.gov.bipad.hydrology.mqtt.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "np.gov.bipad.hydrology.amqp.avro": {
+      "messagegroupid": "np.gov.bipad.hydrology.amqp.avro",
+      "messages": {
+        "np.gov.bipad.hydrology.amqp.RiverStation": {
+          "messageid": "np.gov.bipad.hydrology.amqp.RiverStation",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.RiverStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.RiverStation"
+        },
+        "np.gov.bipad.hydrology.amqp.WaterLevelReading": {
+          "messageid": "np.gov.bipad.hydrology.amqp.WaterLevelReading",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.WaterLevelReading"
+        }
+      }
+    },
+    "np.gov.bipad.hydrology.amqp.avro.binary": {
+      "messagegroupid": "np.gov.bipad.hydrology.amqp.avro.binary",
+      "messages": {
+        "np.gov.bipad.hydrology.amqp.RiverStation": {
+          "messageid": "np.gov.bipad.hydrology.amqp.RiverStation",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.RiverStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.RiverStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "np.gov.bipad.hydrology.amqp.WaterLevelReading": {
+          "messageid": "np.gov.bipad.hydrology.amqp.WaterLevelReading",
+          "basemessage": "/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.WaterLevelReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.avro/schemas/np.gov.bipad.hydrology.WaterLevelReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -385,7 +537,10 @@
                                 "description": "Current alert status of the station relative to configured thresholds. Known values: 'BELOW WARNING LEVEL', 'WARNING', 'DANGER'."
                               },
                               "trend": {
-                                "type": ["string", "null"],
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
                                 "description": "Direction of water level change. Known values: 'STEADY', 'RISING', 'FALLING'."
                               },
                               "water_level_on": {
@@ -397,9 +552,9 @@
                               "station_id",
                               "title",
                               "basin",
-                                                            "status",
-                                                            "water_level_on"
-                                                          ]
+                              "status",
+                              "water_level_on"
+                            ]
                           }
                         }
                       }
@@ -604,9 +759,81 @@
                 ],
                 "description": "Measurement payload for observations in the Nepal BIPAD River Monitoring source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "np.gov.bipad.hydrology.WaterLevelReading",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "Human-readable name of the river station at the time of the reading."
+                  },
+                  {
+                    "name": "basin",
+                    "type": "string",
+                    "doc": "Name of the river basin the station belongs to at the time of the reading."
+                  },
+                  {
+                    "name": "water_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Current water level at the station in meters. Null when the station has no current reading available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "danger_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Configured danger water level threshold in meters. Null when not configured. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "warning_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Configured warning water level threshold in meters. Null when not configured. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "doc": "Current alert status of the station relative to configured thresholds. Known values: 'BELOW WARNING LEVEL', 'WARNING', 'DANGER'."
+                  },
+                  {
+                    "name": "trend",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Direction of water level change. Known values: 'STEADY', 'RISING', 'FALLING'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_level_on",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of when the water level was measured, in Nepal Standard Time (+05:45)."
+                  }
+                ],
+                "doc": "Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         }
       }
     }

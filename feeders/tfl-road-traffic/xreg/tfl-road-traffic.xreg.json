@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/uk.gov.tfl.road.corridors"
+        "#/messagegroups/uk.gov.tfl.road.corridors",
+        "#/messagegroups/uk.gov.tfl.road.corridors.avro",
+        "#/messagegroups/uk.gov.tfl.road.corridors.avro.binary"
       ],
       "description": "Kafka producer endpoint for TfL Road Traffic CloudEvents on the `tfl-road-traffic` topic keyed by `roads/{road_id}`."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/uk.gov.tfl.road.disruptions"
+        "#/messagegroups/uk.gov.tfl.road.disruptions",
+        "#/messagegroups/uk.gov.tfl.road.disruptions.avro",
+        "#/messagegroups/uk.gov.tfl.road.disruptions.avro.binary"
       ],
       "description": "Kafka producer endpoint for TfL Road Traffic CloudEvents on the `tfl-road-traffic` topic keyed by `disruptions/{road_id}/{severity}/{disruption_id}`."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/uk.gov.tfl.road.mqtt"
+        "#/messagegroups/uk.gov.tfl.road.mqtt",
+        "#/messagegroups/uk.gov.tfl.road.mqtt.avro",
+        "#/messagegroups/uk.gov.tfl.road.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for TfL Road Traffic CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
@@ -88,7 +94,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/uk.gov.tfl.road.amqp"
+        "#/messagegroups/uk.gov.tfl.road.amqp",
+        "#/messagegroups/uk.gov.tfl.road.amqp.avro",
+        "#/messagegroups/uk.gov.tfl.road.amqp.avro.binary"
       ]
     }
   },
@@ -109,6 +117,10 @@
             "subject": {
               "value": "roads/{road_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -128,6 +140,10 @@
             "subject": {
               "value": "roads/{road_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -152,6 +168,10 @@
             "subject": {
               "value": "disruptions/{road_id}/{severity}/{disruption_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -539,6 +559,388 @@
             }
           },
           "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionClosure"
+        }
+      }
+    },
+    "uk.gov.tfl.road.corridors.avro": {
+      "messagegroupid": "uk.gov.tfl.road.corridors.avro",
+      "messages": {
+        "uk.gov.tfl.road.RoadCorridor": {
+          "messageid": "uk.gov.tfl.road.RoadCorridor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadCorridor"
+        },
+        "uk.gov.tfl.road.RoadStatus": {
+          "messageid": "uk.gov.tfl.road.RoadStatus",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadStatus"
+        }
+      }
+    },
+    "uk.gov.tfl.road.corridors.avro.binary": {
+      "messagegroupid": "uk.gov.tfl.road.corridors.avro.binary",
+      "messages": {
+        "uk.gov.tfl.road.RoadCorridor": {
+          "messageid": "uk.gov.tfl.road.RoadCorridor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadCorridor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.RoadStatus": {
+          "messageid": "uk.gov.tfl.road.RoadStatus",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.tfl.road.disruptions.avro": {
+      "messagegroupid": "uk.gov.tfl.road.disruptions.avro",
+      "messages": {
+        "uk.gov.tfl.road.RoadDisruption": {
+          "messageid": "uk.gov.tfl.road.RoadDisruption",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        }
+      }
+    },
+    "uk.gov.tfl.road.disruptions.avro.binary": {
+      "messagegroupid": "uk.gov.tfl.road.disruptions.avro.binary",
+      "messages": {
+        "uk.gov.tfl.road.RoadDisruption": {
+          "messageid": "uk.gov.tfl.road.RoadDisruption",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.tfl.road.mqtt.avro": {
+      "messagegroupid": "uk.gov.tfl.road.mqtt.avro",
+      "messages": {
+        "uk.gov.tfl.road.mqtt.RoadCorridor": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadCorridor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadCorridor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadCorridor"
+        },
+        "uk.gov.tfl.road.mqtt.RoadStatus": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadStatus",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadStatus"
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionSerious": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionSerious",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionSerious",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionSevere": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionSevere",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionSevere",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionModerate": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionModerate",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionModerate",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionMinor": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionMinor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionMinor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionInformation": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionInformation",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionClosure": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionClosure",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionClosure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        }
+      }
+    },
+    "uk.gov.tfl.road.mqtt.avro.binary": {
+      "messagegroupid": "uk.gov.tfl.road.mqtt.avro.binary",
+      "messages": {
+        "uk.gov.tfl.road.mqtt.RoadCorridor": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadCorridor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadCorridor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadCorridor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.mqtt.RoadStatus": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadStatus",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionSerious": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionSerious",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionSerious",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionSevere": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionSevere",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionSevere",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionModerate": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionModerate",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionModerate",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionMinor": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionMinor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionMinor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionInformation": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionInformation",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.mqtt.RoadDisruptionClosure": {
+          "messageid": "uk.gov.tfl.road.mqtt.RoadDisruptionClosure",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.mqtt/messages/uk.gov.tfl.road.mqtt.RoadDisruptionClosure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.tfl.road.amqp.avro": {
+      "messagegroupid": "uk.gov.tfl.road.amqp.avro",
+      "messages": {
+        "uk.gov.tfl.road.amqp.RoadCorridor": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadCorridor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadCorridor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadCorridor"
+        },
+        "uk.gov.tfl.road.amqp.RoadStatus": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadStatus",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadStatus"
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionSerious": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionSerious",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionSerious",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionSevere": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionSevere",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionSevere",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionModerate": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionModerate",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionModerate",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionMinor": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionMinor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionMinor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionInformation": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionInformation",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionClosure": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionClosure",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionClosure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption"
+        }
+      }
+    },
+    "uk.gov.tfl.road.amqp.avro.binary": {
+      "messagegroupid": "uk.gov.tfl.road.amqp.avro.binary",
+      "messages": {
+        "uk.gov.tfl.road.amqp.RoadCorridor": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadCorridor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadCorridor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadCorridor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadStatus": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadStatus",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadStatus",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadStatus",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionSerious": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionSerious",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionSerious",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionSevere": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionSevere",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionSevere",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionModerate": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionModerate",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionModerate",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionMinor": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionMinor",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionMinor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionInformation": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionInformation",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionInformation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionClosure": {
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionClosure",
+          "basemessage": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionClosure",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/uk.gov.tfl.road.avro/schemas/uk.gov.tfl.road.RoadDisruption",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -962,6 +1364,468 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.tfl.road.avro": {
+      "schemas": {
+        "uk.gov.tfl.road.RoadCorridor": {
+          "name": "RoadCorridor",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "uk.gov.tfl.road.RoadCorridor",
+                "fields": [
+                  {
+                    "name": "road_id",
+                    "type": "string",
+                    "doc": "Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key."
+                  },
+                  {
+                    "name": "display_name",
+                    "type": "string",
+                    "doc": "Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'."
+                  },
+                  {
+                    "name": "status_severity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status_severity_description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bounds",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Bounding box for the road corridor as a JSON array string. Corresponds to 'bounds' in the upstream response. Format: '[[lon_sw,lat_sw],[lon_ne,lat_ne]]' in WGS84 decimal degrees. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "envelope",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GeoJSON envelope polygon for the road corridor geometry. Corresponds to 'envelope' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status_aggregation_start_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status_aggregation_end_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record for a TfL managed road corridor fetched from GET /Road."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.RoadStatus": {
+          "name": "RoadStatus",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "uk.gov.tfl.road.RoadStatus",
+                "fields": [
+                  {
+                    "name": "road_id",
+                    "type": "string",
+                    "doc": "Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key."
+                  },
+                  {
+                    "name": "display_name",
+                    "type": "string",
+                    "doc": "Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'."
+                  },
+                  {
+                    "name": "status_severity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status_severity_description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bounds",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Bounding box for the road corridor as a JSON array string. Corresponds to 'bounds' in the upstream response. Format: '[[lon_sw,lat_sw],[lon_ne,lat_ne]]' in WGS84 decimal degrees. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "envelope",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GeoJSON envelope polygon for the road corridor geometry. Corresponds to 'envelope' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status_aggregation_start_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status_aggregation_end_date",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.RoadDisruption": {
+          "name": "RoadDisruption",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "uk.gov.tfl.road.RoadDisruption",
+                "fields": [
+                  {
+                    "name": "road_id",
+                    "type": "string",
+                    "doc": "Primary affected TfL road corridor identifier used by MQTT/UNS topics. Derived from the first upstream corridorIds entry when present, otherwise 'unknown'."
+                  },
+                  {
+                    "name": "disruption_id",
+                    "type": "string",
+                    "doc": "Unique identifier for the disruption assigned by the TfL Traffic Information Management System (TIMS). Corresponds to 'id' in the upstream response. Format: 'TIMS-NNNNN' or similar TIMS prefix."
+                  },
+                  {
+                    "name": "category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Top-level category of the disruption. Corresponds to 'category' in the upstream response. Common values: 'RealTime' for live incidents, 'PlannedWork' for scheduled roadworks. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sub_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "More detailed sub-category of the disruption. Corresponds to 'subCategory' in the upstream response. Examples: 'TfL planned works', 'Utility works', 'Incident', 'Traffic signal failure'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "severity",
+                    "type": "string",
+                    "doc": "Normalized TfL-native severity for MQTT partitioning. Values: serious, severe, moderate, minor, information, closure. Upstream values are normalized to lowercase-kebab."
+                  },
+                  {
+                    "name": "ordinal",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Ordinal rank of this disruption used for ordering within a severity level. Corresponds to 'ordinal' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL to the TfL Unified API detail page for this disruption. Corresponds to 'url' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "point",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Representative point location of the disruption as a WKT or coordinate string. Corresponds to 'point' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "comments",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Free-text comments describing the disruption context. Corresponds to 'comments' in the upstream response. May include street names, junction descriptions, or operational notes. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "current_update",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Latest operational update text for this disruption. Corresponds to 'currentUpdate' in the upstream response. Updated by TfL operators as the situation evolves. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "current_update_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when the current update text was last modified. Corresponds to 'currentUpdateDateTime' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "corridor_ids",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Array of road corridor identifiers affected by this disruption. Corresponds to 'corridorIds' in the upstream response. Examples: ['a2', 'a12']. May be empty or null for disruptions not associated with a specific named corridor. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scheduled or actual start date and time of the disruption. Corresponds to 'startDateTime' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "end_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scheduled or actual end date and time of the disruption. Corresponds to 'endDateTime' in the upstream response. May be null for open-ended incidents. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "last_modified_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when this disruption record was last modified in the TfL system. Corresponds to 'lastModifiedTime' in the upstream response. Used for deduplication: disruptions are re-emitted only when this value changes. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "level_of_interest",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "TfL classification of the level of public interest for this disruption. Corresponds to 'levelOfInterest' in the upstream response. Examples: 'Low', 'Medium', 'High'. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Free-text textual description of the disruption location. Corresponds to 'location' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_provisional",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether the disruption timing or details are provisional and subject to change. Corresponds to 'isProvisional' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "has_closures",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether this disruption includes full or partial road closures. Corresponds to 'hasClosures' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "streets",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "Street",
+                          "fields": [
+                            {
+                              "name": "name",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "Street name as reported by TfL. Corresponds to 'name' in the upstream streets array entry. An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "closure",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "Type of closure applied to this street. Corresponds to 'closure' in the upstream streets entry. Values: 'Full', 'Partial'. An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "directions",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "Affected directions of travel on this street. Corresponds to 'directions' in the upstream streets entry. Examples: 'Both Directions', 'Northbound', 'Southbound'. An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "source_system_id",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "Source system identifier for this street record. Corresponds to 'sourceSystemId' in the upstream streets entry. An absent JSON property uses the declared default in Avro."
+                            },
+                            {
+                              "name": "source_system_key",
+                              "default": null,
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "doc": "Source system key for this street record. Corresponds to 'sourceSystemKey' in the upstream streets entry. An absent JSON property uses the declared default in Avro."
+                            }
+                          ],
+                          "doc": "An individual street segment affected by a road disruption in London. Part of the 'streets' array in a RoadDisruption event."
+                        }
+                      }
+                    ],
+                    "doc": "Array of street segments affected by this disruption. Corresponds to 'streets' in the upstream response. Each entry describes an individual street with its closure type, affected directions, and geometry. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geography",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GeoJSON geometry of the disruption area as a JSON string. Corresponds to 'geography' in the upstream response. May be a Point, LineString, or Polygon representing the spatial extent of the disruption. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geometry",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Secondary geometry field from the TfL database as a JSON string. Corresponds to 'geometry' in the upstream response. May contain database geometry in an alternate representation. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Current lifecycle status of the disruption. Corresponds to 'status' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "is_active",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Whether this disruption is currently active. Corresponds to 'isActive' in the upstream response. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption."
               }
             }
           }

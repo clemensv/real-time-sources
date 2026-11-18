@@ -56,6 +56,17 @@ def manifest():
     }
 
 class PrintDocTests(unittest.TestCase):
+    def test_inherited_encoding_variants_keep_mqtt_routing_and_document_limit(self):
+        from xreg_schema_coverage import complete
+
+        data = complete(manifest())
+        md, _ = printdoc.generate_documentation(data)
+        self.assertIn("application/vnd.apache.org.avro+avro", md)
+        self.assertIn("xregistry/codegen#670", md)
+        self.assertIn("`data_base64`", md)
+        self.assertIn("topic `factory/{id}/created`, retain `true`, QoS `1`", md)
+        self.assertNotIn("topic `not declared`", md)
+
     def test_renders_full_surface(self):
         md, warnings = printdoc.generate_documentation(manifest())
         self.assertIn("missing description: schema example.Created", warnings.paths)

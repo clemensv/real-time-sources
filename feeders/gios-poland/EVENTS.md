@@ -1,10 +1,10 @@
-# GIOŚ Poland feeder Events
+# GIOŚ Poland Events
 
 GIOŚ Poland Air Quality publishes sensor readings and air-quality index values from Poland's Chief Inspectorate of Environmental Protection (GIOŚ) for Polish air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 4 documented event types (12 transport bindings in the manifest).
+- **Event types:** 4 documented event types (48 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 3 telemetry event types.
 - **Identity:** `{station_id}`, `{station_id}/{sensor_id}` identifies the resource each event is about.
@@ -17,7 +17,7 @@ These examples show the smallest useful consumer for each transport declared by 
 
 ### Kafka
 
-Subscribe to `gios-poland`. The record key is `{station_id}`. In plain language, `{station_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+Subscribe to `gios-poland`. The record key is not declared. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
 ```python
 from confluent_kafka import Consumer
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `gios-poland`, key `{station_id}` |
 | `MQTT/5.0` | topic `air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}`; application properties voivodeship `{voivodeship}`, pollutant `{pollutant}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}` |
 
 #### Payload
 
@@ -135,9 +135,9 @@ Each event identifies the real-world resource with `{station_id}/{sensor_id}`. `
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `gios-poland`, key `{station_id}` |
+| `KAFKA` | topic `gios-poland`, key `{station_id}/{sensor_id}` |
 | `MQTT/5.0` | topic `air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/sensor`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}/{sensor_id}`; application properties voivodeship `{voivodeship}`, station_id `{station_id}`, pollutant `{pollutant}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}/{sensor_id}` |
 
 #### Payload
 
@@ -184,9 +184,9 @@ Each event identifies the real-world resource with `{station_id}/{sensor_id}`. `
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `gios-poland`, key `{station_id}` |
+| `KAFKA` | topic `gios-poland`, key `{station_id}/{sensor_id}` |
 | `MQTT/5.0` | topic `air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/measurement`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}/{sensor_id}`; application properties voivodeship `{voivodeship}`, station_id `{station_id}`, pollutant `{pollutant}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}/{sensor_id}` |
 
 #### Payload
 
@@ -233,7 +233,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | --- | --- |
 | `KAFKA` | topic `gios-poland`, key `{station_id}` |
 | `MQTT/5.0` | topic `air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/aqi`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}`; application properties voivodeship `{voivodeship}`, pollutant `{pollutant}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/gios-poland`, message subject `{station_id}` |
 
 #### Payload
 
@@ -319,7 +319,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -330,3 +334,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/gios_poland.xreg.json`](xreg/gios_poland.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

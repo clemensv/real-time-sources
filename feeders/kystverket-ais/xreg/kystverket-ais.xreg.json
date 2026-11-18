@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/NO.Kystverket.AIS"
+        "#/messagegroups/NO.Kystverket.AIS",
+        "#/messagegroups/NO.Kystverket.AIS.avro",
+        "#/messagegroups/NO.Kystverket.AIS.avro.binary"
       ],
       "description": "Kafka producer endpoint for Kystverket AIS CloudEvents on the `ais` topic keyed by `{mmsi}`."
     },
@@ -35,7 +37,9 @@
         "deployed": false
       },
       "messagegroups": [
-        "#/messagegroups/NO.Kystverket.AIS.mqtt"
+        "#/messagegroups/NO.Kystverket.AIS.mqtt",
+        "#/messagegroups/NO.Kystverket.AIS.mqtt.avro",
+        "#/messagegroups/NO.Kystverket.AIS.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for Kystverket AIS CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
@@ -57,7 +61,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/NO.Kystverket.AIS.amqp"
+        "#/messagegroups/NO.Kystverket.AIS.amqp",
+        "#/messagegroups/NO.Kystverket.AIS.amqp.avro",
+        "#/messagegroups/NO.Kystverket.AIS.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for kystverket-ais CloudEvents on the configured broker address."
     }
@@ -78,6 +84,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -97,6 +107,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -116,6 +130,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -135,6 +153,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -154,6 +176,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -173,6 +199,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -192,6 +222,10 @@
             "subject": {
               "value": "{mmsi}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -329,6 +363,270 @@
                 "value": "{geohash5}",
                 "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
               }
+            }
+          }
+        }
+      }
+    },
+    "NO.Kystverket.AIS.avro": {
+      "messagegroupid": "NO.Kystverket.AIS.avro",
+      "messages": {
+        "NO.Kystverket.AIS.PositionReportClassA": {
+          "messageid": "NO.Kystverket.AIS.PositionReportClassA",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReportClassA",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReportClassA"
+        },
+        "NO.Kystverket.AIS.StaticVoyageData": {
+          "messageid": "NO.Kystverket.AIS.StaticVoyageData",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticVoyageData",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.StaticVoyageData"
+        },
+        "NO.Kystverket.AIS.PositionReportClassB": {
+          "messageid": "NO.Kystverket.AIS.PositionReportClassB",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReportClassB",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReportClassB"
+        },
+        "NO.Kystverket.AIS.StaticDataClassB": {
+          "messageid": "NO.Kystverket.AIS.StaticDataClassB",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticDataClassB",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.StaticDataClassB"
+        },
+        "NO.Kystverket.AIS.AidToNavigation": {
+          "messageid": "NO.Kystverket.AIS.AidToNavigation",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.AidToNavigation"
+        },
+        "NO.Kystverket.AIS.PositionReport": {
+          "messageid": "NO.Kystverket.AIS.PositionReport",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReport"
+        },
+        "NO.Kystverket.AIS.ShipStatic": {
+          "messageid": "NO.Kystverket.AIS.ShipStatic",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.ShipStatic"
+        }
+      }
+    },
+    "NO.Kystverket.AIS.avro.binary": {
+      "messagegroupid": "NO.Kystverket.AIS.avro.binary",
+      "messages": {
+        "NO.Kystverket.AIS.PositionReportClassA": {
+          "messageid": "NO.Kystverket.AIS.PositionReportClassA",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReportClassA",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReportClassA",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.StaticVoyageData": {
+          "messageid": "NO.Kystverket.AIS.StaticVoyageData",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticVoyageData",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.StaticVoyageData",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.PositionReportClassB": {
+          "messageid": "NO.Kystverket.AIS.PositionReportClassB",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReportClassB",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReportClassB",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.StaticDataClassB": {
+          "messageid": "NO.Kystverket.AIS.StaticDataClassB",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticDataClassB",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.StaticDataClassB",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.AidToNavigation": {
+          "messageid": "NO.Kystverket.AIS.AidToNavigation",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.AidToNavigation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.PositionReport": {
+          "messageid": "NO.Kystverket.AIS.PositionReport",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReport",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.ShipStatic": {
+          "messageid": "NO.Kystverket.AIS.ShipStatic",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.ShipStatic",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NO.Kystverket.AIS.mqtt.avro": {
+      "messagegroupid": "NO.Kystverket.AIS.mqtt.avro",
+      "messages": {
+        "NO.Kystverket.AIS.mqtt.PositionReport": {
+          "messageid": "NO.Kystverket.AIS.mqtt.PositionReport",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.mqtt/messages/NO.Kystverket.AIS.mqtt.PositionReport",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReport"
+        },
+        "NO.Kystverket.AIS.mqtt.ShipStatic": {
+          "messageid": "NO.Kystverket.AIS.mqtt.ShipStatic",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.mqtt/messages/NO.Kystverket.AIS.mqtt.ShipStatic",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.ShipStatic"
+        },
+        "NO.Kystverket.AIS.mqtt.AidToNavigation": {
+          "messageid": "NO.Kystverket.AIS.mqtt.AidToNavigation",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.mqtt/messages/NO.Kystverket.AIS.mqtt.AidToNavigation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.AidToNavigation"
+        }
+      }
+    },
+    "NO.Kystverket.AIS.mqtt.avro.binary": {
+      "messagegroupid": "NO.Kystverket.AIS.mqtt.avro.binary",
+      "messages": {
+        "NO.Kystverket.AIS.mqtt.PositionReport": {
+          "messageid": "NO.Kystverket.AIS.mqtt.PositionReport",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.mqtt/messages/NO.Kystverket.AIS.mqtt.PositionReport",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReport",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.mqtt.ShipStatic": {
+          "messageid": "NO.Kystverket.AIS.mqtt.ShipStatic",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.mqtt/messages/NO.Kystverket.AIS.mqtt.ShipStatic",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.ShipStatic",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.mqtt.AidToNavigation": {
+          "messageid": "NO.Kystverket.AIS.mqtt.AidToNavigation",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.mqtt/messages/NO.Kystverket.AIS.mqtt.AidToNavigation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.AidToNavigation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "NO.Kystverket.AIS.amqp.avro": {
+      "messagegroupid": "NO.Kystverket.AIS.amqp.avro",
+      "messages": {
+        "NO.Kystverket.AIS.amqp.PositionReport": {
+          "messageid": "NO.Kystverket.AIS.amqp.PositionReport",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.amqp/messages/NO.Kystverket.AIS.amqp.PositionReport",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReport"
+        },
+        "NO.Kystverket.AIS.amqp.ShipStatic": {
+          "messageid": "NO.Kystverket.AIS.amqp.ShipStatic",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.amqp/messages/NO.Kystverket.AIS.amqp.ShipStatic",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.ShipStatic"
+        },
+        "NO.Kystverket.AIS.amqp.AidToNavigation": {
+          "messageid": "NO.Kystverket.AIS.amqp.AidToNavigation",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.amqp/messages/NO.Kystverket.AIS.amqp.AidToNavigation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.AidToNavigation"
+        }
+      }
+    },
+    "NO.Kystverket.AIS.amqp.avro.binary": {
+      "messagegroupid": "NO.Kystverket.AIS.amqp.avro.binary",
+      "messages": {
+        "NO.Kystverket.AIS.amqp.PositionReport": {
+          "messageid": "NO.Kystverket.AIS.amqp.PositionReport",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.amqp/messages/NO.Kystverket.AIS.amqp.PositionReport",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.PositionReport",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.amqp.ShipStatic": {
+          "messageid": "NO.Kystverket.AIS.amqp.ShipStatic",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.amqp/messages/NO.Kystverket.AIS.amqp.ShipStatic",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.ShipStatic",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "NO.Kystverket.AIS.amqp.AidToNavigation": {
+          "messageid": "NO.Kystverket.AIS.amqp.AidToNavigation",
+          "basemessage": "/messagegroups/NO.Kystverket.AIS.amqp/messages/NO.Kystverket.AIS.amqp.AidToNavigation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.avro/schemas/NO.Kystverket.AIS.AidToNavigation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -957,6 +1255,876 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "NO.Kystverket.AIS.avro": {
+      "schemas": {
+        "NO.Kystverket.AIS.PositionReportClassA": {
+          "name": "PositionReportClassA",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NO.Kystverket.AIS.PositionReportClassA",
+                "fields": [
+                  {
+                    "name": "mmsi",
+                    "type": "int",
+                    "doc": "Provider field for mmsi in this record."
+                  },
+                  {
+                    "name": "navigation_status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for navigation status in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rate_of_turn",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Provider field for rate of turn in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "speed_over_ground",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Provider field for speed over ground in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "position_accuracy",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for position accuracy in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the resource in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the resource in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "course_over_ground",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Provider field for course over ground in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "true_heading",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for true heading in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the update."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable identifier assigned by the upstream provider for the station or stop. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "msg_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for msg type in this record. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.StaticVoyageData": {
+          "name": "StaticVoyageData",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NO.Kystverket.AIS.StaticVoyageData",
+                "fields": [
+                  {
+                    "name": "mmsi",
+                    "type": "int",
+                    "doc": "Provider field for mmsi in this record."
+                  },
+                  {
+                    "name": "imo_number",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for imo number in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "callsign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider field for callsign in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ship_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable name of the ship. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ship_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for ship type in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_bow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to bow in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_stern",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to stern in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_port",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to port in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_starboard",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to starboard in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "draught",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Provider field for draught in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "destination",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider field for destination in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "eta_month",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for eta month in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "eta_day",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for eta day in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "eta_hour",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for eta hour in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "eta_minute",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for eta minute in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the update."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable identifier assigned by the upstream provider for the station or stop. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.PositionReportClassB": {
+          "name": "PositionReportClassB",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NO.Kystverket.AIS.PositionReportClassB",
+                "fields": [
+                  {
+                    "name": "mmsi",
+                    "type": "int",
+                    "doc": "Provider field for mmsi in this record."
+                  },
+                  {
+                    "name": "speed_over_ground",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Provider field for speed over ground in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "position_accuracy",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for position accuracy in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the resource in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the resource in WGS 84 coordinates."
+                  },
+                  {
+                    "name": "course_over_ground",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Provider field for course over ground in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "true_heading",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for true heading in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the update."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable identifier assigned by the upstream provider for the station or stop. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "msg_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for msg type in this record. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.StaticDataClassB": {
+          "name": "StaticDataClassB",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NO.Kystverket.AIS.StaticDataClassB",
+                "fields": [
+                  {
+                    "name": "mmsi",
+                    "type": "int",
+                    "doc": "Provider field for mmsi in this record."
+                  },
+                  {
+                    "name": "part_number",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for part number in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ship_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable name of the ship. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ship_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for ship type in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "callsign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider field for callsign in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_bow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to bow in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_stern",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to stern in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_port",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to port in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dimension_to_starboard",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Provider field for dimension to starboard in this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Time when the provider recorded or published the update."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable identifier assigned by the upstream provider for the station or stop. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.AidToNavigation": {
+          "name": "AidToNavigation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NO.Kystverket.AIS.AidToNavigation",
+                "fields": [
+                  {
+                    "name": "mmsi",
+                    "type": "string",
+                    "doc": "Source MMSI as a 9-digit ASCII string (padded with leading zeros). Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. JSON Structure annotations: {\"pattern\": \"^[0-9]{9}$\"}"
+                  },
+                  {
+                    "name": "flag",
+                    "type": "string",
+                    "doc": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country. JSON Structure annotations: {\"pattern\": \"^[a-z]{2}$|^xx$\"}"
+                  },
+                  {
+                    "name": "ship_type",
+                    "type": "string",
+                    "doc": "Kebab-case ship-type bucket derived from the ITU-R M.1371 ShipType code. For static reports it is derived from the broadcast Type-5/24 ShipType field; for position reports it is looked up from an in-process ship-type cache keyed by MMSI. 'unknown' if no static report has been observed yet."
+                  },
+                  {
+                    "name": "geohash5",
+                    "type": "string",
+                    "doc": "5-character geohash of the reported (latitude, longitude). Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position, filled from the most recently observed position for the MMSI, falling back to '00000'. JSON Structure annotations: {\"pattern\": \"^[0-9b-hjkmnp-z]{5}$\"}"
+                  },
+                  {
+                    "name": "msg_type",
+                    "type": {
+                      "type": "string",
+                      "doc": "Allowed JSON values: [\"position-report\", \"static\", \"aid-to-navigation\"]"
+                    },
+                    "doc": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template. JSON Structure annotations: {\"descriptions\": {\"aid-to-navigation\": \"Provider coded value `aid-to-navigation` for this field.\", \"position-report\": \"Provider coded value `position-report` for this field.\", \"static\": \"Provider coded value `static` for this field.\"}, \"enum\": [\"position-report\", \"static\", \"aid-to-navigation\"]}"
+                  },
+                  {
+                    "name": "name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Aid-to-Navigation name as broadcast. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "aid_type",
+                    "type": "int",
+                    "doc": "AtoN type code (0..31) per ITU-R M.1371."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Reported latitude in WGS-84 decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Reported longitude in WGS-84 decimal degrees."
+                  },
+                  {
+                    "name": "position_accuracy",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "1 if high-accuracy (DGPS), else 0. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ISO-8601 receive time as supplied by the upstream NMEA tag. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Kystverket base-station identifier. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ais_msg_type",
+                    "type": "int",
+                    "doc": "Original ITU-R M.1371 message ID (21)."
+                  }
+                ],
+                "doc": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.PositionReport": {
+          "name": "PositionReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NO.Kystverket.AIS.PositionReport",
+                "fields": [
+                  {
+                    "name": "mmsi",
+                    "type": "string",
+                    "doc": "Source MMSI as a 9-digit ASCII string (padded with leading zeros). Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. JSON Structure annotations: {\"pattern\": \"^[0-9]{9}$\"}"
+                  },
+                  {
+                    "name": "flag",
+                    "type": "string",
+                    "doc": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country. JSON Structure annotations: {\"pattern\": \"^[a-z]{2}$|^xx$\"}"
+                  },
+                  {
+                    "name": "ship_type",
+                    "type": "string",
+                    "doc": "Kebab-case ship-type bucket derived from the ITU-R M.1371 ShipType code. For static reports it is derived from the broadcast Type-5/24 ShipType field; for position reports it is looked up from an in-process ship-type cache keyed by MMSI. 'unknown' if no static report has been observed yet."
+                  },
+                  {
+                    "name": "geohash5",
+                    "type": "string",
+                    "doc": "5-character geohash of the reported (latitude, longitude). Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position, filled from the most recently observed position for the MMSI, falling back to '00000'. JSON Structure annotations: {\"pattern\": \"^[0-9b-hjkmnp-z]{5}$\"}"
+                  },
+                  {
+                    "name": "msg_type",
+                    "type": {
+                      "type": "string",
+                      "doc": "Allowed JSON values: [\"position-report\", \"static\", \"aid-to-navigation\"]"
+                    },
+                    "doc": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template. JSON Structure annotations: {\"descriptions\": {\"aid-to-navigation\": \"Provider coded value `aid-to-navigation` for this field.\", \"position-report\": \"Provider coded value `position-report` for this field.\", \"static\": \"Provider coded value `static` for this field.\"}, \"enum\": [\"position-report\", \"static\", \"aid-to-navigation\"]}"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Reported latitude in WGS-84 decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Reported longitude in WGS-84 decimal degrees."
+                  },
+                  {
+                    "name": "speed_over_ground",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Speed over ground in knots. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "course_over_ground",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Course over ground in degrees (0..359.9). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "true_heading",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "True heading in degrees (0..359, 511 = not available). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "navigation_status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "ITU navigation status code (0..15). 0 for Class-B. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "rate_of_turn",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Rate of turn in AIS-encoded units. 0 for Class-B. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "position_accuracy",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "1 if high-accuracy (DGPS), else 0. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ISO-8601 receive time as supplied by the upstream NMEA tag. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Kystverket base-station identifier from the NMEA tag block. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ais_msg_type",
+                    "type": "int",
+                    "doc": "Original ITU-R M.1371 message ID (1, 2, 3, 18, or 19)."
+                  }
+                ],
+                "doc": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.ShipStatic": {
+          "name": "ShipStatic",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NO.Kystverket.AIS.ShipStatic",
+                "fields": [
+                  {
+                    "name": "mmsi",
+                    "type": "string",
+                    "doc": "Source MMSI as a 9-digit ASCII string (padded with leading zeros). Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. JSON Structure annotations: {\"pattern\": \"^[0-9]{9}$\"}"
+                  },
+                  {
+                    "name": "flag",
+                    "type": "string",
+                    "doc": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country. JSON Structure annotations: {\"pattern\": \"^[a-z]{2}$|^xx$\"}"
+                  },
+                  {
+                    "name": "ship_type",
+                    "type": "string",
+                    "doc": "Kebab-case ship-type bucket derived from the ITU-R M.1371 ShipType code. For static reports it is derived from the broadcast Type-5/24 ShipType field; for position reports it is looked up from an in-process ship-type cache keyed by MMSI. 'unknown' if no static report has been observed yet."
+                  },
+                  {
+                    "name": "geohash5",
+                    "type": "string",
+                    "doc": "5-character geohash of the reported (latitude, longitude). Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position, filled from the most recently observed position for the MMSI, falling back to '00000'. JSON Structure annotations: {\"pattern\": \"^[0-9b-hjkmnp-z]{5}$\"}"
+                  },
+                  {
+                    "name": "msg_type",
+                    "type": {
+                      "type": "string",
+                      "doc": "Allowed JSON values: [\"position-report\", \"static\", \"aid-to-navigation\"]"
+                    },
+                    "doc": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template. JSON Structure annotations: {\"descriptions\": {\"aid-to-navigation\": \"Provider coded value `aid-to-navigation` for this field.\", \"position-report\": \"Provider coded value `position-report` for this field.\", \"static\": \"Provider coded value `static` for this field.\"}, \"enum\": [\"position-report\", \"static\", \"aid-to-navigation\"]}"
+                  },
+                  {
+                    "name": "ship_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Vessel name as broadcast (max 20 chars, trimmed). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "callsign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Radio call sign as broadcast (max 7 chars). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "imo_number",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "IMO number (7-digit). 0 if not assigned or for Class-B. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ship_type_code",
+                    "type": "int",
+                    "doc": "Raw ITU-R M.1371 ship type code (0..99)."
+                  },
+                  {
+                    "name": "destination",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Voyage destination string (max 20 chars). Empty for Type 24. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "eta",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Voyage ETA as ISO-8601 string. Empty if absent (Type 24). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "draught",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum present static draught in metres. 0.0 if absent. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dim_to_bow",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Distance from reference point to bow in metres. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dim_to_stern",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Distance from reference point to stern in metres. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dim_to_port",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Distance from reference point to port side in metres. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dim_to_starboard",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Distance from reference point to starboard side in metres. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ISO-8601 receive time as supplied by the upstream NMEA tag. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Kystverket base-station identifier. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ais_msg_type",
+                    "type": "int",
+                    "doc": "Original ITU-R M.1371 message ID (5 or 24)."
+                  }
+                ],
+                "doc": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.kiwis.station.kafka"
+        "#/messagegroups/org.kiwis.station.kafka",
+        "#/messagegroups/org.kiwis.station.kafka.avro",
+        "#/messagegroups/org.kiwis.station.kafka.avro.binary"
       ],
       "description": "Kafka endpoint for KiWIS station reference records on the `kiwis` topic keyed by the configured KiWIS instance identifier and upstream station_id."
     },
@@ -40,7 +42,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.kiwis.timeseries.kafka"
+        "#/messagegroups/org.kiwis.timeseries.kafka",
+        "#/messagegroups/org.kiwis.timeseries.kafka.avro",
+        "#/messagegroups/org.kiwis.timeseries.kafka.avro.binary"
       ],
       "description": "Kafka endpoint for KiWIS timeseries metadata and values on the `kiwis` topic keyed by the configured KiWIS instance identifier and upstream ts_id."
     },
@@ -63,7 +67,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.kiwis.station.mqtt",
-        "#/messagegroups/org.kiwis.timeseries.mqtt"
+        "#/messagegroups/org.kiwis.timeseries.mqtt",
+        "#/messagegroups/org.kiwis.station.mqtt.avro",
+        "#/messagegroups/org.kiwis.station.mqtt.avro.binary",
+        "#/messagegroups/org.kiwis.timeseries.mqtt.avro",
+        "#/messagegroups/org.kiwis.timeseries.mqtt.avro.binary"
       ],
       "description": "MQTT 5 endpoint for generalized KiWIS CloudEvents using a hydrology Unified Namespace topic tree."
     },
@@ -86,7 +94,11 @@
       },
       "messagegroups": [
         "#/messagegroups/org.kiwis.station.amqp",
-        "#/messagegroups/org.kiwis.timeseries.amqp"
+        "#/messagegroups/org.kiwis.timeseries.amqp",
+        "#/messagegroups/org.kiwis.station.amqp.avro",
+        "#/messagegroups/org.kiwis.station.amqp.avro.binary",
+        "#/messagegroups/org.kiwis.timeseries.amqp.avro",
+        "#/messagegroups/org.kiwis.timeseries.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 endpoint for generalized KiWIS CloudEvents on a configured queue, topic, or event hub address."
     }
@@ -110,6 +122,10 @@
             "subject": {
               "value": "{kiwis_id}/{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -135,6 +151,10 @@
             "subject": {
               "value": "{kiwis_id}/{ts_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -155,6 +175,10 @@
             "subject": {
               "value": "{kiwis_id}/{ts_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -304,6 +328,302 @@
                 "value": "{kiwis_id}",
                 "description": "Configuration-assigned KiWIS instance identifier used by AMQP subscribers to filter a shared address by upstream instance."
               }
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.station.avro": {
+      "messagegroupid": "org.kiwis.station.avro",
+      "messages": {
+        "org.kiwis.Station": {
+          "messageid": "org.kiwis.Station",
+          "basemessage": "/messagegroups/org.kiwis.station/messages/org.kiwis.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station"
+        }
+      }
+    },
+    "org.kiwis.station.avro.binary": {
+      "messagegroupid": "org.kiwis.station.avro.binary",
+      "messages": {
+        "org.kiwis.Station": {
+          "messageid": "org.kiwis.Station",
+          "basemessage": "/messagegroups/org.kiwis.station/messages/org.kiwis.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.timeseries.avro": {
+      "messagegroupid": "org.kiwis.timeseries.avro",
+      "messages": {
+        "org.kiwis.Timeseries": {
+          "messageid": "org.kiwis.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries"
+        },
+        "org.kiwis.TimeseriesValue": {
+          "messageid": "org.kiwis.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue"
+        }
+      }
+    },
+    "org.kiwis.timeseries.avro.binary": {
+      "messagegroupid": "org.kiwis.timeseries.avro.binary",
+      "messages": {
+        "org.kiwis.Timeseries": {
+          "messageid": "org.kiwis.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.kiwis.TimeseriesValue": {
+          "messageid": "org.kiwis.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries/messages/org.kiwis.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.station.kafka.avro": {
+      "messagegroupid": "org.kiwis.station.kafka.avro",
+      "messages": {
+        "org.kiwis.station.kafka.Station": {
+          "messageid": "org.kiwis.station.kafka.Station",
+          "basemessage": "/messagegroups/org.kiwis.station.kafka/messages/org.kiwis.station.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station"
+        }
+      }
+    },
+    "org.kiwis.station.kafka.avro.binary": {
+      "messagegroupid": "org.kiwis.station.kafka.avro.binary",
+      "messages": {
+        "org.kiwis.station.kafka.Station": {
+          "messageid": "org.kiwis.station.kafka.Station",
+          "basemessage": "/messagegroups/org.kiwis.station.kafka/messages/org.kiwis.station.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.station.mqtt.avro": {
+      "messagegroupid": "org.kiwis.station.mqtt.avro",
+      "messages": {
+        "org.kiwis.station.mqtt.Station": {
+          "messageid": "org.kiwis.station.mqtt.Station",
+          "basemessage": "/messagegroups/org.kiwis.station.mqtt/messages/org.kiwis.station.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station"
+        }
+      }
+    },
+    "org.kiwis.station.mqtt.avro.binary": {
+      "messagegroupid": "org.kiwis.station.mqtt.avro.binary",
+      "messages": {
+        "org.kiwis.station.mqtt.Station": {
+          "messageid": "org.kiwis.station.mqtt.Station",
+          "basemessage": "/messagegroups/org.kiwis.station.mqtt/messages/org.kiwis.station.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.station.amqp.avro": {
+      "messagegroupid": "org.kiwis.station.amqp.avro",
+      "messages": {
+        "org.kiwis.station.amqp.Station": {
+          "messageid": "org.kiwis.station.amqp.Station",
+          "basemessage": "/messagegroups/org.kiwis.station.amqp/messages/org.kiwis.station.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station"
+        }
+      }
+    },
+    "org.kiwis.station.amqp.avro.binary": {
+      "messagegroupid": "org.kiwis.station.amqp.avro.binary",
+      "messages": {
+        "org.kiwis.station.amqp.Station": {
+          "messageid": "org.kiwis.station.amqp.Station",
+          "basemessage": "/messagegroups/org.kiwis.station.amqp/messages/org.kiwis.station.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.timeseries.kafka.avro": {
+      "messagegroupid": "org.kiwis.timeseries.kafka.avro",
+      "messages": {
+        "org.kiwis.timeseries.kafka.Timeseries": {
+          "messageid": "org.kiwis.timeseries.kafka.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.kafka/messages/org.kiwis.timeseries.kafka.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries"
+        },
+        "org.kiwis.timeseries.kafka.TimeseriesValue": {
+          "messageid": "org.kiwis.timeseries.kafka.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.kafka/messages/org.kiwis.timeseries.kafka.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue"
+        }
+      }
+    },
+    "org.kiwis.timeseries.kafka.avro.binary": {
+      "messagegroupid": "org.kiwis.timeseries.kafka.avro.binary",
+      "messages": {
+        "org.kiwis.timeseries.kafka.Timeseries": {
+          "messageid": "org.kiwis.timeseries.kafka.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.kafka/messages/org.kiwis.timeseries.kafka.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.kiwis.timeseries.kafka.TimeseriesValue": {
+          "messageid": "org.kiwis.timeseries.kafka.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.kafka/messages/org.kiwis.timeseries.kafka.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.timeseries.mqtt.avro": {
+      "messagegroupid": "org.kiwis.timeseries.mqtt.avro",
+      "messages": {
+        "org.kiwis.timeseries.mqtt.Timeseries": {
+          "messageid": "org.kiwis.timeseries.mqtt.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.mqtt/messages/org.kiwis.timeseries.mqtt.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries"
+        },
+        "org.kiwis.timeseries.mqtt.TimeseriesValue": {
+          "messageid": "org.kiwis.timeseries.mqtt.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.mqtt/messages/org.kiwis.timeseries.mqtt.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue"
+        }
+      }
+    },
+    "org.kiwis.timeseries.mqtt.avro.binary": {
+      "messagegroupid": "org.kiwis.timeseries.mqtt.avro.binary",
+      "messages": {
+        "org.kiwis.timeseries.mqtt.Timeseries": {
+          "messageid": "org.kiwis.timeseries.mqtt.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.mqtt/messages/org.kiwis.timeseries.mqtt.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.kiwis.timeseries.mqtt.TimeseriesValue": {
+          "messageid": "org.kiwis.timeseries.mqtt.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.mqtt/messages/org.kiwis.timeseries.mqtt.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.kiwis.timeseries.amqp.avro": {
+      "messagegroupid": "org.kiwis.timeseries.amqp.avro",
+      "messages": {
+        "org.kiwis.timeseries.amqp.Timeseries": {
+          "messageid": "org.kiwis.timeseries.amqp.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.amqp/messages/org.kiwis.timeseries.amqp.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries"
+        },
+        "org.kiwis.timeseries.amqp.TimeseriesValue": {
+          "messageid": "org.kiwis.timeseries.amqp.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.amqp/messages/org.kiwis.timeseries.amqp.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue"
+        }
+      }
+    },
+    "org.kiwis.timeseries.amqp.avro.binary": {
+      "messagegroupid": "org.kiwis.timeseries.amqp.avro.binary",
+      "messages": {
+        "org.kiwis.timeseries.amqp.Timeseries": {
+          "messageid": "org.kiwis.timeseries.amqp.Timeseries",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.amqp/messages/org.kiwis.timeseries.amqp.Timeseries",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.Timeseries",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.kiwis.timeseries.amqp.TimeseriesValue": {
+          "messageid": "org.kiwis.timeseries.amqp.TimeseriesValue",
+          "basemessage": "/messagegroups/org.kiwis.timeseries.amqp/messages/org.kiwis.timeseries.amqp.TimeseriesValue",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.kiwis.avro/schemas/org.kiwis.TimeseriesValue",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

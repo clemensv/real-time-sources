@@ -1,10 +1,10 @@
-# Hub'Eau Hydrometrie feeder Events
+# Hub'Eau Hydrometrie Events
 
 Hub'Eau Hydrométrie publishes water height and discharge observations from the French Eaufrance Hub'Eau hydrometry API for French hydrometric monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Event types:** 2 documented event types (18 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{code_station}` identifies the resource each event is about.
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{code_station}`. `{code_stat
 | --- | --- |
 | `KAFKA` | topic `hubeau-hydrometrie`, key `{code_station}` |
 | `MQTT/5.0` | topic `hydro/fr/hubeau/hubeau-hydrometrie/{basin}/{code_station}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/hubeau-hydrometrie`, message subject `{code_station}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/hubeau-hydrometrie`, message subject `{code_station}` |
 
 #### Payload
 
@@ -94,7 +94,7 @@ Each event identifies the real-world resource with `{code_station}`. `{code_stat
 - **`code_departement`** (string or null, optional): French department code for the station location.
 - **`en_service`** (boolean or null, optional): Whether Hub'Eau marks the station as currently in service.
 - **`date_ouverture_station`** (string or null, optional): Date when the station began operating, when the upstream catalog provides it.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -137,19 +137,19 @@ Each event identifies the real-world resource with `{code_station}`. `{code_stat
 | --- | --- |
 | `KAFKA` | topic `hubeau-hydrometrie`, key `{code_station}` |
 | `MQTT/5.0` | topic `hydro/fr/hubeau/hubeau-hydrometrie/{basin}/{code_station}/observation`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/hubeau-hydrometrie`, message subject `{code_station}`; application properties basin `{basin}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/hubeau-hydrometrie`, message subject `{code_station}` |
 
 #### Payload
 
-`Observation` payloads are JSON object. Required fields: `code_station`, `date_obs`, `resultat_obs`, `grandeur_hydro`.
+`Observation` payloads are JSON object. Required fields: `date_obs`, `resultat_obs`, `grandeur_hydro`.
 
-- **`code_station`** (string, required): Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations.
+- **`code_station`** (string or null, optional): Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations.
 - **`date_obs`** (datetime, required): Observation timestamp published by Hub'Eau for this measurement.
-- **`resultat_obs`** (double, required): Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height.
+- **`resultat_obs`** (double or string, required): Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height. The upstream Hub'Eau API may return this field as a string when the value is non-numeric.
 - **`grandeur_hydro`** (string, required): Hydrometric quantity code identifying what `resultat_obs` measures, such as discharge or water height.
 - **`libelle_methode_obs`** (string or null, optional): Provider label for the observation method used to produce the measurement.
 - **`libelle_qualification_obs`** (string or null, optional): Provider quality label describing how Hub'Eau qualifies the observation.
-- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie.
+- **`basin`** (string or null, optional): Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -183,7 +183,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -194,3 +198,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/hubeau_hydrometrie.xreg.json`](xreg/hubeau_hydrometrie.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
