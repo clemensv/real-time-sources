@@ -18,7 +18,6 @@ import time
 import logging
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
@@ -27,17 +26,17 @@ from nve_hydro.nve_hydro import (
     NVEHydroAPI,
     PARAM_DISCHARGE,
     PARAM_STAGE,
+    REFERENCE_REFRESH_SECONDS,
     _load_state,
+    _parse_datetime,
     _save_state,
-    _fetch_station_observations,
+    fetch_observation_batches,
     _station_has_parameter,
 )
 from nve_hydro_amqp_producer_data import Station, WaterLevelObservation
 from nve_hydro_amqp_producer_amqp_producer.producer import NONVEHydrologyAmqpProducer
 
 logger = logging.getLogger(__name__)
-
-MAX_WORKERS = 10
 
 _UNS_REPLACEMENTS = str.maketrans({
     "æ": "ae", "ø": "o", "å": "aa", "Æ": "ae", "Ø": "o", "Å": "aa",
@@ -64,16 +63,22 @@ def _uns_slug(value: str) -> str:
 
 
 def _build_station(s: Dict[str, Any]) -> Station:
+    masl = s.get("masl")
+    drainage_basin_area = s.get("drainageBasinArea")
     return Station(
         station_id=s.get("stationId", ""),
         station_name=s.get("stationName", "") or "",
-        river_name=s.get("riverName", "") or "",
+        river_name=s.get("riverName"),
         latitude=float(s.get("latitude", 0.0) or 0.0),
         longitude=float(s.get("longitude", 0.0) or 0.0),
-        masl=float(s.get("masl") or 0.0),
-        council_name=s.get("councilName", "") or "",
-        county_name=s.get("countyName", "") or "",
-        drainage_basin_area=float(s.get("drainageBasinArea") or 0.0),
+        masl=float(masl) if masl is not None else None,
+        council_name=s.get("councilName"),
+        county_name=s.get("countyName"),
+        drainage_basin_area=(
+            float(drainage_basin_area)
+            if drainage_basin_area is not None
+            else None
+        ),
     )
 
 
@@ -112,70 +117,86 @@ def _publish_observations(
         if params:
             station_params[sid] = params
 
-    loop = asyncio.get_running_loop()
     sent = 0
+    observations_by_station = fetch_observation_batches(api, station_params)
+    for sid, obs_by_param in observations_by_station.items():
+        if not obs_by_param:
+            continue
 
-    def fetch_one(sid: str):
-        return sid, _fetch_station_observations(api, sid, station_params[sid])
+        wl_val = None
+        wl_ts = ""
+        q_val = None
+        q_ts = ""
+        stage: Dict[str, Any] = {}
+        discharge: Dict[str, Any] = {}
+        if PARAM_STAGE in obs_by_param:
+            stage = obs_by_param[PARAM_STAGE]
+            wl_val = float(stage["value"])
+            wl_ts = stage.get("time", "")
+        if PARAM_DISCHARGE in obs_by_param:
+            discharge = obs_by_param[PARAM_DISCHARGE]
+            q_val = float(discharge["value"])
+            q_ts = discharge.get("time", "")
+        if wl_val is None and q_val is None:
+            continue
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = [loop.run_in_executor(executor, fetch_one, sid) for sid in station_params]
-        for fut in asyncio.as_completed(futures):
-            try:
-                sid, obs_by_param = fut
-            except Exception as exc:  # pylint: disable=broad-except
-                logger.debug("Error fetching observations: %s", exc)
-                continue
-            if not obs_by_param:
-                continue
+        reading_key = f"{sid}:{wl_ts}:{q_ts}"
+        if reading_key in previous_readings:
+            continue
 
-            wl_val = None
-            wl_ts = ""
-            q_val = None
-            q_ts = ""
-            if PARAM_STAGE in obs_by_param:
-                stage = obs_by_param[PARAM_STAGE]
-                wl_val = float(stage["value"])
-                wl_ts = stage.get("time", "")
-            if PARAM_DISCHARGE in obs_by_param:
-                discharge = obs_by_param[PARAM_DISCHARGE]
-                q_val = float(discharge["value"])
-                q_ts = discharge.get("time", "")
-            if wl_val is None and q_val is None:
-                continue
-
-            reading_key = f"{sid}:{wl_ts}:{q_ts}"
-            if reading_key in previous_readings:
-                continue
-
-            station = stations_by_id.get(sid) or {}
-            river_raw = station.get("riverName", "") or ""
-            river_slug = _uns_slug(river_raw)
-            try:
-                producer.send_water_level_observation(
-                    _station_id=sid,
-                    _river_name=river_slug,
-                    data=WaterLevelObservation(
-                        station_id=sid,
-                        river_name=river_raw,
-                        water_level=wl_val if wl_val is not None else 0.0,
-                        water_level_unit="m",
-                        water_level_timestamp=datetime.fromisoformat(wl_ts.replace("Z", "+00:00")) if wl_ts else None,
-                        discharge=q_val if q_val is not None else 0.0,
-                        discharge_unit="m3/s",
-                        discharge_timestamp=datetime.fromisoformat(q_ts.replace("Z", "+00:00")) if q_ts else None,
-                    ),
-                )
-                sent += 1
-                previous_readings[reading_key] = wl_ts or q_ts
-            except Exception as exc:  # pylint: disable=broad-except
-                logger.error("Error publishing observation for %s: %s", sid, exc)
+        station = stations_by_id.get(sid) or {}
+        river_raw = station.get("riverName", "") or ""
+        river_slug = _uns_slug(river_raw)
+        try:
+            producer.send_water_level_observation(
+                _station_id=sid,
+                _river_name=river_slug,
+                data=WaterLevelObservation(
+                    station_id=sid,
+                    river_name=river_raw,
+                    water_level=wl_val,
+                    water_level_unit=stage.get("unit") if wl_val is not None else None,
+                    water_level_timestamp=_parse_datetime(wl_ts),
+                    water_level_quality=stage.get("quality"),
+                    water_level_correction=stage.get("correction"),
+                    water_level_series_version=stage.get("series_version"),
+                    water_level_method=stage.get("method"),
+                    discharge=q_val,
+                    discharge_unit=discharge.get("unit") if q_val is not None else None,
+                    discharge_timestamp=_parse_datetime(q_ts),
+                    discharge_quality=discharge.get("quality"),
+                    discharge_correction=discharge.get("correction"),
+                    discharge_series_version=discharge.get("series_version"),
+                    discharge_method=discharge.get("method"),
+                ),
+            )
+            sent += 1
+            previous_readings[reading_key] = wl_ts or q_ts
+        except Exception as exc:  # pylint: disable=broad-except
+            logger.error("Error publishing observation for %s: %s", sid, exc)
     return sent
 
 
 def _publish_mock(producer: NONVEHydrologyAmqpProducer) -> None:
     station = Station(station_id="mock-station", station_name="Mock Station", river_name="Mock River", latitude=60.0, longitude=10.0, masl=100.0, council_name="Mock", county_name="Mock", drainage_basin_area=10.0)
-    observation = WaterLevelObservation(station_id="mock-station", river_name="Mock River", water_level=1.23, water_level_unit="m", water_level_timestamp=datetime.now(timezone.utc), discharge=12.3, discharge_unit="m3/s", discharge_timestamp=datetime.now(timezone.utc))
+    observation = WaterLevelObservation(
+        station_id="mock-station",
+        river_name="Mock River",
+        water_level=1.23,
+        water_level_unit="m",
+        water_level_timestamp=datetime.now(timezone.utc),
+        water_level_quality=2,
+        water_level_correction=0,
+        water_level_series_version=1,
+        water_level_method="Instantaneous",
+        discharge=12.3,
+        discharge_unit="m³/s",
+        discharge_timestamp=datetime.now(timezone.utc),
+        discharge_quality=2,
+        discharge_correction=0,
+        discharge_series_version=1,
+        discharge_method="Instantaneous",
+    )
     producer.send_station(data=station, _station_id="mock-station", _river_name="mock-river")
     producer.send_water_level_observation(data=observation, _station_id="mock-station", _river_name="mock-river")
 
@@ -212,6 +233,7 @@ def feed(
     logger.info("Publishing %d station info events under hydro/no/nve/nve-hydro/...", len(stations))
     stations_by_id = _publish_stations(producer, stations)
     logger.info("Finished publishing station catalog")
+    last_station_refresh = time.monotonic()
 
     try:
         while True:
@@ -225,6 +247,11 @@ def feed(
                 if once:
                     logger.info("--once mode: exiting after first polling cycle")
                     break
+                if time.monotonic() - last_station_refresh >= REFERENCE_REFRESH_SECONDS:
+                    refreshed = api.get_stations()
+                    stations_by_id = _publish_stations(producer, refreshed)
+                    last_station_refresh = time.monotonic()
+                    logger.info("Refreshed %d station info events", len(stations_by_id))
                 if effective > 0:
                     time.sleep(effective)
             except KeyboardInterrupt:
@@ -243,6 +270,8 @@ DEFAULT_ENTRA_AUDIENCE_EVENTHUBS = "https://eventhubs.azure.net/.default"
 
 
 def _build_producer(*, host: str, port: int, address: str, use_tls: bool, content_mode: str, auth_mode: str, username: Optional[str], password: Optional[str], entra_audience: str, entra_client_id: Optional[str], sas_key_name: Optional[str], sas_key: Optional[str]) -> NONVEHydrologyAmqpProducer:
+    # WORKAROUND(xregistry/codegen#638): xrcg defaults generated producers to
+    # structured mode even when the selected endpoint declares binary mode.
     if auth_mode == "entra":
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
         credential = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()

@@ -3,6 +3,7 @@
 import json
 import os
 import pytest
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 from nve_hydro.nve_hydro import (
@@ -10,8 +11,10 @@ from nve_hydro.nve_hydro import (
     parse_connection_string,
     _load_state,
     _save_state,
+    _parse_datetime,
     _station_has_parameter,
     _fetch_station_observations,
+    _build_observation_batches,
     send_stations,
     feed_observations,
     NVE_BASE_URL,
@@ -61,9 +64,14 @@ SAMPLE_STATION_2 = {
 SAMPLE_OBSERVATIONS_STAGE = {
     "data": [
         {
+            "stationId": "2.11.0",
+            "parameter": PARAM_STAGE,
+            "serieVersionNo": 1,
+            "method": "Instantaneous",
+            "unit": "m",
             "observations": [
-                {"time": "2023-11-14T12:00:00Z", "value": 1.23},
-                {"time": "2023-11-14T13:00:00Z", "value": 1.45},
+                {"time": "2023-11-14T12:00:00Z", "value": 1.23, "correction": 0, "quality": 1},
+                {"time": "2023-11-14T13:00:00Z", "value": 1.45, "correction": 2, "quality": 2},
             ]
         }
     ]
@@ -72,12 +80,26 @@ SAMPLE_OBSERVATIONS_STAGE = {
 SAMPLE_OBSERVATIONS_DISCHARGE = {
     "data": [
         {
+            "stationId": "2.11.0",
+            "parameter": PARAM_DISCHARGE,
+            "serieVersionNo": 3,
+            "method": "Instantaneous",
+            "unit": "m³/s",
             "observations": [
-                {"time": "2023-11-14T12:00:00Z", "value": 45.6},
+                {"time": "2023-11-14T12:00:00Z", "value": 45.6, "correction": 0, "quality": 3},
             ]
         }
     ]
 }
+
+
+def _batched_observations(parameters):
+    result = []
+    if PARAM_STAGE in parameters:
+        result.extend(SAMPLE_OBSERVATIONS_STAGE["data"])
+    if PARAM_DISCHARGE in parameters:
+        result.extend(SAMPLE_OBSERVATIONS_DISCHARGE["data"])
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -147,6 +169,11 @@ class TestStateHelpers:
         _save_state(path, {"x": "y"})
         assert os.path.exists(path)
 
+    def test_parse_datetime_accepts_utc_z_suffix(self):
+        parsed = _parse_datetime("2026-09-23T06:00:00Z")
+        assert parsed is not None
+        assert parsed.isoformat() == "2026-09-23T06:00:00+00:00"
+
 
 # ---------------------------------------------------------------------------
 # _station_has_parameter helper
@@ -165,6 +192,16 @@ class TestStationHasParameter:
     def test_empty_series_list(self):
         st = {"seriesList": []}
         assert _station_has_parameter(st, PARAM_STAGE) is False
+
+
+class TestObservationBatches:
+    def test_batches_do_not_exceed_ten_series(self):
+        station_params = {
+            f"station-{index}": [PARAM_STAGE, PARAM_DISCHARGE]
+            for index in range(12)
+        }
+        batches = _build_observation_batches(station_params)
+        assert [len(batch) for batch in batches] == [5, 5, 2]
 
     def test_none_series_list(self):
         st = {"seriesList": None}
@@ -293,10 +330,18 @@ class TestDataClasses:
             river_name="Vosso",
             water_level=1.45,
             water_level_unit="m",
-            water_level_timestamp="2023-11-14T13:00:00Z",
+            water_level_timestamp=datetime.fromisoformat("2023-11-14T13:00:00+00:00"),
+            water_level_quality=2,
+            water_level_correction=0,
+            water_level_series_version=1,
+            water_level_method="Instantaneous",
             discharge=45.6,
-            discharge_unit="m3/s",
-            discharge_timestamp="2023-11-14T12:00:00Z",
+            discharge_unit="m³/s",
+            discharge_timestamp=datetime.fromisoformat("2023-11-14T12:00:00+00:00"),
+            discharge_quality=3,
+            discharge_correction=0,
+            discharge_series_version=3,
+            discharge_method="Instantaneous",
         )
         assert obs.station_id == "2.11.0"
         data = json.loads(obs.to_json())
@@ -313,6 +358,7 @@ class TestSendStations:
     def _mock_producer(self):
         p = MagicMock(spec=NONVEHydrologyEventProducer)
         p.producer = MagicMock()
+        p.producer.flush.return_value = 0
         return p
 
     @patch.object(NVEHydroAPI, "get_stations")
@@ -348,6 +394,20 @@ class TestSendStations:
         assert station_params == {}
         assert station_river == {}
 
+    @patch.object(NVEHydroAPI, "get_stations")
+    def test_flushes_station_events_in_hundred_record_chunks(self, mock_gs):
+        mock_gs.return_value = [
+            {**SAMPLE_STATION_1, "stationId": f"station-{index}"}
+            for index in range(101)
+        ]
+        api = NVEHydroAPI("key")
+        prod = self._mock_producer()
+
+        send_stations(api, prod)
+
+        assert prod.send_no_nve_hydrology_station.call_count == 101
+        assert prod.producer.flush.call_count == 2
+
 
 # ---------------------------------------------------------------------------
 # feed_observations
@@ -357,17 +417,12 @@ class TestFeedObservations:
     def _mock_producer(self):
         p = MagicMock(spec=NONVEHydrologyEventProducer)
         p.producer = MagicMock()
+        p.producer.flush.return_value = 0
         return p
 
     @patch.object(NVEHydroAPI, "get_observations")
     def test_sends_new_observations(self, mock_obs):
-        def side_effect(sid, param):
-            if param == PARAM_STAGE:
-                return SAMPLE_OBSERVATIONS_STAGE["data"]
-            if param == PARAM_DISCHARGE:
-                return SAMPLE_OBSERVATIONS_DISCHARGE["data"]
-            return []
-        mock_obs.side_effect = side_effect
+        mock_obs.side_effect = lambda station_ids, parameters: _batched_observations(parameters)
 
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
@@ -381,9 +436,7 @@ class TestFeedObservations:
 
     @patch.object(NVEHydroAPI, "get_observations")
     def test_deduplicates(self, mock_obs):
-        mock_obs.side_effect = lambda sid, param: (
-            SAMPLE_OBSERVATIONS_STAGE["data"] if param == PARAM_STAGE else []
-        )
+        mock_obs.side_effect = lambda station_ids, parameters: _batched_observations(parameters)
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
         station_params = {"2.11.0": [PARAM_STAGE]}
@@ -392,8 +445,88 @@ class TestFeedObservations:
         feed_observations(api, prod, station_params, station_river, previous)
         prod.reset_mock()
         prod.producer = MagicMock()
+        prod.producer.flush.return_value = 0
         count = feed_observations(api, prod, station_params, station_river, previous)
         assert count == 0
+
+    @patch.object(NVEHydroAPI, "get_observations")
+    def test_stage_only_observation_keeps_discharge_fields_null(self, mock_obs):
+        mock_obs.side_effect = lambda station_ids, parameters: _batched_observations(parameters)
+        api = NVEHydroAPI("key")
+        prod = self._mock_producer()
+
+        count = feed_observations(
+            api,
+            prod,
+            {"2.11.0": [PARAM_STAGE]},
+            {"2.11.0": "Vosso"},
+            {},
+        )
+
+        assert count == 1
+        data = prod.send_no_nve_hydrology_water_level_observation.call_args.kwargs["data"]
+        assert data.water_level == 1.45
+        assert data.water_level_unit == "m"
+        assert data.water_level_quality == 2
+        assert data.water_level_correction == 2
+        assert data.water_level_series_version == 1
+        assert data.water_level_method == "Instantaneous"
+        assert data.discharge is None
+        assert data.discharge_unit is None
+        assert data.discharge_timestamp is None
+        assert data.discharge_quality is None
+        assert data.discharge_correction is None
+        assert data.discharge_series_version is None
+        assert data.discharge_method is None
+
+    @patch.object(NVEHydroAPI, "get_observations")
+    def test_discharge_only_observation_keeps_water_level_fields_null(self, mock_obs):
+        mock_obs.side_effect = lambda station_ids, parameters: _batched_observations(parameters)
+        api = NVEHydroAPI("key")
+        prod = self._mock_producer()
+
+        count = feed_observations(
+            api,
+            prod,
+            {"2.11.0": [PARAM_DISCHARGE]},
+            {"2.11.0": "Vosso"},
+            {},
+        )
+
+        assert count == 1
+        data = prod.send_no_nve_hydrology_water_level_observation.call_args.kwargs["data"]
+        assert data.water_level is None
+        assert data.water_level_unit is None
+        assert data.water_level_timestamp is None
+        assert data.water_level_quality is None
+        assert data.water_level_correction is None
+        assert data.water_level_series_version is None
+        assert data.water_level_method is None
+        assert data.discharge == 45.6
+        assert data.discharge_unit == "m³/s"
+        assert data.discharge_quality == 3
+        assert data.discharge_correction == 0
+        assert data.discharge_series_version == 3
+        assert data.discharge_method == "Instantaneous"
+
+    @patch.object(NVEHydroAPI, "get_observations")
+    def test_flush_failure_does_not_advance_dedupe_state(self, mock_obs):
+        mock_obs.side_effect = lambda station_ids, parameters: _batched_observations(parameters)
+        api = NVEHydroAPI("key")
+        prod = self._mock_producer()
+        prod.producer.flush.return_value = 1
+        previous = {}
+
+        with pytest.raises(RuntimeError, match="Kafka flush failed"):
+            feed_observations(
+                api,
+                prod,
+                {"2.11.0": [PARAM_STAGE, PARAM_DISCHARGE]},
+                {"2.11.0": "Vosso"},
+                previous,
+            )
+
+        assert previous == {}
 
     @patch.object(NVEHydroAPI, "get_observations")
     def test_empty_observations(self, mock_obs):
@@ -428,8 +561,12 @@ class TestProducerClient:
             station_id="2.11.0",
             river_name="Vosso",
             water_level=1.45, water_level_unit="m",
-            water_level_timestamp="2023-11-14T13:00:00Z",
-            discharge=None, discharge_unit="m3/s", discharge_timestamp="",
+            water_level_timestamp=datetime.fromisoformat("2023-11-14T13:00:00+00:00"),
+            water_level_quality=2, water_level_correction=0,
+            water_level_series_version=1, water_level_method="Instantaneous",
+            discharge=None, discharge_unit=None, discharge_timestamp=None,
+            discharge_quality=None, discharge_correction=None,
+            discharge_series_version=None, discharge_method=None,
         )
         prod.send_no_nve_hydrology_water_level_observation("2.11.0", obs)
         mock_kafka.produce.assert_called_once()

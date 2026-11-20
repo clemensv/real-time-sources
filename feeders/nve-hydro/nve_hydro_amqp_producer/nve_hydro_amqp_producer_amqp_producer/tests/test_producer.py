@@ -5,6 +5,7 @@
 Tests for nve_hydro_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../nve_hydro_amqp_producer_data/src')))
@@ -25,9 +27,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from nve_hydro_amqp_producer_amqp_producer import *
 from nve_hydro_amqp_producer_data import Station
-from test_nve_hydro_amqp_producer_data_station import Test_Station
+from test_station import Test_Station
 from nve_hydro_amqp_producer_data import WaterLevelObservation
-from test_nve_hydro_amqp_producer_data_waterlevelobservation import Test_WaterLevelObservation
+from test_waterlevelobservation import Test_WaterLevelObservation
 
 
 
@@ -110,38 +112,38 @@ ARTEMIS_BROKER_XML = """<?xml version='1.0'?>
 @pytest.fixture(scope="module")
 def amqp_broker():
     """Create and start an AMQP broker container for testing.
-    
+
     Uses ActiveMQ Artemis by default.
     Set AMQP_BROKER=rabbitmq environment variable to test with RabbitMQ.
     Set RABBITMQ_VERSION=3 or RABBITMQ_VERSION=4 to choose RabbitMQ version (default: 4).
     """
     broker_type = os.environ.get("AMQP_BROKER", "artemis").lower()
-    
+
     if broker_type == "rabbitmq":
         rabbitmq_version = os.environ.get("RABBITMQ_VERSION", "4")
         image_tag = "3-management" if rabbitmq_version == "3" else "4-management"
-        
+
         container = DockerContainer(f"rabbitmq:{image_tag}")
         container.with_bind_ports(5672, 5672)
         container.with_bind_ports(15672, 15672)
         container.with_env("RABBITMQ_DEFAULT_USER", "guest")
         container.with_env("RABBITMQ_DEFAULT_PASS", "guest")
         container.with_exposed_ports(5672, 15672)
-        
+
         # RabbitMQ 3.x requires AMQP 1.0 plugin, RabbitMQ 4.0+ has native support
         if rabbitmq_version == "3":
             container.with_command(
-                "bash", "-c", 
+                "bash", "-c",
                 "rabbitmq-plugins enable rabbitmq_amqp1_0 && docker-entrypoint.sh rabbitmq-server"
             )
-        
+
         container.start()
         # Wait for RabbitMQ to be ready
         wait_for_logs(container, "Server startup complete", timeout=120)
         host = container.get_container_host_ip()
         if rabbitmq_version != "3":
             _declare_rabbitmq_queue(host, int(container.get_exposed_port(15672)), "test-queue")
-        
+
         yield {
             "host": host,
             "port": int(container.get_exposed_port(5672)),
@@ -149,7 +151,7 @@ def amqp_broker():
             "password": "guest",
             "address": _rabbitmq_queue_address("test-queue")
         }
-        
+
         container.stop()
     else:
         # Default: ActiveMQ Artemis
@@ -157,7 +159,7 @@ def amqp_broker():
         with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as f:
             f.write(ARTEMIS_BROKER_XML)
             config_file = f.name
-        
+
         try:
             container = DockerContainer("apache/activemq-artemis:latest")
             container.with_bind_ports(5672, 5672)
@@ -165,12 +167,12 @@ def amqp_broker():
             container.with_env("ARTEMIS_PASSWORD", "guest")
             container.with_volume_mapping(config_file, "/var/lib/artemis-instance/etc-override/broker.xml")
             container.with_exposed_ports(5672)
-            
+
             # Wait for Artemis to be ready
             container.start()
             # Wait for broker to log that it's ready (AMQ241004 = "Artemis Server is now live")
             wait_for_logs(container, "AMQ241004", timeout=60)
-            
+
             yield {
                 "host": container.get_container_host_ip(),
                 "port": int(container.get_exposed_port(5672)),
@@ -178,7 +180,7 @@ def amqp_broker():
                 "password": "guest",
                 "address": "test-queue"
             }
-            
+
             container.stop()
         finally:
             if os.path.exists(config_file):
@@ -217,7 +219,7 @@ def _receive_single_message(config: dict, timeout: int = 30):
 
 class TestNONVEHydrologyAmqpProducer:
     """Test cases for NONVEHydrologyAmqpProducer"""
-    
+
     def test_producer_initialization(self, artemis_container):
         """Test that producer initializes correctly"""
         producer = NONVEHydrologyAmqpProducer(
@@ -233,7 +235,46 @@ class TestNONVEHydrologyAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
-    
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(NONVEHydrologyAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
+
     def test_send_station(self, artemis_container):
         """Send and receive a Station message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
@@ -247,7 +288,7 @@ class TestNONVEHydrologyAmqpProducer:
             password=artemis_container["password"],
             content_mode='structured'
         )
-        
+
         try:
             assert producer.host == artemis_container["host"]
             assert producer.address == artemis_container["address"]
@@ -260,6 +301,7 @@ class TestNONVEHydrologyAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _river_name="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -267,6 +309,7 @@ class TestNONVEHydrologyAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -281,7 +324,7 @@ class TestNONVEHydrologyAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NO.NVE.Hydrology.amqp.Station"
+                    assert cloud_event_payload.get("type") == "NO.NVE.Hydrology.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -291,7 +334,39 @@ class TestNONVEHydrologyAmqpProducer:
                 assert properties.get('river_name') == "{river_name}".format(river_name="value")
         finally:
             producer.close()
-    
+
+    def test_send_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one Station message on a fresh producer connection."""
+        payload = Test_Station.create_instance()
+
+        producer = NONVEHydrologyAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_station(
+                data=payload,
+                _station_id="value",
+                _river_name="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NO.NVE.Hydrology.Station'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('river_name') == "{river_name}".format(river_name="value")
+
     def test_send_water_level_observation(self, artemis_container):
         """Send and receive a WaterLevelObservation message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
@@ -305,7 +380,7 @@ class TestNONVEHydrologyAmqpProducer:
             password=artemis_container["password"],
             content_mode='structured'
         )
-        
+
         try:
             assert producer.host == artemis_container["host"]
             assert producer.address == artemis_container["address"]
@@ -318,6 +393,7 @@ class TestNONVEHydrologyAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _river_name="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -325,6 +401,7 @@ class TestNONVEHydrologyAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -339,7 +416,7 @@ class TestNONVEHydrologyAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NO.NVE.Hydrology.amqp.WaterLevelObservation"
+                    assert cloud_event_payload.get("type") == "NO.NVE.Hydrology.WaterLevelObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -349,4 +426,36 @@ class TestNONVEHydrologyAmqpProducer:
                 assert properties.get('river_name') == "{river_name}".format(river_name="value")
         finally:
             producer.close()
+
+    def test_send_water_level_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one WaterLevelObservation message on a fresh producer connection."""
+        payload = Test_WaterLevelObservation.create_instance()
+
+        producer = NONVEHydrologyAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_water_level_observation(
+                data=payload,
+                _station_id="value",
+                _river_name="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NO.NVE.Hydrology.WaterLevelObservation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('river_name') == "{river_name}".format(river_name="value")
 

@@ -13,12 +13,14 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 
 
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Station:
     """
     Reference details for one monitoring station or site in the NVE Hydrology source.
-    
+
     Attributes:
         station_id (str)
         station_name (str)
@@ -30,8 +32,9 @@ class Station:
         county_name (typing.Optional[str])
         drainage_basin_area (typing.Optional[float])
     """
-    
-    
+
+
+
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     river_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river_name"))
@@ -42,14 +45,15 @@ class Station:
     county_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="county_name"))
     drainage_basin_area: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="drainage_basin_area"))
 
+
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
         """
         Converts a dictionary to a dataclass instance.
-        
+
         Args:
             data: The dictionary to convert to a dataclass.
-        
+
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -68,7 +72,7 @@ class Station:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -80,7 +84,7 @@ class Station:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-        
+
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -89,17 +93,21 @@ class Station:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.        
+            The byte array representation of the dataclass.
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -119,10 +127,10 @@ class Station:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Station']:
         """
         Converts the data to a dataclass based on the content type string.
-        
+
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to. 
+            content_type_string: The content type string to convert the data to.
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -146,7 +154,7 @@ class Station:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -156,24 +164,25 @@ class Station:
                 return Station.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
     def create_instance(cls) -> 'Station':
         """
         Creates an instance of the dataclass with test values.
-        
+
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            station_id='luvebqcmuknlpdvxiqhg',
-            station_name='gwhwsghepyxezcjuhnzn',
-            river_name='xoudqoryhmfwhuhrrzor',
-            latitude=float(6.750218104537497),
-            longitude=float(12.153710008278418),
-            masl=float(12.673408608737248),
-            council_name='ufmovaowspcabzhjmfwj',
-            county_name='dgjzhilhcclrbmsphivk',
-            drainage_basin_area=float(12.76421742632473)
+            station_id='xhyakcjgyhpfolxfekxc',
+            station_name='cregifjaomzwufpxwpua',
+            river_name='cmnvcpgwtiosljibjpqg',
+            latitude=float(76.4609631605764),
+            longitude=float(77.32447692593594),
+            masl=float(11.744657108979217),
+            council_name='bcevlbskllkakmnuedgw',
+            county_name='zopyovsedjsspkvkcxiv',
+            drainage_basin_area=float(44.86763058884327)
         )
