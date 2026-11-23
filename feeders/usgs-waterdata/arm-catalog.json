@@ -1,0 +1,97 @@
+{
+  "feeders": [
+    {
+      "slug": "usgs-waterdata",
+      "namePrefix": "usgs-waterdata",
+      "eventHubName": "usgs-waterdata",
+      "queueName": "usgs-waterdata",
+      "mqttTopicRoot": "hydro/us/usgs/waterdata/#",
+      "emptyTemplates": [
+        "feeders\\usgs-waterdata\\azure-template.json",
+        "feeders\\usgs-waterdata\\azure-template-with-eventhub.json",
+        "feeders\\usgs-waterdata\\azure-template-mqtt.json",
+        "feeders\\usgs-waterdata\\azure-template-with-eventgrid-mqtt.json",
+        "feeders\\usgs-waterdata\\azure-template-amqp.json",
+        "feeders\\usgs-waterdata\\azure-template-with-servicebus.json"
+      ],
+      "envVars": [
+        {
+          "name": "LOG_LEVEL",
+          "armParamName": "logLevel",
+          "default": "INFO",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "USER_AGENT",
+          "armParamName": "userAgent",
+          "default": "real-time-sources-usgs-waterdata/0.1.0",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "ONCE_MODE",
+          "armParamName": "onceMode",
+          "default": "false",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "POLLING_INTERVAL",
+          "armParamName": "pollingInterval",
+          "default": "300",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "USGS_WATERDATA_SITES",
+          "armParamName": "usgsWaterdataSites",
+          "default": "USGS-01646500",
+          "isRequired": false,
+          "isSecret": false,
+          "description": "Comma-separated monitoring-location IDs; numeric USGS site numbers are prefixed with USGS-."
+        },
+        {
+          "name": "USGS_WATERDATA_PARAMETERS",
+          "armParamName": "usgsWaterdataParameters",
+          "default": "00010,00060",
+          "isRequired": false,
+          "isSecret": false,
+          "description": "Five-digit parameter codes; empty selects all continuous parameters at the sites."
+        },
+        {
+          "name": "USGS_WATERDATA_LOOKBACK_HOURS",
+          "armParamName": "usgsWaterdataLookbackHours",
+          "default": "2",
+          "isRequired": false,
+          "isSecret": false,
+          "description": "Recent observation-time window. First run starts here; subsequent runs also query corrections without an observation-time limit."
+        },
+        {
+          "name": "USGS_WATERDATA_REFERENCE_INTERVAL",
+          "armParamName": "usgsWaterdataReferenceInterval",
+          "default": "86400",
+          "isRequired": false,
+          "isSecret": false,
+          "description": "Seconds between acknowledged full reference refreshes. The series endpoint updates at most daily."
+        },
+        {
+          "name": "USGS_WATERDATA_OVERLAP_SECONDS",
+          "armParamName": "usgsWaterdataOverlapSeconds",
+          "default": "300",
+          "isRequired": false,
+          "isSecret": false,
+          "description": "Overlap on incremental last_modified correction windows."
+        },
+        {
+          "name": "USGS_API_KEY",
+          "armParamName": "usgsApiKey",
+          "default": "",
+          "isRequired": false,
+          "isSecret": true,
+          "description": "Optional USGS API gateway key, sent only to the allowed API host. Secret."
+        }
+      ]
+    }
+  ]
+}

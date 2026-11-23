@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1.6
 FROM python:3.10-slim
+ARG PIP_INDEX_URL=https://pypi.org/simple
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/usgs-iv"
 LABEL org.opencontainers.image.title="USGS Instantaneous Values → MQTT/UNS bridge"
@@ -7,6 +8,7 @@ LABEL org.opencontainers.image.description="Polls USGS instantaneous values and 
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-iv/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 LABEL source.transport="mqtt"
+LABEL com.azure.containerizationassist.createdby="containerization-assist"
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
@@ -15,7 +17,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 
 COPY . /app
 
-RUN pip install --no-cache-dir confluent-kafka \
+RUN pip install --no-cache-dir ./vendor/*.whl \
+ && pip install --no-cache-dir confluent-kafka \
  && pip install --no-cache-dir ./usgs_iv_mqtt_producer/usgs_iv_mqtt_producer_data \
  && pip install --no-cache-dir ./usgs_iv_mqtt_producer/usgs_iv_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./usgs_iv_producer/usgs_iv_producer_data \
@@ -30,4 +33,7 @@ ENV MQTT_BROKER_URL=""
 # never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
 RUN python -c "import importlib, importlib.util as _u; _m = 'usgs_iv_mqtt'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
 
+RUN useradd -m -u 10001 appuser
+USER appuser
+HEALTHCHECK CMD python -c "import os; os.kill(1, 0)"
 CMD ["python", "-m", "usgs_iv_mqtt", "feed"]

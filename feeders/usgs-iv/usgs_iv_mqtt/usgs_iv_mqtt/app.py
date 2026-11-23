@@ -15,9 +15,11 @@ import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
 from usgs_iv.usgs_iv import USGSDataPoller
+from .delivery import PublishAcknowledgements
 from usgs_iv_mqtt_producer_mqtt_client.client import (
     USGSInstantaneousValuesMqttMqttClient,
     USGSSitesMqttMqttClient,
+    USGSSiteTimeseriesMqttMqttClient,
 )
 import json
 
@@ -66,10 +68,11 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
 logger = logging.getLogger(__name__)
 
 class _MqttProducerAdapter:
-    def __init__(self, client: Any, prefix: str):
+    def __init__(self, client: Any, prefix: str, acknowledgements: Optional[PublishAcknowledgements] = None):
         self.producer = self
         self._client = client
         self._prefix = prefix
+        self._acknowledgements = acknowledgements
         self._tasks: set[asyncio.Task[None]] = set()
         self._failures: list[BaseException] = []
         self._semaphore = asyncio.Semaphore(64)
@@ -78,6 +81,8 @@ class _MqttProducerAdapter:
         if not name.startswith("send_"):
             raise AttributeError(name)
         publish_name = name.replace("send_", "publish_").replace(self._prefix, f"{self._prefix}mqtt_")
+        if name == "send_usgs_sites_site_timeseries":
+            publish_name = "publish_usgs_site_timeseries_mqtt_site_timeseries"
         publish: Callable[..., Awaitable[None]] = getattr(self._client, publish_name)
 
         async def _publish_with_limit(**kwargs: Any) -> None:
@@ -109,15 +114,17 @@ class _MqttProducerAdapter:
             self._failures.append(exc)
             logger.exception("MQTT publish failed", exc_info=exc)
 
-    def flush(self) -> Awaitable[None]:
-        return self.drain()
+    def flush(self, timeout=120) -> Awaitable[None]:
+        return self.drain(timeout)
 
-    async def drain(self) -> None:
+    async def drain(self, timeout: float = 120) -> None:
         while self._tasks:
             pending = list(self._tasks)
             await asyncio.gather(*pending, return_exceptions=True)
         if self._failures:
             raise RuntimeError("one or more MQTT publishes failed") from self._failures[0]
+        if self._acknowledgements is not None:
+            await self._acknowledgements.flush_publishes(timeout)
 
 async def feed(
     poller: USGSDataPoller,
@@ -132,6 +139,7 @@ async def feed(
 ) -> None:
     site_client_id = f"{client_id or 'usgs-iv'}-sites"
     values_client_id = f"{client_id or 'usgs-iv'}-values"
+    timeseries_client_id = f"{client_id or 'usgs-iv'}-timeseries"
     _, site_username, site_password, _entra_props = _resolve_mqtt_connection_settings(
         username=username,
         password=password or "",
@@ -156,6 +164,19 @@ async def feed(
         values_paho.tls_set()
     site_client = USGSSitesMqttMqttClient(client=site_paho, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
     values_client = USGSInstantaneousValuesMqttMqttClient(client=values_paho, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
+    ts_paho = mqtt.Client(client_id=timeseries_client_id, callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if _entra_props is None and (site_username or site_password):
+        ts_paho.username_pw_set(site_username, site_password)
+    if tls or _entra_props is not None:
+        ts_paho.tls_set()
+    ts_client = USGSSiteTimeseriesMqttMqttClient(client=ts_paho, content_mode=content_mode, loop=asyncio.get_running_loop())  # type: ignore[arg-type]
+    acknowledgements = []
+    # WORKAROUND(xregistry/codegen#700): frozen publishers discard PUBACK reasons.
+    for raw in (site_paho, values_paho, ts_paho):
+        tracker = PublishAcknowledgements(raw.publish)
+        setattr(raw, "publish", tracker.publish)
+        raw.on_publish = tracker.on_publish
+        acknowledgements.append(tracker)
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
         import paho.mqtt.properties as _mqtt_props_mod
@@ -165,20 +186,26 @@ async def feed(
         _vals_props = _EP(_PKT.CONNECT); _vals_props.AuthenticationMethod = "OAUTH2-JWT"; _vals_props.AuthenticationData = _entra_props.AuthenticationData
         site_paho.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_site_props); site_paho.loop_start()
         values_paho.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_vals_props); values_paho.loop_start()
+        ts_paho.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_site_props); ts_paho.loop_start()
     else:
         await site_client.connect(broker_host, broker_port)
         await values_client.connect(broker_host, broker_port)
-    site_adapter = _MqttProducerAdapter(site_client, "usgs_sites_")
-    values_adapter = _MqttProducerAdapter(values_client, "usgs_instantaneous_values_")
+        await ts_client.connect(broker_host, broker_port)
+    site_adapter = _MqttProducerAdapter(site_client, "usgs_sites_", acknowledgements[0])
+    values_adapter = _MqttProducerAdapter(values_client, "usgs_instantaneous_values_", acknowledgements[1])
     poller.site_producer = site_adapter
     poller.values_producer = values_adapter
+    ts_adapter = _MqttProducerAdapter(ts_client, "usgs_sites_", acknowledgements[2])
+    poller.timeseries_producer = ts_adapter
     try:
         await poller.poll_and_send()
         await site_adapter.drain()
         await values_adapter.drain()
+        await ts_adapter.drain()
     finally:
         await site_client.disconnect()
         await values_client.disconnect()
+        await ts_client.disconnect()
 
 def _parse_broker_url(url: str) -> tuple[str, int, bool]:
     parsed = urlparse(url if "://" in url else f"mqtt://{url}")

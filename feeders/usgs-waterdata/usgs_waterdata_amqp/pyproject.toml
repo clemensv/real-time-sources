@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usgs-waterdata-amqp"
+dynamic = ["version"]
+description = "Native USGS Water Data AMQP 1.0 CloudEvents publisher"
+requires-python = ">=3.10,<4.0"
+dependencies = ["usgs-waterdata", "azure-identity>=1.17", "python-qpid-proton>=0.40", "usgs-waterdata-amqp-producer-data", "usgs-waterdata-amqp-producer-amqp-producer"]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["usgs_waterdata_amqp"]

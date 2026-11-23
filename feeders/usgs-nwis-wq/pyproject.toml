@@ -16,6 +16,7 @@ authors = [
 ]
 requires-python = "<4.0,>=3.10"
 dependencies = [
+    "usgs-waterdata-core>=0.1.0,<2.0.0",
     "aiohttp>=3.14.1",
     "asyncio>=3.4.3",
     "avro>=1.12.1,<2.0.0",
@@ -30,6 +31,7 @@ usgs-nwis-wq = "usgs_nwis_wq.usgs_nwis_wq:main"
 
 [project.optional-dependencies]
 dev = [
+    "json-structure>=0.8.0",
     "flake8>=7.1.1",
     "mypy>=1.11.2",
     "pylint>=3.2.7",

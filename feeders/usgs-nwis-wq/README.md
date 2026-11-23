@@ -30,11 +30,40 @@
 
 This feeder turns the upstream USGS NWIS Water Quality hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+> **Continuous sensors, not laboratory samples:** this bridge acquires continuous observations from USGS IV/Water Data. Legacy acquisition remains default until retirement. The opt-in transitional path preserves the existing WQ event contract on Kafka, MQTT and AMQP. Use the [native Water Data feeder](../usgs-waterdata/README.md) for new or unmapped series.
+
+## Schema-stable transitional acquisition
+
+Set `USGS_API_MODE=waterdata`, `USGS_SITES`, `USGS_PARAMETERS`, and
+`USGS_ENROLLMENT_FILE`. Mount an explicitly reviewed operator enrollment from
+outside the checkout. The [synthetic example](enrollment/synthetic-example.json)
+documents the file shape for offline tests; its invented identities do not
+approve any live station. Review actual mappings against legacy RDB identities
+and paired timestamp/value evidence outside Git. Future candidates require
+their own review. Production site fields remain historical WaterML snapshots
+with capture provenance, not invented replacements for discontinued metadata.
+
+All transports use the same live acquisition and WQ projection; MQTT does not
+emit mock data. MonitoringSite precedes WaterQualityReading. Optional fields
+that are absent are omitted rather than serialized as `null`, as required by
+the frozen WQ schema. Existing source/type/subject/key and transport routing
+remain unchanged. Unenrolled selected series or unsupported metadata fail
+with an enrollment error rather than disappearing from the feed.
+
+Fixed two-hour `last_modified` queries find updates; the historical two-hour
+observation-time window is preserved (`WQ_LOOKBACK_HOURS`). Content dedupe
+ignores timestamp-only database refreshes but emits corrected measurements
+inside that window. State advances only after acknowledgements and flush.
+Set a baseline explicitly through the reviewed enrollment or
+`USGS_REPLAY_START`; `USGS_STATE_FILE`/`STATE_FILE` selects the new checkpoint,
+otherwise the legacy state path gains a `.waterdata` suffix.
+See [CONTAINER.md](CONTAINER.md#transitional-configuration).
+
 <!-- upstream-links:begin -->
 ## Upstream
 
 - Home page: <https://waterdata.usgs.gov/>
-- API / data documentation: <https://api.waterdata.usgs.gov/docs#samples>
+- Continuous-observation API documentation: <https://api.waterdata.usgs.gov/docs/ogcapi/>
 
 <!-- upstream-links:end -->
 

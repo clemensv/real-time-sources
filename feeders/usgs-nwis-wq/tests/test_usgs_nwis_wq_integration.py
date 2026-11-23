@@ -119,7 +119,7 @@ class TestPollAndSendWithMocks:
     async def test_poll_sites_sends_readings(self):
         """Verify that poll_and_send sends site and reading events."""
         mock_producer = MagicMock()
-        mock_producer.flush = MagicMock()
+        mock_producer.flush = MagicMock(return_value=0)
 
         mock_site_producer = MagicMock()
         mock_site_producer.producer = mock_producer

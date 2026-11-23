@@ -30,6 +30,80 @@
 
 This document covers the published OCI container images for the USGS Instantaneous Values feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+## Transitional configuration
+
+Legacy acquisition remains default. The native `usgs-waterdata` feeder is
+the migration target for unrestricted new-series coverage. The frozen-contract
+transition below is opt-in and applies identically to Kafka, MQTT and AMQP.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `USGS_API_MODE` | `legacy` | `waterdata` selects reviewed transitional acquisition; `legacy` is available only until WaterServices retirement. |
+| `USGS_SITES` | None | Required in waterdata mode: comma-separated site IDs, numeric or `USGS-` prefixed. No implicit nationwide or example-site selection. |
+| `USGS_PARAMETERS` | None | Required in waterdata mode: comma-separated parameter codes. Every selected site/parameter needs verified enrollment. |
+| `USGS_ENROLLMENT_FILE` | None | Required in waterdata mode: JSON enrollment with captured historical metadata, verified RDB identities, provenance and baseline. |
+| `USGS_REPLAY_START` | Enrollment `baseline` | Initial offset-aware timestamp; ignored after a successful new-path checkpoint exists. |
+| `USGS_STATE_FILE` | `STATE_FILE`, else legacy state path + `.waterdata` | New-path checkpoint. Use separate files per feeder and transport. Legacy state remains untouched. |
+| `USGS_API_KEY` | None | Optional USGS API key; never logged. |
+| `POLLING_INTERVAL` | `300` seconds | Delay after the update cursor catches up. Catch-up uses fixed two-hour update-time windows without sleeping. |
+
+Operator-configured example (replace the paths and selected site):
+
+```powershell
+docker run --rm `
+  --mount "type=bind,source=C:\operator\reviewed-enrollment.json,target=/config/enrollment.json,readonly" `
+  -e USGS_API_MODE=waterdata -e USGS_SITES=<reviewed-site-number> `
+  -e USGS_PARAMETERS=00010,00060 `
+  -e USGS_ENROLLMENT_FILE=/config/enrollment.json `
+  -e "CONNECTION_STRING=BootstrapServer=broker:9092;EntityPath=usgs-iv" `
+  -e KAFKA_ENABLE_TLS=false -e ONCE_MODE=true `
+  ghcr.io/clemensv/real-time-sources-usgs-iv:latest
+```
+
+Use the same acquisition variables with the existing MQTT or AMQP connection
+variables and corresponding image suffix. Existing `CONNECTION_STRING`
+`EntityPath` routing takes precedence over Kafka topic defaults. A missing
+or ambiguous mapping fails before publishing; use the native feeder rather
+than assigning a new legacy identity. Keep actual enrollment, snapshot evidence
+and the replay baseline outside Git. The checked-in
+[synthetic enrollment](enrollment/synthetic-example.json) is for offline tests
+only and cannot be used for live acceptance. Strict Docker migration E2E runs
+require `USGS_E2E_ENROLLMENT_FILE` pointing to a reviewed file outside the checkout;
+the harness stages it only into the test build context. USGS data is US Government public
+domain. State directories mounted into these non-root images must be writable
+by UID `10001`. The image healthcheck tests process liveness, not freshness.
+
+The shared acquisition package is installed from the checked-in
+`vendor/` wheel, generated from the single authoritative
+`feeders/usgs-waterdata/usgs_waterdata_core` tree. Use the repository's
+USGS vendor-wheel helper (`python feeders\usgs-iv\vendor_core.py`, then
+`python feeders\usgs-iv\vendor_core.py --check`, Python 3.11+) to regenerate
+and check source hashes before building. CI import smoke and the local notebook
+wheel builder verify and include that same core wheel; no unpublished PyPI
+package is required. Do not edit or publish a diverging copy. Notebook callers must set these opt-in acquisition
+variables and provide an accessible reviewed enrollment file.
+
+MQTT drains check every broker PUBACK reason before checkpointing, including
+the separate site and timeseries connections. Rejected PUBACKs retain state
+even when Paho reports the message published.
+
+The handwritten AMQP boundary waits for broker acceptance and honors TLS;
+local socket drain does not advance the checkpoint. This preserves the frozen
+generated code while [codegen#699](https://github.com/xregistry/codegen/issues/699)
+is unresolved.
+Password authentication explicitly selects SASL PLAIN. Cleartext PLAIN is
+permitted only when the operator configures non-TLS AMQP; TLS mode does not
+permit insecure mechanisms. CBS authentication retains its generated path.
+All AMQP authentication paths attach a symbolic `x-opt-partition-key`
+annotation equal to the existing subject, including site references and
+parameter/timeseries identities. The handwritten boundary covers the frozen
+producer layout predating [codegen#294](https://github.com/xregistry/codegen/issues/294).
+It rejects missing or overlength identities rather than truncating keys.
+
+For a network-restricted build, pass an approved TLS package index through
+`docker build --build-arg PIP_INDEX_URL=https://your-approved-index/simple ...`.
+The default remains public PyPI. Do not disable certificate validation.
+
 <!-- upstream-links:begin -->
 ## Upstream
 

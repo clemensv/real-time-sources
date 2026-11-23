@@ -415,6 +415,22 @@
       "module": "usgs_iv"
     },
     {
+      "dir": "feeders/usgs-waterdata",
+      "module": "usgs_waterdata"
+    },
+    {
+      "dir": "feeders/usgs-waterdata",
+      "image": "usgs-waterdata-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "usgs_waterdata_mqtt"
+    },
+    {
+      "dir": "feeders/usgs-waterdata",
+      "image": "usgs-waterdata-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_waterdata_amqp"
+    },
+    {
       "dir": "feeders/waterinfo-vmm",
       "module": "waterinfo_vmm"
     },
@@ -2441,6 +2457,31 @@
       "test_class": "TestUSGSIVDockerFlow"
     },
     {
+      "dir": "feeders/usgs-waterdata",
+      "test_class": "TestUSGSWaterDataDockerFlow"
+    },
+    {
+      "dir": "feeders/usgs-waterdata",
+      "image": "usgs-waterdata-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestUSGSWaterDataMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/usgs-waterdata",
+      "image": "usgs-waterdata-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUSGSWaterDataAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/usgs-waterdata",
+      "image": "usgs-waterdata-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestUSGSWaterDataAmqpSbEmulatorFlow"
+    },
+    {
       "dir": "feeders/waterinfo-vmm",
       "test_class": "TestWaterinfoVMMDockerFlow"
     },
@@ -3188,6 +3229,13 @@
       "test_class": "TestUSGSIVAmqpDockerFlow"
     },
     {
+      "dir": "feeders/usgs-iv",
+      "image": "usgs-iv-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestUSGSIVAmqpSbEmulatorFlow"
+    },
+    {
       "dir": "feeders/jma-bosai-quake",
       "image": "jma-bosai-quake-amqp",
       "file": "Dockerfile.amqp",
@@ -3700,6 +3748,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUsgsNwisWqAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/usgs-nwis-wq",
+      "image": "usgs-nwis-wq-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestUSGSNWISWQAmqpSbEmulatorFlow"
     },
     {
       "dir": "feeders/waterinfo-vmm",

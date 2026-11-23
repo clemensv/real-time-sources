@@ -1,11 +1,13 @@
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
+ARG PIP_INDEX_URL=https://pypi.org/simple
 
-LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/usgs_iv"
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/usgs-iv"
 LABEL org.opencontainers.image.title="USGS Instantaneous Values Service bridge to Kafka endpoints"
 LABEL org.opencontainers.image.description="This container is a bridge between USGS feeds and Kafka endpoints. It fetches entries from feeds and forwards them to the configured Kafka endpoints."
-LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/usgs_iv/CONTAINER.md"
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-iv/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
+LABEL com.azure.containerizationassist.createdby="containerization-assist"
 
 # Set the working directory in the container
 WORKDIR /app
@@ -16,12 +18,12 @@ COPY . /app
 # Install the required Python packages
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install ./usgs_iv_producer/usgs_iv_producer_data \
+RUN pip install --no-cache-dir ./vendor/*.whl \
+ && pip install ./usgs_iv_producer/usgs_iv_producer_data \
  && pip install ./usgs_iv_producer/usgs_iv_producer_kafka_producer \
  && pip install .
 
 # Define environment variables (default values)
-ENV CONNECTION_STRING=""
 ENV LOG_LEVEL="INFO"
 ENV PYTHONUNBUFFERED="1"
 
@@ -31,4 +33,7 @@ ENV PYTHONUNBUFFERED="1"
 # never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
 RUN python -c "import importlib, importlib.util as _u; _m = 'usgs_iv'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
 
+RUN useradd -m -u 10001 appuser
+USER appuser
+HEALTHCHECK CMD python -c "import os; os.kill(1, 0)"
 CMD ["python", "-m", "usgs_iv", "feed"]

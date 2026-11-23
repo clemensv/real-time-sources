@@ -1,0 +1,403 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['USGS.WaterData.ContinuousObservation'] (
+   [time_series_id]: string,
+   [monitoring_location_id]: string,
+   [parameter_code]: string,
+   [statistic_id]: string,
+   [time]: datetime,
+   [value]: string,
+   [unit_of_measure]: string,
+   [approval_status]: string,
+   [qualifier]: string,
+   [last_modified]: datetime,
+   [method_category]: string,
+   [geometry]: dynamic,
+   [feature_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['USGS.WaterData.ContinuousObservation'] docstring @"{""description"": ""Native USGS continuous observation, including approval, qualifier, method category and exact value text. Corrections are events for the same series and observation instant when scientific content changes.""}";
+
+.alter table ['USGS.WaterData.ContinuousObservation'] column-docstrings (
+   [time_series_id]: @"{""description"": ""Native opaque USGS time-series identifier, equal to time-series-metadata.id and continuous.time_series_id. Never a legacy numeric NWIS TS_ID.""}",
+   [monitoring_location_id]: @"{""description"": ""A unique identifier representing a single monitoring location. This corresponds to the `id` field in the `monitoring-locations` endpoint. Monitoring location IDs are created by combining the agency code of the agency responsible for the monitoring location (e.g. USGS) with the ID number of the monitoring location (e.g. 02238500), separated by a hyphen (e.g. USGS-02238500). Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [parameter_code]: @"{""description"": ""Parameter codes are 5-digit codes used to identify the constituent measured and the units of measure. A complete list of parameter codes and associated groupings can be found at [https://api.waterdata.usgs.gov/ogcapi/v1/collections/parameter-codes/items](https://api.waterdata.usgs.gov/ogcapi/v1/collections/parameter-codes/items). Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [statistic_id]: @"{""description"": ""A code corresponding to the statistic an observation represents. Example codes include 00001 (max), 00002 (min), and 00003 (mean). A complete list of codes and their descriptions can be found at [https://api.waterdata.usgs.gov/ogcapi/v1/collections/statistic-codes/items](https://api.waterdata.usgs.gov/ogcapi/v1/collections/statistic-codes/items). Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [time]: @"{""description"": ""The date an observation represents. You can query this field using date-times or intervals, adhering to RFC 3339, or using ISO 8601 duration objects. Intervals may be bounded or half-bounded (double-dots at start or end).\nExamples:\n\n  - A date-time: \""2018-02-12T23:20:50Z\""\n  - A bounded interval: \""2018-02-12T00:00:00Z/2018-03-18T12:31:12Z\""\n  - Half-bounded intervals: \""2018-02-12T00:00:00Z/..\"" or \""../2018-03-18T12:31:12Z\""\n  - Duration objects: \""P1M\"" for data from the past month or \""PT36H\"" for the last 36 hours\n\nOnly features that have a `time` that intersects the value of datetime are selected. If a feature has multiple temporal properties, it is the decision of the server whether only a single temporal property is used to determine the extent or all relevant temporal properties. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [value]: @"{""description"": ""The value of the observation. Values are transmitted as strings in the JSON response format in order to preserve precision. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [unit_of_measure]: @"{""description"": ""A human-readable description of the units of measurement associated with an observation. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [approval_status]: @"{""description"": ""Some of the data that you have obtained from this U.S. Geological Survey database may not have received Director's approval.  Any such data values are qualified as provisional and are subject to revision.  Provisional data are released on the condition that neither the USGS nor the United States Government may be held liable for any damages resulting from its use. This field reflects the approval status of each record, and is either \""Approved\"", meaining processing review has been completed and the data is approved for publication, or \""Provisional\"" and subject to revision. For more information about provisional data, go to [https://waterdata.usgs.gov/provisional-data-statement/](https://waterdata.usgs.gov/provisional-data-statement/). Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [qualifier]: @"{""description"": ""This field indicates any qualifiers associated with an observation, for instance if a sensor may have been impacted by ice or if values were estimated. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [last_modified]: @"{""description"": ""The last time a record was refreshed in our database. This may happen due to regular operational processes and does not necessarily indicate anything about the measurement has changed.\nYou can query this field using date-times or intervals, adhering to RFC 3339, or using ISO 8601 duration objects. Intervals may be bounded or half-bounded (double-dots at start or end).\nExamples:\n\n  - A date-time: \""2018-02-12T23:20:50Z\""\n  - A bounded interval: \""2018-02-12T00:00:00Z/2018-03-18T12:31:12Z\""\n  - Half-bounded intervals: \""2018-02-12T00:00:00Z/..\"" or \""../2018-03-18T12:31:12Z\""\n  - Duration objects: \""P1M\"" for data from the past month or \""PT36H\"" for the last 36 hours\n\nOnly features that have a `last_modified` that intersects the value of datetime are selected. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [method_category]: @"{""description"": ""The RLMS method category code classifying the method in effect for this interval. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/schema.""}",
+   [geometry]: @"{""description"": ""OGC feature geometry; null when the reference collection has no geometry.""}",
+   [feature_id]: @"{""description"": ""OGC continuous feature id from the outer Feature; a database record identifier, not the series identity or dedupe key.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['USGS.WaterData.ContinuousObservation'] ingestion json mapping "USGS.WaterData.ContinuousObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_series_id", "path": "$.time_series_id"},
+  {"column": "monitoring_location_id", "path": "$.monitoring_location_id"},
+  {"column": "parameter_code", "path": "$.parameter_code"},
+  {"column": "statistic_id", "path": "$.statistic_id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "value", "path": "$.value"},
+  {"column": "unit_of_measure", "path": "$.unit_of_measure"},
+  {"column": "approval_status", "path": "$.approval_status"},
+  {"column": "qualifier", "path": "$.qualifier"},
+  {"column": "last_modified", "path": "$.last_modified"},
+  {"column": "method_category", "path": "$.method_category"},
+  {"column": "geometry", "path": "$.geometry"},
+  {"column": "feature_id", "path": "$.feature_id"}
+]
+```
+
+.create-or-alter table ['USGS.WaterData.ContinuousObservation'] ingestion json mapping "USGS.WaterData.ContinuousObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_series_id", "path": "$.data.time_series_id"},
+  {"column": "monitoring_location_id", "path": "$.data.monitoring_location_id"},
+  {"column": "parameter_code", "path": "$.data.parameter_code"},
+  {"column": "statistic_id", "path": "$.data.statistic_id"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "unit_of_measure", "path": "$.data.unit_of_measure"},
+  {"column": "approval_status", "path": "$.data.approval_status"},
+  {"column": "qualifier", "path": "$.data.qualifier"},
+  {"column": "last_modified", "path": "$.data.last_modified"},
+  {"column": "method_category", "path": "$.data.method_category"},
+  {"column": "geometry", "path": "$.data.geometry"},
+  {"column": "feature_id", "path": "$.data.feature_id"}
+]
+```
+
+.drop materialized-view ['USGS.WaterData.ContinuousObservationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['USGS.WaterData.ContinuousObservationLatest'] on table ['USGS.WaterData.ContinuousObservation'] {
+    ['USGS.WaterData.ContinuousObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['USGS.WaterData.ContinuousObservation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.WaterData.ContinuousObservation') | project['time_series_id'] = tostring(data.['time_series_id']),['monitoring_location_id'] = tostring(data.['monitoring_location_id']),['parameter_code'] = tostring(data.['parameter_code']),['statistic_id'] = tostring(data.['statistic_id']),['time'] = todatetime(data.['time']),['value'] = tostring(data.['value']),['unit_of_measure'] = tostring(data.['unit_of_measure']),['approval_status'] = tostring(data.['approval_status']),['qualifier'] = tostring(data.['qualifier']),['last_modified'] = todatetime(data.['last_modified']),['method_category'] = tostring(data.['method_category']),['geometry'] = todynamic(data.['geometry']),['feature_id'] = tostring(data.['feature_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['USGS.WaterData.TimeSeries'] (
+   [unit_of_measure]: string,
+   [parameter_name]: string,
+   [parameter_code]: string,
+   [statistic_id]: string,
+   [last_modified]: string,
+   [begin]: datetime,
+   [end]: datetime,
+   [computation_period_identifier]: string,
+   [computation_identifier]: string,
+   [thresholds]: dynamic,
+   [sublocation_identifier]: string,
+   [primary]: string,
+   [monitoring_location_id]: string,
+   [web_description]: string,
+   [parameter_description]: string,
+   [parent_time_series_id]: string,
+   [data_gap_interval]: string,
+   [statistics_begin]: string,
+   [time_series_id]: string,
+   [geometry]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['USGS.WaterData.TimeSeries'] docstring @"{""description"": ""Reference metadata for one native instantaneous Points time series. Only computation_identifier=Instantaneous and computation_period_identifier=Points are emitted; other OGC products are out of scope.""}";
+
+.alter table ['USGS.WaterData.TimeSeries'] column-docstrings (
+   [unit_of_measure]: @"{""description"": ""A human-readable description of the units of measurement associated with an observation. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [parameter_name]: @"{""description"": ""A human-understandable name corresponding to `parameter_code`. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [parameter_code]: @"{""description"": ""Parameter codes are 5-digit codes used to identify the constituent measured and the units of measure. A complete list of parameter codes and associated groupings can be found at [https://api.waterdata.usgs.gov/ogcapi/v1/collections/parameter-codes/items](https://api.waterdata.usgs.gov/ogcapi/v1/collections/parameter-codes/items). Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [statistic_id]: @"{""description"": ""A code corresponding to the statistic an observation represents. Example codes include 00001 (max), 00002 (min), and 00003 (mean). A complete list of codes and their descriptions can be found at [https://api.waterdata.usgs.gov/ogcapi/v1/collections/statistic-codes/items](https://api.waterdata.usgs.gov/ogcapi/v1/collections/statistic-codes/items). Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [last_modified]: @"{""description"": ""The last time a record was refreshed in our database. This may happen due to regular operational processes and does not necessarily indicate anything about the measurement has changed.\nYou can query this field using date-times or intervals, adhering to RFC 3339, or using ISO 8601 duration objects. Intervals may be bounded or half-bounded (double-dots at start or end).\nExamples:\n\n  - A date-time: \""2018-02-12T23:20:50Z\""\n  - A bounded interval: \""2018-02-12T00:00:00Z/2018-03-18T12:31:12Z\""\n  - Half-bounded intervals: \""2018-02-12T00:00:00Z/..\"" or \""../2018-03-18T12:31:12Z\""\n  - Duration objects: \""P1M\"" for data from the past month or \""PT36H\"" for the last 36 hours\n\nOnly features that have a `last_modified` that intersects the value of datetime are selected. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema. The live metadata API omits a timezone on some va...""}",
+   [begin]: @"{""description"": ""The datetime of the earliest observation in the time series. Together with `end`, this field represents the period of record of a time series. Note that some time series may have large gaps in their collection record.\nYou can query this field using date-times or intervals, adhering to RFC 3339, or using ISO 8601 duration objects. Intervals may be bounded or half-bounded (double-dots at start or end).\nExamples:\n\n  - A date-time: \""2018-02-12T23:20:50Z\""\n  - A bounded interval: \""2018-02-12T00:00:00Z/2018-03-18T12:31:12Z\""\n  - Half-bounded intervals: \""2018-02-12T00:00:00Z/..\"" or \""../2018-03-18T12:31:12Z\""\n  - Duration objects: \""P1M\"" for data from the past month or \""PT36H\"" for the last 36 hours\n\nOnly features that have a `begin` that intersects the value of datetime are selected. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [end]: @"{""description"": ""The datetime of the most recent observation in the time series. Data returned by this endpoint updates at most once per day, and potentially less frequently than that, and as such there may be more recent observations within a time series than the time series `end` value reflects. Together with `begin`, this field represents the period of record of a time series. It is additionally used to determine whether a time series is \""active\"".\nYou can query this field using date-times or intervals, adhering to RFC 3339, or using ISO 8601 duration objects. Intervals may be bounded or half-bounded (double-dots at start or end).\nExamples:\n\n  - A date-time: \""2018-02-12T23:20:50Z\""\n  - A bounded interval: \""2018-02-12T00:00:00Z/2018-03-18T12:31:12Z\""\n  - Half-bounded intervals: \""2018-02-12T00:00:00Z/..\"" or \""../2018-03-18T12:31:12Z\""\n  - Duration objects: \""P1M\"" for data from the past month or \""PT36H\"" for...""}",
+   [computation_period_identifier]: @"{""description"": ""Indicates the period of data used for any statistical computations. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [computation_identifier]: @"{""description"": ""Indicates the computation performed to calculate this time series. Values of \""Instantaneous\"" reflect point measurements. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [thresholds]: @"{""description"": ""Thresholds represent known numeric limits for a time series, for example the historic maximum value for a parameter or a level below which a sensor is non-operative. These thresholds are sometimes used to automatically determine if an observation is erroneous due to sensor error, and therefore shouldn't be included in the time series. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema. Modeled from the live array, including effective periods; not the incorrect published string."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [sublocation_identifier]: @"{""description"": ""An optional human-readable identifier used to specify where measurements are recorded at a monitoring location. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [primary]: @"{""description"": ""A flag identifying if the time series is a \""primary\"" time series. \""Primary\"" time series (which have this flag) are standard observations which undergo [Bureau review and approval processes](https://www.usgs.gov/survey-manual/5028-fundamental-science-practices-review-and-approval-scientific-data-release). Non-primary time series, which will have missing values for \""primary\"", are provisional datasets made available to meet the need for timely best science and to assist with daily operations which need real-time information. Non-primary time series data are only retained by this system for 120 days. See the [USGS Provisional Data Statement](https://waterdata.usgs.gov/provisional-data-statement/) for more information. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [monitoring_location_id]: @"{""description"": ""A unique identifier representing a single monitoring location. This corresponds to the `id` field in the `monitoring-locations` endpoint. Monitoring location IDs are created by combining the agency code of the agency responsible for the monitoring location (e.g. USGS) with the ID number of the monitoring location (e.g. 02238500), separated by a hyphen (e.g. USGS-02238500). Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [web_description]: @"{""description"": ""An optional description of the time series. WDFN and other USGS data dissemination products use this field, in combination with sublocation_identifier, to distinguish the differences between multiple time series for the same parameter code, statistic code, and monitoring location. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [parameter_description]: @"{""description"": ""A description of what the parameter code represents, as used by WDFN and other USGS data dissemination products. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [parent_time_series_id]: @"{""description"": ""The unique identifier representing the parent or \""upchain\"" time series that a daily values time series is generated from. Daily values time series have one and only one parent time series. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [data_gap_interval]: @"{""description"": ""The time interval threshold used for gap detection in the time series. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema. Kusto stores the original ISO-8601 text, including calendar durations, without timespan conversion.""}",
+   [statistics_begin]: @"{""description"": ""When this field is populated, WDFN does not include data before this year when computing statistics. If the field is not populated, the full period of record is used. Source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/schema.""}",
+   [time_series_id]: @"{""description"": ""Native opaque USGS time-series identifier, equal to time-series-metadata.id and continuous.time_series_id. Never a legacy numeric NWIS TS_ID.""}",
+   [geometry]: @"{""description"": ""OGC feature geometry; null when the reference collection has no geometry.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['USGS.WaterData.TimeSeries'] ingestion json mapping "USGS.WaterData.TimeSeries_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "unit_of_measure", "path": "$.unit_of_measure"},
+  {"column": "parameter_name", "path": "$.parameter_name"},
+  {"column": "parameter_code", "path": "$.parameter_code"},
+  {"column": "statistic_id", "path": "$.statistic_id"},
+  {"column": "last_modified", "path": "$.last_modified"},
+  {"column": "begin", "path": "$.begin"},
+  {"column": "end", "path": "$.end"},
+  {"column": "computation_period_identifier", "path": "$.computation_period_identifier"},
+  {"column": "computation_identifier", "path": "$.computation_identifier"},
+  {"column": "thresholds", "path": "$.thresholds"},
+  {"column": "sublocation_identifier", "path": "$.sublocation_identifier"},
+  {"column": "primary", "path": "$.primary"},
+  {"column": "monitoring_location_id", "path": "$.monitoring_location_id"},
+  {"column": "web_description", "path": "$.web_description"},
+  {"column": "parameter_description", "path": "$.parameter_description"},
+  {"column": "parent_time_series_id", "path": "$.parent_time_series_id"},
+  {"column": "data_gap_interval", "path": "$.data_gap_interval"},
+  {"column": "statistics_begin", "path": "$.statistics_begin"},
+  {"column": "time_series_id", "path": "$.time_series_id"},
+  {"column": "geometry", "path": "$.geometry"}
+]
+```
+
+.create-or-alter table ['USGS.WaterData.TimeSeries'] ingestion json mapping "USGS.WaterData.TimeSeries_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "unit_of_measure", "path": "$.data.unit_of_measure"},
+  {"column": "parameter_name", "path": "$.data.parameter_name"},
+  {"column": "parameter_code", "path": "$.data.parameter_code"},
+  {"column": "statistic_id", "path": "$.data.statistic_id"},
+  {"column": "last_modified", "path": "$.data.last_modified"},
+  {"column": "begin", "path": "$.data.begin"},
+  {"column": "end", "path": "$.data.end"},
+  {"column": "computation_period_identifier", "path": "$.data.computation_period_identifier"},
+  {"column": "computation_identifier", "path": "$.data.computation_identifier"},
+  {"column": "thresholds", "path": "$.data.thresholds"},
+  {"column": "sublocation_identifier", "path": "$.data.sublocation_identifier"},
+  {"column": "primary", "path": "$.data.primary"},
+  {"column": "monitoring_location_id", "path": "$.data.monitoring_location_id"},
+  {"column": "web_description", "path": "$.data.web_description"},
+  {"column": "parameter_description", "path": "$.data.parameter_description"},
+  {"column": "parent_time_series_id", "path": "$.data.parent_time_series_id"},
+  {"column": "data_gap_interval", "path": "$.data.data_gap_interval"},
+  {"column": "statistics_begin", "path": "$.data.statistics_begin"},
+  {"column": "time_series_id", "path": "$.data.time_series_id"},
+  {"column": "geometry", "path": "$.data.geometry"}
+]
+```
+
+.drop materialized-view ['USGS.WaterData.TimeSeriesLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['USGS.WaterData.TimeSeriesLatest'] on table ['USGS.WaterData.TimeSeries'] {
+    ['USGS.WaterData.TimeSeries'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['USGS.WaterData.TimeSeries'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.WaterData.TimeSeries') | project['unit_of_measure'] = tostring(data.['unit_of_measure']),['parameter_name'] = tostring(data.['parameter_name']),['parameter_code'] = tostring(data.['parameter_code']),['statistic_id'] = tostring(data.['statistic_id']),['last_modified'] = tostring(data.['last_modified']),['begin'] = todatetime(data.['begin']),['end'] = todatetime(data.['end']),['computation_period_identifier'] = tostring(data.['computation_period_identifier']),['computation_identifier'] = tostring(data.['computation_identifier']),['thresholds'] = todynamic(data.['thresholds']),['sublocation_identifier'] = tostring(data.['sublocation_identifier']),['primary'] = tostring(data.['primary']),['monitoring_location_id'] = tostring(data.['monitoring_location_id']),['web_description'] = tostring(data.['web_description']),['parameter_description'] = tostring(data.['parameter_description']),['parent_time_series_id'] = tostring(data.['parent_time_series_id']),['data_gap_interval'] = tostring(data.['data_gap_interval']),['statistics_begin'] = tostring(data.['statistics_begin']),['time_series_id'] = tostring(data.['time_series_id']),['geometry'] = todynamic(data.['geometry']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['USGS.WaterData.MonitoringLocation'] (
+   [time_series_id]: string,
+   [location]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['USGS.WaterData.MonitoringLocation'] docstring @"{""description"": ""MonitoringLocation reference attached to each native series that uses it. The time_series_id attachment is the existing relationship from time-series-metadata, not a new property claimed on the upstream resource.""}";
+
+.alter table ['USGS.WaterData.MonitoringLocation'] column-docstrings (
+   [time_series_id]: @"{""description"": ""Native opaque USGS time-series identifier, equal to time-series-metadata.id and continuous.time_series_id. Never a legacy numeric NWIS TS_ID.""}",
+   [location]: @"{""description"": ""Complete monitoring-locations properties plus its OGC geometry.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['USGS.WaterData.MonitoringLocation'] ingestion json mapping "USGS.WaterData.MonitoringLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_series_id", "path": "$.time_series_id"},
+  {"column": "location", "path": "$.location"}
+]
+```
+
+.create-or-alter table ['USGS.WaterData.MonitoringLocation'] ingestion json mapping "USGS.WaterData.MonitoringLocation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_series_id", "path": "$.data.time_series_id"},
+  {"column": "location", "path": "$.data.location"}
+]
+```
+
+.drop materialized-view ['USGS.WaterData.MonitoringLocationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['USGS.WaterData.MonitoringLocationLatest'] on table ['USGS.WaterData.MonitoringLocation'] {
+    ['USGS.WaterData.MonitoringLocation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['USGS.WaterData.MonitoringLocation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.WaterData.MonitoringLocation') | project['time_series_id'] = tostring(data.['time_series_id']),['location'] = todynamic(data.['location']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['USGS.WaterData.Parameter'] (
+   [time_series_id]: string,
+   [parameter]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['USGS.WaterData.Parameter'] docstring @"{""description"": ""Parameter reference attached to each native series that uses it. The time_series_id attachment is the existing relationship from time-series-metadata, not a new property claimed on the upstream resource.""}";
+
+.alter table ['USGS.WaterData.Parameter'] column-docstrings (
+   [time_series_id]: @"{""description"": ""Native opaque USGS time-series identifier, equal to time-series-metadata.id and continuous.time_series_id. Never a legacy numeric NWIS TS_ID.""}",
+   [parameter]: @"{""description"": ""Complete parameter-codes properties plus its OGC geometry.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['USGS.WaterData.Parameter'] ingestion json mapping "USGS.WaterData.Parameter_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_series_id", "path": "$.time_series_id"},
+  {"column": "parameter", "path": "$.parameter"}
+]
+```
+
+.create-or-alter table ['USGS.WaterData.Parameter'] ingestion json mapping "USGS.WaterData.Parameter_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_series_id", "path": "$.data.time_series_id"},
+  {"column": "parameter", "path": "$.data.parameter"}
+]
+```
+
+.drop materialized-view ['USGS.WaterData.ParameterLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['USGS.WaterData.ParameterLatest'] on table ['USGS.WaterData.Parameter'] {
+    ['USGS.WaterData.Parameter'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['USGS.WaterData.Parameter'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.WaterData.Parameter') | project['time_series_id'] = tostring(data.['time_series_id']),['parameter'] = todynamic(data.['parameter']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+

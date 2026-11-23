@@ -10,12 +10,14 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import tempfile
 import time
 from base64 import b64encode
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Dict, List, Mapping, Optional, Tuple
+from urllib.parse import urlsplit
 
 import docker
 from docker.models.containers import Container
@@ -115,8 +117,31 @@ def write_kafka_artifacts(
         handle.write(container_logs)
 
 
+def _stage_usgs_test_enrollment(project_dir: str, temp_context: str) -> None:
+    if project_dir not in ('usgs-iv', 'usgs-nwis-wq'):
+        return
+    path = os.environ.get('USGS_E2E_ENROLLMENT_FILE')
+    if not path:
+        return
+    resolved = os.path.realpath(path)
+    root = os.path.realpath(REPO_ROOT)
+    if os.path.splitdrive(resolved)[0].lower() == os.path.splitdrive(root)[0].lower():
+        if os.path.commonpath([os.path.normcase(resolved), os.path.normcase(root)]) == os.path.normcase(root):
+            raise ValueError('USGS_E2E_ENROLLMENT_FILE must be outside the repository')
+    if not os.path.isfile(resolved):
+        raise FileNotFoundError('USGS_E2E_ENROLLMENT_FILE must name an existing reviewed enrollment file')
+    destination = os.path.join(temp_context, 'enrollment')
+    os.makedirs(destination, exist_ok=True)
+    shutil.copyfile(resolved, os.path.join(destination, '01646500.json'))
+
+
 def build_image(project_dir: str, dockerfile: str = 'Dockerfile', tag: Optional[str] = None) -> Image:
     """Build a Docker image for a project.
+
+    Set DOCKER_BUILDKIT=1 to use the Docker CLI's BuildKit builder instead
+    of the SDK's legacy builder. Both paths use the same staged context.
+    USGS_E2E_ENROLLMENT_FILE injects reviewed external enrollment into only
+    the temporary legacy-USGS test context, never the checked-in source.
 
     Args:
         project_dir: Directory name relative to repo root (e.g. 'chmi-hydro').
@@ -126,6 +151,13 @@ def build_image(project_dir: str, dockerfile: str = 'Dockerfile', tag: Optional[
     Returns:
         The built :class:`docker.models.images.Image`.
     """
+    buildargs = {}
+    index_url = os.environ.get('PIP_INDEX_URL')
+    if index_url:
+        parsed_index = urlsplit(index_url)
+        if parsed_index.scheme != 'https' or not parsed_index.hostname or parsed_index.username is not None:
+            raise ValueError('Docker PIP_INDEX_URL must be a credential-free HTTPS URL')
+        buildargs['PIP_INDEX_URL'] = index_url
     client = docker.from_env()
     build_context = _resolve_project_dir(project_dir)
     if tag is None:
@@ -133,6 +165,7 @@ def build_image(project_dir: str, dockerfile: str = 'Dockerfile', tag: Optional[
 
     with tempfile.TemporaryDirectory(prefix='docker-build-context-') as temp_context:
         shutil.copytree(build_context, temp_context, dirs_exist_ok=True)
+        _stage_usgs_test_enrollment(project_dir, temp_context)
 
         git_path = os.path.join(REPO_ROOT, '.git')
         if os.path.isfile(git_path):
@@ -148,12 +181,21 @@ def build_image(project_dir: str, dockerfile: str = 'Dockerfile', tag: Optional[
         else:
             shutil.copytree(git_path, os.path.join(temp_context, '.git'), dirs_exist_ok=True)
 
-        image, _logs = client.images.build(
-            path=temp_context,
-            dockerfile=dockerfile,
-            tag=tag,
-            rm=True,
-        )
+        if os.environ.get('DOCKER_BUILDKIT') == '1':
+            command = ['docker', 'build', '--quiet', '--rm', '--file', dockerfile, '--tag', tag]
+            for name, value in buildargs.items():
+                command.extend(['--build-arg', f'{name}={value}'])
+            command.append(temp_context)
+            subprocess.run(command, cwd=temp_context, check=True)
+            image = client.images.get(tag)
+        else:
+            image, _logs = client.images.build(
+                path=temp_context,
+                dockerfile=dockerfile,
+                tag=tag,
+                rm=True,
+                buildargs=buildargs,
+            )
     return image
 
 

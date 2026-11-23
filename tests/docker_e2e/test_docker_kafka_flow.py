@@ -17,6 +17,13 @@ Run with:  pytest tests/docker_e2e/test_docker_kafka_flow.py -v --timeout=600
 
 To persist consumed Kafka messages and container logs for manual verification,
 pass ``--kafka-artifacts-dir <path>``.
+
+Transitional USGS Water Data tests require ``USGS_E2E_ENROLLMENT_FILE`` to
+name a reviewed enrollment record outside the checkout. The shared builder
+injects it into a temporary test context; published sources contain only
+synthetic enrollment examples.
+CI loads the same reviewed record from ``USGS_E2E_ENROLLMENT_JSON`` into
+``RUNNER_TEMP``; missing configuration fails explicitly.
 """
 
 import json
@@ -511,6 +518,7 @@ def _run_kafka_flow_test(
     required_exact_types: Optional[List[str]] = None,
     required_any_types: Optional[List[str]] = None,
     fail_on_missing_types: bool = False,
+    require_clean_exit: bool = False,
     extra_env: Optional[Dict[str, str]] = None,
     command: Optional[str | List[str]] = None,
     min_messages: int = 5,
@@ -535,6 +543,7 @@ def _run_kafka_flow_test(
             observed event types.
         required_any_types: Substrings where at least one must appear.
         fail_on_missing_types: Raise instead of skipping when deterministic tests miss required types.
+        require_clean_exit: Require the bounded feeder cycle to finish successfully.
         extra_env: Additional environment variables for the container.
         command: Optional container command override.
         min_messages: Minimum total messages to consume.
@@ -605,7 +614,7 @@ def _run_kafka_flow_test(
             consumer.close()
 
         if len(records) < min_messages:
-            if _container_crashed(container):
+            if fail_on_missing_types or _container_crashed(container):
                 raise AssertionError(
                     f'Expected >={min_messages} messages, got {len(records)}.\n'
                     f'Container logs:\n{container.logs().decode()}'
@@ -623,7 +632,7 @@ def _run_kafka_flow_test(
                 any(pat in t for pat in reference_types) for t in observed_types
             )
             if not has_reference:
-                if _container_crashed(container):
+                if fail_on_missing_types or _container_crashed(container):
                     raise AssertionError(
                         f'No reference events found.  Expected type containing one of '
                         f'{reference_types}, but got types: {sorted(observed_types)}\n'
@@ -640,7 +649,7 @@ def _run_kafka_flow_test(
                 any(pat in t for pat in telemetry_types) for t in observed_types
             )
             if not has_telemetry:
-                if _container_crashed(container):
+                if fail_on_missing_types or _container_crashed(container):
                     raise AssertionError(
                         f'No telemetry events found.  Expected type containing one of '
                         f'{telemetry_types}, but got types: {sorted(observed_types)}\n'
@@ -700,6 +709,12 @@ def _run_kafka_flow_test(
                     f'Upstream did not emit any of {required_any_types} '
                     f'in {timeout}s (observed {sorted(observed_types)}); container healthy.'
                 )
+        if require_clean_exit:
+            result = container.wait(timeout=max(1, int(deadline - time.time())))
+            assert result.get('StatusCode') == 0, (
+                f'Feeder failed after publishing: {result}\n'
+                f'Container logs:\n{container.logs().decode()}'
+            )
     finally:
         container_logs = container.logs().decode('utf-8', errors='replace')
         write_kafka_artifacts(project_dir, topic, records, container_logs)
@@ -975,14 +990,23 @@ class TestNWSForecastsDockerFlow:
 class TestUSGSIVDockerFlow:
     TOPIC = 'test-usgs-iv'
 
-    @pytest.mark.xfail(reason='USGS API polls all 50+ states; intermittent upstream timeouts')
     def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, usgs_iv_image):
         _run_kafka_flow_test(
             kafka, usgs_iv_image, self.TOPIC,
-            reference_types=['Site'],
-            telemetry_types=['Streamflow', 'GageHeight', 'WaterTemperature',
-                             'Precipitation', 'DissolvedOxygen'],
-            timeout=480,
+            reference_types=['Site', 'SiteTimeseries'],
+            telemetry_types=['Streamflow', 'WaterTemperature'],
+            required_exact_types=['USGS.Sites.Site', 'USGS.Sites.SiteTimeseries',
+                                  'USGS.InstantaneousValues.Streamflow', 'USGS.InstantaneousValues.WaterTemperature'],
+            extra_env={
+                'USGS_API_MODE': 'waterdata', 'USGS_SITES': '01646500',
+                'USGS_PARAMETERS': '00010,00060',
+                'USGS_ENROLLMENT_FILE': '/app/enrollment/01646500.json',
+                'ONCE_MODE': 'true',
+            },
+            min_messages=4,
+            timeout=300,
+            fail_on_missing_types=True,
+            require_clean_exit=True,
         )
 
 
@@ -997,13 +1021,54 @@ def usgs_nwis_wq_image():
 class TestUSGSNWISWQDockerFlow:
     TOPIC = 'test-usgs-nwis-wq'
 
-    @pytest.mark.xfail(reason='USGS API polls all 50+ states; intermittent upstream timeouts')
     def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, usgs_nwis_wq_image):
         _run_kafka_flow_test(
             kafka, usgs_nwis_wq_image, self.TOPIC,
             reference_types=['MonitoringSite'],
             telemetry_types=['WaterQualityReading'],
-            timeout=480,
+            required_exact_types=['USGS.WaterQuality.Sites.MonitoringSite',
+                                  'USGS.WaterQuality.Readings.WaterQualityReading'],
+            extra_env={
+                'USGS_API_MODE': 'waterdata', 'USGS_SITES': '01646500',
+                'USGS_PARAMETERS': '00010',
+                'USGS_ENROLLMENT_FILE': '/app/enrollment/01646500.json',
+                'ONCE_MODE': 'true',
+            },
+            min_messages=2,
+            timeout=300,
+            fail_on_missing_types=True,
+            require_clean_exit=True,
+        )
+
+
+# ---------------------------------------------------------------------------
+# USGS Water Data
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def usgs_waterdata_image():
+    return build_image('usgs-waterdata')
+
+
+class TestUSGSWaterDataDockerFlow:
+    TOPIC = 'test-usgs-waterdata'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, usgs_waterdata_image):
+        _run_kafka_flow_test(
+            kafka, usgs_waterdata_image, self.TOPIC,
+            reference_types=['MonitoringLocation', 'TimeSeries', 'Parameter'],
+            telemetry_types=['ContinuousObservation'],
+            required_exact_types=['USGS.WaterData.MonitoringLocation', 'USGS.WaterData.TimeSeries',
+                                  'USGS.WaterData.Parameter', 'USGS.WaterData.ContinuousObservation'],
+            extra_env={
+                'USGS_WATERDATA_SITES': 'USGS-01646500',
+                'USGS_WATERDATA_PARAMETERS': '00010,00060',
+                'ONCE_MODE': 'true',
+            },
+            min_messages=4,
+            timeout=300,
+            fail_on_missing_types=True,
+            require_clean_exit=True,
         )
 
 

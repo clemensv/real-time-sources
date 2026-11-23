@@ -1148,7 +1148,9 @@ class TestUkEaFloodMonitoringAmqpArtemisFlow:
 
 class TestUsgsNwisWqAmqpArtemisFlow:
     def test_emits_cloudevents_to_amqp_queue(self):
-        _run_b1_amqp_artemis_flow(11)
+        from .test_docker_amqp_flow import TestUsgsNwisWqAmqpDockerFlow
+
+        TestUsgsNwisWqAmqpDockerFlow().test_emits_cloudevents_to_amqp_queue()
 
 
 class TestWaterinfoVmmAmqpArtemisFlow:

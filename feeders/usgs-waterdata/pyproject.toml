@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usgs-waterdata"
+dynamic = ["version"]
+description = "Native USGS Water Data continuous observations with location, series and parameter references"
+requires-python = ">=3.10,<4.0"
+dependencies = ["usgs-waterdata-core", "requests>=2.32.3", "cloudevents>=1.12.1,<2.0.0", "isodate>=0.6.1"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "mypy>=1.11", "json-structure>=0.8.0,<0.9"]
+kafka = ["confluent-kafka>=2.5.3", "usgs-waterdata-producer-data", "usgs-waterdata-producer-kafka-producer"]
+
+[project.scripts]
+usgs-waterdata = "usgs_waterdata.app:main"
+
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["usgs_waterdata"]
+include-package-data = false

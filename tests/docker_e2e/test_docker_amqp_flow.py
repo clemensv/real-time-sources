@@ -14,7 +14,10 @@ import docker
 import pytest
 from json_structure import InstanceValidator
 
-from .helpers import REPO_ROOT, build_image
+from .helpers import (
+    REPO_ROOT, build_image, _find_xreg_file, _resolve_json_pointer,
+    _resolve_message_inheritance, _SCHEMA_VALIDATOR,
+)
 
 ARTEMIS_IMAGE = "apache/activemq-artemis:latest-alpine"
 ARTEMIS_USER = "admin"
@@ -63,25 +66,27 @@ def _extract_ce_attrs(msg: Any) -> Dict[str, Any]:
 
 
 def _load_jstruct_validators(project_dir: str) -> Dict[str, InstanceValidator]:
-    xreg_path = os.path.join(REPO_ROOT, "feeders", project_dir, "xreg", f"{project_dir.replace('-', '_')}.xreg.json")
-    if not os.path.exists(xreg_path):
-        xreg_path = os.path.join(REPO_ROOT, "feeders", project_dir, "xreg", f"{project_dir}.xreg.json")
-    with open(xreg_path, "r", encoding="utf-8") as handle:
+    with open(_find_xreg_file(project_dir), "r", encoding="utf-8") as handle:
         manifest = json.load(handle)
     validators: Dict[str, InstanceValidator] = {}
-    for group in manifest.get("schemagroups", {}).values():
-        if "jsonstructure" not in str(group.get("format", "")).lower() and str(group.get("format", "")).lower() != "jstruct":
+    for endpoint in manifest.get("endpoints", {}).values():
+        if str(endpoint.get("protocol", "")).upper() not in ("AMQP", "AMQP/1.0"):
             continue
-        for schema_name, schema_entry in group.get("schemas", {}).items():
-            schema = schema_entry.get("schema")
-            if schema is None and "versions" in schema_entry:
-                version_id = schema_entry.get("defaultversionid") or next(iter(schema_entry["versions"]))
-                schema = schema_entry["versions"][version_id].get("schema", schema_entry["versions"][version_id])
-            if schema is None:
-                schema = schema_entry
-            validator = InstanceValidator(schema, extended=True)
-            validators[schema.get("$id", schema_name)] = validator
-            validators[schema_name] = validator
+        for group_ref in endpoint.get("messagegroups", []):
+            pointer = "#" + group_ref if group_ref.startswith("/") else group_ref
+            group = _resolve_json_pointer(manifest, pointer)
+            for name, message in group.get("messages", {}).items():
+                resolved = _resolve_message_inheritance(manifest, message)
+                schema_record = _resolve_json_pointer(manifest, resolved["dataschemauri"])
+                if "schema" in schema_record:
+                    schema = schema_record["schema"]
+                else:
+                    schema = schema_record["versions"][schema_record["defaultversionid"]]["schema"]
+                errors = _SCHEMA_VALIDATOR.validate(schema)
+                assert not errors, f"Invalid AMQP JsonStructure schema for {name}: {errors}"
+                event_type = resolved.get("envelopemetadata", {}).get("type", {}).get("value", name)
+                validators[event_type] = InstanceValidator(schema, extended=True)
+    assert validators, f"No AMQP payload contracts found for {project_dir}"
     return validators
 
 
@@ -110,6 +115,7 @@ class AmqpDockerFlowBase:
     expected_count = 3
     require_cloud_events_application_properties = False
     validate_payloads = False
+    strict = False
 
     def test_emits_cloudevents_to_amqp_queue(self):
         client = docker.from_env()
@@ -151,6 +157,8 @@ class AmqpDockerFlowBase:
                 time.sleep(2)
             if not ready:
                 tail = broker.logs().decode("utf-8", errors="replace")[-2000:]
+                if self.strict:
+                    pytest.fail(f"Artemis broker did not become ready. Tail:\n{tail}")
                 pytest.skip(f"Artemis broker did not become ready. Tail:\n{tail}")
             time.sleep(8)
 
@@ -173,6 +181,8 @@ class AmqpDockerFlowBase:
                 feeder.kill()
                 result = {"StatusCode": -1}
             logs = feeder.logs().decode("utf-8", errors="replace")
+            if self.strict:
+                assert result.get("StatusCode") == 0, f"Bounded AMQP feeder did not finish: {result}\n{logs}"
             if result.get("StatusCode") not in (0, -1):
                 assert False, f"Feeder failed: {result}\n{logs[-4000:]}"
             messages = _receive_messages("127.0.0.1", host_port, queue, expected=self.expected_count, timeout=60)
@@ -192,7 +202,7 @@ class AmqpDockerFlowBase:
                 # If we saw at least one expected type, the bridge is functional but
                 # upstream didn't return all event variants in the window (common for
                 # ONCE_MODE from clean state with no mock). Warn but don't fail.
-                if seen & self.expected_types:
+                if seen & self.expected_types and not self.strict:
                     import warnings
                     missing = must_see - seen
                     warnings.warn(f"Missing types (bridge functional): {sorted(missing)}. Seen: {sorted(seen)}")
@@ -207,6 +217,12 @@ class AmqpDockerFlowBase:
                     raw_props = dict(getattr(msg, "properties", None) or {})
                     for required in ("id", "source", "type", "subject", "specversion"):
                         assert f"cloudEvents:{required}" in raw_props, f"Missing cloudEvents:{required}: {raw_props}"
+                if self.strict:
+                    assert str(ce["specversion"]) == "1.0"
+                    assert getattr(msg, "content_type", None) == "application/json"
+                    annotations = dict(getattr(msg, "annotations", None) or {})
+                    partition_key = annotations.get("x-opt-partition-key", annotations.get(b"x-opt-partition-key"))
+                    assert partition_key == ce["subject"], f"Partition key differs from CE subject: {annotations}"
                 if self.validate_payloads:
                     payload = _amqp_body_dict(msg)
                     validator = validators.get(str(ce.get("type")))
@@ -513,9 +529,36 @@ class TestUSGSGeomagAmqpDockerFlow(AmqpDockerFlowBase):
 class TestUSGSIVAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "usgs-iv"
     image = "usgs-iv-amqp"
-    env = {"ONCE_MODE": "true", "USGS_FORCE_SITE_REFRESH": "true", "USGS_FORCE_DATA_REFRESH": "true", "USGS_STATE": "DE"}
-    expected_types = set()
-    expected_count = 1
+    env = {
+        "ONCE_MODE": "true", "USGS_API_MODE": "waterdata", "USGS_SITES": "01646500",
+        "USGS_PARAMETERS": "00010,00060", "USGS_ENROLLMENT_FILE": "/app/enrollment/01646500.json",
+    }
+    expected_types = {
+        "USGS.Sites.Site", "USGS.Sites.SiteTimeseries",
+        "USGS.InstantaneousValues.Streamflow", "USGS.InstantaneousValues.WaterTemperature",
+    }
+    expected_count = 4
+    require_cloud_events_application_properties = True
+    validate_payloads = True
+    strict = True
+
+
+class TestUSGSWaterDataAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "usgs-waterdata"
+    image = "usgs-waterdata-amqp"
+    env = {
+        "ONCE_MODE": "true",
+        "USGS_WATERDATA_SITES": "USGS-01646500",
+        "USGS_WATERDATA_PARAMETERS": "00010,00060",
+    }
+    expected_types = {
+        "USGS.WaterData.MonitoringLocation", "USGS.WaterData.TimeSeries",
+        "USGS.WaterData.Parameter", "USGS.WaterData.ContinuousObservation",
+    }
+    expected_count = 4
+    require_cloud_events_application_properties = True
+    validate_payloads = True
+    strict = True
 
 
 class TestJmaBosaiQuakeAmqpDockerFlow(AmqpDockerFlowBase):
@@ -718,9 +761,15 @@ class TestUkEaFloodMonitoringAmqpDockerFlow(AmqpDockerFlowBase):
 class TestUsgsNwisWqAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "usgs-nwis-wq"
     image = "usgs-nwis-wq-amqp"
-    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    env = {
+        "ONCE_MODE": "true", "USGS_API_MODE": "waterdata", "USGS_SITES": "01646500",
+        "USGS_PARAMETERS": "00010", "USGS_ENROLLMENT_FILE": "/app/enrollment/01646500.json",
+    }
     expected_types = {'USGS.WaterQuality.Readings.WaterQualityReading', 'USGS.WaterQuality.Sites.MonitoringSite'}
     expected_count = 2
+    require_cloud_events_application_properties = True
+    validate_payloads = True
+    strict = True
 
 class TestWaterinfoVmmAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "waterinfo-vmm"

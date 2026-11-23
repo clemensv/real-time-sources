@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usgs-waterdata-core"
+dynamic = ["version"]
+description = "USGS Water Data acquisition and legacy compatibility enrollment"
+requires-python = ">=3.10,<4.0"
+dependencies = ["requests>=2.32.3", "urllib3>=2.2.3"]
+
+[project.scripts]
+usgs-waterdata-capture = "usgs_waterdata_core.capture:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["usgs_waterdata_core"]
+include-package-data = false

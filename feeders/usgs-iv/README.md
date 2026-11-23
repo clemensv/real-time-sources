@@ -30,6 +30,39 @@
 
 This feeder turns the upstream USGS Instantaneous Values hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+> **WaterServices transition:** legacy acquisition remains the default until retirement. The opt-in Water Data path preserves the existing schemas, CloudEvents source/types/subjects, Kafka keys, and MQTT/AMQP routing. It requires explicitly selected, reviewed series; it does not provide an automatic nationwide identity mapping. Use the [native Water Data feeder](../usgs-waterdata/README.md) for new or unmapped series.
+
+## Schema-stable transitional acquisition
+
+Set `USGS_API_MODE=waterdata`, `USGS_SITES`, `USGS_PARAMETERS`, and
+`USGS_ENROLLMENT_FILE` on any of the three transport images. Supply a reviewed
+operator enrollment from outside the checkout and mount it read-only.
+The [synthetic example](enrollment/synthetic-example.json) documents the file
+shape for offline tests only; its invented site and series cannot validate live
+acquisition. Review actual mappings against legacy RDB identities and paired
+timestamp/value evidence, kept outside Git. Capturing a candidate does not
+approve it.
+
+Site fields remain historical snapshots with capture timestamps and upstream
+provenance in the enrollment. Missing metadata, unreviewed units/qualifiers,
+or an unknown selected series fail the poll before emission. No replacement
+legacy identifier is fabricated.
+
+The new path reads fixed two-hour `last_modified` windows, including
+corrections to older observations. Its content checkpoint ignores
+`last_modified`-only refreshes and advances only after broker acknowledgements
+and a successful flush. `USGS_REPLAY_START` overrides the enrollment's explicit
+baseline. New state uses `USGS_STATE_FILE`, `STATE_FILE`, or the old state path
+plus `.waterdata`; the legacy checkpoint is never overwritten implicitly.
+`USGS_API_MODE=legacy` selects the old acquisition path until retirement.
+See [CONTAINER.md](CONTAINER.md#transitional-configuration) for configuration
+and a scoped example.
+
+MQTT checkpoint drains confirm successful PUBACK reasons on each site,
+timeseries and observation connection; task completion alone is insufficient.
+Legacy cycles also confirm each timeseries reference before dependent telemetry
+and drain the reference producer before saving state.
+
 <!-- upstream-links:begin -->
 ## Upstream
 

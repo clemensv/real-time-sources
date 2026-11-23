@@ -1,0 +1,16 @@
+{
+  "authoritative_source": "feeders/usgs-waterdata/usgs_waterdata_core",
+  "builder": "feeders/usgs-iv/vendor_core.py",
+  "files": {
+    "pyproject.toml": "236e3ef65091d6aecc20abba82766c7dee9065fc64f95ab1fb39f72e0c43aa5c",
+    "usgs_waterdata_core/__init__.py": "f38bb83b6c356ad18c1ad3efc1f9f7b48fcd0b1e3ee52924ef14d87ee301887c",
+    "usgs_waterdata_core/capture.py": "8c1fc8313abcbc542141da03bc18d7049982a323efc3c2668538e3e3b5072ab9",
+    "usgs_waterdata_core/client.py": "87f965a22b7ae2acbc0562e63aecb390f6aca442050a14fa8c4d11bf57471921",
+    "usgs_waterdata_core/compat.py": "48f7db36f9e46dcd5c272283026fa0123cb008a09fa4db4fc17d693b1c677e87",
+    "usgs_waterdata_core/delivery.py": "7b9887dbbe76ce5c4576886c9066320566825769a9a5bf51ca3987bba3da5206",
+    "usgs_waterdata_core/state.py": "18994be63a46a8515b9fde566e71f8a4727cd2998fc14bb9e679c6eb7e01a50f"
+  },
+  "source_sha256": "c136b4971312cb7f48426e5d0ae9492bdc46bef42ee5a163e624726305c007f1",
+  "wheel": "usgs_waterdata_core-0.1.0+c136b4971312-py3-none-any.whl",
+  "wheel_sha256": "043a03947f50ac19c2bf8abefb2d76288d558e11ecd80e6c7af62d92f37c56fa"
+}

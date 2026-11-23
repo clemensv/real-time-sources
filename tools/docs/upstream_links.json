@@ -406,11 +406,15 @@
   },
   "usgs-iv": {
     "homepage": "https://waterdata.usgs.gov/",
-    "api_docs": "https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details/"
+    "api_docs": "https://api.waterdata.usgs.gov/"
   },
   "usgs-nwis-wq": {
     "homepage": "https://waterdata.usgs.gov/",
-    "api_docs": "https://waterservices.usgs.gov/docs/water-quality-samples/water-quality-samples-details/"
+    "api_docs": "https://api.waterdata.usgs.gov/"
+  },
+  "usgs-waterdata": {
+    "homepage": "https://waterdata.usgs.gov/",
+    "api_docs": "https://api.waterdata.usgs.gov/"
   },
   "vatsim": {
     "homepage": "https://www.vatsim.net/",

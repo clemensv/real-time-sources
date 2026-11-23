@@ -1,192 +1,161 @@
+"""Live USGS water-quality acquisition over MQTT 5."""
 
-import dataclasses, importlib, inspect, os, pkgutil, sys, typing
-from datetime import datetime, timezone
-
+import argparse
+import asyncio
 import json
+import logging
+import os
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
+
+import paho.mqtt.client as mqtt
+from paho.mqtt.client import CallbackAPIVersion, MQTTv5
+from usgs_nwis_wq.usgs_nwis_wq import USGSWaterQualityPoller
+from usgs_nwis_wq.transport import PublisherAdapter
+from .delivery import PublishAcknowledgements
+from usgs_nwis_wq_mqtt_producer_mqtt_client.client import (
+    USGSWaterQualitySitesMqttMqttClient,
+    USGSWaterQualityReadingsMqttMqttClient,
+)
+
 
 def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
-    params = {
-        "api-version": "2018-02-01",
-        "resource": audience or "https://eventgrid.azure.net/",
-    }
+    params = {"api-version": "2018-02-01", "resource": audience or "https://eventgrid.azure.net/"}
     if managed_identity_client_id:
         params["client_id"] = managed_identity_client_id
-
     request = Request(
         "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
         headers={"Metadata": "true"},
     )
     with urlopen(request, timeout=30) as response:
         payload = json.loads(response.read().decode("utf-8"))
-
     token = payload.get("accessToken") or payload.get("access_token")
     if not token:
         raise RuntimeError("IMDS token response did not contain an access token")
     return str(token)
 
+
 def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
-    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
-    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
-
-    if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or ""), None
-
-    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
-    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
-    resolved_username = resolved_client_id or str(username or "").strip()
-    if not resolved_username:
-        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
-
-    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
-    from paho.mqtt.properties import Properties as _MqttConnProps
-    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
-    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
-    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
-    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
-    return resolved_client_id, resolved_username, resolved_password, _connect_props
-
-def _slug(v):
-    return str(v or 'unknown').replace('/', '-').replace(' ', '-').lower()
-
-def _sample_value(name, annotation):
-    lname = name.lower().rstrip('_')
-    if lname in ('station_id','station_number','code_station','station_ref','station_reference','site_number'):
-        return 'mock-station'
-    if lname in ('sensor_num',): return 1
-    if lname in ('parameter_code',): return '00010'
-    if lname in ('state',): return 'CA'
-    if lname in ('region',): return 'PACIFIC'
-    if lname in ('basin','river','water_body','water_body_name','river_name','libelle_cours_eau','water_area_name'):
-        return 'mock-basin'
-    if 'time' in lname or 'date' in lname: return datetime.now(timezone.utc).isoformat()
-    if 'lat' in lname: return 45.0
-    if lname in ('longitude','long','lng') or 'lon' in lname: return -75.0
-    if any(x in lname for x in ('level','value','temperature','speed','pressure','height','depth','salinity','conductivity','humidity','visibility','discharge','flow','elevation','latitude')): return 1.0
-    if any(x in lname for x in ('code',)): return '01'
-    if any(x in lname for x in ('count','num','bin','direction','timezonecorr')): return 1
-    if lname.startswith('is_') or lname in ('tidal','greatlakes','observedst','stormsurge','forecast','outlook','nonNavigational'.lower(),'en_service','outside_sigma_band','flat_tolerance_limit','rate_of_change_limit','max_min_expected_height','max_pressure_exceeded','min_pressure_exceeded','rate_of_change_exceeded','max_temp_exceeded','min_temp_exceeded','max_humidity_exceeded','min_humidity_exceeded','max_conductivity_exceeded','min_conductivity_exceeded'):
-        return False
-    return 'mock'
-
-def _make_instance(cls):
-    kwargs={}
-    for f in dataclasses.fields(cls):
-        if not f.init: continue
-        ann=f.type
-        origin=typing.get_origin(ann)
-        args=typing.get_args(ann)
-        if origin in (typing.Union, getattr(typing, 'Optional', object)) and args:
-            ann=next((a for a in args if a is not type(None)), args[0])
-        try:
-            if dataclasses.is_dataclass(ann):
-                kwargs[f.name]=_make_instance(ann); continue
-        except Exception:
-            pass
-        kwargs[f.name]=_sample_value(f.name, ann)
-    return cls(**kwargs)
-
-def _required_call_kwargs(method, data_pkg):
-    sig=inspect.signature(method)
-    out={}
-    data_obj=None
-    for name,param in sig.parameters.items():
-        if name in ('self','topic','qos','retain','content_type','flush_producer'): continue
-        if name == 'data':
-            ann=param.annotation
-            if isinstance(ann, str): ann=None
-            if ann is inspect._empty or ann is None:
-                raise RuntimeError(f'No data annotation for {method}')
-            data_obj=_make_instance(ann)
-            out[name]=data_obj
-        else:
-            key=name[1:] if name.startswith('_') else name
-            out[name]=_sample_value(key, str(param.annotation))
-    return out
-
-import argparse, asyncio, logging
-from urllib.parse import urlencode, urlparse
-from urllib.request import Request, urlopen
-import paho.mqtt.client as mqtt
-from paho.mqtt.client import CallbackAPIVersion, MQTTv5
-import usgs_nwis_wq_mqtt_producer_data
-from usgs_nwis_wq_mqtt_producer_mqtt_client.client import *
-
-async def _publish_mock(client):
-    methods=[getattr(client,n) for n in dir(client) if n.startswith('publish_')]
-    for method in methods:
-        await method(**_required_call_kwargs(method, usgs_nwis_wq_mqtt_producer_data))
-
-async def feed(host, port, username=None, password=None, tls=False, client_id=None, once=False, content_mode='binary'):
-    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
-        username=username,
-        password=password or '',
-        client_id=client_id or '',
-        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).lower()
+    if mode == "password":
+        return client_id, username or "", password or "", None
+    if mode != "entra":
+        raise ValueError("MQTT_AUTH_MODE must be password or entra")
+    if not client_id:
+        raise ValueError("MQTT_CLIENT_ID is required for MQTT_AUTH_MODE=entra")
+    token = _fetch_entra_mqtt_token(
+        os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/"),
+        os.getenv("MQTT_ENTRA_CLIENT_ID"),
     )
+    # WORKAROUND(xregistry/codegen#432): generated connect lacks enhanced authentication properties.
+    from paho.mqtt.properties import Properties
+    from paho.mqtt.packettypes import PacketTypes
+    properties = Properties(PacketTypes.CONNECT)
+    properties.AuthenticationMethod = "OAUTH2-JWT"
+    properties.AuthenticationData = token.encode("utf-8")
+    return client_id, client_id, token, properties
 
-    paho_client=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if _entra_props is None and (resolved_username or resolved_password):
-        paho_client.username_pw_set(resolved_username, resolved_password)
-    if tls: paho_client.tls_set()
-    client_classes=[obj for obj in globals().values() if isinstance(obj,type) and obj.__name__.endswith('MqttClient')]
-    if not client_classes:
-        raise RuntimeError('No generated MQTT clients found')
-    clients=[cls(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop()) for cls in client_classes]
-    # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
-    if _entra_props is not None:
-        import threading as _threading
-        _connected = _threading.Event()
-        def _on_connack(client, userdata, flags, reason_code, props=None):
-            if reason_code == 0:
-                _connected.set()
-        paho.on_connect = _on_connack
-        paho.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
-        paho.loop_start()
-        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
-            raise RuntimeError('MQTT CONNACK timeout after 30s')
-    else:
-        # Direct paho connect: multiple generated MqttClient instances sharing one
-        # paho client overwrite each other's on_connect, causing connect() timeout.
-        import threading as _threading
-        _connected = _threading.Event()
-        def _on_connack(client, userdata, flags, reason_code, props=None):
-            rc = getattr(reason_code, 'value', reason_code) if not isinstance(reason_code, int) else reason_code
-            if rc == 0:
-                _connected.set()
-        paho.on_connect = _on_connack
-        paho.connect(host, port, keepalive=60)
-        paho.loop_start()
-        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
-            raise RuntimeError('MQTT CONNACK timeout after 30s')
+
+async def feed(host, port, username=None, password=None, tls=False, client_id=None, once=False, content_mode="binary"):
+    from usgs_nwis_wq.waterdata import WaterDataFeed, api_mode
+    poller = USGSWaterQualityPoller(
+        last_polled_file=os.getenv("USGS_WQ_LAST_POLLED_FILE") or os.getenv("STATE_FILE") or os.path.expanduser("~/.usgs_wq_last_polled_mqtt.json"),
+        states=os.getenv("USGS_WQ_STATES", "").split(",") if os.getenv("USGS_WQ_STATES") else None,
+        sites=os.getenv("USGS_WQ_SITES", "").split(",") if os.getenv("USGS_WQ_SITES") else None,
+        parameter_codes=os.getenv("USGS_WQ_PARAMETER_CODES") or None,
+    )
+    if api_mode() == "waterdata":
+        WaterDataFeed(poller)
+    identity, user, secret, properties = _resolve_mqtt_connection_settings(
+        username=username, password=password, client_id=client_id,
+    )
+    raw = mqtt.Client(client_id=identity, callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if properties is None and (user or secret):
+        raw.username_pw_set(user, secret)
+    if tls or properties is not None:
+        raw.tls_set()
+    acknowledgements = PublishAcknowledgements(raw.publish)
+    # WORKAROUND(xregistry/codegen#700): generated methods discard PUBACK.
+    # Keep the Paho API intact while flush confirms every broker outcome.
+    setattr(raw, "publish", acknowledgements.publish)
+    setattr(raw, "flush_publishes", acknowledgements.flush_publishes)
+    raw.on_publish = acknowledgements.on_publish
+    clients = []
     try:
-        for client in clients:
-            await _publish_mock(client)
+        for suffix, cls in (
+            ("sites", USGSWaterQualitySitesMqttMqttClient),
+            ("readings", USGSWaterQualityReadingsMqttMqttClient),
+        ):
+            client = cls(client=raw, content_mode=content_mode, loop=asyncio.get_running_loop())
+            clients.append(client)
+            adapter = PublisherAdapter(client, "mqtt")
+            if suffix == "sites":
+                poller.site_producer = adapter
+            else:
+                poller.readings_producer = adapter
+        loop = asyncio.get_running_loop()
+        connected = loop.create_future()
+
+        def on_connect(client, userdata, flags, reason, properties=None):
+            def complete():
+                if connected.done():
+                    return
+                if reason == 0:
+                    connected.set_result(None)
+                else:
+                    connected.set_exception(RuntimeError(f"MQTT broker rejected CONNECT: {reason}"))
+            loop.call_soon_threadsafe(complete)
+
+        def on_disconnect(client, userdata, flags, reason, properties=None):
+            def complete():
+                if not connected.done():
+                    connected.set_exception(RuntimeError(f"MQTT disconnected before CONNACK: {reason}"))
+            loop.call_soon_threadsafe(complete)
+
+        # Both generated constructors replace raw callbacks; install the
+        # connection owner's callbacks only after constructing both wrappers.
+        raw.on_connect = on_connect
+        raw.on_disconnect = on_disconnect
+        raw.connect(host, port, keepalive=60, clean_start=True, properties=properties)
+        raw.loop_start()
+        await asyncio.wait_for(connected, timeout=30)
+        await poller.poll_and_send(once=once)
     finally:
-        await clients[0].disconnect()
+        raw.disconnect()
+        await asyncio.to_thread(raw.loop_stop)
+
 
 def _parse_broker_url(url):
-    parsed=urlparse(url if '://' in url else f'mqtt://{url}')
-    tls=(parsed.scheme or 'mqtt').lower() in ('mqtts','ssl','tls')
-    return parsed.hostname or 'localhost', parsed.port or (8883 if tls else 1883), tls, parsed.username, parsed.password
+    parsed = urlparse(url if "://" in url else f"mqtt://{url}")
+    tls = (parsed.scheme or "mqtt").lower() in ("mqtts", "ssl", "tls")
+    return parsed.hostname or "localhost", parsed.port or (8883 if tls else 1883), tls, parsed.username, parsed.password
+
 
 def main(argv=None):
-    logging.basicConfig(level=logging.INFO)
-    p=argparse.ArgumentParser(description='usgs-nwis-wq MQTT/UNS bridge')
-    sub=p.add_subparsers(dest='command'); f=sub.add_parser('feed')
-    f.add_argument('--broker-url', default=os.getenv('MQTT_BROKER_URL'))
-    f.add_argument('--broker-host', default=os.getenv('MQTT_HOST'))
-    f.add_argument('--broker-port', type=int, default=int(os.getenv('MQTT_PORT','0')) or None)
-    f.add_argument('--username', default=os.getenv('MQTT_USERNAME'))
-    f.add_argument('--password', default=os.getenv('MQTT_PASSWORD'))
-    f.add_argument('--tls', action='store_true', default=os.getenv('MQTT_TLS','').lower() in ('1','true','yes'))
-    f.add_argument('--client-id', default=os.getenv('MQTT_CLIENT_ID'))
-    f.add_argument('--content-mode', default=os.getenv('MQTT_CONTENT_MODE','binary'), choices=['binary','structured'])
-    f.add_argument('--once', action='store_true', default=os.getenv('ONCE_MODE','').lower() in ('1','true','yes'))
-    args=p.parse_args(argv)
-    if args.command!='feed': p.print_help(); return
+    logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
+    parser = argparse.ArgumentParser(description="USGS NWIS WQ MQTT bridge")
+    sub = parser.add_subparsers(dest="command")
+    feed_parser = sub.add_parser("feed")
+    feed_parser.add_argument("--broker-url", default=os.getenv("MQTT_BROKER_URL"))
+    feed_parser.add_argument("--broker-host", default=os.getenv("MQTT_HOST"))
+    feed_parser.add_argument("--broker-port", type=int, default=int(os.getenv("MQTT_PORT", "0")) or None)
+    feed_parser.add_argument("--username", default=os.getenv("MQTT_USERNAME"))
+    feed_parser.add_argument("--password", default=os.getenv("MQTT_PASSWORD"))
+    feed_parser.add_argument("--tls", action="store_true", default=os.getenv("MQTT_TLS", "").lower() in ("1", "true", "yes"))
+    feed_parser.add_argument("--client-id", default=os.getenv("MQTT_CLIENT_ID"))
+    feed_parser.add_argument("--content-mode", choices=["binary", "structured"], default=os.getenv("MQTT_CONTENT_MODE", "binary"))
+    feed_parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
+    args = parser.parse_args(argv)
+    if args.command != "feed":
+        parser.print_help()
+        return
     if args.broker_url:
-        host, port, tls, user, pwd=_parse_broker_url(args.broker_url); username=args.username or user; password=args.password or pwd; port=args.broker_port or port; tls=tls or args.tls
+        host, port, tls, user, secret = _parse_broker_url(args.broker_url)
+        user, secret = args.username or user, args.password or secret
+        port, tls = args.broker_port or port, tls or args.tls
     else:
-        tls=args.tls; host=args.broker_host or 'localhost'; port=args.broker_port or (8883 if tls else 1883); username=args.username; password=args.password
-    asyncio.run(feed(host, port, username=username, password=password, tls=tls, client_id=args.client_id, once=args.once, content_mode=args.content_mode))
+        host, tls = args.broker_host or "localhost", args.tls
+        port, user, secret = args.broker_port or (8883 if tls else 1883), args.username, args.password
+    asyncio.run(feed(host, port, username=user, password=secret, tls=tls, client_id=args.client_id,
+                     once=args.once, content_mode=args.content_mode))

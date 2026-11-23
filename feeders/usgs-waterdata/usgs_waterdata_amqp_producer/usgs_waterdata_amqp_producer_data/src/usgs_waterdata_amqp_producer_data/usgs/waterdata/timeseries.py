@@ -1,0 +1,225 @@
+""" TimeSeries dataclass. """
+
+# pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
+import io
+import gzip
+import enum
+import typing
+import dataclasses
+from dataclasses import dataclass
+import dataclasses_json
+from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
+import json
+from usgs_waterdata_amqp_producer_data.usgs.waterdata.threshold import Threshold
+from usgs_waterdata_amqp_producer_data.usgs.waterdata.point import Point
+import datetime
+
+
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class TimeSeries:
+    """
+    Reference metadata for one native instantaneous Points time series. Only computation_identifier=Instantaneous and computation_period_identifier=Points are emitted; other OGC products are out of scope.
+    
+    Attributes:
+        unit_of_measure (typing.Optional[str])
+        parameter_name (typing.Optional[str])
+        parameter_code (typing.Optional[str])
+        statistic_id (typing.Optional[str])
+        last_modified (typing.Optional[str])
+        begin (typing.Optional[datetime.datetime])
+        end (typing.Optional[datetime.datetime])
+        computation_period_identifier (typing.Optional[str])
+        computation_identifier (typing.Optional[str])
+        thresholds (typing.List[Threshold])
+        sublocation_identifier (typing.Optional[str])
+        primary (typing.Optional[str])
+        monitoring_location_id (typing.Optional[str])
+        web_description (typing.Optional[str])
+        parameter_description (typing.Optional[str])
+        parent_time_series_id (typing.Optional[str])
+        data_gap_interval (typing.Optional[datetime.timedelta])
+        statistics_begin (typing.Optional[str])
+        time_series_id (str)
+        geometry (typing.Optional[Point])
+    """
+    
+    
+    
+    unit_of_measure: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unit_of_measure"))
+    parameter_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_name"))
+    parameter_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_code"))
+    statistic_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="statistic_id"))
+    last_modified: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_modified"))
+    begin: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="begin", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    end: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    computation_period_identifier: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="computation_period_identifier"))
+    computation_identifier: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="computation_identifier"))
+    thresholds: typing.List[Threshold]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="thresholds"))
+    sublocation_identifier: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sublocation_identifier"))
+    primary: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="primary"))
+    monitoring_location_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="monitoring_location_id"))
+    web_description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="web_description"))
+    parameter_description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_description"))
+    parent_time_series_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parent_time_series_id"))
+    data_gap_interval: typing.Optional[datetime.timedelta]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_gap_interval"))
+    statistics_begin: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="statistics_begin"))
+    time_series_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_series_id"))
+    geometry: typing.Optional[Point]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geometry"))
+
+
+    @classmethod
+    def from_serializer_dict(cls, data: dict) -> 'TimeSeries':
+        """
+        Converts a dictionary to a dataclass instance.
+        
+        Args:
+            data: The dictionary to convert to a dataclass.
+        
+        Returns:
+            The dataclass representation of the dataclass.
+        """
+        return cls(**data)
+
+    def to_serializer_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary.
+
+        Returns:
+            The dictionary representation of the dataclass.
+        """
+        asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        return asdict_result
+
+    def _dict_resolver(self, data):
+        """
+        Helps resolving the Enum values to their actual values and fixes the key names.
+        """ 
+        def _resolve_enum(v):
+            if isinstance(v, enum.Enum):
+                return v.value
+            return v
+        def _fix_key(k):
+            return k[:-1] if k.endswith('_') else k
+        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
+
+    def to_byte_array(self, content_type_string: str) -> bytes:
+        """
+        Converts the dataclass to a byte array based on the content type string.
+        
+        Args:
+            content_type_string: The content type string to convert the dataclass to.
+                Supported content types:
+                    'application/json': Encodes the data to JSON format.
+                Supported content type extensions:
+                    '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
+
+        Returns:
+            The byte array representation of the dataclass.        
+        """
+        content_type = content_type_string.split(';')[0].strip()
+        result = None
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            #pylint: disable=no-member
+            result = self.to_json()
+            #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+
+        if result is not None and content_type.endswith('+gzip'):
+            # Handle string result from to_json()
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            with io.BytesIO() as stream:
+                with gzip.GzipFile(fileobj=stream, mode='wb') as gzip_file:
+                    gzip_file.write(result)
+                result = stream.getvalue()
+
+        if result is None:
+            raise NotImplementedError(f"Unsupported media type {content_type}")
+
+        return result
+
+    @classmethod
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['TimeSeries']:
+        """
+        Converts the data to a dataclass based on the content type string.
+        
+        Args:
+            data: The data to convert to a dataclass.
+            content_type_string: The content type string to convert the data to. 
+                Supported content types:
+                    'application/json': Attempts to decode the data from JSON encoded format.
+                Supported content type extensions:
+                    '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
+        Returns:
+            The dataclass representation of the data.
+        """
+        if data is None:
+            return None
+        if isinstance(data, cls):
+            return data
+        if isinstance(data, dict):
+            return cls.from_serializer_dict(data)
+
+        content_type = (content_type_string or 'application/octet-stream').split(';')[0].strip()
+
+        if content_type.endswith('+gzip'):
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for gzip decompression')
+            with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
+                data = gzip_file.read()
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            if isinstance(data, (bytes, str)):
+                data_str = data.decode('utf-8') if isinstance(data, bytes) else data
+                _record = json.loads(data_str)
+                return TimeSeries.from_serializer_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
+        raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'TimeSeries':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            unit_of_measure='tdpdddpogespwwfpnzke',
+            parameter_name='dknkxnnmdccksivjrkjp',
+            parameter_code='xaqkoisrajcfkaqlkydh',
+            statistic_id='lebejgvzvonomungjkvu',
+            last_modified='jwbmzpfkzgexgmgcmqyh',
+            begin=datetime.datetime.now(datetime.timezone.utc),
+            end=datetime.datetime.now(datetime.timezone.utc),
+            computation_period_identifier='rctncgleyjcxlfnfnjtl',
+            computation_identifier='uebwskrghrhsckmzekkk',
+            thresholds=[None, None, None, None, None],
+            sublocation_identifier='aziucjjrcaxhqczuppkv',
+            primary='krwkzyojidytaowritzb',
+            monitoring_location_id='ddcddubigswimdpetzaf',
+            web_description='swegvywlnctyeoliwvjp',
+            parameter_description='ptxrgfouqjnisxiuioco',
+            parent_time_series_id='niccmlpgwioappivsmen',
+            data_gap_interval=datetime.timedelta(days=1),
+            statistics_begin='rhhtixcdnolzmcsbglah',
+            time_series_id='xkdqhmupyvqgaancqfpy',
+            geometry=None
+        )

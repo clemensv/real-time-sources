@@ -47,7 +47,7 @@ from usgs_iv_producer_data.usgs.instantaneousvalues.otherparameter import OtherP
 from usgs_iv_producer_data.usgs.sites.site import Site
 from usgs_iv_producer_data.usgs.sites.sitetimeseries import SiteTimeseries
 try:
-    from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer, USGSInstantaneousValuesEventProducer
+    from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer, USGSSiteTimeseriesEventProducer, USGSInstantaneousValuesEventProducer
 except ModuleNotFoundError:
     # The generated Kafka producer package is only installed in the Kafka
     # image. The MQTT/AMQP images reuse this module for the shared
@@ -55,6 +55,7 @@ except ModuleNotFoundError:
     # producer is an optional dependency there. Only the Kafka bridge
     # references it, and that class never runs in those images.
     USGSSitesEventProducer = None
+    USGSSiteTimeseriesEventProducer = None
     USGSInstantaneousValuesEventProducer = None
 # pylint: enable=import-error, line-too-long
 
@@ -192,8 +193,10 @@ class USGSDataPoller:
         self.kafka_topic = kafka_topic
         self.last_polled_file = last_polled_file
         if kafka_config is not None:
-            producer = Producer(kafka_config)
+            from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer
+            producer = AcknowledgedKafkaProducer(Producer(kafka_config))
             self.site_producer = USGSSitesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
+            self.timeseries_producer = USGSSiteTimeseriesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
             self.values_producer = USGSInstantaneousValuesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
 
         self.state = state
@@ -335,6 +338,12 @@ class USGSDataPoller:
         Poll USGS data and send it to Kafka.
         """
 
+        from .waterdata import api_mode, WaterDataFeed
+        if api_mode() == "waterdata":
+            await WaterDataFeed(self).run()
+            return
+        logger.warning("USGS_API_MODE=legacy: temporary WaterServices rollback; retirement disables this path")
+
         def isfloat(v: str) -> bool:
             try:
                 float(v)
@@ -384,9 +393,11 @@ class USGSDataPoller:
             )
 
         async def flush_transport(producer):
-            result = producer.producer.flush()
+            result = producer.producer.flush(timeout=120)
             if hasattr(result, "__await__"):
-                await result
+                result = await result
+            if result not in (0, None):
+                raise RuntimeError(f"Broker flush left {result} messages; checkpoint retained")
 
         stations_sent = False
         last_polled_times = self.load_last_polled_times()
@@ -455,8 +466,8 @@ class USGSDataPoller:
                                 counts[parameter_name] += 1
 
                                 timeseries_key = (agency_cd, site_no, parameter_cd, timeseries_cd)
-                                if timeseries_key not in emitted_timeseries and hasattr(self.site_producer, 'send_usgs_sites_site_timeseries'):
-                                    self.site_producer.send_usgs_sites_site_timeseries(
+                                if timeseries_key not in emitted_timeseries:
+                                    self.timeseries_producer.send_usgs_sites_site_timeseries(
                                         _source_uri=self.BASE_URL,
                                         _agency_cd=agency_cd,
                                         _site_no=site_no,
@@ -471,6 +482,7 @@ class USGSDataPoller:
                                         ),
                                         flush_producer=False,
                                     )
+                                    await flush_transport(self.timeseries_producer)
                                     emitted_timeseries.add(timeseries_key)
 
                                 last_polled_time = last_polled_times.get(parameter_name, {}).get(
@@ -571,7 +583,9 @@ class USGSDataPoller:
                                     last_polled_times[parameter_name][site_no] = timestamp
                     if count_records % 1000 == 0:
                         await flush_transport(self.values_producer)
+                        await flush_transport(self.timeseries_producer)
                 await flush_transport(self.values_producer)
+                await flush_transport(self.timeseries_producer)
                 try:
                     self.save_last_polled_times(last_polled_times)
                 except OSError as exc:
@@ -595,6 +609,15 @@ class USGSDataPoller:
 
     async def get_sites_in_state(self, state_code: str) -> AsyncIterator[Site]:
         """Get all sites in a state."""
+
+        from .waterdata import api_mode, WaterDataFeed
+        if api_mode() == "waterdata":
+            feed = WaterDataFeed(self)
+            for location in feed.locations:
+                site = feed.site(location)
+                if not state_code or state_code in (site.state_cd, feed.enrollment.sites[location].get("routing_state")):
+                    yield site
+            return
 
         async with aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=30),
@@ -677,6 +700,12 @@ class USGSDataPoller:
 
     async def get_all_sites(self) -> AsyncIterator[Site]:
         """Get all sites in the US."""
+        from .waterdata import api_mode, WaterDataFeed
+        if api_mode() == "waterdata":
+            feed = WaterDataFeed(self)
+            for location in feed.locations:
+                yield feed.site(location)
+            return
         poller = USGSDataPoller()
 
         for state_code in state_codes:
@@ -804,10 +833,10 @@ def main():
             sasl_username = config_params.get('sasl.username')
             sasl_password = config_params.get('sasl.password')
         else:
-            kafka_bootstrap_servers = args.kafka_bootstrap_servers
-            kafka_topic = args.kafka_topic
-            sasl_username = args.sasl_username
-            sasl_password = args.sasl_password
+            kafka_bootstrap_servers = args.kafka_bootstrap_servers or os.getenv("KAFKA_BOOTSTRAP_SERVERS")
+            kafka_topic = args.kafka_topic or os.getenv("KAFKA_TOPIC")
+            sasl_username = args.sasl_username or os.getenv("SASL_USERNAME")
+            sasl_password = args.sasl_password or os.getenv("SASL_PASSWORD")
 
         # Check if required parameters are provided
         if not kafka_bootstrap_servers:
@@ -834,7 +863,7 @@ def main():
             kafka_config=kafka_config,
             kafka_topic=kafka_topic,
             last_polled_file=args.last_polled_file,
-            state=args.state,
+            state=args.state or os.getenv("USGS_STATE"),
             force_site_refresh=args.force_site_refresh,
             force_data_refresh=args.force_data_refresh,
             once=args.once

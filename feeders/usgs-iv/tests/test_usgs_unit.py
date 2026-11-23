@@ -25,10 +25,11 @@ def mock_kafka_config():
 class TestUSGSDataPoller:
     """Test suite for USGSDataPoller initialization and configuration."""
 
+    @patch('usgs_iv.usgs_iv.USGSSiteTimeseriesEventProducer')
     @patch('usgs_iv.usgs_iv.USGSSitesEventProducer')
     @patch('usgs_iv.usgs_iv.USGSInstantaneousValuesEventProducer')
     @patch('usgs_iv.usgs_iv.Producer')
-    def test_init_with_kafka_config(self, mock_producer_class, mock_values_producer, mock_site_producer, mock_kafka_config):
+    def test_init_with_kafka_config(self, mock_producer_class, mock_values_producer, mock_site_producer, mock_timeseries_producer, mock_kafka_config):
         """Test USGSDataPoller initialization with Kafka configuration."""
         mock_producer_instance = Mock()
         mock_producer_class.return_value = mock_producer_instance
@@ -47,8 +48,11 @@ class TestUSGSDataPoller:
         assert poller.force_data_refresh is False
         
         mock_producer_class.assert_called_once_with(mock_kafka_config)
-        mock_site_producer.assert_called_once_with(mock_producer_instance, 'test-topic')
-        mock_values_producer.assert_called_once_with(mock_producer_instance, 'test-topic')
+        acknowledged = mock_site_producer.call_args.args[0]
+        assert acknowledged.raw is mock_producer_instance
+        mock_site_producer.assert_called_once_with(acknowledged, 'test-topic')
+        mock_values_producer.assert_called_once_with(acknowledged, 'test-topic')
+        mock_timeseries_producer.assert_called_once_with(acknowledged, 'test-topic')
 
     def test_init_without_kafka_config(self):
         """Test USGSDataPoller initialization without Kafka configuration."""

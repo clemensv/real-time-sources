@@ -1,0 +1,202 @@
+{
+  "fixture_kind": "Synthetic domain scenarios; no features were copied from an upstream response.",
+  "collections": {
+    "continuous": {
+      "features": [
+        {
+          "type": "Feature",
+          "id": "synthetic-observation-temperature",
+          "geometry": {"type": "Point", "coordinates": [-100.25, 40.5]},
+          "properties": {
+            "time_series_id": "synthetic-series-temperature",
+            "monitoring_location_id": "USGS-99000001",
+            "parameter_code": "00010",
+            "statistic_id": "00011",
+            "time": "2040-02-03T10:00:00+00:00",
+            "value": "12.34500",
+            "unit_of_measure": "degC",
+            "approval_status": "Provisional",
+            "qualifier": null,
+            "last_modified": "2040-02-03T10:10:00.123456+00:00",
+            "method_category": null
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "synthetic-observation-discharge",
+          "geometry": {"type": "Point", "coordinates": [-100.25, 40.5]},
+          "properties": {
+            "time_series_id": "synthetic-series-discharge",
+            "monitoring_location_id": "USGS-99000001",
+            "parameter_code": "00060",
+            "statistic_id": "00011",
+            "time": "2040-02-03T10:05:00+00:00",
+            "value": "45.6700",
+            "unit_of_measure": "ft^3/s",
+            "approval_status": "Approved",
+            "qualifier": "Estimated",
+            "last_modified": "2040-02-03T10:15:00.654321+00:00",
+            "method_category": "synthetic-method"
+          }
+        }
+      ]
+    },
+    "monitoring-locations": {
+      "features": [
+        {
+          "type": "Feature",
+          "id": "USGS-99000001",
+          "geometry": {"type": "Point", "coordinates": [-100.25, 40.5]},
+          "properties": {
+            "id": "USGS-99000001",
+            "agency_code": "USGS",
+            "agency_name": "U.S. Geological Survey",
+            "monitoring_location_number": "99000001",
+            "monitoring_location_name": "SYNTHETIC TEST CHANNEL",
+            "country_code": "US",
+            "country_name": "United States of America",
+            "state_code": "99",
+            "state_name": "Synthetic test state",
+            "county_code": "999",
+            "county_name": "Synthetic test county",
+            "site_type_code": "ST",
+            "site_type": "Stream",
+            "altitude": 123.45,
+            "altitude_accuracy": 0.5,
+            "vertical_datum": "NAVD88",
+            "original_horizontal_datum": "NAD83",
+            "drainage_area": 42.5,
+            "contributing_drainage_area": null,
+            "time_zone_abbreviation": "UTC",
+            "uses_daylight_savings": "N",
+            "revision_note": "Synthetic revision for metadata serialization tests.",
+            "revision_created": "2040-01-01T00:00:00+00:00",
+            "revision_modified": "2040-02-01T00:00:00+00:00",
+            "well_constructed_depth": null
+          }
+        }
+      ]
+    },
+    "time-series-metadata": {
+      "features": [
+        {
+          "type": "Feature",
+          "id": "synthetic-series-temperature",
+          "geometry": {"type": "Point", "coordinates": [-100.25, 40.5]},
+          "properties": {
+            "id": "synthetic-series-temperature",
+            "unit_of_measure": "degC",
+            "parameter_name": "Temperature, water",
+            "parameter_code": "00010",
+            "statistic_id": "00011",
+            "last_modified": "2040-02-03T10:10:00.123456",
+            "begin": "2040-01-01T00:00:00+00:00",
+            "end": "2040-02-03T10:00:00+00:00",
+            "computation_period_identifier": "Points",
+            "computation_identifier": "Instantaneous",
+            "thresholds": [
+              {
+                "Name": "Synthetic upper boundary",
+                "Type": "ThresholdAbove",
+                "Severity": 2,
+                "Description": "Invented boundary for nested-field serialization.",
+                "DisplayColor": "#123ABC",
+                "ReferenceCode": "synthetic-reference",
+                "ProcessingOrder": "Suppression",
+                "Periods": [
+                  {
+                    "StartTime": "2040-01-02T03:04:05.1234567-05:00",
+                    "EndTime": "9999-12-31T23:59:59.9999999+00:00",
+                    "AppliedTime": "2040-01-03T06:07:08.7654321Z",
+                    "SuppressData": true,
+                    "ReferenceValue": 18.25,
+                    "SecondaryReferenceValue": 19.75,
+                    "Comments": "Synthetic period exercises both reference values."
+                  }
+                ]
+              }
+            ],
+            "sublocation_identifier": "Synthetic upstream sensor",
+            "primary": "Primary",
+            "monitoring_location_id": "USGS-99000001",
+            "web_description": "Synthetic active sensor description",
+            "parameter_description": "Temperature, water, degrees Celsius",
+            "parent_time_series_id": null,
+            "data_gap_interval": "PT1H15M",
+            "statistics_begin": "2040"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "synthetic-series-discharge",
+          "geometry": null,
+          "properties": {
+            "id": "synthetic-series-discharge",
+            "unit_of_measure": "ft^3/s",
+            "parameter_name": "Discharge",
+            "parameter_code": "00060",
+            "statistic_id": "00011",
+            "last_modified": "2040-02-03T10:15:00",
+            "begin": "2040-01-01T00:00:00+00:00",
+            "end": "2040-02-03T10:05:00+00:00",
+            "computation_period_identifier": "Points",
+            "computation_identifier": "Instantaneous",
+            "thresholds": [],
+            "sublocation_identifier": null,
+            "primary": "Primary",
+            "monitoring_location_id": "USGS-99000001",
+            "web_description": null,
+            "parameter_description": "Discharge, cubic feet per second",
+            "parent_time_series_id": "synthetic-parent-series",
+            "data_gap_interval": null,
+            "statistics_begin": null
+          }
+        }
+      ]
+    },
+    "parameter-codes": {
+      "features": [
+        {
+          "type": "Feature",
+          "id": "00010",
+          "geometry": null,
+          "properties": {
+            "id": "00010",
+            "parameter_name": "Temperature, water",
+            "unit_of_measure": "deg C",
+            "parameter_group_code": "PHY",
+            "parameter_description": "Temperature, water, degrees Celsius",
+            "medium": "Water",
+            "statistical_basis": "Mean",
+            "time_basis": "1 Day",
+            "weight_basis": null,
+            "particle_size_basis": null,
+            "sample_fraction": null,
+            "temperature_basis": null,
+            "epa_equivalence": "Not checked"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "00060",
+          "geometry": null,
+          "properties": {
+            "id": "00060",
+            "parameter_name": "Discharge",
+            "unit_of_measure": "ft3/s",
+            "parameter_group_code": "PHY",
+            "parameter_description": "Discharge, cubic feet per second",
+            "medium": "Water",
+            "statistical_basis": "Mean",
+            "time_basis": "1 Day",
+            "weight_basis": null,
+            "particle_size_basis": null,
+            "sample_fraction": null,
+            "temperature_basis": null,
+            "epa_equivalence": "Not checked"
+          }
+        }
+      ]
+    }
+  }
+}
