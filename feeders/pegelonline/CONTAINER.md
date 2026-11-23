@@ -288,6 +288,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). **Required when `AMQP_AUTH_MODE=sas`.** |
 | `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). **Required when `AMQP_AUTH_MODE=sas`.** |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `AMQP_PAYLOAD_ENCODING` | `json` (default, `application/json`) or `avro` (raw Avro binary, `application/vnd.apache.avro+avro`). Also selectable with `--payload-encoding`. Independent of CloudEvents content mode. |
 | `POLLING_INTERVAL` | Seconds between polling cycles (default `60`). |
 | `STATE_FILE` | Path to the dedupe state file. |
 | `ONCE_MODE` | `true` runs a single polling cycle and exits. |

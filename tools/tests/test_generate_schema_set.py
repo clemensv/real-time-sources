@@ -4,6 +4,7 @@ import copy
 import importlib.util
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 
@@ -49,6 +50,43 @@ def registry():
             },
         }}}},
     }
+
+
+def test_python_data_generation_supports_json_and_avro(tmp_path, monkeypatch):
+    source = tmp_path / "registry.json"
+    source.write_text(json.dumps(registry()))
+    output = tmp_path / "data"
+    assert generator.main([
+        "--registry", str(source), "--messagegroup", "variant",
+        "--definition", str(tmp_path / "definition.json"),
+        "--python-data-output", str(output), "--python-package", "test_dual_data",
+    ]) == 0
+    assert re.search(r'(?m)^avro\s*=', (output / "pyproject.toml").read_text())
+    monkeypatch.syspath_prepend(str(output / "src"))
+    from test_dual_data.example.reading import Reading
+    import avro.io
+    import io
+
+    record = Reading(value=12.5)
+    assert json.loads(record.to_byte_array("application/json")) == {"value": 12.5}
+    encoded = record.to_byte_array("application/vnd.apache.avro+avro")
+    assert avro.io.DatumReader(Reading.AvroType).read(
+        avro.io.BinaryDecoder(io.BytesIO(encoded))) == {"value": 12.5}
+
+
+@pytest.mark.parametrize("options", [
+    ["--python-data-output", "data"],
+    ["--python-package", "test_dual_data"],
+    ["--python-data-output", "data", "--python-package", "test_dual_data", "--include-history"],
+])
+def test_python_data_generation_rejects_incomplete_or_historical_selection(tmp_path, options):
+    with pytest.raises(SystemExit) as error:
+        generator.main([
+            "--registry", str(tmp_path / "missing.json"), "--messagegroup", "variant",
+            "--definition", str(tmp_path / "definition.json"), *options,
+        ])
+    assert error.value.code == 2
+    assert not (tmp_path / "definition.json").exists()
 
 
 def test_inherited_metadata_versions_and_no_input_mutation():

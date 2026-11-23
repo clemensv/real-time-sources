@@ -32,4 +32,17 @@ xrcg generate `
     --template-args azure_cbs_target=servicebus `
     --output pegelonline_amqp_producer
 
+$definition = Join-Path ([IO.Path]::GetTempPath()) ("pegelonline-" + [guid]::NewGuid() + ".json")
+try {
+    python ..\..\tools\deploy-fabric\generate_schema_set.py `
+        --registry fabric\schematized\pegelonline.fabric.xreg.json `
+        --messagegroup de.wsv.pegelonline.avro `
+        --definition $definition `
+        --python-data-output pegelonline_amqp_producer\pegelonline_amqp_producer_data `
+        --python-package pegelonline_amqp_producer_data
+    if ($LASTEXITCODE -ne 0) { throw "AMQP dual-encoding data generation failed" }
+} finally {
+    if (Test-Path $definition) { Remove-Item -LiteralPath $definition }
+}
+
 Convert-GeneratedPyprojects

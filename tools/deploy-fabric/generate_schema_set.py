@@ -312,6 +312,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--messagegroup", action="append", required=True)
     parser.add_argument("--definition", type=Path, required=True)
     parser.add_argument("--output-registry", type=Path)
+    parser.add_argument("--python-data-output", type=Path,
+                        help="Generate Python data classes with JSON and Avro binary encoders")
+    parser.add_argument("--python-package")
     parser.add_argument("--schema-version", action="append", default=[], metavar="SCHEMA_URI=VERSION")
     parser.add_argument("--root-record", action="append", default=[], metavar="SCHEMA_URI=AVRO_NAME")
     parser.add_argument("--projected-version", action="append", default=[], metavar="SCHEMA_URI=VERSION")
@@ -319,6 +322,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--include-history", action="store_true",
                         help="Include other Avro versions of selected schema resources")
     args = parser.parse_args(argv)
+    if bool(args.python_data_output) != bool(args.python_package):
+        parser.error("--python-data-output and --python-package must be supplied together")
+    if args.python_data_output and args.include_history:
+        parser.error("Python data generation requires selected versions only, without --include-history")
     if args.create_avro_variants and not args.output_registry:
         parser.error("--create-avro-variants requires --output-registry")
     outputs = [args.definition] + ([args.output_registry] if args.output_registry else [])
@@ -337,6 +344,14 @@ def main(argv: list[str] | None = None) -> int:
             encoded.append((args.output_registry, json.dumps(derived, indent=2, ensure_ascii=True) + "\n"))
         for path, text in encoded:
             path.write_text(text, encoding="utf-8")
+        if args.python_data_output:
+            from avrotize.avrotopython import convert_avro_schema_to_python
+
+            convert_avro_schema_to_python(
+                [json.loads(schema["versions"][0]["schema"]) for schema in definition["schemas"]],
+                str(args.python_data_output), package_name=args.python_package,
+                dataclasses_json_annotation=True, avro_annotation=True,
+            )
     except (ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"Schema-set generation failed: {error}\n")
     return 0

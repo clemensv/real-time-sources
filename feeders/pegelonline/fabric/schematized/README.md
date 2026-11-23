@@ -79,7 +79,7 @@ Validate the retained artifacts from the repository root:
 
 ```powershell
 python -m pip install -r feeders\pegelonline\fabric\requirements-validation.txt
-python -m pytest feeders\pegelonline\fabric\tests\test_projection.py feeders\pegelonline\fabric\tests\test_notebook.py --no-cov -q
+python -m pytest feeders\pegelonline\fabric\tests\test_projection.py feeders\pegelonline\fabric\tests\test_notebook.py feeders\pegelonline\fabric\tests\test_payload_encoding.py --no-cov -q
 ```
 
 These checks compare the registry, Fabric definition and notebook bindings
@@ -87,9 +87,28 @@ directly. They do not regenerate files, provision resources or publish events.
 
 ## Wire and storage requirements
 
-Use the existing AMQP 1.0 binary CloudEvents contract with JSON payload bytes,
-`application/json`, `cloudEvents:` application properties and the exact
-service-issued registered schema-version URI.
+The notebook parameter `PAYLOAD_ENCODING` accepts `json` (the default,
+`application/json`) or `avro` (`application/vnd.apache.avro+avro`, raw Avro
+binary without an object-container header). CloudEvents remains in AMQP binary
+mode for both choices: `cloudEvents:` application properties and the exact
+service-issued registered schema-version URI are unchanged. Invalid encoding
+values fail before connection lookup.
+
+The AMQP data package is generated from the selected projected Avro schemas
+with both Avrotize encoders. Both encodings retain string timestamps and the
+selected schemas' nullability; this does not select the older canonical
+long-timestamp Avro variant. `generate_producer.ps1` regenerates this package
+after xrcg using the shared schema authoring command. Use the pinned Avrotize
+3.9.7 release, which fixes the missing Avro runtime dependency tracked in
+[clemensv/avrotize#585](https://github.com/clemensv/avrotize/issues/585).
+No local generator patch is required.
+
+Changing the checked-in notebook does not update a deployed notebook or its
+Environment. Publish the new AMQP data and bridge wheels before changing the
+deployed parameter. JSON is the previously live-validated Fabric path. Avro
+binary requires new receiver/output/history acceptance before a live switch;
+an Avro schema registered for JSON does not prove that the configured receiver
+admits Avro binary.
 
 Structured Kafka input was rejected by the registered receiver with
 `CloudEventPropertyMissingException: type is missing`. Do not assume that

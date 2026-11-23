@@ -1,2 +1,2 @@
-avrotize==3.9.6
+avrotize==3.9.7
 fastavro>=1.9.4,<2

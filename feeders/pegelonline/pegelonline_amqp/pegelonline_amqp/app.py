@@ -92,6 +92,7 @@ def _publish_stations(
     producer: DeWsvPegelonlineAmqpProducer,
     stations: list,
     station_index: Dict[str, Dict[str, Any]],
+    content_type: str = "application/json",
 ) -> None:
     for station in stations:
         station_index[station["uuid"]] = station
@@ -100,6 +101,7 @@ def _publish_stations(
             _feedurl=f"{FEED_URL_ROOT}/stations/{station['shortname']}",
             _station_id=station["uuid"],
             _water_shortname=_water_shortname(station),
+            content_type=content_type,
         )
 
 
@@ -206,13 +208,16 @@ def feed(
     *,
     state_file: str = "",
     once: bool = False,
+    content_type: str = "application/json",
 ) -> None:
+    if content_type not in ("application/json", "application/vnd.apache.avro+avro"):
+        raise ValueError(f"Unsupported payload content type: {content_type}")
     previous_readings: Dict[str, Dict[str, Any]] = load_state(state_file)
     station_index: Dict[str, Dict[str, Any]] = {}
 
     stations = api.list_stations()
     logger.info("Publishing %d station info events to AMQP address", len(stations))
-    _publish_stations(api, producer, stations, station_index)
+    _publish_stations(api, producer, stations, station_index, content_type)
     logger.info("Finished publishing station catalog")
 
     try:
@@ -233,6 +238,7 @@ def feed(
                             _feedurl=f"{FEED_URL_ROOT}/stations/{station_id}/W/currentmeasurement.json",
                             _station_id=station_id,
                             _water_shortname=_water_shortname(station_meta),
+                            content_type=content_type,
                         )
                     except Exception as e:  # pylint: disable=broad-except
                         logger.error("Error publishing measurement for %s: %s", station_id, e)
@@ -302,6 +308,9 @@ def _build_arg_parser() -> argparse.ArgumentParser:
                              default=os.getenv("AMQP_CONTENT_MODE", "binary"),
                              choices=["binary", "structured"],
                              help="CloudEvents content mode (default: binary)")
+    feed_parser.add_argument("--payload-encoding", choices=["json", "avro"],
+                             default=os.getenv("AMQP_PAYLOAD_ENCODING", "json"),
+                             help="Payload encoding, independent of CloudEvents content mode (default: json)")
     polling_interval_default = int(os.getenv("POLLING_INTERVAL", "60"))
     feed_parser.add_argument("-i", "--polling-interval", type=int, default=polling_interval_default,
                              help="Polling interval in seconds")
@@ -342,6 +351,9 @@ def main(argv: Optional[list] = None) -> None:
     if args.command != "feed":
         parser.print_help()
         return
+    content_types = {"json": "application/json", "avro": "application/vnd.apache.avro+avro"}
+    if args.payload_encoding not in content_types:
+        parser.error("AMQP_PAYLOAD_ENCODING must be json or avro")
 
     address = args.address
     if args.broker_url:
@@ -386,6 +398,7 @@ def main(argv: Optional[list] = None) -> None:
         args.polling_interval,
         state_file=args.state_file,
         once=args.once,
+        content_type=content_types[args.payload_encoding],
     )
 
 

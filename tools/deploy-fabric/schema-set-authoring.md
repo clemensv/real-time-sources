@@ -46,6 +46,21 @@ This command targets JSON payloads; a declared non-JSON content type is rejected
 An Avro schema declaration alone does not prove that a producer's JSON payload
 matches it. Compare nullable fields, timestamps and enums with the actual serializer.
 
+## Generate dual-encoding Python data classes
+
+Add `--python-data-output <package-directory> --python-package <package_name>`
+to generate data classes from the selected Avro records through Avrotize with
+both JSON and Avro binary encoders enabled. This writes an installable generated
+package; it does not change message producers or choose a runtime encoding.
+Do not combine this option with `--include-history`: one schema version per
+record must define the runtime type. Both encoders use the same selected schema,
+including its timestamp representation and nullability.
+
+Use the pinned Avrotize 3.9.7 release. It includes the fix for
+[clemensv/avrotize#585](https://github.com/clemensv/avrotize/issues/585), so
+generated packages declare their Avro runtime dependency without a local patch.
+Regenerate packages rather than editing their generated manifests.
+
 ## Construct missing variants
 
 For JSON Structure contracts without suitable Avro variants:

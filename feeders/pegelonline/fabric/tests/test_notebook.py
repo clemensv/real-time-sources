@@ -75,7 +75,8 @@ def test_notebook_maps_sas_connection_without_losing_key_padding(monkeypatch):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("send_error", [False, True])
-def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_path, send_error):
+@pytest.mark.parametrize("encoding", ["json", "avro"])
+def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_path, send_error, encoding):
     monkeypatch.setenv("SSL_CERT_FILE", "test-ca-bundle")
     namespace = helpers(monkeypatch, None)
     state = tmp_path / "state.json"
@@ -85,6 +86,8 @@ def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_pat
     def feed(api, producer, polling_interval, **kwargs):
         assert kwargs["state_file"] == str(state)
         assert kwargs["once"] is True
+        assert kwargs["content_type"] == (
+            "application/json" if encoding == "json" else "application/vnd.apache.avro+avro")
         if send_error:
             logging.error("Publish rejected")
 
@@ -104,6 +107,7 @@ def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_pat
     namespace.update(
         LOG_PATH=str(tmp_path / "last-run.log"), STATE_FILE=str(state),
         RUN_DURATION=5, POLLING_INTERVAL=60, ONCE_MODE=True,
+        PAYLOAD_ENCODING=encoding,
         WORKSPACE_ID="ws", EVENTSTREAM_NAME="pilot", SOURCE_NAME="input",
         SCHEMA_BINDINGS={"Station": {"source_uri": next(iter(overrides))}},
         dataschema_overrides=overrides,
@@ -132,6 +136,7 @@ def test_unbound_notebook_fails_before_connection_lookup(monkeypatch, tmp_path):
     namespace.update(
         LOG_PATH=str(tmp_path / "last-run.log"), RUN_DURATION=5, POLLING_INTERVAL=60,
         WORKSPACE_ID="ws", SCHEMA_BINDINGS={"Station": {"source_uri": "xreg://./station"}},
+        PAYLOAD_ENCODING="json",
         notebookutils=SimpleNamespace(notebook=SimpleNamespace(exit=exits.append)),
     )
     cells = json.loads(NOTEBOOK.read_text())["cells"]
@@ -139,6 +144,23 @@ def test_unbound_notebook_fails_before_connection_lookup(monkeypatch, tmp_path):
     exec("".join(cells[4]["source"]), namespace)
     assert exits[0].startswith("FAIL:")
     assert "verified schema mapping cell" in (tmp_path / "last-run.log").read_text()
+
+
+@pytest.mark.unit
+def test_invalid_encoding_fails_before_connection_lookup(monkeypatch, tmp_path):
+    namespace = helpers(monkeypatch, None)
+    monkeypatch.setitem(sys.modules, "proton", SimpleNamespace(SSL=SimpleNamespace(present=lambda: True)))
+    namespace["requests"].certs = SimpleNamespace(where=lambda: "test-ca-bundle")
+    exits = []
+    namespace.update(
+        LOG_PATH=str(tmp_path / "last-run.log"), WORKSPACE_ID="ws", PAYLOAD_ENCODING="invalid",
+        RUN_DURATION=5, POLLING_INTERVAL=60,
+        notebookutils=SimpleNamespace(notebook=SimpleNamespace(exit=exits.append)),
+    )
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+    exec("".join(cells[4]["source"]), namespace)
+    assert exits[0].startswith("FAIL:")
+    assert "PAYLOAD_ENCODING must be json or avro" in (tmp_path / "last-run.log").read_text()
 
 
 @pytest.mark.unit
