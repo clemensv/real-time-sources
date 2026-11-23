@@ -2,6 +2,13 @@
 
 Updated: 2026-11-23. Repository baseline: `41a32d93d9080c9b125d641e89ce328f0cda39ce`.
 
+Draft migration PR: [#1762](https://github.com/clemensv/real-time-sources/pull/1762).
+The branch contains only the USGS migration on current `origin/main`; unrelated
+inherited work remains on its original branches. Local validation and all
+review corrections passed. Cloud release gates remain blocked in
+[#1761](https://github.com/clemensv/real-time-sources/issues/1761); no merge,
+image publication or production cutover has occurred.
+
 ## Decision and current status
 
 Implement two tracks:
