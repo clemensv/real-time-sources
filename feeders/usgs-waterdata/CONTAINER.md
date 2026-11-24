@@ -167,20 +167,25 @@ docker run --rm -e AMQP_HOST=servicebus-emulator -e AMQP_PORT=5672 -e AMQP_USE_T
 
 ### Microsoft Fabric
 
-> Hosting/identity approval is an open release gate. Pure-Python metadata
-> satisfies the current static validator, but the shared notebook deployer
-> rewrites the kernel/removes the Spark Environment binding required by current
-> hosting guidance. Workspace-managed identity is preferred; neither a verified
-> compatible hosting recipe nor workspace-identity Kafka publication has been
-> established. Do not enable access-key fallback without explicit approval.
+> The notebook uses the shared plain-Python hosting path. Live runtime and
+> scheduled acceptance remains required. Workspace-managed identity is
+> preferred, but workspace-identity Kafka publication has not been verified.
+> Do not enable access-key fallback without explicit approval.
 
 [Deploy notebook](https://clemensv.github.io/real-time-sources#usgs-waterdata/fabric-notebook)
 or [container](https://clemensv.github.io/real-time-sources#usgs-waterdata/fabric-aci).
-The notebook uses the same Kafka bridge, an Environment wheel bundle, OneLake
+The notebook uses the same Kafka bridge, a OneLake wheel bundle, OneLake
 state/logs and a worker thread. Connection lookup stays in the canonical
 Topology API cell. Do not paste a connection string into notebook parameters.
-The notebook uses the canonical pure-Python kernel. Verify its Environment
-wheel bundle and Lakehouse binding in a fresh scheduled run. The notebook
+The notebook uses the canonical pure-Python kernel without an Environment
+binding. It requires exactly one wheel each for the bridge, shared core and
+both Kafka producer packages. The shared deployer uploads them under
+`/lakehouse/default/Files/wheels/usgs-waterdata/`; the run cell installs them
+and their public dependencies before connection lookup. Installation requires
+access to the configured Python package index and fails explicitly on error.
+Each install has a 300-second timeout. The OneLake log records active package
+versions. Verify the wheel bundle and Lakehouse binding in a fresh scheduled
+run. The notebook
 requires explicit approval of access-key fallback after identity review;
 no workspace-managed-identity Kafka publisher has been verified here.
 For a scoped run, set notebook parameters `USGS_WATERDATA_SITES` to

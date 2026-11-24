@@ -78,18 +78,18 @@ editing generated producers.
 
 ### Microsoft Fabric
 
-> Notebook hosting remains an open release gate. The static validator requires
-> pure-Python metadata, while current hosting guidance requires preserved Spark
-> Environment bindings and prefers workspace-managed identity. The shared
-> deployer rewrites the kernel/removes that Environment binding. No verified
-> hosting recipe or workspace-identity Kafka path is claimed here; access-key
-> fallback stays disabled pending explicit identity approval.
+> The notebook uses the shared plain-Python hosting path. Live manual and
+> scheduled acceptance remains required. Workspace-identity Kafka publication
+> has not been verified; access-key fallback stays disabled pending explicit
+> identity approval.
 
 - [Fabric notebook](https://clemensv.github.io/real-time-sources#usgs-waterdata/fabric-notebook):
   runs the same Kafka bridge in a worker thread with OneLake state and logs.
-  Uses the canonical pure-Python kernel with a published Environment wheel
-  bundle and Lakehouse binding. Verify those bindings and a fresh scheduled
-  run before production use.
+  The shared deployer uploads its wheel bundle to OneLake. The notebook installs
+  those wheels and public dependencies without a Fabric Environment binding.
+  Missing or ambiguous source wheels and installation failures fail the run
+  and are recorded in the OneLake log. Verify the Lakehouse binding, active
+  package versions and a fresh scheduled run before production use.
   The generated Kafka source connection requires access keys, so the notebook
   fails closed unless an operator explicitly approves that fallback after
   identity review. It does not expose broker secrets as parameters.

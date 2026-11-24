@@ -148,9 +148,10 @@ acceptance, not image publication, production deployment or cutover. The
 November 23 PR review and validation results above supersede the earlier counts.
 
 Cloud release has two explicit blockers: the existing Azure policy prohibits
-the shared-key storage used by the stateful ACI templates, and the shared
-Fabric deployer's kernel/Environment and authentication paths require an
-approved replacement. Six native ARM-engine validations were attempted in
+the shared-key storage used by the stateful ACI templates, and Fabric
+publishing authentication requires a verified supported path. The selected
+notebook host is now plain Python with OneLake wheels, not a Spark Environment.
+Six native ARM-engine validations were attempted in
 an isolated empty resource group; all were blocked by policy. That resource
 group was deleted and its absence verified.
 
@@ -437,7 +438,7 @@ Owners below are proposed roles, not assignments already accepted.
 | USGS-15 | Local acceptance done; release blocked | Implementer | USGS-01 | Native continuous-only implementation, generated contracts/producers, packaging and independent specialist reviews complete. Final Kafka/MQTT/Artemis/Service Bus run passed all four cases. USGS-17/18 block release. |
 | USGS-16 | Done for reviewed sample | Implementer | USGS-03 | Verified enrollment for site 01646500 and parameters 00010/00060, captured expanded-site metadata, explicit units/qualifiers, guarded projection and deterministic vendored-core wheels integrated. Broader enrollment remains an operator coverage gate, not inferred from this sample. |
 | USGS-17 | Blocked | Maintainer + implementer | USGS-10, USGS-15 | Choose and implement policy-compatible persistent state hosting for ACI. All six native ARM-engine validations hit the existing deny-shared-key policy. Do not waive policy or discard state; rerun live deployment acceptance after approval. |
-| USGS-18 | Blocked | Maintainer + implementer | USGS-10, USGS-15 | Resolve Environment-backed Spark hosting and supported publishing identity for Fabric; obtain approval before any access-key fallback. Then verify fresh notebook output, typed KQL history and a scheduled run. |
+| USGS-18 | Blocked | Maintainer + implementer | USGS-10, USGS-15 | Plain Python hosting selected; native notebook now loads shared-deployer OneLake wheels. Verify supported publishing identity, fresh notebook output, typed KQL history and a scheduled run. Access-key fallback remains disabled pending explicit approval. |
 | USGS-19 | Pending upstream fixes | Upstream maintainers + implementer | USGS-06, USGS-15 | Track the four linked generator defects. Retire handwritten boundaries only after fixed generation and strict on-wire/schema regression tests; preserve the legacy contract freeze. |
 
 ### Implemented compatibility boundary
@@ -579,13 +580,46 @@ passed. The failed attempts remain recorded; they are not reported as passing
 suite invocations. Pytest also reports an existing unregistered `docker_e2e`
 marker warning; no warnings or errors were used as delivery proof.
 
-Cloud acceptance is not waived. The shared notebook deployer forces the Python
-kernel and removes Environment binding; the Environment-backed hosting path
-requires Spark bindings. Its legacy connection-string path also needs an
+### Plain Python notebook adaptation (November 24)
+
+The maintainer selected plain Python hosting and confirmed that storage Shared
+Key is prohibited. The native notebook now uses the shared deployer's OneLake
+wheel directory rather than an attached Spark Environment. It checks for one
+bridge, core, data and Kafka producer wheel before installation. Installation
+errors fail the run through the existing OneLake log and notebook exit path.
+The legacy IV/WQ notebooks already had runtime wheel installation; their
+descriptions now match that behavior. No event contract, producer or KQL
+artifact changed.
+
+Local validation:
+
+- `python -m pytest tests\test_notebook.py -q --no-header --override-ini=addopts= -p no:cacheprovider`
+  from the native source: seven tests passed, including failure logging and
+  notebook exit before connection lookup.
+- Offline feeder tests using `python -m pytest tests\ -m "not e2e" -q --no-header --ignore-glob=*_container.py --ignore-glob=*_e2e.py --override-ini=addopts= -p no:cacheprovider`:
+  native 69, IV 66 and WQ 80 passed.
+- `pwsh tools\validate-fabric-deployment.ps1 -FeederSlug <slug>` for each
+  source: 33 checks passed, zero blockers or warnings.
+- Notebook regeneration produced identical bytes on consecutive runs.
+  All Python source files and notebook code cells compiled.
+- Producer-aware fleet mypy: no issues in 1,332 source files.
+- `python tools\ci\import_smoke.py feeders\usgs-waterdata` passed all three
+  native runtime modules after installation in the task validation environment.
+  A combined import check also passed all nine native/IV/WQ transport modules.
+
+No compatible shared stateful ARM template was found in current main.
+The merged AISstream storage-removal change applies to a stateless bridge;
+copying it into USGS would remove persistent checkpoints. ACI adaptation
+remains blocked on identifying the intended shared keyless state design.
+The existing denied templates have not been presented as policy-compatible.
+
+Cloud acceptance is not waived. The selected shared notebook deployment path
+uses the plain Python kernel and OneLake wheel installation; it does not
+require a Spark Environment. Its legacy connection-string path still needs an
 explicitly approved access-key fallback if workspace-identity publishing is
-unavailable. The current static validator passing does not settle either
-runtime question. No access keys were retrieved and no shared Fabric items
-were modified. Resolve the hosting/authentication path before running cloud
+unavailable. The current static validator passing does not establish runtime acceptance.
+No access keys were retrieved and no shared Fabric items
+were modified. Resolve the authentication path before running cloud
 acceptance; do not silently change a shared deployment or enable key auth.
 
 Azure returned `RequestDisallowedByPolicy` for all six native templates.

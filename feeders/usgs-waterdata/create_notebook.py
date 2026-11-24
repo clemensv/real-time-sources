@@ -1,4 +1,4 @@
-"""Build the four-cell, Environment-backed native feeder notebook."""
+"""Build the four-cell native feeder notebook for the shared Python host."""
 
 import json
 from pathlib import Path
@@ -18,12 +18,34 @@ WORKSPACE_ID = ""
 ACCESS_KEY_FALLBACK_APPROVED = False
 '''
 
-LOOKUP = '''import os, requests
+LOOKUP = '''import importlib, importlib.metadata, os, pathlib, subprocess, sys
 import notebookutils
 
 FABRIC_API = "https://api.fabric.microsoft.com/v1"
 
+def _bootstrap():
+    directory = pathlib.Path("/lakehouse/default/Files/wheels/usgs-waterdata")
+    wheels = sorted(directory.glob("*.whl"))
+    required = ("usgs_waterdata-", "usgs_waterdata_core-",
+                "usgs_waterdata_producer_data-", "usgs_waterdata_producer_kafka_producer-")
+    for prefix in required:
+        if len([wheel for wheel in wheels if wheel.name.startswith(prefix)]) != 1:
+            raise RuntimeError(f"Expected one deployed {prefix} wheel in {directory}")
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "--force-reinstall", "--no-deps"]
+        + [str(wheel) for wheel in wheels], timeout=300)
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "--upgrade",
+         "requests>=2.32.3", "urllib3>=2.2.3", "cloudevents>=1.12.1,<2.0.0", "isodate>=0.6.1",
+         "confluent-kafka>=2.5.3", "avro>=1.11.3", "dataclasses-json>=0.6.7,<0.7.0"],
+        timeout=300)
+    importlib.invalidate_caches()
+    for distribution in ("usgs-waterdata", "usgs-waterdata-core",
+                         "usgs-waterdata-producer-data", "usgs-waterdata-producer-kafka-producer"):
+        logging.info("Active package %s version %s", distribution, importlib.metadata.version(distribution))
+
 def _read(url, headers):
+    import requests
     response = requests.get(url, headers=headers, timeout=60)
     response.raise_for_status()
     return response.json()
@@ -77,6 +99,7 @@ try:
         raise RuntimeError("This scheduled notebook requires bounded one-shot polling")
     if RUN_DURATION <= 0:
         raise ValueError("RUN_DURATION must be positive")
+    _bootstrap()
     os.environ["CONNECTION_STRING"] = _connection()
     pathlib.Path(STATE_FILE).parent.mkdir(parents=True, exist_ok=True)
     os.environ["STATE_FILE"] = STATE_FILE
@@ -121,10 +144,12 @@ def main():
     intro = (
         "# USGS Water Data Feeder (Fabric Notebook)\n\n"
         "Runs the native continuous-observation Kafka bridge and its monitoring-location, "
-        "time-series and parameter reference events from a Fabric Environment. "
+        "time-series and parameter reference events in the plain Python kernel. "
         "See [source documentation](https://github.com/clemensv/real-time-sources/tree/main/feeders/usgs-waterdata). "
-        "Pure-Python metadata matches the static validator, but the shared deployer does not preserve the Spark Environment "
-        "required by current hosting guidance. Hosting and identity approval remain release gates. Access-key fallback requires explicit approval; "
+        "The shared deployer uploads source wheels to OneLake; the run cell installs them "
+        "and their public dependencies before acquisition, without an Environment binding. "
+        "Missing or ambiguous wheels and installation failures are reported in the OneLake log. "
+        "Access-key fallback requires explicit approval; "
         "the generated Kafka binding has no verified workspace-identity flow. This notebook is one-shot only. "
         "Never delete delivery state for validation. A worker timeout is failure, not successful completion.\n"
     )

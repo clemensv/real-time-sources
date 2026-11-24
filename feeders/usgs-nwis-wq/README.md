@@ -203,7 +203,7 @@ Two hosting models are supported. Use the deploy buttons on the [project portal]
 
 #### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
 
-A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `usgs_nwis_wq` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/usgs-nwis-wq/`.
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller in the plain Python kernel. The shared deployer uploads the `usgs_nwis_wq` package, shared core and generated producer wheels to OneLake for runtime installation; no Fabric Environment binding is required. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API. The lookup identity does not establish the publisher's identity. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/usgs-nwis-wq/`.
 
 ```powershell
 tools/deploy-fabric/deploy-feeder-notebook.ps1 `
