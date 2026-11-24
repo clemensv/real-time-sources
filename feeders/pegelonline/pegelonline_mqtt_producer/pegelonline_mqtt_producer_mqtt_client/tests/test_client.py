@@ -144,6 +144,7 @@ async def test_de_wsv_pegelonline_mqtt_de_wsv_pegelonline_mqtt_station_py(mosqui
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            water_shortname=f"test_water_shortname_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
@@ -211,6 +212,7 @@ async def test_de_wsv_pegelonline_mqtt_de_wsv_pegelonline_mqtt_current_measureme
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            water_shortname=f"test_water_shortname_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"

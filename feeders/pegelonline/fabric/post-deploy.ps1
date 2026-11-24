@@ -10,14 +10,15 @@
     `<source>/fabric/post-deploy.ps1`. Can also be run standalone for
     re-wiring after a layer/colour/KQL change.
 
-    The generic deployer has already applied `kql/pegelonline.kql` which
-    defines all the helper functions consumed by the map
-    (StateSegments, NavSegments, TrendBase + TrendSegments{1h,3h,6h,24h},
-    FreshSegments, StationLabels). This hook then:
+    The legacy deployer applies `kql/pegelonline.kql` for base ingestion.
+    Schematized deployments must skip that script and supply the discovered
+    StationTable and MeasurementTable names explicitly. This hook then:
 
       1. Ingests `river_geometries.kql` (~1900 `.append` commands) into the
          `RiverSegments` table. Throttles via per-command retry on HTTP 429.
-      2. Runs `wire_pegelonline_map.py` to (re)create 8 layers:
+      2. Reads back both typed table schemas and installs analytics-only
+         adapters and the helpers in `analytics.kql`.
+      3. Runs `wire_pegelonline_map.py` to (re)create 8 layers:
          hydrological state, navigation state, 1h/3h/6h/24h trend,
          data freshness, station labels.
 
@@ -44,11 +45,22 @@ param(
     [string]    $MapId          = $env:PEGELONLINE_FABRIC_MAP_ID,
     [string]    $KqlDatabaseId,
     [string]    $KustoUri,
-    [string]    $KustoDatabase  = "pegelonline"
+    [string]    $KustoDatabase  = "pegelonline",
+    [switch]    $Schematized,
+    [string]    $StationTable = "de.wsv.pegelonline.Station",
+    [string]    $MeasurementTable = "de.wsv.pegelonline.CurrentMeasurement"
 )
 
 $ErrorActionPreference = "Stop"
 $kustoDatabaseBound = $PSBoundParameters.ContainsKey('KustoDatabase')
+if ($Schematized -and (
+    -not $PSBoundParameters.ContainsKey('StationTable') -or
+    -not $PSBoundParameters.ContainsKey('MeasurementTable') -or
+    [string]::IsNullOrWhiteSpace($StationTable) -or
+    [string]::IsNullOrWhiteSpace($MeasurementTable)
+)) {
+    throw "Schematized analytics requires explicit discovered StationTable and MeasurementTable names."
+}
 
 function Get-KustoAccessToken {
     param(
@@ -170,6 +182,46 @@ if (Test-Path $riverKql) {
 } else {
     Write-Host "  [pegelonline post-deploy] $riverKql not present; skipping RiverSegments ingest." -ForegroundColor DarkYellow
     Write-Host "  Regenerate via:  python pegelonline/fabric/build_river_geometries.py  (requires MAPS_KEY)" -ForegroundColor DarkYellow
+}
+
+$analyticsPrefix = Join-Path ([System.IO.Path]::GetTempPath()) ("pegelonline-analytics-" + [guid]::NewGuid())
+$stationSchemaFile = "$analyticsPrefix-station.json"
+$measurementSchemaFile = "$analyticsPrefix-measurement.json"
+$analyticsFile = "$analyticsPrefix.kql"
+try {
+    $h = @{ 'Authorization' = "Bearer $($env:KUSTO_TOKEN)"; 'Content-Type' = 'application/json; charset=utf-8' }
+    $mgmtUrl = "$KustoUri/v1/rest/mgmt"
+    foreach ($binding in @(
+        @($StationTable, $stationSchemaFile),
+        @($MeasurementTable, $measurementSchemaFile)
+    )) {
+        $quoted = ConvertTo-Json -InputObject $binding[0] -Compress
+        $body = @{ db = $KustoDatabase; csl = ".show table [$quoted] schema as json" } | ConvertTo-Json -Compress
+        $response = Invoke-RestMethod -Uri $mgmtUrl -Method Post -Headers $h -Body $body
+        $table = $response.Tables[0]
+        $schemaColumn = -1
+        for ($index = 0; $index -lt $table.Columns.Count; $index++) {
+            if ($table.Columns[$index].ColumnName -eq 'Schema') { $schemaColumn = $index }
+        }
+        if ($schemaColumn -lt 0 -or $table.Rows.Count -ne 1) {
+            throw "Expected exactly one typed table schema for $($binding[0])."
+        }
+        $schema = $table.Rows[0][$schemaColumn] | ConvertFrom-Json
+        if ($schema.Name -ne $binding[0]) { throw "Typed table schema identity mismatch." }
+        $schema | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $binding[1] -Encoding utf8
+    }
+    & $py (Join-Path $PSScriptRoot "render_analytics.py") `
+        --station-schema $stationSchemaFile --measurement-schema $measurementSchemaFile --output $analyticsFile
+    if ($LASTEXITCODE -ne 0) { throw "Analytics table binding failed." }
+    $commands = (Get-Content -LiteralPath $analyticsFile -Raw) -split "`r?`n`r?`n"
+    foreach ($command in $commands | Where-Object { $_.Trim().Length -gt 0 }) {
+        $body = @{ db = $KustoDatabase; csl = $command } | ConvertTo-Json -Compress -Depth 30
+        Invoke-RestMethod -Uri $mgmtUrl -Method Post -Headers $h -Body $body | Out-Null
+    }
+} finally {
+    foreach ($path in @($stationSchemaFile, $measurementSchemaFile, $analyticsFile)) {
+        if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path }
+    }
 }
 
 $script = Join-Path $PSScriptRoot "wire_pegelonline_map.py"

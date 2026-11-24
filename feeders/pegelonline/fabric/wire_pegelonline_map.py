@@ -20,7 +20,8 @@ per gauge, sourced from ``RiverSegments``), plus station labels:
   8. Station labels      - text labels ``shortname  NNN cm`` at zoom >= 9.
                            Default-on.
 
-All layers query helper functions in ``kql/pegelonline.kql``:
+All layers query helper functions in ``fabric/analytics.kql``, bound to
+discovered typed tables by ``fabric/render_analytics.py``:
 
   * ``StateSegments()``, ``NavSegments()``, ``FreshSegments()`` - per-station
     river segments enriched with the current metric value and a precomputed

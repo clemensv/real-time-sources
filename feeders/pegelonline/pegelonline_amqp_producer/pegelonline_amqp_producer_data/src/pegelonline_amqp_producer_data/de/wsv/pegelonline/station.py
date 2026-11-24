@@ -33,8 +33,8 @@ class Station:
         longitude (float): WGS84 decimal-degree longitude of the gauge installation; positive east of the prime meridian. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `longitude` field. [minimum: -180, maximum: 180]
         latitude (float): WGS84 decimal-degree latitude of the gauge installation; positive north of the equator. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `latitude` field. [minimum: -90, maximum: 90]
         water (Water): Federal waterway the gauge measures. See the nested Water schema for routing semantics."""
-    
-    
+
+
     station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     number: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="number"))
     shortname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
@@ -52,12 +52,12 @@ class Station:
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id) if self.station_id else None
-        self.number=str(self.number) if self.number else None
-        self.shortname=str(self.shortname) if self.shortname else None
-        self.longname=str(self.longname) if self.longname else None
-        self.km=float(self.km) if self.km else None
-        self.agency=str(self.agency) if self.agency else None
+        self.station_id=(str(self.station_id)) if self.station_id is not None else None
+        self.number=(str(self.number)) if self.number is not None else None
+        self.shortname=(str(self.shortname)) if self.shortname is not None else None
+        self.longname=(str(self.longname)) if self.longname is not None else None
+        self.km=(float(self.km)) if self.km is not None else None
+        self.agency=(str(self.agency)) if self.agency is not None else None
         self.longitude=float(self.longitude)
         self.latitude=float(self.latitude)
         value_water = self.water
@@ -90,7 +90,7 @@ class Station:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v,enum.Enum):
                 return v.value
@@ -117,7 +117,7 @@ class Station:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
@@ -182,7 +182,7 @@ class Station:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:

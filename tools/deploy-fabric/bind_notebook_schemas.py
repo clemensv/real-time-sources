@@ -15,7 +15,11 @@ from urllib.parse import urlparse
 CELL_TAG = "deployment-dataschema-overrides"
 
 
-def bind_notebook(notebook: dict[str, Any], overrides: dict[str, str]) -> dict[str, Any]:
+def bind_notebook(
+    notebook: dict[str, Any], overrides: dict[str, str], payload_encoding: str,
+) -> dict[str, Any]:
+    if payload_encoding not in ("json", "avro"):
+        raise ValueError("Deployment payload encoding must be json or avro")
     cells = notebook["cells"]
     selections = []
     for cell in cells:
@@ -47,6 +51,7 @@ def bind_notebook(notebook: dict[str, Any], overrides: dict[str, str]) -> dict[s
     cell["source"] = (
         "# Resolved and fingerprint-verified during deployment; keep this copy outside Git.\n"
         + "dataschema_overrides = " + pformat(overrides, sort_dicts=True, width=100) + "\n"
+        + f"deployment_payload_encoding = {payload_encoding!r}\n"
     ).splitlines(keepends=True)
     cell["outputs"] = []
     cell["execution_count"] = None
@@ -60,6 +65,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--notebook", required=True, type=Path)
     parser.add_argument("--resolved-map", required=True, type=Path)
+    parser.add_argument("--payload-encoding", required=True, choices=("json", "avro"),
+                        help="Encoding qualified against registered metadata and history serialization")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
@@ -70,7 +77,7 @@ def main() -> None:
     try:
         notebook = json.loads(args.notebook.read_text(encoding="utf-8"))
         overrides = json.loads(args.resolved_map.read_text(encoding="utf-8"))
-        result = bind_notebook(notebook, overrides)
+        result = bind_notebook(notebook, overrides, args.payload_encoding)
         output.write_text(json.dumps(result, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     except (ValueError, KeyError, TypeError, OSError) as error:
         parser.exit(1, f"Notebook binding failed: {error}\n")

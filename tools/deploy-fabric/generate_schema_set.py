@@ -133,7 +133,7 @@ def convert_structure(schema: Json, root_name: str | None) -> Json:
         return avro_record(json.loads(target.read_text(encoding="utf-8")), root_name or schema.get("name"))
 
 
-def envelope_metadata(message: Json) -> Json:
+def envelope_metadata(message: Json, payload_encoding: str | None = None) -> Json:
     if message.get("envelope") != "CloudEvents/1.0":
         raise ValueError("Only CloudEvents/1.0 messages are supported")
     metadata = copy.deepcopy(message.get("envelopemetadata", {}))
@@ -150,12 +150,18 @@ def envelope_metadata(message: Json) -> Json:
         if name != "datacontenttype":
             entry["required"] = True
     metadata["specversion"]["value"] = "1.0"
+    if payload_encoding is not None:
+        content_types = {"json": "application/json", "avro": "application/vnd.apache.avro+avro"}
+        if payload_encoding not in content_types:
+            raise ValueError("Payload encoding must be json or avro")
+        metadata["datacontenttype"]["value"] = content_types[payload_encoding]
     content_type = metadata["datacontenttype"].setdefault("value", "application/json")
     if not isinstance(content_type, str):
-        raise ValueError("datacontenttype must have a literal JSON media type")
+        raise ValueError("datacontenttype must have a literal media type")
     media_type = content_type.split(";", 1)[0].strip().lower()
-    if media_type != "application/json" and not media_type.endswith("+json"):
-        raise ValueError("This tool targets JSON-wire messages, not Avro-binary payloads")
+    if (media_type not in ("application/json", "application/vnd.apache.avro+avro", "avro/binary")
+            and not media_type.endswith("+json")):
+        raise ValueError("Unsupported payload media type; select JSON or raw Avro encoding")
     for name, entry in metadata.items():
         value = entry.get("value")
         if isinstance(value, str) and ("{" in value or "}" in value):
@@ -197,6 +203,7 @@ def generate(
     projected_versions: dict[str, str] | None = None,
     create_avro_variants: bool = False,
     include_history: bool = False,
+    payload_encoding: str | None = None,
 ) -> tuple[Json, Json]:
     versions = versions or {}
     roots = roots or {}
@@ -216,7 +223,7 @@ def generate(
         for message_id in messages:
             message_parts = ["messagegroups", group_id, "messages", message_id]
             message = resolve_message(registry, message_parts)
-            metadata = envelope_metadata(message)
+            metadata = envelope_metadata(message, payload_encoding)
             event_type = metadata["type"]["value"]
             if event_type in event_types:
                 raise ValueError(f"Duplicate CloudEvents wire type: {event_type}")
@@ -258,7 +265,9 @@ def generate(
                     "dataschemaformat": AVRO,
                     "dataschemauri": local_reference(
                         ["schemagroups", target_group, "schemas", schema_id, "versions", selected]),
-                    "envelopemetadata": {"datacontenttype": {"value": "application/json"}},
+                    "envelopemetadata": {
+                        "datacontenttype": {"value": metadata["datacontenttype"]["value"]},
+                    },
                 }
             else:
                 raise ValueError(
@@ -321,6 +330,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--create-avro-variants", action="store_true")
     parser.add_argument("--include-history", action="store_true",
                         help="Include other Avro versions of selected schema resources")
+    parser.add_argument("--payload-encoding", choices=("json", "avro"),
+                        help="Override payload metadata without changing the Avro schema representation")
     args = parser.parse_args(argv)
     if bool(args.python_data_output) != bool(args.python_package):
         parser.error("--python-data-output and --python-package must be supplied together")
@@ -338,6 +349,7 @@ def main(argv: list[str] | None = None) -> int:
             roots=selection_map(args.root_record), create_avro_variants=args.create_avro_variants,
             projected_versions=selection_map(args.projected_version),
             include_history=args.include_history,
+            payload_encoding=args.payload_encoding,
         )
         encoded = [(args.definition, json.dumps(definition, indent=2, ensure_ascii=True) + "\n")]
         if args.output_registry:

@@ -228,7 +228,7 @@ def test_de_wsv_pegelonline_kafka_cross_event_type_kafka_key(kafka_emulator):
         if msg is None or msg.error():
             continue
         cloudevent = parse_cloudevent(msg)
-        if cloudevent['type'] in ["de.wsv.pegelonline.kafka.Station", "de.wsv.pegelonline.kafka.CurrentMeasurement"]:
+        if cloudevent['type'] in ["de.wsv.pegelonline.Station", "de.wsv.pegelonline.CurrentMeasurement"]:
             key = msg.key().decode('utf-8') if msg.key() else None
             collected_keys.append(key)
 

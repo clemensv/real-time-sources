@@ -24,6 +24,7 @@ from pegelonline_core import (
     FEED_URL_ROOT,
     PegelOnlineAPI,
     build_kafka_config,
+    get_measurement_state,
     load_state,
     parse_kafka_connection_string,
     save_state,
@@ -56,8 +57,8 @@ def _build_measurement(station_id: str, raw: Dict[str, Any]) -> CurrentMeasureme
         station_id=station_id,
         timestamp=raw["timestamp"],
         value=raw["value"],
-        stateMnwMhw=raw.get("stateMnwMhw"),
-        stateNswHsw=raw.get("stateNswHsw"),
+        stateMnwMhw=get_measurement_state(raw, "stateMnwMhw"),
+        stateNswHsw=get_measurement_state(raw, "stateNswHsw"),
         trend=raw.get("trend"),
     )
 

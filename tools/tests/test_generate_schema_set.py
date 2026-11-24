@@ -114,7 +114,7 @@ def test_inherited_metadata_versions_and_no_input_mutation():
     ("remote", "Only local"),
     ("missing", "Missing registry"),
     ("unversioned", "Pin a version"),
-    ("binary", "JSON-wire"),
+    ("binary", "Unsupported payload"),
     ("duplicate", "Duplicate CloudEvents"),
 ])
 def test_invalid_selections_fail_explicitly(change, match):
@@ -130,7 +130,7 @@ def test_invalid_selections_fail_explicitly(change, match):
     elif change == "unversioned":
         del document["schemagroups"]["sensors"]["schemas"]["Reading"]["defaultversionid"]
     elif change == "binary":
-        message["envelopemetadata"]["datacontenttype"] = {"value": "avro/binary"}
+        message["envelopemetadata"]["datacontenttype"] = {"value": "application/octet-stream"}
     elif change == "duplicate":
         groups.append("base")
     with pytest.raises(ValueError, match=match):
@@ -159,7 +159,8 @@ def test_multiple_families_nondefault_version_and_unknown_logical_type():
         assert validate({"value": timestamp}, schema)
 
 
-def test_avrotize_conversion_creates_parallel_inherited_variants():
+@pytest.mark.parametrize("encoding", [None, "json", "avro"])
+def test_avrotize_conversion_creates_parallel_inherited_variants(encoding):
     document = registry()
     message = document["messagegroups"]["base"]["messages"]["reading"]
     message["dataschemaformat"] = "JsonStructure/draft-02"
@@ -188,6 +189,7 @@ def test_avrotize_conversion_creates_parallel_inherited_variants():
     derived, definition = generator.generate(
         document, ["base"], create_avro_variants=True,
         projected_versions={"#/schemagroups/sensors/schemas/Reading": "7"},
+        payload_encoding=encoding,
     )
     assert document == original
     assert derived["endpoints"] == original["endpoints"]
@@ -197,10 +199,28 @@ def test_avrotize_conversion_creates_parallel_inherited_variants():
     variant = derived["messagegroups"]["base.avro"]["messages"]["reading"]
     assert variant["basemessageuri"] == "#/messagegroups/base/messages/reading"
     assert variant["dataschemauri"].endswith("/Reading/versions/7")
+    assert variant["envelopemetadata"]["datacontenttype"]["value"] == (
+        "application/vnd.apache.avro+avro" if encoding == "avro" else "application/json")
     _, regenerated = generator.generate(derived, ["base.avro"])
     assert definition == regenerated
     record = json.loads(definition["schemas"][0]["versions"][0]["schema"])
     assert validate({"id": "sensor1", "state": "OK", "value": None, "location": None}, record)
+
+
+def test_payload_encoding_changes_metadata_without_changing_schema():
+    original = registry()
+    before = copy.deepcopy(original)
+    _, json_definition = generator.generate(original, ["variant"], payload_encoding="json")
+    _, avro_definition = generator.generate(original, ["variant"], payload_encoding="avro")
+    assert original == before
+    assert avro_definition["schemas"] == json_definition["schemas"]
+    assert avro_definition["eventTypes"][0]["envelopeMetadata"]["datacontenttype"]["value"] == (
+        "application/vnd.apache.avro+avro")
+    original["messagegroups"]["base"]["messages"]["reading"]["envelopemetadata"][
+        "datacontenttype"] = {"value": "application/vnd.apache.avro+avro"}
+    assert generator.generate(original, ["variant"])[1] == avro_definition
+    with pytest.raises(ValueError, match="Payload encoding"):
+        generator.generate(original, ["variant"], payload_encoding="invalid")
 
 
 def test_bundle_inlining_and_explicit_root():

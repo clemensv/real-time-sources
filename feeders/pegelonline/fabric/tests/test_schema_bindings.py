@@ -122,6 +122,46 @@ def test_schema_binding_rejects_unqualified_registration(monkeypatch, failure):
 
 
 @pytest.mark.unit
+@pytest.mark.parametrize("encoding", ["json", "avro"])
+@pytest.mark.parametrize("failure", [None, "decoder", "metadata", "missing-family", "untyped"])
+def test_deployment_qualifies_payload_encoding_and_history(monkeypatch, encoding, failure):
+    data = fixture()
+    data["event_type"]["envelopeMetadata"] = {"datacontenttype": {
+        "value": "application/json" if encoding == "json" else "application/vnd.apache.avro+avro",
+    }}
+    properties = {
+        "eventTypes": [{"eventTypeId": "reading-alias"}],
+        "inputSerialization": {"type": "Json" if encoding == "json" else "Avro"},
+        "tableCreationMode": "PerCloudEventSchemaVersion",
+    }
+    data["model"]["properties"]["dataSources"].append({
+        "id": "00000000-0000-0000-0000-000000000006", "type": "Kusto",
+        "direction": "Destination", "properties": properties,
+    })
+    if failure == "decoder":
+        properties["inputSerialization"]["type"] = "Avro" if encoding == "json" else "Json"
+    elif failure == "metadata":
+        data["event_type"]["envelopeMetadata"]["datacontenttype"]["value"] = "application/octet-stream"
+    elif failure == "missing-family":
+        properties["eventTypes"] = []
+    elif failure == "untyped":
+        properties["tableCreationMode"] = "SingleTable"
+    install_session(monkeypatch, data)
+
+    def qualify():
+        return lookup_dataschema_overrides(
+            WS, ES, SOURCE, data["expected"], lambda audience: "approved-token",
+            payload_encoding=encoding,
+        )
+
+    if failure:
+        with pytest.raises(RuntimeError):
+            qualify()
+    else:
+        assert qualify() == {ORIGINAL: SCHEMA_URL + "/versions/2"}
+
+
+@pytest.mark.unit
 @pytest.mark.parametrize("transport", ["kafka", "mqtt", "amqp"])
 @pytest.mark.parametrize("family", ["Station", "CurrentMeasurement"])
 @pytest.mark.parametrize("mode", ["structured", "binary"])

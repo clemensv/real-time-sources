@@ -25,8 +25,8 @@ class Water:
     Attributes:
         shortname (typing.Optional[str]): Lowercase routing token for the waterway as published by WSV — e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII-normalization for non-ASCII characters such as 'ß' → 'ss' or umlauts) as the `{water_shortname}` template variable on the MQTT topic and the AMQP application property. Sourced from the upstream `water.shortname` key. Maximum 40 characters.
         longname (typing.Optional[str]): Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream `water.longname` key. Maximum 255 characters."""
-    
-    
+
+
     shortname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
     longname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
 
@@ -37,8 +37,8 @@ class Water:
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.shortname=str(self.shortname) if self.shortname else None
-        self.longname=str(self.longname) if self.longname else None
+        self.shortname=(str(self.shortname)) if self.shortname is not None else None
+        self.longname=(str(self.longname)) if self.longname is not None else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Water':
@@ -67,7 +67,7 @@ class Water:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v,enum.Enum):
                 return v.value
@@ -94,7 +94,7 @@ class Water:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
@@ -159,7 +159,7 @@ class Water:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:

@@ -9,13 +9,14 @@ dependency. Each transport-specific feeder consumes :class:`PegelOnlineAPI`,
 upstream JSON dictionaries into its own generated CloudEvents producer.
 """
 
-from .acquisition import PegelOnlineAPI, FEED_URL_ROOT
+from .acquisition import PegelOnlineAPI, FEED_URL_ROOT, get_measurement_state
 from .config import FeedConfig, build_kafka_config, parse_kafka_connection_string
 from .state import load_state, save_state
 
 __all__ = [
     "PegelOnlineAPI",
     "FEED_URL_ROOT",
+    "get_measurement_state",
     "FeedConfig",
     "build_kafka_config",
     "parse_kafka_connection_string",

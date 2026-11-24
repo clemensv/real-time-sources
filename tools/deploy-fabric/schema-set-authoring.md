@@ -42,7 +42,10 @@ the input; repeated runs with the same input produce identical output.
 CloudEvents envelope templates are not fixed values on the wire. The tool removes
 template-valued attributes and converts source/dataschema to URI types and subject
 to string. Literal metadata values and descriptions remain intact.
-This command targets JSON payloads; a declared non-JSON content type is rejected.
+This command supports JSON and raw Avro payloads. Existing content-type metadata
+is preserved unless `--payload-encoding json|avro` is supplied. That option
+changes metadata, not the selected Avro schema or its fingerprint. Raw Avro uses
+`application/vnd.apache.avro+avro`, without OCF or Confluent framing.
 An Avro schema declaration alone does not prove that a producer's JSON payload
 matches it. Compare nullable fields, timestamps and enums with the actual serializer.
 
@@ -56,10 +59,16 @@ Do not combine this option with `--include-history`: one schema version per
 record must define the runtime type. Both encoders use the same selected schema,
 including its timestamp representation and nullability.
 
-Use the pinned Avrotize 3.9.7 release. It includes the fix for
+The pinned Avrotize revision includes the 3.9.7 packaging fix for
 [clemensv/avrotize#585](https://github.com/clemensv/avrotize/issues/585), so
 generated packages declare their Avro runtime dependency without a local patch.
 Regenerate packages rather than editing their generated manifests.
+It also includes the nullable-zero correction in
+[clemensv/avrotize#592](https://github.com/clemensv/avrotize/pull/592).
+The official 3.9.7 release still corrupts nullable zeros; use the exact
+Git revisions in the dependency manifest until corrected releases are available.
+The pinned xrcg revision reports `0.11.2.dev6` and includes
+[xregistry/codegen#712](https://github.com/xregistry/codegen/pull/712).
 
 ## Construct missing variants
 
@@ -78,10 +87,11 @@ python tools\deploy-fabric\generate_schema_set.py `
 
 Supply a projected version for every converted schema. Versions are explicit
 contract decisions, never inferred from event names. The tool runs the pinned
-Avrotize 3.9.6 `s2a --no-custom-logical-types` converter and adds
+Avrotize `s2a --no-custom-logical-types` converter and adds
 `<base-message-group>.avro` messages and
 `<base-message-group>.avro.json` schemas. Each variant inherits its base message,
-pins the new schema version and retains JSON content type. Original collections,
+pins the new schema version and uses the selected payload content type. The
+historical `.avro.json` schema-group name does not select the wire encoding. Original collections,
 endpoints, key templates and subjects are unchanged. Existing target groups are
 never overwritten; select them directly instead.
 
@@ -102,7 +112,7 @@ is not proof of Fabric ingestion.
 
 [clemensv/avrotize#571](https://github.com/clemensv/avrotize/issues/571) is resolved
 in Avrotize 3.9.6 by `--no-custom-logical-types`. JSON Structure conversion uses
-that option automatically because this command targets Fabric JSON-wire schemas.
+that option automatically for Fabric-compatible Avro schema representations.
 [clemensv/avrotize#581](https://github.com/clemensv/avrotize/issues/581) was closed:
 xRegistry selection and Fabric definition assembly are implemented here instead.
 
@@ -126,6 +136,9 @@ the selected versions, verifies their fingerprints and obtains exact
 service-issued version URLs. For the pilot, the existing
 `pegelonline_core.fabric.lookup_dataschema_overrides` resolver performs that
 read-only check during deployment with the approved operator credential.
+Pass `payload_encoding="json"` or `"avro"` to also verify registered
+content-type metadata, matching history serialization and per-schema typed
+storage for every selected family before supplying the map to the binder.
 
 Write the resulting original-URI-keyed map to an external operator file, then:
 
@@ -133,6 +146,7 @@ Write the resulting original-URI-keyed map to an external operator file, then:
 python tools\deploy-fabric\bind_notebook_schemas.py `
   --notebook feeders\pegelonline\notebook\pegelonline-feed.ipynb `
   --resolved-map <operator-directory>\resolved-map.json `
+  --payload-encoding <json-or-avro> `
   --output <operator-directory>\deployed-notebook.ipynb
 ```
 
@@ -141,13 +155,19 @@ replaces the single `deployment-dataschema-overrides` code cell and compiles
 all code cells. It does not resolve service metadata or verify fingerprints
 itself; those checks must succeed before supplying the map. Redeployment
 replaces rather than duplicates the cell. Never edit the checked-in notebook
-with physical URLs or put credentials in the mapping file.
+with physical URLs or put credentials in the mapping file. Before binding,
+read back the registered `datacontenttype` and every selected history destination's
+`inputSerialization.type`: JSON requires `Json`; raw Avro requires `Avro`.
+The binder records the qualified encoding but does not perform those service checks.
 
 The portable notebook has an unbound placeholder and fails explicitly if
 executed without deployment injection. The deployed run cell uses the literal
 map without a schema catalog lookup. Connection credentials still come from
 the public Topology API at runtime. Refresh and read back the cell when the
 target source, schema set or selected versions change.
+The run cell rejects a payload encoding that differs from the injected binding
+and requires `ONCE_MODE=True`. Changing encoding requires receiver qualification
+and a newly bound notebook; changing the notebook parameter alone is insufficient.
 
 This helper does not make the legacy shared deployer schematized-safe; preserve
 the registered pipeline and Spark Environment bindings when uploading the

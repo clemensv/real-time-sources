@@ -26,17 +26,19 @@ def mapping(nb):
             for index, item in enumerate(namespace["SCHEMA_BINDINGS"].values())}
 
 
-def test_injection_is_literal_idempotent_and_preserves_input():
+@pytest.mark.parametrize("encoding", ["json", "avro"])
+def test_injection_is_literal_idempotent_and_preserves_input(encoding):
     original = notebook()
     before = copy.deepcopy(original)
     overrides = mapping(original)
     overrides[next(iter(overrides))] += "'quoted"
-    actual = binder.bind_notebook(original, overrides)
+    actual = binder.bind_notebook(original, overrides, encoding)
     assert original == before
-    assert binder.bind_notebook(actual, overrides) == actual
+    assert binder.bind_notebook(actual, overrides, encoding) == actual
     namespace = {}
     exec("".join(actual["cells"][3]["source"]), namespace)
     assert namespace["dataschema_overrides"] == overrides
+    assert namespace["deployment_payload_encoding"] == encoding
     for index in (0, 1, 2, 4):
         assert actual["cells"][index] == before["cells"][index]
     for cell in actual["cells"]:
@@ -57,4 +59,10 @@ def test_invalid_deployment_mapping_rejected(failure):
     else:
         nb["cells"].insert(3, copy.deepcopy(nb["cells"][3]))
     with pytest.raises(ValueError):
-        binder.bind_notebook(nb, overrides)
+        binder.bind_notebook(nb, overrides, "json")
+
+
+def test_invalid_payload_encoding_rejected():
+    nb = notebook()
+    with pytest.raises(ValueError, match="payload encoding"):
+        binder.bind_notebook(nb, mapping(nb), "invalid")

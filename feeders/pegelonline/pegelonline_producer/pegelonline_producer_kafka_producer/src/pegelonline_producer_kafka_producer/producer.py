@@ -133,7 +133,7 @@ class DeWsvPegelonlineKafkaEventProducer:
         event = CloudEvent.create(attributes, byte_data)
         if self.content_mode == "structured":
             media_type = content_type.split(";", 1)[0].strip().lower()
-            if byte_data and (media_type == "application/json" or media_type.endswith("+json")):
+            if byte_data is not None and (media_type == "application/json" or media_type.endswith("+json")):
                 event = CloudEvent.create(attributes, json.loads(byte_data))
             message = to_structured(
                 event,
@@ -182,7 +182,7 @@ class DeWsvPegelonlineKafkaEventProducer:
         event = CloudEvent.create(attributes, byte_data)
         if self.content_mode == "structured":
             media_type = content_type.split(";", 1)[0].strip().lower()
-            if byte_data and (media_type == "application/json" or media_type.endswith("+json")):
+            if byte_data is not None and (media_type == "application/json" or media_type.endswith("+json")):
                 event = CloudEvent.create(attributes, json.loads(byte_data))
             message = to_structured(
                 event,

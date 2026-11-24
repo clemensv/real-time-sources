@@ -98,10 +98,15 @@ The AMQP data package is generated from the selected projected Avro schemas
 with both Avrotize encoders. Both encodings retain string timestamps and the
 selected schemas' nullability; this does not select the older canonical
 long-timestamp Avro variant. `generate_producer.ps1` regenerates this package
-after xrcg using the shared schema authoring command. Use the pinned Avrotize
-3.9.7 release, which fixes the missing Avro runtime dependency tracked in
+after xrcg using the shared schema authoring command. Avrotize
+3.9.7 fixes the missing Avro runtime dependency tracked in
 [clemensv/avrotize#585](https://github.com/clemensv/avrotize/issues/585).
-No local generator patch is required.
+Preserving nullable zeros requires the follow-up correction in
+[clemensv/avrotize#592](https://github.com/clemensv/avrotize/pull/592).
+The shared requirements pin that commit and the structured-JSON/generated-test
+corrections in [xregistry/codegen#712](https://github.com/xregistry/codegen/pull/712).
+Use these revisions until corrected releases are available; do not patch
+generated artifacts.
 
 Changing the checked-in notebook does not update a deployed notebook or its
 Environment. Publish the new AMQP data and bridge wheels before changing the
@@ -133,6 +138,11 @@ upstream option without local patches. Use
 validation does not enforce the original datetime, enum or numeric-range
 constraints; retain JSON Structure validation.
 
+The bridge emits the documented `unknown` classification when upstream omits
+either water-level state, or supplies no state value. It does not emit `null`
+for these optional, non-nullable canonical fields. Other nullable fields,
+including zero-valued trends and river kilometres, retain their values.
+
 ## Deployment-time schema URI binding
 
 The intended deployment path resolves schema URLs **during notebook deployment**.
@@ -149,11 +159,41 @@ the [shared notebook binder](../../../../tools/deploy-fabric/bind_notebook_schem
 to replace that cell in an external deployment copy. The unbound template fails
 explicitly before connecting. The legacy deployer is still not schematized-safe.
 Connection credential discovery remains separate from schema URL mapping.
+The binder also requires the payload encoding qualified against registered
+content-type metadata and the history receiver's `Json` or `Avro` serialization.
+The run cell rejects a mismatched `PAYLOAD_ENCODING` and continuous mode.
+Keep `ONCE_MODE=True`; this notebook has no cooperative worker shutdown.
+
+## Analytics without ingestion plumbing
+
+Eventstream owns the typed Station and CurrentMeasurement tables. Do not apply
+the legacy dispatch table, JSON mappings or either dispatch-to-base update policy
+to this path. The legacy KQL script remains available for other deployments.
+
+After fresh typed-history acceptance, discover the exact physical table names
+and types from the database. The [analytics renderer](../render_analytics.py)
+accepts the `Name` and `OrderedColumns` JSON returned by `.show table ... schema
+as json`. It rejects missing or incompatible columns and writes a bound copy
+outside Git. Its output creates functions only, including explicit datetime
+conversion for string measurement timestamps.
+
+Latest-state helpers scan retained history on each refresh so stale stations
+remain visible. Measure refresh cost before adding latest-state materialization;
+a recent-history cutoff would hide stale stations and is not equivalent.
+
+For Map setup, invoke the [post-deploy hook](../post-deploy.ps1) explicitly with
+`-Schematized -StationTable <discovered-station-table>
+-MeasurementTable <discovered-measurement-table>`, alongside the workspace, Map,
+database and cluster parameters. The hook reads and validates both schemas,
+loads static river geometry, installs the [analytics helpers](../analytics.kql)
+and wires the Map. It does not create base ingestion tables, mappings or routing
+policies. Latest-state enrichment and trends run at query time against the
+selected history; no additional update policy is required.
 
 The [notebook](../../notebook/pegelonline-feed.ipynb) passes
 `dataschema_overrides` to the generated producer constructor.
 [xregistry/codegen#696](https://github.com/xregistry/codegen/pull/696) adds
-this API. The Kafka, MQTT and AMQP clients are generated with xrcg 0.11.1
+this API. The Kafka, MQTT and AMQP clients are generated with the pinned xrcg revision
 and expose this constructor argument. The Kafka and MQTT `feed` functions
 and the AMQP producer factory also accept the optional map. Without a map,
 clients emit their original file-backed schema identities.
@@ -163,13 +203,14 @@ the repository. Activate that environment, then run the source's enforced
 generator script:
 
 ```powershell
-python -m pip install -e <local-xrcg-checkout> tomli-w
+python -m pip install -r tools\deploy-fabric\requirements-schema-set.txt tomli-w
 Push-Location feeders\pegelonline
 try { .\generate_producer.ps1 } finally { Pop-Location }
 ```
 
-The local checkout must report version 0.11.1 and satisfy its declared
-dependencies, including Avrotize >=3.9.5. Client generation does not generate
+The pinned xrcg revision reports `0.11.2.dev6`. The pinned Avrotize revision
+preserves nullable zeros in both encodings; the official 3.9.7 release does not.
+Client generation does not generate
 the Fabric schema-set definition; use the shared authoring command above. Do not
 hand-edit generated clients or relax dependency requirements. Rebuild all
 affected wheels before updating a Fabric Environment; regeneration does

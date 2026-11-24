@@ -108,6 +108,7 @@ def test_notebook_preserves_state_and_reports_feeder_errors(monkeypatch, tmp_pat
         LOG_PATH=str(tmp_path / "last-run.log"), STATE_FILE=str(state),
         RUN_DURATION=5, POLLING_INTERVAL=60, ONCE_MODE=True,
         PAYLOAD_ENCODING=encoding,
+        deployment_payload_encoding=encoding,
         WORKSPACE_ID="ws", EVENTSTREAM_NAME="pilot", SOURCE_NAME="input",
         SCHEMA_BINDINGS={"Station": {"source_uri": next(iter(overrides))}},
         dataschema_overrides=overrides,
@@ -161,6 +162,36 @@ def test_invalid_encoding_fails_before_connection_lookup(monkeypatch, tmp_path):
     exec("".join(cells[4]["source"]), namespace)
     assert exits[0].startswith("FAIL:")
     assert "PAYLOAD_ENCODING must be json or avro" in (tmp_path / "last-run.log").read_text()
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("failure", ["continuous", "encoding-mismatch", "unqualified-encoding"])
+def test_notebook_rejects_unsafe_run_before_connection_or_worker(monkeypatch, tmp_path, failure):
+    namespace = helpers(monkeypatch, None)
+    monkeypatch.setitem(sys.modules, "proton", SimpleNamespace(SSL=SimpleNamespace(present=lambda: True)))
+    namespace["requests"].certs = SimpleNamespace(where=lambda: "test-ca-bundle")
+    exits = []
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("Unsafe notebook run reached connection lookup or worker creation")
+
+    namespace.update(
+        LOG_PATH=str(tmp_path / "last-run.log"), RUN_DURATION=5, POLLING_INTERVAL=60,
+        WORKSPACE_ID="ws", PAYLOAD_ENCODING="avro", ONCE_MODE=failure != "continuous",
+        deployment_payload_encoding="json" if failure == "encoding-mismatch" else "avro",
+        SCHEMA_BINDINGS={"Station": {"source_uri": "xreg://./station"}},
+        dataschema_overrides={"xreg://./station": "https://catalog.example/schemas/s/versions/1"},
+        lookup_es_binding=unexpected,
+        notebookutils=SimpleNamespace(notebook=SimpleNamespace(exit=exits.append)),
+    )
+    if failure == "unqualified-encoding":
+        del namespace["deployment_payload_encoding"]
+    monkeypatch.setattr(namespace["threading"], "Thread", unexpected)
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+    exec("".join(cells[4]["source"]), namespace)
+    assert exits[0].startswith("FAIL:")
+    log = (tmp_path / "last-run.log").read_text()
+    assert ("requires ONCE_MODE=True" if failure == "continuous" else "deployment-qualified") in log
 
 
 @pytest.mark.unit

@@ -29,7 +29,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 from urllib.parse import urlparse
 
-from pegelonline_core import FEED_URL_ROOT, PegelOnlineAPI, load_state, save_state
+from pegelonline_core import FEED_URL_ROOT, PegelOnlineAPI, get_measurement_state, load_state, save_state
 from pegelonline_amqp_producer_data.de.wsv.pegelonline.currentmeasurement import CurrentMeasurement
 from pegelonline_amqp_producer_data.de.wsv.pegelonline.station import Station
 from pegelonline_amqp_producer_data.de.wsv.pegelonline.water import Water
@@ -61,8 +61,8 @@ def _build_measurement(station_id: str, raw: Dict[str, Any]) -> CurrentMeasureme
         station_id=station_id,
         timestamp=raw["timestamp"],
         value=raw["value"],
-        stateMnwMhw=raw.get("stateMnwMhw"),
-        stateNswHsw=raw.get("stateNswHsw"),
+        stateMnwMhw=get_measurement_state(raw, "stateMnwMhw"),
+        stateNswHsw=get_measurement_state(raw, "stateNswHsw"),
         trend=raw.get("trend"),
     )
 

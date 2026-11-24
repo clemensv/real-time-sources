@@ -29,12 +29,16 @@ def lookup_dataschema_overrides(
     source_id: str,
     expected: Mapping[str, SchemaBinding],
     get_token: Callable[[str], str],
+    *,
+    payload_encoding: str | None = None,
 ) -> dict[str, str]:
     """Resolve the selected versions and verify their projection fingerprints.
 
     The caller supplies its approved credential flow. Provider-specific metadata
     APIs are required here; connection strings still use the public Topology API.
     """
+    if payload_encoding not in (None, "json", "avro"):
+        raise ValueError("Payload encoding must be json or avro")
     workspace_id = str(UUID(workspace_id))
     eventstream_id = str(UUID(eventstream_id))
     source_id = str(UUID(source_id))
@@ -101,6 +105,25 @@ def lookup_dataschema_overrides(
         selections = sources[0]["properties"].get("eventTypes") or []
         if len(selections) != len(expected) or {item["eventTypeId"] for item in selections} != set(expected):
             raise RuntimeError("Source registered event types do not match the producer contracts")
+        if payload_encoding is not None:
+            history_types = set()
+            for node in model["properties"]["dataSources"]:
+                if node.get("type") != "Kusto" or node.get("direction") != "Destination":
+                    continue
+                properties = node["properties"]
+                selected_types = {
+                    item["eventTypeId"] for item in properties.get("eventTypes", [])
+                } & set(expected)
+                if not selected_types:
+                    continue
+                serialization = properties.get("inputSerialization", {}).get("type")
+                if serialization != ("Json" if payload_encoding == "json" else "Avro"):
+                    raise RuntimeError("History serialization does not match the selected payload encoding")
+                if properties.get("tableCreationMode") != "PerCloudEventSchemaVersion":
+                    raise RuntimeError("Selected history destination must own per-schema typed tables")
+                history_types.update(selected_types)
+            if history_types != set(expected):
+                raise RuntimeError("Every selected family requires a qualified typed history destination")
         result = {}
         schema_sets = {}
         for selection in selections:
@@ -121,6 +144,17 @@ def lookup_dataschema_overrides(
             ).json()
             if event_type["id"] != event_type_id:
                 raise RuntimeError("Registered event type identity mismatch")
+            if payload_encoding is not None:
+                content_type = event_type.get("envelopeMetadata", {}).get(
+                    "datacontenttype", {}).get("value", "")
+                media_type = content_type.split(";", 1)[0].strip().lower()
+                matches_encoding = (
+                    media_type == "application/json" or media_type.endswith("+json")
+                    if payload_encoding == "json"
+                    else media_type in ("application/vnd.apache.avro+avro", "avro/binary")
+                )
+                if not matches_encoding:
+                    raise RuntimeError("Registered content type does not match the selected payload encoding")
             schema_url = event_type["schemaUrl"]
             parsed = urlparse(schema_url)
             prefix = f"/schemagroups/{artifact_id}/schemas/"

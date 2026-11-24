@@ -29,8 +29,8 @@ class CurrentMeasurement:
         stateMnwMhw (typing.Optional[str]): Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values, as computed by the upstream feed. Omitted by upstream when the gauge has no MNW/MHW reference series configured (treat absence as 'unknown').
         stateNswHsw (typing.Optional[str]): Categorical classification of the current water level against the highest navigable water level (HSW) reference for the reach, as computed by the upstream feed. Drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Note: upstream never emits 'low' on this series — HSW is an upper bound only. Omitted by upstream when the gauge has no HSW reference (treat absence as 'unknown').
         trend (typing.Optional[int]): Short-term trend of the water level relative to the previous reading, as classified by the upstream feed. First-class signal for flood-monitoring dashboards. Sourced from the upstream `trend` field; omitted when upstream cannot compute a trend (e.g. first reading after a gap)."""
-    
-    
+
+
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
@@ -48,9 +48,9 @@ class CurrentMeasurement:
         self.station_id=str(self.station_id)
         self.timestamp=str(self.timestamp)
         self.value=float(self.value)
-        self.stateMnwMhw=str(self.stateMnwMhw) if self.stateMnwMhw else None
-        self.stateNswHsw=str(self.stateNswHsw) if self.stateNswHsw else None
-        self.trend=int(self.trend) if self.trend else None
+        self.stateMnwMhw=(str(self.stateMnwMhw)) if self.stateMnwMhw is not None else None
+        self.stateNswHsw=(str(self.stateNswHsw)) if self.stateNswHsw is not None else None
+        self.trend=(int(self.trend)) if self.trend is not None else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'CurrentMeasurement':
@@ -79,7 +79,7 @@ class CurrentMeasurement:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v,enum.Enum):
                 return v.value
@@ -106,7 +106,7 @@ class CurrentMeasurement:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
@@ -171,7 +171,7 @@ class CurrentMeasurement:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
