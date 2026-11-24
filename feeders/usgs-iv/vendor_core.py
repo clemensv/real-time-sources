@@ -94,7 +94,7 @@ def main() -> None:
             if (
                 not path.exists() or path.read_bytes() != wheel
                 or not (directory / "core-wheel.json").exists()
-                or (directory / "core-wheel.json").read_bytes() != manifest_bytes
+                or (directory / "core-wheel.json").read_bytes().replace(b"\r\n", b"\n") != manifest_bytes
                 or len(list(directory.glob("*.whl"))) != 1
             ):
                 raise SystemExit(f"Stale USGS core vendor wheel: {directory}; run python feeders\\usgs-iv\\vendor_core.py")

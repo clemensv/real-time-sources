@@ -74,6 +74,27 @@ Their resolution is tracked in [#1761](https://github.com/clemensv/real-time-sou
 
 ### November 23 PR review corrections
 
+### November 24 CI remediation
+
+The IV resilience fixture now mocks all three producer groups with confirmed
+flush results and uses a bounded once-mode cycle. Tests no longer catch every
+exception or depend on the seven-day refresh boundary's timing. The vendor
+freshness check accepts Git-converted CRLF manifest text without changing the
+wheel bytes. A focused regression covers that checkout case.
+
+The WQ Service Bus emulator failure was a 300-second container-wait timeout.
+The harness now reports feeder logs before cleanup on that failure; its
+deadline and required wire assertions are unchanged. The same strict WQ
+emulator case passed locally without retries after this diagnostic change.
+
+Local checks: 66 IV offline tests using CI import/selection options, all three
+installed IV runtime imports, complete IV compilation, 51 shared regressions
+and producer-aware mypy over 1,332 files passed. The vendored core wheel remains
+byte-identical. Remote CI must verify the pushed remediation before green
+status is claimed.
+
+### November 23 validation detail
+
 The final code reviewer closed all four findings after corrections:
 
 - IV MQTT now rejects unsuccessful PUBACKs on all three connections. The

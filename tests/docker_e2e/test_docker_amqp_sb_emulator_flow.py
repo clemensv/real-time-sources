@@ -36,6 +36,7 @@ from typing import Any, Dict, List
 
 import docker
 import pytest
+from requests.exceptions import ConnectionError, Timeout
 
 from .helpers import REPO_ROOT, build_image
 
@@ -428,7 +429,11 @@ def _run_generic_amqp_sb_flow(
             environment=feeder_env,
         )
         try:
-            result = feeder.wait(timeout=300)
+            try:
+                result = feeder.wait(timeout=300)
+            except (ConnectionError, Timeout) as exc:
+                logs = feeder.logs().decode("utf-8", errors="replace")
+                pytest.fail(f"Bounded feeder wait failed: {exc}\n--- LOGS ---\n{logs[-8000:]}")
             logs = feeder.logs().decode("utf-8", errors="replace")
             assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
         finally:

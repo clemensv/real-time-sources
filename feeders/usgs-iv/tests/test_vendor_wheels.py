@@ -3,6 +3,7 @@
 import importlib.util
 from pathlib import Path
 import shutil
+import sys
 
 import pytest
 
@@ -61,3 +62,13 @@ def test_vendor_archive_is_identical_for_lf_checkout(monkeypatch):
 
     monkeypatch.setattr(Path, "read_bytes", lf_checkout)
     assert helper.build() == expected
+
+
+def test_vendor_check_accepts_crlf_manifest_without_changing_wheel(tmp_path, monkeypatch):
+    helper = load("vendor_core", SOURCE / "vendor_core.py")
+    shutil.copytree(SOURCE / "vendor", tmp_path / "vendor")
+    manifest = tmp_path / "vendor" / "core-wheel.json"
+    manifest.write_bytes(manifest.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+    monkeypatch.setattr(helper, "DESTINATIONS", [manifest.parent])
+    monkeypatch.setattr(sys, "argv", ["vendor_core.py", "--check"])
+    helper.main()
