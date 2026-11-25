@@ -101,11 +101,13 @@ editing generated producers.
 
 ### Azure
 
-> These ACI templates use account-key-backed Azure Files mounts for delivery
-> checkpoints. Deployment is blocked in subscriptions whose storage policy
-> denies Shared Key access. Disabling Shared Key while retaining the mount
-> does not fix that dependency. An approved state-storage design is required;
-> removing persistent dedupe or weakening policy is not a supported workaround.
+These candidate templates configure Azure Files delivery checkpoints through SMB
+managed-identity mounts with storage Shared Key disabled. They require ACI API
+`2026-07-01` and the **Storage File Data SMB MI Admin** role on the dedicated
+state account. Existing state paths and broker identities are preserved.
+See the [shared template contract](../../tools/aci_files_identity.md) for
+permissions, regeneration and live acceptance requirements.
+Live mounting has not passed acceptance; keep cloud release blocked.
 
 | Template | Provisioned resources |
 |---|---|

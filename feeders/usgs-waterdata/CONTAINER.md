@@ -200,11 +200,15 @@ identity review. `EVENTSTREAM_NAME`, `EVENTSTREAM_SOURCE_NAME` and
 
 ### Azure
 
-> Cloud release is blocked where subscription policy denies storage Shared
-> Key access. All six templates preserve delivery state through account-key-backed
-> Azure Files mounts. Merely setting `allowSharedKeyAccess=false` leaves those
-> mounts dependent on denied keys. Storage/identity redesign requires approval;
-> these templates do not drop persistent state or loosen policy.
+All six candidate templates configure delivery state through Azure Files SMB
+managed-identity mounts with `allowSharedKeyAccess=false`. A dedicated
+user-assigned state identity receives **Storage File Data SMB MI Admin** on the
+dedicated storage account; broker identities and permissions remain unchanged.
+This administrator role is currently required for managed-identity SMB access.
+Do not store unrelated data in the state account. ACI API `2026-07-01` selects
+the state identity without a storage account key. See the
+[shared template contract](../../tools/aci_files_identity.md). Service-side
+mount and restart acceptance has not passed; cloud release remains blocked.
 
 [Kafka BYO](azure-template.json) deploys ACI against an existing connection;
 [Kafka + Event Hubs](azure-template-with-eventhub.json) adds a namespace.
@@ -217,6 +221,9 @@ Service Bus provisioning template, not a bring-your-own-broker template;
 queue, managed identity and sender role. Service Bus sessions are not enabled.
 All six templates provision an Azure Files share, mount `/mnt/bridge-state`,
 and set `STATE_FILE` to `/mnt/bridge-state/usgs-waterdata.json`.
+Run `pwsh feeders\usgs-waterdata\generate-template.ps1` from the repository root
+to regenerate them, including the shared managed-identity transformation.
+No new feeder environment variable or image package is required for the mount.
 
 All templates expose the shared source controls and generic `STATE_FILE`,
 `USER_AGENT`, `ONCE_MODE`, `LOG_LEVEL` and `POLLING_INTERVAL` parameters.

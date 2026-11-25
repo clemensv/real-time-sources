@@ -137,7 +137,8 @@
     "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
     "namespaceResourceId": "[resourceId('Microsoft.ServiceBus/namespaces', variables('namespaceName'))]",
     "queueResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues', variables('namespaceName'), parameters('queueName'))]",
-    "roleAssignmentName": "[guid(variables('queueResourceId'), variables('userIdentityResourceId'), variables('sbDataSenderRoleId'))]"
+    "roleAssignmentName": "[guid(variables('queueResourceId'), variables('userIdentityResourceId'), variables('sbDataSenderRoleId'))]",
+    "stateIdentityName": "[concat(variables('storageAccountName'), '-files-mi')]"
   },
   "resources": [
     {
@@ -160,7 +161,7 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-08-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -169,24 +170,40 @@
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
-        "minimumTlsVersion": "TLS1_2"
+        "minimumTlsVersion": "TLS1_2",
+        "allowSharedKeyAccess": false,
+        "allowBlobPublicAccess": false,
+        "supportsHttpsTrafficOnly": true,
+        "azureFilesIdentityBasedAuthentication": {
+          "directoryServiceOptions": "None",
+          "smbOAuthSettings": {
+            "isSmbOAuthEnabled": true
+          }
+        }
       }
     },
     {
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-08-01",
       "name": "[concat(variables('storageAccountName'), '/default')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": {}
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "authenticationMethods": "Kerberos"
+          }
+        }
+      }
     },
     {
       "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
       "apiVersion": "2023-05-01",
       "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices', variables('storageAccountName'), 'default')]"
       ],
       "properties": {
         "shareQuota": 1
@@ -242,13 +259,14 @@
     },
     {
       "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2026-07-01",
       "name": "[variables('containerGroupName')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[variables('userIdentityResourceId')]": {}
+          "[variables('userIdentityResourceId')]": {},
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]": {}
         }
       },
       "dependsOn": [
@@ -256,7 +274,9 @@
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]",
         "[variables('namespaceResourceId')]",
         "[variables('queueResourceId')]",
-        "[extensionResourceId(variables('queueResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+        "[extensionResourceId(variables('queueResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]",
+        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-smb-mi-admin'))]"
       ],
       "properties": {
         "osType": "Linux",
@@ -376,10 +396,31 @@
             "azureFile": {
               "shareName": "[variables('fileShareName')]",
               "storageAccountName": "[variables('storageAccountName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
+              "userManagedIdentityClientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').clientId]"
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('stateIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-smb-mi-admin')]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a235d3ee-5935-4cfb-8cc5-a3303ad5995e')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
       }
     }
   ],

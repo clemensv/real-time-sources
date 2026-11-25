@@ -299,6 +299,14 @@ docker run --rm \
 
 ## Deploying into Azure Container Instances
 
+The candidate templates configure Azure Files checkpoint volumes with storage
+Shared Key disabled. ACI uses a dedicated user-assigned managed identity and
+the required **Storage File Data SMB MI Admin** role on the dedicated state
+account. Existing broker identities, state paths and image dependencies are
+unchanged. See the [shared template contract](../../tools/aci_files_identity.md)
+for supported API versions, regeneration and mount/restart acceptance.
+Live mounting has not passed acceptance; cloud release remains blocked.
+
 ### AMQP — bring your own AMQP broker
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-iv%2Fazure-template-amqp.json)

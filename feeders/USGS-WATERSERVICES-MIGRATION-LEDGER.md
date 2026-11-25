@@ -1,6 +1,6 @@
 # USGS WaterServices migration work ledger
 
-Updated: 2026-11-23. Repository baseline: `41a32d93d9080c9b125d641e89ce328f0cda39ce`.
+Updated: 2026-11-25. Repository baseline: `41a32d93d9080c9b125d641e89ce328f0cda39ce`.
 
 Draft migration PR: [#1762](https://github.com/clemensv/real-time-sources/pull/1762).
 The branch contains only the USGS migration on current `origin/main`; unrelated
@@ -147,13 +147,14 @@ identities were checked without mocks or skipped acceptance. This is local
 acceptance, not image publication, production deployment or cutover. The
 November 23 PR review and validation results above supersede the earlier counts.
 
-Cloud release has two explicit blockers: the existing Azure policy prohibits
-the shared-key storage used by the stateful ACI templates, and Fabric
+Cloud release has two explicit blockers: the new keyless ACI state templates
+still need successful live mount and checkpoint acceptance, and Fabric
 publishing authentication requires a verified supported path. The selected
 notebook host is now plain Python with OneLake wheels, not a Spark Environment.
-Six native ARM-engine validations were attempted in
-an isolated empty resource group; all were blocked by policy. That resource
-group was deleted and its absence verified.
+The earlier six native ARM-engine validations were blocked by policy. All six
+full templates now pass with the keyless configuration, but both isolated live
+mount probes failed before startup. Every temporary resource group was deleted
+and its absence verified; see the November 25 results below.
 
 The [USGS shutdown notice][shutdown] confirms permanent shutdown on
 **2027-02-22**. USGS correspondence reviewed for this investigation specifies
@@ -437,7 +438,7 @@ Owners below are proposed roles, not assignments already accepted.
 | USGS-14 | Pending | Operator | USGS-13 | Verify scheduled notebook diagnostics and typed KQL tables, then monitor freshness/delivery/429s for 48 hours. Confirm no production acquisition traffic to legacy WaterServices and retain the compatibility crosswalk/supplement. |
 | USGS-15 | Local acceptance done; release blocked | Implementer | USGS-01 | Native continuous-only implementation, generated contracts/producers, packaging and independent specialist reviews complete. Final Kafka/MQTT/Artemis/Service Bus run passed all four cases. USGS-17/18 block release. |
 | USGS-16 | Done for reviewed sample | Implementer | USGS-03 | Verified enrollment for site 01646500 and parameters 00010/00060, captured expanded-site metadata, explicit units/qualifiers, guarded projection and deterministic vendored-core wheels integrated. Broader enrollment remains an operator coverage gate, not inferred from this sample. |
-| USGS-17 | Blocked | Maintainer + implementer | USGS-10, USGS-15 | Choose and implement policy-compatible persistent state hosting for ACI. All six native ARM-engine validations hit the existing deny-shared-key policy. Do not waive policy or discard state; rerun live deployment acceptance after approval. |
+| USGS-17 | Implemented; live acceptance blocked | Maintainer + implementer | USGS-10, USGS-15 | Shared SMB managed-identity transformation applied to all 18 USGS templates; Shared Key disabled, checkpoint mounts retained. All six full native templates pass ARM validation. Both isolated probes reported FailedMountAzureFileVolume, including Kerberos configured before creation; successful mount/restart and feeder checkpoint acceptance remain required. Probe resources removed and absence verified. Do not waive policy or discard state. |
 | USGS-18 | Blocked | Maintainer + implementer | USGS-10, USGS-15 | Plain Python hosting selected; native notebook now loads shared-deployer OneLake wheels. Verify supported publishing identity, fresh notebook output, typed KQL history and a scheduled run. Access-key fallback remains disabled pending explicit approval. |
 | USGS-19 | Pending upstream fixes | Upstream maintainers + implementer | USGS-06, USGS-15 | Track the four linked generator defects. Retire handwritten boundaries only after fixed generation and strict on-wire/schema regression tests; preserve the legacy contract freeze. |
 
@@ -607,11 +608,13 @@ Local validation:
   native runtime modules after installation in the task validation environment.
   A combined import check also passed all nine native/IV/WQ transport modules.
 
-No compatible shared stateful ARM template was found in current main.
+At this stage, no compatible shared stateful ARM template was found in main.
 The merged AISstream storage-removal change applies to a stateless bridge;
 copying it into USGS would remove persistent checkpoints. ACI adaptation
-remains blocked on identifying the intended shared keyless state design.
+remained blocked on identifying the intended shared keyless state design.
 The existing denied templates have not been presented as policy-compatible.
+The November 25 implementation below supersedes this missing-design blocker,
+but does not establish successful live mounting.
 
 Cloud acceptance is not waived. The selected shared notebook deployment path
 uses the plain Python kernel and OneLake wheel installation; it does not
@@ -622,13 +625,72 @@ No access keys were retrieved and no shared Fabric items
 were modified. Resolve the authentication path before running cloud
 acceptance; do not silently change a shared deployment or enable key auth.
 
-Azure returned `RequestDisallowedByPolicy` for all six native templates.
+Before the November 25 changes, Azure returned `RequestDisallowedByPolicy`
+for all six native templates.
 The policy, "Deny storage accounts that allow Shared Key", requires
 `allowSharedKeyAccess=false`; the templates use account-key-backed Azure Files
 for persistent state. Merely adding that property does not establish a working,
 policy-compatible mount. Do not request an exemption, bypass the policy,
 remove dedupe persistence or silently switch authentication. Release requires
 an approved state-storage/hosting design and then successful live acceptance.
+
+### Keyless Azure Files state templates (November 25)
+
+Azure Files now documents SMB managed-identity authentication, and the stable
+ACI `2026-07-01` API includes a managed-identity Azure Files volume example.
+The shared [template transformation](../tools/aci_files_identity.md) applies
+that contract to all 18 native, IV and WQ templates. It preserves share names,
+mount paths, state settings and existing broker identities. It disables
+storage Shared Key, enables SMB OAuth, explicitly permits Kerberos in the
+file service and attaches a separate state identity.
+
+Azure Files requires **Storage File Data SMB MI Admin** for these mounts.
+The templates assign that role on the dedicated state account; it bypasses
+file-level ACLs and must not be used for an account containing unrelated data.
+The transformation rejects unsupported topologies rather than falling back
+to keys or removing persistence. Native ARM generation invokes it after the
+ordinary generator.
+
+The published ARM reference spells the volume identity field differently
+from the stable REST specification, TypeSpec and explicit example. The tool
+uses `userManagedIdentityClientId`, which the service retained on readback.
+The documentation mismatch is tracked in
+[Azure/azure-rest-api-specs#48501](https://github.com/Azure/azure-rest-api-specs/issues/48501);
+it is not evidence that the spelling caused the mount failure.
+
+Validation completed locally:
+
+- `python -m pytest tools\tests\test_aci_files_identity.py -q --no-header --override-ini=addopts= -p no:cacheprovider`:
+  23 cases passed across all 18 templates, including key removal,
+  configuration preservation, idempotence and unsupported-topology rejection.
+- `pwsh tools\validate-arm-templates.ps1 -FeederSlug <slug>`:
+  native six, IV seven and WQ five templates passed without blockers or warnings.
+- `pwsh feeders\usgs-waterdata\generate-template.ps1`:
+  all six regenerated templates matched the checked-in bytes.
+- `az_m deployment group validate --resource-group <isolated-group> --template-file <template> --subscription <subscription>`:
+  all six full native templates passed Azure ARM-engine validation with Shared
+  Key disabled. The temporary resource group was removed and absence verified.
+- Offline source suites: native 69, IV 66 and WQ 80 passed. All nine runtime
+  imports passed. Shared tool mypy and producer-aware fleet mypy passed
+  (1,332 feeder files); changed Python files compiled.
+
+The isolated Azure probe passed ARM-engine validation with Shared Key
+disabled. Service readback confirmed SMB OAuth, the selected mount identity
+and its required role. ACI nevertheless reported `FailedMountAzureFileVolume`
+before the container started. Explicit Kerberos was then configured on the
+test file service. A separate clean deployment configured this prerequisite
+before ACI creation and also reported `FailedMountAzureFileVolume`; it did not
+complete within the eight-minute acceptance window. Neither probe reached
+the initial write or restart-read stage. The service supplied no more specific
+mount reason, so the cause is unresolved; this result does not establish that
+the API field or role is wrong. Both probe resource groups were removed and
+their absence independently verified.
+
+A successful ARM validation or service readback alone is not mount proof.
+Live write/restart persistence and actual feeder checkpoint delivery remain
+release gates in [#1761](https://github.com/clemensv/real-time-sources/issues/1761).
+No third speculative deployment, key fallback or policy exemption was attempted.
+Deployment coordinates and diagnostic evidence stay outside Git.
 
 All commands below run from the migration worktree. The package mirror uses
 verified HTTPS without credentials; no TLS verification was disabled.

@@ -61,3 +61,15 @@ argument-hint: "Describe the source, its runtime package, required environment v
 ## References
 
 - [Delivery checklist](references/delivery-checklist.md)
+
+## Learnings
+
+- Azure Files now supports managed-identity SMB mounts; do not conclude that
+  keyless state requires removing ACI volumes. The shared
+  [`aci_files_identity.py`](../../../tools/aci_files_identity.md) transformation
+  enables SMB OAuth, disables storage Shared Key and uses the stable ACI
+  `2026-07-01` REST field `userManagedIdentityClientId` (the ARM reference uses
+  a conflicting spelling). Its required SMB MI Admin role grants broad file
+  access, so use a dedicated state account and require live mount/restart
+  persistence proof before claiming support in the selected region; an accepted
+  ARM request and retained identity field do not establish host-side mounting.

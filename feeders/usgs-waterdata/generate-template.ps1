@@ -80,6 +80,9 @@ try {
         }
         $document | ConvertTo-Json -Depth 100 | Set-Content $target -Encoding utf8NoBOM
     }
+    $templates = @($original.emptyTemplates | ForEach-Object { Join-Path $repoRoot $_ })
+    & python (Join-Path $repoRoot 'tools\aci_files_identity.py') @templates
+    if ($LASTEXITCODE -ne 0) { throw 'USGS Water Data managed-identity state configuration failed' }
 } finally {
     Remove-Item $generatedCatalog -ErrorAction SilentlyContinue
 }

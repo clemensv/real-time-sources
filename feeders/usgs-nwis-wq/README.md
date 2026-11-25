@@ -238,6 +238,14 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 5 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
 
+Candidate state volumes use Azure Files SMB managed identity with storage Shared Key
+disabled. The dedicated state identity requires **Storage File Data SMB MI
+Admin** on its dedicated account; do not store unrelated data there. ACI API
+`2026-07-01` selects this identity without changing state paths or broker
+identities. See the [shared template contract](../../tools/aci_files_identity.md)
+for regeneration and live acceptance requirements.
+Live mounting has not passed acceptance; keep cloud release blocked.
+
 #### Kafka — bring your own Event Hub / Kafka
 
 Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string. You pass the connection string at deploy time; the template provisions only the container and a storage account for persistent dedupe state.
