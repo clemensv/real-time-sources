@@ -113,7 +113,8 @@ def test_water_shortname_sanitization():
 
 
 @pytest.mark.unit
-def test_mqtt_feed_publishes_station_and_measurement(tmp_path):
+@pytest.mark.parametrize("override_schema", [False, True])
+def test_mqtt_feed_publishes_station_and_measurement(tmp_path, override_schema):
     fake = FakePahoClient()
     api = mock.Mock()
     api.list_stations.return_value = [{
@@ -135,6 +136,11 @@ def test_mqtt_feed_publishes_station_and_measurement(tmp_path):
             "stateNswHsw": "unknown",
         }
     }
+    original_schema = (
+        "xreg://./schemagroups/de.wsv.pegelonline.jstruct/schemas/"
+        "de.wsv.pegelonline.CurrentMeasurement/versions/1"
+    )
+    registered_schema = "https://catalog.example/schemas/measurement/versions/2"
 
     with mock.patch("pegelonline_mqtt.app.mqtt.Client", return_value=fake):
         asyncio.run(mqtt_app.feed(
@@ -144,6 +150,7 @@ def test_mqtt_feed_publishes_station_and_measurement(tmp_path):
             polling_interval=1,
             state_file=str(tmp_path / "state.json"),
             once=True,
+            dataschema_overrides={original_schema: registered_schema} if override_schema else None,
         ))
 
     topics = [p["topic"] for p in fake.publishes]
@@ -157,4 +164,5 @@ def test_mqtt_feed_publishes_station_and_measurement(tmp_path):
     headers = _user_properties(measurement_pub["properties"])
     assert headers.get("type") == "de.wsv.pegelonline.CurrentMeasurement"
     assert headers.get("subject") == "STATION-1"
+    assert headers["dataschema"] == (registered_schema if override_schema else original_schema)
     assert "id" in headers and "source" in headers and "time" in headers

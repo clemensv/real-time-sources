@@ -1,0 +1,103 @@
+.create-or-alter function with (folder="Pegelonline analytics") CurrentByStation() {
+    PegelMeasurements()
+    | where isnotempty(station_id) and isnotnull(timestamp)
+    | summarize arg_max(timestamp, *) by station_id
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") EnrichedMeasurements() {
+    PegelStations()
+    | where isnotempty(station_id)
+    | summarize arg_max(station_event_time, *) by station_id
+    | lookup kind=leftouter (CurrentByStation()) on station_id
+    | extend water_shortname=tostring(water.shortname), state=stateMnwMhw, nav_state=stateNswHsw
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") MeasurementSegments() {
+    RiverSegments
+    | project station_id, geometry
+    | lookup kind=leftouter (EnrichedMeasurements()) on station_id
+    | extend label=strcat(shortname, "  ", iif(isnull(value), "no data", strcat(tostring(value), " cm")))
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") StateColor(state:string) {
+    case(state == "very-high", "#d7191c", state == "high", "#fdae61",
+         state == "normal", "#1a9850", state == "low", "#2c7bb6",
+         state == "very-low", "#08306b", "#7f7f7f")
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") StateSegments() {
+    MeasurementSegments()
+    | extend stroke_color=StateColor(state), stroke_weight=5.0
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") NavSegments() {
+    MeasurementSegments()
+    | extend stroke_color=StateColor(nav_state), stroke_weight=5.0
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") TrendBase(window:timespan) {
+    let target = now() - window;
+    let tolerance = max_of(window * 1.5, window + 6h);
+    let reference = PegelMeasurements()
+        | where timestamp between ((now() - tolerance) .. (now() - window * 0.5))
+        | where isnotnull(value)
+        | extend distance=abs(datetime_diff("millisecond", timestamp, target))
+        | summarize arg_min(distance, timestamp, value) by station_id
+        | project station_id, reference_timestamp=timestamp, reference_value=value;
+    EnrichedMeasurements()
+    | lookup kind=leftouter (reference) on station_id
+    | extend elapsed_hours=(timestamp - reference_timestamp) / 1h
+    | extend delta_cm=iif(elapsed_hours > 0 and isnotnull(value), value - reference_value, real(null))
+    | extend abs_delta=abs(delta_cm), rate_cm_h=delta_cm / elapsed_hours
+    | extend direction=case(isnull(rate_cm_h), "unknown", rate_cm_h > 3.0, "extreme-rise",
+                            rate_cm_h > 0.25, "rising", rate_cm_h < -3.0, "extreme-fall",
+                            rate_cm_h < -0.25, "falling", "steady")
+    | extend stroke_color=case(direction == "extreme-rise", "#d7191c",
+                               direction == "rising", "#fdae61", direction == "steady", "#ffffbf",
+                               direction == "falling", "#abd9e9", direction == "extreme-fall", "#2c7bb6", "#7f7f7f"),
+             stroke_weight=iif(isnull(abs_delta), 2.0, 1.0 + 7.0 * min_of(abs_delta / (window / 1h * 10.0), 1.0)),
+             label=strcat(shortname, "  ", iif(isnull(delta_cm), "no reference",
+                          strcat(tostring(round(delta_cm, 1)), " cm/", tostring(round(elapsed_hours, 1)), "h")))
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") TrendSegments(window:timespan) {
+    RiverSegments
+    | project station_id, geometry
+    | lookup kind=leftouter (TrendBase(window)) on station_id
+    | extend direction=iif(isempty(direction), "unknown", direction),
+             stroke_color=iif(isempty(stroke_color), "#7f7f7f", stroke_color),
+             stroke_weight=coalesce(stroke_weight, 2.0),
+             label=iif(isempty(label), strcat(station_id, "  no station metadata"), label)
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") TrendSegments1h() {
+    TrendSegments(1h)
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") TrendSegments3h() {
+    TrendSegments(3h)
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") TrendSegments6h() {
+    TrendSegments(6h)
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") TrendSegments24h() {
+    TrendSegments(24h)
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") FreshSegments() {
+    MeasurementSegments()
+    | extend age_min=(now() - timestamp) / 1m
+    | extend freshness=case(isnull(timestamp), "no-data", age_min <= 30, "fresh",
+                            age_min <= 180, "stale", age_min <= 1440, "old", "very-old")
+    | extend stroke_color=case(freshness == "fresh", "#1a9850", freshness == "stale", "#fdae61",
+                               freshness == "old", "#d7191c", "#7f7f7f"), stroke_weight=5.0
+}
+
+.create-or-alter function with (folder="Pegelonline analytics") StationLabels() {
+    EnrichedMeasurements()
+    | where isnotnull(longitude) and isnotnull(latitude)
+    | extend geometry=bag_pack("type", "Point", "coordinates", pack_array(longitude, latitude)),
+             label=strcat(shortname, "  ", iif(isnull(value), "no data", strcat(tostring(value), " cm")))
+}

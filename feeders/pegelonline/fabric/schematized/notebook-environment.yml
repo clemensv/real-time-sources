@@ -1,0 +1,10 @@
+dependencies:
+  - pip:
+    - avro>=1.12.1
+    - azure-core>=1.30.0
+    - azure-identity>=1.17.0
+    - cloudevents>=1.12.1,<2.0.0
+    - dataclasses_json>=0.6.7
+    - requests>=2.32.3
+    - idna>=3.15
+    - urllib3>=2.7.0

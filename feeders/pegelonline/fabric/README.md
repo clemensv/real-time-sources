@@ -1,5 +1,9 @@
 # pegelonline Fabric assets
 
+The isolated [schematized pilot](./schematized/README.md) uses
+Eventstream-created base tables. The instructions below describe the legacy
+path; do not apply its table definitions or Map hook to schematized items.
+
 Post-deploy artefacts for the **pegelonline** real-time-sources bridge: an
 8-layer Fabric Map that visualises the live state of the German Federal
 Waterways gauge network (~800 stations along the Rhein, Elbe, Donau, Main,
@@ -78,7 +82,7 @@ After tweaking colour ramps, KQL bodies, or adding layers in
 ```powershell
 $env:PEGELONLINE_FABRIC_MAP_ID = "<map-item-guid>"
 ./pegelonline/fabric/post-deploy.ps1 `
-    -Workspace   "<workspace-guid>" `
+    -WorkspaceId "<workspace-guid>" `
     -KqlDatabaseId "<kql-db-guid>" `
     -KustoUri      "https://trd-xxxxxxxx.z1.kusto.fabric.microsoft.com"
 ```
@@ -89,7 +93,8 @@ prefix `pegelonline `) before adding the current set, so re-runs are safe.
 ## What the map looks like
 
 8 layers, all driven by the KQL helper functions in
-`pegelonline/kql/pegelonline.kql`. Default-on layers are starred.
+[`analytics.kql`](./analytics.kql). The hook reads back and validates the
+selected table schemas before installing these functions. Default-on layers are starred.
 
 | # | Layer | Geometry | Colour encoding | Default | Source function |
 | - | ----- | -------- | --------------- | ------- | --------------- |
@@ -143,9 +148,11 @@ in cm/h, and bucketises it:
 | < -3.0 | extreme-fall | blue |
 | (no reading in tolerance) | unknown | grey |
 
-Stroke width scales with `|delta_cm|` over a per-window cap
+The computed `stroke_weight` scales with `|delta_cm|` over a per-window cap
 (`window * 10 cm/h`), so a 100 cm/24h move and a 100 cm/1h move don't
-render identically. Labels always carry the actual elapsed window
+have the same computed weight. Fabric's current line-options schema accepts
+only a constant width, so the wire script renders all ribbons at 5 pixels.
+Labels carry the actual elapsed window
 (e.g. `KOELN  + +12 cm/3h`).
 
 ### Filters
