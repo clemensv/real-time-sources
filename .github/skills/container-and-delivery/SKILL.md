@@ -73,3 +73,11 @@ argument-hint: "Describe the source, its runtime package, required environment v
   access, so use a dedicated state account and require live mount/restart
   persistence proof before claiming support in the selected region; an accepted
   ARM request and retained identity field do not establish host-side mounting.
+- For new SMB identity roles, allow the Azure Files permission-propagation
+  window before testing ACI; `dependsOn` does not establish data-plane readiness.
+  Preserve the account, identity and assignment across attempts and collect
+  file-service request logs before deleting test resources. Successful OAuth
+  `GetKerbTicket` requests followed by mount warnings narrow the failure to a
+  later stage; they do not prove SMB authorization or TCP 445 connectivity.
+  AppLens and Resource Health may not support ACI, so retain private correlation
+  IDs for host-side CIFS/SMB investigation.

@@ -689,8 +689,59 @@ their absence independently verified.
 A successful ARM validation or service readback alone is not mount proof.
 Live write/restart persistence and actual feeder checkpoint delivery remain
 release gates in [#1761](https://github.com/clemensv/real-time-sources/issues/1761).
-No third speculative deployment, key fallback or policy exemption was attempted.
 Deployment coordinates and diagnostic evidence stay outside Git.
+
+### Controlled mature-permission mount test (November 25)
+
+The service team confirmed in
+[Azure/azure-rest-api-specs#47379](https://github.com/Azure/azure-rest-api-specs/pull/47379#issuecomment-6641081961)
+that `userManagedIdentityClientId` is the supported wire field and the ARM
+reference spelling was never supported. The current templates already use
+the correct field. Azure Files permits all SMB authentication methods by
+default, so the first probe's empty SMB settings did not establish that
+Kerberos was disabled.
+
+The earlier probes ended only 15.75 and 7.71 minutes after fresh role
+assignments, shorter than the documented approximately 30-minute-or-longer
+share-permission propagation window. A third test therefore deployed the
+storage account, share, identity and role separately, read back their exact
+bindings and settings, and waited at least 35 minutes after provisioning
+completed before creating ACI. It retained the same prerequisites throughout.
+The probe used a digest-pinned public image verified to run as root; it did
+not request keys, weaken encryption or remove persistence.
+
+Result:
+
+- ARM validation passed with Shared Key disabled, SMB OAuth enabled, explicit
+  Kerberos and the required direct account-scoped SMB MI Admin assignment.
+- ACI remained Creating/Waiting throughout a further 15-minute mount window.
+  Nine `FailedMountAzureFileVolume` warnings were recorded; neither initial
+  write nor restart-read was reached.
+- File-service request diagnostics recorded eight OAuth `GetKerbTicket`
+  requests with `Success`/HTTP 200. Every requester matched the selected
+  identity's principal. Each logged request preceded the corresponding mount
+  warning by 7.10-9.09 seconds.
+- No SMB requests appeared in the collected log result. Successful ticket
+  requests do not establish SMB share authorization or TCP 445 connectivity;
+  the remaining failing stage requires ACI host-side CIFS/SMB diagnostics.
+- Live AppLens reported only Web Apps, AKS and API Management as supported
+  resource types. Resource Health returned `UnsupportedResourceType` for ACI.
+  These tools supplied no diagnosis of the mount failure.
+- The isolated group, including its diagnostic workspace, was deleted and
+  its absence verified. Raw requests, correlation IDs and receipts remain
+  outside Git.
+
+Failure persists after a 35-minute pre-creation wait; the test does not prove
+that every SMB authorization cache was ready.
+Cloud release stays blocked in
+[#1761](https://github.com/clemensv/real-time-sources/issues/1761). A private
+support handoff must include the successful ticket requests and subsequent
+mount failures; no application dependency change or key fallback is justified
+by these observations.
+
+CI on the keyless candidate head `8e8ae4835adb7c8963ff0becbb95f4a29697b4ee`
+completed with 716 passing checks and eight skipped. This confirms its code
+gates, not cloud mount acceptance.
 
 All commands below run from the migration worktree. The package mirror uses
 verified HTTPS without credentials; no TLS verification was disabled.
