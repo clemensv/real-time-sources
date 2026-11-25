@@ -6,6 +6,10 @@ Create and associate the Event Schema Set before generating application bindings
 These upstream event contracts are separate from application data models.
 Application connector configuration does not provision this infrastructure.
 Obtain approval for the target workspace and resource changes.
+For replacement of an existing feeder pipeline, follow the
+[migration runbook](./migration.md) first. Preserve the original history,
+definition, state and schedule until qualified cutover and rollback retention
+have been approved.
 
 1. Inventory signals, supplied producers/feeders, schemas and xRegistry definitions.
    Define an event type per distinct contract, such as a reading or alarm.

@@ -1,6 +1,6 @@
 ---
 name: schematized-fabric-pipeline
-description: "Build and verify a schematized Microsoft Fabric Eventstream pipeline from a producer or feeder and event contracts. Covers Event Schema Sets, xRegistry/Avro projection, schema-aware source association, wire admission, custom output endpoints, paired KQL history, and the application handoff. Use for pipeline creation, schema association, registered KQL ingestion, or upstream pipeline diagnosis."
+description: "Build, migrate and verify schematized Microsoft Fabric Eventstream pipelines for existing or new feeders. Covers reusable Avro variants, pinned schema registration, notebook/runtime bindings, typed history, analytics and Maps, fresh output/history acceptance, staged cutover/rollback and low-disk fleet execution. Use for feeder migration, pipeline creation, schema association or registered-ingestion diagnosis."
 ---
 
 # Build a schematized Fabric Eventstream pipeline
@@ -27,6 +27,10 @@ configuration and acceptance evidence externally.
 ## Build and verify
 
 Read [schema-first authoring](./references/index.md), then only the references needed for the selected path.
+For an existing feeder or a fleet migration, start with the
+[migration execution runbook](./references/migration.md). It defines preparation
+gates, per-feeder changes, acceptance, cutover/rollback and worktree reuse.
+It is a guided workflow, not a claim that the legacy deployer is migration-safe.
 
 1. Inventory the actual producer contracts and supported wire representation.
    [Reuse an existing feeder](./references/external-feeders.md) and resolve [xRegistry references](./references/xregistry-projection.md), including inherited Avro message-group variants.
@@ -67,6 +71,8 @@ Do not invoke a legacy deployer that overwrites these bindings or applies base-i
 
 ## Related skills
 
+- [Existing-feeder and fleet migration](./references/migration.md), including
+  disk-budgeted worktree reuse and an explicit completion checklist.
 - [Scoped authoring gateway qualification](./references/scoped-authoring.md) for an approved isolated pipeline-building adapter.
 - [Source contracts](../xreg-source-contract/SKILL.md) for feeder contract authoring.
 - [Fabric notebook deployment](../fabric-notebook-deployment/SKILL.md) for notebook-hosted pollers.

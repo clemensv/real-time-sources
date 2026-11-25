@@ -52,6 +52,35 @@ An approved deployment-boundary adaptation must be explicit, tested and linked
 to its removal condition; do not make a temporary producer subclass the fleet
 architecture or patch generated source. Remove it only after regeneration and
 fresh output/history proof with the supported generator.
+The merged pilot uses the generated producer's supported
+`dataschema_overrides` constructor argument. Pass an exact original-schema-URI
+to registered-version-URI map through the feeder's existing producer factory;
+do not add a temporary subclass or patch generated clients.
+The map is copied per producer instance and does not recursively rewrite
+payloads. Unmapped URIs retain their original values, so deployment must verify
+complete coverage before publishing any selected family.
+
+## Qualify payload encoding and history together
+
+JSON and raw Avro both passed fresh output/history acceptance over the pilot's
+AMQP binary binding. Raw Avro uses `application/vnd.apache.avro+avro`, with
+neither object-container-file nor Confluent framing. Check the actual bytes with
+the selected schema and an independent decoder; bytes in a custom output alone
+do not prove typed ingestion.
+
+Read back registered `datacontenttype` and the selected history destination's
+`inputSerialization.type`: JSON requires `Json`; raw Avro requires `Avro`.
+For the qualified per-schema history path, read back
+`tableCreationMode=PerCloudEventSchemaVersion` and every selected family.
+Do not infer these from a registered Avro schema or a UI preview.
+
+An in-place JSON-to-Avro destination update left the pilot's decoder unusable
+for typed history; switching back did not restore acceptance. See
+[#1763](https://github.com/clemensv/real-time-sources/issues/1763).
+A clean pipeline created with matching Avro metadata and history serialization
+passed. Treat encoding changes as separately approved candidate pipelines until
+in-place changes and rollback are independently qualified. Do not repeatedly
+flip a production decoder or delete existing history to obtain a pass.
 
 Publish a small authorized probe with new IDs after the source is ready.
 Use real measurements when the scenario requires them; do not synthesize telemetry.

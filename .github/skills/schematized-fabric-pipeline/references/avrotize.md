@@ -6,14 +6,25 @@ Fabric currently documents Avro schema support.
 First reuse a suitable supplied Avro schema, including an existing generated or exported representation.
 Do not convert another representation merely because it was the first one inspected.
 
-When conversion is needed, use [Avrotize from PyPI](https://pypi.org/project/avrotize/), an authoring-time Python dependency.
+When conversion is needed, use Avrotize as an authoring-time Python dependency.
 Do not write a replacement schema converter or add it to the browser runtime.
-Install it in the project's Python tooling environment and record the tool version with the source schema and generated artifact:
+For this repository, install the pinned shared authoring dependencies in an
+external tooling environment and record their resolved revisions:
 
-```sh
-python -m pip install avrotize==3.9.6
+```powershell
+python -m pip install -r tools\deploy-fabric\requirements-schema-set.txt
 python -m pip show avrotize
 ```
+
+Avrotize 3.9.6 introduced `--no-custom-logical-types`; it is not the qualified
+dual-encoding runtime generator. The official 3.9.7 release fixes the generated
+Avro dependency but lacks the nullable-zero correction in
+[clemensv/avrotize#592](https://github.com/clemensv/avrotize/pull/592).
+The requirements also pin the structured JSON/generated-test corrections in
+[xregistry/codegen#712](https://github.com/xregistry/codegen/pull/712).
+Both correction PRs were still open when the pilot was merged. Use the pinned
+revisions until replacement releases pass the same regressions; a version string
+alone does not prove that a correction is installed.
 
 For JSON Structure, convert the resolved payload schema, not the whole xRegistry document:
 
@@ -93,18 +104,25 @@ If the upstream registry is read-only, save a derived registry in the approved p
 1. Inventory every selected base message, including reference-data events, and resolve its authoritative payload schema and version.
    Convert each missing representation with Avrotize's `s2a` or `j2a`, as appropriate.
    Do not infer schemas from samples when an authoritative contract exists.
-2. Add a sibling `<base-group>.avro` schema group containing the converted records, explicit schema/version IDs and the supported Avro format.
+2. Let the shared command add `<base-group>.avro.json` schema resources and
+   `<base-group>.avro` messages with explicit schema/version IDs.
+   The `.avro.json` suffix is a historical resource name, not an encoding switch.
+   For registries outside this repository, follow their established group naming
+   and inheritance vocabulary instead of renaming existing resources.
    Require explicit projected version IDs and record the source-to-derived mapping.
    Keep nested named-type dependencies resolvable in the schema registered with Fabric.
    Do not replace the original JSON Structure or JSON Schema resources.
 3. Add a sibling `<base-group>.avro` message group with one variant per selected base message.
    Preserve each message ID and inherit the original message using the reference attribute supported by that registry revision.
    Override `dataschemaformat` to `Avro` and `dataschemauri` to the corresponding Avro resource.
-   Preserve the inherited CloudEvents wire type, source, subject/key identity, protocol metadata and JSON `datacontenttype`.
+   Preserve the inherited CloudEvents wire type, source, subject/key identity and
+   protocol metadata. Select `datacontenttype` explicitly for the qualified
+   payload encoding; retain JSON when no encoding change is authorized.
    Do not copy the full base message into each variant.
 4. If Avro binary payloads are also in scope and supported by the producer and target, add `<base-group>.avro.binary`.
    Reference the same Avro schema resources and override only the payload `datacontenttype` to the producer's verified Avro media type.
-   Bluesky uses `application/vnd.apache.org.avro+avro`.
+   The qualified pilot uses `application/vnd.apache.avro+avro`.
+   Do not copy another feeder's media type without receiver qualification.
    Do not infer CloudEvents envelope mode from this suffix or advertise unsupported encodings.
 5. Add variant references to the applicable existing endpoint's `messagegroups` list only for representations that endpoint/producer supports.
    Preserve existing references and transport bindings; an added reference does not implement a serializer.
@@ -122,6 +140,9 @@ If the upstream registry is read-only, save a derived registry in the approved p
 For a JSON-emitting source, the required result is a reusable `.avro` message group and its Avro schema resources, plus a pinned Fabric projection.
 An `.avsc` file alone omits the message identity and envelope metadata needed for that projection.
 Constructing these variants must not change the feeder's existing default encoding or replace a deployed pipeline.
+If shared generation finds an existing target group, it refuses to overwrite it.
+Select and validate that group directly, or authorize a distinct derived
+projection; do not bypass the guard with local rewrites.
 
 ## Infer a draft from JSON samples
 
