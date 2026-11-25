@@ -112,3 +112,62 @@ def test_json_flow_rejects_mislabeled_or_binary_payloads(monkeypatch, extra):
     event = {'type': 'example.Observation', 'data': {'id': 'id'}, **extra}
     with pytest.raises(AssertionError, match='JSON flow'):
         helpers.assert_kafka_contract('example', [record], [event])
+
+
+@pytest.mark.parametrize('base_key', ['basemessage', 'basemessageuri', 'basemessageurl'])
+def test_mqtt_json_flow_preserves_inherited_routing_among_avro_variants(tmp_path, monkeypatch, base_key):
+    from tests.docker_e2e import test_docker_mqtt_flow as mqtt_helpers
+
+    schema = {'type': 'object', 'name': 'Observation', 'properties': {'id': {'type': 'string'}}}
+    document = {
+        'messagegroups': {
+            'json': {'messages': {'Observation': {
+                'dataschemaformat': 'JsonStructure/draft-02',
+                'dataschemauri': '#/schemagroups/example/schemas/Observation',
+                'envelopemetadata': {
+                    'type': {'value': 'example.Observation'},
+                    'subject': {'value': '{id}'},
+                    'source': {'value': 'urn:test:source'},
+                    'datacontenttype': {'value': 'application/json'},
+                },
+            }}},
+            'mqtt': {'messages': {'Observation': {
+                base_key: '/messagegroups/json/messages/Observation',
+                'protocoloptions': {'topic_name': 'example/{id}', 'qos': 1, 'retain': True},
+            }}},
+            'avro': {'messages': {'Observation': {
+                'basemessage': '/messagegroups/mqtt/messages/Observation',
+                'dataschemaformat': 'Avro/1.11.3',
+                'dataschemauri': '#/absent/avro',
+            }}},
+            'binary': {'messages': {'Observation': {
+                'basemessage': '/messagegroups/avro/messages/Observation',
+                'envelopemetadata': {'datacontenttype': {'value': 'application/vnd.apache.org.avro+avro'}},
+            }}},
+        },
+        'endpoints': {'Mqtt': {
+            'protocol': 'MQTT',
+            'messagegroups': ['#/messagegroups/mqtt', '#/messagegroups/avro', '#/messagegroups/binary'],
+        }},
+        'schemagroups': {'example': {'schemas': {'Observation': {
+            'defaultversionid': '1', 'versions': {'1': {'schema': schema}},
+        }}}},
+    }
+    xreg_dir = tmp_path / 'feeders' / 'example' / 'xreg'
+    xreg_dir.mkdir(parents=True)
+    (xreg_dir / 'example.xreg.json').write_text(json.dumps(document), encoding='utf-8')
+    monkeypatch.setattr(mqtt_helpers, 'REPO_ROOT', str(tmp_path))
+    schemas = []
+    monkeypatch.setattr(mqtt_helpers, 'InstanceValidator', lambda schema, **kwargs: schemas.append(schema))
+    mqtt_helpers._load_mqtt_contracts.cache_clear()
+    try:
+        contracts = mqtt_helpers._load_mqtt_contracts('example')
+        assert list(contracts) == ['example.Observation']
+        assert contracts['example.Observation']['topic'] == 'example/{id}'
+        assert contracts['example.Observation']['subject_template'] == '{id}'
+        assert contracts['example.Observation']['source_template'] == 'urn:test:source'
+        assert contracts['example.Observation']['qos'] == 1
+        assert contracts['example.Observation']['retain'] is True
+        assert schemas == [schema]
+    finally:
+        mqtt_helpers._load_mqtt_contracts.cache_clear()

@@ -101,8 +101,8 @@ function Convert-GeneratedPyprojects {
     # Codegen self-test (postmortem P2): py_compile every freshly generated
     # producer package so a malformed xrcg/avrotize emission -- a `{time}`
     # subject placeholder colliding with the injected `_time` envelope param
-    # (duplicate-argument SyntaxError), a numeric-leading enum symbol, or empty
-    # template output -- fails here at generation time instead of at container
+    # (duplicate-argument SyntaxError), a numeric-leading enum symbol, or absent
+    # Python output -- fails here at generation time instead of at container
     # start. Single fleet-wide injection point: every generate_producer.ps1
     # routes through Convert-GeneratedPyprojects.
     Test-GeneratedProducers -ProducerDirs ($producerDirs | ForEach-Object { $_.FullName })
@@ -115,25 +115,25 @@ function Test-GeneratedProducers {
 
     .DESCRIPTION
     Runs tools/ci/verify_generated_producer.py over each generated *_producer*
-    directory. A SyntaxError in generated code throws here so the generator
-    stops with a clear, actionable error instead of shipping a producer that
-    crashes on first import. Never hand-edit generated code -- fix the xreg
-    manifest and regenerate.
+    directory. Missing Python output or a SyntaxError throws here. This does
+    not replace runtime import and delivery checks. Never hand-edit generated
+    code -- fix the manifest or generator and regenerate.
     #>
     param(
         [string[]] $ProducerDirs = @()
     )
 
-    if (-not $ProducerDirs -or $ProducerDirs.Count -eq 0) { return }
+    if (-not $ProducerDirs -or $ProducerDirs.Count -eq 0) {
+        throw "No generated producer directories were found. Check the generation logs and output paths."
+    }
 
     $verifier = Join-Path $PSScriptRoot "ci/verify_generated_producer.py"
     if (-not (Test-Path $verifier)) {
-        Write-Warning "verify_generated_producer.py not found at $verifier; skipping codegen self-test."
-        return
+        throw "Required generated producer verifier not found at $verifier."
     }
 
     & python $verifier @ProducerDirs
     if ($LASTEXITCODE -ne 0) {
-        throw "Generated producer self-test failed (py_compile errors in generated code). Fix the xreg manifest and regenerate; never hand-edit generated output."
+        throw "Generated producer self-test failed. Check the generation logs and fix the manifest or generator; never hand-edit generated output."
     }
 }

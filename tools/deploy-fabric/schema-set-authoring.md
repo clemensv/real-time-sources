@@ -69,6 +69,8 @@ The official 3.9.7 release still corrupts nullable zeros; use the exact
 Git revisions in the dependency manifest until corrected releases are available.
 The pinned xrcg revision reports `0.11.2.dev6` and includes
 [xregistry/codegen#712](https://github.com/xregistry/codegen/pull/712).
+Install that revision from the upstream repository in the dependency manifest.
+The fork's tag ancestry produces a different setuptools-scm version for the same commit.
 
 ## Construct missing variants
 

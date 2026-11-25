@@ -1,5 +1,5 @@
 # Unreleased nullable-value correction: clemensv/avrotize#592.
 avrotize @ git+https://github.com/clemensv/avrotize.git@f35d8758b00d0c9eea7e5ed98db244a4792bda6b
 # Unreleased generated-test corrections: xregistry/codegen#712.
-xrcg @ git+https://github.com/clemensv/codegen.git@439f7a7a7ad512ed461cf483e574dacf689e5112
+xrcg @ git+https://github.com/xregistry/codegen.git@439f7a7a7ad512ed461cf483e574dacf689e5112
 fastavro>=1.9.4,<2
