@@ -743,6 +743,51 @@ CI on the keyless candidate head `8e8ae4835adb7c8963ff0becbb95f4a29697b4ee`
 completed with 716 passing checks and eight skipped. This confirms its code
 gates, not cloud mount acceptance.
 
+### Linux and ACI host controls (November 25)
+
+A supported Ubuntu 24.04 VM used Microsoft's `azfilesauth` package (1.0-13)
+and CIFS client (7.0) against a new isolated account/share and the same identity
+subsequently supplied to ACI. Keyless settings and the direct SMB MI Admin role
+were read back, with at least 35 minutes allowed after prerequisite provisioning.
+The VM used the documented Kerberos credential-cache UID and mount options;
+it completed write/fsync, unmount, remount and marker read. Storage-side SMB
+TreeConnect, Write, Flush and Read operations confirm this control.
+
+ACI was created approximately 36.27 minutes after prerequisite completion.
+It reported `SuccessfulMountAzureFileVolume` and the application logged
+`ACI_SMB_WRITE_OK` with exit code zero. Readback matched the exact control
+account and identity, with no storage key supplied. The existing authentication
+configuration worked in this control; no feeder code or filesystem API changed.
+A separate stateless ACI also proved DNS and TCP 445 connectivity. Its observed
+kernel was `6.1.158.2-microsoft-standard`, not evidence of the earlier failed
+hosts' kernel versions.
+
+This supersedes a blanket claim that the ACI path cannot mount. It does not
+diagnose the earlier failures: resources/placement were new and Linux had
+already accessed the share before ACI. No experiment isolated those variables,
+so neither a VM warm-up requirement nor a permission/host bug is established.
+Standalone cold-share startup, ACI restart-read and actual feeder checkpoint
+delivery remain unverified in
+[#1761](https://github.com/clemensv/real-time-sources/issues/1761).
+
+The first VM-control attempt hit an asynchronous resource-visibility race and
+was torn down before a mount test. The corrected attempt handled only the
+expected transient not-found response. The stateless ACI probe also required
+removing an unnecessary inherited identity reference; its corrected deployment
+passed. These were diagnostic-harness corrections, not feeder or template fixes.
+
+The initial storage-log snapshot had 23 rows. Recovery of only the test-owned
+soft-deleted workspace yielded 58 rows, all from the Linux phase; no ACI-phase
+requests were recovered. Do not treat missing rows as a network diagnosis or
+claim ACI storage-side correlation. ACI's mount event and application result
+are retained separately. Every VM, ACI group, share/account/identity and
+diagnostic group was deleted and absence verified; temporary SSH keys were
+removed. The recovered workspace was removed again and its group absence
+verified. Raw captures and target coordinates remain outside Git.
+
+CI on documentation head `47602b3db9bc4bfdb45d9992e2e3c7ed6b33c189`
+completed with 716 passing checks and eight skipped.
+
 All commands below run from the migration worktree. The package mirror uses
 verified HTTPS without credentials; no TLS verification was disabled.
 `DOCKER_BUILDKIT=1` explicitly selects the Docker CLI builder with the same

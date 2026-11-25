@@ -81,3 +81,9 @@ argument-hint: "Describe the source, its runtime package, required environment v
   later stage; they do not prove SMB authorization or TCP 445 connectivity.
   AppLens and Resource Health may not support ACI, so retain private correlation
   IDs for host-side CIFS/SMB investigation.
+- A working Linux SMB control and an ACI mount in a new deployment do not
+  establish why an earlier host failed or that Linux share warm-up is required.
+  Keep storage diagnostics alive until expected request records are collected;
+  an early teardown can leave the application/mount evidence without its
+  storage-side correlation. A recovered workspace may retain only older phases,
+  so label those limits rather than interpreting missing rows as no traffic.

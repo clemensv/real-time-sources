@@ -6,12 +6,13 @@ mount paths, state-file settings and existing broker identities. It does not
 change event contracts or feeder code.
 
 > Candidate deployment path, not release acceptance. All six full native USGS
-> templates passed Azure ARM validation with Shared Key disabled. Three isolated
-> live ACI probes reported `FailedMountAzureFileVolume`. The latest allowed
-> 35 minutes for role propagation before ACI creation and collected eight
-> successful OAuth `GetKerbTicket` requests for the expected identity, followed
-> by mount warnings. No SMB requests appeared in the collected logs. Successful
-> mount, restart persistence and feeder checkpoint acceptance remain required.
+> templates passed Azure ARM validation with Shared Key disabled. Three initial
+> probes failed to mount. A subsequent supported Linux control mounted the
+> share, wrote and remounted/read its marker; ACI then reported
+> `SuccessfulMountAzureFileVolume` and completed its write against the same
+> account and identity. The earlier failure was not reproduced in this control,
+> and its cause remains unproven. Standalone cold-share startup, ACI restart
+> persistence and feeder checkpoint acceptance remain required.
 
 ```powershell
 python tools\aci_files_identity.py feeders\<source>\azure-template.json
@@ -84,6 +85,19 @@ do not prove SMB share authorization or TCP 445 connectivity. Obtain ACI
 host-side CIFS/SMB diagnostics rather than changing feeder dependencies,
 broadening roles or enabling keys. AppLens and Resource Health reported that
 they do not support this ACI resource type.
+
+The subsequent control used Ubuntu 24.04 with Microsoft's `azfilesauth` and
+CIFS client. It completed write/fsync/remount/read with the same keyless
+account and identity later supplied to ACI. A separate stateless ACI resolved
+the service endpoint and connected to TCP 445. The managed-volume ACI then
+reported a successful mount and completed the application write, without
+changing the candidate's authentication configuration or feeder dependencies.
+New resources, placement and prior Linux share access differ from the failed
+probes; the control does not identify which difference matters, prove that a
+VM is needed, or justify an NFS migration. Storage logs verify the Linux
+control's SMB operations, but the recovered snapshot contains no ACI-phase
+requests. Keep diagnostic collection open long enough to observe the expected
+requests before deleting its workspace.
 
 Run `python -m pytest tools\tests\test_aci_files_identity.py` and
 `pwsh tools\validate-arm-templates.ps1 -FeederSlug <source>`.
