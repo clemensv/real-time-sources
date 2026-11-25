@@ -11,8 +11,11 @@ change event contracts or feeder code.
 > share, wrote and remounted/read its marker; ACI then reported
 > `SuccessfulMountAzureFileVolume` and completed its write against the same
 > account and identity. The earlier failure was not reproduced in this control,
-> and its cause remains unproven. Standalone cold-share startup, ACI restart
-> persistence and feeder checkpoint acceptance remain required.
+> and its cause remains unproven. Further tests failed standalone cold-share
+> startup and the native/WQ mounts. IV delivered 51 schema-validated Service
+> Bus events across all four required families and read its persisted
+> checkpoint after the actual ACI Restart API. This successful IV path does
+> not establish reliable cold startup or acceptance of every template.
 
 ```powershell
 python tools\aci_files_identity.py feeders\<source>\azure-template.json
@@ -98,6 +101,25 @@ VM is needed, or justify an NFS migration. Storage logs verify the Linux
 control's SMB operations, but the recovered snapshot contains no ACI-phase
 requests. Keep diagnostic collection open long enough to observe the expected
 requests before deleting its workspace.
+
+Further November 25 verification used a fresh share without Linux access.
+After at least 35 minutes for direct roles, ACI failed its additional
+20-minute mount window. Diagnostics remained available for another 15 minutes:
+23 HTTPS OAuth `GetKerbTicket` operations succeeded, but no SMB rows appeared.
+Write/fsync and generic marker restart-read were unreachable.
+
+Separate fresh stacks used digest-pinned current AMQP images and Entra-only
+Service Bus authentication. Native and WQ groups reached deployment timeout
+with repeated `FailedMountAzureFileVolume` events and never started their
+feeders. IV ran as UID 10001, emitted all four required reference/telemetry
+families, passed payload/envelope validation on 51 consumed events and saved
+a checkpoint. A test-only hold-open wrapper kept its one-shot group Running
+for the actual Restart API; the restarted process read the existing checkpoint
+and completed another feeder cycle. The initial restart request against its
+completed one-shot group returned `ContainerGroupStopped`; that harness error
+was corrected without changing the feeder, identity, image or state path.
+All owned cloud resources were removed and absence independently verified.
+The contrasting outcomes do not identify the failed hosts' mount cause.
 
 Run `python -m pytest tools\tests\test_aci_files_identity.py` and
 `pwsh tools\validate-arm-templates.ps1 -FeederSlug <source>`.

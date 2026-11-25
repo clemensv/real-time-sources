@@ -766,8 +766,8 @@ This supersedes a blanket claim that the ACI path cannot mount. It does not
 diagnose the earlier failures: resources/placement were new and Linux had
 already accessed the share before ACI. No experiment isolated those variables,
 so neither a VM warm-up requirement nor a permission/host bug is established.
-Standalone cold-share startup, ACI restart-read and actual feeder checkpoint
-delivery remain unverified in
+At that stage, standalone cold-share startup, ACI restart-read and actual
+feeder checkpoint delivery remained unverified in
 [#1761](https://github.com/clemensv/real-time-sources/issues/1761).
 
 The first VM-control attempt hit an asynchronous resource-visibility race and
@@ -787,6 +787,50 @@ verified. Raw captures and target coordinates remain outside Git.
 
 CI on documentation head `47602b3db9bc4bfdb45d9992e2e3c7ed6b33c189`
 completed with 716 passing checks and eight skipped.
+
+### Cold startup, actual feeder restart and Python notebook verification (November 25)
+
+These tests use the candidate templates and current packages without storage
+keys, a Linux warm-up or changes to event contracts. Deployment coordinates,
+image digests, live captures, notebook definitions and receipts remain external.
+
+| Scenario | Observed result |
+|---|---|
+| Untouched keyless share, generic ACI cold startup | FAIL: at least 35 minutes for direct roles followed by a 20-minute mount window; repeated `FailedMountAzureFileVolume`, no application startup. |
+| Generic marker write/fsync/restart-read | Unreachable because the cold mount failed. |
+| Cold-test storage diagnostics | 23 successful HTTPS OAuth `GetKerbTicket` requests after a further 15-minute diagnostic wait; no SMB rows observed. Ticket success does not prove TreeConnect authorization, and absent rows do not prove absent packets. |
+| Native AMQP feeder on ACI | FAIL: deployment timeout and repeated mount warnings; no runtime delivery/checkpoint acceptance. |
+| Transitional IV AMQP feeder on ACI | PASS: UID 10001; 51 real Service Bus events consumed across Site, SiteTimeseries, Streamflow and WaterTemperature; CloudEvents envelope and existing schemas validated; checkpoint written. |
+| IV checkpoint across actual ACI Restart API | PASS: changed container start time, existing checkpoint read at startup, successful subsequent feeder cycle. No checkpoint was cleared. |
+| Transitional WQ AMQP feeder on ACI | FAIL: deployment timeout and repeated mount warnings; no runtime delivery/checkpoint acceptance. |
+| Native plain-Python Fabric notebook | Bootstrap PASS: actual Python kernel/Lakehouse readback, four current wheels installed and all four active versions logged. |
+| Fabric publishing and typed-history acceptance | BLOCKED: notebook explicitly rejected unapproved access-key authentication before retrieving a broker key. No output, typed KQL history or scheduled-run success claimed. |
+| Cleanup | PASS: all owned Azure stacks and Fabric notebooks/Lakehouses removed and absence verified; temporary registry credentials removed; unrelated resources preserved. |
+
+The first IV restart request returned `ContainerGroupStopped` because the
+one-shot group had already completed. The corrected test deployed a hold-open
+wrapper around the same feeder command, waited for its checkpoint confirmation,
+then exercised the actual Restart API and verified a new container start time
+and checkpoint read. This is a test-harness correction, not a feeder change.
+The native/WQ log endpoint also returned `InternalServerError` for groups that
+never started; their retained readbacks separately establish mount failure.
+
+All three candidate AMQP images built locally, including their import checks,
+and were published only to an isolated Entra-authenticated test registry.
+Production image publication and live portal acceptance remain outstanding.
+The native notebook installed `usgs-waterdata`, its core and both producer
+packages at version `1.9.1.post20`; bootstrap is distinct from publishing.
+The configured Kafka binding has no verified keyless flow in this test.
+This does not imply that every Fabric protocol lacks Entra support.
+
+CI on the tested candidate head
+`5c52d5cf2a90b921b17ebea49dbb8ed0e57c740c` completed with 716 passing checks
+and eight skipped. All three static notebook validations passed 11 checks
+each, with zero blockers/warnings. Runtime acceptance remains blocked in
+[#1761](https://github.com/clemensv/real-time-sources/issues/1761).
+The successful IV run disproves a blanket mount incompatibility but does not
+explain the failed cold/native/WQ placements. A service-side host investigation
+and a verified keyless Fabric publishing binding are still required.
 
 All commands below run from the migration worktree. The package mirror uses
 verified HTTPS without credentials; no TLS verification was disabled.
