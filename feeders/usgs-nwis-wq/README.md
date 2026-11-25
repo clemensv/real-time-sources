@@ -213,6 +213,12 @@ reviewed selection/enrollment and a distinct `STATE_FILE`; retain the original
 checkpoint. Regenerate with
 `python feeders\usgs-waterdata\create_notebook.py --source usgs-nwis-wq`.
 
+The unchanged KQL monitoring-site projection omits the optional transport
+routing fields `state` and `parameter_code`. These fields remain in custom
+output and the dispatch payload, but not in monitoring-site columns. Typed
+storage validation covers the existing projection; it does not establish
+column storage for those routing fields.
+
 ```powershell
 tools/deploy-fabric/deploy-feeder-notebook.ps1 `
   -Source usgs-nwis-wq `

@@ -79,9 +79,13 @@ Fresh untouched-share HTTPS control passed cold write/read and actual ACI
 restart/read. The actual feeder run then exposed an incorrect SDK rename keyword:
 the public API requires `overwrite`, not its internal `replace_if_exists` argument.
 The call is corrected and a regression exercises the real SDK request header.
-Actual native/IV/WQ checkpoint and restart validation is being repeated.
-Marker-only proof does not establish feeder acceptance. The SMB host cause
-remains unresolved; HTTPS avoids that dependency.
+The repeated actual feeder run passed: native 50 events across four families,
+IV 51 across four, and WQ 18 across two. Every captured event passed envelope
+and schema checks. Each feeder wrote its HTTPS checkpoint, then read it after
+the actual ACI Restart API with a changed container start time. No host state
+mount or storage key was used. The owned test group and registry credentials
+were removed; absence was verified. The SMB host cause remains unresolved;
+HTTPS avoids that dependency.
 
 Final local results are native 94, shared-template 25, IV 69 unit/integration plus
 8 upstream-live, and WQ 89 passed. Initial IV upstream calls timed out; their
@@ -91,11 +95,21 @@ verified, all three trees compiled, all 18 ARM static audits and 33 notebook
 checks passed. The strict 13-case wire matrix passed without skips or retries.
 After the SDK correction and WQ TLS-binding fix, all three real Kafka cases
 passed again with current wheels. All nine final no-cache image builds passed.
-Actual legacy notebook manual/scheduled acceptance and a native run with the
-final wheel bundle are still in progress.
+Final-wheel native, IV and WQ notebooks passed actual manual and scheduled
+invocations, OneLake logs, all-family custom output and fresh typed history.
+The five-minute expiring schedules were read back and paused after their first
+invocations, with the same checkpoints retained. All owned Fabric items were
+removed.
+
+Native typed payloads were checked field by field. The unchanged WQ
+monitoring-site projection omits optional transport axes `state` and
+`parameter_code`; those fields remain in complete custom-output/dispatch
+payloads. Typed checks cover every projected field and envelope attribute,
+with explicit timestamp and nullable-string storage rules. This does not
+claim column storage for the omitted routing fields. Legacy KQL stays frozen.
 The sole CI failure was an external build mirror quota error; its targeted retry
 passed. The currently pushed PR has 716 passing checks and eight skipped checks.
-These uncommitted remediation changes still require their own published CI run.
+The remediation is published in PR #1762; its own CI run is tracked there.
 No production cutover or permission fallback has been performed.
 
 ### Accepted upstream constraints (November 23)
@@ -504,7 +518,7 @@ Owners below are proposed roles, not assignments already accepted.
 | USGS-15 | Local acceptance done; release blocked | Implementer | USGS-01 | Native continuous-only implementation, generated contracts/producers, packaging and independent specialist reviews complete. Final Kafka/MQTT/Artemis/Service Bus run passed all four cases. USGS-17/18 block release. |
 | USGS-16 | Done for reviewed sample | Implementer | USGS-03 | Verified enrollment for site 01646500 and parameters 00010/00060, captured expanded-site metadata, explicit units/qualifiers, guarded projection and deterministic vendored-core wheels integrated. Broader enrollment remains an operator coverage gate, not inferred from this sample. |
 | USGS-17 | Implemented; live acceptance blocked | Maintainer + implementer | USGS-10, USGS-15 | Shared SMB managed-identity transformation applied to all 18 USGS templates; Shared Key disabled, checkpoint mounts retained. All six full native templates pass ARM validation. Both isolated probes reported FailedMountAzureFileVolume, including Kerberos configured before creation; successful mount/restart and feeder checkpoint acceptance remain required. Probe resources removed and absence verified. Do not waive policy or discard state. |
-| USGS-18 | Blocked | Maintainer + implementer | USGS-10, USGS-15 | Plain Python hosting selected; native notebook now loads shared-deployer OneLake wheels. Verify supported publishing identity, fresh notebook output, typed KQL history and a scheduled run. Access-key fallback remains disabled pending explicit approval. |
+| USGS-18 | Complete | Maintainer + implementer | USGS-10, USGS-15 | All three plain-Python notebooks passed manual and scheduled keyless Entra publishing, OneLake diagnostics, fresh output and frozen typed projections. Delegated-user identity verified; workspace-MI publishing is not claimed. Access keys are discarded. |
 | USGS-19 | Pending upstream fixes | Upstream maintainers + implementer | USGS-06, USGS-15 | Track the four linked generator defects. Retire handwritten boundaries only after fixed generation and strict on-wire/schema regression tests; preserve the legacy contract freeze. |
 
 ### Implemented compatibility boundary
