@@ -78,10 +78,10 @@ editing generated producers.
 
 ### Microsoft Fabric
 
-> The notebook uses the shared plain-Python hosting path. Live manual and
-> scheduled acceptance remains required. Workspace-identity Kafka publication
-> has not been verified; access-key fallback stays disabled pending explicit
-> identity approval.
+> The notebook uses plain Python and namespace-scoped Entra Kafka tokens.
+> The verified principal is a delegated user, not workspace managed identity.
+> Scheduled acceptance and the target principal's permissions still require
+> verification.
 
 - [Fabric notebook](https://clemensv.github.io/real-time-sources#usgs-waterdata/fabric-notebook):
   runs the same Kafka bridge in a worker thread with OneLake state and logs.
@@ -90,9 +90,10 @@ editing generated producers.
   Missing or ambiguous source wheels and installation failures fail the run
   and are recorded in the OneLake log. Verify the Lakehouse binding, active
   package versions and a fresh scheduled run before production use.
-  The generated Kafka source connection requires access keys, so the notebook
-  fails closed unless an operator explicitly approves that fallback after
-  identity review. It does not expose broker secrets as parameters.
+  The public Topology connection response supplies the namespace and entity.
+  It also bundles keys; the notebook discards them without selecting or logging
+  one. Publication uses refreshed NotebookUtils namespace-audience tokens,
+  TLS and OAUTHBEARER. No access-key authentication fallback is implemented.
 - [Fabric container](https://clemensv.github.io/real-time-sources#usgs-waterdata/fabric-aci):
   an independently hosted Kafka container publishes to an Eventstream.
 - [Generated KQL](kql/usgs-waterdata.kql) supports non-schematized structured
@@ -101,13 +102,13 @@ editing generated producers.
 
 ### Azure
 
-These candidate templates configure Azure Files delivery checkpoints through SMB
-managed-identity mounts with storage Shared Key disabled. They require ACI API
-`2026-07-01` and the **Storage File Data SMB MI Admin** role on the dedicated
-state account. Existing state paths and broker identities are preserved.
+These templates configure Azure Files delivery checkpoints over HTTPS with
+storage Shared Key disabled. The dedicated state identity receives **Storage
+File Data Privileged Contributor** for OAuth backup-intent operations.
+Existing share-relative state paths and broker identities are preserved.
+No host SMB mount is required; its earlier failures remain unexplained.
 See the [shared template contract](../../tools/aci_files_identity.md) for
-permissions, regeneration and live acceptance requirements.
-Live mounting has not passed acceptance; keep cloud release blocked.
+permissions, single-writer semantics, regeneration and live acceptance.
 
 | Template | Provisioned resources |
 |---|---|

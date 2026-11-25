@@ -33,6 +33,71 @@ three container variants, six ARM templates, a notebook, KQL and documentation.
 Both existing feeders have opt-in OGC acquisition on all three transports.
 Their legacy acquisition remains the default; no production cutover occurred.
 
+### November 25 keyless remediation
+
+The default ACI state path now uses Azure Files HTTPS rather than a host SMB
+mount. It preserves the existing account/share, logical checkpoint path,
+JSON format and acknowledged dedupe history. The dedicated state identity uses
+Storage File Data Privileged Contributor with OAuth backup intent.
+Checkpoint writes stage a sibling file and atomically rename it. Remote write
+failure leaves in-memory state unchanged. One writer per checkpoint is required;
+distributed locking is not implemented.
+
+All 18 templates select `STATE_BACKEND=azure-files-rest` and remove host state
+mounts. Existing broker identities are preserved. Both classic and transitional
+legacy checkpoint paths use the shared backend. Incremental deployment retains
+old SMB role assignments; remove the superseded assignment explicitly after
+verifying cutover. Enrollment files and certificates remain separate local
+inputs. See the [shared state contract](../tools/aci_files_identity.md).
+
+The three notebooks retain plain Python, OneLake wheels, bounded worker-thread
+execution and local OneLake state. They discard bundled Topology access keys
+and use refreshed namespace-scoped NotebookUtils tokens for Kafka OAUTHBEARER.
+Actual plain-Python Kafka and AMQP publication both passed. The global Event
+Hubs audience failed on this Fabric Kafka endpoint; the service-issued namespace
+audience passed. The observed principal was a delegated user, not workspace
+managed identity. This establishes a keyless publishing path, not workspace-MI
+authentication.
+
+The final native run completed with confirmed delivery. A bounded Kafka
+consumer received all four native families after the original AMQP output
+consumer stalled. Fresh dispatch and typed rows matched all selected event IDs,
+payload fields and envelope attributes. The initial byte-text comparison failed
+because Kusto normalizes timestamp strings. The final comparison checks every
+field with explicit rules for the observed timestamp conversions, including
+seven fractional digits and offsets. Timezone-free metadata is interpreted as
+UTC in Kusto; that does not prove its upstream timezone. Original custom-output
+events preserve the source representation. This is non-schematized typed
+history, not registered-schema ingestion.
+The proof wheel Python sources matched that tested runtime, and all owned Fabric
+items were removed. An isolated five-minute schedule also completed successfully,
+with a fresh event matched between custom output, dispatch and its typed table.
+The schedule was paused after its first invocation. The validation copy refreshed
+references after one second and retained the manual run's checkpoint.
+
+Fresh untouched-share HTTPS control passed cold write/read and actual ACI
+restart/read. The actual feeder run then exposed an incorrect SDK rename keyword:
+the public API requires `overwrite`, not its internal `replace_if_exists` argument.
+The call is corrected and a regression exercises the real SDK request header.
+Actual native/IV/WQ checkpoint and restart validation is being repeated.
+Marker-only proof does not establish feeder acceptance. The SMB host cause
+remains unresolved; HTTPS avoids that dependency.
+
+Final local results are native 94, shared-template 25, IV 69 unit/integration plus
+8 upstream-live, and WQ 89 passed. Initial IV upstream calls timed out; their
+unchanged assertions and the complete eight-case live suite passed subsequently.
+Producer-aware fleet mypy passed all 1,333 files. Both deterministic vendor wheels
+verified, all three trees compiled, all 18 ARM static audits and 33 notebook
+checks passed. The strict 13-case wire matrix passed without skips or retries.
+After the SDK correction and WQ TLS-binding fix, all three real Kafka cases
+passed again with current wheels. All nine final no-cache image builds passed.
+Actual legacy notebook manual/scheduled acceptance and a native run with the
+final wheel bundle are still in progress.
+The sole CI failure was an external build mirror quota error; its targeted retry
+passed. The currently pushed PR has 716 passing checks and eight skipped checks.
+These uncommitted remediation changes still require their own published CI run.
+No production cutover or permission fallback has been performed.
+
 ### Accepted upstream constraints (November 23)
 
 Proceed using the information supplied by USGS on November 17 and 18.
@@ -147,7 +212,7 @@ identities were checked without mocks or skipped acceptance. This is local
 acceptance, not image publication, production deployment or cutover. The
 November 23 PR review and validation results above supersede the earlier counts.
 
-Cloud release has two explicit blockers: the new keyless ACI state templates
+At that earlier checkpoint, cloud release had two explicit blockers: the keyless ACI state templates
 still need successful live mount and checkpoint acceptance, and Fabric
 publishing authentication requires a verified supported path. The selected
 notebook host is now plain Python with OneLake wheels, not a Spark Environment.

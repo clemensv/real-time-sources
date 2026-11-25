@@ -35,8 +35,12 @@ Kusto datetime columns are UTC analytical values with 100-nanosecond
 resolution. They normalize source offsets and cannot preserve timestamp
 spelling or precision finer than seven fractional digits. Native JSON
 events preserve the original RFC3339 text; retain those events when the
-original spelling matters. Threshold arrays remain dynamic rather than
-being flattened into datetime columns.
+original spelling matters. Threshold arrays remain dynamic rather than being flattened into datetime
+columns. Dynamic JSON also converts timestamp-looking strings: offsets become
+UTC, fractional digits are padded to seven, and timezone-free metadata is
+interpreted as UTC by Kusto. That interpretation does not establish the
+upstream timezone. Keep the original custom-output events when timestamp
+spelling or timezone-free metadata must be preserved.
 The upstream threshold schema mismatch remains in the migration backlog.
 Qualifier coverage is incomplete, and no authoritative legacy TS_ID crosswalk
 is available. Native series identities are not inferred from legacy IDs.
@@ -47,9 +51,9 @@ See [database integration](../../DATABASE.md).
 
 | Tag | Dockerfile | Entry point | State share |
 |---|---|---|---|
-| `:latest` | `Dockerfile` | `python -m usgs_waterdata feed` | Mount when `STATE_FILE` is set |
-| `-mqtt:latest` | `Dockerfile.mqtt` | `python -m usgs_waterdata_mqtt feed` | Mount when `STATE_FILE` is set |
-| `-amqp:latest` | `Dockerfile.amqp` | `python -m usgs_waterdata_amqp feed` | Mount when `STATE_FILE` is set |
+| `:latest` | `Dockerfile` | `python -m usgs_waterdata feed` | Local volume or managed-identity HTTPS |
+| `-mqtt:latest` | `Dockerfile.mqtt` | `python -m usgs_waterdata_mqtt feed` | Local volume or managed-identity HTTPS |
+| `-amqp:latest` | `Dockerfile.amqp` | `python -m usgs_waterdata_amqp feed` | Local volume or managed-identity HTTPS |
 
 All variants use Python 3.10 slim, run as UID 10001, expose no inbound ports,
 and have no HTTP health endpoint. `/state` is writable in the image.
@@ -78,6 +82,7 @@ docker pull ghcr.io/clemensv/real-time-sources-usgs-waterdata-amqp:latest
 | `USER_AGENT` | `real-time-sources-usgs-waterdata/0.1.0` | HTTP User-Agent; supply an operations contact when appropriate. |
 | `POLLING_INTERVAL` | `300` | Seconds between cycles; must be positive. |
 | `STATE_FILE` | unset | Atomic delivery checkpoint path; unset means memory only. Do not share across concurrent writers/destinations. |
+| `STATE_BACKEND` | `local` | `azure-files-rest` uses the dedicated state identity over HTTPS. See [backend bindings](../../tools/aci_files_identity.md#runtime-configuration-and-persistence). No storage key fallback. |
 | `ONCE_MODE` | `false` | One cycle then exit; any failed site causes a visible nonzero exit. |
 | `LOG_LEVEL` | `INFO` | Python logging level; broker secrets are never logged. |
 
@@ -105,6 +110,7 @@ image includes the Cyrus SASL PLAIN module; Entra/SAS CBS paths are unchanged.
 | `SASL_USERNAME` | unset | SASL username; must be paired with `SASL_PASSWORD`. |
 | `SASL_PASSWORD` | unset | SASL password for the explicit broker username; required with `SASL_USERNAME` and supplied as a secret. |
 | `SASL_MECHANISM` | `PLAIN` | SASL mechanism for explicit credentials. |
+| `KAFKA_AUTH_MODE` | unset | `fabric-entra` is notebook-only: TLS, one namespace on port 9093 and refreshed NotebookUtils namespace-audience tokens. Explicit passwords are rejected in this mode. Unset preserves existing broker authentication. |
 
 ```powershell
 docker run --rm -v "${PWD}\state:/state" -e STATE_FILE=/state/native-kafka.json -e KAFKA_BOOTSTRAP_SERVERS=kafka.example:9093 -e SASL_USERNAME=publisher -e SASL_PASSWORD="<password>" ghcr.io/clemensv/real-time-sources-usgs-waterdata:latest
@@ -167,10 +173,9 @@ docker run --rm -e AMQP_HOST=servicebus-emulator -e AMQP_PORT=5672 -e AMQP_USE_T
 
 ### Microsoft Fabric
 
-> The notebook uses the shared plain-Python hosting path. Live runtime and
-> scheduled acceptance remains required. Workspace-managed identity is
-> preferred, but workspace-identity Kafka publication has not been verified.
-> Do not enable access-key fallback without explicit approval.
+> Plain-Python Kafka publication has been verified with namespace-scoped
+> Entra tokens. The principal was a delegated user, not workspace managed
+> identity. Verify scheduling and the actual target principal separately.
 
 [Deploy notebook](https://clemensv.github.io/real-time-sources#usgs-waterdata/fabric-notebook)
 or [container](https://clemensv.github.io/real-time-sources#usgs-waterdata/fabric-aci).
@@ -185,30 +190,31 @@ and their public dependencies before connection lookup. Installation requires
 access to the configured Python package index and fails explicitly on error.
 Each install has a 300-second timeout. The OneLake log records active package
 versions. Verify the wheel bundle and Lakehouse binding in a fresh scheduled
-run. The notebook
-requires explicit approval of access-key fallback after identity review;
-no workspace-managed-identity Kafka publisher has been verified here.
+run. The public connection response bundles access keys, but the notebook
+immediately discards them. Namespace and entity metadata form a credentialless
+binding; refreshed NotebookUtils tokens authenticate Kafka through OAUTHBEARER.
+The token audience is the service-issued namespace URI, not the global Event
+Hubs resource. No access-key fallback is implemented.
 For a scoped run, set notebook parameters `USGS_WATERDATA_SITES` to
 `USGS-01646500` and `USGS_WATERDATA_PARAMETERS` to `00010,00060`.
 The run cell writes these values into their same-named environment variables,
 so notebook parameters take precedence over deployer `EnvVar` settings.
 It likewise sets `STATE_FILE`, `POLLING_INTERVAL` and `ONCE_MODE`; the latter
 must remain `True`. `RUN_DURATION` bounds the worker join and defaults to 900
-seconds. Set `ACCESS_KEY_FALLBACK_APPROVED=True` only after the required
-identity review. `EVENTSTREAM_NAME`, `EVENTSTREAM_SOURCE_NAME` and
+seconds. `STATE_BACKEND=local` keeps the OneLake checkpoint independent of
+ACI REST bindings. `EVENTSTREAM_NAME`, `EVENTSTREAM_SOURCE_NAME` and
 `WORKSPACE_ID` select the exact named public-Topology-API endpoint.
 
 ### Azure
 
-All six candidate templates configure delivery state through Azure Files SMB
-managed-identity mounts with `allowSharedKeyAccess=false`. A dedicated
-user-assigned state identity receives **Storage File Data SMB MI Admin** on the
+All six templates configure delivery state through Azure Files HTTPS with
+`allowSharedKeyAccess=false`. A dedicated user-assigned state identity receives
+**Storage File Data Privileged Contributor** on the
 dedicated storage account; broker identities and permissions remain unchanged.
-This administrator role is currently required for managed-identity SMB access.
-Do not store unrelated data in the state account. ACI API `2026-07-01` selects
-the state identity without a storage account key. See the
-[shared template contract](../../tools/aci_files_identity.md). Service-side
-mount and restart acceptance has not passed; cloud release remains blocked.
+OAuth backup intent bypasses file ACLs. Do not store unrelated data there.
+ACI supplies the explicit state identity without a storage key or host SMB
+mount. See the [shared template contract](../../tools/aci_files_identity.md)
+for bindings, atomic writes, single-writer semantics and old-role removal.
 
 [Kafka BYO](azure-template.json) deploys ACI against an existing connection;
 [Kafka + Event Hubs](azure-template-with-eventhub.json) adds a namespace.
@@ -219,11 +225,12 @@ namespace/topic space plus managed identity and topic-space publisher role.
 Service Bus provisioning template, not a bring-your-own-broker template;
 [AMQP + Service Bus](azure-template-with-servicebus.json) provisions a namespace,
 queue, managed identity and sender role. Service Bus sessions are not enabled.
-All six templates provision an Azure Files share, mount `/mnt/bridge-state`,
-and set `STATE_FILE` to `/mnt/bridge-state/usgs-waterdata.json`.
+All six templates provision an Azure Files share and preserve the logical
+`STATE_FILE` path `/mnt/bridge-state/usgs-waterdata.json`. The runtime derives
+the same share-relative file name; `/mnt/bridge-state` is not mounted.
 Run `pwsh feeders\usgs-waterdata\generate-template.ps1` from the repository root
 to regenerate them, including the shared managed-identity transformation.
-No new feeder environment variable or image package is required for the mount.
+The shared core includes Azure Identity and Azure Files SDK dependencies.
 
 All templates expose the shared source controls and generic `STATE_FILE`,
 `USER_AGENT`, `ONCE_MODE`, `LOG_LEVEL` and `POLLING_INTERVAL` parameters.
@@ -239,8 +246,8 @@ MQTT BYO infers `userpass` when `brokerUsername` is supplied and `anonymous`
 otherwise; `mqttAuthMode` can select an explicit mode. `mqttEnableTls` defaults
 to `true`; set it to `false` only for an intentionally unencrypted broker.
 Certificate-mode paths (`mqttCaFile`, `mqttClientCert`, `mqttClientKey`) must
-refer to files supplied through the mounted share, for example under
-`/mnt/bridge-state/certs`; the template does not upload certificate files.
+refer to separately supplied local readable files. HTTPS checkpoints do not
+mount a certificate directory, and the template does not upload certificates.
 The Event Grid template supplies the managed identity, client ID, TLS broker
 endpoint and Entra audience. Alternate password/certificate modes are not
 applicable to that provisioned target.

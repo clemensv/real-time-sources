@@ -112,8 +112,8 @@ class USGSWaterQualityPoller:
             raise ValueError("POLLING_INTERVAL must be positive")
 
         if kafka_config is not None:
-            from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer
-            producer = AcknowledgedKafkaProducer(Producer(kafka_config))
+            from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer, fabric_kafka_config
+            producer = AcknowledgedKafkaProducer(Producer(fabric_kafka_config(kafka_config)))
             self.site_producer = USGSWaterQualitySitesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
             self.readings_producer = USGSWaterQualityReadingsEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
         else:
@@ -287,6 +287,15 @@ class USGSWaterQualityPoller:
 
     def load_last_polled_times(self) -> Dict:
         """Load persisted last-polled timestamps."""
+        if self.last_polled_file and os.getenv("STATE_BACKEND") == "azure-files-rest":
+            from pathlib import Path
+            from usgs_waterdata_core.azure_files import read_json
+            loaded = read_json(Path(self.last_polled_file))
+            if loaded is None:
+                return {}
+            if not isinstance(loaded, dict):
+                raise ValueError("Corrupt USGS legacy delivery state")
+            return loaded
         if self.last_polled_file and os.path.exists(self.last_polled_file):
             with open(self.last_polled_file, 'r', encoding='utf-8') as f:
                 try:
@@ -298,6 +307,11 @@ class USGSWaterQualityPoller:
 
     def save_last_polled_times(self, last_polled: Dict) -> None:
         """Save last-polled timestamps to file."""
+        if self.last_polled_file and os.getenv("STATE_BACKEND") == "azure-files-rest":
+            from pathlib import Path
+            from usgs_waterdata_core.state import write_json
+            write_json(Path(self.last_polled_file), last_polled)
+            return
         if self.last_polled_file:
             with open(self.last_polled_file, 'w', encoding='utf-8') as f:
                 json.dump(last_polled, f)
@@ -452,7 +466,9 @@ def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str
         config_dict['bootstrap.servers'] = parts['BootstrapServer']
         kafka_topic = parts.get('EntityPath', '')
         enable_tls = os.environ.get('KAFKA_ENABLE_TLS', 'true').lower()
-        if enable_tls == 'false':
+        if os.environ.get('KAFKA_AUTH_MODE') == 'fabric-entra':
+            config_dict['security.protocol'] = 'PLAINTEXT' if enable_tls in ('false', '0', 'no') else 'SSL'
+        elif enable_tls == 'false':
             config_dict['security.protocol'] = 'PLAINTEXT'
     elif 'Endpoint' in parts:
         endpoint = parts['Endpoint'].replace('sb://', '').rstrip('/')

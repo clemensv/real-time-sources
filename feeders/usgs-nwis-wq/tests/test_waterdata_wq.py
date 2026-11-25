@@ -453,3 +453,23 @@ def test_generated_wq_producers_accept_frozen_payloads(feed, transport):
         assert not list(InstanceValidator(schemas[event_type], extended=True).validate_instance(payload))
     invalid_site = dict(payloads[0], county_code=None)
     assert list(InstanceValidator(schemas[event_types[0]], extended=True).validate_instance(invalid_site))
+@pytest.mark.parametrize("write_fails", [False, True])
+def test_rest_checkpoint_stages_without_io_and_commits_only_after_remote_write(feed, monkeypatch, write_fails):
+    from unittest.mock import Mock
+    from azure.core.exceptions import HttpResponseError
+    from usgs_waterdata_core import azure_files
+
+    monkeypatch.setenv("STATE_BACKEND", "azure-files-rest")
+    write = Mock(side_effect=HttpResponseError("Synthetic write rejected") if write_fails else None)
+    monkeypatch.setattr(azure_files, "write_json", write)
+    before = deepcopy(feed.state.data)
+    instant = datetime(2026, 11, 16, 15, 25, tzinfo=timezone.utc)
+    if write_fails:
+        with pytest.raises(HttpResponseError, match="write rejected"):
+            asyncio.run(feed.cycle(fixture_client(), instant))
+        assert feed.state.data == before
+    else:
+        assert asyncio.run(feed.cycle(fixture_client(), instant)) > 0
+        assert feed.state.data["cursor"] == instant.isoformat()
+    assert write.call_count == 1
+    assert write.call_args.args[0] == feed.state.path

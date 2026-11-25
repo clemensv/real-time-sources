@@ -15,7 +15,7 @@ import typing
 from typing import Any, SupportsIndex
 from urllib.parse import unquote, urlsplit
 
-from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer
+from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer, fabric_kafka_config
 
 from .app import boolean
 
@@ -149,7 +149,7 @@ class KafkaSink:
                            "security.protocol": "SASL_SSL" if tls else "SASL_PLAINTEXT"})
         elif "security.protocol" not in config:
             config["security.protocol"] = "SSL" if tls else "PLAINTEXT"
-        self.raw = AcknowledgedKafkaProducer(Producer(config))
+        self.raw = AcknowledgedKafkaProducer(Producer(fabric_kafka_config(config)))
         self.producer = cls(self.raw, topic, content_mode="structured")
 
     async def send(self, family: str, series_id: str, payload: dict[str, Any]) -> None:

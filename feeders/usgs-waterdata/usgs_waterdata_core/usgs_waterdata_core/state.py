@@ -15,7 +15,18 @@ from typing import Any
 from .client import utc_datetime
 
 
+def _remote_state() -> bool:
+    backend = os.getenv("STATE_BACKEND", "local")
+    if backend not in ("local", "azure-files-rest"):
+        raise ValueError("STATE_BACKEND must be local or azure-files-rest")
+    return backend == "azure-files-rest"
+
+
 def write_json(path: Path, data: Mapping[str, Any]) -> None:
+    if _remote_state():
+        from .azure_files import write_json as remote_write
+        remote_write(path, data)
+        return
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary: str | None = None
     try:
@@ -54,8 +65,16 @@ class DeliveryState:
     def __init__(self, path: Path | None = None) -> None:
         self.path = path
         self.data: dict[str, Any] = {"version": 1, "observations": {}}
-        if path is not None and path.exists():
-            loaded = json.loads(path.read_text(encoding="utf-8"))
+        present = False
+        if _remote_state():
+            if path is None:
+                raise ValueError("Azure Files state requires a persistent STATE_FILE")
+            from .azure_files import read_json
+            loaded = read_json(path)
+        else:
+            present = path is not None and path.exists()
+            loaded = json.loads(path.read_text(encoding="utf-8")) if path is not None and present else None
+        if loaded is not None or present:
             if (
                 not isinstance(loaded, dict)
                 or loaded.get("version") != 1

@@ -144,8 +144,8 @@ class WaterDataFeed:
         eligible = [feature for feature in features if utc_datetime(feature["properties"]["time"]) >= end - self.lookback]
         # Validate even rows outside the WQ window: unknown selected series must never disappear silently.
         projected = {id(feature): self.project(feature) for feature in features}
-        pending = DeliveryState()
-        pending.data = deepcopy(self.state.data)
+        pending = deepcopy(self.state)
+        pending.path = None
         selected: list[dict[str, Any]] = []
         pending.deliver(eligible, selected.append, lambda: 0, retain_since=end - self.lookback)
         for index, location in enumerate(self.locations, 1):

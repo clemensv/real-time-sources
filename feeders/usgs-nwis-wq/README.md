@@ -205,6 +205,14 @@ Two hosting models are supported. Use the deploy buttons on the [project portal]
 
 A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller in the plain Python kernel. The shared deployer uploads the `usgs_nwis_wq` package, shared core and generated producer wheels to OneLake for runtime installation; no Fabric Environment binding is required. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API. The lookup identity does not establish the publisher's identity. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/usgs-nwis-wq/`.
 
+The notebook discards bundled access keys and authenticates Kafka with refreshed
+namespace-scoped NotebookUtils Entra tokens. The verified principal is a
+delegated user; workspace-identity publishing has not been established.
+`USGS_API_MODE` defaults to `legacy`. Transitional runs require `waterdata`,
+reviewed selection/enrollment and a distinct `STATE_FILE`; retain the original
+checkpoint. Regenerate with
+`python feeders\usgs-waterdata\create_notebook.py --source usgs-nwis-wq`.
+
 ```powershell
 tools/deploy-fabric/deploy-feeder-notebook.ps1 `
   -Source usgs-nwis-wq `
@@ -238,13 +246,13 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 5 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
 
-Candidate state volumes use Azure Files SMB managed identity with storage Shared Key
-disabled. The dedicated state identity requires **Storage File Data SMB MI
-Admin** on its dedicated account; do not store unrelated data there. ACI API
-`2026-07-01` selects this identity without changing state paths or broker
-identities. See the [shared template contract](../../tools/aci_files_identity.md)
-for regeneration and live acceptance requirements.
-Live mounting has not passed acceptance; keep cloud release blocked.
+Checkpoints use Azure Files HTTPS with storage Shared Key disabled. The dedicated
+state identity requires **Storage File Data Privileged Contributor** for OAuth
+backup-intent operations; do not store unrelated data in its account.
+The runtime preserves existing share-relative state paths without a host SMB
+mount. Broker identities remain unchanged. See the
+[shared template contract](../../tools/aci_files_identity.md) for bindings,
+single-writer semantics, old-role removal and live acceptance requirements.
 
 #### Kafka — bring your own Event Hub / Kafka
 

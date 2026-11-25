@@ -5,7 +5,7 @@ through correctly."""
 
 import asyncio
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -138,3 +138,21 @@ def test_once_flag_defaults_false_from_env(monkeypatch):
         sys.argv = argv_backup
 
     assert captured.get('once') is False
+def test_legacy_checkpoint_routes_reads_and_writes_to_keyless_rest(monkeypatch, tmp_path):
+    from datetime import datetime
+    from usgs_waterdata_core import azure_files, state
+    from usgs_iv.usgs_iv import USGSDataPoller
+
+    path = str(tmp_path / "legacy.json")
+    poller = USGSDataPoller(kafka_config=None, last_polled_file=path)
+    monkeypatch.setenv("STATE_BACKEND", "azure-files-rest")
+    read = Mock(return_value={"00060": {"01646500": "2026-11-25T12:00:00+00:00"}})
+    write = Mock()
+    monkeypatch.setattr(azure_files, "read_json", read)
+    monkeypatch.setattr(state, "write_json", write)
+    loaded = poller.load_last_polled_times()
+    assert loaded["00060"]["01646500"] == datetime.fromisoformat("2026-11-25T12:00:00+00:00")
+    poller.save_last_polled_times(loaded)
+    assert str(read.call_args.args[0]) == path
+    assert str(write.call_args.args[0]) == path
+    assert write.call_args.args[1] == read.return_value

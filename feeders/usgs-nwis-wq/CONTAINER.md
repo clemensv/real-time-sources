@@ -85,6 +85,23 @@ and the local notebook wheel builder verify and include that same wheel without
 an unpublished PyPI dependency. Notebook users explicitly set acquisition variables and an accessible
 reviewed enrollment path. No example-site default is installed.
 
+Persistent local checkpoints remain the default. The explicit
+`STATE_BACKEND=azure-files-rest` option reads and atomically replaces the same
+share-relative JSON checkpoint through a dedicated managed identity.
+Both legacy and transitional acquisition use this backend. Configure all four
+`STATE_AZURE_FILES_*` bindings described in the
+[shared state contract](../../tools/aci_files_identity.md#runtime-configuration-and-persistence).
+Use one writer per checkpoint; authorization and corrupt-state errors fail
+explicitly. HTTPS checkpoint access does not make enrollment files local.
+
+Plain-Python notebooks set `KAFKA_AUTH_MODE=fabric-entra`, discard bundled
+Topology access keys and refresh namespace-scoped NotebookUtils Entra tokens.
+The verified principal is a delegated user, not workspace managed identity.
+Notebook state stays on OneLake with `STATE_BACKEND=local`. Set
+`USGS_API_MODE=waterdata` and provide reviewed enrollment for transitional runs;
+use a separate `STATE_FILE` from legacy mode. The notebook generator is
+`python feeders\usgs-waterdata\create_notebook.py --source usgs-nwis-wq`.
+
 Handwritten AMQP subclasses wait for remote broker acceptance and honor TLS
 while [codegen#699](https://github.com/xregistry/codegen/issues/699) is unresolved.
 Password connections explicitly select SASL PLAIN; insecure mechanisms are
@@ -296,13 +313,14 @@ docker run --rm \
 
 ## Deploying into Azure Container Instances
 
-The candidate templates configure Azure Files checkpoint volumes with storage
-Shared Key disabled. ACI uses a dedicated user-assigned managed identity and
-the required **Storage File Data SMB MI Admin** role on the dedicated state
-account. Existing broker identities, state paths and image dependencies are
-unchanged. See the [shared template contract](../../tools/aci_files_identity.md)
-for supported API versions, regeneration and mount/restart acceptance.
-Live mounting has not passed acceptance; cloud release remains blocked.
+The templates configure Azure Files HTTPS checkpoints with storage Shared Key
+disabled. ACI uses a dedicated user-assigned managed identity and **Storage File
+Data Privileged Contributor** for OAuth backup-intent operations on the
+dedicated account. Existing broker identities and share-relative state paths
+are preserved. The shared core supplies the Azure SDK dependencies.
+No host SMB mount is required; its earlier failure remains unexplained.
+See the [shared template contract](../../tools/aci_files_identity.md) for
+single-writer semantics, old-role removal, regeneration and live acceptance.
 
 ### MQTT — bring your own broker
 

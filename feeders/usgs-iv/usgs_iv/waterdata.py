@@ -143,8 +143,8 @@ class WaterDataFeed:
             ))
         ))
         projected = {id(feature): self.project(feature) for feature in features}
-        pending = DeliveryState()
-        pending.data = deepcopy(self.state.data)
+        pending = deepcopy(self.state)
+        pending.path = None
         selected: list[dict[str, Any]] = []
         pending.deliver(features, selected.append, lambda: 0)
         for index, location in enumerate(self.locations, 1):

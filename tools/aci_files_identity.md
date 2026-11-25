@@ -1,21 +1,16 @@
-# ACI state volumes with Azure Files managed identity
+# ACI checkpoints with Azure Files managed identity
 
 `aci_files_identity.py` converts existing canonical ACI state templates to
-SMB managed-identity mounts. It retains storage account names, file shares,
-mount paths, state-file settings and existing broker identities. It does not
-change event contracts or feeder code.
+managed-identity HTTPS checkpoints by default. It retains storage account names,
+file shares, share-relative checkpoint paths and existing broker identities.
+The USGS runtime supplies the corresponding `azure-files-rest` backend.
+No event contract or generated producer changes are required.
 
-> Candidate deployment path, not release acceptance. All six full native USGS
-> templates passed Azure ARM validation with Shared Key disabled. Three initial
-> probes failed to mount. A subsequent supported Linux control mounted the
-> share, wrote and remounted/read its marker; ACI then reported
-> `SuccessfulMountAzureFileVolume` and completed its write against the same
-> account and identity. The earlier failure was not reproduced in this control,
-> and its cause remains unproven. Further tests failed standalone cold-share
-> startup and the native/WQ mounts. IV delivered 51 schema-validated Service
-> Bus events across all four required families and read its persisted
-> checkpoint after the actual ACI Restart API. This successful IV path does
-> not establish reliable cold startup or acceptance of every template.
+> HTTPS removes the dependency on the ACI host's SMB mount. It does not fix
+> or explain the host defect. Fresh-share write/read, actual Restart API
+> readback and acknowledged feeder delivery are separate acceptance gates.
+> Their current verdicts are in the
+> [USGS migration ledger](../feeders/USGS-WATERSERVICES-MIGRATION-LEDGER.md).
 
 ```powershell
 python tools\aci_files_identity.py feeders\<source>\azure-template.json
@@ -26,7 +21,56 @@ The tool validates every input before writing any template. Reapplying it
 produces the same JSON. Run it after ordinary ARM generation; the native USGS
 `generate-template.ps1` includes this step.
 
+Use `--mode smb` only for the explicit legacy mount variant. The Python
+`configure(template)` API retains its SMB default for existing callers;
+`configure(template, mode="azure-files-rest")` selects HTTPS.
+
 ## Resources and permissions
+
+- `allowSharedKeyAccess=false` remains mandatory. No key is read or supplied.
+- A dedicated user-assigned managed identity is attached to ACI for state.
+  Existing Event Grid or Service Bus publisher identities remain attached.
+- HTTPS uses **Storage File Data Privileged Contributor**
+  (`69566ab7-960f-475b-8e7c-b3118f30c6bd`) on the dedicated state account.
+  Azure Files OAuth requires backup intent; the SDK sets `token_intent="backup"`.
+  This permission bypasses file ACLs. Do not use the account or identity for
+  unrelated data.
+- REST templates remove Azure Files host volumes and their mounts. The runtime
+  reads the account's service-issued HTTPS endpoint from ARM configuration and
+  selects `ManagedIdentityCredential` with the explicit state client ID.
+  Neither SAS nor a delegated user token is a storage fallback.
+- Role assignment dependencies establish management-plane ordering only.
+  Allow data-plane propagation before first startup; do not interpret an
+  authorization failure as an absent checkpoint.
+- Incremental deployment does not remove old SMB role assignments. After
+  confirming the REST cutover, explicitly remove the superseded SMB MI Admin
+  assignment for the dedicated identity. Do not remove unrelated broker roles.
+
+### Runtime configuration and persistence
+
+| Variable | Meaning |
+|---|---|
+| `STATE_BACKEND` | `local` by default; explicit `azure-files-rest` selects HTTPS. |
+| `STATE_FILE` | Existing absolute logical checkpoint path, under the preserved root. |
+| `STATE_AZURE_FILES_ROOT` | Former mount root; used only to derive the share-relative path. |
+| `STATE_AZURE_FILES_ACCOUNT_URL` | Service-issued HTTPS account endpoint, without credentials or query parameters. |
+| `STATE_AZURE_FILES_SHARE` | Existing dedicated share name. |
+| `STATE_AZURE_FILES_CLIENT_ID` | Explicit dedicated user-assigned managed identity client ID. |
+
+An existing `/mnt/bridge-state/checkpoint.json` with root
+`/mnt/bridge-state` still names `checkpoint.json` in the same share.
+JSON layout and dedupe history are preserved. A missing file is a first run;
+missing shares, authentication errors and corrupt JSON fail explicitly.
+Writes serialize before upload, stage a unique sibling file and atomically
+rename it over the checkpoint. A failed write does not advance in-memory state.
+Use **one writer per checkpoint**: this backend does not provide distributed
+locking, and concurrent writers can overwrite each other's state.
+
+HTTPS checkpoint support does not mount enrollment files, TLS certificates
+or other application inputs. Supply those separately as local readable files.
+Fabric notebooks explicitly use `STATE_BACKEND=local` for OneLake state.
+
+### Optional SMB variant
 
 - Storage API `2025-08-01` enables
   `azureFilesIdentityBasedAuthentication.smbOAuthSettings.isSmbOAuthEnabled`
@@ -121,10 +165,15 @@ was corrected without changing the feeder, identity, image or state path.
 All owned cloud resources were removed and absence independently verified.
 The contrasting outcomes do not identify the failed hosts' mount cause.
 
+For the default REST path, use the Azure Files
+[OAuth REST authorization](https://learn.microsoft.com/azure/storage/files/authorize-oauth-rest)
+and [Rename File](https://learn.microsoft.com/rest/api/storageservices/rename-file)
+contracts. Atomic rename applies to SMB shares accessed through HTTPS, not NFS.
+
 Run `python -m pytest tools\tests\test_aci_files_identity.py` and
 `pwsh tools\validate-arm-templates.ps1 -FeederSlug <source>`.
-Static validation does not establish that the target region's ACI host supports
-the new mount. Before release, deploy in an isolated resource group, observe a
+Static validation does not establish data-plane acceptance. Before release,
+deploy in an isolated resource group, observe a
 write and a subsequent restart reading the same file with Shared Key disabled,
 then verify the actual feeder still emits and saves acknowledged checkpoints.
 Keep deployment coordinates and evidence outside Git. Never clear existing

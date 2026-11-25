@@ -81,6 +81,28 @@ def test_failed_flush_and_unknown_series_do_not_checkpoint(feed):
     assert not feed.state.path.exists()
 
 
+@pytest.mark.parametrize("write_fails", [False, True])
+def test_rest_checkpoint_stages_without_io_and_commits_only_after_remote_write(feed, monkeypatch, write_fails):
+    from unittest.mock import Mock
+    from azure.core.exceptions import HttpResponseError
+    from usgs_waterdata_core import azure_files
+
+    monkeypatch.setenv("STATE_BACKEND", "azure-files-rest")
+    write = Mock(side_effect=HttpResponseError("Synthetic write rejected") if write_fails else None)
+    monkeypatch.setattr(azure_files, "write_json", write)
+    before = deepcopy(feed.state.data)
+    instant = datetime(2026, 11, 16, 15, 25, tzinfo=timezone.utc)
+    if write_fails:
+        with pytest.raises(HttpResponseError, match="write rejected"):
+            asyncio.run(feed.cycle(fixture_client(), instant))
+        assert feed.state.data == before
+    else:
+        assert asyncio.run(feed.cycle(fixture_client(), instant)) == 34
+        assert feed.state.data["cursor"] == instant.isoformat()
+    assert write.call_count == 1
+    assert write.call_args.args[0] == feed.state.path
+
+
 @pytest.mark.parametrize("rejected_connection", [None, "sites", "values", "timeseries"])
 def test_frozen_mqtt_publish_completion_requires_successful_puback(feed, monkeypatch, rejected_connection):
     import usgs_iv_mqtt.app as app

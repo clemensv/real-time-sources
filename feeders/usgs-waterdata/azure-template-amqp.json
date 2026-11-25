@@ -175,10 +175,7 @@
         "allowBlobPublicAccess": false,
         "supportsHttpsTrafficOnly": true,
         "azureFilesIdentityBasedAuthentication": {
-          "directoryServiceOptions": "None",
-          "smbOAuthSettings": {
-            "isSmbOAuthEnabled": true
-          }
+          "directoryServiceOptions": "None"
         }
       }
     },
@@ -276,7 +273,7 @@
         "[variables('queueResourceId')]",
         "[extensionResourceId(variables('queueResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]",
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]",
-        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-smb-mi-admin'))]"
+        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor'))]"
       ],
       "properties": {
         "osType": "Linux",
@@ -379,24 +376,28 @@
                 {
                   "name": "PYTHONUNBUFFERED",
                   "value": "1"
-                }
-              ],
-              "volumeMounts": [
+                },
                 {
-                  "name": "bridge-state",
-                  "mountPath": "/mnt/bridge-state"
+                  "name": "STATE_BACKEND",
+                  "value": "azure-files-rest"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_ACCOUNT_URL",
+                  "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2025-08-01').primaryEndpoints.file]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_SHARE",
+                  "value": "[variables('fileShareName')]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_CLIENT_ID",
+                  "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_ROOT",
+                  "value": "/mnt/bridge-state"
                 }
               ]
-            }
-          }
-        ],
-        "volumes": [
-          {
-            "name": "bridge-state",
-            "azureFile": {
-              "shareName": "[variables('fileShareName')]",
-              "storageAccountName": "[variables('storageAccountName')]",
-              "userManagedIdentityClientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').clientId]"
             }
           }
         ]
@@ -411,14 +412,14 @@
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-smb-mi-admin')]",
+      "name": "[guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor')]",
       "scope": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]"
       ],
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a235d3ee-5935-4cfb-8cc5-a3303ad5995e')]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69566ab7-960f-475b-8e7c-b3118f30c6bd')]",
         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').principalId]",
         "principalType": "ServicePrincipal"
       }

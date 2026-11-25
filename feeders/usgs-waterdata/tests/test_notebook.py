@@ -123,3 +123,49 @@ def test_notebook_selection_parameters_override_deployer_environment():
     exec(compile(ast.Module(body=assignments, type_ignores=[]), "notebook-environment", "exec"), scope)
     assert environment["USGS_WATERDATA_SITES"] == "USGS-12345678"
     assert environment["USGS_WATERDATA_PARAMETERS"] == "00065"
+
+
+def _connection_scope(response, source="usgs-waterdata"):
+    notebook = json.loads((Path(__file__).parents[2] / source / "notebook" / f"{source}-feed.ipynb").read_text(encoding="utf-8"))
+    lookup = ast.parse("".join(notebook["cells"][2]["source"]))
+    function = next(node for node in lookup.body if isinstance(node, ast.FunctionDef) and node.name == "_connection")
+    endpoint = "https://api.fabric.microsoft.com/v1/workspaces/synthetic/eventstreams/stream"
+    calls = []
+
+    def read(url, headers):
+        calls.append(url)
+        if url == endpoint + "/topology":
+            return {"sources": [{"name": "input", "type": "CustomEndpoint", "id": "source"}]}
+        assert url == endpoint + "/sources/source/connection"
+        return response
+
+    scope = {"WORKSPACE_ID": "synthetic", "FABRIC_API": "https://api.fabric.microsoft.com/v1",
+             "EVENTSTREAM_NAME": "stream", "EVENTSTREAM_SOURCE_NAME": "input",
+             "notebookutils": SimpleNamespace(credentials=SimpleNamespace(getToken=lambda audience: "synthetic-token")),
+             "_pages": lambda url, headers: [{"displayName": "stream", "id": "stream"}], "_read": read}
+    exec(compile(ast.Module(body=[function], type_ignores=[]), "notebook-binding", "exec"), scope)
+    return scope["_connection"], calls
+
+
+@pytest.mark.parametrize("source", ["usgs-waterdata", "usgs-iv", "usgs-nwis-wq"])
+def test_notebook_binding_discards_keys_and_uses_issued_namespace_and_entity(source):
+    response = {"type": "CustomEndpoint", "fullyQualifiedNamespace": "synthetic.servicebus.windows.net",
+                "eventHubName": "synthetic-entity",
+                "accessKeys": {"primaryConnectionString": "must-not-be-used"}}
+    connection, calls = _connection_scope(response, source)
+    assert connection() == "BootstrapServer=synthetic.servicebus.windows.net:9093;EntityPath=synthetic-entity"
+    assert "accessKeys" not in response
+    assert len(calls) == 2
+
+
+@pytest.mark.parametrize("namespace,entity", [
+    ("https://synthetic.servicebus.windows.net", "entity"),
+    ("", "entity"),
+    ("synthetic.servicebus.windows.net", ""),
+    ("synthetic.servicebus.windows.net", "entity;SharedAccessKey=synthetic"),
+])
+def test_notebook_binding_rejects_missing_or_invalid_endpoint_metadata(namespace, entity):
+    connection, _ = _connection_scope({"type": "CustomEndpoint", "fullyQualifiedNamespace": namespace,
+                                      "eventHubName": entity})
+    with pytest.raises(RuntimeError, match="namespace/entity"):
+        connection()

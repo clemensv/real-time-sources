@@ -67,6 +67,11 @@ def _atomic_write_json(path: str, data: Dict, retries: int = 5, backoff_seconds:
     and atomically (write-to-temp-then-rename) so a failed or interrupted
     write never leaves a truncated/corrupt state file behind.
     """
+    if os.getenv("STATE_BACKEND") == "azure-files-rest":
+        from pathlib import Path
+        from usgs_waterdata_core.state import write_json
+        write_json(Path(path), data)
+        return
     import errno
     import time
     import uuid
@@ -193,8 +198,8 @@ class USGSDataPoller:
         self.kafka_topic = kafka_topic
         self.last_polled_file = last_polled_file
         if kafka_config is not None:
-            from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer
-            producer = AcknowledgedKafkaProducer(Producer(kafka_config))
+            from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer, fabric_kafka_config
+            producer = AcknowledgedKafkaProducer(Producer(fabric_kafka_config(kafka_config)))
             self.site_producer = USGSSitesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
             self.timeseries_producer = USGSSiteTimeseriesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
             self.values_producer = USGSInstantaneousValuesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
@@ -299,6 +304,16 @@ class USGSDataPoller:
         Returns:
             Dict: The last polled times for each site and parameter.
         """
+        if self.last_polled_file and os.getenv("STATE_BACKEND") == "azure-files-rest":
+            from pathlib import Path
+            from usgs_waterdata_core.azure_files import read_json
+            saved_times = read_json(Path(self.last_polled_file))
+            if saved_times is None:
+                return {}
+            if not isinstance(saved_times, dict):
+                raise ValueError("Corrupt USGS legacy delivery state")
+            return {parameter: {site: datetime.fromisoformat(timestamp) for site, timestamp in sites.items()}
+                    for parameter, sites in saved_times.items()}
         if self.last_polled_file and os.path.exists(self.last_polled_file):
             with open(self.last_polled_file, 'r', encoding='utf-8') as file:
                 try:
@@ -818,7 +833,7 @@ def main():
         if not args.connection_string:
             args.connection_string = os.getenv('CONNECTION_STRING')
         if not args.last_polled_file:
-            args.last_polled_file = os.getenv('USGS_LAST_POLLED_FILE')
+            args.last_polled_file = os.getenv('USGS_LAST_POLLED_FILE') or os.getenv('STATE_FILE')
             if not args.last_polled_file:
                 args.last_polled_file = os.path.expanduser('~/.usgs_last_polled.json')
         if os.getenv('LOG_LEVEL'):

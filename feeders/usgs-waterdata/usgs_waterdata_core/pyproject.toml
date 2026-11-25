@@ -7,7 +7,8 @@ name = "usgs-waterdata-core"
 dynamic = ["version"]
 description = "USGS Water Data acquisition and legacy compatibility enrollment"
 requires-python = ">=3.10,<4.0"
-dependencies = ["requests>=2.32.3", "urllib3>=2.2.3"]
+dependencies = ["requests>=2.32.3", "urllib3>=2.2.3", "azure-identity>=1.19.0",
+                "azure-storage-file-share>=12.20.0,<13.0.0"]
 
 [project.scripts]
 usgs-waterdata-capture = "usgs_waterdata_core.capture:main"
