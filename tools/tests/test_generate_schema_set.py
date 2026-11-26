@@ -242,6 +242,8 @@ def test_bundle_inlining_and_explicit_root():
 def test_portable_conversion_reproduces_pilot_records_from_canonical_structure():
     source = ROOT / "feeders" / "pegelonline"
     canonical = json.loads((source / "xreg" / "pegelonline.xreg.json").read_text(encoding="utf-8"))
+    # Exercise creation without overwriting the checked-in Avro variants.
+    canonical["messagegroups"]["pilot-source"] = canonical["messagegroups"]["de.wsv.pegelonline"]
     retained = json.loads(
         (source / "fabric" / "schematized" / "EventSchemaSetDefinition.json").read_text(encoding="utf-8"))
     versions = {
@@ -249,7 +251,7 @@ def test_portable_conversion_reproduces_pilot_records_from_canonical_structure()
         "#/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement": "2",
     }
     _, definition = generator.generate(
-        canonical, ["de.wsv.pegelonline"], create_avro_variants=True,
+        canonical, ["pilot-source"], create_avro_variants=True,
         projected_versions=versions,
     )
     for generated in definition["schemas"]:

@@ -59,14 +59,14 @@ Do not combine this option with `--include-history`: one schema version per
 record must define the runtime type. Both encoders use the same selected schema,
 including its timestamp representation and nullability.
 
-The pinned Avrotize revision includes the 3.9.7 packaging fix for
+Avrotize 3.9.8 includes the 3.9.7 packaging fix for
 [clemensv/avrotize#585](https://github.com/clemensv/avrotize/issues/585), so
 generated packages declare their Avro runtime dependency without a local patch.
 Regenerate packages rather than editing their generated manifests.
-It also includes the nullable-zero correction in
-[clemensv/avrotize#592](https://github.com/clemensv/avrotize/pull/592).
-The official 3.9.7 release still corrupts nullable zeros; use the exact
-Git revisions in the dependency manifest until corrected releases are available.
+The dependency manifest pins this release for the nullable-value correction in
+[clemensv/avrotize#592](https://github.com/clemensv/avrotize/pull/592) and the
+record-union, nested-collection and JSON bytes corrections in
+[clemensv/avrotize#595](https://github.com/clemensv/avrotize/pull/595).
 The pinned xrcg revision reports `0.11.2.dev6` and includes
 [xregistry/codegen#712](https://github.com/xregistry/codegen/pull/712).
 Install that revision from the upstream repository in the dependency manifest.
