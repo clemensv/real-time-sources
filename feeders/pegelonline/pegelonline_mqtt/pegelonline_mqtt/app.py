@@ -25,7 +25,7 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 
-from pegelonline_core import FEED_URL_ROOT, PegelOnlineAPI, load_state, save_state
+from pegelonline_core import FEED_URL_ROOT, PegelOnlineAPI, get_measurement_state, load_state, save_state
 
 DEFAULT_ENTRA_AUDIENCE = "https://eventgrid.azure.net/"
 ENTRA_MQTT_AUTH_METHOD = "OAUTH2-JWT"
@@ -57,8 +57,8 @@ def _build_measurement(station_id: str, raw: Dict[str, Any]) -> CurrentMeasureme
         station_id=station_id,
         timestamp=raw["timestamp"],
         value=raw["value"],
-        stateMnwMhw=raw.get("stateMnwMhw"),
-        stateNswHsw=raw.get("stateNswHsw"),
+        stateMnwMhw=get_measurement_state(raw, "stateMnwMhw"),
+        stateNswHsw=get_measurement_state(raw, "stateNswHsw"),
         trend=raw.get("trend"),
     )
 
@@ -193,6 +193,7 @@ async def feed(
     auth_mode: str = "password",
     entra_audience: str = DEFAULT_ENTRA_AUDIENCE,
     entra_client_id: Optional[str] = None,
+    dataschema_overrides: Optional[Dict[str, str]] = None,
 ) -> None:
     previous_readings: Dict[str, Dict[str, Any]] = load_state(state_file)
 
@@ -226,6 +227,7 @@ async def feed(
         client=paho_client,
         content_mode=content_mode,  # type: ignore[arg-type]
         loop=loop,
+        dataschema_overrides=dataschema_overrides,
     )
 
     logger.info(

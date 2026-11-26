@@ -711,6 +711,11 @@ Per session:
 
 ## Learnings
 
+- Parse Event Hubs `serviceBusEndpoint` as a URL and use its hostname before
+  selecting Kafka port 9093. The returned HTTPS URL can already include port
+  443; stripping only the scheme and appending `:9093` creates an invalid
+  bootstrap address. Check the consumer's resolved address before treating a
+  failed receive as a publisher/authentication defect.
 - An ACI one-shot container can finish before the Restart API test and return
   `ContainerGroupStopped`; this is not evidence that checkpoint reads fail.
   A validation-only hold-open wrapper can keep it Running after its normal

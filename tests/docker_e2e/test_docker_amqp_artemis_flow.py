@@ -265,7 +265,8 @@ def _load_cap_alerts_schemas() -> Dict[str, Dict[str, Any]]:
 class TestPegelonlineAmqpArtemisFlow:
     """End-to-end: feeder pushes CloudEvents to Artemis over AMQP 1.0."""
 
-    def test_emits_cloudevents_to_amqp_queue(self, artemis_broker, pegelonline_amqp_image):
+    @pytest.mark.parametrize("encoding", ["json", "avro"])
+    def test_emits_cloudevents_to_amqp_queue(self, artemis_broker, pegelonline_amqp_image, encoding):
         client = docker.from_env()
 
         feeder = client.containers.run(
@@ -280,6 +281,7 @@ class TestPegelonlineAmqpArtemisFlow:
                 "AMQP_USERNAME": artemis_broker["user"],
                 "AMQP_PASSWORD": artemis_broker["password"],
                 "AMQP_AUTH_MODE": "password",
+                "AMQP_PAYLOAD_ENCODING": encoding,
                 "POLLING_INTERVAL": "60",
                 "ONCE_MODE": "true",
                 "PYTHONUNBUFFERED": "1",
@@ -356,7 +358,27 @@ class TestPegelonlineAmqpArtemisFlow:
             if ce_type not in schemas:
                 continue
             sample_msg, _ = items[0]
-            data = _body_to_obj(sample_msg)
+            expected_content_type = (
+                "application/json" if encoding == "json" else "application/vnd.apache.avro+avro")
+            assert str(sample_msg.content_type) == expected_content_type
+            if encoding == "json":
+                data = _body_to_obj(sample_msg)
+            else:
+                import io
+                import avro.io
+                import avro.schema
+
+                with open(os.path.join(REPO_ROOT, "feeders", "pegelonline", "fabric",
+                                       "schematized", "EventSchemaSetDefinition.json"),
+                          encoding="utf-8") as fh:
+                    definition = json.load(fh)
+                selected_version = "2" if ce_type.endswith(".CurrentMeasurement") else "1"
+                resource = next(s for s in definition["schemas"] if s["id"] == ce_type)
+                avro_schema = avro.schema.parse(next(
+                    v["schema"] for v in resource["versions"] if v["id"] == selected_version))
+                stream = io.BytesIO(bytes(sample_msg.body))
+                data = avro.io.DatumReader(avro_schema).read(avro.io.BinaryDecoder(stream))
+                assert stream.tell() == len(sample_msg.body)
             assert isinstance(data, dict), f"{ce_type} body not a JSON object: {data!r}"
             schema = schemas[ce_type]
             assert not validator_factory.validate(schema), (

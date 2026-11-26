@@ -1,5 +1,6 @@
 docker
 confluent-kafka
+avro>=1.11.3,<2.0.0
 testcontainers[kafka]>=4.7,<5
 json-structure>=0.6.1
 paho-mqtt>=2.1.0

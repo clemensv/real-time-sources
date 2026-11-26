@@ -1,13 +1,14 @@
 # USGS WaterServices migration work ledger
 
-Updated: 2026-11-25. Repository baseline: `41a32d93d9080c9b125d641e89ce328f0cda39ce`.
+Updated: 2026-11-26. Repository baseline: `41a32d93d9080c9b125d641e89ce328f0cda39ce`.
 
 Draft migration PR: [#1762](https://github.com/clemensv/real-time-sources/pull/1762).
 The branch contains only the USGS migration on current `origin/main`; unrelated
 inherited work remains on its original branches. Local validation and all
-review corrections passed. Cloud release gates remain blocked in
-[#1761](https://github.com/clemensv/real-time-sources/issues/1761); no merge,
-image publication or production cutover has occurred.
+review corrections passed. Remaining release gates are tracked in
+[#1761](https://github.com/clemensv/real-time-sources/issues/1761).
+Production image publication has passed; no merge or production cutover has
+occurred.
 
 ## Decision and current status
 
@@ -27,11 +28,73 @@ Worktree: `C:\git\rts-usgs-waterdata`.
 Branch: `feature/usgs-waterdata-migration`.
 The original working tree and its unrelated changes are not part of this work.
 
-**Implementation and local transport acceptance passed; cloud release is blocked.** The
+**Implementation, local transport, cold-state and notebook acceptance passed.** The
 native feeder has four event families, generated Kafka/MQTT/AMQP producers,
 three container variants, six ARM templates, a notebook, KQL and documentation.
 Both existing feeders have opt-in OGC acquisition on all three transports.
 Their legacy acquisition remains the default; no production cutover occurred.
+
+### November 26 pre-merge release checks
+
+All nine USGS production images were built, pushed and signed from runtime
+revision `0eba17ba249acdce16a0a6fc2b605c4e9445cab2`. Anonymous registry
+readback verified matching SHA/latest digests, the expected linux/amd64 revision
+labels and signature-artifact presence for every image. Signature presence is
+not independent cryptographic verification. Scoped workflow dispatch publishes
+only the selected sources and their transport variants; `publish=false`
+suppresses publication and signing.
+
+The native Event Hubs template now disables broker local authentication and
+uses an explicit user-assigned publisher identity with namespace Data Sender.
+The shared transformation preserves the separate state identity. The first
+live test rejected the global Event Hubs Kafka audience with
+`Invalid tenant name 'eventhubs'`. The callback now requests
+`https://<namespace>.servicebus.windows.net/.default`; AMQP audiences and the
+existing Fabric authentication path are unchanged.
+
+The first native-template pass verified Kafka BYO (19 events), Service Bus
+(56), the AMQP alias (54) and MQTT BYO (54), each across all four event families
+with envelope/schema checks and a committed HTTPS checkpoint. Those cases used
+the preceding release revision; the namespace correction does not change their
+code paths. A focused rerun using the corrected published images verified Event
+Hubs (13 events) and Event Grid MQTT (56), also across all four families with
+envelope/schema/checkpoint acceptance. The Event Hubs test consumer initially
+appended Kafka port 9093 to an HTTPS endpoint that already contained port 443.
+The corrected consumer recovered actual events from the same deployment;
+failed-attempt receipts are retained separately. The six-target reconciliation
+passed on 2026-11-26. All four exact proof-owned Azure groups were independently
+verified absent; temporary broker credentials and 21 owned local image tags
+were removed. Final-head CI is tracked in the PR rather than inferred from
+the older 716-pass result.
+
+Current local results are native 96, IV 69 deterministic and WQ 89 tests, plus
+32 shared identity/publication tests. The earlier complete eight-case IV live
+suite passed. All nine corrected no-cache builds passed runtime imports, and
+the three actual Kafka cases passed again in 342.39 seconds. The earlier
+13-case strict transport matrix passed; it was not rerun in full after the
+namespace-only correction.
+
+Current main was integrated without rewriting published history. Both skill
+conflicts preserve the USGS hosting guidance and upstream schematized-pipeline
+safeguards. Producer-aware fleet mypy passed 1,335 files after integration;
+upstream Pegelonline compilation, all three actual imports and 119 tests
+passed. The combined shared identity, publication, schema-set and binding
+suite passed all 60 tests. Schema-set tests require the checked-in pinned
+schema-tool dependencies in an isolated environment. USGS source, template,
+wheel and publication inputs are unchanged by the main integration. A fresh
+Git-object comparison also verified all 271 frozen legacy contract/generated/
+KQL artifacts and both EVENTS documents unchanged.
+
+The earlier manual/scheduled Fabric proofs establish the unchanged
+`fabric-entra` path, not cloud execution of the latest wheel bytes.
+Current release wheels passed the local build/unit/wire checks above.
+
+Live portal acceptance requires an authorized merge and subsequent Pages sync.
+The native source is not yet on the live portal, and its main-branch template
+returns HTTP 404. Existing IV/WQ routes and available deployment targets were
+checked in the live browser. The Pages workflow explicitly checks out main;
+it was not used to overwrite production Pages with unmerged targets. Keep the
+PR draft until the remaining gates are reconciled.
 
 ### November 25 keyless remediation
 
@@ -510,14 +573,14 @@ Owners below are proposed roles, not assignments already accepted.
 | USGS-07 | Done for enrolled scope | Implementer | USGS-04, USGS-05, USGS-06 | IV OGC poller/site commands and separate series-reference producer wired. Strict Kafka/MQTT/Artemis/Service Bus tests received site, series, streamflow and temperature events. AMQP partition identity equals subject for every family. Broader production enrollment remains blocked by USGS-04/05. |
 | USGS-08 | Done for enrolled scope | Implementer | USGS-05, USGS-06 | WQ OGC normalization on all transports; real legacy polling is the MQTT default. Strict Kafka, MQTT, Artemis and Service Bus tests passed for site and reading events; the Artemis compatibility entry point also passed. |
 | USGS-09 | Done | Implementer | USGS-07, USGS-08 | Delivery-acknowledged state, versioned state preservation, replay/correction and rejection tests implemented. Failed sends/flushes do not advance checkpoints. Broker acceptance still requires USGS-10. |
-| USGS-10 | Local checks done; cloud blocked | Implementer | USGS-09 | 271 frozen artifacts unchanged; 201 offline source tests, 49 shared regressions, nine final image builds and 1,331-file fleet mypy passed. All 13 distinct strict transport cases passed across focused runs, without mocks/skips/xfails. USGS-17/18 block cloud acceptance. |
+| USGS-10 | Local and hosting acceptance done | Implementer | USGS-09 | 271 frozen artifacts unchanged. Native 96, IV 69 deterministic plus eight earlier live cases, WQ 89 and shared identity/publication 32 tests passed. Nine corrected image builds/imports, 1,335-file integrated fleet mypy, the earlier 13-case strict wire matrix and three corrected-release Kafka rechecks passed. Final-head CI remains a separate gate. |
 | USGS-11 | Pending | Operator + implementer | USGS-02, USGS-10 | Run legacy/new shadow comparison with isolated topics/state, over 24 hours and a reference refresh; compare matched observation sets and report all differences by field/reason. No unexplained omissions, identity changes or numeric/unit changes. |
 | USGS-12 | Done | Implementer | USGS-10 | Native and transitional deployment/API docs, root catalog/portal entry, upstream links, matrix and notebook wheel publication integration updated. Historical CE source and frozen legacy EVENTS/contracts retained. |
-| USGS-13 | Pending | Operator + maintainer | USGS-11, USGS-12 | Rebuild/publish images and notebook wheels; canary one scoped deployment per hosting/transport surface, then roll out serially. Capture deployed versions, observed records, lag and rollback checkpoint per deployment. |
+| USGS-13 | Images published; production rollout pending | Operator + maintainer | USGS-11, USGS-12 | Nine production images published and read back. All six native-template targets and all three manual/scheduled notebook hosting paths passed, with image provenance recorded above. Current wheels passed local gates. Authorized merge, final CI and live portal synchronization/acceptance precede any production rollout. Preserve deployment-specific versions, lag and rollback checkpoints outside Git. |
 | USGS-14 | Pending | Operator | USGS-13 | Verify scheduled notebook diagnostics and typed KQL tables, then monitor freshness/delivery/429s for 48 hours. Confirm no production acquisition traffic to legacy WaterServices and retain the compatibility crosswalk/supplement. |
-| USGS-15 | Local acceptance done; release blocked | Implementer | USGS-01 | Native continuous-only implementation, generated contracts/producers, packaging and independent specialist reviews complete. Final Kafka/MQTT/Artemis/Service Bus run passed all four cases. USGS-17/18 block release. |
+| USGS-15 | Implementation and live targets accepted | Implementer | USGS-01 | Native continuous-only implementation, generated contracts/producers, packaging and independent specialist reviews complete. Kafka/MQTT/Artemis/Service Bus wire tests, keyless hosting and all six native-template targets passed. Final-head CI and merge-dependent live portal acceptance are tracked in the PR. |
 | USGS-16 | Done for reviewed sample | Implementer | USGS-03 | Verified enrollment for site 01646500 and parameters 00010/00060, captured expanded-site metadata, explicit units/qualifiers, guarded projection and deterministic vendored-core wheels integrated. Broader enrollment remains an operator coverage gate, not inferred from this sample. |
-| USGS-17 | Implemented; live acceptance blocked | Maintainer + implementer | USGS-10, USGS-15 | Shared SMB managed-identity transformation applied to all 18 USGS templates; Shared Key disabled, checkpoint mounts retained. All six full native templates pass ARM validation. Both isolated probes reported FailedMountAzureFileVolume, including Kerberos configured before creation; successful mount/restart and feeder checkpoint acceptance remain required. Probe resources removed and absence verified. Do not waive policy or discard state. |
+| USGS-17 | Complete | Maintainer + implementer | USGS-10, USGS-15 | All 18 templates use managed-identity Azure Files HTTPS state instead of host SMB mounts. Native/IV/WQ cold delivery, checkpoint writes and actual ACI restart reads passed; Shared Key stays disabled and acknowledged history is preserved. The underlying host SMB defect is not diagnosed, but it no longer blocks the selected state path. Proof stacks were removed and absence verified. |
 | USGS-18 | Complete | Maintainer + implementer | USGS-10, USGS-15 | All three plain-Python notebooks passed manual and scheduled keyless Entra publishing, OneLake diagnostics, fresh output and frozen typed projections. Delegated-user identity verified; workspace-MI publishing is not claimed. Access keys are discarded. |
 | USGS-19 | Pending upstream fixes | Upstream maintainers + implementer | USGS-06, USGS-15 | Track the four linked generator defects. Retire handwritten boundaries only after fixed generation and strict on-wire/schema regression tests; preserve the legacy contract freeze. |
 

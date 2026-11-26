@@ -12,6 +12,7 @@ class StateMnwMhwEnum(Enum):
     commented = 'commented'
     out_MINUSdated = 'out-dated'
 
+
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'StateMnwMhwEnum':
         """

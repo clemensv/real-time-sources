@@ -145,27 +145,33 @@ See [EVENTS.md](EVENTS.md) for the full schemas of both event types
 <!-- source-deploy:begin -->
 ## Deploy
 
-The portal buttons wrap the underlying scripts and ARM templates documented below; pick the path that matches your destination and operational preference. Every route lands in the same Eventhouse / KQL schema if you want one — they only differ in where the feeder container or notebook runs.
+The portal buttons wrap the legacy scripts and ARM templates documented below.
+The schematized notebook hosting option uses a different KQL layout.
 
 ### Deploying into Microsoft Fabric
 
-Pegelonline targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/), and the bundled [Fabric Map](fabric/README.md) visualizes the live state on a basemap.
+The schematized notebook sends registered events to a Fabric **Eventstream**,
+which creates typed base tables in its paired **KQL database**. The legacy
+container deployment instead applies [`kql/`](kql/) and supports the bundled
+[Fabric Map](fabric/README.md). That Map hook has not been adapted to the
+Eventstream-created tables.
 
-Two hosting models are supported. Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources#pegelonline) to launch either — both walk you through the same Fabric workspace selection and follow-up steps.
+The notebook pilot and legacy container hosting paths are described separately below.
 
 #### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
 
-A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `pegelonline` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/pegelonline/`.
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the AMQP binary
+feeder inside a source-specific published Fabric **Environment**. It uses a
+Spark kernel to support that Environment. The connection string is retrieved
+from the public Topology API for an explicitly named CustomEndpoint source;
+credentials are not notebook parameters. Dedupe state and per-run logs live in
+OneLake under `/lakehouse/default/Files/feeder-state/pegelonline/`.
 
-```powershell
-tools/deploy-fabric/deploy-feeder-notebook.ps1 `
-  -Source pegelonline `
-  -Workspace <fabric-workspace-id-or-name> `
-  -ResourceGroup <azure-rg-for-bootstrap> `
-  -Location <azure-region>
-```
-
-Best fit for poll-based sources whose update cadence aligns with scheduled execution; the notebook writes a per-run diagnostic log to OneLake on every run.
+> This branch's notebook targets the [schematized pilot](fabric/schematized/README.md).
+> Follow its deployment prerequisites and evidence, not the shared notebook
+> deployer or portal button below. The shared deployer still forces a Python
+> kernel, removes the Environment binding and provisions legacy base-table
+> ingestion. It has not been migrated. The Map hook is also still a legacy path.
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#pegelonline/fabric-notebook)
 
@@ -187,7 +193,7 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 #### Fabric Map visualization &nbsp;<sub><i>(optional, post-deploy)</i></sub>
 
-After either hosting model has events flowing, run [`fabric/post-deploy.ps1`](fabric/README.md) (or `tools/deploy-fabric/deploy-fabric.ps1 -Source pegelonline -Workspace <ws>`) to provision the bundled Fabric Map item and wire its Kusto-backed layers onto a basemap. The map updates live as new events arrive.
+For the legacy deployment only, after events are flowing, run [`fabric/post-deploy.ps1`](fabric/README.md) (or `tools/deploy-fabric/deploy-fabric.ps1 -Source pegelonline -Workspace <ws>`) to provision the bundled Fabric Map item and wire its Kusto-backed layers onto a basemap. Do not run that hook against the schematized pilot.
 
 
 ### Deploying into Azure Container Instances

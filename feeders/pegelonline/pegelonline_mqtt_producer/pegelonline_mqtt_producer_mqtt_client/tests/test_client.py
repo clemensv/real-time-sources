@@ -44,6 +44,57 @@ async def mosquitto_broker():
     finally:
         container.stop()
 
+@pytest.mark.asyncio
+async def test_de_wsv_pegelonline_mqtt_shared_paho_client_connect_multiplexes_py():
+    """Regression for issue #485.
+
+    Several generated clients are meant to share one paho client (one connection
+    per multi-messagegroup source). Paho stores only one callback per event, so a
+    later-instantiated client used to overwrite the shared ``on_connect`` and make
+    an earlier client's ``connect()`` hang forever. A callback multiplexer must fan
+    the CONNACK out to every instance so ``connect()`` resolves regardless of order.
+
+    Deterministic (fake paho client, no broker): the second instance is created
+    AFTER the first, then ``connect()`` on the FIRST instance must still complete.
+    """
+    class _FakeClient:
+        def __init__(self):
+            self.on_connect = None
+            self.on_disconnect = None
+            self.on_message = None
+
+        def connect(self, *args, **kwargs):
+            pass
+
+        def loop_start(self):
+            # Simulate the broker's CONNACK arriving on the network thread.
+            if self.on_connect is not None:
+                self.on_connect(self, None, {}, 0, None)
+
+        def loop_stop(self, *args, **kwargs):
+            pass
+
+        def disconnect(self, *args, **kwargs):
+            pass
+
+    loop = asyncio.get_running_loop()
+    shared = _FakeClient()
+    first = DeWsvPegelonlineMqttMqttClient(shared, loop=loop)
+    second = DeWsvPegelonlineMqttMqttClient(shared, loop=loop)  # would steal first's on_connect pre-fix
+
+    mux = getattr(shared, "_xrcg_callback_multiplexer", None)
+    assert mux is not None and len(mux._live()) == 2, \
+        "both clients sharing one paho client must register on the callback multiplexer (#485)"
+
+    try:
+        await first.connect("broker", 1883, keepalive=5)
+    except (asyncio.TimeoutError, TimeoutError):
+        pytest.fail(
+            "connect() on a shared-client instance timed out - a later client "
+            "overwrote the shared on_connect callback (issue #485)"
+        )
+    assert first._connected is True
+
 
 
 @pytest.mark.asyncio
@@ -93,6 +144,7 @@ async def test_de_wsv_pegelonline_mqtt_de_wsv_pegelonline_mqtt_station_py(mosqui
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            water_shortname=f"test_water_shortname_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
@@ -160,6 +212,7 @@ async def test_de_wsv_pegelonline_mqtt_de_wsv_pegelonline_mqtt_current_measureme
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            water_shortname=f"test_water_shortname_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
@@ -178,4 +231,60 @@ async def test_de_wsv_pegelonline_mqtt_de_wsv_pegelonline_mqtt_current_measureme
     await subscriber_client.disconnect()
     await publisher_client.disconnect()
 
+
+
+
+@pytest.mark.asyncio
+async def test_de_wsv_pegelonline_mqtt_disconnect_flushes_inflight_qos1_py():
+    """Regression for issue #486.
+
+    A short-lived ('--once') producer that publishes a QoS-1 message and then
+    immediately disconnects must not drop the last-queued message. ``disconnect()``
+    must wait for in-flight delivery (PUBACK) BEFORE stopping paho's network loop.
+
+    Uses a fake paho client so the ordering is asserted deterministically without
+    depending on broker/network timing.
+    """
+    calls = []
+
+    class _FakeInfo:
+        def __init__(self):
+            self._published = False
+
+        def wait_for_publish(self, timeout=None):
+            calls.append("wait_for_publish")
+            self._published = True
+
+        def is_published(self):
+            return self._published
+
+    class _FakeClient:
+        def __init__(self):
+            self.on_message = None
+            self.on_connect = None
+            self.on_disconnect = None
+
+        def publish(self, *args, **kwargs):
+            calls.append("publish")
+            return _FakeInfo()
+
+        def disconnect(self, *args, **kwargs):
+            calls.append("disconnect")
+
+        def loop_stop(self, *args, **kwargs):
+            calls.append("loop_stop")
+
+    loop = asyncio.get_running_loop()
+    client = DeWsvPegelonlineMqttMqttClient(_FakeClient(), loop=loop)
+
+    # Simulate a QoS-1 publish still in flight, then disconnect immediately.
+    client._track_inflight(client.client.publish("test/topic", b"{}", qos=1))
+    await client.disconnect()
+
+    assert "wait_for_publish" in calls, \
+        "disconnect() must flush queued QoS-1 publishes before stopping the loop"
+    assert calls.index("wait_for_publish") < calls.index("loop_stop"), \
+        "disconnect() must wait for in-flight delivery BEFORE loop_stop()"
+    assert calls.index("disconnect") < calls.index("loop_stop"), \
+        "disconnect() must send DISCONNECT before stopping the loop"
 

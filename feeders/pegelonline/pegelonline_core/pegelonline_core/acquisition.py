@@ -95,3 +95,13 @@ class PegelOnlineAPI:
                     measurement["uuid"] = station["uuid"]
                     station_levels[station["uuid"]] = measurement
         return station_levels
+
+
+def get_measurement_state(raw: Dict[str, Any], name: str) -> str:
+    """Use the documented unknown classification when reference state is unavailable."""
+    state = raw.get(name)
+    if state is None:
+        return "unknown"
+    if not isinstance(state, str):
+        raise ValueError(f"{name} must be a string classification")
+    return state

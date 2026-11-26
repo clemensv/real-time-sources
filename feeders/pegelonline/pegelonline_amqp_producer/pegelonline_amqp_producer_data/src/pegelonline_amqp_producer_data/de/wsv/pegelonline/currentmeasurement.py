@@ -1,21 +1,20 @@
 """ CurrentMeasurement dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
-from __future__ import annotations
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-from marshmallow import fields
-import json
-from pegelonline_amqp_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
-from pegelonline_amqp_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
-from pegelonline_amqp_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
-import datetime
+import avro.schema
+import avro.name
+import avro.io
+
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -23,23 +22,35 @@ import datetime
 class CurrentMeasurement:
     """
     Latest 15-minute water-level reading for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Carries only the W (water-level) timeseries; other timeseries (Q discharge, LT water temperature) are not emitted by this source.
-    
     Attributes:
-        station_id (str)
-        timestamp (datetime.datetime)
-        value (float)
-        stateMnwMhw (typing.Optional[StateMnwMhwEnum])
-        stateNswHsw (typing.Optional[StateNswHswEnum])
-        trend (typing.Optional[TrendEnum])
-    """
-    
-    
+        station_id (str): Stable UUID of the gauge this reading was taken at. References the `station_id` of the corresponding Station reference event. Used as the CloudEvents `subject` and the Kafka partition key so all readings for a given gauge land on the same partition / topic key.
+        timestamp (str): Wall-clock time the upstream reading was taken, in ISO 8601 / RFC 3339 with an explicit UTC offset. PegelOnline publishes the value in Europe/Berlin local time, so the offset shifts between `+01:00` (CET) and `+02:00` (CEST) across the DST boundary — preserve the offset when storing. Sourced from the upstream `timestamp` field.
+        value (float): Water-level reading on the W (water-level) timeseries, in centimetres above the gauge's Pegelnullpunkt (PNP — a geodetically fixed datum specific to each gauge, see https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Typical operational range is 0–1500 cm; flood events at major Rhine gauges can exceed 1000 cm. Negative readings are valid at gauges whose normal pool is below PNP (e.g. tidal Elbe at low water). Unit: cm. [minimum: -1000, maximum: 2500]
+        stateMnwMhw (typing.Optional[str]): Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values, as computed by the upstream feed. Omitted by upstream when the gauge has no MNW/MHW reference series configured (treat absence as 'unknown').
+        stateNswHsw (typing.Optional[str]): Categorical classification of the current water level against the highest navigable water level (HSW) reference for the reach, as computed by the upstream feed. Drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Note: upstream never emits 'low' on this series — HSW is an upper bound only. Omitted by upstream when the gauge has no HSW reference (treat absence as 'unknown').
+        trend (typing.Optional[int]): Short-term trend of the water level relative to the previous reading, as classified by the upstream feed. First-class signal for flood-monitoring dashboards. Sourced from the upstream `trend` field; omitted when upstream cannot compute a trend (e.g. first reading after a gap)."""
+
+
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    stateMnwMhw: typing.Optional[StateMnwMhwEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
-    stateNswHsw: typing.Optional[StateNswHswEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
-    trend: typing.Optional[TrendEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
+    stateMnwMhw: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
+    stateNswHsw: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
+    trend: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
+
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"CurrentMeasurement\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Latest 15-minute water-level reading for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Carries only the W (water-level) timeseries; other timeseries (Q discharge, LT water temperature) are not emitted by this source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Stable UUID of the gauge this reading was taken at. References the `station_id` of the corresponding Station reference event. Used as the CloudEvents `subject` and the Kafka partition key so all readings for a given gauge land on the same partition / topic key.\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"x-original-logical-type\": \"rfc3339-timestamp-millis\"}, \"doc\": \"Wall-clock time the upstream reading was taken, in ISO 8601 / RFC 3339 with an explicit UTC offset. PegelOnline publishes the value in Europe/Berlin local time, so the offset shifts between `+01:00` (CET) and `+02:00` (CEST) across the DST boundary \u2014 preserve the offset when storing. Sourced from the upstream `timestamp` field.\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"Water-level reading on the W (water-level) timeseries, in centimetres above the gauge's Pegelnullpunkt (PNP \u2014 a geodetically fixed datum specific to each gauge, see https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Typical operational range is 0\u20131500 cm; flood events at major Rhine gauges can exceed 1000 cm. Negative readings are valid at gauges whose normal pool is below PNP (e.g. tidal Elbe at low water). Unit: cm. [minimum: -1000, maximum: 2500]\"}, {\"name\": \"stateMnwMhw\", \"type\": [\"null\", \"string\"], \"doc\": \"Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values, as computed by the upstream feed. Omitted by upstream when the gauge has no MNW/MHW reference series configured (treat absence as 'unknown').\", \"default\": null}, {\"name\": \"stateNswHsw\", \"type\": [\"null\", \"string\"], \"doc\": \"Categorical classification of the current water level against the highest navigable water level (HSW) reference for the reach, as computed by the upstream feed. Drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Note: upstream never emits 'low' on this series \u2014 HSW is an upper bound only. Omitted by upstream when the gauge has no HSW reference (treat absence as 'unknown').\", \"default\": null}, {\"name\": \"trend\", \"type\": [\"int\", \"null\"], \"doc\": \"Short-term trend of the water level relative to the previous reading, as classified by the upstream feed. First-class signal for flood-monitoring dashboards. Sourced from the upstream `trend` field; omitted when upstream cannot compute a trend (e.g. first reading after a gap).\", \"default\": null}]}"), avro.name.Names()
+    )
+
+
+    def __post_init__(self):
+        """ Initializes the dataclass with the provided keyword arguments."""
+        self.station_id=str(self.station_id)
+        self.timestamp=str(self.timestamp)
+        self.value=float(self.value)
+        self.stateMnwMhw=(str(self.stateMnwMhw)) if self.stateMnwMhw is not None else None
+        self.stateNswHsw=(str(self.stateNswHsw)) if self.stateNswHsw is not None else None
+        self.trend=(int(self.trend)) if self.trend is not None else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'CurrentMeasurement':
@@ -50,8 +61,9 @@ class CurrentMeasurement:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dataclass.
+            The dataclass representation of the dictionary.
         """
+        data = dict(data)
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -67,9 +79,9 @@ class CurrentMeasurement:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
-            if isinstance(v, enum.Enum):
+            if isinstance(v,enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -83,6 +95,8 @@ class CurrentMeasurement:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -92,9 +106,15 @@ class CurrentMeasurement:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            stream = io.BytesIO()
+            writer = avro.io.DatumWriter(self.AvroType)
+            encoder = avro.io.BinaryEncoder(stream)
+            writer.write(self.to_serializer_dict(), encoder)
+            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -125,6 +145,10 @@ class CurrentMeasurement:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
+                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
+                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
+                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -147,9 +171,21 @@ class CurrentMeasurement:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
+            reader = avro.io.DatumReader(cls.AvroType)
+            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+                decoder = avro.io.BinaryDecoder(stream)
+            else:
+                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
+            _record = reader.read(decoder)
+            return CurrentMeasurement.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -157,21 +193,5 @@ class CurrentMeasurement:
                 return CurrentMeasurement.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-        raise NotImplementedError(f'Unsupported media type {content_type}')
 
-    @classmethod
-    def create_instance(cls) -> 'CurrentMeasurement':
-        """
-        Creates an instance of the dataclass with test values.
-        
-        Returns:
-            An instance of the dataclass.
-        """
-        return cls(
-            station_id='keptvbvtpalhixabfgtj',
-            timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(46.32331692666581),
-            stateMnwMhw=StateMnwMhwEnum.low,
-            stateNswHsw=StateNswHswEnum.normal,
-            trend=TrendEnum.VALUE_NEG_1
-        )
+        raise NotImplementedError(f'Unsupported media type {content_type}')

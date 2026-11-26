@@ -10,13 +10,14 @@ name = "pegelonline-amqp-producer-data"
 dynamic = [
     "version",
 ]
-description = "A package for handling JSON Structure schema data"
+description = "A package for handling Avro schema data"
 authors = [
     { name = "Your Name" },
 ]
 license = "MIT"
 requires-python = "<4.0,>=3.10"
 dependencies = [
+    "avro>=1.11.3,<2.0.0",
     "dataclasses-json>=0.6.7,<0.7.0",
 ]
 

@@ -1,6 +1,6 @@
 ---
 name: fabric-notebook-deployment
-description: "Use when adding or modifying a Fabric notebook-hosted feeder. Covers Environment-backed hosting, approved plain-Python OneLake wheels, keyless Topology/Entra Kafka binding, scheduling, fresh-event acceptance and OneLake diagnostics."
+description: "Use when adding or modifying a Fabric notebook-hosted feeder. Covers native TLS dependencies, Spark Environment bindings, approved plain-Python OneLake wheels, named-source Topology/Entra binding, state preservation, scheduling and fresh output/history acceptance."
 argument-hint: "Describe the source, its workspace, eventhouse and KQL database, and whether a Fabric Environment already exists."
 ---
 
@@ -17,6 +17,14 @@ argument-hint: "Describe the source, its workspace, eventhouse and KQL database,
 
 ## Non-Negotiables
 
+- **Prefer the workspace managed identity, not SAS.** Verify support for the
+  selected source connection, transport and destination, then configure the
+  identity with least-privilege roles and the correct token audience. Verify
+  which principal actually runs and publishes; a delegated user token from
+  notebook credentials does not prove workspace-identity use. Do not retrieve
+  access keys by default. If workspace identity is unsupported, record the
+  exact limitation and obtain approval for a fallback, with another supported
+  Entra flow preferred over SAS. Never enable key authentication silently.
 - **Never call `asyncio.run()` directly inside a notebook cell.** Fabric
   notebook kernels run inside a live asyncio loop. Every bridge in this repo
   ultimately calls `asyncio.run(...)` inside its `main()`. Run the bridge in
@@ -47,6 +55,27 @@ argument-hint: "Describe the source, its workspace, eventhouse and KQL database,
   by event ID, envelope and payload across custom output and typed history.
   Query Kusto with the `https://kusto.kusto.windows.net` audience; old positive
   row counts and a `Completed` job are not delivery proof.
+- **Job completion and broker acknowledgement are not ingestion proof.**
+  Require a successful runtime log and fresh reference/telemetry events
+  matched between custom output and typed KQL history. See E2E verification
+  below; an old nonzero table count cannot validate a new run.
+- **Preserve Spark Environment bindings.** Use the Spark kernel
+  (`synapse_pyspark`) for the verified Environment-backed hosting path and
+  read back Environment, Lakehouse and child KQL database IDs after upload.
+  The current shared deployer forces Python and removes the Environment
+  binding; do not use it against migrated schematized items until fixed.
+- **Native import success does not prove TLS support.** Proton can compile
+  with TLS stubs when OpenSSL development files are absent. Verify
+  `from proton import SSL; assert SSL.present()` in a clean compatible Linux
+  container and at notebook startup. Record the wheel hash, ABI/platform,
+  build inputs and TLS check. Supply a valid CA bundle; never disable TLS
+  verification.
+- **Select the exact named CustomEndpoint.** Handle list pagination and HTTP
+  failures; reject missing or duplicate matches. Do not select the first
+  endpoint or expose its connection string as a notebook parameter.
+- **Preserve dedupe state.** Never delete it to make validation pass.
+  Separately named state for a changed binding requires an explicit replay
+  decision; retain the previous state.
 - **Pre-merge static validation is a blocking review criterion.** Every PR
   that adds or modifies a notebook MUST pass
   `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>` with **zero
@@ -82,7 +111,13 @@ argument-hint: "Describe the source, its workspace, eventhouse and KQL database,
     <source>-feed.ipynb       # parameters, CS lookup, thread-isolated run
 ```
 
-## Deployment Pipeline (deploy-feeder-notebook.ps1)
+## Legacy deployment pipeline (deploy-feeder-notebook.ps1)
+
+The sequence below describes existing tooling, not a verified schematized
+deployment recipe. Its ingestion setup and kernel/Environment rewriting
+must be corrected before reuse for migrated sources. The isolated Pegelonline
+pilot established the requirements below; its implementation and acceptance
+receipts are separate work and are not included with this guidance.
 
 Stages in order — none are optional unless explicitly skipped via the listed
 flag:
@@ -98,9 +133,17 @@ flag:
 | B/5a  | POST `/jobs/instances?jobType=RunNotebook` for an immediate run       | `-NoTriggerNow` |
 | B/5b  | POST `/jobs/RunNotebook/schedules` with Cron schedule                 | `-NoSchedule`, `-ScheduleIntervalMinutes <5-60>` |
 
-When the publish LRO is slow (≥3 min), do not abort — poll up to 10 min
-before declaring failure. Spurious `InternalServerError` from `/kqlDatabases`
-GET is common during Fabric warmup; retry the script.
+Upload public dependencies as `environment.yml` and custom wheels through
+multipart library upload; `requirements.txt` was rejected by the tested API.
+Publish and wait for `publishDetails.state == Success` with a finite deadline,
+then read back the definition. A publish acknowledgement is not readiness.
+
+For asynchronous operations, honor `Retry-After` and reconcile the accepted
+operation through documented public operation-state/result APIs. A regional
+Location or response-parsing failure is not permission to repeat a mutation.
+For an accepted notebook run, reconcile its job ID before considering retry.
+Retry safe reads with bounded backoff; do not rerun the whole deploy script
+after an ambiguous mutation.
 
 ## Notebook Cell Contract
 
@@ -110,73 +153,36 @@ Four cells, in this order:
 2. **Parameters** (`parameters` tag) — `EVENTSTREAM_NAME`, `STATE_FILE`,
    `POLLING_INTERVAL`, `RUN_DURATION`, `ONCE_MODE`, `WORKSPACE_ID`.
    No `CONNECTION_STRING`.
-3. **CS lookup** — `notebookutils.credentials.getToken('pbi')` → list ES →
-   get topology → get source connection. ~15 lines using the Topology API.
-   Sets `os.environ['CONNECTION_STRING']`.
+3. **Binding/authentication lookup** — resolve the exact Eventstream and named
+   source through paginated public APIs. Prefer workspace-identity token
+   authentication. Use source access keys only for an approved fallback.
+   Check HTTP status and uniqueness; keep credentials in memory and out of logs.
 4. **Run cell** — opens log file in Lakehouse Files, wraps everything in
-   try/except, imports the feeder, runs `feeder.main()` **in a worker
-   thread**, and calls `notebookutils.notebook.exit("OK" | "FAIL: …")` at
-   the end.
+   try/except, imports the feeder, runs it **in a worker thread**, and records
+   exceptions and logged publish errors. Call
+   `notebookutils.notebook.exit("OK" | "FAIL: ...")` outside that handler so
+   notebook exit control flow is not swallowed. A one-shot timeout is failure.
 
 See `references/fabric-notebook-runbook.md` for the exact cell sources.
 
-## Continuous Polling Mode (preferred for real-time sources)
+## Run mode and scheduling
 
-The default deployment model is **continuous polling**: the notebook runs
-the feeder's native poll loop for a fixed duration (`RUN_DURATION`,
-default 3300 s = 55 min), then exits cleanly. The Fabric scheduler
-(set to 60 min) serves only as a restart safety net — it is NOT the
-polling cadence.
+Choose bounded one-shot polling or continuous polling explicitly for the
+source and approved operating window. Continuous polling can amortize compute
+startup, but requires cooperative shutdown, producer flush/close and a verified
+worker exit. A daemon thread remains alive while the kernel runs;
+`join(timeout=...)` does not stop it. Never report timeout as clean completion.
+If the worker cannot stop, report failure and stop the job/session before
+reusing its state or starting another worker.
 
-**Why continuous > single-shot batch:**
-
-- Fabric cold-starts a fresh Python kernel per scheduled invocation
-  (~65–70 s overhead: compute allocation + environment activation).
-- For a 30 s polling source, a 5-min schedule wastes 20% of wall-clock
-  time on startup. A 1-min schedule is ~50% overhead.
-- Continuous mode amortizes the cold start across 55 minutes of actual
-  work. The effective overhead drops to ~2%.
-
-**Parameters for continuous mode:**
-
-```python
-POLLING_INTERVAL = 30    # native source cadence (seconds)
-RUN_DURATION     = 3300  # exit after 55 min (scheduler restarts at 60 min)
-ONCE_MODE        = False # False = continuous loop
-```
-
-**Run cell pattern (continuous):**
-
-```python
-sys.argv = ['<source>', 'feed']   # no --once flag
-t = threading.Thread(target=_worker, daemon=True)
-t.start()
-t.join(timeout=RUN_DURATION)      # ← key difference from single-shot
-if t.is_alive():
-    _log(f'Run duration {RUN_DURATION}s reached; exiting cleanly.')
-elif _err:
-    raise _err[0]
-```
-
-The daemon thread is abandoned on timeout — the feeder's asyncio loop
-dies with the thread. No explicit cancellation is needed.
-
-**Schedule configuration (safety net):**
-
-```json
-{ "type": "Cron", "interval": 60 }
-```
-
-Set to 60 min regardless of source cadence. The scheduler's only job is
-to restart the notebook if it exits (timeout, crash, or capacity
-reclaim). The actual polling frequency is controlled by
-`POLLING_INTERVAL` inside the running notebook.
-
-**When to use single-shot instead:**
-
-- Sources that genuinely run once and exit (one-off data loads, daily
-  digests with >1 h cadence). These keep `ONCE_MODE = True` and
-  `t.join()` (no timeout).
+For one-shot runs, use `ONCE_MODE=True` and a finite `RUN_DURATION`. Obtain
+approval for schedule interval and expiry, read them back and observe an actual
+scheduled run after manual acceptance. Avoid overlapping writers to the same
+state file; reconcile any still-running invocation before restarting.
+Measure whole-job duration rather than assuming a fixed startup allowance.
+In the 2026-11-16 pilot, worker execution took about 38 seconds but the entire
+scheduled job took about 266 seconds. This is an observation, not a sizing
+guarantee. Schedule interval does not establish data freshness.
 
 ## Diagnosing Failures
 
@@ -205,18 +211,31 @@ Query the KQL DB via REST with the `https://kusto.kusto.windows.net`
 audience (NOT `kusto.fabric.microsoft.com`):
 
 ```powershell
-$tok = az account get-access-token --resource https://kusto.kusto.windows.net --query accessToken -o tsv
+$tok = az_m account get-access-token --resource https://kusto.kusto.windows.net --query accessToken -o tsv
 $body = @{ db='<source>_nb'; csl="['<TableName>'] | count" } | ConvertTo-Json
-irm "https://<cluster>.z1.kusto.fabric.microsoft.com/v2/rest/query" -Method Post `
+irm "https://<cluster>.z1.kusto.fabric.microsoft.com/v1/rest/query" -Method Post `
   -Headers @{Authorization="Bearer $tok"; 'Content-Type'='application/json'} -Body $body
 ```
 
-For non-schematized dispatch/update-policy ingestion, check both:
+For schematized ingestion, Eventstream owns base-table creation. Supply no
+base-table DDL, ingestion mappings or dispatch update policies. Discover actual
+table names/types and registered version selections before querying. Preserve
+legacy KQL artifacts for non-Fabric users; legacy dispatch counts are not a
+schematized acceptance criterion.
 
-1. `['_cloudevents_dispatch'] | count` — the raw landing table fed by
-   the eventstream.
-2. At least one typed table such as `['Measurement'] | count` —
-   produced by the update-policy projection over `_cloudevents_dispatch`.
+After source readiness, capture the run/job ID and time boundary, read its
+OneLake log, and match fresh events from every selected family between custom
+output and typed history. Compare IDs, payloads, source, subject and time;
+verify output `dataschema` against exact registered version URIs. Record any
+documented storage normalization, such as nullable strings becoming empty
+strings. Inspect runtime validation logs when broker sends succeed but storage
+does not advance. Old counts and synthetic events do not prove acceptance.
+
+For non-schematized dispatch/update-policy ingestion, check the dispatch table
+and each selected typed table separately:
+
+1. `['_cloudevents_dispatch'] | count`
+2. `['<ActualTypedTableName>'] | count`
 
 A non-zero dispatch count with a zero typed-table count means the
 update policy never fired against the new events. This is exactly the
@@ -228,8 +247,18 @@ events from every selected family matched across custom output, dispatch and
 typed history. Keep raw receipts and deployment coordinates outside Git and PR
 bodies; publish sanitized verdicts.
 
-Pegelonline reference: 785 stations × 1 = 785 reference rows;
-telemetry: 736 measurements after one cycle.
+Use the response shape of the selected Kusto endpoint: the tested v1 query
+returns Tables/Rows; v2 can return frames. Do not parse either as the other.
+Persist a non-secret receipt outside Git and PR bodies with item IDs,
+schema/version selections, package and definition hashes, run-specific counts
+and schedule readback.
+
+The generated metadata gap is tracked in
+[xregistry/codegen#693](https://github.com/xregistry/codegen/issues/693).
+The pilot's producer subclass is temporary, not a fleet pattern. Once fixed,
+regenerate through the enforced generator and remove the boundary override
+only after tests and new output/history acceptance pass. Do not hand-edit
+generated producers or assume the issue's implementation has shipped.
 
 ## Things That Are Not Allowed
 
@@ -282,4 +311,4 @@ telemetry: 736 measurements after one cycle.
   - `tools/deploy-fabric/deploy-feeder-notebook.ps1`
   - `tools/deploy-fabric/deploy-fabric.ps1` (Topology API CS lookup)
   - `tools/deploy-fabric/strip-wheel-pathdeps.py`
-- Reference implementation: `pegelonline/notebook/pegelonline-feed.ipynb`
+- Verified schematized notebook: `feeders/pegelonline/notebook/pegelonline-feed.ipynb`

@@ -14,7 +14,8 @@ import pytest
 
 
 @pytest.mark.unit
-def test_kafka_feed_once_emits_stations_and_measurements(tmp_path):
+@pytest.mark.parametrize("overrides", [None, {"xreg://./schemas/example": "https://catalog.example/schema"}])
+def test_kafka_feed_once_emits_stations_and_measurements(tmp_path, overrides):
     from pegelonline_kafka import app as kafka_app
 
     api = mock.Mock()
@@ -43,7 +44,7 @@ def test_kafka_feed_once_emits_stations_and_measurements(tmp_path):
 
     with mock.patch.object(kafka_app, "Producer", return_value=fake_raw_producer), \
          mock.patch.object(kafka_app, "DeWsvPegelonlineKafkaEventProducer",
-                           return_value=fake_event_producer):
+                           return_value=fake_event_producer) as constructor:
         asyncio.run(kafka_app.feed(
             api=api,
             kafka_config={"bootstrap.servers": "localhost:9092"},
@@ -51,8 +52,10 @@ def test_kafka_feed_once_emits_stations_and_measurements(tmp_path):
             polling_interval=1,
             state_file=str(tmp_path / "state.json"),
             once=True,
+            dataschema_overrides=overrides,
         ))
 
+    assert constructor.call_args.kwargs["dataschema_overrides"] == overrides
     assert fake_event_producer.send_de_wsv_pegelonline_kafka_station.call_count == 1
     station_call = fake_event_producer.send_de_wsv_pegelonline_kafka_station.call_args
     assert station_call.kwargs["_station_id"] == "STATION-1"
