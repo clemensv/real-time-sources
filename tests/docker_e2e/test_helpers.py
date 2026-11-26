@@ -264,6 +264,26 @@ def test_strict_mqtt_checks_out_of_band_routing_against_an_expected_value(monkey
         )
 
 
+@pytest.mark.parametrize("matching_identity", [True, False])
+def test_strict_mqtt_resolves_lookup_routing_without_overriding_payload_identity(monkeypatch, matching_identity):
+    _mqtt_contracts(monkeypatch)
+    mqtt_flow._load_mqtt_contracts("fixture")["Fixture.Observation"]["topic"] = (
+        "hydro/us/usgs/{state}/{site}/{event}"
+    )
+    sample = _mqtt_sample()
+    station = "01646500" if matching_identity else "99999999"
+    sample["topic"] = f"hydro/us/usgs/MD/{station}/observation"
+    if matching_identity:
+        mqtt_flow._assert_mqtt_contract_messages(
+            "fixture", [sample], required_types={"Fixture.Observation"}, strict=True
+        )
+    else:
+        with pytest.raises(AssertionError):
+            mqtt_flow._assert_mqtt_contract_messages(
+                "fixture", [sample], required_types={"Fixture.Observation"}, strict=True
+            )
+
+
 @pytest.mark.parametrize("protocol", ["AMQP", "amqp", "AMQP/1.0"])
 @pytest.mark.parametrize("base_attribute", ["basemessageuri", "basemessage"])
 @pytest.mark.parametrize("schema_ref", [

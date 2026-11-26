@@ -47,6 +47,8 @@ producer dependencies.
 AMQP payload validation follows endpoint message inheritance and selected
 schema versions. It resolves format declarations from the version, resource,
 or schema group and excludes Avro declarations from the JSON flow.
+Live MQTT tests validate current entity IDs and required event families;
+fixed sample IDs belong to explicitly selected mock mode.
 
 ## Repository layout
 
