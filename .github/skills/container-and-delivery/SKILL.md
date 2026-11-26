@@ -61,3 +61,27 @@ argument-hint: "Describe the source, its runtime package, required environment v
 ## References
 
 - [Delivery checklist](references/delivery-checklist.md)
+
+## Learnings
+
+### ACI state need not depend on host SMB mounts
+
+For managed-identity Azure Files checkpoints, use the HTTPS state pattern
+qualified by the three USGS feeders in [#1762](https://github.com/clemensv/real-time-sources/pull/1762)
+when adopting or replacing unreliable host SMB mounts; the host defect itself
+was not diagnosed.
+Follow the [migration procedure](../schematized-fabric-pipeline/references/migration.md#aci-managed-identity-https-checkpoints)
+for runtime integration, privileged-role approval, single-writer enforcement,
+cold-start/restart acceptance and explicit removal of superseded SMB roles.
+The reference implementation remains in a draft PR: integrate and qualify its
+shared template transformation and runtime dependencies before applying it to
+another feeder, rather than assuming it is available on main.
+
+### State and publishing acceptance are separate
+
+ARM validation, a mounted share or a successful SDK probe does not establish
+checkpoint durability: require an actual feeder's untouched-share startup,
+acknowledged-event checkpoint write and read after an actual ACI restart.
+The USGS manual/scheduled notebook tests used a delegated publishing principal
+and dispatch/update-policy storage; they do not prove workspace managed identity
+or registered-schema ingestion.

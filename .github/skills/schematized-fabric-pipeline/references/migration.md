@@ -158,6 +158,80 @@ requires an explicit replay decision and retention of the old file. If an upstre
 dry period yields no new observations, wait within the approved deadline or report
 blocked acceptance; do not use old rows or synthetic telemetry as runtime proof.
 
+### ACI managed-identity HTTPS checkpoints
+
+For ACI-hosted feeders with persistent file checkpoints, adopt the managed-identity
+Azure Files HTTPS pattern instead of depending on host SMB state mounts.
+The reference implementation in
+[#1762](https://github.com/clemensv/real-time-sources/pull/1762) passed real
+cold-start/write/restart-read tests for native Water Data, IV and WQ.
+That PR is still draft at this writing; integrate its reviewed shared components
+or wait for merge before using them on another branch.
+This is a qualified alternative to the unexplained host-mount failure, not a
+diagnosis or proof that every SMB mount is defective.
+
+1. Inventory the current checkpoint JSON, logical paths, share, writer identity
+   and mount root. Preserve them and the old deployment definition externally.
+   Keep enrollment and certificate inputs separate: replacing checkpoint
+   persistence does not upload those local inputs or change broker identities.
+2. Integrate the shared `tools\aci_files_identity.py` transformation and the
+   reviewed state backend from `usgs_waterdata_core\azure_files.py` in #1762.
+   The transformation's default is SMB, so select `azure-files-rest` explicitly.
+   It is not a fleet runtime adapter: first extract reusable non-domain storage
+   code into shared tooling/package ownership, or use an existing reviewed
+   dependency boundary. Do not copy the backend into each feeder or make unrelated
+   feeders depend on USGS-specific acquisition logic.
+3. Configure `STATE_BACKEND=azure-files-rest` and explicit
+   `STATE_AZURE_FILES_ACCOUNT_URL`, `STATE_AZURE_FILES_SHARE`,
+   `STATE_AZURE_FILES_CLIENT_ID` and `STATE_AZURE_FILES_ROOT`.
+   Keep original checkpoint paths; resolve only files beneath the absolute root
+   into share-relative paths. Require a credential-free HTTPS account endpoint.
+   Package the Azure Identity and Azure Files SDK dependencies and rebuild every
+   affected image; an ARM-only edit cannot add runtime checkpoint support.
+4. Use a dedicated state account and user-assigned managed identity without
+   changing the broker identity. Disable shared-key access and retain HTTPS/TLS
+   verification. The qualified REST flow uses **Storage File Data Privileged
+   Contributor** at the dedicated account scope and SDK `token_intent="backup"`.
+   This bypasses file ACLs: obtain explicit approval, limit account contents to
+   the intended state, and document the privilege. Do not silently substitute
+   another role, broaden scope or retrieve storage keys.
+5. Enforce one writer per checkpoint through deployment/schedule ownership.
+   The reference backend has no cross-process writer lease. Serialize existing
+   JSON without losing acknowledged delivery state; upload a uniquely named
+   temporary file, then rename with the SDK's public `overwrite=True` argument.
+   Preserve the old checkpoint when a write fails, clean up failed staging files
+   where possible, and surface authentication, parse and service errors.
+   Only a verified missing checkpoint means cold initialization; a missing share
+   or denied request must not be interpreted as empty state.
+6. Validate every generated template and test an untouched share with the actual
+   feeder, not only an SDK probe. Observe genuine broker-accepted events,
+   checkpoint contents after acknowledged delivery, then invoke the actual ACI
+   Restart API and verify the restarted feeder reads and resumes that state.
+   Record event/state correlation and image hashes externally. Allow bounded
+   role-propagation time with explicit diagnostics; the USGS test needed up to
+   35 minutes, which is an observation, not a guaranteed readiness delay.
+7. Cut over with a single writer and retain the old definition/state for the
+   approved rollback period. Incremental ARM deployment does not delete old SMB
+   role assignments simply because the new template omits them. After verified
+   cutover and authorization, remove only superseded SMB assignments identified
+   for that state identity/account; preserve broker roles and unrelated grants.
+   A rollback to a previously failing host mount is not qualified merely because
+   its old definition was saved; retain a verified recovery path for the state.
+
+The USGS reference applies the shared transformation to all 18 USGS templates,
+but actual three-feeder Service Bus tests and six native ARM-engine validations
+do not establish live acceptance of every shipped template.
+Repeat the required source/transport/template gates; production image publication
+and live portal acceptance remain separate release requirements.
+
+Its plain-Python Fabric notebooks also passed manual and actual scheduled
+publishing using refreshed namespace-scoped Entra Kafka tokens, with bundled
+Topology keys discarded. The observed principal was a delegated user, not
+workspace managed identity, and history used dispatch/update policies.
+Do not copy that notebook hosting/authentication path over the Spark-bound
+schematized pilot without separate qualification: neither checkpoint durability
+nor those notebook results establish registered-schema output/history acceptance.
+
 ## 5. Replace analytics dependencies, not ingestion ownership
 
 After fresh typed-history acceptance, read actual table names and schemas using
@@ -290,6 +364,46 @@ Do not recursively delete checkout roots, session folders or shared caches.
 `git worktree prune --dry-run` only reports stale registration metadata; it does
 not reclaim live checkout bytes. Inventory Docker usage before any targeted image
 removal; never run a blanket system/volume prune on the shared machine.
+
+## Learnings
+
+### Classify dirty files before declaring a checkout obsolete
+
+Expand untracked directory entries and inspect tracked diff summaries: an
+untracked `.venv-e2e` can be a disposable dependency environment, while hundreds
+of changed manifests, Dockerfiles and runtime files are unfinished work.
+Apparent mass deletions require checking the index and materialization state;
+do not assume sparse checkout or discard them because the base commit is merged.
+
+### Preserve shared Git state during authorized cleanup
+
+Linked worktrees share branch refs and stashes; removing a checkout does not
+authorize deleting its branch or dropping any stash.
+After explicit cleanup approval, recheck current changes, locks, merged-patch
+preservation and active-use evidence, remove only verified disposable nested
+environments, then use non-forced `git worktree remove` on each exact path.
+Verify both directory/registration absence and unchanged retained refs/stash
+identities; do not recursively delete the primary object store.
+
+### Audit virtual environments independently of worktrees
+
+Identify environments by `pyvenv.cfg`, measure them, and check executable paths,
+process arguments, task/script configuration and editable-install bindings before
+reusing or deleting them.
+No running process reference is not proof of obsolescence, and an environment
+with editable packages from another checkout is not an interchangeable worker.
+Retain dependency/version evidence outside Git before approved disposal; never
+remove every root-level environment by wildcard.
+
+### Separate measured footprint from recovered disk space
+
+Rank reclamation by measured bytes rather than checkout count, and distinguish
+logical sizes from file allocation and shared hard links.
+Report reclaimed bytes only when independently attributable: concurrent builds,
+downloads and cleanup can make the drive's before/after free-space delta negative
+even after successful removal.
+Keep machine-specific paths, counts and measurements in external survey receipts,
+not in portable migration instructions.
 
 ## Completion checklist
 
