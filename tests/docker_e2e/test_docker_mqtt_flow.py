@@ -22,6 +22,7 @@ import socket
 import time
 import warnings
 from contextlib import closing
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from typing import Any, Dict, List, Mapping, Tuple
 
@@ -5676,7 +5677,13 @@ def mosquitto_inpe_deter_brazil():
 
 class TestInpeDeterBrazilMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_inpe_deter_brazil, inpe_deter_brazil_mqtt_image):
-        _run_mqtt_contract_flow('inpe-deter-brazil', inpe_deter_brazil_mqtt_image, mosquitto_inpe_deter_brazil)
+        since_date = (datetime.now(timezone.utc) - timedelta(days=30)).date().isoformat()
+        _run_mqtt_contract_flow(
+            'inpe-deter-brazil',
+            inpe_deter_brazil_mqtt_image,
+            mosquitto_inpe_deter_brazil,
+            extra_env={'SINCE_DATE': since_date},
+        )
 
 
 @pytest.fixture(scope='module')

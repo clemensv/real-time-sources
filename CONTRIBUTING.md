@@ -49,6 +49,9 @@ schema versions. It resolves format declarations from the version, resource,
 or schema group and excludes Avro declarations from the JSON flow.
 Live MQTT tests validate current entity IDs and required event families;
 fixed sample IDs belong to explicitly selected mock mode.
+The live INPE MQTT case sets `SINCE_DATE` to a rolling 30-day window,
+matching the Kafka feeder's initial poll. It still queries both biomes
+and validates real alerts, without backfilling the entire WFS archive.
 
 ## Repository layout
 
