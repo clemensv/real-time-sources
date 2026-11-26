@@ -36,6 +36,7 @@ from typing import Any, Dict, List
 
 import docker
 import pytest
+from requests.exceptions import ConnectionError, Timeout
 
 from .helpers import REPO_ROOT, build_image
 
@@ -350,7 +351,12 @@ def _load_source_schemas_sb(source_dir: str) -> Dict[str, Dict[str, Any]]:
     return {name: schema["versions"]["1"]["schema"] for name, schema in schemagroup["schemas"].items()}
 
 
-def _run_generic_amqp_sb_flow(source_dir: str, image_tag: str, station_type: str, telemetry_type: str) -> None:
+def _run_generic_amqp_sb_flow(
+    source_dir: str, image_tag: str, station_type: str, telemetry_type: str, *,
+    extra_env: Dict[str, str] | None = None,
+    required_types: set[str] | None = None,
+    strict: bool = False,
+) -> None:
     queue = source_dir
     client = docker.from_env()
     image = build_image(source_dir, dockerfile="Dockerfile.amqp", tag=image_tag)
@@ -378,6 +384,8 @@ def _run_generic_amqp_sb_flow(source_dir: str, image_tag: str, station_type: str
                 break
             time.sleep(2)
         else:
+            if strict:
+                pytest.fail("MSSQL container did not become ready in 120s")
             pytest.skip("MSSQL container did not become ready in 120s")
         emu_container = client.containers.run(
             SBEMU_IMAGE,
@@ -395,33 +403,44 @@ def _run_generic_amqp_sb_flow(source_dir: str, image_tag: str, station_type: str
                 break
             time.sleep(2)
         else:
+            if strict:
+                pytest.fail(f"SB emulator not ready. Tail:\n{emu_container.logs().decode('utf-8', errors='replace')[-2000:]}")
             pytest.skip(f"SB emulator not ready. Tail:\n{emu_container.logs().decode('utf-8', errors='replace')[-2000:]}")
         time.sleep(5)
+        feeder_env = {
+            "AMQP_HOST": f"{source_dir}-sbemu-e2e-emu",
+            "AMQP_PORT": "5672",
+            "AMQP_ADDRESS": queue,
+            "AMQP_AUTH_MODE": "sas",
+            "AMQP_USE_TLS": "false",
+            "AMQP_SAS_KEY_NAME": SAS_KEY_NAME,
+            "AMQP_SAS_KEY": SAS_KEY_VALUE,
+            "ONCE_MODE": "true",
+            "PYTHONUNBUFFERED": "1",
+        }
+        if not strict:
+            feeder_env.update({"MOCK_MODE": "true", "NVE_API_KEY": "mock"})
+        feeder_env.update(extra_env or {})
         feeder = client.containers.run(
             image.id,
             detach=True,
             remove=False,
             network=network.name,
-            environment={
-                "AMQP_HOST": f"{source_dir}-sbemu-e2e-emu",
-                "AMQP_PORT": "5672",
-                "AMQP_ADDRESS": queue,
-                "AMQP_AUTH_MODE": "sas",
-                "AMQP_SAS_KEY_NAME": SAS_KEY_NAME,
-                "AMQP_SAS_KEY": SAS_KEY_VALUE,
-                "MOCK_MODE": "true",
-                "NVE_API_KEY": "mock",
-                "ONCE_MODE": "true",
-                "PYTHONUNBUFFERED": "1",
-            },
+            environment=feeder_env,
         )
         try:
-            result = feeder.wait(timeout=300)
+            try:
+                result = feeder.wait(timeout=300)
+            except (ConnectionError, Timeout) as exc:
+                logs = feeder.logs().decode("utf-8", errors="replace")
+                pytest.fail(f"Bounded feeder wait failed: {exc}\n--- LOGS ---\n{logs[-8000:]}")
             logs = feeder.logs().decode("utf-8", errors="replace")
             assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
         finally:
             feeder.remove(force=True)
         expected_messages = 16 if source_dir == "fdsn-seismology" else 2
+        if strict:
+            expected_messages = 10000
         messages = _receive_via_sdk(host_port, queue, SAS_KEY_NAME, SAS_KEY_VALUE, expected=expected_messages, timeout=60)
         assert messages, "No AMQP messages received from SB emulator"
         by_type: Dict[str, List[Any]] = {}
@@ -433,6 +452,31 @@ def _run_generic_amqp_sb_flow(source_dir: str, image_tag: str, station_type: str
             by_type.setdefault(event_type, []).append(message)
         assert station_type in by_type, sorted(by_type)
         assert telemetry_type in by_type, sorted(by_type)
+        if required_types:
+            assert required_types <= by_type.keys(), f"Missing required families: {required_types - by_type.keys()}"
+        if strict:
+            from .test_docker_amqp_flow import _load_jstruct_validators
+
+            validators = _load_jstruct_validators(source_dir)
+            for message in messages:
+                properties = {
+                    key.decode() if isinstance(key, bytes) else key:
+                    value.decode() if isinstance(value, bytes) else value
+                    for key, value in dict(message.application_properties or {}).items()
+                }
+                for name in ("id", "source", "type", "subject", "specversion"):
+                    assert f"cloudEvents:{name}" in properties, properties
+                assert properties["cloudEvents:specversion"] == "1.0"
+                assert message.content_type == "application/json"
+                assert message.partition_key == properties["cloudEvents:subject"]
+                body = b"".join(message.body)
+                payload = json.loads(body)
+                assert isinstance(payload, dict), "AMQP body must decode once to an object"
+                event_type = properties["cloudEvents:type"]
+                assert event_type in validators, f"No schema for {event_type}"
+                errors = list(validators[event_type].validate_instance(payload))
+                assert not errors, f"JsonStructure validation failed for {event_type}: {errors[:3]}"
+            return
         schemas = _load_source_schemas_sb(source_dir)
         from json_structure import InstanceValidator, SchemaValidator
         validator_factory = SchemaValidator(extended=True)
@@ -501,4 +545,60 @@ class TestWalloniaIssepAmqpSbEmulatorFlow:
 class TestFdsnSeismologyAmqpSbEmulatorFlow:
     def test_emits_cloudevents_to_sb_emulator_queue(self):
         _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[7])
+
+
+@pytest.mark.docker_e2e
+class TestUSGSWaterDataAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(
+            "usgs-waterdata", "test-usgs-waterdata-amqp",
+            "USGS.WaterData.MonitoringLocation", "USGS.WaterData.ContinuousObservation",
+            extra_env={
+                "USGS_WATERDATA_SITES": "USGS-01646500",
+                "USGS_WATERDATA_PARAMETERS": "00010,00060",
+            },
+            required_types={
+                "USGS.WaterData.MonitoringLocation", "USGS.WaterData.TimeSeries",
+                "USGS.WaterData.Parameter", "USGS.WaterData.ContinuousObservation",
+            },
+            strict=True,
+        )
+
+
+@pytest.mark.docker_e2e
+class TestUSGSIVAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(
+            "usgs-iv", "test-usgs-iv-amqp",
+            "USGS.Sites.Site", "USGS.InstantaneousValues.Streamflow",
+            extra_env={
+                "USGS_API_MODE": "waterdata", "USGS_SITES": "01646500",
+                "USGS_PARAMETERS": "00010,00060",
+                "USGS_ENROLLMENT_FILE": "/app/enrollment/01646500.json",
+            },
+            required_types={
+                "USGS.Sites.Site", "USGS.Sites.SiteTimeseries",
+                "USGS.InstantaneousValues.Streamflow", "USGS.InstantaneousValues.WaterTemperature",
+            },
+            strict=True,
+        )
+
+
+@pytest.mark.docker_e2e
+class TestUSGSNWISWQAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(
+            "usgs-nwis-wq", "test-usgs-nwis-wq-amqp",
+            "USGS.WaterQuality.Sites.MonitoringSite", "USGS.WaterQuality.Readings.WaterQualityReading",
+            extra_env={
+                "USGS_API_MODE": "waterdata", "USGS_SITES": "01646500",
+                "USGS_PARAMETERS": "00010",
+                "USGS_ENROLLMENT_FILE": "/app/enrollment/01646500.json",
+            },
+            required_types={
+                "USGS.WaterQuality.Sites.MonitoringSite",
+                "USGS.WaterQuality.Readings.WaterQualityReading",
+            },
+            strict=True,
+        )
 

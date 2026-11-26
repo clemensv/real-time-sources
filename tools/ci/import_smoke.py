@@ -12,7 +12,8 @@ the import-time half of that class deterministically.
 For one ``feeders/<source>`` it:
 
 1. ``py_compile`` every ``.py`` in the tree (generated + hand-written).
-2. Editable-installs the generated sub-packages in dependency order
+2. Verifies and installs source-local shared wheels when a vendor manifest is
+   present, then editable-installs the generated sub-packages in dependency order
    (``*_data`` -> ``*_core`` -> producers -> the main feeder package last).
    The install runs in two passes -- a ``--no-deps`` pass that registers
    every local package first (so a transport app that depends on the main
@@ -45,6 +46,9 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "deploy-fabric"))
+from vendor_wheels import vendored_wheels
 
 CMD_RE = re.compile(r"^\s*(?:CMD|ENTRYPOINT)\s+(\[.*\])\s*$")
 SKIP_RE = re.compile(r"[\\/](build|\.git|__pycache__)[\\/]")
@@ -161,8 +165,15 @@ def main(argv: list[str] | None = None) -> int:
 
     modules = dockerfile_modules(feeder)
     order = install_order(feeder)
+    try:
+        wheels = vendored_wheels(feeder)
+    except (ValueError, KeyError, OSError, subprocess.CalledProcessError) as exc:
+        print(f"FAIL: vendor wheel verification: {exc}", file=sys.stderr)
+        return 1
 
     print(f"== import smoke: {feeder.name} ==")
+    for wheel in wheels:
+        print(f"  verified shared wheel (installed first): {wheel.name}")
     print("  install order (editable):")
     for d in order:
         print(f"    - {d.name}")
@@ -181,6 +192,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if not args.no_install:
+        for wheel in wheels:
+            if _run([sys.executable, "-m", "pip", "install", "--no-input",
+                     "--no-deps", str(wheel)]) != 0:
+                print(f"FAIL: pip install shared wheel {wheel}", file=sys.stderr)
+                return 1
         # Pass 1: register every local editable package WITHOUT dependency
         # resolution. A transport app sub-package (e.g. ``<src>_mqtt``) often
         # declares the main feeder package (``<src>``) as a dependency; that
@@ -195,6 +211,10 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
         # Pass 2: resolve external dependencies now that every local package is
         # already satisfied from the editable set above.
+        for wheel in wheels:
+            if _run([sys.executable, "-m", "pip", "install", "--no-input", str(wheel)]) != 0:
+                print(f"FAIL: pip resolve shared wheel {wheel}", file=sys.stderr)
+                return 1
         for d in order:
             if _run([sys.executable, "-m", "pip", "install", "--no-input",
                      *_EDITABLE_STRICT, "-e", str(d)]) != 0:

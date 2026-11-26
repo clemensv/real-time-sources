@@ -30,6 +30,39 @@
 
 This feeder turns the upstream USGS Instantaneous Values hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+> **WaterServices transition:** legacy acquisition remains the default until retirement. The opt-in Water Data path preserves the existing schemas, CloudEvents source/types/subjects, Kafka keys, and MQTT/AMQP routing. It requires explicitly selected, reviewed series; it does not provide an automatic nationwide identity mapping. Use the [native Water Data feeder](../usgs-waterdata/README.md) for new or unmapped series.
+
+## Schema-stable transitional acquisition
+
+Set `USGS_API_MODE=waterdata`, `USGS_SITES`, `USGS_PARAMETERS`, and
+`USGS_ENROLLMENT_FILE` on any of the three transport images. Supply a reviewed
+operator enrollment from outside the checkout and mount it read-only.
+The [synthetic example](enrollment/synthetic-example.json) documents the file
+shape for offline tests only; its invented site and series cannot validate live
+acquisition. Review actual mappings against legacy RDB identities and paired
+timestamp/value evidence, kept outside Git. Capturing a candidate does not
+approve it.
+
+Site fields remain historical snapshots with capture timestamps and upstream
+provenance in the enrollment. Missing metadata, unreviewed units/qualifiers,
+or an unknown selected series fail the poll before emission. No replacement
+legacy identifier is fabricated.
+
+The new path reads fixed two-hour `last_modified` windows, including
+corrections to older observations. Its content checkpoint ignores
+`last_modified`-only refreshes and advances only after broker acknowledgements
+and a successful flush. `USGS_REPLAY_START` overrides the enrollment's explicit
+baseline. New state uses `USGS_STATE_FILE`, `STATE_FILE`, or the old state path
+plus `.waterdata`; the legacy checkpoint is never overwritten implicitly.
+`USGS_API_MODE=legacy` selects the old acquisition path until retirement.
+See [CONTAINER.md](CONTAINER.md#transitional-configuration) for configuration
+and a scoped example.
+
+MQTT checkpoint drains confirm successful PUBACK reasons on each site,
+timeseries and observation connection; task completion alone is insufficient.
+Legacy cycles also confirm each timeseries reference before dependent telemetry
+and drain the reference producer before saving state.
+
 <!-- upstream-links:begin -->
 ## Upstream
 
@@ -175,7 +208,15 @@ Two hosting models are supported. Use the deploy buttons on the [project portal]
 
 #### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
 
-A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `usgs_iv` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/usgs-iv/`.
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller in the plain Python kernel. The shared deployer uploads the `usgs_iv` package, shared core and generated producer wheels to OneLake for runtime installation; no Fabric Environment binding is required. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API. The lookup identity does not establish the publisher's identity. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/usgs-iv/`.
+
+The notebook discards bundled access keys and authenticates Kafka with refreshed
+namespace-scoped NotebookUtils Entra tokens. The verified principal is a
+delegated user; workspace-identity publishing has not been established.
+`USGS_API_MODE` defaults to `legacy`. Transitional runs require `waterdata`,
+reviewed selection/enrollment and a distinct `STATE_FILE`; retain the original
+checkpoint. Regenerate with
+`python feeders\usgs-waterdata\create_notebook.py --source usgs-iv`.
 
 ```powershell
 tools/deploy-fabric/deploy-feeder-notebook.ps1 `
@@ -208,7 +249,15 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 ### Deploying into Azure Container Instances
 
-3 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+
+Checkpoints use Azure Files HTTPS with storage Shared Key disabled. The dedicated
+state identity requires **Storage File Data Privileged Contributor** for OAuth
+backup-intent operations; do not store unrelated data in its account.
+The runtime preserves existing share-relative state paths without a host SMB
+mount. Broker identities remain unchanged. See the
+[shared template contract](../../tools/aci_files_identity.md) for bindings,
+single-writer semantics, old-role removal and live acceptance requirements.
 
 #### Kafka — bring your own Event Hub / Kafka
 

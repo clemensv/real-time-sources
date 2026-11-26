@@ -514,6 +514,28 @@ class TestConnectionStringParsing:
         config, topic = parse_connection_string(cs)
         assert config['security.protocol'] == 'PLAINTEXT'
 
+    @patch.dict('os.environ', {'KAFKA_AUTH_MODE': 'fabric-entra', 'KAFKA_ENABLE_TLS': 'true'})
+    def test_fabric_bootstrap_preserves_tls_for_entra(self):
+        from usgs_waterdata_core.delivery import fabric_kafka_config
+
+        config, topic = parse_connection_string("BootstrapServer=namespace.example.test:9093;EntityPath=test-topic")
+        with patch.dict('sys.modules', {'notebookutils': Mock()}):
+            configured = fabric_kafka_config(config)
+        assert topic == 'test-topic'
+        assert configured['security.protocol'] == 'SASL_SSL'
+        assert configured['sasl.mechanism'] == 'OAUTHBEARER'
+        assert 'sasl.password' not in configured
+
+    @pytest.mark.parametrize('disabled', ['false', '0', 'no'])
+    def test_fabric_bootstrap_rejects_disabled_tls(self, monkeypatch, disabled):
+        from usgs_waterdata_core.delivery import fabric_kafka_config
+
+        monkeypatch.setenv('KAFKA_AUTH_MODE', 'fabric-entra')
+        monkeypatch.setenv('KAFKA_ENABLE_TLS', disabled)
+        config, _ = parse_connection_string("BootstrapServer=namespace.example.test:9093;EntityPath=test-topic")
+        with pytest.raises(ValueError, match='requires TLS'):
+            fabric_kafka_config(config)
+
 
 # ---------------------------------------------------------------------------
 # Tests: Multi-site and edge cases in parsing

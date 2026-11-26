@@ -30,11 +30,99 @@
 
 This document covers the published OCI container images for the USGS NWIS Water Quality feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+## Transitional configuration
+
+This feed contains continuous sensor observations, not laboratory samples.
+Legacy acquisition remains default. Choose the native `usgs-waterdata`
+feeder for new or unmapped series. Kafka, MQTT and AMQP share the same opt-in
+frozen-contract acquisition; MQTT no longer publishes synthetic examples.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `USGS_API_MODE` | `legacy` | `waterdata` opts into verified transitional acquisition; legacy rollback ends at WaterServices retirement. |
+| `USGS_SITES` | None | Required in waterdata mode: explicit comma-separated numeric or `USGS-` prefixed site IDs. |
+| `USGS_PARAMETERS` | `USGS_WQ_PARAMETER_CODES`, else none | Required explicit parameter selection in waterdata mode. Every site/parameter must be enrolled. |
+| `USGS_ENROLLMENT_FILE` | None | Required in waterdata mode: reviewed JSON enrollment with captured IV and WQ site metadata and transport `routing_state`. |
+| `USGS_REPLAY_START` | Enrollment `baseline` | Initial offset-aware update-time baseline; a committed new-path cursor takes precedence. |
+| `USGS_STATE_FILE` | `STATE_FILE`, else legacy state path + `.waterdata` | New-path checkpoint; never implicitly overwrites legacy dedupe state. Give every transport its own path. |
+| `WQ_LOOKBACK_HOURS` | `2` | Retained observation-time window, including corrections within that window. Must be positive. |
+| `USGS_API_KEY` | None | Optional USGS API key, kept out of logs. |
+| `POLLING_INTERVAL` | `300` seconds (Kafka/MQTT), `600` (AMQP) | Delay after catch-up. Two-hour fixed `last_modified` windows replay without delay until caught up. |
+
+Operator-configured example (replace the paths and selected site):
+
+```powershell
+docker run --rm `
+  --mount "type=bind,source=C:\operator\reviewed-enrollment.json,target=/config/enrollment.json,readonly" `
+  -e USGS_API_MODE=waterdata -e USGS_SITES=<reviewed-site-number> -e USGS_PARAMETERS=00010 `
+  -e USGS_ENROLLMENT_FILE=/config/enrollment.json `
+  -e "CONNECTION_STRING=BootstrapServer=broker:9092;EntityPath=usgs-wq" `
+  -e KAFKA_ENABLE_TLS=false -e ONCE_MODE=true `
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
+```
+
+The same acquisition settings work with the existing MQTT/AMQP authentication
+variables and image suffixes. The operator enrollment supplies transport
+`routing_state`; the historical WaterML FIPS state remains in payload metadata.
+The unchanged CloudEvents source remains the
+historical WaterServices URL. Kafka `EntityPath` wins over topic defaults.
+Unknown selected series, units, qualifiers or missing snapshots fail before
+emission. Keep actual enrollment, provenance and observation evidence outside
+Git. The [synthetic enrollment](enrollment/synthetic-example.json) documents the
+offline test shape only. Strict Docker migration E2E requires
+`USGS_E2E_ENROLLMENT_FILE` pointing to a reviewed file outside the checkout; the
+harness stages it only into the test build context, never a published image.
+USGS data is US Government public domain.
+
+Images run as UID `10001`; mounted state directories must be writable by that
+user. Their healthcheck tests process liveness, not observation freshness.
+The deterministic `vendor/` core wheel comes from the authoritative
+`feeders/usgs-waterdata/usgs_waterdata_core` package. Regenerate/check it with
+the repository USGS vendor-wheel helper
+(`python feeders\usgs-iv\vendor_core.py`, then
+`python feeders\usgs-iv\vendor_core.py --check`, Python 3.11+). CI import smoke
+and the local notebook wheel builder verify and include that same wheel without
+an unpublished PyPI dependency. Notebook users explicitly set acquisition variables and an accessible
+reviewed enrollment path. No example-site default is installed.
+
+Persistent local checkpoints remain the default. The explicit
+`STATE_BACKEND=azure-files-rest` option reads and atomically replaces the same
+share-relative JSON checkpoint through a dedicated managed identity.
+Both legacy and transitional acquisition use this backend. Configure all four
+`STATE_AZURE_FILES_*` bindings described in the
+[shared state contract](../../tools/aci_files_identity.md#runtime-configuration-and-persistence).
+Use one writer per checkpoint; authorization and corrupt-state errors fail
+explicitly. HTTPS checkpoint access does not make enrollment files local.
+
+Plain-Python notebooks set `KAFKA_AUTH_MODE=fabric-entra`, discard bundled
+Topology access keys and refresh namespace-scoped NotebookUtils Entra tokens.
+The verified principal is a delegated user, not workspace managed identity.
+Notebook state stays on OneLake with `STATE_BACKEND=local`. Set
+`USGS_API_MODE=waterdata` and provide reviewed enrollment for transitional runs;
+use a separate `STATE_FILE` from legacy mode. The notebook generator is
+`python feeders\usgs-waterdata\create_notebook.py --source usgs-nwis-wq`.
+
+Handwritten AMQP subclasses wait for remote broker acceptance and honor TLS
+while [codegen#699](https://github.com/xregistry/codegen/issues/699) is unresolved.
+Password connections explicitly select SASL PLAIN; insecure mechanisms are
+allowed only for configured non-TLS AMQP. CBS authentication remains unchanged.
+MQTT uses one application-owned connection for both families and confirms every
+QoS 1 PUBACK before checkpointing. Missing or rejected acknowledgements and
+local enqueue errors fail the cycle. This boundary addresses
+[codegen#700](https://github.com/xregistry/codegen/issues/700).
+The [codegen#698](https://github.com/xregistry/codegen/issues/698) JSON boundary
+omits absent optional fields instead of sending schema-invalid nulls. None of
+these boundaries changes generated files.
+
+Network-restricted builders can select an approved TLS package index with
+`--build-arg PIP_INDEX_URL=https://your-approved-index/simple`. Public PyPI
+remains the build default; TLS verification stays enabled.
+
 <!-- upstream-links:begin -->
 ## Upstream
 
 - Home page: <https://waterdata.usgs.gov/>
-- API / data documentation: <https://api.waterdata.usgs.gov/docs#samples>
+- Continuous-observation API documentation: <https://api.waterdata.usgs.gov/docs/ogcapi/>
 
 <!-- upstream-links:end -->
 
@@ -224,6 +312,15 @@ docker run --rm \
 | `AMQP_USERNAME` | SASL PLAIN username, used when `AMQP_AUTH_MODE=password` (default). |
 
 ## Deploying into Azure Container Instances
+
+The templates configure Azure Files HTTPS checkpoints with storage Shared Key
+disabled. ACI uses a dedicated user-assigned managed identity and **Storage File
+Data Privileged Contributor** for OAuth backup-intent operations on the
+dedicated account. Existing broker identities and share-relative state paths
+are preserved. The shared core supplies the Azure SDK dependencies.
+No host SMB mount is required; its earlier failure remains unexplained.
+See the [shared template contract](../../tools/aci_files_identity.md) for
+single-writer semantics, old-role removal, regeneration and live acceptance.
 
 ### MQTT — bring your own broker
 

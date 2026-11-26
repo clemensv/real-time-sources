@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "baseline": "2026-11-16T13:25:00+00:00",
+  "provenance": {
+    "kind": "synthetic",
+    "description": "Invented offline test data. No live station, observations or approved operator binding."
+  },
+  "legacy_sites": {
+    "USGS-99000001": {
+      "captured_at": "2026-11-16T13:25:00+00:00",
+      "source": "synthetic offline test",
+      "routing_state": "MD",
+      "fields": {
+        "agency_cd": "USGS", "site_no": "99000001", "station_nm": "SYNTHETIC TEST CHANNEL",
+        "site_tp_cd": "ST", "lat_va": "", "long_va": "",
+        "dec_lat_va": "0.125", "dec_long_va": "-0.25",
+        "coord_meth_cd": "", "coord_acy_cd": "", "coord_datum_cd": "",
+        "dec_coord_datum_cd": "", "district_cd": "", "state_cd": "24",
+        "county_cd": "999", "country_cd": "US", "land_net_ds": "",
+        "map_nm": "Synthetic grid", "map_scale_fc": "1000",
+        "alt_va": "1.5", "alt_meth_cd": "", "alt_acy_va": "",
+        "alt_datum_cd": "", "huc_cd": "999999999999",
+        "basin_cd": "", "topo_cd": "", "instruments_cd": "",
+        "construction_dt": "", "inventory_dt": "", "drain_area_va": "2",
+        "contrib_drain_area_va": "", "tz_cd": "UTC", "local_time_fg": "N",
+        "reliability_cd": "", "gw_file_cd": "", "nat_aqfr_cd": "",
+        "aqfr_cd": "", "aqfr_type_cd": "", "well_depth_va": "",
+        "hole_depth_va": "", "depth_src_cd": "", "project_no": ""
+      },
+      "wq_fields": {
+        "site_number": "99000001", "site_name": "SYNTHETIC TEST CHANNEL", "agency_code": "USGS",
+        "latitude": 0.125, "longitude": -0.25, "site_type": "ST", "state_code": "24",
+        "county_code": "999", "huc_code": "999999999999", "state": null, "parameter_code": "00010"
+      }
+    }
+  },
+  "legacy_rdb_identities": ["USGS/99000001/00010/11111", "USGS/99000001/00060/22222"],
+  "series": {
+    "synthetic-temperature": {
+      "agency_cd": "USGS", "site_no": "99000001", "parameter_cd": "00010", "timeseries_cd": "11111",
+      "unit": "deg C", "upstream_units": ["degC"], "parameter_name": "Temperature, water, degrees Celsius",
+      "status": "verified", "verified_by": "Synthetic test author, offline only",
+      "verified_at": "2026-11-16T13:25:00+00:00", "qualifier_codes": {}
+    },
+    "synthetic-discharge": {
+      "agency_cd": "USGS", "site_no": "99000001", "parameter_cd": "00060", "timeseries_cd": "22222",
+      "unit": "ft3/s", "upstream_units": ["ft^3/s"], "parameter_name": "Discharge, cubic feet per second",
+      "status": "verified", "verified_by": "Synthetic test author, offline only",
+      "verified_at": "2026-11-16T13:25:00+00:00", "qualifier_codes": {}
+    }
+  }
+}

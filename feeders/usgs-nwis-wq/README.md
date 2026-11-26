@@ -30,11 +30,40 @@
 
 This feeder turns the upstream USGS NWIS Water Quality hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+> **Continuous sensors, not laboratory samples:** this bridge acquires continuous observations from USGS IV/Water Data. Legacy acquisition remains default until retirement. The opt-in transitional path preserves the existing WQ event contract on Kafka, MQTT and AMQP. Use the [native Water Data feeder](../usgs-waterdata/README.md) for new or unmapped series.
+
+## Schema-stable transitional acquisition
+
+Set `USGS_API_MODE=waterdata`, `USGS_SITES`, `USGS_PARAMETERS`, and
+`USGS_ENROLLMENT_FILE`. Mount an explicitly reviewed operator enrollment from
+outside the checkout. The [synthetic example](enrollment/synthetic-example.json)
+documents the file shape for offline tests; its invented identities do not
+approve any live station. Review actual mappings against legacy RDB identities
+and paired timestamp/value evidence outside Git. Future candidates require
+their own review. Production site fields remain historical WaterML snapshots
+with capture provenance, not invented replacements for discontinued metadata.
+
+All transports use the same live acquisition and WQ projection; MQTT does not
+emit mock data. MonitoringSite precedes WaterQualityReading. Optional fields
+that are absent are omitted rather than serialized as `null`, as required by
+the frozen WQ schema. Existing source/type/subject/key and transport routing
+remain unchanged. Unenrolled selected series or unsupported metadata fail
+with an enrollment error rather than disappearing from the feed.
+
+Fixed two-hour `last_modified` queries find updates; the historical two-hour
+observation-time window is preserved (`WQ_LOOKBACK_HOURS`). Content dedupe
+ignores timestamp-only database refreshes but emits corrected measurements
+inside that window. State advances only after acknowledgements and flush.
+Set a baseline explicitly through the reviewed enrollment or
+`USGS_REPLAY_START`; `USGS_STATE_FILE`/`STATE_FILE` selects the new checkpoint,
+otherwise the legacy state path gains a `.waterdata` suffix.
+See [CONTAINER.md](CONTAINER.md#transitional-configuration).
+
 <!-- upstream-links:begin -->
 ## Upstream
 
 - Home page: <https://waterdata.usgs.gov/>
-- API / data documentation: <https://api.waterdata.usgs.gov/docs#samples>
+- Continuous-observation API documentation: <https://api.waterdata.usgs.gov/docs/ogcapi/>
 
 <!-- upstream-links:end -->
 
@@ -174,7 +203,21 @@ Two hosting models are supported. Use the deploy buttons on the [project portal]
 
 #### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
 
-A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `usgs_nwis_wq` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/usgs-nwis-wq/`.
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller in the plain Python kernel. The shared deployer uploads the `usgs_nwis_wq` package, shared core and generated producer wheels to OneLake for runtime installation; no Fabric Environment binding is required. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API. The lookup identity does not establish the publisher's identity. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/usgs-nwis-wq/`.
+
+The notebook discards bundled access keys and authenticates Kafka with refreshed
+namespace-scoped NotebookUtils Entra tokens. The verified principal is a
+delegated user; workspace-identity publishing has not been established.
+`USGS_API_MODE` defaults to `legacy`. Transitional runs require `waterdata`,
+reviewed selection/enrollment and a distinct `STATE_FILE`; retain the original
+checkpoint. Regenerate with
+`python feeders\usgs-waterdata\create_notebook.py --source usgs-nwis-wq`.
+
+The unchanged KQL monitoring-site projection omits the optional transport
+routing fields `state` and `parameter_code`. These fields remain in custom
+output and the dispatch payload, but not in monitoring-site columns. Typed
+storage validation covers the existing projection; it does not establish
+column storage for those routing fields.
 
 ```powershell
 tools/deploy-fabric/deploy-feeder-notebook.ps1 `
@@ -208,6 +251,14 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 ### Deploying into Azure Container Instances
 
 5 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+
+Checkpoints use Azure Files HTTPS with storage Shared Key disabled. The dedicated
+state identity requires **Storage File Data Privileged Contributor** for OAuth
+backup-intent operations; do not store unrelated data in its account.
+The runtime preserves existing share-relative state paths without a host SMB
+mount. Broker identities remain unchanged. See the
+[shared template contract](../../tools/aci_files_identity.md) for bindings,
+single-writer semantics, old-role removal and live acceptance requirements.
 
 #### Kafka — bring your own Event Hub / Kafka
 

@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1.6
 FROM python:3.10-slim
+ARG PIP_INDEX_URL=https://pypi.org/simple
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/usgs-iv"
 LABEL org.opencontainers.image.title="Usgs Iv → AMQP 1.0 bridge"
@@ -7,6 +8,7 @@ LABEL org.opencontainers.image.description="Publishes Usgs Iv CloudEvents over A
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-iv/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 LABEL source.transport="amqp"
+LABEL com.azure.containerizationassist.createdby="containerization-assist"
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
@@ -26,7 +28,8 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
-RUN pip install --no-cache-dir confluent-kafka \
+RUN pip install --no-cache-dir ./vendor/*.whl \
+ && pip install --no-cache-dir confluent-kafka \
  && pip install --no-cache-dir ./usgs_iv_amqp_producer/usgs_iv_amqp_producer_data \
  && pip install --no-cache-dir ./usgs_iv_producer/usgs_iv_producer_data && pip install --no-cache-dir ./usgs_iv_amqp_producer/usgs_iv_amqp_producer_amqp_producer \
  && pip install --no-cache-dir . \
@@ -48,5 +51,9 @@ ENV USGS_IV_MOCK="false"
 # companion package it imports) is not importable -- closes the "built but
 # never ran" gap. PR-time equivalent: tools/ci/import_smoke.py.
 RUN python -c "import importlib, importlib.util as _u; _m = 'usgs_iv_amqp'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m)"
+RUN python -c "from proton import SSL, SASL; from glob import glob; assert SSL.present(); assert SASL.extended(); assert glob('/usr/lib/*/sasl2/libplain.so*')"
 
+RUN useradd -m -u 10001 appuser
+USER appuser
+HEALTHCHECK CMD python -c "import os; os.kill(1, 0)"
 CMD ["python", "-m", "usgs_iv_amqp", "feed"]

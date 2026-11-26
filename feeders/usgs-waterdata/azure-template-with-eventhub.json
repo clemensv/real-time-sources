@@ -1,0 +1,409 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the usgs-waterdata bridge with a new Event Hub namespace, event hub, and Azure Container Instance with Log Analytics diagnostics."
+  },
+  "parameters": {
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "usgs-waterdata",
+      "metadata": {
+        "description": "Name for the container group and base name for all resources."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "eventHubSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Event Hubs namespace SKU for the broker that receives usgs-waterdata CloudEvents."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "logLevel": {
+      "type": "string",
+      "metadata": {
+        "description": "Python logging level; broker secrets are never logged."
+      },
+      "defaultValue": "INFO"
+    },
+    "userAgent": {
+      "type": "string",
+      "metadata": {
+        "description": "HTTP User-Agent; supply an operations contact when appropriate."
+      },
+      "defaultValue": "real-time-sources-usgs-waterdata/0.1.0"
+    },
+    "onceMode": {
+      "type": "string",
+      "metadata": {
+        "description": "One cycle then exit; any failed site causes a visible nonzero exit."
+      },
+      "defaultValue": "false"
+    },
+    "pollingInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between cycles; must be positive."
+      },
+      "defaultValue": "300"
+    },
+    "usgsWaterdataSites": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated monitoring-location IDs; numeric USGS site numbers are prefixed with USGS-."
+      },
+      "defaultValue": "USGS-01646500"
+    },
+    "usgsWaterdataParameters": {
+      "type": "string",
+      "metadata": {
+        "description": "Five-digit parameter codes; empty selects all continuous parameters at the sites."
+      },
+      "defaultValue": "00010,00060"
+    },
+    "usgsWaterdataLookbackHours": {
+      "type": "string",
+      "metadata": {
+        "description": "Recent observation-time window. First run starts here; subsequent runs also query corrections without an observation-time limit."
+      },
+      "defaultValue": "2"
+    },
+    "usgsWaterdataReferenceInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between acknowledged full reference refreshes. The series endpoint updates at most daily."
+      },
+      "defaultValue": "86400"
+    },
+    "usgsWaterdataOverlapSeconds": {
+      "type": "string",
+      "metadata": {
+        "description": "Overlap on incremental last_modified correction windows."
+      },
+      "defaultValue": "300"
+    },
+    "usgsApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Optional USGS API gateway key, sent only to the allowed API host. Secret."
+      },
+      "defaultValue": ""
+    },
+    "stateFile": {
+      "type": "string",
+      "metadata": {
+        "description": "Atomic delivery checkpoint path; unset means memory only. Do not share across concurrent writers/destinations."
+      },
+      "defaultValue": "/mnt/bridge-state/usgs-waterdata.json"
+    }
+  },
+  "variables": {
+    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
+    "fileShareName": "bridge-state",
+    "imageName": "ghcr.io/clemensv/real-time-sources-usgs-waterdata:latest",
+    "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
+    "eventHubName": "usgs-waterdata",
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]",
+    "stateIdentityName": "[concat(variables('storageAccountName'), '-files-mi')]",
+    "kafkaIdentityName": "[concat(parameters('containerGroupName'), '-kafka-mi')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2024-01-01",
+      "name": "[variables('eventHubNamespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('eventHubSku')]",
+        "tier": "[parameters('eventHubSku')]",
+        "capacity": 1
+      },
+      "properties": {
+        "minimumTlsVersion": "1.2",
+        "isAutoInflateEnabled": false,
+        "kafkaEnabled": true,
+        "disableLocalAuth": true
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(variables('eventHubNamespaceName'), '/', variables('eventHubName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+      ],
+      "properties": {
+        "partitionCount": 4,
+        "messageRetentionInDays": 1
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2025-08-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2",
+        "allowSharedKeyAccess": false,
+        "allowBlobPublicAccess": false,
+        "supportsHttpsTrafficOnly": true,
+        "azureFilesIdentityBasedAuthentication": {
+          "directoryServiceOptions": "None"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2025-08-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "authenticationMethods": "Kerberos"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices', variables('storageAccountName'), 'default')]"
+      ],
+      "properties": {
+        "shareQuota": 1
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2026-07-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]",
+        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName'))]",
+        "[extensionResourceId(resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName')), 'Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, variables('kafkaIdentityName'), 'eventhubs-data-sender'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "OnFailure",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[variables('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "[parameters('logLevel')]"
+                },
+                {
+                  "name": "USER_AGENT",
+                  "value": "[parameters('userAgent')]"
+                },
+                {
+                  "name": "ONCE_MODE",
+                  "value": "[parameters('onceMode')]"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "[parameters('pollingInterval')]"
+                },
+                {
+                  "name": "USGS_WATERDATA_SITES",
+                  "value": "[parameters('usgsWaterdataSites')]"
+                },
+                {
+                  "name": "USGS_WATERDATA_PARAMETERS",
+                  "value": "[parameters('usgsWaterdataParameters')]"
+                },
+                {
+                  "name": "USGS_WATERDATA_LOOKBACK_HOURS",
+                  "value": "[parameters('usgsWaterdataLookbackHours')]"
+                },
+                {
+                  "name": "USGS_WATERDATA_REFERENCE_INTERVAL",
+                  "value": "[parameters('usgsWaterdataReferenceInterval')]"
+                },
+                {
+                  "name": "USGS_WATERDATA_OVERLAP_SECONDS",
+                  "value": "[parameters('usgsWaterdataOverlapSeconds')]"
+                },
+                {
+                  "name": "USGS_API_KEY",
+                  "secureValue": "[parameters('usgsApiKey')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "[parameters('stateFile')]"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                },
+                {
+                  "name": "STATE_BACKEND",
+                  "value": "azure-files-rest"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_ACCOUNT_URL",
+                  "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2025-08-01').primaryEndpoints.file]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_SHARE",
+                  "value": "[variables('fileShareName')]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_CLIENT_ID",
+                  "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_ROOT",
+                  "value": "/mnt/bridge-state"
+                },
+                {
+                  "name": "KAFKA_AUTH_MODE",
+                  "value": "azure-entra"
+                },
+                {
+                  "name": "KAFKA_ENTRA_CLIENT_ID",
+                  "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName')), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "KAFKA_BOOTSTRAP_SERVERS",
+                  "value": "[concat(variables('eventHubNamespaceName'), '.servicebus.windows.net:9093')]"
+                },
+                {
+                  "name": "KAFKA_TOPIC",
+                  "value": "[variables('eventHubName')]"
+                },
+                {
+                  "name": "KAFKA_ENABLE_TLS",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]": {},
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName'))]": {}
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('stateIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor')]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69566ab7-960f-475b-8e7c-b3118f30c6bd')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('kafkaIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, variables('kafkaIdentityName'), 'eventhubs-data-sender')]",
+      "scope": "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName'))]",
+        "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName')), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "eventHubNamespaceName": {
+      "type": "string",
+      "value": "[variables('eventHubNamespaceName')]"
+    },
+    "eventHubName": {
+      "type": "string",
+      "value": "[variables('eventHubName')]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+    }
+  }
+}

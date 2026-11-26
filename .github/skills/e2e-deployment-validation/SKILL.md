@@ -709,6 +709,49 @@ Per session:
 - [source_cadence.json](references/source_cadence.json) — per-source expected data cadence
 - [CHECKLIST_TEMPLATE.md](../../tests/e2e_deploy/CHECKLIST_TEMPLATE.md) — session checklist template
 
+## Learnings
+
+- Parse Event Hubs `serviceBusEndpoint` as a URL and use its hostname before
+  selecting Kafka port 9093. The returned HTTPS URL can already include port
+  443; stripping only the scheme and appending `:9093` creates an invalid
+  bootstrap address. Check the consumer's resolved address before treating a
+  failed receive as a publisher/authentication defect.
+- An ACI one-shot container can finish before the Restart API test and return
+  `ContainerGroupStopped`; this is not evidence that checkpoint reads fail.
+  A validation-only hold-open wrapper can keep it Running after its normal
+  cycle; call the actual Restart API, verify a changed start time and a read of
+  the existing checkpoint, and never clear state to manufacture acceptance.
+- Compare complete broker/custom-output/dispatch payloads separately from the
+  typed projection, and read back actual KQL table names rather than assuming
+  event-type names.
+  Frozen legacy tables can omit optional transport routing axes, as WQ
+  monitoring sites do for `state` and `parameter_code`; document those omissions
+  and validate the unchanged projection rather than claiming lossless typed storage.
+- Kusto can normalize timestamp-like strings to UTC, retain seven fractional
+  digits and store null strings as empty strings; permit conversions only at
+  documented field paths.
+  Python datetime alone loses the seventh fractional digit, so compare that
+  fraction separately; never normalize arbitrary strings or infer an upstream
+  timezone from Kusto's UTC interpretation.
+- Give each proof a source-qualified receipt directory with a random suffix;
+  timestamps alone can collide between concurrent runs.
+  Use bounded request timeouts appropriate to KQL management versus queries,
+  avoid blind retries of mutations, and return a nonzero harness exit code for
+  FAIL even when teardown succeeds.
+- Independent cleanup must check the exact owned item IDs and automatically
+  created Eventhouse default databases, not just a successful DELETE response.
+  Track ownership before creation, reconcile accepted operations, verify absence
+  and remove exact temporary credential directories and image tags; preserve
+  unrelated resources and shared Docker caches.
+  Store deployment coordinates, payload captures, schedules and receipts outside
+  the checkout; public reports contain sanitized verdicts.
+- Static ARM validation, a marker-file probe, actual feeder checkpoint restart,
+  all-transport local wire proof and each live deployment-template target are
+  separate gates.
+  For example, three feeders passing a Service Bus deployment does not validate
+  every native Kafka or MQTT Azure template, production image publication or
+  live portal deploy buttons.
+
 ## Operational Pitfalls (from real runs)
 
 ### 1. Stale pre-built wheels

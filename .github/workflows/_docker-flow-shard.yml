@@ -15,6 +15,8 @@ on:
     secrets:
       WSDOT_ACCESS_CODE:
         required: false
+      USGS_E2E_ENROLLMENT_JSON:
+        required: false
 
 jobs:
   flow:
@@ -50,6 +52,27 @@ jobs:
         run: |
           pip install -r tests/docker_e2e/requirements.txt
           pip install pytest-rerunfailures
+
+      - name: Load reviewed USGS enrollment outside checkout
+        if: ${{ matrix.dir == 'feeders/usgs-iv' || matrix.dir == 'feeders/usgs-nwis-wq' }}
+        env:
+          USGS_E2E_ENROLLMENT_JSON: ${{ secrets.USGS_E2E_ENROLLMENT_JSON }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          record = os.environ.get("USGS_E2E_ENROLLMENT_JSON")
+          if not record:
+              raise RuntimeError("USGS_E2E_ENROLLMENT_JSON must contain reviewed enrollment for live migration tests")
+          json.loads(record)
+          path = Path(os.environ["RUNNER_TEMP"]) / "usgs-e2e-enrollment.json"
+          path.write_text(record, encoding="utf-8")
+          path.chmod(0o600)
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as environment:
+              environment.write(f"USGS_E2E_ENROLLMENT_FILE={path}\n")
+          PY
 
       - name: Run Kafka flow test
         run: |

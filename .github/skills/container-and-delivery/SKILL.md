@@ -37,7 +37,7 @@ argument-hint: "Describe the source, its runtime package, required environment v
 - **Fabric notebook deployment correctness is a blocking review criterion.** If the source ships `feeders/<slug>/notebook/<slug>-feed.ipynb`, the PR MUST pass `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>` with zero blockers AND have been deployed end-to-end to the **`ContosoRealTimeTest`** Fabric workspace (one scheduled run observed reaching non-zero counts in BOTH `_cloudevents_dispatch` AND at least one typed update-policy table) within the last 30 days. The two-level KQL count is mandatory — the eventstream-topology timing bug fixed by `Wait-EventStreamTopologyReady` produced runs where dispatch had rows but typed tables did not. The validator catches the silent failure modes — `asyncio.run` in cells, `%pip install` magic, missing OneLake state-file path, missing `notebookutils.notebook.exit` failure handler, `CONNECTION_STRING` exposed as a notebook parameter, broken post-deploy hooks, and catalog ↔ notebook opt-in drift (the single most common cause of "the button doesn't show up on the portal"). See the [`fabric-notebook-deployment`](../fabric-notebook-deployment/SKILL.md) skill for the full check list and the `notebook: true` flag handling in both `catalog.json` and the ghpages `app.js` SOURCES list.
 - **ARM template correctness is a blocking review criterion, not a soft check.** Every `azure-template-*.json` the source ships must have a non-empty `resources` array, expose every required feeder env var as an ARM parameter with `metadata.description`, use the right container image suffix for the transport family (suffix may be in the `image` expression OR the `imageName` parameter `defaultValue`), document the same env vars in `CONTAINER.md` (template ↔ docs symmetry), and pass a live deploy via `pwsh tools/verify-arm-template.ps1 -FeederSlug <slug> -Variant <variant>` (creates RG → deploys → observes data flow → tears down). An "empty placeholder" template (`"resources": []`) is the single most common silent regression in this repo because the deploy button "succeeds" and creates an empty resource group. Audit before merge with `pwsh tools/validate-arm-templates.ps1 -RepoRoot .` which enforces all six static checks (empty-resources, image suffix, state share gated on `*_STATE_FILE`, non-stub `metadata.description`, env-var coverage, CONTAINER.md ↔ ARM symmetry); zero blockers required, warnings triaged in the PR body. Reject any PR that introduces or leaves an empty template behind. Hand-editing per-feeder templates for fleet-wide parameter changes is also a red flag — regenerate from the aisstream canonicals via `python tools/generate-arm-templates.py` and confirm `git diff -- feeders/<slug>/azure-template*.json` is empty before opening the PR.
 - **Upstream API re-audit at merge time.** The upstream API audit done at design time can go stale between design and merge. Before merging a new-source or contract-changing PR, re-walk the upstream API docs (delegate to **explore** or **general-purpose** via `task`), enumerate every endpoint / channel / topic, fetch one representative live payload per endpoint, and produce a keep/drop/missing report against the current `xreg/<source>.xreg.json`. New endpoints, new fields, new enum labels, or upstream-doc moves must all be addressed (added, deferred with issue link, or declared out of scope) in the PR body. See § 1a of the [feeder-release-checklist](../feeder-release-checklist/SKILL.md) skill.
-- **Catalog and docs must stay UTF-8, no mojibake.** `catalog.json`, `README.md`, `CONTAINER.md`, and `EVENTS.md` must be UTF-8 without BOM and free of CP1252 round-trip corruption (the `Ã‚Â°` / `Ã¢â‚¬“` mojibake signatures from incident `25e33ecd2`, which corrupted the root-README generator across 106 fields). Never write these through a PowerShell `>` / `Out-File` / `Set-Content` that silently re-encodes; edit via a UTF-8-aware tool and run `python tools/ci/lint_catalog_encoding.py` before commit (CI: `lint-encoding.yml`).
+- **Catalog and docs must stay UTF-8, no mojibake.** `catalog.json`, `README.md`, `CONTAINER.md`, and `EVENTS.md` must be UTF-8 without BOM and free of CP1252 round-trip corruption (for example, U+00C2 U+00B0 instead of a degree sign; incident `25e33ecd2` corrupted the root-README generator across 106 fields). Never write these through a PowerShell `>` / `Out-File` / `Set-Content` that silently re-encodes; edit via a UTF-8-aware tool and run `python tools/ci/lint_catalog_encoding.py` before commit (CI: `lint-encoding.yml`).
 
 ## Procedure
 
@@ -63,6 +63,60 @@ argument-hint: "Describe the source, its runtime package, required environment v
 - [Delivery checklist](references/delivery-checklist.md)
 
 ## Learnings
+
+- Verify the Kafka token audience against the selected namespace. The actual
+  USGS ACI Event Hubs proof rejected the global audience with
+  `Invalid tenant name 'eventhubs'`; namespace-scoped tokens passed live
+  four-family delivery and HTTPS checkpoint acceptance. Request
+  `https://<namespace>.servicebus.windows.net/.default` through the explicitly
+  selected managed identity, with TLS and namespace Data Sender.
+  Do not infer AMQP CBS audience changes from a Kafka result.
+- To publish selected feeder images without queuing the fleet, dispatch
+  `build_containers.yml` with `feeders=usgs-waterdata,usgs-iv,usgs-nwis-wq` and
+  `publish=true` on the intended branch.
+  The filter includes every transport variant and rejects unknown slugs;
+  `publish=false` builds without registry login, pushes or signing.
+- Azure Files now supports managed-identity SMB mounts; do not conclude that
+  keyless state requires removing ACI volumes. The shared
+  [`aci_files_identity.py`](../../../tools/aci_files_identity.md) transformation
+  defaults to HTTPS checkpoints; its explicit `--mode smb` enables SMB OAuth,
+  disables storage Shared Key and uses the stable ACI
+  `2026-07-01` REST field `userManagedIdentityClientId` (the ARM reference uses
+  a conflicting spelling). Its required SMB MI Admin role grants broad file
+  access, so use a dedicated state account and require live mount/restart
+  persistence proof before claiming support in the selected region; an accepted
+  ARM request and retained identity field do not establish host-side mounting.
+- For new SMB identity roles, allow the Azure Files permission-propagation
+  window before testing ACI; `dependsOn` does not establish data-plane readiness.
+  Preserve the account, identity and assignment across attempts and collect
+  file-service request logs before deleting test resources. Successful OAuth
+  `GetKerbTicket` requests followed by mount warnings narrow the failure to a
+  later stage; they do not prove SMB authorization or TCP 445 connectivity.
+  AppLens and Resource Health may not support ACI, so retain private correlation
+  IDs for host-side CIFS/SMB investigation.
+- A working Linux SMB control and an ACI mount in a new deployment do not
+  establish why an earlier host failed or that Linux share warm-up is required.
+  Keep storage diagnostics alive until expected request records are collected;
+  an early teardown can leave the application/mount evidence without its
+  storage-side correlation. A recovered workspace may retain only older phases,
+  so label those limits rather than interpreting missing rows as no traffic.
+- For a runtime that supports it, managed-identity Azure Files HTTPS can remove
+  the ACI host SMB dependency without dropping persistence or changing event
+  contracts; this does not diagnose or repair the host defect.
+  Follow the [shared checkpoint guide](../../../tools/aci_files_identity.md):
+  explicit state identity, OAuth backup intent, dedicated account and privileged
+  file-data role, preserved share-relative paths, and one writer per checkpoint.
+  Incremental ARM deployment retains obsolete SMB role assignments; remove only
+  those assignments after verified cutover.
+- Azure Files SDK atomic replacement uses
+  `stage.rename_file(relative_path, overwrite=True)`, not the internal
+  `replace_if_exists` keyword, which can fail only after upload.
+  Test through the real SDK request builder and assert
+  `x-ms-file-rename-replace-if-exists: true`; a mocked rename method alone misses
+  this error.
+  Commit in-memory dedupe state only after remote replacement succeeds, and
+  distinguish a missing checkpoint file from share/authentication/corruption
+  failures.
 
 ### ACI state need not depend on host SMB mounts
 

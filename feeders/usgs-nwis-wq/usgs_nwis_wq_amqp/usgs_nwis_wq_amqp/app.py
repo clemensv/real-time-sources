@@ -4,6 +4,7 @@ Polls the USGS Water Services API for water quality data and publishes them as C
 """
 
 import argparse
+import asyncio
 import logging
 import os
 import sys
@@ -15,9 +16,9 @@ from typing import Optional, Dict, List, Any
 from urllib.parse import urlparse
 
 from usgs_nwis_wq_amqp_producer_data import MonitoringSite, WaterQualityReading
-from usgs_nwis_wq_amqp_producer_amqp_producer.producer import (
-    USGSWaterQualitySitesAmqpProducer,
-    USGSWaterQualityReadingsAmqpProducer,
+from .delivery import (
+    ConfirmedSitesProducer as USGSWaterQualitySitesAmqpProducer,
+    ConfirmedReadingsProducer as USGSWaterQualityReadingsAmqpProducer,
 )
 
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
@@ -140,6 +141,18 @@ def feed(host, port, address='usgs-nwis-wq', username=None, password=None, tls=F
          entra_client_id=None, sas_key_name=None, sas_key=None, once=False,
          polling_interval=600, state_file='', states=None, param_codes=None):
     """Poll USGS NWIS API and emit monitoring site + water quality reading events via AMQP."""
+    from usgs_nwis_wq.usgs_nwis_wq import USGSWaterQualityPoller
+    from usgs_nwis_wq.transport import PublisherAdapter
+    from usgs_nwis_wq.waterdata import WaterDataFeed, api_mode
+    poller = USGSWaterQualityPoller(
+        last_polled_file=os.getenv("USGS_WQ_LAST_POLLED_FILE") or state_file,
+        states=states or DEFAULT_STATES,
+        sites=os.getenv("USGS_WQ_SITES", "").split(",") if os.getenv("USGS_WQ_SITES") else None,
+        parameter_codes=param_codes or DEFAULT_PARAM_CODES,
+        polling_interval=polling_interval,
+    )
+    if api_mode() == "waterdata":
+        WaterDataFeed(poller)
     site_producer = _retry_producer_init(lambda: _build_sites_producer(
         host, port, address, tls, content_mode, auth_mode, username, password,
         entra_audience, entra_client_id, sas_key_name, sas_key))
@@ -147,82 +160,12 @@ def feed(host, port, address='usgs-nwis-wq', username=None, password=None, tls=F
         host, port, address, tls, content_mode, auth_mode, username, password,
         entra_audience, entra_client_id, sas_key_name, sas_key))
 
-    poll_states = states or DEFAULT_STATES
-    poll_params = param_codes or DEFAULT_PARAM_CODES
-    previous = {}
-    if state_file and os.path.exists(state_file):
-        try:
-            with open(state_file, 'r') as f:
-                previous = json.load(f)
-        except Exception:
-            pass
-
     try:
-        while True:
-            total_sites = 0
-            total_readings = 0
-            for state_code in poll_states:
-                try:
-                    data = _fetch_waterml(state_code, poll_params)
-                    if not data:
-                        continue
-                    sites, readings = _parse_waterml(data)
-                    # Emit sites
-                    for s in sites:
-                        site = MonitoringSite(
-                            site_number=s["site_number"],
-                            site_name=s.get("site_name", ""),
-                            agency_code="USGS",
-                            latitude=s.get("latitude"),
-                            longitude=s.get("longitude"),
-                            site_type=s.get("site_type", ""),
-                            state_code=state_code,
-                            county_code=None,
-                            huc_code=None,
-                            state=state_code,
-                            parameter_code=s.get("parameter_code", ""),
-                        )
-                        site_producer.send_monitoring_site(
-                            data=site, _source_uri=BASE_URL,
-                            _site_number=s["site_number"], _state=state_code)
-                        total_sites += 1
-                    # Emit readings
-                    for r in readings:
-                        obs_key = f"{r['site_number']}:{r['parameter_code']}:{r['date_time']}"
-                        if obs_key in previous:
-                            continue
-                        reading = WaterQualityReading(
-                            site_number=r["site_number"],
-                            site_name=r.get("site_name", ""),
-                            parameter_code=r["parameter_code"],
-                            parameter_name=r.get("parameter_name", ""),
-                            value=r.get("value"),
-                            unit=r.get("unit", ""),
-                            qualifier=r.get("qualifier", ""),
-                            date_time=r.get("date_time", ""),
-                            state=state_code,
-                        )
-                        readings_producer.send_water_quality_reading(
-                            data=reading, _source_uri=BASE_URL,
-                            _site_number=r["site_number"],
-                            _parameter_code=r["parameter_code"],
-                            _state=state_code)
-                        previous[obs_key] = "1"
-                        total_readings += 1
-                except Exception as exc:
-                    logger.warning("Error polling state %s: %s", state_code, exc)
-            if len(previous) > 100000:
-                previous = dict(list(previous.items())[-50000:])
-            if state_file:
-                try:
-                    with open(state_file, 'w') as f:
-                        json.dump(previous, f)
-                except Exception:
-                    pass
-            logger.info("Published %d sites, %d readings", total_sites, total_readings)
-            if once:
-                break
-            time.sleep(polling_interval)
+        async def run():
+            poller.site_producer = PublisherAdapter(site_producer, "amqp")
+            poller.readings_producer = PublisherAdapter(readings_producer, "amqp")
+            await poller.poll_and_send(once=once)
+        asyncio.run(run())
     finally:
         for p in (site_producer, readings_producer):
             try:

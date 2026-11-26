@@ -3,12 +3,13 @@
 
 Inputs (env):
   CHANGED_FILES : newline-separated list of changed file paths.
-  EVENT_NAME    : github.event_name (workflow_dispatch / schedule / tag push
-                  force full).
+  EVENT_NAME    : github.event_name (unfiltered workflow_dispatch / schedule /
+                  tag push force full).
   REF_TYPE      : github.ref_type ('tag' forces full).
   ALL_BASE_JSON : JSON array of {path, file, image} for plain Dockerfiles.
   ALL_TRANSPORT_JSON : JSON array of {path, file, image, variant} for
                        Dockerfile.<variant>.
+  FEEDER_FILTER : optional comma-separated feeder slugs, dispatch only.
 
 Outputs (GITHUB_OUTPUT):
   containers_base      : JSON array, filtered.
@@ -17,6 +18,7 @@ Outputs (GITHUB_OUTPUT):
   reason               : short human-readable reason.
 
 Scoping rule:
+  - An explicit dispatch feeder filter selects those sources and all variants.
   - Force full if: workflow_dispatch, schedule, tag push, no changed files,
     OR any change touches a path NOT clearly inside a single source dir
     (.github/, tools/, tests/, or any repo-root file).
@@ -86,6 +88,22 @@ def main() -> int:
     changed = _load_changed_files()
     base = json.loads(os.environ.get("ALL_BASE_JSON", "[]"))
     transport = json.loads(os.environ.get("ALL_TRANSPORT_JSON", "[]"))
+
+    selected = os.environ.get("FEEDER_FILTER", "").strip()
+    if selected:
+        if event != "workflow_dispatch":
+            raise ValueError("FEEDER_FILTER is only supported for workflow_dispatch")
+        slugs = {slug.strip() for slug in selected.split(",")}
+        available = {top_dir(c["path"]).removeprefix("feeders/") for c in base + transport}
+        if "" in slugs or slugs - available:
+            raise ValueError(f"Unknown or empty feeder filter: {sorted(slugs - available)}")
+        base = [c for c in base if top_dir(c["path"]).removeprefix("feeders/") in slugs]
+        transport = [c for c in transport if top_dir(c["path"]).removeprefix("feeders/") in slugs]
+        emit("full_run", "false")
+        emit("reason", "explicit dispatch feeders: " + ", ".join(sorted(slugs)))
+        emit("containers_base", json.dumps(base))
+        emit("containers_transport", json.dumps(transport))
+        return 0
 
     force_full = False
     reason = ""

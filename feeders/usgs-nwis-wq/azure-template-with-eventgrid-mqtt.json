@@ -24,7 +24,9 @@
     "eventGridSku": {
       "type": "string",
       "defaultValue": "Standard",
-      "allowedValues": ["Standard"],
+      "allowedValues": [
+        "Standard"
+      ],
       "metadata": {
         "description": "Event Grid namespace SKU."
       }
@@ -67,7 +69,8 @@
     "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
     "namespaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces', variables('namespaceName'))]",
     "topicSpaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces/topicSpaces', variables('namespaceName'), variables('topicSpaceName'))]",
-    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]"
+    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]",
+    "stateIdentityName": "[concat(variables('storageAccountName'), '-files-mi')]"
   },
   "resources": [
     {
@@ -82,39 +85,58 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-08-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
-        "minimumTlsVersion": "TLS1_2"
+        "minimumTlsVersion": "TLS1_2",
+        "allowSharedKeyAccess": false,
+        "allowBlobPublicAccess": false,
+        "supportsHttpsTrafficOnly": true,
+        "azureFilesIdentityBasedAuthentication": {
+          "directoryServiceOptions": "None"
+        }
       }
     },
     {
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-08-01",
       "name": "[concat(variables('storageAccountName'), '/default')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": {}
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "authenticationMethods": "Kerberos"
+          }
+        }
+      }
     },
     {
       "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
       "apiVersion": "2023-05-01",
       "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices', variables('storageAccountName'), 'default')]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.EventGrid/namespaces",
@@ -163,13 +185,14 @@
     },
     {
       "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2026-07-01",
       "name": "[variables('containerGroupName')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[variables('userIdentityResourceId')]": {}
+          "[variables('userIdentityResourceId')]": {},
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]": {}
         }
       },
       "dependsOn": [
@@ -177,7 +200,9 @@
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]",
         "[variables('namespaceResourceId')]",
         "[variables('topicSpaceResourceId')]",
-        "[extensionResourceId(variables('topicSpaceResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+        "[extensionResourceId(variables('topicSpaceResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]",
+        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor'))]"
       ],
       "properties": {
         "osType": "Linux",
@@ -195,15 +220,24 @@
             "properties": {
               "image": "[parameters('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
                 {
                   "name": "MQTT_BROKER_URL",
                   "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
                 },
-                { "name": "MQTT_AUTH_MODE", "value": "entra" },
-                { "name": "MQTT_ENTRA_AUDIENCE", "value": "https://eventgrid.azure.net/" },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
                 {
                   "name": "MQTT_ENTRA_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
@@ -212,25 +246,63 @@
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
                 },
-                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
-              ],
-              "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                },
+                {
+                  "name": "STATE_BACKEND",
+                  "value": "azure-files-rest"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_ACCOUNT_URL",
+                  "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2025-08-01').primaryEndpoints.file]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_SHARE",
+                  "value": "[variables('fileShareName')]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_CLIENT_ID",
+                  "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "STATE_AZURE_FILES_ROOT",
+                  "value": "/mnt/bridge-state"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                }
               ]
             }
           }
-        ],
-        "volumes": [
-          {
-            "name": "bridge-state",
-            "azureFile": {
-              "shareName": "[variables('fileShareName')]",
-              "storageAccountName": "[variables('storageAccountName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
-            }
-          }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('stateIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor')]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69566ab7-960f-475b-8e7c-b3118f30c6bd')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
       }
     }
   ],

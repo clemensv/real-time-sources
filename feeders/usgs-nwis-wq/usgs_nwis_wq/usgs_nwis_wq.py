@@ -16,6 +16,7 @@ import sys
 import asyncio
 import aiohttp
 import html
+import inspect
 import logging
 import argparse
 from datetime import datetime, timedelta, timezone
@@ -88,6 +89,7 @@ class USGSWaterQualityPoller:
         states: Optional[List[str]] = None,
         sites: Optional[List[str]] = None,
         parameter_codes: Optional[str] = None,
+        polling_interval: Optional[float] = None,
     ):
         """
         Initialize the water quality poller.
@@ -105,9 +107,13 @@ class USGSWaterQualityPoller:
         self.states = states or STATE_CODES
         self.sites = sites
         self.parameter_codes = parameter_codes or ALL_WQ_PARAM_CODES
+        self.polling_interval = float(os.getenv("POLLING_INTERVAL", "300")) if polling_interval is None else polling_interval
+        if self.polling_interval <= 0:
+            raise ValueError("POLLING_INTERVAL must be positive")
 
         if kafka_config is not None:
-            producer = Producer(kafka_config)
+            from usgs_waterdata_core.delivery import AcknowledgedKafkaProducer, fabric_kafka_config
+            producer = AcknowledgedKafkaProducer(Producer(fabric_kafka_config(kafka_config)))
             self.site_producer = USGSWaterQualitySitesEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
             self.readings_producer = USGSWaterQualityReadingsEventProducer(producer, kafka_topic)  # type: ignore[arg-type]
         else:
@@ -281,6 +287,15 @@ class USGSWaterQualityPoller:
 
     def load_last_polled_times(self) -> Dict:
         """Load persisted last-polled timestamps."""
+        if self.last_polled_file and os.getenv("STATE_BACKEND") == "azure-files-rest":
+            from pathlib import Path
+            from usgs_waterdata_core.azure_files import read_json
+            loaded = read_json(Path(self.last_polled_file))
+            if loaded is None:
+                return {}
+            if not isinstance(loaded, dict):
+                raise ValueError("Corrupt USGS legacy delivery state")
+            return loaded
         if self.last_polled_file and os.path.exists(self.last_polled_file):
             with open(self.last_polled_file, 'r', encoding='utf-8') as f:
                 try:
@@ -292,6 +307,11 @@ class USGSWaterQualityPoller:
 
     def save_last_polled_times(self, last_polled: Dict) -> None:
         """Save last-polled timestamps to file."""
+        if self.last_polled_file and os.getenv("STATE_BACKEND") == "azure-files-rest":
+            from pathlib import Path
+            from usgs_waterdata_core.state import write_json
+            write_json(Path(self.last_polled_file), last_polled)
+            return
         if self.last_polled_file:
             with open(self.last_polled_file, 'w', encoding='utf-8') as f:
                 json.dump(last_polled, f)
@@ -314,7 +334,19 @@ class USGSWaterQualityPoller:
             once: If True, exit after a single polling cycle (used by scheduled
                 Fabric notebook runs).
         """
+        from .waterdata import api_mode, WaterDataFeed, frozen_payload
+        if api_mode() == "waterdata":
+            await WaterDataFeed(self).run(once=once)
+            return
+        logger.warning("USGS_API_MODE=legacy: temporary WaterServices rollback until retirement")
         last_polled = self.load_last_polled_times()
+
+        async def flush(producer):
+            result = producer.producer.flush()
+            if inspect.isawaitable(result):
+                result = await result
+            if result not in (0, None):
+                raise RuntimeError(f"Broker flush left {result} messages; checkpoint retained")
 
         while True:
             start_time = datetime.now(timezone.utc)
@@ -330,31 +362,35 @@ class USGSWaterQualityPoller:
                     total_sites += len(sites)
 
                     for site in sites:
+                        site.state = site.state_code
                         if self.site_producer:
                             self.site_producer.send_usgs_water_quality_sites_monitoring_site(
                                 _source_uri=self.BASE_URL,
                                 _site_number=site.site_number,
-                                data=site,
+                                data=frozen_payload(site),
                                 flush_producer=False,
                             )
 
+                    if self.site_producer:
+                        await flush(self.site_producer)
                     for reading in readings:
+                        reading.state = next((site.state for site in sites if site.site_number == reading.site_number), None)
                         if not self.is_duplicate(last_polled, reading.site_number, reading.parameter_code, reading.date_time):
                             if self.readings_producer:
                                 self.readings_producer.send_usgs_water_quality_readings_water_quality_reading(
                                     _source_uri=self.BASE_URL,
                                     _site_number=reading.site_number,
                                     _parameter_code=reading.parameter_code,
-                                    data=reading,
+                                    data=frozen_payload(reading),
                                     flush_producer=False,
                                 )
                             self.update_last_polled(last_polled, reading.site_number, reading.parameter_code, reading.date_time)
                             total_readings += 1
 
                     if self.site_producer:
-                        self.site_producer.producer.flush()
+                        await flush(self.site_producer)
                     if self.readings_producer:
-                        self.readings_producer.producer.flush()
+                        await flush(self.readings_producer)
             else:
                 # Poll by state
                 for state_code in self.states:
@@ -367,31 +403,35 @@ class USGSWaterQualityPoller:
                     total_sites += len(sites)
 
                     for site in sites:
+                        site.state = state_code
                         if self.site_producer:
                             self.site_producer.send_usgs_water_quality_sites_monitoring_site(
                                 _source_uri=self.BASE_URL,
                                 _site_number=site.site_number,
-                                data=site,
+                                data=frozen_payload(site),
                                 flush_producer=False,
                             )
 
+                    if self.site_producer:
+                        await flush(self.site_producer)
                     for reading in readings:
+                        reading.state = state_code
                         if not self.is_duplicate(last_polled, reading.site_number, reading.parameter_code, reading.date_time):
                             if self.readings_producer:
                                 self.readings_producer.send_usgs_water_quality_readings_water_quality_reading(
                                     _source_uri=self.BASE_URL,
                                     _site_number=reading.site_number,
                                     _parameter_code=reading.parameter_code,
-                                    data=reading,
+                                    data=frozen_payload(reading),
                                     flush_producer=False,
                                 )
                             self.update_last_polled(last_polled, reading.site_number, reading.parameter_code, reading.date_time)
                             total_readings += 1
 
                     if self.site_producer:
-                        self.site_producer.producer.flush()
+                        await flush(self.site_producer)
                     if self.readings_producer:
-                        self.readings_producer.producer.flush()
+                        await flush(self.readings_producer)
 
                     logger.info("State %s: %d sites, %d new readings", state_code, len(sites), sum(
                         1 for r in readings if not self.is_duplicate({}, r.site_number, r.parameter_code, r.date_time)
@@ -406,7 +446,7 @@ class USGSWaterQualityPoller:
                 break
 
             # Wait before next poll (5 minutes)
-            await asyncio.sleep(300)
+            await asyncio.sleep(self.polling_interval)
 
 
 def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str]:
@@ -426,7 +466,9 @@ def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str
         config_dict['bootstrap.servers'] = parts['BootstrapServer']
         kafka_topic = parts.get('EntityPath', '')
         enable_tls = os.environ.get('KAFKA_ENABLE_TLS', 'true').lower()
-        if enable_tls == 'false':
+        if os.environ.get('KAFKA_AUTH_MODE') == 'fabric-entra':
+            config_dict['security.protocol'] = 'PLAINTEXT' if enable_tls in ('false', '0', 'no') else 'SSL'
+        elif enable_tls == 'false':
             config_dict['security.protocol'] = 'PLAINTEXT'
     elif 'Endpoint' in parts:
         endpoint = parts['Endpoint'].replace('sb://', '').rstrip('/')
@@ -476,7 +518,7 @@ def main():
     sasl_username = getattr(args, 'sasl_username', None) or os.environ.get("SASL_USERNAME", "")
     sasl_password = getattr(args, 'sasl_password', None) or os.environ.get("SASL_PASSWORD", "")
 
-    last_polled_file = os.environ.get("USGS_WQ_LAST_POLLED_FILE") or os.environ.get("STATE_FILE") or "/lakehouse/default/Files/feeder-state/usgs-nwis-wq/state.json"
+    last_polled_file = os.environ.get("USGS_WQ_LAST_POLLED_FILE") or os.environ.get("STATE_FILE") or os.path.expanduser("~/.usgs_wq_last_polled.json")
     states_arg = getattr(args, 'states', None) or os.environ.get("USGS_WQ_STATES", "")
     sites_arg = getattr(args, 'sites', None) or os.environ.get("USGS_WQ_SITES", "")
     param_codes = getattr(args, 'parameter_codes', None) or os.environ.get("USGS_WQ_PARAMETER_CODES", "")
@@ -484,7 +526,7 @@ def main():
     kafka_config = None
     if connection_string:
         kafka_config, topic_from_cs = parse_connection_string(connection_string)
-        if not kafka_topic:
+        if topic_from_cs:
             kafka_topic = topic_from_cs
     elif kafka_bootstrap_servers:
         kafka_config = {

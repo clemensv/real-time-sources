@@ -310,17 +310,22 @@ class TestPollAndSendResilience:
     def _make_poller():
         with patch('usgs_iv.usgs_iv.Producer'), \
              patch('usgs_iv.usgs_iv.USGSSitesEventProducer') as mock_site_ep_cls, \
+             patch('usgs_iv.usgs_iv.USGSSiteTimeseriesEventProducer') as mock_series_ep_cls, \
              patch('usgs_iv.usgs_iv.USGSInstantaneousValuesEventProducer') as mock_iv_ep_cls:
             mock_site_ep = MagicMock()
             mock_site_ep.producer = MagicMock()
+            mock_site_ep.producer.flush.return_value = 0
             mock_site_ep_cls.return_value = mock_site_ep
             mock_iv_ep = MagicMock()
             mock_iv_ep.producer = MagicMock()
+            mock_iv_ep.producer.flush.return_value = 0
             mock_iv_ep_cls.return_value = mock_iv_ep
+            mock_series_ep_cls.return_value.producer.flush.return_value = 0
             poller = USGSDataPoller(
                 kafka_config={'bootstrap.servers': 'localhost:9092'},
                 kafka_topic='test-topic',
                 state='MD',
+                once=True,
             )
         return poller, mock_site_ep, mock_iv_ep
 
@@ -349,12 +354,8 @@ class TestPollAndSendResilience:
 
         with patch.object(poller, 'load_last_polled_times', return_value=last_polled), \
              patch.object(poller, 'save_last_polled_times'), \
-             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen), \
-             patch('asyncio.sleep', side_effect=asyncio.CancelledError):
-            try:
-                await poller.poll_and_send()
-            except (asyncio.CancelledError, Exception):
-                pass
+             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen):
+            await poller.poll_and_send()
 
         mock_site_ep.send_usgs_sites_site.assert_not_called()
 
@@ -369,12 +370,8 @@ class TestPollAndSendResilience:
 
         with patch.object(poller, 'load_last_polled_times', return_value=last_polled), \
              patch.object(poller, 'save_last_polled_times'), \
-             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen), \
-             patch('asyncio.sleep', side_effect=asyncio.CancelledError):
-            try:
-                await poller.poll_and_send()
-            except (asyncio.CancelledError, Exception):
-                pass
+             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen):
+            await poller.poll_and_send()
 
         assert mock_site_ep.send_usgs_sites_site.call_count >= 1
         site_call = mock_site_ep.send_usgs_sites_site.call_args
@@ -383,17 +380,16 @@ class TestPollAndSendResilience:
     @pytest.mark.asyncio
     async def test_flush_called_at_end_of_state_processing(self):
         """producer.flush() is called at the end of each state's record batch, not per record."""
-        poller, _, mock_iv_ep = self._make_poller()
+        poller, mock_site_ep, mock_iv_ep = self._make_poller()
         poller.get_data_by_state = self._empty_data_gen
 
-        with patch.object(poller, 'load_last_polled_times', return_value={}), \
-             patch.object(poller, 'save_last_polled_times'), \
-             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen), \
-             patch('asyncio.sleep', side_effect=asyncio.CancelledError):
-            try:
-                await poller.poll_and_send()
-            except (asyncio.CancelledError, Exception):
-                pass
+        stale = datetime.now(timezone.utc) - timedelta(days=8)
+        with patch.object(poller, 'load_last_polled_times', return_value={'stations': {'MD': stale}}), \
+             patch.object(poller, 'save_last_polled_times') as save_state, \
+             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen):
+            await poller.poll_and_send()
 
-        # flush() called at least once after the state loop (end-of-state flush)
-        assert mock_iv_ep.producer.flush.call_count >= 1
+        mock_site_ep.producer.flush.assert_called_once_with(timeout=120)
+        mock_iv_ep.producer.flush.assert_called_once_with(timeout=120)
+        poller.timeseries_producer.producer.flush.assert_called_once_with(timeout=120)
+        save_state.assert_called_once()

@@ -1219,6 +1219,17 @@
     "amqp": true
   },
   {
+    "id": "usgs-waterdata",
+    "name": "USGS Water Data",
+    "cat": "Hydrology",
+    "key": false,
+    "desc": "United States — continuous water observations with native OGC identifiers",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "vatsim",
     "name": "VATSIM",
     "cat": "Aviation",

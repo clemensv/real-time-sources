@@ -14,7 +14,11 @@ from urllib.parse import urlparse
 
 from usgs_iv.usgs_iv import USGSDataPoller, Site
 
-from usgs_iv_amqp_producer_amqp_producer.producer import USGSSitesAmqpProducer, USGSSiteTimeseriesAmqpProducer, USGSInstantaneousValuesAmqpProducer
+from .delivery import (
+    ConfirmedSitesProducer as USGSSitesAmqpProducer,
+    ConfirmedTimeseriesProducer as USGSSiteTimeseriesAmqpProducer,
+    ConfirmedValuesProducer as USGSInstantaneousValuesAmqpProducer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -201,7 +205,7 @@ class _MqttProducerAdapter:
             self._failures.append(exc)
             logger.exception("AMQP publish failed", exc_info=exc)
 
-    def flush(self) -> Awaitable[None]:
+    def flush(self, timeout=120) -> Awaitable[None]:
         return self.drain()
 
     async def drain(self) -> None:
@@ -240,6 +244,7 @@ async def feed(
     site_adapter = _MqttProducerAdapter(mqtt_client, "usgs_sites_")
     values_adapter = _MqttProducerAdapter(mqtt_client, "usgs_instantaneous_values_")
     poller.site_producer = site_adapter
+    poller.timeseries_producer = site_adapter
     poller.values_producer = values_adapter
     try:
         await poller.poll_and_send()

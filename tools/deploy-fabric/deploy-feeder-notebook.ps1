@@ -408,6 +408,8 @@ function Build-SourceWheels {
         & python -m pip wheel --no-deps --no-build-isolation --wheel-dir $outDir $pkgDir 2>&1 | Out-Host
         if ($LASTEXITCODE -ne 0) { throw "pip wheel failed for $pkgDir" }
     }
+    & python (Join-Path $PSScriptRoot "vendor_wheels.py") $srcDir $outDir | Out-Host
+    if ($LASTEXITCODE -ne 0) { throw "Shared vendor wheel validation failed for $Source" }
 
     $wheels = Get-ChildItem -LiteralPath $outDir -Filter *.whl
     if (-not $wheels) { throw "No wheels produced in $outDir" }

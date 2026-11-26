@@ -1,0 +1,34 @@
+FROM python:3.10-slim AS build
+ARG PIP_INDEX_URL=https://pypi.org/simple
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential pkg-config libssl-dev libsasl2-dev \
+ && rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip wheel --no-cache-dir --wheel-dir /wheels ./usgs_waterdata_amqp_producer/usgs_waterdata_amqp_producer_data \
+ && pip wheel --no-cache-dir --wheel-dir /wheels --find-links /wheels ./usgs_waterdata_amqp_producer/usgs_waterdata_amqp_producer_amqp_producer \
+ && pip wheel --no-cache-dir --wheel-dir /wheels ./usgs_waterdata_core \
+ && pip wheel --no-cache-dir --wheel-dir /wheels --find-links /wheels . \
+ && pip wheel --no-cache-dir --wheel-dir /wheels --find-links /wheels ./usgs_waterdata_amqp
+
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources" \
+      org.opencontainers.image.title="USGS Water Data AMQP feeder" \
+      org.opencontainers.image.description="Native USGS continuous observations and reference metadata over AMQP 1.0" \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-waterdata/CONTAINER.md" \
+      org.opencontainers.image.licenses="MIT" \
+      com.azure.containerizationassist.createdby="containerization-assist"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY --from=build /wheels /wheels
+RUN apt-get update && apt-get install -y --no-install-recommends libsasl2-2 libsasl2-modules \
+ && rm -rf /var/lib/apt/lists/* \
+ && pip install --no-cache-dir --no-index --find-links /wheels usgs-waterdata-amqp \
+ && rm -rf /wheels \
+ && useradd --create-home --uid 10001 feeder \
+ && mkdir /state && chown feeder:feeder /state
+USER feeder
+# Outbound poller: no listening socket or HTTP health endpoint.
+HEALTHCHECK NONE
+RUN python -c "from proton import SSL, SASL; assert SSL.present(); assert SASL.extended(); import glob; assert glob.glob('/usr/lib/*/sasl2/libplain.so*'); import importlib, importlib.util as _u; _m='usgs_waterdata_amqp'; importlib.import_module(_m + '.app' if _u.find_spec(_m + '.app') else _m); from usgs_waterdata.transports import generated; generated('amqp')"
+CMD ["python", "-m", "usgs_waterdata_amqp", "feed"]

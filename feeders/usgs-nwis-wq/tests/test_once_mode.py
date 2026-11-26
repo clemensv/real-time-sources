@@ -35,3 +35,22 @@ async def test_once_mode_exits_after_one_cycle():
     assert sleep_mock.await_count == 0, (
         "poll_and_send(once=True) should exit before the inter-cycle sleep"
     )
+
+
+def test_legacy_checkpoint_routes_reads_and_writes_to_keyless_rest(monkeypatch, tmp_path):
+    from unittest.mock import Mock
+    from usgs_waterdata_core import azure_files, state
+    from usgs_nwis_wq.usgs_nwis_wq import USGSWaterQualityPoller
+
+    path = str(tmp_path / "legacy.json")
+    poller = USGSWaterQualityPoller(last_polled_file=path)
+    monkeypatch.setenv("STATE_BACKEND", "azure-files-rest")
+    read = Mock(return_value={"01646500/00010": "2026-11-25T12:00:00+00:00"})
+    write = Mock()
+    monkeypatch.setattr(azure_files, "read_json", read)
+    monkeypatch.setattr(state, "write_json", write)
+    loaded = poller.load_last_polled_times()
+    poller.save_last_polled_times(loaded)
+    assert str(read.call_args.args[0]) == path
+    assert str(write.call_args.args[0]) == path
+    assert write.call_args.args[1] == read.return_value

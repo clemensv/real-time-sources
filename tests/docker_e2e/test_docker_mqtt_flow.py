@@ -5436,7 +5436,7 @@ def _transient_upstream_skip_reason(logs: str) -> str | None:
     return f"transient upstream network failure (marker {hit!r}); last log line: {tail!r}"
 
 
-def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], *, extra_env: Mapping[str, str] | None = None, timeout: int = 420, min_messages: int = 1, allow_empty: bool = False, required_types: set[str] | None = None) -> List[Dict[str, Any]]:
+def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], *, extra_env: Mapping[str, str] | None = None, timeout: int = 420, min_messages: int = 1, allow_empty: bool = False, required_types: set[str] | None = None, strict: bool = False, expected_routing: Mapping[str, str] | None = None) -> List[Dict[str, Any]]:
     contracts = _load_mqtt_contracts(project_dir)
     topic_filter = _mqtt_root_filter(contracts)
     sub, messages = _collect_mqtt_live_messages('127.0.0.1', broker['host_port'], topic_filter, min_messages=min_messages)
@@ -5490,9 +5490,11 @@ def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], 
     try:
         if not feeder_timed_out and result.get('StatusCode') != 0:
             _skip_reason = _transient_upstream_skip_reason(logs)
-            if _skip_reason is not None:
+            if _skip_reason is not None and not strict:
                 pytest.skip(f"{project_dir} MQTT feeder: {_skip_reason}")
             assert False, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+        if strict:
+            assert not feeder_timed_out, f"Bounded MQTT cycle did not finish\n{logs}"
         deadline = time.time() + 20
         last_count = -1
         stable_since = time.time()
@@ -5531,16 +5533,20 @@ def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], 
     if allow_empty and not messages:
         return []
     assert messages, f'No MQTT messages received on {topic_filter}\n--- LOGS ---\n{logs}'
-    _assert_mqtt_contract_messages(project_dir, messages, required_types=required_types)
+    _assert_mqtt_contract_messages(project_dir, messages, required_types=required_types, strict=strict, expected_routing=expected_routing)
     return messages
 
 
-def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, Any]], *, required_types: set[str] | None = None) -> None:
+def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, Any]], *, required_types: set[str] | None = None, strict: bool = False, expected_routing: Mapping[str, str] | None = None) -> None:
     contracts = _load_mqtt_contracts(project_dir)
     observed_by_type: Dict[str, List[Dict[str, Any]]] = {}
     observed_by_topic_leaf: Dict[Tuple[str, bool], List[Dict[str, Any]]] = {}
     for sample in messages:
         raw_props = sample['user_properties']
+        if strict:
+            for name in ('specversion', 'type', 'source', 'subject', 'id', 'time'):
+                assert name in raw_props, f"Missing unchanged CloudEvents MQTT attribute {name}: {raw_props}"
+            assert raw_props.get('_contenttype') == 'application/json'
         props = _normalise_ce_properties(raw_props)
         for required in ('ce_specversion', 'ce_type', 'ce_source', 'ce_subject', 'ce_id', 'ce_time', 'content_type'):
             assert required in props, f"missing {required} on {sample['topic']}: raw={raw_props}, normalised={props}"
@@ -5552,6 +5558,8 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         assert sample['qos'] == contract['qos'], sample
         if not contract['retain']:
             assert sample['retain'] is False, sample
+        if strict:
+            assert isinstance(sample['payload'], dict), f"MQTT body must decode once to an object: {sample['topic']}"
         payload = _to_dict(sample['payload'])
         assert payload is not None, f"payload is not JSON object for {sample['topic']}"
         context = dict(payload)
@@ -5559,6 +5567,9 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         context.setdefault('item_id', props['ce_subject'])
         context.setdefault('sourceurl', props['ce_source'])
         _merge_template_values(contract.get('subject_template'), props['ce_subject'], context)
+        for name, value in (expected_routing or {}).items():
+            assert name not in context or context[name] == value, f"Unexpected routing value for {name}: {context[name]}"
+            context[name] = value
         # Verify topic matches the template pattern (routing values may be derived from lookups)
         _topic_pattern = '^' + __import__('re').escape(contract['topic']) + '$'
         for _tn in _TEMPLATE_PATTERN.findall(contract['topic']):
@@ -5575,7 +5586,13 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
             assert __import__('re').match(_subj_pattern, props['ce_subject']), (
                 f"Subject {props['ce_subject']!r} does not match template {contract['subject_template']!r}"
             )
-        errors = [err for err in contract['validator'].validate_instance(payload) if 'got NoneType' not in str(err) and 'Expected datetime (RFC3339)' not in str(err)]
+        if strict:
+            assert sample['topic'] == _render_mqtt_template(contract['topic'], context)
+            if contract.get('subject_template'):
+                assert props['ce_subject'] == _render_mqtt_template(contract['subject_template'], context)
+        errors = list(contract['validator'].validate_instance(payload))
+        if not strict:
+            errors = [err for err in errors if 'got NoneType' not in str(err) and 'Expected datetime (RFC3339)' not in str(err)]
         assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
         observed_by_type.setdefault(ce_type, []).append(sample)
         observed_by_topic_leaf.setdefault((contract['topic'].rsplit('/', 1)[-1], contract['retain']), []).append(sample)
@@ -5595,14 +5612,14 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         if required_types is not None and ce_type not in required_types:
             continue
         key = (contract['topic'].rsplit('/', 1)[-1], contract['retain'])
-        if project_dir == 'usgs-iv' and key in {('info', True), ('timeseries', True), ('observation', True)}:
+        if not strict and project_dir == 'usgs-iv' and key in {('info', True), ('timeseries', True), ('observation', True)}:
             continue
         # digitraffic-maritime: stream mode emits AIS location only (metadata arrives every 6 min — skipped with ONCE_MODE);
         # port-call families are tested via the Kafka E2E test
         if project_dir == 'digitraffic-maritime' and key in {('metadata', True), ('port-call', False), ('vessel-details', True), ('port-location', True)}:
             continue
         leaf = contract['topic'].rsplit('/', 1)[-1]
-        if '{' in leaf and '}' in leaf:
+        if strict or ('{' in leaf and '}' in leaf):
             observed = ce_type in observed_by_type
             retained_ok = observed and (not contract['retain'] or any(m['retain'] for m in observed_by_type[ce_type]))
         else:
@@ -5628,6 +5645,8 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
             _missing_coverage.append(f"{contract['topic']} [no retained copy]")
 
     if _missing_coverage:
+        if strict:
+            pytest.fail(f"Missing MQTT contract coverage for {project_dir}: {', '.join(_missing_coverage)}")
         warnings.warn(
             f"MQTT contract coverage incomplete for {project_dir}: "
             f"{len(_missing_coverage)} of {len(contracts)} families/leaves not observed in the "
@@ -5678,7 +5697,60 @@ def mosquitto_usgs_iv():
 
 class TestUSGSIVMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_usgs_iv, usgs_iv_mqtt_image):
-        _run_mqtt_contract_flow('usgs-iv', usgs_iv_mqtt_image, mosquitto_usgs_iv, extra_env={'USGS_FORCE_SITE_REFRESH': 'true', 'USGS_FORCE_DATA_REFRESH': 'true', 'USGS_STATE': 'DE'}, timeout=900)
+        _run_mqtt_contract_flow(
+            'usgs-iv', usgs_iv_mqtt_image, mosquitto_usgs_iv,
+            extra_env={
+                'USGS_API_MODE': 'waterdata', 'USGS_SITES': '01646500',
+                'USGS_PARAMETERS': '00010,00060',
+                'USGS_ENROLLMENT_FILE': '/app/enrollment/01646500.json',
+            },
+            required_types={
+                'USGS.Sites.Site', 'USGS.Sites.SiteTimeseries',
+                'USGS.InstantaneousValues.Streamflow', 'USGS.InstantaneousValues.WaterTemperature',
+            },
+            min_messages=4, timeout=300, strict=True,
+        )
+
+
+@pytest.fixture(scope='module')
+def usgs_waterdata_mqtt_image():
+    return build_image('usgs-waterdata', dockerfile='Dockerfile.mqtt', tag='test-usgs-waterdata-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_usgs_waterdata():
+    container, network, host_port, broker_ip = _generic_mosquitto(
+        'usgs-waterdata-mqtt-e2e', 'usgs-waterdata-mqtt-e2e-broker'
+    )
+    try:
+        yield {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name}
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestUSGSWaterDataMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_usgs_waterdata, usgs_waterdata_mqtt_image):
+        _run_mqtt_contract_flow(
+            'usgs-waterdata', usgs_waterdata_mqtt_image, mosquitto_usgs_waterdata,
+            extra_env={
+                'USGS_WATERDATA_SITES': 'USGS-01646500',
+                'USGS_WATERDATA_PARAMETERS': '00010,00060',
+            },
+            required_types={
+                'USGS.WaterData.MonitoringLocation', 'USGS.WaterData.TimeSeries',
+                'USGS.WaterData.Parameter', 'USGS.WaterData.ContinuousObservation',
+            },
+            min_messages=4,
+            timeout=300,
+            strict=True,
+        )
 
 
 @pytest.fixture(scope='module')
@@ -6320,7 +6392,34 @@ class TestUkEaFloodMonitoringMqttDockerFlow:
 
 class TestUsgsNwisWqMqttDockerFlow:
     def test_emits_retained_uns_topics(self):
-        pytest.skip("_run_b1_mqtt_flow helper missing — see Canada ECCC test")
+        broker, network, host_port, broker_ip = _generic_mosquitto(
+            'usgs-nwis-wq-mqtt-e2e', 'usgs-nwis-wq-mqtt-e2e-broker'
+        )
+        try:
+            image = build_image('usgs-nwis-wq', dockerfile='Dockerfile.mqtt', tag='test-usgs-nwis-wq-mqtt')
+            _run_mqtt_contract_flow(
+                'usgs-nwis-wq', image,
+                {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name},
+                extra_env={
+                    'USGS_API_MODE': 'waterdata', 'USGS_SITES': '01646500',
+                    'USGS_PARAMETERS': '00010',
+                    'USGS_ENROLLMENT_FILE': '/app/enrollment/01646500.json',
+                },
+                required_types={
+                    'USGS.WaterQuality.Sites.MonitoringSite',
+                    'USGS.WaterQuality.Readings.WaterQualityReading',
+                },
+                min_messages=2, timeout=300, strict=True, expected_routing={'state': 'MD'},
+            )
+        finally:
+            try:
+                broker.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
 
 class TestWaterinfoVmmMqttDockerFlow:
     def test_emits_retained_uns_topics(self):
