@@ -32,6 +32,7 @@ const SOURCES = [
   { id: "uk-ea-flood-monitoring", name: "UK EA Flood Monitoring", cat: "Hydrology", key: false, desc: "England — ~4,000 stations", notebook: true, mqtt: true, amqp: true },
   { id: "usgs-iv", name: "USGS Instantaneous Values", cat: "Hydrology", key: false, desc: "United States — ~1.5M stations", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
   { id: "usgs-nwis-wq", name: "USGS NWIS Water Quality", cat: "Hydrology", key: false, desc: "United States — ~3,000 continuous WQ sites", notebook: true, mqtt: true, amqp: true },
+  { id: "usgs-waterdata", name: "USGS Water Data", cat: "Hydrology", key: false, desc: "United States — continuous water observations with native OGC identifiers", kql: true, notebook: true, mqtt: true, amqp: true },
   { id: "waterinfo-vmm", name: "Waterinfo VMM", cat: "Hydrology", key: false, desc: "Belgium / Flanders — ~1,785 stations", notebook: true, mqtt: true, amqp: true },
 
   // ── Weather and Meteorology ──
