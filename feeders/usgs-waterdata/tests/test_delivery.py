@@ -102,7 +102,7 @@ def test_aci_oauth_uses_explicit_managed_identity_and_refreshes(monkeypatch):
     assert result["oauth_cb"]("") == ("first", float(expiry))
     assert result["oauth_cb"]("") == ("second", float(expiry + 3600))
     factory.assert_called_once_with(client_id="synthetic-client")
-    credential.get_token.assert_called_with("https://eventhubs.azure.net/.default")
+    credential.get_token.assert_called_with("https://synthetic.servicebus.windows.net/.default")
     assert credential.get_token.call_count == 2
     assert result["sasl.mechanism"] == "OAUTHBEARER"
     assert result["security.protocol"] == "SASL_SSL"

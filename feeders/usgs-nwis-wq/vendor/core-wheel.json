@@ -8,10 +8,10 @@
     "usgs_waterdata_core/capture.py": "8c1fc8313abcbc542141da03bc18d7049982a323efc3c2668538e3e3b5072ab9",
     "usgs_waterdata_core/client.py": "87f965a22b7ae2acbc0562e63aecb390f6aca442050a14fa8c4d11bf57471921",
     "usgs_waterdata_core/compat.py": "48f7db36f9e46dcd5c272283026fa0123cb008a09fa4db4fc17d693b1c677e87",
-    "usgs_waterdata_core/delivery.py": "7ae233f43002c57b6a9bf5ed89d6696c3aa40b481d52dc129934edb8eb7795eb",
+    "usgs_waterdata_core/delivery.py": "380fc7d4bc56c97afc8f83ed570b170a72aa6473102cb0caa8bd618309a685b7",
     "usgs_waterdata_core/state.py": "688e8c40bb365f919dc7070dc3a86680fe492ce53ba7fafe2600ef7d7c5781c2"
   },
-  "source_sha256": "747f9938bcc4fe36a478b0163d23c83c60a753febbae0631d8dbd6832df74425",
-  "wheel": "usgs_waterdata_core-0.1.0+747f9938bcc4-py3-none-any.whl",
-  "wheel_sha256": "0d2c3814c73945956de87fb578a0a069426116a790f54c5b0c13f116e0faa61f"
+  "source_sha256": "c615f77d30dae690276822f77f8c75db494d7f56667379a10111f8a524a6c41e",
+  "wheel": "usgs_waterdata_core-0.1.0+c615f77d30da-py3-none-any.whl",
+  "wheel_sha256": "c0347283599ff236394770af76b4a1b8b97387260733a1ac303e703880489e51"
 }

@@ -35,7 +35,9 @@ authorization rule and connection-string binding with a dedicated publisher
 identity and namespace-scoped Azure Event Hubs Data Sender, and preserves the
 separate state identity. The runtime explicitly selects
 `KAFKA_AUTH_MODE=azure-entra` and `KAFKA_ENTRA_CLIENT_ID`; its OAuth callback
-refreshes managed-identity tokens for `https://eventhubs.azure.net/.default`.
+refreshes managed-identity tokens for the selected namespace resource,
+`https://<namespace>.servicebus.windows.net/.default`. The global Event Hubs
+audience is rejected by this Kafka endpoint.
 No NotebookUtils, SAS key or default-credential fallback is used by this mode.
 Incremental deployment retains obsolete authorization-rule resources; disabling
 local auth prevents their use, and operators must remove them after cutover.

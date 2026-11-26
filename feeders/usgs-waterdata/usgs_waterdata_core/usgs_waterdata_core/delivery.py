@@ -38,7 +38,7 @@ def fabric_kafka_config(config: Mapping[str, Any]) -> dict[str, Any]:
         credential = ManagedIdentityCredential(client_id=client_id)
 
         def managed_oauth(_: str) -> tuple[str, float]:
-            token = credential.get_token("https://eventhubs.azure.net/.default")
+            token = credential.get_token(audience + ".default")
             if token.expires_on <= time.time() + 60:
                 raise ValueError("Managed identity Event Hubs token expires within 60 seconds")
             return token.token, float(token.expires_on)
